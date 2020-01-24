@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapitre 2 Analyse factorielle exploratoire | Analyse multidimensionnelle appliquée</title>
+  <meta name="description" content="Ce recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
+  <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapitre 2 Analyse factorielle exploratoire | Analyse multidimensionnelle appliquée" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Ce recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapitre 2 Analyse factorielle exploratoire | Analyse multidimensionnelle appliquée" />
+  
+  <meta name="twitter:description" content="Ce recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
+  
+
+<meta name="author" content="Denis Larocque, Léo Belzile" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="references.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">MATH60602</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#survol-du-cours"><i class="fa fa-check"></i><b>1.1</b> Survol du cours</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#analyse-factorielle-exploratoire"><i class="fa fa-check"></i><b>1.1.1</b> Analyse factorielle exploratoire</a></li>
+<li class="chapter" data-level="1.1.2" data-path="index.html"><a href="index.html#sélection-de-variables-et-de-modèles"><i class="fa fa-check"></i><b>1.1.2</b> Sélection de variables et de modèles</a></li>
+<li class="chapter" data-level="1.1.3" data-path="index.html"><a href="index.html#régression-logistique"><i class="fa fa-check"></i><b>1.1.3</b> Régression logistique</a></li>
+<li class="chapter" data-level="1.1.4" data-path="index.html"><a href="index.html#analyse-de-regroupements"><i class="fa fa-check"></i><b>1.1.4</b> Analyse de regroupements</a></li>
+<li class="chapter" data-level="1.1.5" data-path="index.html"><a href="index.html#analyse-de-survie"><i class="fa fa-check"></i><b>1.1.5</b> Analyse de survie</a></li>
+<li class="chapter" data-level="1.1.6" data-path="index.html"><a href="index.html#données-manquantes"><i class="fa fa-check"></i><b>1.1.6</b> Données manquantes</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html"><i class="fa fa-check"></i><b>2</b> Analyse factorielle exploratoire</a><ul>
+<li class="chapter" data-level="2.1" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#rappels-sur-le-coefficient-de-corrélation-linéaire"><i class="fa fa-check"></i><b>2.2</b> Rappels sur le coefficient de corrélation linéaire</a></li>
+<li class="chapter" data-level="2.3" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#exemple-de-questionnaire"><i class="fa fa-check"></i><b>2.3</b> Exemple de questionnaire</a></li>
+<li class="chapter" data-level="2.4" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#description-du-modèle-danalyse-factorielle"><i class="fa fa-check"></i><b>2.4</b> Description du modèle d’analyse factorielle</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#rotation-des-facteurs"><i class="fa fa-check"></i><b>2.4.1</b> Rotation des facteurs</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#estimation-des-facteurs"><i class="fa fa-check"></i><b>2.5</b> Estimation des facteurs</a></li>
+<li class="chapter" data-level="2.6" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#choix-du-nombre-de-facteurs"><i class="fa fa-check"></i><b>2.6</b> Choix du nombre de facteurs</a></li>
+<li class="chapter" data-level="2.7" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#construction-déchelles-à-partir-des-facteurs"><i class="fa fa-check"></i><b>2.7</b> Construction d’échelles à partir des facteurs</a></li>
+<li class="chapter" data-level="2.8" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#compléments-dinformation"><i class="fa fa-check"></i><b>2.8</b> Compléments d’information</a><ul>
+<li class="chapter" data-level="2.8.1" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#variables-ordinales"><i class="fa fa-check"></i><b>2.8.1</b> Variables ordinales</a></li>
+<li class="chapter" data-level="2.8.2" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#autres-méthodes-dextractions-de-facteurs"><i class="fa fa-check"></i><b>2.8.2</b> Autres méthodes d’extractions de facteurs</a></li>
+<li class="chapter" data-level="2.8.3" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#autres-méthodes-de-rotation-des-facteurs"><i class="fa fa-check"></i><b>2.8.3</b> Autres méthodes de rotation des facteurs</a></li>
+<li class="chapter" data-level="2.8.4" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#scores-factoriels"><i class="fa fa-check"></i><b>2.8.4</b> Scores factoriels</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Publié avec bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Analyse multidimensionnelle appliquée</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="analyse-factorielle-exploratoire-1" class="section level1">
+<h1><span class="header-section-number">Chapitre 2</span> Analyse factorielle exploratoire</h1>
+<div id="introduction-1" class="section level2">
+<h2><span class="header-section-number">2.1</span> Introduction</h2>
+<p>On dispose de <span class="math inline">\(p\)</span> variables <span class="math inline">\(X_1, \ldots, X_p\)</span>.</p>
+<ul>
+<li>Y a-t-il des groupements de variables?</li>
+<li>Est-ce que les variables faisant partie d’un groupement semblent mesurer certains aspects d’un facteur commun (non observé)?</li>
+</ul>
+<p>Un tel groupement peut être détecté si plusieurs variables sont très corrélées entre elles. Est-ce que la structure de corrélation entre les <span class="math inline">\(p\)</span> variables peut être expliquée à l’aide d’un nombre restreint de facteurs?</p>
+<p><em>Exemple de facteurs</em>: Habileté quantitative, habileté sociale, importance accordée à la qualité du service, importance accordée à la loyauté, habileté de leader, etc</p>
+<p>L’analyse factorielle est aussi une méthode de réduction du nombre de variables. En effet, une fois qu’on a identifié les facteurs, on peut remplacer les variables individuelles par un résumé pour chaque facteur (qui est souvent la moyenne des variables qui font partie du facteur).</p>
+<p>Pour faire une analyse factorielle, la taille d’échantillon devrait être d’au moins 10 fois le nombre de variables.</p>
+</div>
+<div id="rappels-sur-le-coefficient-de-corrélation-linéaire" class="section level2">
+<h2><span class="header-section-number">2.2</span> Rappels sur le coefficient de corrélation linéaire</h2>
+<p>On veut examiner la relation entre deux variables <span class="math inline">\(X\)</span> et <span class="math inline">\(Y\)</span> et on dispose de <span class="math inline">\(n\)</span> couples d’observations, où <span class="math inline">\(x_i\)</span> (<span class="math inline">\(y_i\)</span>) est la valeur de la variable <span class="math inline">\(X\)</span> (<span class="math inline">\(Y\)</span>) pour le <span class="math inline">\(i\)</span>e individu.</p>
+<p>Le coefficient de corrélation linéaire, que l’on note <span class="math inline">\(r\)</span>, cherche à mesurer la force de la relation linéaire entre deux variables, c’est-à-dire à quantifier à quel point les observations sont alignées autour d’une droite. Le coefficient de corrélation est
+<span class="math display">\[\begin{align*}
+r = \frac{\sum_{i=1}^n (x_i-\overline{x})(y_i -\bar{y})}{\left\{\sum_{i=1}^n (x_i-\overline{x})^2 \sum_{i=1}^n(y_i -\bar{y})^2\right\}^{1/2}}
+\end{align*}\]</span></p>
+<p>Les propriétés les plus importantes du coefficient de corrélation linéaire sont les suivantes:</p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(-1 \leq r \leq 1\)</span>;</li>
+<li><span class="math inline">\(r=1\)</span> (respectivement <span class="math inline">\(r=-1\)</span>) si et seulement si les <span class="math inline">\(n\)</span> observations sont exactement alignées sur une droite de pente positive (négative). C’est-à-dire, s’il existe deux constantes <span class="math inline">\(a\)</span> et <span class="math inline">\(b&gt;0\)</span> (<span class="math inline">\(b&lt;0\)</span>) telles que <span class="math inline">\(y_i=a+b x_i\)</span> pour tout <span class="math inline">\(i=1, \ldots, n\)</span>.</li>
+</ol>
+<p>Règle générale,</p>
+<ul>
+<li>Plus la corrélation est près de 1, plus les points auront tendance à être alignés autour d’une droite de pente positive. Par conséquent, plus la valeur de <span class="math inline">\(X\)</span> augmente, plus celle de <span class="math inline">\(Y\)</span> aura tendance à augmenter et vice-versa.</li>
+<li>Plus la corrélation est près de <span class="math inline">\(-1\)</span>, plus les points auront tendance à être alignés autour d’une droite de pente négative. Par conséquent, plus la valeur de <span class="math inline">\(X\)</span> augmente, plus celle de <span class="math inline">\(Y\)</span> aura tendance à diminuer et vice-versa.</li>
+<li>Lorsque la corrélation est presque nulle, les points n’auront pas tendance à être alignés autour d’une droite. Il est très important de noter que cela n’implique pas qu’il n’y a pas de relation entre les deux variables. Cela implique seulement qu’il n’y a pas de <strong>relation linéaire</strong> entre les deux variables.</li>
+</ul>
+</div>
+<div id="exemple-de-questionnaire" class="section level2">
+<h2><span class="header-section-number">2.3</span> Exemple de questionnaire</h2>
+<p>Le questionnaire suivant porte sur une étude dans un magasin. Pour les besoins d’une enquête, on a demandé à 200 consommateurs adultes de répondre aux questions suivantes par rapport à un certain type de magasin sur une échelle de 1 à 5, où</p>
+<ol style="list-style-type: decimal">
+<li>pas important</li>
+<li>peu important</li>
+<li>moyennement important</li>
+<li>assez important</li>
+<li>très important</li>
+</ol>
+<p>Pour vous, à quel point est-ce important</p>
+<ol style="list-style-type: decimal">
+<li>que le magasin offre de bons prix tous les jours?</li>
+<li>que le magasin accepte les cartes de crédit majeures (Visa, Mastercard)?</li>
+<li>que le magasin offre des produits de qualité?</li>
+<li>que les vendeurs connaissent bien les produits?</li>
+<li>qu’il y ait des ventes spéciales régulièrement?</li>
+<li>que les marques connues soient disponibles?</li>
+<li>que le magasin ait sa propre carte de crédit?</li>
+<li>que le service soit rapide?</li>
+<li>qu’il y ait une vaste sélection de produits?</li>
+<li>que le magasin accepte le paiement par carte de débit?</li>
+<li>que le personnel soit courtois?</li>
+<li>que le magasin ait en stock les produits annoncés?</li>
+</ol>
+<p>Une analyse factorielle cherchera à identifier automatiquement des groupes de variables qui sont fortement corrélées entre elles.</p>
+<div id="code-r" class="section level4 unnumbered">
+<h4>Code R</h4>
+<p>Le chiffrier <code>factor2.csv</code> contient les observations pour ces 12 questions. Tout d’abord, les statistiques descriptives ainsi que la matrice des corrélations qui suivent sont obtenues en exécutant les lignes suivantes:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1">path &lt;-<span class="st"> &quot;https://lbelzile.bitbucket.io/MATH60602/factor.csv&quot;</span></a>
+<a class="sourceLine" id="cb1-2" title="2">facto &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="dt">file =</span> path, <span class="dt">header =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb1-3" title="3">cormat &lt;-<span class="st"> </span><span class="kw">cor</span>(facto, <span class="dt">method =</span> <span class="st">&quot;pearson&quot;</span>)</a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="kw">round</span>(cormat, <span class="dt">digits =</span> <span class="dv">2</span>)</a></code></pre></div>
+<pre><code>##        x1    x2    x3    x4    x5    x6    x7    x8    x9   x10   x11   x12
+## x1   1.00 -0.08 -0.14 -0.07  0.38 -0.01 -0.10 -0.13 -0.03 -0.11 -0.12 -0.01
+## x2  -0.08  1.00  0.04 -0.02 -0.08  0.06  0.50  0.01 -0.01  0.43 -0.12  0.07
+## x3  -0.14  0.04  1.00  0.10 -0.06  0.39  0.00  0.05  0.47  0.08  0.13  0.46
+## x4  -0.07 -0.02  0.10  1.00 -0.05  0.06  0.08  0.57  0.01  0.09  0.50  0.09
+## x5   0.38 -0.08 -0.06 -0.05  1.00 -0.04 -0.04 -0.02  0.03 -0.07 -0.06 -0.07
+## x6  -0.01  0.06  0.39  0.06 -0.04  1.00  0.07  0.04  0.32  0.07 -0.04  0.32
+## x7  -0.10  0.50  0.00  0.08 -0.04  0.07  1.00  0.09 -0.02  0.51 -0.03  0.02
+## x8  -0.13  0.01  0.05  0.57 -0.02  0.04  0.09  1.00 -0.03  0.16  0.55  0.04
+## x9  -0.03 -0.01  0.47  0.01  0.03  0.32 -0.02 -0.03  1.00  0.01  0.02  0.39
+## x10 -0.11  0.43  0.08  0.09 -0.07  0.07  0.51  0.16  0.01  1.00  0.01  0.02
+## x11 -0.12 -0.12  0.13  0.50 -0.06 -0.04 -0.03  0.55  0.02  0.01  1.00  0.05
+## x12 -0.01  0.07  0.46  0.09 -0.07  0.32  0.02  0.04  0.39  0.02  0.05  1.00</code></pre>
+</div>
+<div id="code-sas" class="section level4 unnumbered">
+<h4>Code SAS</h4>
+<p>Les commandes (ainsi que plusieurs commentaires) pour faire les analyses se trouvent dans le fichier <code>factor1_intro.sas</code>. Les statistiques descriptives ainsi que la matrice des corrélations sont obtenues en exécutant les lignes suivantes:</p>
+<pre class="sas"><code>proc corr data=multi.factor2;
+var x1-x12;
+run;</code></pre>
+<p><img src="figures/01-facto-e1.png" width="90%" style="display: block; margin: auto;" />
+<img src="figures/01-facto-e2.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="description-du-modèle-danalyse-factorielle" class="section level2">
+<h2><span class="header-section-number">2.4</span> Description du modèle d’analyse factorielle</h2>
+<p>On dispose d’observations sur <span class="math inline">\(p\)</span> variables <span class="math inline">\(X_1, \ldots, X_p\)</span>. Le modèle d’analyse factorielle fait l’hypothèse que ces variables dépendent linéairement d’un plus petit nombre <span class="math inline">\(m\)</span> de variables aléatoires, <span class="math inline">\(F_1, \ldots, F_m\)</span>, appelées facteurs communs et de <span class="math inline">\(p\)</span> termes d’erreurs (ou facteurs spécifiques) <span class="math inline">\(\varepsilon_1, \ldots, \varepsilon_p\)</span>, de moyenne <span class="math inline">\({\mathsf E}\left(\varepsilon_i\right)=0\)</span> et de variance <span class="math inline">\({\mathsf{Var}}\left(\varepsilon_i\right)=\psi_i\)</span> pour <span class="math inline">\(i=1, \ldots, p\)</span>. Spécifiquement, le modèle est
+<span class="math display">\[\begin{align*}
+X_1 &amp;= \mu_1 + l_{11}F_1 + l_{12} F_2 + \cdots + l_{1m}F_m + \varepsilon_1\\
+X_2 &amp;= \mu_2 + l_{21}F_1 + l_{22} F_2 + \cdots + l_{2m}F_m + \varepsilon_2\\
+&amp;\vdots \\
+X_p &amp;= \mu_p + l_{p1}F_1 + l_{p2} F_2 + \cdots + l_{pm}F_m + \varepsilon_p,
+\end{align*}\]</span>
+où <span class="math inline">\(\mu_i\)</span> est l’espérance de la variable aléatoire <span class="math inline">\(X_i\)</span> (<span class="math inline">\(i=1, \ldots, p\)</span>) et où <span class="math inline">\(l_{ij}\)</span> est le chargement de la variable <span class="math inline">\(X_i\)</span> sur le facteur <span class="math inline">\(F_j\)</span> (<span class="math inline">\(i=1,\ldots, p; j=1, \ldots, m\)</span>).</p>
+<p>Les espérances (<span class="math inline">\(\mu_i\)</span>), les chargements (<span class="math inline">\(l_{ij}\)</span>) et les variances (<span class="math inline">\(\psi_i\)</span>) sont des quantités fixes, mais inconnues, tandis que les facteurs communs (<span class="math inline">\(F_i\)</span>) et spécifiques (<span class="math inline">\(\varepsilon_i\)</span>) sont des variables aléatoires non observables.</p>
+<p>Des hypothèses supplémentaires sont nécessaires afin de pouvoir utiliser ce modèle (contraintes d’identifiabilité des paramètres). Sans entrer dans les détails, mentionnons que l’une de ces hypothèses est que les facteurs sont non corrélés.</p>
+<p>De plus, si les variables ont été préalablement standardisées de telle sorte que <span class="math inline">\({\mathsf E}\left(X_i\right)=0\)</span> et <span class="math inline">\({\mathsf{Var}}\left(X_i\right)=1\)</span> (note: ceci revient à utiliser la matrice de corrélation des observations dans l’analyse ce qui est fait par défaut dans ), alors <span class="math inline">\({\mathsf{Cor}}\left(X_i, F_j\right)=l_{ij}\)</span>, c’est-à-dire, le chargement de la variable <span class="math inline">\(X_i\)</span> sur le chargement <span class="math inline">\(F_j\)</span> est le coefficient de corrélation entre cette variable et ce facteur.</p>
+<p>Sans aucune contrainte sur le modèle, la matrice de covariance de <span class="math inline">\(X_1, \ldots, X_p\)</span> possède <span class="math inline">\(p(p+1)/2\)</span> paramètres, soit <span class="math inline">\(p\)</span> variances et <span class="math inline">\(p(p-1)/2\)</span> termes de corrélation. Avec le modèle d’analyse factorielle, on suppose que l’on peut décrire cette structure en utilisant seulement <span class="math inline">\(p(m+1)\)</span> paramètres (<span class="math inline">\(p\)</span> variances spécifiques et <span class="math inline">\(pm\)</span> chargements). Par exemple, avec <span class="math inline">\(p=50\)</span> variables et <span class="math inline">\(m=6\)</span> facteurs, on essaie de décrire la structure de covariance à l’aide de 350 paramètres au lieu de 1275.</p>
+<p>Il existe plusieurs méthodes pour extraire les facteurs, c’est-à-dire pour estimer les paramètres du modèle (les <span class="math inline">\(\psi_i\)</span> et les <span class="math inline">\(l_{ij}\)</span>). Nous allons discuter de deux d’entre elles: la méthode du maximum de vraisemblance et la méthode des composantes principales. L’avantage de l’estimation par maximum de vraisemblance est qu’elle permet l’utilisation de critères d’information et de statistiques de tests pour guider le choix du nombre de facteurs. En revanche, l’estimation des paramètres requiert une optimisation numérique qui peut être délicate selon les cas de figure.</p>
+<div id="rotation-des-facteurs" class="section level3">
+<h3><span class="header-section-number">2.4.1</span> Rotation des facteurs</h3>
+<p>Dans le modèle d’analyse factorielle, on peut montrer que, lorsqu’il y a deux facteurs ou plus, il existe plusieurs configurations de facteurs qui donnent la même structure de covariance. En fait, les chargements peuvent seulement être déterminés à une transformation orthogonale prêt (note: une transformation orthogonale est une transformation qui préserve le produit scalaire; elle préserve ainsi toutes les distances et les angles entre deux vecteurs). Si les chargements provenant d’une méthode d’extraction des facteurs ne sont pas uniques, la matrice de corrélation estimée par le modèle est par contre unique.</p>
+<p>Il existe plusieurs techniques de rotation de facteurs. Le but de ces techniques est d’essayer de trouver une solution qui fera en sorte que les facteurs seront facilement interprétables. La méthode la plus utilisée est la méthode <strong>varimax</strong>: elle produit une configuration de chargement en maximisant la variance de la somme des carrés des chargements pour les <span class="math inline">\(m\)</span> facteurs. La méthode varimax tend à produire une configuration de facteurs tel que les chargements de chaque variable sont dispersés (des chargements élevés positifs ou négatifs et d’autres presque nuls).</p>
+<p>Je vous suggère de toujours tenter d’interpréter la solution avec une rotation varimax. Si ce n’est pas suffisamment clair, il existe d’autres méthodes de rotation dont certaines (les rotations de type oblique) permettent la présence de corrélation entre les facteurs.</p>
+</div>
+</div>
+<div id="estimation-des-facteurs" class="section level2">
+<h2><span class="header-section-number">2.5</span> Estimation des facteurs</h2>
+<p>Les chargements estimés pour la solution à quatre facteurs, suite à la rotation varimax, sont obtenus avec le code SAS suivant:</p>
+<pre class="sas"><code>proc factor data=multi.factor2 
+ method=ml rotate=varimax nfact=4
+ maxiter=500 flag=.3 hey;
+ var x1-x12;
+run;</code></pre>
+<p><img src="figures/01-facto-e3.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>En général, on associe une variable à un groupe (facteur) si son chargement est supérieur à 0,3 (en valeur absolue), ce qui donne</p>
+<ul>
+<li>Facteur 1: <span class="math inline">\(X_4\)</span>,<span class="math inline">\(X_8\)</span> et <span class="math inline">\(X_{11}\)</span></li>
+<li>Facteur 2: <span class="math inline">\(X_3\)</span>,<span class="math inline">\(X_6\)</span>, <span class="math inline">\(X_9\)</span> et <span class="math inline">\(X_{12}\)</span></li>
+<li>Facteur 3: <span class="math inline">\(X_2\)</span>,<span class="math inline">\(X_7\)</span> et <span class="math inline">\(X_{10}\)</span></li>
+<li>Facteur 4: <span class="math inline">\(X_1\)</span> et <span class="math inline">\(X_5\)</span>.</li>
+</ul>
+<p>Ces facteurs sont interprétables:</p>
+<ul>
+<li>Le facteur 1 représente l’importance accordée au service.</li>
+<li>Le facteur 2 représente l’importance accordée aux produits.</li>
+<li>Le facteur 3 représente l’importance accordée à la facilité de paiement.</li>
+<li>Le facteur 4 représente l’importance accordée aux prix.</li>
+</ul>
+<p>Dans cet exemple, les choses se sont bien passées et le nombre de facteurs que nous avons spécifié (4) semble être adéquat, mais ce n’est pas toujours aussi évident. Il est utile d’avoir des outils pour guider le choix du nombre de facteurs.</p>
+</div>
+<div id="choix-du-nombre-de-facteurs" class="section level2">
+<h2><span class="header-section-number">2.6</span> Choix du nombre de facteurs</h2>
+<p>Il existe différentes méthodes pour se guider dans le nombre de facteurs, <span class="math inline">\(m\)</span>, à utiliser. Cependant, le point important à retenir est que, peu importe le nombre choisi, il faut que les facteurs soient <strong>interprétables</strong>. Par conséquent, les méthodes qui
+suivent ne devraient servir que de guide et non pas être suivies aveuglément.
+La méthode du maximum de vraisemblance que nous avons utilisée dans l’exemple possède l’avantage de fournir trois critères pour choisir le nombre de facteurs appropriés. Ces critères sont:</p>
+<ul>
+<li>AIC (critère d’information d’Akaike)</li>
+<li>BIC (critère d’information bayésien de Schwarz)</li>
+<li>Le test du rapport de vraisemblance pour l’hypothèse nulle que le modèle de corrélation décrit le modèle factoriel avec <span class="math inline">\(m\)</span> facteurs est adéquat, contre l’alternative qu’il n’est pas adéquat.</li>
+</ul>
+<p>Les critères d’information servent à la sélection de modèles; ils seront traités plus en détail dans les chapitres qui suivent. Pour l’instant, il est suffisant de savoir que le modèle avec la valeur du critère AIC (ou BIC) la plus petite est considéré le « meilleur » (selon ce critère).</p>
+<p>Les sorties suivantes proviennent du même programme SAS et correspondent au modèle factoriel avec quatre facteurs estimé par maximum de vraisemblance.</p>
+<p><img src="figures/01-facto-e4.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Pour choisir le nombre de facteurs avec les critères, il faut ajuster le modèle en faisant varier le nombre de facteurs (option <code>nfact</code> et extraire la valeur numérique.</p>
+<p>Le tableau @ref(01-IC_table) présente les valeurs estimées des critères d’information et des valeurs-<span class="math inline">\(p\)</span> pour le test du rapport de vraisemblance pour cinq modèles. Le critère AIC suggère quatre facteurs, tandis que les deux autres critères (BIC et test du rapport de vraisemblance suggèrent plutôt trois facteurs.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">m</th>
+<th align="right">AIC</th>
+<th align="right">BIC</th>
+<th align="right">valeur-<em>p</em></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="right">228,0</td>
+<td align="right">49,9</td>
+<td align="right">&lt;0,001</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="right">99,5</td>
+<td align="right">-42,3</td>
+<td align="right">&lt;0,001</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="right">-20,5</td>
+<td align="right">-129,3</td>
+<td align="right">0,096</td>
+</tr>
+<tr class="even">
+<td align="center">4</td>
+<td align="right">-34,9</td>
+<td align="right">-114,1</td>
+<td align="right">0,973</td>
+</tr>
+<tr class="odd">
+<td align="center">5</td>
+<td align="right">-24,8</td>
+<td align="right">-77,6</td>
+<td align="right">0,975</td>
+</tr>
+</tbody>
+</table>
+<p>On peut considérer le modèle avec trois facteurs: les chargements (après rotation varimax) sont données dans le tableau <a href="analyse-factorielle-exploratoire-1.html#fig:fig1p5">2.1</a>.</p>
+<div class="figure" style="text-align: center"><span id="fig:fig1p5"></span>
+<img src="figures/01-facto-e5.png" alt="Estimés des chargements pour trois facteurs avec rotation varimax" width="55%" />
+<p class="caption">
+Figure 2.1: Estimés des chargements pour trois facteurs avec rotation varimax
+</p>
+</div>
+<p>Cette solution récupère les trois facteurs <em>service</em>, <em>produits</em> et <em>paiement</em> de la solution précédente à quatre facteurs. Le facteur <em>prix</em> (qui était formé de <span class="math inline">\(X_1\)</span> et <span class="math inline">\(X_5\)</span>) n’est plus présent: que faire avec ce dernier? Cela dépend du but de l’analyse et nous y reviendrons plus tard.</p>
+<p>Pour terminer cette section, voici la description de deux autres
+critères <em>classiques</em> pour choisir le nombre de facteurs. Ces deux critères sont:</p>
+<ul>
+<li>Critère de Kaiser, un critère basé sur les valeurs propres. Avec une analyse en composantes principales basée sur la matrice des corrélations, la valeur propre associée à un facteur représente la partie de la variance totale qui est expliquée par ce facteur. Chaque variable compte pour un dans la variance totale. Le nombre de facteurs choisis est le nombre de valeurs propres supérieures à 1. L’idée est de garder seulement les facteurs qui expliquent plus de variance qu’une variable individuelle.</li>
+<li>le diagramme d’éboulis: un graphique des valeurs propres ordonnées de la plus grande à la plus petite en fonction de <span class="math inline">\(1,\ldots, p\)</span>. Habituellement, ce graphe prendra la forme d’une chute assez importante suivie d’une stabilisation des valeurs propres. Avec ce critère, le nombre de facteurs est déterminé par le nombre de valeurs propres avant le début du coude où il a stabilisation apparente. L’idée est de choisir l’endroit où l’ajout d’un facteur supplémentaire n’apporte qu’un gain marginal faible. Ce critère est par contre subjectif et dépend de l’analyste.</li>
+</ul>
+<p>Les sorties qui suivent proviennent du programme:</p>
+<pre class="sas"><code>proc factor data=multi.factor2 method=principal
+ scree rotate=varimax flag=.3;
+var x1-x12;
+run;</code></pre>
+<p>Cette fois-ci, c’est la méthode des composantes principales qui
+est utilisée (voir section suivante). En ne spécifiant pas l’option <code>nfact</code>, choisit le nombre de facteurs en utilisant par défaut le critère de Kaiser (valeurs propres supérieures à 1). Quatre facteurs sont retenus, tel qu’indiqué par la sortie au bas du tableau <a href="analyse-factorielle-exploratoire-1.html#fig:fig1p7">2.2</a>. Pour le diagramme d’éboulis de la figure <a href="analyse-factorielle-exploratoire-1.html#fig:fig1p6">2.3</a>, le choix est assez subjectif: il semble raisonnable de choisir trois ou quatre facteurs.</p>
+<div class="figure" style="text-align: center"><span id="fig:fig1p7"></span>
+<img src="figures/01-facto-e7.png" alt="Valeurs propres et proportion de variance" width="65%" />
+<p class="caption">
+Figure 2.2: Valeurs propres et proportion de variance
+</p>
+</div>
+<div class="figure" style="text-align: center"><span id="fig:fig1p6"></span>
+<img src="figures/01-facto-e6.png" alt="Diagramme d'éboulis" width="65%" />
+<p class="caption">
+Figure 2.3: Diagramme d’éboulis
+</p>
+</div>
+<p>On suggère d’utiliser <em>de facto</em> les trois critères découlant de l’utilisation de la vraisemblance et de déterminer le nombre de facteurs à extraire selon différents critères avant d’examiner les modèles avec ce nombre de facteurs et ceux
+avec un facteur de moins ou de plus. Au final, le plus important est de pouvoir interpréter raisonnablement les facteurs et donc le modèle retenu est souvent choisi selon le critère <strong>Wow!</strong>. On veut dire par là que la configuration de facteurs choisie est compréhensible.</p>
+</div>
+<div id="construction-déchelles-à-partir-des-facteurs" class="section level2">
+<h2><span class="header-section-number">2.7</span> Construction d’échelles à partir des facteurs</h2>
+<p>Si le seul but de l’analyse factorielle est de comprendre la structure de corrélation entre les variables, alors se limiter à l’interprétation des facteurs est suffisant.</p>
+<p>Si par contre, le but est de réduire le nombre de variables pour pouvoir par la suite procéder à d’autres analyses statistiques, l’analyse factorielle peut alors servir de guide pour construire de nouvelles variables (échelles). En supposant que l’analyse factorielle a produit des facteurs qui sont interprétables et satisfaisants, la méthode de construction d’échelles la plus couramment utilisée consiste à construire <span class="math inline">\(m\)</span> nouvelles variables, une par facteur. Pour un facteur donné, la nouvelle variable est simplement la moyenne des variables ayant des chargements élevés sur ce facteur (positifs ou négatifs, mais de même signe). Une autre méthode, les scores factoriels, sera présentée plus loin.</p>
+<p>Lorsqu’on construit une échelle, il est important d’examiner sa cohérence interne. Ceci peut être fait à l’aide du coefficient alpha de Cronbach. Ce coefficient mesure à quel point chaque variable faisant partie d’une échelle est corrélée avec le total de toutes les variables pour cette échelle.
+Plus le coefficient est élevé, plus les variables ont tendance à être corrélées entre elles. L’alpha de Cronbach est
+<span class="math display">\[\begin{align*}
+\alpha=\frac{k}{k-1} \frac{S^2-\sum_{i=1}^k S_i^k}{S^2},
+\end{align*}\]</span>
+où <span class="math inline">\(k\)</span> est le nombre de variables dans l’échelle, <span class="math inline">\(S^2\)</span> est la variance empirique de la somme des variables et <span class="math inline">\(S_i^2\)</span> est la variance empirique de la <span class="math inline">\(i\)</span>e variable. En pratique, on voudra que ce coefficient soit au moins égal à 0,6 pour être satisfait de la cohérence interne de l’échelle.</p>
+<p>Avec , la procédure <code>corr</code> permet de calculer <span class="math inline">\(\alpha\)</span>.</p>
+<pre class="sas"><code>/* pour le facteur service */
+proc corr data=multi.factor2 alpha;
+var x4 x8 x11;
+run;
+/* pour le facteur produits */
+proc corr data=multi.factor2 alpha;
+var x3 x6 x9 x12;
+run;
+/* pour le facteur paiement */
+proc corr data=multi.factor2 alpha;
+var x2 x7 x10;
+run;
+/* pour le facteur prix */
+proc corr data=multi.factor2 alpha;
+var x1 x5;
+run;</code></pre>
+
+
+
+
+<div class="figure" style="text-align: center"><span id="fig:fig1p8"></span>
+<img src="figures/01-facto-e8.png" alt="Alpha de Cronbach pour le facteur service." width="85%" />
+<p class="caption">
+Figure 2.4: Alpha de Cronbach pour le facteur <em>service</em>.
+</p>
+</div>
+<div class="figure" style="text-align: center"><span id="fig:fig1p9"></span>
+<img src="figures/01-facto-e9.png" alt="Alpha de Cronbach pour le facteur produits." width="85%" />
+<p class="caption">
+Figure 2.5: Alpha de Cronbach pour le facteur <em>produits</em>.
+</p>
+</div>
+<div class="figure" style="text-align: center"><span id="fig:fig1p10"></span>
+<img src="figures/01-facto-e10.png" alt="Alpha de Cronbach pour le facteur paiement." width="85%" />
+<p class="caption">
+Figure 2.6: Alpha de Cronbach pour le facteur <em>paiement</em>.
+</p>
+</div>
+<div class="figure" style="text-align: center"><span id="fig:fig1p11"></span>
+<img src="figures/01-facto-e11.png" alt="Alpha de Cronbach pour le facteur prix." width="85%" />
+<p class="caption">
+Figure 2.7: Alpha de Cronbach pour le facteur <em>prix</em>.
+</p>
+</div>
+<p>Il faut utiliser le alpha brut. Ainsi, les alphas de Cronbach sont tous
+satisfaisants (plus grand que 0,6) sauf pour le facteur <em>prix</em> (<span class="math inline">\(\alpha=0,546\)</span>). fournit également la matrice des corrélations des variables de l’échelle ainsi que la valeur du alpha de Cronbach si on retirait une variable à la fois de l’échelle. Tout est donc cohérent. Les échelles provenant des facteurs <em>service</em>, <em>produits</em> et <em>paiement</em>, sont satisfaisantes. Ces facteurs sont identifiés à la fois dans la solution à quatre, mais aussi dans la solution à troisfacteurs. Le facteur <em>prix</em> est celui qui apparaît en plus dans la solution à quatre facteurs. Il a une interprétation claire, mais son faible alpha ferait en sorte qu’il serait discutable de travailler avec l’échelle <em>prix</em> dans d’autres analyses (du moins avec selon l’usage habituel du alpha).</p>
+</div>
+<div id="compléments-dinformation" class="section level2">
+<h2><span class="header-section-number">2.8</span> Compléments d’information</h2>
+<div id="variables-ordinales" class="section level3">
+<h3><span class="header-section-number">2.8.1</span> Variables ordinales</h3>
+<p>Théoriquement, une analyse factorielle ne devrait être faite qu’avec des
+variables continues. Par contre, en pratique, on l’utilise souvent aussi avec des variables ordinales (comme pour l’exemple portant sur le questionnaire) et même avec des variables binaires (0-1).</p>
+<p>Dans ce genre de situation, on peut aussi utiliser d’autres mesures d’associations au lieu du coefficient de corrélation linéaire. Par exemple, on peut utiliser la corrélation polychorique, qui est une mesure de corrélation entre deux variables ordinales. La corrélation tétrachorique correspond au cas spécial de deux variables binaires.</p>
+<p>Ma suggestion est d’utiliser la corrélation linéaire ordinaire avec des variables ordinales (même binaires). Si les résultats ne sont pas satisfaisants, on peut alors essayer avec d’autres mesures d’associations.</p>
+<p>On peut refaire l’analyse des données portant sur le magasin dans en utilisant la corrélation polychorique calculées par la procédure <code>corr</code> et en passant la sortie à la procédure <code>factor</code>.</p>
+<pre class="sas"><code>proc corr data=multi.factor2 polychoric out=poly_corr;
+var x1-x12;
+run;
+
+proc factor data=poly_corr
+ method=ml rotate=varimax nfact=4
+ maxiter=500 flag=.3 hey;
+ var x1-x12;
+run;</code></pre>
+<p>Les chargements sont donnés dans le tableau <a href="analyse-factorielle-exploratoire-1.html#fig:fig1p12">2.8</a>. Les facteurs obtenus sont les mêmes qu’en utilisant les corrélations linéaires.</p>
+<div class="figure" style="text-align: center"><span id="fig:fig1p12"></span>
+<img src="figures/01-facto-e12.png" alt="Chargements estimés pour la corrélation polychorique" width="65%" />
+<p class="caption">
+Figure 2.8: Chargements estimés pour la corrélation polychorique
+</p>
+</div>
+</div>
+<div id="autres-méthodes-dextractions-de-facteurs" class="section level3">
+<h3><span class="header-section-number">2.8.2</span> Autres méthodes d’extractions de facteurs</h3>
+<p>Il n’y a pas de formule explicites pour l’estimation des paramètres avec la méthode du maximum de vraisemblance et un algorithme d’optimisation est nécessaire pour l’option des paramètres. Dans certains cas, l’algorithme peut terminer sans solution ou retourner un cas limite (où la variance est négative). La méthode par les composantes principales (mentionnée lors de la présentation des valeurs propres et du diagramme d’éboulis a une solution explicite et peut donc dépanner si on n’arrive pas à obtenir le maximum de vraisemblance.</p>
+<p>D’autres méthodes sont aussi disponibles dans (voir la rubrique d’aide du logiciel) mais les deux méthodes mentionnées devraient être suffisantes pour la grande majorité des applications.</p>
+</div>
+<div id="autres-méthodes-de-rotation-des-facteurs" class="section level3">
+<h3><span class="header-section-number">2.8.3</span> Autres méthodes de rotation des facteurs</h3>
+<p>Jusqu’à présent, nous avons utilisé la méthode de rotation orthogonale varimax. Il existe de nombreuses autres méthodes de rotations orthogonales telles, orthomax, quartimax, parsimax et equimax (voir la rubrique d’aide de ). Rappelez-vous que le modèle d’analyse factorielle de base suppose que les facteurs sont non corrélés. Les rotations de type obliques quant à elles permettent d’introduire de la corrélation entre les facteurs. Quelquefois, une telle rotation facilitera davantage l’interprétation des facteurs qu’une rotation orthogonale. permet l’utilisation de plusieurs méthodes de
+rotation obliques qui sont documentées dans la rubrique d’aide. Notez qu’il faut être prudent lorsqu’on utilise une méthode de rotation oblique car il y aura trois matrices de chargements après rotation. On suggère l’utilisation de la première, soit la représentation avec <strong>coefficients de régression normalisés</strong>. Il s’agit des coefficients de régression si on voulait prédire les variables à l’aide des facteurs. Ils indiquent donc à quel point chaque facteur est associé à chaque variable. Dans le cas d’une rotation orthogonale, ces trois matrices sont les mêmes et il s’agit de trois interprétations valides des chargements.</p>
+<p>Le programme suivant fait une analyse factorielle avec quatre facteurs, mais en utilisant une rotation varimax oblique (option <code>rotate=obvarimax</code>).</p>
+<pre class="sas"><code>proc factor data=multi.factor2
+maxiter=500 flag=.3 hey;
+var x1-x12;
+run;</code></pre>
+<p>La matrice des corrélations entres facteurs est donnée dans le tableau <a href="analyse-factorielle-exploratoire-1.html#fig:fig1p13">2.9</a> et les chargements sont présentés dans le tableau <a href="analyse-factorielle-exploratoire-1.html#fig:fig1p14">2.10</a>. On voit ici qu’on obtient les mêmes quatre facteurs qu’avec une rotation varimax orthogonale.</p>
+<div class="figure" style="text-align: center"><span id="fig:fig1p13"></span>
+<img src="figures/01-facto-e13.png" alt="Corrélation interfacteurs pour rotation varimax oblique" width="70%" />
+<p class="caption">
+Figure 2.9: Corrélation interfacteurs pour rotation varimax oblique
+</p>
+</div>
+<div class="figure" style="text-align: center"><span id="fig:fig1p14"></span>
+<img src="figures/01-facto-e14.png" alt="Chargements avec rotation oblique varimax" width="70%" />
+<p class="caption">
+Figure 2.10: Chargements avec rotation oblique varimax
+</p>
+</div>
+</div>
+<div id="scores-factoriels" class="section level3">
+<h3><span class="header-section-number">2.8.4</span> Scores factoriels</h3>
+<p>Avec les données de l’exemple, en nous basant sur les résultats de l’analyse factorielle, nous avons créé quatre nouvelles échelles (une par facteur) que l’on peut calculer pour chaque individu:</p>
+<ul>
+<li><em>service</em> = <span class="math inline">\((X_4+X_8+X_{11})/3\)</span>,</li>
+<li><em>produit</em> = <span class="math inline">\((X_3+X_6+X_9+X_{12})/4\)</span>,</li>
+<li><em>paiement</em> = <span class="math inline">\((X_2+X_7+X_{10})/3\)</span>,</li>
+<li><em>prix</em> = <span class="math inline">\((X_1+X_5)/2\)</span>.</li>
+</ul>
+<p>Par exemple, la variable <em>prix</em> peut donc être vu comme une combinaison linéaire des 12
+variables où seulement <span class="math inline">\(X_1\)</span> et <span class="math inline">\(X_5\)</span> reçoivent un poids (égal) différent de zéro. Une autre façon de créer de nouvelles variables consiste à calculer des scores factoriels (un pour chaque facteur) pour chaque individu. Par exemple, pour un individu donné, un score factoriel pour le premier facteur peut être calculé selon la formule
+<span class="math display">\[\begin{align*}
+\hat{F}_1 = \widehat{\beta}_1 x_1 + \cdots + \widehat{\beta}_{12}x_{12},
+\end{align*}\]</span>
+où <span class="math inline">\(x_1, \ldots, x_{12}\)</span> sont les valeurs (habituellement standardisées) des variables pour cet individu et où <span class="math inline">\(\widehat{\beta}_1, \ldots, \widehat{\beta}_{12}\)</span> sont des coefficients estimés à partir des chargements (après rotation) et de la matrice de corrélation des variables.</p>
+<p>Ainsi, chacune des 12 variables originales contribue au calcul du score
+factoriel. Les variables ayant des chargements plus élevés sur ce facteur auront tendance à avoir des poids (<span class="math inline">\(\widehat{\beta}\)</span>) plus élevés. Par contre, les scores factoriels ne sont pas uniques car ils dépendent des chargements utilisés (et donc à la fois de la méthode d’estimation et de la méthode de rotation).
+On peut également utiliser les scores factoriels au lieu des 12 variables
+originales dans des analyses subséquentes. Il est suggéré d’utiliser les nouvelles variables (échelles) obtenues en faisant les moyennes des variables identifiées comme faisant partie de chaque
+facteur pour les raisons suivantes:</p>
+<ul>
+<li>l’interprétation des scores factoriels est moins claire (chaque facteur dépend de toutes les variables)</li>
+<li>les scores factoriels ne sont pas uniques (ils dépendent de la méthode d’estimation et de rotation).</li>
+<li>les coefficients servant au calcul seront différents d’une étude à l’autre.</li>
+</ul>
+<div class="figure" style="text-align: center"><span id="fig:fig1p15"></span>
+<img src="figures/01-facto-e15.png" alt="Coefficients du score normalisés" width="60%" />
+<p class="caption">
+Figure 2.11: Coefficients du score normalisés
+</p>
+</div>
+<p>Pour obtenir les scores avec , il suffit d’insérer l’option <code>score</code> à la procédure <code>factor</code>. L’option <code>out=...</code> permet de créer un fichier de données qui contient la valeur des <span class="math inline">\(m\)</span> scores pour chaque individu.
+Les scores factoriels pour l’exemples sont rapportés dans le tableau <a href="analyse-factorielle-exploratoire-1.html#fig:fig1p15">2.11</a>. On remarque que</p>
+<ul>
+<li>pour le premier facteur, trois variables ont des poids importants (<span class="math inline">\(X_4\)</span>, <span class="math inline">\(X_8\)</span> et <span class="math inline">\(X_{11}\)</span>). Il s’agit donc d’un facteur très proche du facteur <em>service</em>.</li>
+<li>pour le deuxième facteur, les variables <span class="math inline">\(X_3\)</span>, <span class="math inline">\(X_6\)</span>, <span class="math inline">\(X_9\)</span> et <span class="math inline">\(X_{12}\)</span> ont des poids importants. Il s’agit donc d’un facteur très proche du facteur <em>produits</em>.</li>
+<li>pour le troisième facteur, les variables <span class="math inline">\(X_2\)</span>, <span class="math inline">\(X_7\)</span>, <span class="math inline">\(X_{10}\)</span> ont des poids importants. Il s’agit donc d’un facteur très proche du facteur <em>paiement</em>.</li>
+<li>pour le quatrième facteur, seule la variable <span class="math inline">\(X_1\)</span> a un poids important.
+On aurait pu s’attendre à ce que ce soit également le cas pour <span class="math inline">\(X_5\)</span>, en lien avec le facteur <em>prix</em> — ce facteur était moins clair selon le alpha de Cronbach.</li>
+</ul>
+<p>Les corrélations entre les échelles (construites avec les moyennes) et les scores factoriels sont données dans le tableau <a href="analyse-factorielle-exploratoire-1.html#fig:fig1p16">2.12</a>. On remarque la forte corrélation entre le score factoriel et les échelles construites avec les moyennes pour les facteurs <em>service</em>, <em>produits</em> et
+<em>paiement</em>. Cela veut dire qu’utiliser les échelles ou les scores factoriels ne
+devrait pas faire de différence dans des analyses subséquentes. Par contre,
+cette corrélation est plus faible (0.82) pour le facteur <em>prix</em>.</p>
+<div class="figure" style="text-align: center"><span id="fig:fig1p16"></span>
+<img src="figures/01-facto-e16.png" alt="Corrélation entre scores et échelles" width="65%" />
+<p class="caption">
+Figure 2.12: Corrélation entre scores et échelles
+</p>
+</div>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["MATH60602.pdf", "MATH60602.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
