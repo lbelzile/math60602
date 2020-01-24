@@ -51,68 +51,6 @@
 
 
 
-<style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {  }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -237,36 +175,12 @@ r = \frac{\sum_{i=1}^n (x_i-\overline{x})(y_i -\bar{y})}{\left\{\sum_{i=1}^n (x_
 <li>que le magasin ait en stock les produits annoncés?</li>
 </ol>
 <p>Une analyse factorielle cherchera à identifier automatiquement des groupes de variables qui sont fortement corrélées entre elles.</p>
-<div id="code-r" class="section level4 unnumbered">
-<h4>Code R</h4>
-<p>Le chiffrier <code>factor2.csv</code> contient les observations pour ces 12 questions. Tout d’abord, les statistiques descriptives ainsi que la matrice des corrélations qui suivent sont obtenues en exécutant les lignes suivantes:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1">path &lt;-<span class="st"> &quot;https://lbelzile.bitbucket.io/MATH60602/factor.csv&quot;</span></a>
-<a class="sourceLine" id="cb1-2" title="2">facto &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="dt">file =</span> path, <span class="dt">header =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb1-3" title="3">cormat &lt;-<span class="st"> </span><span class="kw">cor</span>(facto, <span class="dt">method =</span> <span class="st">&quot;pearson&quot;</span>)</a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="kw">round</span>(cormat, <span class="dt">digits =</span> <span class="dv">2</span>)</a></code></pre></div>
-<pre><code>##        x1    x2    x3    x4    x5    x6    x7    x8    x9   x10   x11   x12
-## x1   1.00 -0.08 -0.14 -0.07  0.38 -0.01 -0.10 -0.13 -0.03 -0.11 -0.12 -0.01
-## x2  -0.08  1.00  0.04 -0.02 -0.08  0.06  0.50  0.01 -0.01  0.43 -0.12  0.07
-## x3  -0.14  0.04  1.00  0.10 -0.06  0.39  0.00  0.05  0.47  0.08  0.13  0.46
-## x4  -0.07 -0.02  0.10  1.00 -0.05  0.06  0.08  0.57  0.01  0.09  0.50  0.09
-## x5   0.38 -0.08 -0.06 -0.05  1.00 -0.04 -0.04 -0.02  0.03 -0.07 -0.06 -0.07
-## x6  -0.01  0.06  0.39  0.06 -0.04  1.00  0.07  0.04  0.32  0.07 -0.04  0.32
-## x7  -0.10  0.50  0.00  0.08 -0.04  0.07  1.00  0.09 -0.02  0.51 -0.03  0.02
-## x8  -0.13  0.01  0.05  0.57 -0.02  0.04  0.09  1.00 -0.03  0.16  0.55  0.04
-## x9  -0.03 -0.01  0.47  0.01  0.03  0.32 -0.02 -0.03  1.00  0.01  0.02  0.39
-## x10 -0.11  0.43  0.08  0.09 -0.07  0.07  0.51  0.16  0.01  1.00  0.01  0.02
-## x11 -0.12 -0.12  0.13  0.50 -0.06 -0.04 -0.03  0.55  0.02  0.01  1.00  0.05
-## x12 -0.01  0.07  0.46  0.09 -0.07  0.32  0.02  0.04  0.39  0.02  0.05  1.00</code></pre>
-</div>
-<div id="code-sas" class="section level4 unnumbered">
-<h4>Code SAS</h4>
 <p>Les commandes (ainsi que plusieurs commentaires) pour faire les analyses se trouvent dans le fichier <code>factor1_intro.sas</code>. Les statistiques descriptives ainsi que la matrice des corrélations sont obtenues en exécutant les lignes suivantes:</p>
 <pre class="sas"><code>proc corr data=multi.factor2;
 var x1-x12;
 run;</code></pre>
 <p><img src="figures/01-facto-e1.png" width="90%" style="display: block; margin: auto;" />
 <img src="figures/01-facto-e2.png" width="90%" style="display: block; margin: auto;" /></p>
-</div>
 </div>
 <div id="description-du-modèle-danalyse-factorielle" class="section level2">
 <h2><span class="header-section-number">2.4</span> Description du modèle d’analyse factorielle</h2>
