@@ -332,14 +332,14 @@ Pour faire une analyse factorielle, la taille d'échantillon devrait être d'au 
 \hypertarget{rappels-sur-le-coefficient-de-corruxe9lation-linuxe9aire}{%
 \section{Rappels sur le coefficient de corrélation linéaire}\label{rappels-sur-le-coefficient-de-corruxe9lation-linuxe9aire}}
 
-On veut examiner la relation entre deux variables \(X\) et \(Y\) et on dispose de \(n\) couples d'observations, où \(x_i\) (\(y_i\)) est la valeur de la variable \(X\) (\(Y\)) pour le \(i\)e individu.
+On veut examiner la relation entre deux variables \(X_j\) et \(X_k\) et on dispose de \(n\) couples d'observations, où \(x_{i, j}\) (respectivement \(x_{i, k}\)) est la valeur de la variable \(X_j\) (\(X_k\)) pour le \(i\)e individu.
 
-Le coefficient de corrélation linéaire, que l'on note \(r\), cherche à mesurer la force de la relation linéaire entre deux variables, c'est-à-dire à quantifier à quel point les observations sont alignées autour d'une droite. Le coefficient de corrélation est
+Le coefficient de corrélation linéaire entre \(X_j\) et \(X_k\), que l'on note \(r_{j, k}\), cherche à mesurer la force de la relation linéaire entre deux variables, c'est-à-dire à quantifier à quel point les observations sont alignées autour d'une droite. Le coefficient de corrélation est
 \begin{align*}
-r = \frac{\sum_{i=1}^n (x_i-\overline{x})(y_i -\bar{y})}{\left\{\sum_{i=1}^n (x_i-\overline{x})^2 \sum_{i=1}^n(y_i -\bar{y})^2\right\}^{1/2}}
+r_{j, k} = \frac{\sum_{i=1}^n (x_{i, j}-\overline{x}_j)(x_{i, k} -\overline{x}_{k})}{\left\{\sum_{i=1}^n (x_{i, j}-\overline{x}_j)^2 \sum_{i=1}^n(x_{i, k} -\overline{x}_{k})^2\right\}^{1/2}}
 \end{align*}
 
-Les propriétés les plus importantes du coefficient de corrélation linéaire sont les suivantes:
+Les propriétés les plus importantes du coefficient de corrélation linéaire \(r\) sont les suivantes:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
@@ -415,7 +415,7 @@ Pour vous, à quel point est-ce important\ldots
 
 Une analyse factorielle cherchera à identifier automatiquement des groupes de variables qui sont fortement corrélées entre elles.
 
-Les commandes \textsf{SAS}(ainsi que plusieurs commentaires) pour faire les analyses se trouvent dans le fichier \texttt{factor1\_intro.sas}. Les statistiques descriptives ainsi que la matrice des corrélations sont obtenues en exécutant les lignes suivantes:
+Les commandes \textbf{SAS} (ainsi que plusieurs commentaires) pour faire les analyses se trouvent dans le fichier \texttt{MATH60602\_cours3.sas}. Les statistiques descriptives ainsi que la matrice des corrélations sont obtenues en exécutant les lignes suivantes:
 
 \begin{verbatim}
 proc corr data=multi.factor2;
@@ -435,15 +435,15 @@ On dispose d'observations sur \(p\) variables \(X_1, \ldots, X_p\). Le modèle d
 X_1 &= \mu_1 + l_{11}F_1 + l_{12} F_2 + \cdots + l_{1m}F_m + \varepsilon_1\\
 X_2 &= \mu_2 + l_{21}F_1 + l_{22} F_2 + \cdots + l_{2m}F_m + \varepsilon_2\\
 &\vdots \\
-X_p &= \mu_p + l_{p1}F_1 + l_{p2} F_2 + \cdots + l_{pm}F_m + \varepsilon_p,
+X_p &= \mu_p + l_{p1}F_1 + l_{p2} F_2 + \cdots + l_{pm}F_m + \varepsilon_p, 
 \end{align*}
-où \(\mu_i\) est l'espérance de la variable aléatoire \(X_i\) (\(i=1, \ldots, p\)) et où \(l_{ij}\) est le chargement de la variable \(X_i\) sur le facteur \(F_j\) (\(i=1,\ldots, p; j=1, \ldots, m\)).
+où \(\mu_i\) est l'espérance de la variable aléatoire \(X_i\) (\(i=1, \ldots, p\)) et où \(l_{ij}\) est le chargement de la variable \(X_i\) sur le facteur \(F_j\) (\(i=1, \ldots, p\); \(j=1, \ldots, m\)).
 
-Les espérances (\(\mu_i\)), les chargements (\(l_{ij}\)) et les variances (\(\psi_i\)) sont des quantités fixes, mais inconnues, tandis que les facteurs communs (\(F_i\)) et spécifiques (\(\varepsilon_i\)) sont des variables aléatoires non observables.
+Les espérances (\(\mu_i\)), les chargements (\(l_{ij}\)) et les variances (\(\psi_i\)) sont des quantités fixes, mais inconnues, tandis que les facteurs communs (\(F_i\)) et spécifiques (\(\varepsilon_i\)) sont des variables aléatoires non observables que l'on assume non corrélée aux facteurs \(F\) et entre elles.
 
 Des hypothèses supplémentaires sont nécessaires afin de pouvoir utiliser ce modèle (contraintes d'identifiabilité des paramètres). Sans entrer dans les détails, mentionnons que l'une de ces hypothèses est que les facteurs sont non corrélés.
 
-De plus, si les variables ont été préalablement standardisées de telle sorte que \({\mathsf E}\left(X_i\right)=0\) et \({\mathsf{Var}}\left(X_i\right)=1\) (note: ceci revient à utiliser la matrice de corrélation des observations dans l'analyse ce qui est fait par défaut dans \textsf{SAS}), alors \({\mathsf{Cor}}\left(X_i, F_j\right)=l_{ij}\), c'est-à-dire, le chargement de la variable \(X_i\) sur le chargement \(F_j\) est le coefficient de corrélation entre cette variable et ce facteur.
+De plus, si les variables ont été préalablement standardisées de telle sorte que \({\mathsf E}\left(X_i\right)=0\) et \({\mathsf{Var}}\left(X_i\right)=1\) (note: ceci revient à utiliser la matrice de corrélation des observations dans l'analyse ce qui est fait par défaut dans \textbf{SAS}), alors \({\mathsf{Cor}}\left(X_i, F_j\right)=l_{ij}\), c'est-à-dire, le chargement de la variable \(X_i\) sur le chargement \(F_j\) est le coefficient de corrélation entre cette variable et ce facteur.
 
 Sans aucune contrainte sur le modèle, la matrice de covariance de \(X_1, \ldots, X_p\) possède \(p(p+1)/2\) paramètres, soit \(p\) variances et \(p(p-1)/2\) termes de corrélation. Avec le modèle d'analyse factorielle, on suppose que l'on peut décrire cette structure en utilisant seulement \(p(m+1)\) paramètres (\(p\) variances spécifiques et \(pm\) chargements). Par exemple, avec \(p=50\) variables et \(m=6\) facteurs, on essaie de décrire la structure de covariance à l'aide de 350 paramètres au lieu de 1275.
 
@@ -473,16 +473,16 @@ run;
 
 \begin{center}\includegraphics[width=0.7\linewidth]{figures/01-facto-e3} \end{center}
 
-En général, on associe une variable à un groupe (facteur) si son chargement est supérieur à 0,3 (en valeur absolue), ce qui donne
+En général, on associe une variable à un groupe (facteur) si son chargement est supérieur à 0, 3 (en valeur absolue), ce qui donne
 
 \begin{itemize}
 \tightlist
 \item
-  Facteur 1: \(X_4\),\(X_8\) et \(X_{11}\)
+  Facteur 1: \(X_4\), \(X_8\) et \(X_{11}\)
 \item
-  Facteur 2: \(X_3\),\(X_6\), \(X_9\) et \(X_{12}\)
+  Facteur 2: \(X_3\), \(X_6\), \(X_9\) et \(X_{12}\)
 \item
-  Facteur 3: \(X_2\),\(X_7\) et \(X_{10}\)
+  Facteur 3: \(X_2\), \(X_7\) et \(X_{10}\)
 \item
   Facteur 4: \(X_1\) et \(X_5\).
 \end{itemize}
@@ -526,24 +526,29 @@ Les sorties suivantes proviennent du même programme SAS et correspondent au mod
 
 \begin{center}\includegraphics[width=0.7\linewidth]{figures/01-facto-e4} \end{center}
 
-Pour choisir le nombre de facteurs avec les critères, il faut ajuster le modèle en faisant varier le nombre de facteurs (option \texttt{nfact} et extraire la valeur numérique.
+Pour choisir le nombre de facteurs avec les critères d'information, il faut ajuster le modèle en faisant varier le nombre de facteurs (option \texttt{nfact}) et extraire la valeur numérique correspondante.
 
-Le tableau @ref(01-IC\_table) présente les valeurs estimées des critères d'information et des valeurs-\(p\) pour le test du rapport de vraisemblance pour cinq modèles. Le critère AIC suggère quatre facteurs, tandis que les deux autres critères (BIC et test du rapport de vraisemblance suggèrent plutôt trois facteurs.
+Le tableau \ref{tab:ICtable} présente les valeurs estimées des critères d'information et des valeurs-\(p\) pour le test du rapport de vraisemblance pour cinq modèles. Le critère AIC suggère quatre facteurs, tandis que les deux autres critères (BIC et test du rapport de vraisemblance suggèrent plutôt trois facteurs.
 
 \begin{longtable}[]{@{}crrr@{}}
+\caption{\label{tab:ICtable} Critères d'information et valeurs-\emph{p} pour le modèle factoriel à \emph{m} facteurs}\tabularnewline
+\toprule
+m & AIC & BIC & valeur-\emph{p}\tabularnewline
+\midrule
+\endfirsthead
 \toprule
 m & AIC & BIC & valeur-\emph{p}\tabularnewline
 \midrule
 \endhead
-1 & 228,0 & 49,9 & \textless0,001\tabularnewline
-2 & 99,5 & -42,3 & \textless0,001\tabularnewline
-3 & -20,5 & -129,3 & 0,096\tabularnewline
-4 & -34,9 & -114,1 & 0,973\tabularnewline
-5 & -24,8 & -77,6 & 0,975\tabularnewline
+1 & 228, 0 & 49, 9 & \textless0, 001\tabularnewline
+2 & 99, 5 & -42, 3 & \textless0, 001\tabularnewline
+3 & -20, 5 & -129, 3 & 0, 096\tabularnewline
+4 & -34, 9 & -114, 1 & 0, 973\tabularnewline
+5 & -24, 8 & -77, 6 & 0, 975\tabularnewline
 \bottomrule
 \end{longtable}
 
-On peut considérer le modèle avec trois facteurs: les chargements (après rotation varimax) sont données dans le tableau \ref{fig:fig1p5}.
+On peut considérer le modèle avec trois facteurs: les chargements (après rotation varimax) sont données dans la figure \ref{fig:fig1p5}.
 
 \begin{figure}
 
@@ -564,7 +569,7 @@ critères \emph{classiques} pour choisir le nombre de facteurs. Ces deux critèr
 \item
   Critère de Kaiser, un critère basé sur les valeurs propres. Avec une analyse en composantes principales basée sur la matrice des corrélations, la valeur propre associée à un facteur représente la partie de la variance totale qui est expliquée par ce facteur. Chaque variable compte pour un dans la variance totale. Le nombre de facteurs choisis est le nombre de valeurs propres supérieures à 1. L'idée est de garder seulement les facteurs qui expliquent plus de variance qu'une variable individuelle.
 \item
-  le diagramme d'éboulis: un graphique des valeurs propres ordonnées de la plus grande à la plus petite en fonction de \(1,\ldots, p\). Habituellement, ce graphe prendra la forme d'une chute assez importante suivie d'une stabilisation des valeurs propres. Avec ce critère, le nombre de facteurs est déterminé par le nombre de valeurs propres avant le début du coude où il a stabilisation apparente. L'idée est de choisir l'endroit où l'ajout d'un facteur supplémentaire n'apporte qu'un gain marginal faible. Ce critère est par contre subjectif et dépend de l'analyste.
+  le diagramme d'éboulis: un graphique des valeurs propres ordonnées de la plus grande à la plus petite en fonction de \(1, \ldots, p\). Habituellement, ce graphe prendra la forme d'une chute assez importante suivie d'une stabilisation des valeurs propres. Avec ce critère, le nombre de facteurs est déterminé par le nombre de valeurs propres avant le début du coude où il a stabilisation apparente. L'idée est de choisir l'endroit où l'ajout d'un facteur supplémentaire n'apporte qu'un gain marginal faible. Ce critère est par contre subjectif et dépend de l'analyste. En ajoutant \texttt{scree} comme option à \texttt{proc\ factor}, on obtient le diagramme d'éboulis mais il est facile de le créer manuellement et le résultat est esthétiquement plus réussi.
 \end{itemize}
 
 Les sorties qui suivent proviennent du programme:
@@ -572,12 +577,18 @@ Les sorties qui suivent proviennent du programme:
 \begin{verbatim}
 proc factor data=multi.factor2 method=principal
  scree rotate=varimax flag=.3;
-var x1-x12;
+ ods output Eigenvalues=eigen;
+ var x1-x12;
+run; 
+
+proc sgplot data=eigen;
+ scatter x=number y=eigenvalue;
+ yaxis label="valeurs propres";
+ xaxis label='nombre';
 run;
 \end{verbatim}
 
-Cette fois-ci, c'est la méthode des composantes principales qui
-est utilisée (voir section suivante). En ne spécifiant pas l'option \texttt{nfact}, \textsf{SAS}choisit le nombre de facteurs en utilisant par défaut le critère de Kaiser (valeurs propres supérieures à 1). Quatre facteurs sont retenus, tel qu'indiqué par la sortie au bas du tableau \ref{fig:fig1p7}. Pour le diagramme d'éboulis de la figure \ref{fig:fig1p6}, le choix est assez subjectif: il semble raisonnable de choisir trois ou quatre facteurs.
+Cette fois-ci, c'est la méthode des composantes principales qui est utilisée; cette dernière consiste à estimer les chargements en utilisant les \(m\) premières valeurs propres et vecteurs propres de la matrice de corrélation. En ne spécifiant pas l'option \texttt{nfact}, \textbf{SAS} choisit le nombre de facteurs en utilisant par défaut le critère de Kaiser (valeurs propres supérieures à 1). Quatre facteurs sont retenus, tel qu'indiqué par la sortie au bas du tableau \ref{fig:fig1p7}. Pour le diagramme d'éboulis de la figure \ref{fig:fig1p6}, le choix est assez subjectif: il semble raisonnable de choisir trois ou quatre facteurs.
 
 \begin{figure}
 
@@ -610,11 +621,11 @@ Si par contre, le but est de réduire le nombre de variables pour pouvoir par la
 Lorsqu'on construit une échelle, il est important d'examiner sa cohérence interne. Ceci peut être fait à l'aide du coefficient alpha de Cronbach. Ce coefficient mesure à quel point chaque variable faisant partie d'une échelle est corrélée avec le total de toutes les variables pour cette échelle.
 Plus le coefficient est élevé, plus les variables ont tendance à être corrélées entre elles. L'alpha de Cronbach est
 \begin{align*}
-\alpha=\frac{k}{k-1} \frac{S^2-\sum_{i=1}^k S_i^k}{S^2},
+\alpha=\frac{k}{k-1} \frac{S^2-\sum_{i=1}^k S_i^k}{S^2}, 
 \end{align*}
-où \(k\) est le nombre de variables dans l'échelle, \(S^2\) est la variance empirique de la somme des variables et \(S_i^2\) est la variance empirique de la \(i\)e variable. En pratique, on voudra que ce coefficient soit au moins égal à 0,6 pour être satisfait de la cohérence interne de l'échelle.
+où \(k\) est le nombre de variables dans l'échelle, \(S^2\) est la variance empirique de la somme des variables et \(S_i^2\) est la variance empirique de la \(i\)e variable. En pratique, on voudra que ce coefficient soit au moins égal à 0, 6 pour être satisfait de la cohérence interne de l'échelle.
 
-Avec \textsf{SAS}, la procédure \texttt{corr} permet de calculer \(\alpha\).
+Avec \textbf{SAS}, la procédure \texttt{corr} permet de calculer \(\alpha\).
 
 \begin{verbatim}
 /* pour le facteur service */
@@ -680,7 +691,7 @@ run;
 \end{figure}
 
 Il faut utiliser le alpha brut. Ainsi, les alphas de Cronbach sont tous
-satisfaisants (plus grand que 0,6) sauf pour le facteur \emph{prix} (\(\alpha=0,546\)). \textsf{SAS}fournit également la matrice des corrélations des variables de l'échelle ainsi que la valeur du alpha de Cronbach si on retirait une variable à la fois de l'échelle. Tout est donc cohérent. Les échelles provenant des facteurs \emph{service}, \emph{produits} et \emph{paiement}, sont satisfaisantes. Ces facteurs sont identifiés à la fois dans la solution à quatre, mais aussi dans la solution à troisfacteurs. Le facteur \emph{prix} est celui qui apparaît en plus dans la solution à quatre facteurs. Il a une interprétation claire, mais son faible alpha ferait en sorte qu'il serait discutable de travailler avec l'échelle \emph{prix} dans d'autres analyses (du moins avec selon l'usage habituel du alpha).
+satisfaisants (plus grand que 0, 6) sauf pour le facteur \emph{prix} (\(\alpha=0, 546\)). \textbf{SAS} fournit également la matrice des corrélations des variables de l'échelle ainsi que la valeur du alpha de Cronbach si on retirait une variable à la fois de l'échelle. Tout est donc cohérent. Les échelles provenant des facteurs \emph{service}, \emph{produits} et \emph{paiement}, sont satisfaisantes. Ces facteurs sont identifiés à la fois dans la solution à quatre, mais aussi dans la solution à troisfacteurs. Le facteur \emph{prix} est celui qui apparaît en plus dans la solution à quatre facteurs. Il a une interprétation claire, mais son faible alpha ferait en sorte qu'il serait discutable de travailler avec l'échelle \emph{prix} dans d'autres analyses (du moins avec selon l'usage habituel du alpha).
 
 \hypertarget{compluxe9ments-dinformation}{%
 \section{Compléments d'information}\label{compluxe9ments-dinformation}}
@@ -695,7 +706,7 @@ Dans ce genre de situation, on peut aussi utiliser d'autres mesures d'associatio
 
 Ma suggestion est d'utiliser la corrélation linéaire ordinaire avec des variables ordinales (même binaires). Si les résultats ne sont pas satisfaisants, on peut alors essayer avec d'autres mesures d'associations.
 
-On peut refaire l'analyse des données portant sur le magasin dans \textsf{SAS}en utilisant la corrélation polychorique calculées par la procédure \texttt{corr} et en passant la sortie à la procédure \texttt{factor}.
+On peut refaire l'analyse des données portant sur le magasin dans \textbf{SAS} en utilisant la corrélation polychorique calculées par la procédure \texttt{corr} et en passant la sortie à la procédure \texttt{factor}.
 
 \begin{verbatim}
 proc corr data=multi.factor2 polychoric out=poly_corr;
@@ -709,7 +720,7 @@ proc factor data=poly_corr
 run;
 \end{verbatim}
 
-Les chargements sont donnés dans le tableau \ref{fig:fig1p12}. Les facteurs obtenus sont les mêmes qu'en utilisant les corrélations linéaires.
+Les chargements sont donnés dans la figure \ref{fig:fig1p12}. Les facteurs obtenus sont les mêmes qu'en utilisant les corrélations linéaires.
 
 \begin{figure}
 
@@ -723,15 +734,16 @@ Les chargements sont donnés dans le tableau \ref{fig:fig1p12}. Les facteurs obt
 \hypertarget{autres-muxe9thodes-dextractions-de-facteurs}{%
 \subsection{Autres méthodes d'extractions de facteurs}\label{autres-muxe9thodes-dextractions-de-facteurs}}
 
-Il n'y a pas de formule explicites pour l'estimation des paramètres avec la méthode du maximum de vraisemblance et un algorithme d'optimisation est nécessaire pour l'option des paramètres. Dans certains cas, l'algorithme peut terminer sans solution ou retourner un cas limite (où la variance est négative). La méthode par les composantes principales (mentionnée lors de la présentation des valeurs propres et du diagramme d'éboulis a une solution explicite et peut donc dépanner si on n'arrive pas à obtenir le maximum de vraisemblance.
+Il n'y a pas de formule explicites pour l'estimation des paramètres avec la méthode du maximum de vraisemblance et un algorithme d'optimisation est nécessaire pour l'option des paramètres. Dans certains cas, l'algorithme peut terminer sans solution ou retourner un cas limite (où la variance est négative ou nulle). C'est le cas dans notre exemple avec quatre facteurs (solution de Heywood), bien que ce ne soit pas indiqué. La sortie \textbf{SAS} contient des informations sur la convergence de l'estimé: idéalement, on obtient la mention \texttt{Critère\ de\ convergence\ respecté}; autrement, essayez de varier le nombre. Un autre signe que l'algorithme n'a pas convergé est la présence de degrés de libertés négatifs pour le test du rapport de vraisemblance.
 
-D'autres méthodes sont aussi disponibles dans \textsf{SAS}(voir la rubrique d'aide du logiciel) mais les deux méthodes mentionnées devraient être suffisantes pour la grande majorité des applications.
+La méthode par les composantes principales (mentionnée lors de la présentation des valeurs propres et du diagramme d'éboulis a une solution explicite et peut donc dépanner si on n'arrive pas à obtenir le maximum de vraisemblance.
+
+D'autres méthodes sont aussi disponibles dans \textbf{SAS} (voir la rubrique d'aide du logiciel) mais les deux méthodes mentionnées devraient être suffisantes pour la grande majorité des applications.
 
 \hypertarget{autres-muxe9thodes-de-rotation-des-facteurs}{%
 \subsection{Autres méthodes de rotation des facteurs}\label{autres-muxe9thodes-de-rotation-des-facteurs}}
 
-Jusqu'à présent, nous avons utilisé la méthode de rotation orthogonale varimax. Il existe de nombreuses autres méthodes de rotations orthogonales telles, orthomax, quartimax, parsimax et equimax (voir la rubrique d'aide de \textsf{SAS}). Rappelez-vous que le modèle d'analyse factorielle de base suppose que les facteurs sont non corrélés. Les rotations de type obliques quant à elles permettent d'introduire de la corrélation entre les facteurs. Quelquefois, une telle rotation facilitera davantage l'interprétation des facteurs qu'une rotation orthogonale. \textsf{SAS}permet l'utilisation de plusieurs méthodes de
-rotation obliques qui sont documentées dans la rubrique d'aide. Notez qu'il faut être prudent lorsqu'on utilise une méthode de rotation oblique car il y aura trois matrices de chargements après rotation. On suggère l'utilisation de la première, soit la représentation avec \textbf{coefficients de régression normalisés}. Il s'agit des coefficients de régression si on voulait prédire les variables à l'aide des facteurs. Ils indiquent donc à quel point chaque facteur est associé à chaque variable. Dans le cas d'une rotation orthogonale, ces trois matrices sont les mêmes et il s'agit de trois interprétations valides des chargements.
+Jusqu'à présent, nous avons utilisé la méthode de rotation orthogonale varimax. Il existe de nombreuses autres méthodes de rotations orthogonales telles, orthomax, quartimax, parsimax et equimax (voir la rubrique d'aide de \textbf{SAS}). Rappelez-vous que le modèle d'analyse factorielle de base suppose que les facteurs sont non corrélés. Les rotations de type obliques quant à elles permettent d'introduire de la corrélation entre les facteurs. Quelquefois, une telle rotation facilitera davantage l'interprétation des facteurs qu'une rotation orthogonale. \textbf{SAS} permet l'utilisation de plusieurs méthodes de rotation obliques qui sont documentées dans la rubrique d'aide. Notez qu'il faut être prudent lorsqu'on utilise une méthode de rotation oblique car il y aura trois matrices de chargements après rotation. On suggère l'utilisation de la première, soit la représentation avec \textbf{coefficients de régression normalisés}. Il s'agit des coefficients de régression si on voulait prédire les variables à l'aide des facteurs. Ils indiquent donc à quel point chaque facteur est associé à chaque variable. Dans le cas d'une rotation orthogonale, ces trois matrices sont les mêmes et il s'agit de trois interprétations valides des chargements.
 
 Le programme suivant fait une analyse factorielle avec quatre facteurs, mais en utilisant une rotation varimax oblique (option \texttt{rotate=obvarimax}).
 
@@ -742,7 +754,7 @@ var x1-x12;
 run;
 \end{verbatim}
 
-La matrice des corrélations entres facteurs est donnée dans le tableau \ref{fig:fig1p13} et les chargements sont présentés dans le tableau \ref{fig:fig1p14}. On voit ici qu'on obtient les mêmes quatre facteurs qu'avec une rotation varimax orthogonale.
+La matrice des corrélations entres facteurs est donnée dans la figure \ref{fig:fig1p13} et les chargements sont présentés dans la figure \ref{fig:fig1p14}. On voit ici qu'on obtient les mêmes quatre facteurs qu'avec une rotation varimax orthogonale.
 
 \begin{figure}
 
@@ -780,17 +792,17 @@ Avec les données de l'exemple, en nous basant sur les résultats de l'analyse f
 \end{itemize}
 
 Par exemple, la variable \emph{prix} peut donc être vu comme une combinaison linéaire des 12
-variables où seulement \(X_1\) et \(X_5\) reçoivent un poids (égal) différent de zéro. Une autre façon de créer de nouvelles variables consiste à calculer des scores factoriels (un pour chaque facteur) pour chaque individu. Par exemple, pour un individu donné, un score factoriel pour le premier facteur peut être calculé selon la formule
+variables où seulement \(X_1\) et \(X_5\) reçoivent un poids (égal) différent de zéro. Une autre façon de créer de nouvelles variables consiste à calculer des scores factoriels (un pour chaque facteur) pour chaque individu. Par exemple, pour un individu \(i\) donné, le score factoriel pour le facteur \(k\) peut être prédit à l'aide de la formule
 \begin{align*}
-\hat{F}_1 = \widehat{\beta}_1 x_1 + \cdots + \widehat{\beta}_{12}x_{12},
+\hat{F}_{ik} &= \widehat{\mathbf{L}}^{\top}\mathbf{R}^{-1}\boldsymbol{z}\\&=
+\widehat{\gamma}_{1, k} z_{i, 1} + \cdots + \widehat{\gamma}_{12, k}z_{i, 12}, 
 \end{align*}
-où \(x_1, \ldots, x_{12}\) sont les valeurs (habituellement standardisées) des variables pour cet individu et où \(\widehat{\beta}_1, \ldots, \widehat{\beta}_{12}\) sont des coefficients estimés à partir des chargements (après rotation) et de la matrice de corrélation des variables.
+où \(z_{i, 1}, \ldots, x_{i, 12}\) sont les valeurs centrées et réduites des observations correspondant à l'individu et où \(\widehat{\gamma}_{1, k}, \ldots, \widehat{\gamma}_{12, k}\) sont des coefficients estimés à partir des chargements \(l_{ij}\) (après rotation) et de la matrice de corrélation des variables \(\mathbf{R}\), avec \(\widehat{\gamma}_{i, k}=\sum_{j=1}^p \hat{l}_{kj}r_{jk}\).
 
 Ainsi, chacune des 12 variables originales contribue au calcul du score
-factoriel. Les variables ayant des chargements plus élevés sur ce facteur auront tendance à avoir des poids (\(\widehat{\beta}\)) plus élevés. Par contre, les scores factoriels ne sont pas uniques car ils dépendent des chargements utilisés (et donc à la fois de la méthode d'estimation et de la méthode de rotation).
+factoriel. Les variables ayant des chargements plus élevés sur ce facteur auront tendance à avoir des poids (\(\widehat{\gamma}\)) plus élevés. Par contre, les scores factoriels ne sont pas uniques car ils dépendent des chargements utilisés (et donc à la fois de la méthode d'estimation et de la méthode de rotation).
 On peut également utiliser les scores factoriels au lieu des 12 variables
-originales dans des analyses subséquentes. Il est suggéré d'utiliser les nouvelles variables (échelles) obtenues en faisant les moyennes des variables identifiées comme faisant partie de chaque
-facteur pour les raisons suivantes:
+originales dans des analyses subséquentes. Il est suggéré d'utiliser les nouvelles variables (échelles) obtenues en faisant les moyennes des variables identifiées comme faisant partie de chaque facteur pour les raisons suivantes:
 
 \begin{itemize}
 \tightlist
@@ -811,8 +823,7 @@ facteur pour les raisons suivantes:
 \caption{Coefficients du score normalisés}\label{fig:fig1p15}
 \end{figure}
 
-Pour obtenir les scores avec \textsf{SAS}, il suffit d'insérer l'option \texttt{score} à la procédure \texttt{factor}. L'option \texttt{out=...} permet de créer un fichier de données \textsf{SAS}qui contient la valeur des \(m\) scores pour chaque individu.
-Les scores factoriels pour l'exemples sont rapportés dans le tableau \ref{fig:fig1p15}. On remarque que
+Pour obtenir les scores avec \textbf{SAS}, il suffit d'insérer l'option \texttt{score} à la procédure \texttt{factor}. L'option \texttt{out=...} permet de créer un fichier de données \textbf{SAS} qui contient la valeur des \(m\) scores pour chaque individu. Les scores factoriels pour l'exemples sont rapportés dans la figure \ref{fig:fig1p15}. On remarque que:
 
 \begin{itemize}
 \tightlist
@@ -827,10 +838,7 @@ Les scores factoriels pour l'exemples sont rapportés dans le tableau \ref{fig:f
   On aurait pu s'attendre à ce que ce soit également le cas pour \(X_5\), en lien avec le facteur \emph{prix} --- ce facteur était moins clair selon le alpha de Cronbach.
 \end{itemize}
 
-Les corrélations entre les échelles (construites avec les moyennes) et les scores factoriels sont données dans le tableau \ref{fig:fig1p16}. On remarque la forte corrélation entre le score factoriel et les échelles construites avec les moyennes pour les facteurs \emph{service}, \emph{produits} et
-\emph{paiement}. Cela veut dire qu'utiliser les échelles ou les scores factoriels ne
-devrait pas faire de différence dans des analyses subséquentes. Par contre,
-cette corrélation est plus faible (0.82) pour le facteur \emph{prix}.
+Les corrélations entre les échelles (construites avec les moyennes) et les scores factoriels sont données dans la figure \ref{fig:fig1p16}. On remarque la forte corrélation entre le score factoriel et les échelles construites avec les moyennes pour les facteurs \emph{service}, \emph{produits} et \emph{paiement}. Cela veut dire qu'utiliser les échelles ou les scores factoriels ne devrait pas faire de différence dans des analyses subséquentes. Par contre, cette corrélation est plus faible (0.82) pour le facteur \emph{prix}.
 
 \begin{figure}
 
