@@ -51,68 +51,6 @@
 
 
 
-<style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {  }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -247,69 +185,11 @@ Cette quantité est tout simplement l’équivalent du <span class="math inline"
 <h3><span class="header-section-number">3.5.1</span> Choix d’un modèle polynomial en régression linéaire</h3>
 <p>Cet exemple simple servira à illustrer le fait qu’on ne peut utiliser directement les mêmes données qui ont servi à ajuster un modèle pour évaluer sa performance.</p>
 <p>Nous disposons de 100 observations sur une variable cible <span class="math inline">\(Y\)</span> et d’une seule variable explicative <span class="math inline">\(X\)</span>. Le fichier <code>selection1_train.xls</code> contient les données. Nous voulons considérer des modèles polynomiaux (en <span class="math inline">\(X\)</span>) afin d’en trouver un bon pour prédire <span class="math inline">\(Y\)</span>. Un modèle polynomial est un modèle de la forme <span class="math inline">\(Y=\beta_0 + \beta_1X+\cdots+\beta_kX^k+\varepsilon\)</span>. Le cas <span class="math inline">\(k=1\)</span> correspond à un modèle linéaire simple, <span class="math inline">\(k=2\)</span> à un modèle cubique, <span class="math inline">\(k=3\)</span> à un modèle cubique, etc. Notre but est de déterminer l’ordre (<span class="math inline">\(k\)</span>) du polynôme qui nous donnera un bon modèle. Voici d’abord le graphe de ces 100 observations.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">setwd</span>(<span class="st">&quot;~/Documents/Dropbox/website/lbelzile.bitbucket.io/MATH60602&quot;</span>)</a>
-<a class="sourceLine" id="cb7-2" title="2">train &lt;-<span class="st"> </span>haven<span class="op">::</span><span class="kw">read_sas</span>(<span class="dt">data_file =</span> <span class="st">&quot;selection1_train.sas7bdat&quot;</span>)</a>
-<a class="sourceLine" id="cb7-3" title="3">test &lt;-<span class="st"> </span>haven<span class="op">::</span><span class="kw">read_sas</span>(<span class="dt">data_file =</span> <span class="st">&quot;selection1_test.sas7bdat&quot;</span>)</a>
-<a class="sourceLine" id="cb7-4" title="4"><span class="kw">library</span>(ggplot2)</a>
-<a class="sourceLine" id="cb7-5" title="5"><span class="kw">print</span>(<span class="kw">ggplot</span>(<span class="dt">data =</span> train, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x=</span>x,<span class="dt">y=</span>y)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>())</a></code></pre></div>
-<p><img src="MATH60602_files/figure-html/02-graphedonneestest-1.png" width="672" /></p>
+<p><img src="MATH60602_files/figure-html/02-graphedonneestest-1.png" width="480" style="display: block; margin: auto;" /></p>
 <p>Il s’agit de l’échantillon d’apprentissage. Ces données ont été obtenues par simulation et le vrai modèle sous-jacent (celui qui a généré les données) est le modèle cubique, c’est-à-dire le modèle d’ordre <span class="math inline">\(k=3\)</span>.</p>
 <p>Afin de simuler une population, j’ai généré selon le même modèle 100 000 observations supplémentaires. Ces observations ne vont pas servir à estimer les modèles mais seulement à évaluer leur performance afin d’avoir une estimation sans biais. Ces données se trouvent dans <code>selection1_test.xls</code></p>
 <p>J’ai ajusté tour à tour à tour les modèles polynomiaux jusqu’à l’ordre 10, avec l’échantillon d’apprentissage de taille 100. C’est-à-dire, le modèle linéaire avec un polynôme d’ordre <span class="math inline">\(k=1\)</span> (linéaire), <span class="math inline">\(k=2\)</span> (quadratique), etc., jusqu’à <span class="math inline">\(k=10\)</span>. J’ai ensuite obtenu la valeur de l’erreur moyenne quadratique d’apprentissage pour chacun de ces modèles. J’ai ensuite utilisé ces modèles afin de prédire les 100 000 autres observations (la population) et calculé les 100 000 observations de l’échantillon test pour obtenir une très bonne approximation de l’erreur quadratique moyenne de généralisation.</p>
 <p>Voici le graphe de l’<span class="math inline">\(\mathsf{EMQ}_a\)</span> et de l’<span class="math inline">\(\mathsf{EMQ}\)</span> de généralisation en fonction de l’ordre (<span class="math inline">\(k\)</span>) du modèle utilisé.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">lmkfold &lt;-<span class="st"> </span><span class="cf">function</span>(formula, data, k, ...){</a>
-<a class="sourceLine" id="cb8-2" title="2">  accu &lt;-<span class="st"> </span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb8-3" title="3">  k &lt;-<span class="st"> </span><span class="kw">as.integer</span>(k)</a>
-<a class="sourceLine" id="cb8-4" title="4">  n &lt;-<span class="st"> </span><span class="kw">nrow</span>(data)</a>
-<a class="sourceLine" id="cb8-5" title="5">  gp &lt;-<span class="st"> </span><span class="kw">sample.int</span>(n, n, <span class="dt">replace =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb8-6" title="6">  folds &lt;-<span class="st"> </span><span class="kw">split</span>(gp, <span class="kw">cut</span>(<span class="kw">seq_along</span>(gp), <span class="dv">10</span>, <span class="dt">labels =</span> <span class="ot">FALSE</span>))</a>
-<a class="sourceLine" id="cb8-7" title="7">  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span> <span class="op">:</span>k){</a>
-<a class="sourceLine" id="cb8-8" title="8">   g &lt;-<span class="st"> </span><span class="kw">as.integer</span>(<span class="kw">unlist</span>(folds[i]))</a>
-<a class="sourceLine" id="cb8-9" title="9">   fitlm &lt;-<span class="st"> </span><span class="kw">lm</span>(formula, data[<span class="op">-</span>g,])</a>
-<a class="sourceLine" id="cb8-10" title="10">   accu &lt;-<span class="st"> </span>accu <span class="op">+</span><span class="st"> </span><span class="kw">sum</span>((data[g, <span class="kw">all.vars</span>(formula)[<span class="dv">1</span>]] <span class="op">-</span><span class="kw">predict</span>(fitlm, <span class="dt">newdata=</span>data[g,]))<span class="op">^</span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb8-11" title="11">  }</a>
-<a class="sourceLine" id="cb8-12" title="12"><span class="kw">return</span>(accu<span class="op">/</span>n)</a>
-<a class="sourceLine" id="cb8-13" title="13">}</a>
-<a class="sourceLine" id="cb8-14" title="14"></a>
-<a class="sourceLine" id="cb8-15" title="15">emq &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> <span class="dv">10</span>, <span class="dt">ncol =</span> <span class="dv">7</span>)</a>
-<a class="sourceLine" id="cb8-16" title="16">emqcv &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> <span class="dv">10</span>, <span class="dt">ncol =</span> <span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb8-17" title="17"><span class="kw">library</span>(caret)</a></code></pre></div>
-<pre><code>## Loading required package: lattice</code></pre>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">library</span>(ggplot2)</a>
-<a class="sourceLine" id="cb10-2" title="2"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span> <span class="op">:</span><span class="dv">10</span>){</a>
-<a class="sourceLine" id="cb10-3" title="3">  <span class="kw">set.seed</span>(i<span class="op">*</span><span class="dv">1000</span>)</a>
-<a class="sourceLine" id="cb10-4" title="4">  <span class="co"># Créer le modèle avec une chaîne de caractère pour le polynôme</span></a>
-<a class="sourceLine" id="cb10-5" title="5">  meanmod &lt;-<span class="st"> </span><span class="kw">as.formula</span>(<span class="kw">paste0</span>(<span class="st">&quot;y~&quot;</span>, <span class="kw">paste0</span>(<span class="st">&quot;I(x^&quot;</span>,<span class="dv">1</span> <span class="op">:</span>i,<span class="st">&quot;)&quot;</span>, <span class="dt">collapse=</span> <span class="st">&quot;+&quot;</span>)))</a>
-<a class="sourceLine" id="cb10-6" title="6">  mod &lt;-<span class="st">  </span><span class="kw">lm</span>(meanmod, <span class="dt">data =</span> train)</a>
-<a class="sourceLine" id="cb10-7" title="7">  <span class="co"># Calculer l&#39;erreur moyenne dans les deux échantillons</span></a>
-<a class="sourceLine" id="cb10-8" title="8">  emq[i,<span class="dv">1</span> <span class="op">:</span><span class="dv">2</span>] &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">mean</span>(<span class="kw">resid</span>(mod)<span class="op">^</span><span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb10-9" title="9">               <span class="kw">mean</span>((test<span class="op">$</span>y <span class="op">-</span><span class="kw">predict</span>(mod, <span class="dt">newdata =</span> test))<span class="op">^</span><span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb10-10" title="10">  emq[i,<span class="dv">3</span>] &lt;-<span class="st"> </span><span class="kw">summary</span>(mod)<span class="op">$</span>r.squared</a>
-<a class="sourceLine" id="cb10-11" title="11">  emq[i,<span class="dv">4</span>] &lt;-<span class="st"> </span><span class="kw">summary</span>(mod)<span class="op">$</span>adj.r.squared</a>
-<a class="sourceLine" id="cb10-12" title="12">  emq[i,<span class="dv">5</span>] &lt;-<span class="st"> </span><span class="kw">AIC</span>(mod)</a>
-<a class="sourceLine" id="cb10-13" title="13">  emq[i,<span class="dv">6</span>] &lt;-<span class="st"> </span><span class="kw">BIC</span>(mod)</a>
-<a class="sourceLine" id="cb10-14" title="14"><span class="co"># validation croisée avec 10 groupes</span></a>
-<a class="sourceLine" id="cb10-15" title="15">  emqcv[i,] &lt;-<span class="st">  </span><span class="kw">replicate</span>(<span class="dt">n =</span> 100L, </a>
-<a class="sourceLine" id="cb10-16" title="16">                    <span class="kw">train</span>(<span class="dt">form =</span> meanmod, <span class="dt">data =</span> train, <span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>,</a>
-<a class="sourceLine" id="cb10-17" title="17">                <span class="dt">trControl =</span> <span class="kw">trainControl</span>(<span class="dt">method =</span> <span class="st">&quot;cv&quot;</span>, </a>
-<a class="sourceLine" id="cb10-18" title="18">                                         <span class="dt">number =</span> <span class="dv">10</span>))<span class="op">$</span>results<span class="op">$</span>RMSE<span class="op">^</span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb10-19" title="19">  emq[i,<span class="dv">7</span>] &lt;-<span class="st"> </span><span class="kw">lmkfold</span>(<span class="dt">formula =</span> meanmod, <span class="dt">data =</span> train, <span class="dt">k =</span> <span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb10-20" title="20">}</a>
-<a class="sourceLine" id="cb10-21" title="21"></a>
-<a class="sourceLine" id="cb10-22" title="22"></a>
-<a class="sourceLine" id="cb10-23" title="23"></a>
-<a class="sourceLine" id="cb10-24" title="24">emqdat &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">ordre =</span> <span class="kw">rep</span>(<span class="dv">1</span> <span class="op">:</span><span class="dv">10</span>, <span class="dt">length.out =</span> <span class="dv">20</span>), </a>
-<a class="sourceLine" id="cb10-25" title="25">           <span class="dt">emq =</span> <span class="kw">c</span>(emq[,<span class="dv">1</span> <span class="op">:</span><span class="dv">2</span>]),</a>
-<a class="sourceLine" id="cb10-26" title="26">           <span class="dt">echantillon =</span> <span class="kw">factor</span>(<span class="kw">c</span>(<span class="kw">rep</span>(<span class="st">&quot;apprentissage&quot;</span>,<span class="dv">10</span>), <span class="kw">rep</span>(<span class="st">&quot;test&quot;</span>, <span class="dv">10</span>)))</a>
-<a class="sourceLine" id="cb10-27" title="27">)</a>
-<a class="sourceLine" id="cb10-28" title="28"><span class="kw">ggplot</span>(<span class="dt">data =</span> emqdat, <span class="kw">aes</span>(<span class="dt">x=</span>ordre, <span class="dt">y=</span>emq, <span class="dt">color=</span>echantillon)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb10-29" title="29"><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb10-30" title="30"><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">shape=</span>echantillon, <span class="dt">color=</span>echantillon)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb10-31" title="31"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Erreur moyenne quadratique estimée en fonction de l&#39;ordre&quot;</span>, </a>
-<a class="sourceLine" id="cb10-32" title="32">     <span class="dt">x =</span> <span class="st">&quot;ordre du polynôme&quot;</span>, </a>
-<a class="sourceLine" id="cb10-33" title="33">     <span class="dt">y =</span> <span class="st">&quot;erreur moyenne quadratique&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb10-34" title="34"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>,</a>
-<a class="sourceLine" id="cb10-35" title="35">        <span class="dt">legend.title=</span><span class="kw">element_blank</span>())</a></code></pre></div>
 <p><img src="MATH60602_files/figure-html/02-plotEMQa-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>On voit clairement que l’<span class="math inline">\(\mathsf{EMQ}_a\)</span> diminue en fonction de l’ordre sur l’échantillon d’apprentissage. C’est-à-dire, plus le modèle est complexe, plus l’erreur observée sur l’échantillon d’apprentissage est petite. Mais cela est trompeur. La courbe <span class="math inline">\(\mathsf{EMQ}\)</span> donne l’heure juste. Il s’agit d’une estimation de la performance réelle des modèles sur de nouvelles données. On voit que le meilleur modèle est donc le modèle cubique (<span class="math inline">\(k=3\)</span>). Ce qui n’est pas surprenant car il s’agit du modèle que j’ai utilisé pour générer les données. On peut aussi remarquer d’autres éléments intéressants. Premièrement, on obtient un bon gain en performance (<span class="math inline">\(\mathsf{EMQ}\)</span>) en passant de l’ordre <span class="math inline">\(2\)</span> à l’ordre <span class="math inline">\(3\)</span>. Ensuite, la perte de performance en passant de l’ordre <span class="math inline">\(3\)</span> à <span class="math inline">\(4\)</span>, et ensuite à des ordres supérieurs n’est pas si sévère, même si elle est présente. Cela illustre empiriquement qu’il est préférable d’avoir un modèle un peu trop complexe que d’avoir un modèle trop simple. Il serait beaucoup plus grave pour la performance de choisir le modèle avec <span class="math inline">\(k=2\)</span> que celui avec <span class="math inline">\(k=4\)</span>.</p>
 <p>En pratique par contre, on n’a pas accès à la population : les 100 000 observations qui ont servi à estimer l’<span class="math inline">\(\mathsf{EMQ}\)</span> théorique ne seront pas disponible. Si on a seulement l’échantillon d’apprentissage, soit 100 observations dans notre exemple, comment faire alors pour choisir le bon modèle? C’est ce que nous verrons à partir de la section suivante.</p>
@@ -346,7 +226,7 @@ Nous avons déjà utilisé les critères <span class="math inline">\(\mathsf{AIC
 <span class="math display">\[\begin{align*}
 \mathsf{AIC} &amp;=-2 \ell(\widehat{\boldsymbol{\beta}}, \widehat{\sigma}^2) +2p=n \ln (\mathsf{SCE}) - n\ln(n) + 2p,
 \intertext{tandis que le  critère d&#39;information bayésien de Schwartz, $\mathsf{BIC}$, est défini par}
-\mathsf{BIC} =-2 \ell(\widehat{\boldsymbol{\beta}}, \widehat{\sigma}^2) + p\ln(n)=n \ln (\mathsf{SCE}) - n\ln(n) + p\ln(n)
+\mathsf{BIC} &amp;=-2 \ell(\widehat{\boldsymbol{\beta}}, \widehat{\sigma}^2) + p\ln(n)=n \ln (\mathsf{SCE}) - n\ln(n) + p\ln(n)
 \end{align*}\]</span>
 Plus la valeur du <span class="math inline">\(\mathsf{AIC}\)</span> (ou du <span class="math inline">\(\mathsf{BIC}\)</span>) est petite, meilleur est l’adéquation. Que se passE-t-il lorsqu’on ajoute un paramètre à un modèle? D’une part, la somme du carré des erreurs va méchaniquement diminuer, et donc la quantité <span class="math inline">\(n \ln (\mathsf{SCE}/n)\)</span> va diminuer. D’autre part, la valeur de <span class="math inline">\(p\)</span> augmente de <span class="math inline">\(1\)</span>. Ainsi, le <span class="math inline">\(\mathsf{AIC}\)</span> peut soit augmenter, soit diminuer, lorsqu’on ajoute un paramètre; idem pour le <span class="math inline">\(\mathsf{BIC}\)</span>. Par exemple, le <span class="math inline">\(\mathsf{AIC}\)</span> va diminuer seulement si la baisse de la somme du carré des erreurs est suffisante pour compenser le fait que le terme <span class="math inline">\(2p\)</span> augmente à <span class="math inline">\(2 (p+1)\)</span>.</p>
 <p>Ces critères pénalisent l’ajout de variables afin de se prémunir contre le surajustement. De plus, le <span class="math inline">\(\mathsf{BIC}\)</span> pénalise plus que le <span class="math inline">\(\mathsf{AIC}\)</span>. Par conséquent, le critère <span class="math inline">\(\mathsf{BIC}\)</span> va choisir des modèles contenant soit le même nombre, soit moins de paramètres que le <span class="math inline">\(\mathsf{AIC}\)</span>.</p>
@@ -365,118 +245,7 @@ model y=x x*x x*x*x /selection=none;
 run;</code></pre>
 <p>Il s’agit du modèle cubique (d’ordre 3) en <span class="math inline">\(x\)</span>.</p>
 <p>Le tableau qui suit résume ces quantités pour tous les modèles de l’ordre 1 à l’ordre 10.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">knitr<span class="op">::</span><span class="kw">kable</span>(<span class="dt">x =</span> <span class="kw">as.data.frame</span>(emq[,<span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span><span class="op">:</span><span class="dv">6</span>)]), </a>
-<a class="sourceLine" id="cb12-2" title="2">             <span class="dt">digits =</span> <span class="dv">2</span>, </a>
-<a class="sourceLine" id="cb12-3" title="3">             <span class="dt">row.names =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb12-4" title="4">            <span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">mathsf{EMQ}</span><span class="ch">\\</span><span class="st">)&quot;</span>,</a>
-<a class="sourceLine" id="cb12-5" title="5">                          <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">mathsf{EMQ}_a</span><span class="ch">\\</span><span class="st">)&quot;</span>,</a>
-<a class="sourceLine" id="cb12-6" title="6">                          <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(R^2</span><span class="ch">\\</span><span class="st">)&quot;</span>, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(R^2_a</span><span class="ch">\\</span><span class="st">)&quot;</span>,</a>
-<a class="sourceLine" id="cb12-7" title="7">                          <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">mathsf{AIC}</span><span class="ch">\\</span><span class="st">)&quot;</span>, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">mathsf{BIC}</span><span class="ch">\\</span><span class="st">)&quot;</span>))</a></code></pre></div>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th align="right"><span class="math inline">\(\mathsf{EMQ}\)</span></th>
-<th align="right"><span class="math inline">\(\mathsf{EMQ}_a\)</span></th>
-<th align="right"><span class="math inline">\(R^2\)</span></th>
-<th align="right"><span class="math inline">\(R^2_a\)</span></th>
-<th align="right"><span class="math inline">\(\mathsf{AIC}\)</span></th>
-<th align="right"><span class="math inline">\(\mathsf{BIC}\)</span></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td align="right">3191.29</td>
-<td align="right">3674.20</td>
-<td align="right">0.65</td>
-<td align="right">0.65</td>
-<td align="right">1110.70</td>
-<td align="right">1118.51</td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td align="right">3132.67</td>
-<td align="right">2879.24</td>
-<td align="right">0.73</td>
-<td align="right">0.72</td>
-<td align="right">1088.32</td>
-<td align="right">1098.74</td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td align="right">2697.40</td>
-<td align="right">2620.05</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1080.88</td>
-<td align="right">1093.91</td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td align="right">2766.68</td>
-<td align="right">2581.70</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1081.41</td>
-<td align="right">1097.04</td>
-</tr>
-<tr class="odd">
-<td>5</td>
-<td align="right">2771.05</td>
-<td align="right">2580.86</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1083.38</td>
-<td align="right">1101.61</td>
-</tr>
-<tr class="even">
-<td>6</td>
-<td align="right">2779.66</td>
-<td align="right">2577.60</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1085.25</td>
-<td align="right">1106.09</td>
-</tr>
-<tr class="odd">
-<td>7</td>
-<td align="right">2780.21</td>
-<td align="right">2577.49</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1087.24</td>
-<td align="right">1110.69</td>
-</tr>
-<tr class="even">
-<td>8</td>
-<td align="right">2797.35</td>
-<td align="right">2531.00</td>
-<td align="right">0.76</td>
-<td align="right">0.74</td>
-<td align="right">1087.42</td>
-<td align="right">1113.48</td>
-</tr>
-<tr class="odd">
-<td>9</td>
-<td align="right">2811.07</td>
-<td align="right">2527.85</td>
-<td align="right">0.76</td>
-<td align="right">0.73</td>
-<td align="right">1089.30</td>
-<td align="right">1117.96</td>
-</tr>
-<tr class="even">
-<td>10</td>
-<td align="right">2848.81</td>
-<td align="right">2519.14</td>
-<td align="right">0.76</td>
-<td align="right">0.73</td>
-<td align="right">1090.95</td>
-<td align="right">1122.22</td>
-</tr>
-</tbody>
-</table>
+
 <p>Les colonnes <span class="math inline">\(\mathsf{EMQ}\)</span> et <span class="math inline">\(\mathsf{EMQ}_a\)</span> ont déjà été expliquées à la section précédente et ont été représentées graphiquement.
 On voit que le augmente toujours au fur et à mesure qu’on ajoute une variable (augmente l’ordre du polynôme). Les critères <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span> choisissent le modèle cubique (<span class="math inline">\(k=3\)</span>), c’est-à-dire le bon modèle. Le <span class="math inline">\(R^2\)</span> ajusté quant à lui choisit le modèle d’ordre <span class="math inline">\(4\)</span> (qui est le deuxième meilleur selon le <span class="math inline">\(\mathsf{EMQ}\)</span>). N’oubliez pas que ces trois critères sont calculés avec l’échantillon d’apprentissage (<span class="math inline">\(n=100\)</span>), mais en pénalisant l’ajout de variables. On est ainsi en mesure de contrecarrer le problème provenant du fait qu’on ne peut pas utiliser directement le <span class="math inline">\(\mathsf{EMQ}_a\)</span>.</p>
 <p>Le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span> sont des critères très utilisés et très généraux. Ils sont disponibles dès qu’on utilise la méthode du maximum de vraisemblance est utilisée comme méthode d’estimation. Le <span class="math inline">\(R^2\)</span> ajusté a une portée plus limitée car il est spécialisé à la régression linéaire.</p>
@@ -519,146 +288,8 @@ On voit que le augmente toujours au fur et à mesure qu’on ajoute une variable
 <p>Le fichier <code>selection3_cv.sas</code> contient une macro SAS permettant de faire une validation croisée pour un modèle de régression linéaire.
 Revenons à notre exemple où une seule variable explicative est disponible et où l’on cherche à déterminer un bon modèle polynomial.
 Voici le même tableau que celui vu plus haut mais avec une colonne en plus, la dernière, <span class="math inline">\(\mathsf{VC} (K=10)\)</span>. Il s’agit des estimations du <span class="math inline">\(\mathsf{EMQ}\)</span> obtenues avec la validation croisée à 10 groupes. Notez que si vous exécutez le programme, vous n’obtiendrez pas les mêmes valeurs car il y a un élément aléatoire dans ce processus. La colonne représente la moyenne de 100 réplications.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1">knitr<span class="op">::</span><span class="kw">kable</span>(<span class="dt">x =</span> <span class="kw">as.data.frame</span>(<span class="kw">cbind</span>(emq[,<span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span><span class="op">:</span><span class="dv">6</span>)], <span class="kw">rowMeans</span>(emqcv))), </a>
-<a class="sourceLine" id="cb13-2" title="2">             <span class="dt">digits =</span> <span class="dv">2</span>, </a>
-<a class="sourceLine" id="cb13-3" title="3">             <span class="dt">row.names =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb13-4" title="4">            <span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">mathsf{EMQ}</span><span class="ch">\\</span><span class="st">)&quot;</span>,</a>
-<a class="sourceLine" id="cb13-5" title="5">                          <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">mathsf{EMQ}_a</span><span class="ch">\\</span><span class="st">)&quot;</span>,</a>
-<a class="sourceLine" id="cb13-6" title="6">                          <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(R^2</span><span class="ch">\\</span><span class="st">)&quot;</span>, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(R^2_a</span><span class="ch">\\</span><span class="st">)&quot;</span>,</a>
-<a class="sourceLine" id="cb13-7" title="7">                          <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">mathsf{AIC}</span><span class="ch">\\</span><span class="st">)&quot;</span>,</a>
-<a class="sourceLine" id="cb13-8" title="8">                          <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">mathsf{BIC}</span><span class="ch">\\</span><span class="st">)&quot;</span>,</a>
-<a class="sourceLine" id="cb13-9" title="9">                          <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">mathsf{VC} (K=10)</span><span class="ch">\\</span><span class="st">)&quot;</span>))</a></code></pre></div>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th align="right"><span class="math inline">\(\mathsf{EMQ}\)</span></th>
-<th align="right"><span class="math inline">\(\mathsf{EMQ}_a\)</span></th>
-<th align="right"><span class="math inline">\(R^2\)</span></th>
-<th align="right"><span class="math inline">\(R^2_a\)</span></th>
-<th align="right"><span class="math inline">\(\mathsf{AIC}\)</span></th>
-<th align="right"><span class="math inline">\(\mathsf{BIC}\)</span></th>
-<th align="right"><span class="math inline">\(\mathsf{VC} (K=10)\)</span></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td align="right">3191.29</td>
-<td align="right">3674.20</td>
-<td align="right">0.65</td>
-<td align="right">0.65</td>
-<td align="right">1110.70</td>
-<td align="right">1118.51</td>
-<td align="right">3675.37</td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td align="right">3132.67</td>
-<td align="right">2879.24</td>
-<td align="right">0.73</td>
-<td align="right">0.72</td>
-<td align="right">1088.32</td>
-<td align="right">1098.74</td>
-<td align="right">2897.94</td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td align="right">2697.40</td>
-<td align="right">2620.05</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1080.88</td>
-<td align="right">1093.91</td>
-<td align="right">2675.51</td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td align="right">2766.68</td>
-<td align="right">2581.70</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1081.41</td>
-<td align="right">1097.04</td>
-<td align="right">2666.16</td>
-</tr>
-<tr class="odd">
-<td>5</td>
-<td align="right">2771.05</td>
-<td align="right">2580.86</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1083.38</td>
-<td align="right">1101.61</td>
-<td align="right">2711.11</td>
-</tr>
-<tr class="even">
-<td>6</td>
-<td align="right">2779.66</td>
-<td align="right">2577.60</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1085.25</td>
-<td align="right">1106.09</td>
-<td align="right">2757.13</td>
-</tr>
-<tr class="odd">
-<td>7</td>
-<td align="right">2780.21</td>
-<td align="right">2577.49</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1087.24</td>
-<td align="right">1110.69</td>
-<td align="right">2787.95</td>
-</tr>
-<tr class="even">
-<td>8</td>
-<td align="right">2797.35</td>
-<td align="right">2531.00</td>
-<td align="right">0.76</td>
-<td align="right">0.74</td>
-<td align="right">1087.42</td>
-<td align="right">1113.48</td>
-<td align="right">2845.78</td>
-</tr>
-<tr class="odd">
-<td>9</td>
-<td align="right">2811.07</td>
-<td align="right">2527.85</td>
-<td align="right">0.76</td>
-<td align="right">0.73</td>
-<td align="right">1089.30</td>
-<td align="right">1117.96</td>
-<td align="right">2895.61</td>
-</tr>
-<tr class="even">
-<td>10</td>
-<td align="right">2848.81</td>
-<td align="right">2519.14</td>
-<td align="right">0.76</td>
-<td align="right">0.73</td>
-<td align="right">1090.95</td>
-<td align="right">1122.22</td>
-<td align="right">2976.04</td>
-</tr>
-</tbody>
-</table>
+
 <p>On voit que le modèle cubique (ordre 3) est aussi choisi par la validation croisée, en moyenne (comme il l’était par le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span>). Le graphe qui suit trace les valeurs de l’estimation par validation croisée (courbe de validation croisée) et aussi le <span class="math inline">\(\mathsf{EMQ}\)</span>. On voit que l’estimation par validation croisée suit assez bien la forme du <span class="math inline">\(\mathsf{EMQ}\)</span> (qu’il est supposé estimer). Les boîtes à moustache permettent d’apprécier la variabilité des estimés de l’erreur moyenne quadratique telles qu’estimée par validation croisée avec 10 groupes.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">emqdat &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">ordre =</span> <span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">length.out =</span> <span class="dv">20</span>), </a>
-<a class="sourceLine" id="cb14-2" title="2">           <span class="dt">emq =</span> <span class="kw">c</span>(emq[,<span class="dv">2</span>], <span class="kw">rowMeans</span>(emqcv)),</a>
-<a class="sourceLine" id="cb14-3" title="3">           <span class="dt">echantillon =</span> <span class="kw">factor</span>(<span class="kw">c</span>(<span class="kw">rep</span>(<span class="st">&quot;apprentissage&quot;</span>,<span class="dv">10</span>), <span class="kw">rep</span>(<span class="st">&quot;validation croisée&quot;</span>, <span class="dv">10</span>)))</a>
-<a class="sourceLine" id="cb14-4" title="4">)</a>
-<a class="sourceLine" id="cb14-5" title="5"><span class="kw">ggplot</span>(<span class="dt">data =</span> emqdat, <span class="kw">aes</span>(<span class="dt">x=</span>ordre, <span class="dt">y=</span>emq)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb14-6" title="6"><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">data =</span> <span class="kw">data.frame</span>(<span class="dt">emq =</span> <span class="kw">c</span>(<span class="kw">t</span>(emqcv)), </a>
-<a class="sourceLine" id="cb14-7" title="7">                                 <span class="dt">ordre =</span> <span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">each=</span><span class="dv">100</span>)), <span class="kw">aes</span>(<span class="dt">group=</span>ordre),<span class="dt">show.legend =</span> <span class="ot">FALSE</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb14-8" title="8"><span class="st">  </span><span class="co">#geom_line(aes(color=color=echantillon)) + </span></a>
-<a class="sourceLine" id="cb14-9" title="9"><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">shape=</span>echantillon, <span class="dt">color=</span>echantillon)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb14-10" title="10"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Erreur moyenne quadratique estimée en fonction de l&#39;ordre&quot;</span>, </a>
-<a class="sourceLine" id="cb14-11" title="11">     <span class="dt">x =</span> <span class="st">&quot;ordre du polynôme&quot;</span>, </a>
-<a class="sourceLine" id="cb14-12" title="12">     <span class="dt">y =</span> <span class="st">&quot;erreur moyenne quadratique&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb14-13" title="13"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>,</a>
-<a class="sourceLine" id="cb14-14" title="14">        <span class="dt">legend.title=</span><span class="kw">element_blank</span>())</a></code></pre></div>
 <p><img src="MATH60602_files/figure-html/plotcv-1.png" width="576" style="display: block; margin: auto;" /></p>
 
 </div>
