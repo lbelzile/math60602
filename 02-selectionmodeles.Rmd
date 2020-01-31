@@ -18,7 +18,7 @@ Nous disposons d'une variable réponse $Y$ et d'un ensemble de variables explica
 
 1e situation : On veut développer un modèle pour faire des prévisions sans qu'il soit important de tester formellement les effets des paramètres individuels.
 
-Dans ce cas, on désire seulement que notre modèle soit performant pour prédire des valeurs futures de $Y$. On peut alors baser notre choix de variable (et de modèle) en utilisant des outils qui nous guiderons quant aux performances prédictives futures du modèle (voir $\mathsf{AIC}$, $\mathsf{BIC}$ et validation-croisée plus loin). On pourra enlever ou rajouter des variables et des transformations de variables au besoin afin d'améliorer les performances prédictives. Les méthodes que nous allons voir concernent eSCEntiellement ce contexte.
+Dans ce cas, on désire seulement que notre modèle soit performant pour prédire des valeurs futures de $Y$. On peut alors baser notre choix de variable (et de modèle) en utilisant des outils qui nous guiderons quant aux performances prédictives futures du modèle (voir $\mathsf{AIC}$, $\mathsf{BIC}$ et validation-croisée plus loin). On pourra enlever ou rajouter des variables et des transformations de variables au besoin afin d'améliorer les performances prédictives. Les méthodes que nous allons voir concernent essentiellement ce contexte.
 
 
 2e situation : On veut développer un modèle pour estimer les effets de certaines variables sur notre $Y$ et tester des hypothèses de recherche spécifiques concernant certaines variables. 
@@ -193,7 +193,9 @@ Il s'avère que les estimateurs des paramètres obtenus par la méthode des moin
 Supposons que nous avons ajusté un modèle avec $p$ paramètres en tout (**incluant** l'ordonnée à l'origine). En régression linéaire, le critère d'information d'Akaike, $\mathsf{AIC}$, est 
 \begin{align*}
 \mathsf{AIC} &=-2 \ell(\widehat{\bs{\beta}}, \widehat{\sigma}^2) +2p=n \ln (\mathsf{SCE}) - n\ln(n) + 2p,
-\intertext{tandis que le  critère d'information bayésien de Schwartz, $\mathsf{BIC}$, est défini par}
+\end{align*}
+tandis que le  critère d'information bayésien de Schwartz, $\mathsf{BIC}$, est défini par
+\begin{align*}
 \mathsf{BIC} &=-2 \ell(\widehat{\bs{\beta}}, \widehat{\sigma}^2) + p\ln(n)=n \ln (\mathsf{SCE}) - n\ln(n) + p\ln(n)
 \end{align*}
 Plus la valeur du $\mathsf{AIC}$ (ou du $\mathsf{BIC}$) est petite, meilleur est l'adéquation. Que se passE-t-il lorsqu'on ajoute un paramètre à un modèle? D'une part, la somme du carré des erreurs va méchaniquement diminuer, et donc la quantité $n \ln (\mathsf{SCE}/n)$ va diminuer. D'autre part, la valeur de $p$ augmente de $1$. Ainsi, le $\mathsf{AIC}$ peut soit augmenter, soit diminuer, lorsqu'on ajoute un paramètre; idem pour le $\mathsf{BIC}$. Par exemple, le $\mathsf{AIC}$ va diminuer seulement si la baisse de la somme du carré des erreurs est suffisante pour compenser le fait que le terme $2p$ augmente à $2 (p+1)$.
