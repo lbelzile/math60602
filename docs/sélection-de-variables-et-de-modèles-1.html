@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapitre 3 Sélection de variables et de modèles | Analyse multidimensionnelle appliquée</title>
+  <meta name="description" content="Ce recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
+  <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapitre 3 Sélection de variables et de modèles | Analyse multidimensionnelle appliquée" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Ce recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapitre 3 Sélection de variables et de modèles | Analyse multidimensionnelle appliquée" />
+  
+  <meta name="twitter:description" content="Ce recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
+  
+
+<meta name="author" content="Denis Larocque, Léo Belzile" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="analyse-factorielle-exploratoire-1.html"/>
+<link rel="next" href="references.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">MATH60602</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#survol-du-cours"><i class="fa fa-check"></i><b>1.1</b> Survol du cours</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#analyse-factorielle-exploratoire"><i class="fa fa-check"></i><b>1.1.1</b> Analyse factorielle exploratoire</a></li>
+<li class="chapter" data-level="1.1.2" data-path="index.html"><a href="index.html#sélection-de-variables-et-de-modèles"><i class="fa fa-check"></i><b>1.1.2</b> Sélection de variables et de modèles</a></li>
+<li class="chapter" data-level="1.1.3" data-path="index.html"><a href="index.html#régression-logistique"><i class="fa fa-check"></i><b>1.1.3</b> Régression logistique</a></li>
+<li class="chapter" data-level="1.1.4" data-path="index.html"><a href="index.html#analyse-de-regroupements"><i class="fa fa-check"></i><b>1.1.4</b> Analyse de regroupements</a></li>
+<li class="chapter" data-level="1.1.5" data-path="index.html"><a href="index.html#analyse-de-survie"><i class="fa fa-check"></i><b>1.1.5</b> Analyse de survie</a></li>
+<li class="chapter" data-level="1.1.6" data-path="index.html"><a href="index.html#données-manquantes"><i class="fa fa-check"></i><b>1.1.6</b> Données manquantes</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html"><i class="fa fa-check"></i><b>2</b> Analyse factorielle exploratoire</a><ul>
+<li class="chapter" data-level="2.1" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#rappels-sur-le-coefficient-de-corrélation-linéaire"><i class="fa fa-check"></i><b>2.2</b> Rappels sur le coefficient de corrélation linéaire</a></li>
+<li class="chapter" data-level="2.3" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#exemple-de-questionnaire"><i class="fa fa-check"></i><b>2.3</b> Exemple de questionnaire</a></li>
+<li class="chapter" data-level="2.4" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#description-du-modèle-danalyse-factorielle"><i class="fa fa-check"></i><b>2.4</b> Description du modèle d’analyse factorielle</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#rotation-des-facteurs"><i class="fa fa-check"></i><b>2.4.1</b> Rotation des facteurs</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#estimation-des-facteurs"><i class="fa fa-check"></i><b>2.5</b> Estimation des facteurs</a></li>
+<li class="chapter" data-level="2.6" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#choix-du-nombre-de-facteurs"><i class="fa fa-check"></i><b>2.6</b> Choix du nombre de facteurs</a></li>
+<li class="chapter" data-level="2.7" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#construction-déchelles-à-partir-des-facteurs"><i class="fa fa-check"></i><b>2.7</b> Construction d’échelles à partir des facteurs</a></li>
+<li class="chapter" data-level="2.8" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#compléments-dinformation"><i class="fa fa-check"></i><b>2.8</b> Compléments d’information</a><ul>
+<li class="chapter" data-level="2.8.1" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#variables-ordinales"><i class="fa fa-check"></i><b>2.8.1</b> Variables ordinales</a></li>
+<li class="chapter" data-level="2.8.2" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#autres-méthodes-dextractions-de-facteurs"><i class="fa fa-check"></i><b>2.8.2</b> Autres méthodes d’extractions de facteurs</a></li>
+<li class="chapter" data-level="2.8.3" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#autres-méthodes-de-rotation-des-facteurs"><i class="fa fa-check"></i><b>2.8.3</b> Autres méthodes de rotation des facteurs</a></li>
+<li class="chapter" data-level="2.8.4" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#scores-factoriels"><i class="fa fa-check"></i><b>2.8.4</b> Scores factoriels</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html"><i class="fa fa-check"></i><b>3</b> Sélection de variables et de modèles</a><ul>
+<li class="chapter" data-level="3.1" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#introduction-2"><i class="fa fa-check"></i><b>3.1</b> Introduction</a></li>
+<li class="chapter" data-level="3.2" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#sélection-de-variables-et-de-modèles-selon-les-buts-de-létude"><i class="fa fa-check"></i><b>3.2</b> Sélection de variables et de modèles selon les buts de l’étude</a></li>
+<li class="chapter" data-level="3.3" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#mieux-vaut-plus-que-moins"><i class="fa fa-check"></i><b>3.3</b> Mieux vaut plus que moins</a></li>
+<li class="chapter" data-level="3.4" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#trop-beau-pour-être-vrai"><i class="fa fa-check"></i><b>3.4</b> Trop beau pour être vrai</a></li>
+<li class="chapter" data-level="3.5" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#principes-généraux"><i class="fa fa-check"></i><b>3.5</b> Principes généraux</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#choix-dun-modèle-polynomial-en-régression-linéaire"><i class="fa fa-check"></i><b>3.5.1</b> Choix d’un modèle polynomial en régression linéaire</a></li>
+</ul></li>
+<li class="chapter" data-level="3.6" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#critères-dinformation"><i class="fa fa-check"></i><b>3.6</b> Critères d’information</a></li>
+<li class="chapter" data-level="3.7" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#division-de-léchantillon-et-validation-croisée"><i class="fa fa-check"></i><b>3.7</b> Division de l’échantillon et validation croisée</a><ul>
+<li class="chapter" data-level="3.7.1" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#division-de-léchantillon"><i class="fa fa-check"></i><b>3.7.1</b> Division de l’échantillon</a></li>
+<li class="chapter" data-level="3.7.2" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#validation-croisée"><i class="fa fa-check"></i><b>3.7.2</b> Validation croisée</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Publié avec bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Analyse multidimensionnelle appliquée</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="sélection-de-variables-et-de-modèles-1" class="section level1">
+<h1><span class="header-section-number">Chapitre 3</span> Sélection de variables et de modèles</h1>
+<div id="introduction-2" class="section level2">
+<h2><span class="header-section-number">3.1</span> Introduction</h2>
+<p>Ce chapitre présente des principes, outils et méthodes très généraux pour choisir un « bon » modèle. Nous allons principalement utiliser la régression linéaire pour illustrer les méthodes en supposant que tout le monde connaît ce modèle de base. Les méthodes présentées sont en revanche très générales et peuvent être appliquées avec n’importe quel autre modèle (régression logistique, arbres de classification et régression, réseaux de neurones, analyse de survie, etc.)</p>
+<p>L’expression « sélection de variables » fait référence à la situation où l’on cherche à sélectionner un sous-ensemble de variables à inclure dans notre modèle à partir d’un ensemble de variables <span class="math inline">\(X_1, \ldots, X_p\)</span>. Le terme variable ici inclut autant des variables distinctes que des transformations d’une ou plusieurs variables.</p>
+<p>Par exemple, supposons que les variables <code>age</code>, <code>sexe</code> et <code>revenu</code> sont trois variables explicatives disponibles. Nous pourrions alors considérer choisir entre ces trois variables. Mais aussi, nous pourrions considérer inclure <code>age</code><span class="math inline">\({}^2\)</span>, <code>age</code><span class="math inline">\({}^3\)</span>, <span class="math inline">\(\log(\)</span><code>age</code><span class="math inline">\()\)</span>, etcNous pourrions aussi considérer des termes d’interactions entre les variables, telles <code>age</code><span class="math inline">\(*\)</span><code>revenu</code> ou <code>age</code><span class="math inline">\(*\)</span><code>revenu</code><span class="math inline">\(*\)</span><code>sexe</code>. Le problème est alors de trouver un bon sous-ensemble de variables parmi toutes celles considérées.</p>
+<p>L’expression « sélection de modèle » est un peu plus générale. D’une part, elle inclut la sélection de variables car, pour une famille de modèles spécifiques (régression linéaire par exemple), choisir un sous-ensemble de variables revient à choisir un modèle. D’autre part, elle est plus générale car elle peut aussi faire référence à la situation où l’on cherche à trouver le meilleur modèle parmi des modèles de natures différentes. Par exemple, on pourrait choisir entre une régression linéaire, un arbre de régression, une forêt aléatoire, un réseau de neurones, etc.</p>
+</div>
+<div id="sélection-de-variables-et-de-modèles-selon-les-buts-de-létude" class="section level2">
+<h2><span class="header-section-number">3.2</span> Sélection de variables et de modèles selon les buts de l’étude</h2>
+<p>Nous disposons d’une variable réponse <span class="math inline">\(Y\)</span> et d’un ensemble de variables explicatives <span class="math inline">\(X_1, \ldots, X_p\)</span>. L’attitude à adopter dépend des buts de l’étude.</p>
+<p>1e situation : On veut développer un modèle pour faire des prévisions sans qu’il soit important de tester formellement les effets des paramètres individuels.</p>
+<p>Dans ce cas, on désire seulement que notre modèle soit performant pour prédire des valeurs futures de <span class="math inline">\(Y\)</span>. On peut alors baser notre choix de variable (et de modèle) en utilisant des outils qui nous guiderons quant aux performances prédictives futures du modèle (voir <span class="math inline">\(\mathsf{AIC}\)</span>, <span class="math inline">\(\mathsf{BIC}\)</span> et validation-croisée plus loin). On pourra enlever ou rajouter des variables et des transformations de variables au besoin afin d’améliorer les performances prédictives. Les méthodes que nous allons voir concernent eSCEntiellement ce contexte.</p>
+<p>2e situation : On veut développer un modèle pour estimer les effets de certaines variables sur notre <span class="math inline">\(Y\)</span> et tester des hypothèses de recherche spécifiques concernant certaines variables.</p>
+<p>Dans ce cas, il est préférable de spécifier le modèle dès le départ selon des considérations scientifiques et de s’en tenir à lui. Faire une sélection de variables dans ce cas est dangereux car on ne peut pas utiliser directement les valeurs-p des tests d’hypothèses (ou les intervalles de confiance sur les paramètres) concernant les paramètres du modèle final car elles ne tiennent pas compte de la variabilité due au processus de sélection de variables.</p>
+<p>Une bonne planification de l’étude est alors cruciale afin de collecter les bonnes variables, de spécifier le ou les bons modèles, et de s’assurer d’avoir suffisamment d’observations pour ajuster le ou les modèles désirés.</p>
+<p>Si procéder à une sélection de variables est quand même nécessaire dans ce contexte, il est quand même possible de le faire en divisant l’échantillon en deux. La sélection de variables pourrait être alors effectuée avec le premier échantillon. Une fois qu’un modèle est retenu, on pourrait alors réajuster ce modèle avec le deuxième échantillon (sans faire de sélection de variables cette fois-ci). L’inférence sur les paramètres (valeurs-<em>p</em>, etc.) sera alors valide. Le désavantage ici qu’il faut avoir une très grande taille d’échantillon au départ afin d’être en mesure de le diviser en deux.</p>
+</div>
+<div id="mieux-vaut-plus-que-moins" class="section level2">
+<h2><span class="header-section-number">3.3</span> Mieux vaut plus que moins</h2>
+<p>Il est préférable d’avoir un modèle un peu trop complexe qu’un modèle trop simple. Plaçons-nous dans le contexte de la régression linéaire et supposons que le vrai modèle est inclus dans le modèle qui a été ajusté. Il y a donc des variables en trop dans le modèle qui a été ajusté. Le modèle ajusté est surspécifié.</p>
+<p>Par exemple, supposons que le vrai modèle est <span class="math inline">\(Y=\beta_0+\beta_1X_1+\varepsilon\)</span> mais que c’est le modèle <span class="math inline">\(Y=\beta_0+\beta_1X_1+\beta_2X_2+\varepsilon\)</span>qui a été ajusté. Dans ce cas, règle générale, les estimateurs des paramètres et les prévisions provenant du modèle sont sans biais. Mais leurs variances estimées seront un peu plus élevées car on estime des paramètres pour des variables superflues.</p>
+<p>Supposons à l’inverse qu’il manque des variables dans le modèle ajusté et que le modèle ajusté est sous-spécifié. Par exemple, supposons que le vrai modèle est <span class="math inline">\(Y=\beta_0+\beta_1X_1+\beta_2X_2+\varepsilon\)</span>, mais que c’est le modèle <span class="math inline">\(Y=\beta_0+\beta_1X_1+\varepsilon\)</span> qui a été ajusté. Dans ce cas, généralement, les estimateurs des paramètres et les prévisions sont biaisés.</p>
+<p>Ainsi, il est généralement préférable d’avoir un modèle légèrement surspécifié qu’un modèle sous-spécifié. Plus généralement, il est préférable d’avoir un peu trop de variables dans le modèle que de prendre le risque d’omettre une ou plusieurs variables importantes. Encore plus généralement, il est préférable d’avoir un modèle un peu trop complexe que d’avoir un modèle trop simple.</p>
+<p>Mais il faut faire attention et ne pas tomber dans l’excès et avoir un modèle trop complexe (avec trop de variables inutiles) car il pourrait souffrir de surajustement (<em>over-fitting</em>). Les exemples qui suivent illustreront ce fait.</p>
+</div>
+<div id="trop-beau-pour-être-vrai" class="section level2">
+<h2><span class="header-section-number">3.4</span> Trop beau pour être vrai</h2>
+<p>Cette section traite de l’optimisme de l’évaluation d’un modèle lorsqu’on utilise les mêmes données qui ont servies à l’ajuster pour évaluer sa performance. Un principe fondamental lorsque vient le temps d’évaluer la performance prédictive d’un modèle est le suivant : si on utilise les mêmes observations pour évaluer la performance d’un modèle que celles qui ont servi à l’ajuster (à estimer le modèle et ses paramètres), on va surestimer sa performance. Autrement dit, notre estimation de l’erreur que fera le modèle pour prédire des observations futures sera biaisée à la baisse. Ainsi, il aura l’air meilleur que ce qu’il est en réalité. C’est comme si on demandait à un cinéaste d’évaluer son dernier film. Comme c’est son film, il n’aura généralement pas un regard objectif. C’est pourquoi on aura tendance à se fier à l’opinion d’un critique.</p>
+<p>On cherchera donc à utiliser des outils et méthodes qui nous donneront l’heure juste (une évaluation objective) quant à la performance prédictive d’un modèle.</p>
+</div>
+<div id="principes-généraux" class="section level2">
+<h2><span class="header-section-number">3.5</span> Principes généraux</h2>
+<p>Les idées présentées ici seront illustrées à l’aide de la régression linéaire. Par contre, elles sont valides dans à peu près n’importe quel contexte de modélisation.</p>
+<p>Plaçons-nous d’abord dans un contexte plus général que celui de la régression linéaire. Supposons que l’on dispose de <span class="math inline">\(n\)</span> observations indépendantes sur (<span class="math inline">\(Y, X_1, \ldots, Xp\)</span>) et que l’on a ajusté un modèle <span class="math inline">\(\widehat{f}(X_1, \ldots, X_p)\)</span>, avec ces données, pour prédire une variable continue <span class="math inline">\(Y\)</span>.</p>
+<p>Ce modèle peut être un modèle de régression linéaire,
+<span class="math display">\[\begin{align*}
+\widehat{f}(X_1, \ldots, X_p) = \widehat{\beta}_0 + \widehat{\beta}_1X_1 + \cdots + \widehat{\beta}_pX_p
+\end{align*}\]</span>
+mais il pourrait aussi avoir été construit selon d’autres méthodes (réseau de neurones, arbre de régression, forêt aléatoire, etc.) Une manière de quantifier la performance prédictive du modèle est l’erreur quadratique moyenne de généralisation (<em>generalization mean squared error</em>),
+<span class="math display">\[\begin{align*}
+\mathsf{EMQ}=\mathsf{E}\left[\left\{(Y-\widehat{f}(X_1, \ldots, X_p)\right\}^2\right]
+\end{align*}\]</span>
+lorsque (<span class="math inline">\(Y, X_1, \ldots, X_p\)</span>) est choisi au hasard dans la population. Cette quantité mesure l’erreur (la différence au carré entre la vraie valeur de <span class="math inline">\(Y\)</span> et la valeur prédite par le modèle) que fait le modèle en moyenne pour l’ensemble de la population. Plus cette quantité est petite, meilleur est le modèle. Le problème est que l’on ne peut pas la calculer, car on ne connaît pas toute la population. Tout au plus peut-on essayer de l’estimer ou bien d’estimer une fonction qui, sans l’estimer directement, classifiera les modèles dans le même ordre qu’elle.</p>
+<p>Une première idée est d’estimer <span class="math inline">\(\mathsf{EMQ}\)</span> avec l’erreur quadratique moyenne de l’échantillon d’apprentissage (<em>training mean squared error</em>),
+<span class="math display">\[\begin{align*}
+\mathsf{EMQ}_a= \frac{1}{n}\sum_{i=1}^n \left\{Y_i-\widehat{f}(X_{i1}, \ldots, X_{ip})\right\}^2.
+\end{align*}\]</span>
+Cette quantité est tout simplement l’équivalent du <span class="math inline">\(\mathsf{EMQ}\)</span>, mais est calculée en utilisant seulement notre échantillon.</p>
+<p>Malheureusement, selon le principe fondamental de la section précédente, cette quantité n’est pas un bon estimateur de l’<span class="math inline">\(\mathsf{EMQ}\)</span>. En effet, comme on utilise les mêmes observations que celles qui ont estimé le modèle, l’<span class="math inline">\(\mathsf{EMQ}_a\)</span> aura tendance à toujours diminuer lorsqu’on augmente la complexité du modèle (par exemple, lorsqu’on augmente le nombre de paramètres). Le <span class="math inline">\(\mathsf{EMQ}_a\)</span> tend à surestimer la qualité du modèle en sous-estimant l’<span class="math inline">\(\mathsf{EMQ}\)</span>. C’est-à-dire, le modèle a l’air meilleur qu’il ne l’est en réalité.</p>
+<div id="choix-dun-modèle-polynomial-en-régression-linéaire" class="section level3">
+<h3><span class="header-section-number">3.5.1</span> Choix d’un modèle polynomial en régression linéaire</h3>
+<p>Cet exemple simple servira à illustrer le fait qu’on ne peut utiliser directement les mêmes données qui ont servi à ajuster un modèle pour évaluer sa performance.</p>
+<p>Nous disposons de 100 observations sur une variable cible <span class="math inline">\(Y\)</span> et d’une seule variable explicative <span class="math inline">\(X\)</span>. Le fichier <code>selection1_train.xls</code> contient les données. Nous voulons considérer des modèles polynomiaux (en <span class="math inline">\(X\)</span>) afin d’en trouver un bon pour prédire <span class="math inline">\(Y\)</span>. Un modèle polynomial est un modèle de la forme <span class="math inline">\(Y=\beta_0 + \beta_1X+\cdots+\beta_kX^k+\varepsilon\)</span>. Le cas <span class="math inline">\(k=1\)</span> correspond à un modèle linéaire simple, <span class="math inline">\(k=2\)</span> à un modèle cubique, <span class="math inline">\(k=3\)</span> à un modèle cubique, etc. Notre but est de déterminer l’ordre (<span class="math inline">\(k\)</span>) du polynôme qui nous donnera un bon modèle. Voici d’abord le graphe de ces 100 observations.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">setwd</span>(<span class="st">&quot;~/Documents/Dropbox/website/lbelzile.bitbucket.io/MATH60602&quot;</span>)</a>
+<a class="sourceLine" id="cb7-2" title="2">train &lt;-<span class="st"> </span>haven<span class="op">::</span><span class="kw">read_sas</span>(<span class="dt">data_file =</span> <span class="st">&quot;selection1_train.sas7bdat&quot;</span>)</a>
+<a class="sourceLine" id="cb7-3" title="3">test &lt;-<span class="st"> </span>haven<span class="op">::</span><span class="kw">read_sas</span>(<span class="dt">data_file =</span> <span class="st">&quot;selection1_test.sas7bdat&quot;</span>)</a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb7-5" title="5"><span class="kw">print</span>(<span class="kw">ggplot</span>(<span class="dt">data =</span> train, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x=</span>x,<span class="dt">y=</span>y)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>())</a></code></pre></div>
+<p><img src="MATH60602_files/figure-html/02-graphedonneestest-1.png" width="672" /></p>
+<p>Il s’agit de l’échantillon d’apprentissage. Ces données ont été obtenues par simulation et le vrai modèle sous-jacent (celui qui a généré les données) est le modèle cubique, c’est-à-dire le modèle d’ordre <span class="math inline">\(k=3\)</span>.</p>
+<p>Afin de simuler une population, j’ai généré selon le même modèle 100 000 observations supplémentaires. Ces observations ne vont pas servir à estimer les modèles mais seulement à évaluer leur performance afin d’avoir une estimation sans biais. Ces données se trouvent dans <code>selection1_test.xls</code></p>
+<p>J’ai ajusté tour à tour à tour les modèles polynomiaux jusqu’à l’ordre 10, avec l’échantillon d’apprentissage de taille 100. C’est-à-dire, le modèle linéaire avec un polynôme d’ordre <span class="math inline">\(k=1\)</span> (linéaire), <span class="math inline">\(k=2\)</span> (quadratique), etc., jusqu’à <span class="math inline">\(k=10\)</span>. J’ai ensuite obtenu la valeur de l’erreur moyenne quadratique d’apprentissage pour chacun de ces modèles. J’ai ensuite utilisé ces modèles afin de prédire les 100 000 autres observations (la population) et calculé les 100 000 observations de l’échantillon test pour obtenir une très bonne approximation de l’erreur quadratique moyenne de généralisation.</p>
+<p>Voici le graphe de l’<span class="math inline">\(\mathsf{EMQ}_a\)</span> et de l’<span class="math inline">\(\mathsf{EMQ}\)</span> de généralisation en fonction de l’ordre (<span class="math inline">\(k\)</span>) du modèle utilisé.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">lmkfold &lt;-<span class="st"> </span><span class="cf">function</span>(formula, data, k, ...){</a>
+<a class="sourceLine" id="cb8-2" title="2">  accu &lt;-<span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb8-3" title="3">  k &lt;-<span class="st"> </span><span class="kw">as.integer</span>(k)</a>
+<a class="sourceLine" id="cb8-4" title="4">  n &lt;-<span class="st"> </span><span class="kw">nrow</span>(data)</a>
+<a class="sourceLine" id="cb8-5" title="5">  gp &lt;-<span class="st"> </span><span class="kw">sample.int</span>(n, n, <span class="dt">replace =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb8-6" title="6">  folds &lt;-<span class="st"> </span><span class="kw">split</span>(gp, <span class="kw">cut</span>(<span class="kw">seq_along</span>(gp), <span class="dv">10</span>, <span class="dt">labels =</span> <span class="ot">FALSE</span>))</a>
+<a class="sourceLine" id="cb8-7" title="7">  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span> <span class="op">:</span>k){</a>
+<a class="sourceLine" id="cb8-8" title="8">   g &lt;-<span class="st"> </span><span class="kw">as.integer</span>(<span class="kw">unlist</span>(folds[i]))</a>
+<a class="sourceLine" id="cb8-9" title="9">   fitlm &lt;-<span class="st"> </span><span class="kw">lm</span>(formula, data[<span class="op">-</span>g,])</a>
+<a class="sourceLine" id="cb8-10" title="10">   accu &lt;-<span class="st"> </span>accu <span class="op">+</span><span class="st"> </span><span class="kw">sum</span>((data[g, <span class="kw">all.vars</span>(formula)[<span class="dv">1</span>]] <span class="op">-</span><span class="kw">predict</span>(fitlm, <span class="dt">newdata=</span>data[g,]))<span class="op">^</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb8-11" title="11">  }</a>
+<a class="sourceLine" id="cb8-12" title="12"><span class="kw">return</span>(accu<span class="op">/</span>n)</a>
+<a class="sourceLine" id="cb8-13" title="13">}</a>
+<a class="sourceLine" id="cb8-14" title="14"></a>
+<a class="sourceLine" id="cb8-15" title="15">emq &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> <span class="dv">10</span>, <span class="dt">ncol =</span> <span class="dv">7</span>)</a>
+<a class="sourceLine" id="cb8-16" title="16">emqcv &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> <span class="dv">10</span>, <span class="dt">ncol =</span> <span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb8-17" title="17"><span class="kw">library</span>(caret)</a></code></pre></div>
+<pre><code>## Loading required package: lattice</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span> <span class="op">:</span><span class="dv">10</span>){</a>
+<a class="sourceLine" id="cb10-3" title="3">  <span class="kw">set.seed</span>(i<span class="op">*</span><span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb10-4" title="4">  <span class="co"># Créer le modèle avec une chaîne de caractère pour le polynôme</span></a>
+<a class="sourceLine" id="cb10-5" title="5">  meanmod &lt;-<span class="st"> </span><span class="kw">as.formula</span>(<span class="kw">paste0</span>(<span class="st">&quot;y~&quot;</span>, <span class="kw">paste0</span>(<span class="st">&quot;I(x^&quot;</span>,<span class="dv">1</span> <span class="op">:</span>i,<span class="st">&quot;)&quot;</span>, <span class="dt">collapse=</span> <span class="st">&quot;+&quot;</span>)))</a>
+<a class="sourceLine" id="cb10-6" title="6">  mod &lt;-<span class="st">  </span><span class="kw">lm</span>(meanmod, <span class="dt">data =</span> train)</a>
+<a class="sourceLine" id="cb10-7" title="7">  <span class="co"># Calculer l&#39;erreur moyenne dans les deux échantillons</span></a>
+<a class="sourceLine" id="cb10-8" title="8">  emq[i,<span class="dv">1</span> <span class="op">:</span><span class="dv">2</span>] &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">mean</span>(<span class="kw">resid</span>(mod)<span class="op">^</span><span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb10-9" title="9">               <span class="kw">mean</span>((test<span class="op">$</span>y <span class="op">-</span><span class="kw">predict</span>(mod, <span class="dt">newdata =</span> test))<span class="op">^</span><span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb10-10" title="10">  emq[i,<span class="dv">3</span>] &lt;-<span class="st"> </span><span class="kw">summary</span>(mod)<span class="op">$</span>r.squared</a>
+<a class="sourceLine" id="cb10-11" title="11">  emq[i,<span class="dv">4</span>] &lt;-<span class="st"> </span><span class="kw">summary</span>(mod)<span class="op">$</span>adj.r.squared</a>
+<a class="sourceLine" id="cb10-12" title="12">  emq[i,<span class="dv">5</span>] &lt;-<span class="st"> </span><span class="kw">AIC</span>(mod)</a>
+<a class="sourceLine" id="cb10-13" title="13">  emq[i,<span class="dv">6</span>] &lt;-<span class="st"> </span><span class="kw">BIC</span>(mod)</a>
+<a class="sourceLine" id="cb10-14" title="14"><span class="co"># validation croisée avec 10 groupes</span></a>
+<a class="sourceLine" id="cb10-15" title="15">  emqcv[i,] &lt;-<span class="st">  </span><span class="kw">replicate</span>(<span class="dt">n =</span> 100L, </a>
+<a class="sourceLine" id="cb10-16" title="16">                    <span class="kw">train</span>(<span class="dt">form =</span> meanmod, <span class="dt">data =</span> train, <span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>,</a>
+<a class="sourceLine" id="cb10-17" title="17">                <span class="dt">trControl =</span> <span class="kw">trainControl</span>(<span class="dt">method =</span> <span class="st">&quot;cv&quot;</span>, </a>
+<a class="sourceLine" id="cb10-18" title="18">                                         <span class="dt">number =</span> <span class="dv">10</span>))<span class="op">$</span>results<span class="op">$</span>RMSE<span class="op">^</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb10-19" title="19">  emq[i,<span class="dv">7</span>] &lt;-<span class="st"> </span><span class="kw">lmkfold</span>(<span class="dt">formula =</span> meanmod, <span class="dt">data =</span> train, <span class="dt">k =</span> <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb10-20" title="20">}</a>
+<a class="sourceLine" id="cb10-21" title="21"></a>
+<a class="sourceLine" id="cb10-22" title="22"></a>
+<a class="sourceLine" id="cb10-23" title="23"></a>
+<a class="sourceLine" id="cb10-24" title="24">emqdat &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">ordre =</span> <span class="kw">rep</span>(<span class="dv">1</span> <span class="op">:</span><span class="dv">10</span>, <span class="dt">length.out =</span> <span class="dv">20</span>), </a>
+<a class="sourceLine" id="cb10-25" title="25">           <span class="dt">emq =</span> <span class="kw">c</span>(emq[,<span class="dv">1</span> <span class="op">:</span><span class="dv">2</span>]),</a>
+<a class="sourceLine" id="cb10-26" title="26">           <span class="dt">echantillon =</span> <span class="kw">factor</span>(<span class="kw">c</span>(<span class="kw">rep</span>(<span class="st">&quot;apprentissage&quot;</span>,<span class="dv">10</span>), <span class="kw">rep</span>(<span class="st">&quot;test&quot;</span>, <span class="dv">10</span>)))</a>
+<a class="sourceLine" id="cb10-27" title="27">)</a>
+<a class="sourceLine" id="cb10-28" title="28"><span class="kw">ggplot</span>(<span class="dt">data =</span> emqdat, <span class="kw">aes</span>(<span class="dt">x=</span>ordre, <span class="dt">y=</span>emq, <span class="dt">color=</span>echantillon)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb10-29" title="29"><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-30" title="30"><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">shape=</span>echantillon, <span class="dt">color=</span>echantillon)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-31" title="31"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Erreur moyenne quadratique estimée en fonction de l&#39;ordre&quot;</span>, </a>
+<a class="sourceLine" id="cb10-32" title="32">     <span class="dt">x =</span> <span class="st">&quot;ordre du polynôme&quot;</span>, </a>
+<a class="sourceLine" id="cb10-33" title="33">     <span class="dt">y =</span> <span class="st">&quot;erreur moyenne quadratique&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-34" title="34"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>,</a>
+<a class="sourceLine" id="cb10-35" title="35">        <span class="dt">legend.title=</span><span class="kw">element_blank</span>())</a></code></pre></div>
+<p><img src="MATH60602_files/figure-html/02-plotEMQa-1.png" width="576" style="display: block; margin: auto;" /></p>
+<p>On voit clairement que l’<span class="math inline">\(\mathsf{EMQ}_a\)</span> diminue en fonction de l’ordre sur l’échantillon d’apprentissage. C’est-à-dire, plus le modèle est complexe, plus l’erreur observée sur l’échantillon d’apprentissage est petite. Mais cela est trompeur. La courbe <span class="math inline">\(\mathsf{EMQ}\)</span> donne l’heure juste. Il s’agit d’une estimation de la performance réelle des modèles sur de nouvelles données. On voit que le meilleur modèle est donc le modèle cubique (<span class="math inline">\(k=3\)</span>). Ce qui n’est pas surprenant car il s’agit du modèle que j’ai utilisé pour générer les données. On peut aussi remarquer d’autres éléments intéressants. Premièrement, on obtient un bon gain en performance (<span class="math inline">\(\mathsf{EMQ}\)</span>) en passant de l’ordre <span class="math inline">\(2\)</span> à l’ordre <span class="math inline">\(3\)</span>. Ensuite, la perte de performance en passant de l’ordre <span class="math inline">\(3\)</span> à <span class="math inline">\(4\)</span>, et ensuite à des ordres supérieurs n’est pas si sévère, même si elle est présente. Cela illustre empiriquement qu’il est préférable d’avoir un modèle un peu trop complexe que d’avoir un modèle trop simple. Il serait beaucoup plus grave pour la performance de choisir le modèle avec <span class="math inline">\(k=2\)</span> que celui avec <span class="math inline">\(k=4\)</span>.</p>
+<p>En pratique par contre, on n’a pas accès à la population : les 100 000 observations qui ont servi à estimer l’<span class="math inline">\(\mathsf{EMQ}\)</span> théorique ne seront pas disponible. Si on a seulement l’échantillon d’apprentissage, soit 100 observations dans notre exemple, comment faire alors pour choisir le bon modèle? C’est ce que nous verrons à partir de la section suivante.</p>
+<p>Mais avant cela, nous allons discuter un peu plus en détail au sujet de la régression linéaire et d’une mesure très connue, le coefficient de détermination (<span class="math inline">\(R^2\)</span>). Supposons que l’on a ajusté un modèle de régression linéaire
+<span class="math display">\[\begin{align*}
+\widehat{f}(X_1, \ldots, X_p) = \widehat{Y}=\widehat{\beta}_0 + \widehat{\beta}_1X_1+ \cdots + \widehat{\beta}_p X_p.
+\end{align*}\]</span>
+La somme du carré des erreurs (<span class="math inline">\(\mathsf{SCE}\)</span>) pour notre échantillon est
+<span class="math display">\[\begin{align*}
+\mathsf{SCE}=\sum_{i=1}^n (Y_i - \widehat{\beta}_0 + \widehat{\beta}_1X_1+ \cdots + \widehat{\beta}_p X_p)^2 = \sum_{i=1}^n (Y_i-\widehat{Y}_i)^2.
+ \end{align*}\]</span>
+On peut démontrer que si on ajoute une variable quelconque au modèle, la valeur de la somme du carré des erreurs va nécessairement baisser. Il est facile de se convaincre de cela. En régression linéaire, les estimations sont obtenues par la méthode des moindres carrés qui consiste justement à minimiser la <span class="math inline">\(\mathsf{SCE}\)</span>. Ainsi, en ajoutant une variable <span class="math inline">\(X_{p+1}\)</span> au modèle, la <span class="math inline">\(\mathsf{SCE}\)</span> ne peut que baisser car, dans le pire des cas, le paramètre de la nouvelle variable sera <span class="math inline">\(\widehat{\beta}_{p+1}=0\)</span> et on retombera sur le modèle sans cette variable. C’est pourquoi, la quantité <span class="math inline">\(\mathsf{EMQ}_a=\mathsf{SCE}/n\)</span> ne peut être utilisée comme outil de sélection de modèles en régression linéaire.</p>
+<p>Nous venons d’ailleurs d’illustrer cela avec notre exemple sur les modèles polynomiaux. En effet, augmenter l’ordre du polynôme de <span class="math inline">\(1\)</span> revient à ajouter une variable. Le coefficient de détermination (<span class="math inline">\(R^2\)</span>) est souvent utilisé comme mesure de qualité du modèle. Il peut s’interpréter comme étant la proportion de la variance de <span class="math inline">\(Y\)</span> qui est expliquée par le modèle.</p>
+<p>Le coefficient de détermination est
+<span class="math display">\[\begin{align*}
+R^2=\{\mathsf{cor}(\boldsymbol{y}, \widehat{\boldsymbol{y}})\}^2 = 1-\frac{\mathsf{SCE}}{\mathsf{SCT}},
+\end{align*}\]</span>
+où <span class="math inline">\(\mathsf{SCT}=\sum_{i=1}^n (Y_i-\overline{Y})^2\)</span> est la somme des carrés totale calculée en centrant les observations. La somme des carrés totale, <span class="math inline">\(\mathsf{SCT}\)</span>, ne varie pas en fonction du modèle.
+Ainsi, on voit que le <span class="math inline">\(R^2\)</span> va nécessairement augmenter lorsqu’on ajoute une variable au modèle (car la <span class="math inline">\(\mathsf{SCE}\)</span> diminue). C’est pourquoi on ne peut pas l’utiliser comme outil de sélection de variables.</p>
+<p>Le problème principal que nous avons identifié jusqu’à présent afin d’être en mesure de bien estimer la performance d’un modèle est le suivant : si on utilise les mêmes observations pour évaluer la performance d’un modèle que celles qui ont servi à l’ajuster on va surestimer sa performance.</p>
+<p>Il existe deux grandes approches pour contourner ce problème lorsque le but est de faire de la sélection de variables ou de modèle :</p>
+<ul>
+<li>utiliser les données de l’échantillon d’apprentissage (en échantillon) et pénaliser <span class="math inline">\(\mathsf{EMQ}_a\)</span> pour tenir compte de la complexité du modèle (<span class="math inline">\(\mathsf{AIC}\)</span>, <span class="math inline">\(\mathsf{BIC}\)</span>).</li>
+<li>tenter d’estimer le <span class="math inline">\(\mathsf{EMQ}\)</span> directement sur d’autres données (hors échantillon) en utilisant des méthodes de rééchantillonnage, notamment la validation croisée et la division de l’échantillon.</li>
+</ul>
+</div>
+</div>
+<div id="critères-dinformation" class="section level2">
+<h2><span class="header-section-number">3.6</span> Critères d’information</h2>
+<p>Plaçons-nous dans le contexte de la régression linéaire pour l’instant.
+Nous avons déjà utilisé les critères <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span> en analyse factorielle. Il s’agit de mesures qui découlent d’une méthode d’estimation des paramètres, la méthode du maximum de vraisemblance (<em>maximum likelihood</em>).</p>
+<p>Il s’avère que les estimateurs des paramètres obtenus par la méthode des moindres carrés en régression linéaire sont équivalents à ceux provenant de la méthode du maximum de vraisemblance si on suppose la normalité des termes d’erreurs du modèle. Ainsi, dans ce cas, nous avons accès aux <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span>, deux critères d’information définis pour les modèles dont la fonction objective est la vraisemblance (qui mesure la probabilité des observations sous le modèle postulé suivant une loi choisie par l’utilisateur). La fonction de vraisemblance <span class="math inline">\(\mathcal{L}\)</span> et la log-vraisemblance <span class="math inline">\(\ell\)</span> mesurent l’adéquation du modèle.</p>
+<p>Supposons que nous avons ajusté un modèle avec <span class="math inline">\(p\)</span> paramètres en tout (<strong>incluant</strong> l’ordonnée à l’origine). En régression linéaire, le critère d’information d’Akaike, <span class="math inline">\(\mathsf{AIC}\)</span>, est
+<span class="math display">\[\begin{align*}
+\mathsf{AIC} &amp;=-2 \ell(\widehat{\boldsymbol{\beta}}, \widehat{\sigma}^2) +2p=n \ln (\mathsf{SCE}) - n\ln(n) + 2p,
+\intertext{tandis que le  critère d&#39;information bayésien de Schwartz, $\mathsf{BIC}$, est défini par}
+\mathsf{BIC} =-2 \ell(\widehat{\boldsymbol{\beta}}, \widehat{\sigma}^2) + p\ln(n)=n \ln (\mathsf{SCE}) - n\ln(n) + p\ln(n)
+\end{align*}\]</span>
+Plus la valeur du <span class="math inline">\(\mathsf{AIC}\)</span> (ou du <span class="math inline">\(\mathsf{BIC}\)</span>) est petite, meilleur est l’adéquation. Que se passE-t-il lorsqu’on ajoute un paramètre à un modèle? D’une part, la somme du carré des erreurs va méchaniquement diminuer, et donc la quantité <span class="math inline">\(n \ln (\mathsf{SCE}/n)\)</span> va diminuer. D’autre part, la valeur de <span class="math inline">\(p\)</span> augmente de <span class="math inline">\(1\)</span>. Ainsi, le <span class="math inline">\(\mathsf{AIC}\)</span> peut soit augmenter, soit diminuer, lorsqu’on ajoute un paramètre; idem pour le <span class="math inline">\(\mathsf{BIC}\)</span>. Par exemple, le <span class="math inline">\(\mathsf{AIC}\)</span> va diminuer seulement si la baisse de la somme du carré des erreurs est suffisante pour compenser le fait que le terme <span class="math inline">\(2p\)</span> augmente à <span class="math inline">\(2 (p+1)\)</span>.</p>
+<p>Ces critères pénalisent l’ajout de variables afin de se prémunir contre le surajustement. De plus, le <span class="math inline">\(\mathsf{BIC}\)</span> pénalise plus que le <span class="math inline">\(\mathsf{AIC}\)</span>. Par conséquent, le critère <span class="math inline">\(\mathsf{BIC}\)</span> va choisir des modèles contenant soit le même nombre, soit moins de paramètres que le <span class="math inline">\(\mathsf{AIC}\)</span>.</p>
+<p>Les critères <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span> peuvent être utilisés comme outils de sélection de variables en régression linéaire mais aussi beaucoup plus généralement avec d’autres méthodes basées sur la vraisemblance (analyse factorielle, régression logistique, etc.) En fait, n’importe quel modèle dont les estimateurs proviennent de la méthode du maximum de vraisemblance produira ces quantités. Nous donnerons des formules générales pour le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span> dans le chapitre sur la régression logistique.</p>
+<p>Le critère <span class="math inline">\(\mathsf{BIC}\)</span> est le seul de ces critères qui est convergent. Cela veut dire que si l’ensemble des modèles que l’on considère contient le vrai modèle, alors la probabilité que le critère <span class="math inline">\(\mathsf{BIC}\)</span> choisissent le bon model tend vers 1 lorsque <span class="math inline">\(n\)</span> tend vers l’infini. Il faut mettre cela en perspective : il est peu vraisemblable que <span class="math inline">\(Y\)</span> ait été généré exactement selon un modèle de régression linéaire, car le modèle de régression n’est qu’une approximation de la réalité. Certains auteurs trouvent que le <span class="math inline">\(\mathsf{BIC}\)</span> est quelquefois trop sévère (il choisit des modèles trop simples) pour les tailles d’échantillons finies. Dans certaines applications, cette parsimonie est utile, mais il n’est pas possible de savoir d’avance lequel de ces deux critères (<span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span>) sera préférable pour un problème donné.</p>
+<p>Avant de revenir à l’exemple, voici la description d’une modification du coefficient de détermination, le <span class="math inline">\(R^2\)</span> ajusté, qui permet (contrairement au <span class="math inline">\(R^2\)</span>) de faire de la sélection de variables. En régression linéaire, le <span class="math inline">\(R^2\)</span> ajusté est
+<span class="math display">\[\begin{align*}
+R^2_a=1-\frac{\mathsf{SCE}/(n-p)}{\mathsf{SCT}/(n-1)}.
+\end{align*}\]</span>
+Lorsqu’on ajoute une variable, la somme du carré des erreurs (<span class="math inline">\(\mathsf{SCE}\)</span>) diminue mais c’est aussi le cas de la quantité <span class="math inline">\((n-p)\)</span>. Ainsi, le <span class="math inline">\(R^2\)</span> ajusté peut soit augmenter, soit diminuer lorsqu’on ajoute une variable. On peut donc l’utiliser pour choisir le modèle. Plus <span class="math inline">\(R^2_a\)</span> est élevé, mieux c’est. Ce critère est moins sévère que le <span class="math inline">\(\mathsf{AIC}\)</span>, Ainsi, en général, il va choisir un modèle avec le même nombre ou bien avec plus de paramètres que le <span class="math inline">\(\mathsf{AIC}\)</span>. Pour résumer, on aura la situation suivante :
+<span class="math display">\[ \#(\mathsf{BIC}) \leq \#(\mathsf{AIC}) \leq \#(R^2_a),\]</span>
+où <span class="math inline">\(\#\)</span> représente le nombre de paramètres du modèle linéaire.</p>
+<p>Il est facile d’obtenir les quantités <span class="math inline">\(R^2_a\)</span>, <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span> avec la procédure <code>glmselect</code> dans <strong>SAS</strong>. Le fichier <code>selection1_intro.sas</code> contient les programmes. La sortie qui suit provient des commandes :</p>
+<pre class="sas"><code>proc glmselect data=multi.selection1_train;
+model y=x x*x x*x*x /selection=none;
+run;</code></pre>
+<p>Il s’agit du modèle cubique (d’ordre 3) en <span class="math inline">\(x\)</span>.</p>
+<p>Le tableau qui suit résume ces quantités pour tous les modèles de l’ordre 1 à l’ordre 10.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">knitr<span class="op">::</span><span class="kw">kable</span>(<span class="dt">x =</span> <span class="kw">as.data.frame</span>(emq[,<span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span><span class="op">:</span><span class="dv">6</span>)]), </a>
+<a class="sourceLine" id="cb12-2" title="2">             <span class="dt">digits =</span> <span class="dv">2</span>, </a>
+<a class="sourceLine" id="cb12-3" title="3">             <span class="dt">row.names =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb12-4" title="4">            <span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">mathsf{EMQ}</span><span class="ch">\\</span><span class="st">)&quot;</span>,</a>
+<a class="sourceLine" id="cb12-5" title="5">                          <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">mathsf{EMQ}_a</span><span class="ch">\\</span><span class="st">)&quot;</span>,</a>
+<a class="sourceLine" id="cb12-6" title="6">                          <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(R^2</span><span class="ch">\\</span><span class="st">)&quot;</span>, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(R^2_a</span><span class="ch">\\</span><span class="st">)&quot;</span>,</a>
+<a class="sourceLine" id="cb12-7" title="7">                          <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">mathsf{AIC}</span><span class="ch">\\</span><span class="st">)&quot;</span>, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">mathsf{BIC}</span><span class="ch">\\</span><span class="st">)&quot;</span>))</a></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right"><span class="math inline">\(\mathsf{EMQ}\)</span></th>
+<th align="right"><span class="math inline">\(\mathsf{EMQ}_a\)</span></th>
+<th align="right"><span class="math inline">\(R^2\)</span></th>
+<th align="right"><span class="math inline">\(R^2_a\)</span></th>
+<th align="right"><span class="math inline">\(\mathsf{AIC}\)</span></th>
+<th align="right"><span class="math inline">\(\mathsf{BIC}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td align="right">3191.29</td>
+<td align="right">3674.20</td>
+<td align="right">0.65</td>
+<td align="right">0.65</td>
+<td align="right">1110.70</td>
+<td align="right">1118.51</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td align="right">3132.67</td>
+<td align="right">2879.24</td>
+<td align="right">0.73</td>
+<td align="right">0.72</td>
+<td align="right">1088.32</td>
+<td align="right">1098.74</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td align="right">2697.40</td>
+<td align="right">2620.05</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1080.88</td>
+<td align="right">1093.91</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td align="right">2766.68</td>
+<td align="right">2581.70</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1081.41</td>
+<td align="right">1097.04</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td align="right">2771.05</td>
+<td align="right">2580.86</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1083.38</td>
+<td align="right">1101.61</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td align="right">2779.66</td>
+<td align="right">2577.60</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1085.25</td>
+<td align="right">1106.09</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td align="right">2780.21</td>
+<td align="right">2577.49</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1087.24</td>
+<td align="right">1110.69</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td align="right">2797.35</td>
+<td align="right">2531.00</td>
+<td align="right">0.76</td>
+<td align="right">0.74</td>
+<td align="right">1087.42</td>
+<td align="right">1113.48</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td align="right">2811.07</td>
+<td align="right">2527.85</td>
+<td align="right">0.76</td>
+<td align="right">0.73</td>
+<td align="right">1089.30</td>
+<td align="right">1117.96</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td align="right">2848.81</td>
+<td align="right">2519.14</td>
+<td align="right">0.76</td>
+<td align="right">0.73</td>
+<td align="right">1090.95</td>
+<td align="right">1122.22</td>
+</tr>
+</tbody>
+</table>
+<p>Les colonnes <span class="math inline">\(\mathsf{EMQ}\)</span> et <span class="math inline">\(\mathsf{EMQ}_a\)</span> ont déjà été expliquées à la section précédente et ont été représentées graphiquement.
+On voit que le augmente toujours au fur et à mesure qu’on ajoute une variable (augmente l’ordre du polynôme). Les critères <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span> choisissent le modèle cubique (<span class="math inline">\(k=3\)</span>), c’est-à-dire le bon modèle. Le <span class="math inline">\(R^2\)</span> ajusté quant à lui choisit le modèle d’ordre <span class="math inline">\(4\)</span> (qui est le deuxième meilleur selon le <span class="math inline">\(\mathsf{EMQ}\)</span>). N’oubliez pas que ces trois critères sont calculés avec l’échantillon d’apprentissage (<span class="math inline">\(n=100\)</span>), mais en pénalisant l’ajout de variables. On est ainsi en mesure de contrecarrer le problème provenant du fait qu’on ne peut pas utiliser directement le <span class="math inline">\(\mathsf{EMQ}_a\)</span>.</p>
+<p>Le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span> sont des critères très utilisés et très généraux. Ils sont disponibles dès qu’on utilise la méthode du maximum de vraisemblance est utilisée comme méthode d’estimation. Le <span class="math inline">\(R^2\)</span> ajusté a une portée plus limitée car il est spécialisé à la régression linéaire.</p>
+</div>
+<div id="division-de-léchantillon-et-validation-croisée" class="section level2">
+<h2><span class="header-section-number">3.7</span> Division de l’échantillon et validation croisée</h2>
+<p>La deuxième grande approche après celle consistant à pénaliser le <span class="math inline">\(\mathsf{EMQ}_a\)</span> consiste à tenter d’estimer le <span class="math inline">\(\mathsf{EMQ}\)</span> directement. Nous allons voir deux telles méthodes ici, la division de l’échantillon et la validation croisée (<em>cross-validation</em>).</p>
+<p>Ces deux méthodes s’attaquent directement au problème qu’on ne peut utiliser (sans ajustement) les mêmes données qui ont servi à estimer les paramètres d’un modèle pour estimer sa performance. Pour ce faire, l’échantillon de départ est divisé en deux, ou plusieurs parties, qui vont jouer des rôles différents.</p>
+<div id="division-de-léchantillon" class="section level3">
+<h3><span class="header-section-number">3.7.1</span> Division de l’échantillon</h3>
+<p>Cette idée est très simple. Nous avons un échantillon de taille n. Nous pouvons le diviser au hasard en deux parties de tailles respectives <span class="math inline">\(n_1\)</span> et <span class="math inline">\(n_2\)</span> (<span class="math inline">\(n_1+n_2=n\)</span>),</p>
+<ul>
+<li>un échantillon d’apprentissage (<em>training</em>) de taille <span class="math inline">\(n_1\)</span> et</li>
+<li>un échantillon de validation de taille <span class="math inline">\(n_2\)</span>.</li>
+</ul>
+<p>L’échantillon d’apprentissage servira à estimer les paramètres du modèle. L’échantillon de validation servira à estimer la performance prédictive (par exemple estimer l’<span class="math inline">\(\mathsf{EMQ}\)</span>) du modèle. Comme cet échantillon n’a pas servi à estimer le modèle lui-même, il est formé de « nouvelles » observations qui permettent d’évaluer d’une manière réaliste la performance du modèle. Comme il s’agit de nouvelles observations, on n’a pas à pénaliser la complexité du modèle et on peut directement utiliser le critère de performance choisi, par exemple, l’erreur quadratique moyenne, c’est-à-dire, la moyenne des erreurs au carré pour l’échantillon de validation. Cette quantité est une estimation valable de l’<span class="math inline">\(\mathsf{EMQ}\)</span> de ce modèle. On peut faire la même chose pour tous les modèles en compétition et choisir celui qui a la meilleure performance sur l’échantillon de validation.</p>
+<p>Cette approche possède plusieurs avantages. Elle est facile à implanter. Elle est encore plus générale que les critères <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span>. En effet, ces critères découlent de la méthode d’estimation du maximum de vraisemblance. Plusieurs autres types de modèles ne sont pas estimés par la méthode du maximum de vraisemblance (par exemple, les arbres, les forêts aléatoires, les réseaux de neurones, etc.) La performance de ces modèles peut toujours être estimée en divisant l’échantillon. Cette méthode peut donc servir à comparer des modèles de familles différentes. Par exemple, choisit-on un modèle de régression linéaire, une forêt aléatoire ou bien un réseau de neurones?</p>
+<p>Cette approche possède tout de même un désavantage. Elle nécessite une grande taille d’échantillon au départ. En effet, comme on divise l’échantillon, on doit en avoir assez pour bien estimer les paramètres du modèle (l’échantillon d’apprentissage) et assez pour bien estimer sa performance (l’échantillon de validation).</p>
+<p>La méthode consistant à diviser l’échantillon en deux (apprentissage et validation) afin de sélectionner un modèle est valide. Par contre, si on veut une estimation sans biais de la performance du modèle choisi (celui qui est le meilleur sur l’échantillon de validation), on ne peut pas utiliser directement la valeur observée de l’erreur de ce modèle sur l’échantillon de validation. Elle risque de sous-évaluer l’erreur. En effet, supposons qu’on a 10 échantillons et qu’on ajuste 10 fois le même modèle séparément sur les 10 échantillons. Nous aurons alors 10 estimations différentes de l’erreur du modèle. Il est alors évident que de choisir la plus petite d’entre elles sous-estimerait la vraie erreur du modèle. C’est un peu ce qui se passe lorsqu’on choisit le modèle qui minimise l’erreur sur l’échantillon de validation. Le modèle lui-même est un bon choix, mais l’estimation de son erreur risque d’être sous-évaluée.</p>
+<p>Une manière d’avoir une estimation de l’erreur du modèle retenu consiste à diviser l’échantillon de départ en trois (plutôt que deux). Aux échantillons d’apprentissage et de validation, s’ajoute un échantillon « test ». Cet échantillon est laissé de côté durant tout le processus de sélection du modèle qui est effectué avec les deux premiers échantillons tel qu’expliqué plus haut. Une fois un modèle retenu (par exemple celui qui minimise l’erreur sur l’échantillon de validation), on peut alors évaluer sa performance sur l’échantillon test qui n’a pas encore été utilisé jusque là. L’estimation de l’erreur du modèle retenu sera ainsi valide. Il est évident que pour procéder ainsi, on doit avoir une très grande taille d’échantillon au départ.</p>
+</div>
+<div id="validation-croisée" class="section level3">
+<h3><span class="header-section-number">3.7.2</span> Validation croisée</h3>
+<p>Si la taille d’échantillon n’est pas suffisante pour diviser l’échantillon en deux et procéder comme nous venons de l’expliquer, la validation croisée est une bonne alternative. Cette méthode permet d’imiter le processus de division de l’échantillon.</p>
+<p>Voici les étapes à suivre pour faire une validation-croisée à <span class="math inline">\(K\)</span> groupes (<em><span class="math inline">\(K\)</span>-fold cross-validation</em>) :</p>
+<ol style="list-style-type: decimal">
+<li>Diviser l’échantillon au hasard en <span class="math inline">\(K\)</span> parties <span class="math inline">\(P_1, P_2, \ldots, P_K\)</span> de taille contenant toutes à peu près le même nombre d’observations.</li>
+<li>Pour <span class="math inline">\(j = 1\)</span> à <span class="math inline">\(K\)</span>,</li>
+</ol>
+<ol style="list-style-type: lower-roman">
+<li>Enlever la partie <span class="math inline">\(j\)</span>.</li>
+<li>Estimer les paramètres du modèle en utilisant les observations des <span class="math inline">\(K-1\)</span> autres parties combinées.</li>
+<li>Calculer la mesure de performance (par exemple la somme du carré des erreurs) de ce modèle pour le groupe <span class="math inline">\(P_j\)</span>.</li>
+</ol>
+<ol start="3" style="list-style-type: decimal">
+<li>Faire la somme des <span class="math inline">\(K\)</span> estimations de performance pour obtenir une mesure de performance finale et repondérer au besoin.</li>
+</ol>
+<p>On recommande habituellement de prendre entre <span class="math inline">\(K=5\)</span> et <span class="math inline">\(10\)</span> groupes (le choix de 10 groupes est celui qui revient le plus souvent en pratique). Si on prend <span class="math inline">\(K=10\)</span> groupes, alors chaque modèle est estimé avec 90% des données et on prédit ensuite le 10% restant. Comme on passe en boucle les 10 parties, chaque observation est prédite une et une seule fois à la fin. Il est important de souligner que les groupes sont formés de façon aléatoire et donc que l’estimé que l’on obtient peut être très variable, surtout si la taille de l’échantillon d’apprentissage est petite. Il arrive également que le modèle ajusté sur un groupe ne puisse pas être utilisé pour prédire les observations mises de côté, notamment si des varibles catégorielles sont présentes. Un échantillonage stratifié permet de pallier à cette lacune, mais ce problème se présente en pratique quand certaines classes ont peu d’observations.</p>
+<p>Le cas particulier <span class="math inline">\(K=n\)</span> (en anglais <em>leave-one-out cross validation</em>, ou <span class="math inline">\(\mathsf{LOOCV}\)</span>) consiste à enlever une seule observation, à estimer le modèle avec les <span class="math inline">\(n-1\)</span> autres et à valider à l’aide de l’observation laissée de côté et on recommence pour chaque observation. Pour les modèles linéaires, il existe des formules explicites qui nous permettent d’éviter d’ajuster <span class="math inline">\(n\)</span> régressions par moindre carrés.</p>
+<p>Le fichier <code>selection3_cv.sas</code> contient une macro SAS permettant de faire une validation croisée pour un modèle de régression linéaire.
+Revenons à notre exemple où une seule variable explicative est disponible et où l’on cherche à déterminer un bon modèle polynomial.
+Voici le même tableau que celui vu plus haut mais avec une colonne en plus, la dernière, <span class="math inline">\(\mathsf{VC} (K=10)\)</span>. Il s’agit des estimations du <span class="math inline">\(\mathsf{EMQ}\)</span> obtenues avec la validation croisée à 10 groupes. Notez que si vous exécutez le programme, vous n’obtiendrez pas les mêmes valeurs car il y a un élément aléatoire dans ce processus. La colonne représente la moyenne de 100 réplications.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1">knitr<span class="op">::</span><span class="kw">kable</span>(<span class="dt">x =</span> <span class="kw">as.data.frame</span>(<span class="kw">cbind</span>(emq[,<span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span><span class="op">:</span><span class="dv">6</span>)], <span class="kw">rowMeans</span>(emqcv))), </a>
+<a class="sourceLine" id="cb13-2" title="2">             <span class="dt">digits =</span> <span class="dv">2</span>, </a>
+<a class="sourceLine" id="cb13-3" title="3">             <span class="dt">row.names =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb13-4" title="4">            <span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">mathsf{EMQ}</span><span class="ch">\\</span><span class="st">)&quot;</span>,</a>
+<a class="sourceLine" id="cb13-5" title="5">                          <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">mathsf{EMQ}_a</span><span class="ch">\\</span><span class="st">)&quot;</span>,</a>
+<a class="sourceLine" id="cb13-6" title="6">                          <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(R^2</span><span class="ch">\\</span><span class="st">)&quot;</span>, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(R^2_a</span><span class="ch">\\</span><span class="st">)&quot;</span>,</a>
+<a class="sourceLine" id="cb13-7" title="7">                          <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">mathsf{AIC}</span><span class="ch">\\</span><span class="st">)&quot;</span>,</a>
+<a class="sourceLine" id="cb13-8" title="8">                          <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">mathsf{BIC}</span><span class="ch">\\</span><span class="st">)&quot;</span>,</a>
+<a class="sourceLine" id="cb13-9" title="9">                          <span class="st">&quot;</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">mathsf{VC} (K=10)</span><span class="ch">\\</span><span class="st">)&quot;</span>))</a></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right"><span class="math inline">\(\mathsf{EMQ}\)</span></th>
+<th align="right"><span class="math inline">\(\mathsf{EMQ}_a\)</span></th>
+<th align="right"><span class="math inline">\(R^2\)</span></th>
+<th align="right"><span class="math inline">\(R^2_a\)</span></th>
+<th align="right"><span class="math inline">\(\mathsf{AIC}\)</span></th>
+<th align="right"><span class="math inline">\(\mathsf{BIC}\)</span></th>
+<th align="right"><span class="math inline">\(\mathsf{VC} (K=10)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td align="right">3191.29</td>
+<td align="right">3674.20</td>
+<td align="right">0.65</td>
+<td align="right">0.65</td>
+<td align="right">1110.70</td>
+<td align="right">1118.51</td>
+<td align="right">3675.37</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td align="right">3132.67</td>
+<td align="right">2879.24</td>
+<td align="right">0.73</td>
+<td align="right">0.72</td>
+<td align="right">1088.32</td>
+<td align="right">1098.74</td>
+<td align="right">2897.94</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td align="right">2697.40</td>
+<td align="right">2620.05</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1080.88</td>
+<td align="right">1093.91</td>
+<td align="right">2675.51</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td align="right">2766.68</td>
+<td align="right">2581.70</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1081.41</td>
+<td align="right">1097.04</td>
+<td align="right">2666.16</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td align="right">2771.05</td>
+<td align="right">2580.86</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1083.38</td>
+<td align="right">1101.61</td>
+<td align="right">2711.11</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td align="right">2779.66</td>
+<td align="right">2577.60</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1085.25</td>
+<td align="right">1106.09</td>
+<td align="right">2757.13</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td align="right">2780.21</td>
+<td align="right">2577.49</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1087.24</td>
+<td align="right">1110.69</td>
+<td align="right">2787.95</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td align="right">2797.35</td>
+<td align="right">2531.00</td>
+<td align="right">0.76</td>
+<td align="right">0.74</td>
+<td align="right">1087.42</td>
+<td align="right">1113.48</td>
+<td align="right">2845.78</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td align="right">2811.07</td>
+<td align="right">2527.85</td>
+<td align="right">0.76</td>
+<td align="right">0.73</td>
+<td align="right">1089.30</td>
+<td align="right">1117.96</td>
+<td align="right">2895.61</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td align="right">2848.81</td>
+<td align="right">2519.14</td>
+<td align="right">0.76</td>
+<td align="right">0.73</td>
+<td align="right">1090.95</td>
+<td align="right">1122.22</td>
+<td align="right">2976.04</td>
+</tr>
+</tbody>
+</table>
+<p>On voit que le modèle cubique (ordre 3) est aussi choisi par la validation croisée, en moyenne (comme il l’était par le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span>). Le graphe qui suit trace les valeurs de l’estimation par validation croisée (courbe de validation croisée) et aussi le <span class="math inline">\(\mathsf{EMQ}\)</span>. On voit que l’estimation par validation croisée suit assez bien la forme du <span class="math inline">\(\mathsf{EMQ}\)</span> (qu’il est supposé estimer). Les boîtes à moustache permettent d’apprécier la variabilité des estimés de l’erreur moyenne quadratique telles qu’estimée par validation croisée avec 10 groupes.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">emqdat &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">ordre =</span> <span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">length.out =</span> <span class="dv">20</span>), </a>
+<a class="sourceLine" id="cb14-2" title="2">           <span class="dt">emq =</span> <span class="kw">c</span>(emq[,<span class="dv">2</span>], <span class="kw">rowMeans</span>(emqcv)),</a>
+<a class="sourceLine" id="cb14-3" title="3">           <span class="dt">echantillon =</span> <span class="kw">factor</span>(<span class="kw">c</span>(<span class="kw">rep</span>(<span class="st">&quot;apprentissage&quot;</span>,<span class="dv">10</span>), <span class="kw">rep</span>(<span class="st">&quot;validation croisée&quot;</span>, <span class="dv">10</span>)))</a>
+<a class="sourceLine" id="cb14-4" title="4">)</a>
+<a class="sourceLine" id="cb14-5" title="5"><span class="kw">ggplot</span>(<span class="dt">data =</span> emqdat, <span class="kw">aes</span>(<span class="dt">x=</span>ordre, <span class="dt">y=</span>emq)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb14-6" title="6"><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">data =</span> <span class="kw">data.frame</span>(<span class="dt">emq =</span> <span class="kw">c</span>(<span class="kw">t</span>(emqcv)), </a>
+<a class="sourceLine" id="cb14-7" title="7">                                 <span class="dt">ordre =</span> <span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">each=</span><span class="dv">100</span>)), <span class="kw">aes</span>(<span class="dt">group=</span>ordre),<span class="dt">show.legend =</span> <span class="ot">FALSE</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb14-8" title="8"><span class="st">  </span><span class="co">#geom_line(aes(color=color=echantillon)) + </span></a>
+<a class="sourceLine" id="cb14-9" title="9"><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">shape=</span>echantillon, <span class="dt">color=</span>echantillon)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb14-10" title="10"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Erreur moyenne quadratique estimée en fonction de l&#39;ordre&quot;</span>, </a>
+<a class="sourceLine" id="cb14-11" title="11">     <span class="dt">x =</span> <span class="st">&quot;ordre du polynôme&quot;</span>, </a>
+<a class="sourceLine" id="cb14-12" title="12">     <span class="dt">y =</span> <span class="st">&quot;erreur moyenne quadratique&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb14-13" title="13"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;bottom&quot;</span>,</a>
+<a class="sourceLine" id="cb14-14" title="14">        <span class="dt">legend.title=</span><span class="kw">element_blank</span>())</a></code></pre></div>
+<p><img src="MATH60602_files/figure-html/plotcv-1.png" width="576" style="display: block; margin: auto;" /></p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="analyse-factorielle-exploratoire-1.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["MATH60602.pdf", "MATH60602.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
