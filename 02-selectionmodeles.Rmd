@@ -4,9 +4,10 @@
 
 Ce chapitre présente des principes, outils et méthodes très généraux pour choisir un « bon » modèle. Nous allons principalement utiliser la régression linéaire pour illustrer les méthodes en supposant que tout le monde connaît ce modèle de base. Les méthodes présentées sont en revanche très générales et peuvent être appliquées avec n'importe quel autre modèle (régression logistique, arbres de classification et régression, réseaux de neurones, analyse de survie, etc.) 
 
+
 L'expression « sélection de variables » fait référence à la situation où l'on cherche à sélectionner un sous-ensemble de variables à inclure dans notre modèle à partir d'un ensemble de variables $X_1, \ldots, X_p$. Le terme variable ici inclut autant des variables distinctes que des transformations d'une ou plusieurs variables. 
 
-Par exemple, supposons que les variables `age`, `sexe` et `revenu` sont trois variables explicatives disponibles. Nous pourrions alors considérer choisir entre ces trois variables. Mais aussi, nous pourrions considérer inclure `age`${}^2$, `age`${}^3$, $\log($`age`$)$, etc\ldots Nous pourrions aussi considérer des termes d'interactions entre les variables, telles `age`$*$`revenu` ou `age`$*$`revenu`$*$`sexe`. Le problème est alors de trouver un bon sous-ensemble de variables parmi toutes celles considérées.
+Par exemple, supposons que les variables `age`, `sexe` et `revenu` sont trois variables explicatives disponibles. Nous pourrions alors considérer choisir entre ces trois variables. Mais aussi, nous pourrions considérer inclure $\mathrm{age}^2$, $\mathrm{age}^3$, $\log(\mathrm{age})$, etc. Nous pourrions aussi considérer des termes d'interactions entre les variables, comme $\mathrm{age} \cdot \mathrm{revenu}$ ou $\mathrm{age}\cdot\mathrm{revenu}\cdot\mathrm{sexe}$. Le problème est alors de trouver un bon sous-ensemble de variables parmi toutes celles considérées.
 
 L'expression « sélection de modèle » est un peu plus générale. D'une part, elle inclut la sélection de variables car, pour une famille de modèles spécifiques (régression linéaire par exemple), choisir un sous-ensemble de variables revient à choisir un modèle. D'autre part, elle est plus générale car elle peut aussi faire référence à la situation où l'on cherche à trouver le meilleur modèle parmi des modèles de natures différentes. Par exemple, on pourrait choisir entre une régression linéaire, un arbre de régression, une forêt aléatoire, un réseau de neurones, etc. 
 
@@ -18,7 +19,7 @@ Nous disposons d'une variable réponse $Y$ et d'un ensemble de variables explica
 
 1e situation : On veut développer un modèle pour faire des prévisions sans qu'il soit important de tester formellement les effets des paramètres individuels.
 
-Dans ce cas, on désire seulement que notre modèle soit performant pour prédire des valeurs futures de $Y$. On peut alors baser notre choix de variable (et de modèle) en utilisant des outils qui nous guiderons quant aux performances prédictives futures du modèle (voir $\mathsf{AIC}$, $\mathsf{BIC}$ et validation-croisée plus loin). On pourra enlever ou rajouter des variables et des transformations de variables au besoin afin d'améliorer les performances prédictives. Les méthodes que nous allons voir concernent essentiellement ce contexte.
+Dans ce cas, on désire seulement que notre modèle soit performant pour prédire des valeurs futures de $Y$. On peut alors baser notre choix de variable (et de modèle) en utilisant des outils qui nous guiderons quant aux performances prédictives futures du modèle (voir $\mathsf{AIC}$, $\mathsf{BIC}$ et validation croisée plus loin). On pourra enlever ou rajouter des variables et des transformations de variables au besoin afin d'améliorer les performances prédictives. Les méthodes que nous allons voir concernent essentiellement ce contexte.
 
 
 2e situation : On veut développer un modèle pour estimer les effets de certaines variables sur notre $Y$ et tester des hypothèses de recherche spécifiques concernant certaines variables. 
@@ -65,11 +66,11 @@ lorsque ($Y, X_1, \ldots, X_p$) est choisi au hasard dans la population. Cette q
 
 Une première idée est d'estimer $\mathsf{EMQ}$ avec l'erreur quadratique moyenne de l'échantillon d'apprentissage (_training mean squared error_),
 \begin{align*}
-\mathsf{EMQ}_a= \frac{1}{n}\sum_{i=1}^n \left\{Y_i-\widehat{f}(X_{i1}, \ldots, X_{ip})\right\}^2.
+\widehat{\mathsf{EMQ}}_a= \frac{1}{n}\sum_{i=1}^n \left\{Y_i-\widehat{f}(X_{i1}, \ldots, X_{ip})\right\}^2.
 \end{align*}
 Cette quantité est tout simplement l'équivalent du $\mathsf{EMQ}$, mais est calculée en utilisant seulement notre échantillon. 
 
-Malheureusement, selon le principe fondamental de la section précédente, cette quantité n'est pas un bon estimateur de l'$\mathsf{EMQ}$. En effet, comme on utilise les mêmes observations que celles qui ont estimé le modèle, l'$\mathsf{EMQ}_a$ aura tendance à toujours diminuer lorsqu'on augmente la complexité du modèle (par exemple, lorsqu'on augmente le nombre de paramètres). Le $\mathsf{EMQ}_a$ tend à surestimer la qualité du modèle en sous-estimant l'$\mathsf{EMQ}$. C'est-à-dire, le modèle a l'air meilleur qu'il ne l'est en réalité.
+Malheureusement, selon le principe fondamental de la section précédente, cette quantité n'est pas un bon estimateur de l'$\mathsf{EMQ}$. En effet, comme on utilise les mêmes observations que celles qui ont estimé le modèle, l'$\widehat{\mathsf{EMQ}}_a$ aura tendance à toujours diminuer lorsqu'on augmente la complexité du modèle (par exemple, lorsqu'on augmente le nombre de paramètres). L'$\widehat{\mathsf{EMQ}}_a$ tend à surestimer la qualité du modèle en sous-estimant l'$\mathsf{EMQ}$. C'est-à-dire, le modèle a l'air meilleur qu'il ne l'est en réalité.
 
 
 ### Choix d'un modèle polynomial en régression linéaire
@@ -79,9 +80,10 @@ Cet exemple simple servira à illustrer le fait qu'on ne peut utiliser directeme
 Nous disposons de 100 observations sur une variable cible $Y$ et d'une seule variable explicative $X$. Le fichier `selection1_train.xls` contient les données. Nous voulons considérer des modèles polynomiaux (en $X$) afin d'en trouver un bon pour prédire $Y$. Un modèle polynomial est un modèle de la forme $Y=\beta_0 + \beta_1X+\cdots+\beta_kX^k+\varepsilon$. Le cas $k=1$ correspond à un modèle linéaire simple, $k=2$ à un modèle cubique, $k=3$ à un modèle cubique, etc. Notre but est de  déterminer l'ordre ($k$) du polynôme qui nous donnera un bon modèle. Voici d'abord le graphe de ces 100 observations.
 
 ```{r 02-graphedonneestest, eval=TRUE, echo=FALSE, fig.width = 5, fig.height=4, fig.align = 'center'}
-setwd("~/Documents/Dropbox/website/lbelzile.bitbucket.io/MATH60602")
-train <- haven::read_sas(data_file = "selection1_train.sas7bdat")
-test <- haven::read_sas(data_file = "selection1_test.sas7bdat")
+file <- "https://lbelzile.bitbucket.io/MATH60602/selection1_train.sas7bdat"
+train <- haven::read_sas(data_file = file)
+file <- "https://lbelzile.bitbucket.io/MATH60602/selection1_test.sas7bdat"
+test <- haven::read_sas(data_file = file)
 library(ggplot2)
 print(ggplot(data = train, mapping = aes(x=x,y=y)) + geom_point())
 
@@ -93,9 +95,9 @@ Afin de simuler une population, j'ai généré selon le même modèle 100 000 ob
 
 J'ai ajusté tour à tour à tour les modèles polynomiaux jusqu'à l'ordre 10, avec l'échantillon d'apprentissage de taille 100. C'est-à-dire, le modèle linéaire avec un polynôme d'ordre $k=1$ (linéaire), $k=2$ (quadratique), etc., jusqu'à $k=10$. J'ai ensuite obtenu la valeur de l'erreur moyenne quadratique d'apprentissage pour chacun de ces modèles. J'ai ensuite utilisé ces modèles afin de prédire les 100 000 autres observations (la population) et calculé les 100 000 observations de l'échantillon test pour obtenir une très bonne approximation de l'erreur quadratique moyenne de généralisation.
 
-Voici le graphe de l'$\mathsf{EMQ}_a$ et de l'$\mathsf{EMQ}$ de généralisation en fonction de l'ordre ($k$) du modèle utilisé.
+Voici le graphe de l'$\widehat{\mathsf{EMQ}}_a$ et de l'$\mathsf{EMQ}$ de généralisation en fonction de l'ordre ($k$) du modèle utilisé.
 
-```{r 02-plotEMQa, echo=FALSE, fig.align='center', fig.width=6, fig.height=4, cache=TRUE} 
+```{r 02-plotEMQa, eval=TRUE, echo=FALSE, fig.align='center', fig.width=6, fig.height=4, cache=TRUE} 
 
 lmkfold <- function(formula, data, k, ...){
   accu <- 0
@@ -121,8 +123,8 @@ for(i in 1 :10){
   meanmod <- as.formula(paste0("y~", paste0("I(x^",1 :i,")", collapse= "+")))
   mod <-  lm(meanmod, data = train)
   # Calculer l'erreur moyenne dans les deux échantillons
-  emq[i,1 :2] <- c(mean(resid(mod)^2),
-               mean((test$y -predict(mod, newdata = test))^2))
+  emq[i,1 :2] <- c(mean(resid(mod)^2), #apprentissage
+               mean((test$y - predict(mod, newdata = test))^2)) #échantillon test
   emq[i,3] <- summary(mod)$r.squared
   emq[i,4] <- summary(mod)$adj.r.squared
   emq[i,5] <- AIC(mod)
@@ -132,14 +134,14 @@ for(i in 1 :10){
                     train(form = meanmod, data = train, method = "lm",
                 trControl = trainControl(method = "cv", 
                                          number = 10))$results$RMSE^2)
-  emq[i,7] <- lmkfold(formula = meanmod, data = train, k = 10)
+  # emq[i,7] <- lmkfold(formula = meanmod, data = train, k = 10)
 }
-
+  emq[,7] <- rowMeans(emqcv)
 
 
 emqdat <- data.frame(ordre = rep(1 :10, length.out = 20), 
            emq = c(emq[,1 :2]),
-           echantillon = factor(c(rep("apprentissage",10), rep("test", 10)))
+           echantillon = factor(c(rep("apprentissage",10), rep("théorique", 10)))
 )
 ggplot(data = emqdat, aes(x=ordre, y=emq, color=echantillon)) +
   geom_line() + 
@@ -153,7 +155,7 @@ ggplot(data = emqdat, aes(x=ordre, y=emq, color=echantillon)) +
 
 ```
 
-On voit clairement que l'$\mathsf{EMQ}_a$ diminue en fonction de l'ordre sur l'échantillon d'apprentissage. C'est-à-dire, plus le modèle est complexe, plus l'erreur observée sur l'échantillon d'apprentissage est petite. Mais cela est trompeur. La courbe $\mathsf{EMQ}$ donne l'heure juste. Il s'agit d'une estimation de la performance réelle des modèles sur de nouvelles données. On voit que le meilleur modèle est donc le modèle cubique ($k=3$). Ce qui n'est pas surprenant car il s'agit du modèle que j'ai utilisé pour générer les données. On peut aussi remarquer d'autres éléments intéressants. Premièrement, on obtient un bon gain en performance ($\mathsf{EMQ}$) en passant de l'ordre $2$ à l'ordre $3$. Ensuite, la perte de performance en passant de l'ordre $3$ à $4$, et ensuite à des ordres supérieurs n'est pas si sévère, même si elle est présente. Cela illustre empiriquement qu'il est préférable d'avoir un modèle un peu trop complexe que d'avoir un modèle trop simple. Il serait beaucoup plus grave pour la performance de choisir le modèle avec $k=2$ que celui avec $k=4$. 
+On voit clairement que l'$\widehat{\mathsf{EMQ}}_a$ diminue en fonction de l'ordre sur l'échantillon d'apprentissage. C'est-à-dire, plus le modèle est complexe, plus l'erreur observée sur l'échantillon d'apprentissage est petite. Mais cela est trompeur. La courbe $\mathsf{EMQ}$ donne l'heure juste. Il s'agit d'une estimation de la performance réelle des modèles sur de nouvelles données. On voit que le meilleur modèle est donc le modèle cubique ($k=3$). Ce qui n'est pas surprenant car il s'agit du modèle que j'ai utilisé pour générer les données. On peut aussi remarquer d'autres éléments intéressants. Premièrement, on obtient un bon gain en performance ($\mathsf{EMQ}$) en passant de l'ordre $2$ à l'ordre $3$. Ensuite, la perte de performance en passant de l'ordre $3$ à $4$, et ensuite à des ordres supérieurs n'est pas si sévère, même si elle est présente. Cela illustre empiriquement qu'il est préférable d'avoir un modèle un peu trop complexe que d'avoir un modèle trop simple. Il serait beaucoup plus grave pour la performance de choisir le modèle avec $k=2$ que celui avec $k=4$. 
 
 En pratique par contre, on n'a pas accès à la population : les 100 000 observations qui ont servi à estimer l'$\mathsf{EMQ}$ théorique ne seront pas disponible. Si on a seulement l'échantillon d'apprentissage, soit 100 observations dans notre exemple, comment faire alors pour choisir le bon modèle? C'est ce que nous verrons à partir de la section suivante.
 
@@ -165,7 +167,7 @@ La somme du carré des erreurs ($\mathsf{SCE}$) pour notre échantillon est
 \begin{align*}
 \mathsf{SCE}=\sum_{i=1}^n (Y_i - \widehat{\beta}_0 + \widehat{\beta}_1X_1+ \cdots + \widehat{\beta}_p X_p)^2 = \sum_{i=1}^n (Y_i-\widehat{Y}_i)^2.
  \end{align*}
-On peut démontrer que si on ajoute une variable quelconque au modèle, la valeur de la somme du carré des erreurs va nécessairement baisser. Il est facile de se convaincre de cela. En régression linéaire, les estimations sont obtenues par la méthode des moindres carrés qui consiste justement à minimiser la $\mathsf{SCE}$. Ainsi, en ajoutant une variable $X_{p+1}$ au modèle, la $\mathsf{SCE}$ ne peut que baisser car, dans le pire des cas, le paramètre de la nouvelle variable sera $\widehat{\beta}_{p+1}=0$ et on retombera sur le modèle sans cette variable. C'est pourquoi, la quantité $\mathsf{EMQ}_a=\mathsf{SCE}/n$ ne peut être utilisée comme outil de sélection de modèles en régression linéaire. 
+On peut démontrer que si on ajoute une variable quelconque au modèle, la valeur de la somme du carré des erreurs va nécessairement baisser. Il est facile de se convaincre de cela. En régression linéaire, les estimations sont obtenues par la méthode des moindres carrés qui consiste justement à minimiser la $\mathsf{SCE}$. Ainsi, en ajoutant une variable $X_{p+1}$ au modèle, la $\mathsf{SCE}$ ne peut que baisser car, dans le pire des cas, le paramètre de la nouvelle variable sera $\widehat{\beta}_{p+1}=0$ et on retombera sur le modèle sans cette variable. C'est pourquoi, la quantité $\widehat{\mathsf{EMQ}}_a=\mathsf{SCE}/n$ ne peut être utilisée comme outil de sélection de modèles en régression linéaire. 
 
 Nous venons d'ailleurs d'illustrer cela avec notre exemple sur les modèles polynomiaux. En effet, augmenter l'ordre du polynôme de $1$ revient à ajouter une variable. Le coefficient de détermination ($R^2$) est souvent utilisé comme mesure de qualité du modèle. Il peut s'interpréter comme étant la proportion de la variance de $Y$ qui est expliquée par le modèle. 
 
@@ -180,8 +182,8 @@ Le problème principal que nous avons identifié jusqu'à présent afin d'être 
 
 Il existe deux grandes approches pour contourner ce problème lorsque le but est de faire de la sélection de variables ou de modèle :
 
-- utiliser les données de l'échantillon d'apprentissage (en échantillon) et pénaliser $\mathsf{EMQ}_a$ pour tenir compte de la complexité du modèle ($\mathsf{AIC}$, $\mathsf{BIC}$).
-- tenter d'estimer le $\mathsf{EMQ}$ directement sur d'autres données (hors échantillon) en utilisant des méthodes de rééchantillonnage, notamment la validation croisée et la division de l'échantillon.
+- utiliser les données de l'échantillon d'apprentissage (en échantillon) et pénaliser $\widehat{\mathsf{EMQ}}_a$ pour tenir compte de la complexité du modèle ($\mathsf{AIC}$, $\mathsf{BIC}$).
+- tenter d'estimer l'$\mathsf{EMQ}$ directement sur d'autres données (hors échantillon) en utilisant des méthodes de rééchantillonnage, notamment la validation croisée et la division de l'échantillon.
 
 ## Critères d'information
 
@@ -225,29 +227,35 @@ run;
 ```
 Il s'agit du modèle cubique (d'ordre 3) en $x$.
 
+
+```{r fig2p1_fig1, echo = FALSE, out.width='90%', fig.align = "center"}
+knitr::include_graphics("figures/02-select-e1.png")
+```
+```{r fig2p1_fig2, echo = FALSE, out.width='90%', fig.align = "center"}
+knitr::include_graphics("figures/02-select-e2.png")
+```
+
 Le tableau qui suit résume ces quantités pour tous les modèles de l'ordre 1 à l'ordre 10.
  
-```{r 02-table1, echo=FALSE}
-library(kableExtra)
-options(knitr.table.format = "latex")
-kable(x = as.data.frame(emq[,c(2,1,3:6)]), 
+```{r 02-table1, eval=TRUE,echo=FALSE}
+knitr::kable(x = as.data.frame(emq[,c(2,1,3:6)]), 
              digits = 2, 
              row.names = TRUE, escape =FALSE,
             col.names = c("\\(\\mathsf{EMQ}\\)",
-                          "\\(\\mathsf{EMQ}_a\\)",
+                          "\\(\\widehat{\\mathsf{EMQ}}_a\\)",
                           "\\(R^2\\)", "\\(R^2_a\\)",
                           "\\(\\mathsf{AIC}\\)", "\\(\\mathsf{BIC}\\)"))
  
 ```
  
-Les colonnes $\mathsf{EMQ}$ et $\mathsf{EMQ}_a$ ont déjà été expliquées à la section précédente et ont été représentées graphiquement. 
-On voit que le augmente toujours au fur et à mesure qu'on ajoute une variable (augmente l'ordre du polynôme). Les critères $\mathsf{AIC}$ et $\mathsf{BIC}$ choisissent le modèle cubique ($k=3$), c'est-à-dire le bon modèle. Le $R^2$ ajusté quant à lui choisit le modèle d'ordre $4$ (qui est le deuxième meilleur selon le $\mathsf{EMQ}$). N'oubliez pas que ces trois critères sont calculés avec l'échantillon d'apprentissage ($n=100$), mais en pénalisant l'ajout de variables. On est ainsi en mesure de contrecarrer le problème provenant du fait qu'on ne peut pas utiliser directement le $\mathsf{EMQ}_a$.
+Les colonnes $\mathsf{EMQ}$ et $\widehat{\mathsf{EMQ}}_a$ ont déjà été expliquées à la section précédente et ont été représentées graphiquement. 
+On voit que le augmente toujours au fur et à mesure qu'on ajoute une variable (augmente l'ordre du polynôme). Les critères $\mathsf{AIC}$ et $\mathsf{BIC}$ choisissent le modèle cubique ($k=3$), c'est-à-dire le bon modèle. Le $R^2$ ajusté quant à lui choisit le modèle d'ordre $4$ (qui est le deuxième meilleur selon le $\mathsf{EMQ}$). N'oubliez pas que ces trois critères sont calculés avec l'échantillon d'apprentissage ($n=100$), mais en pénalisant l'ajout de variables. On est ainsi en mesure de contrecarrer le problème provenant du fait qu'on ne peut pas utiliser directement le $\widehat{\mathsf{EMQ}}_a$.
 
 Le $\mathsf{AIC}$ et le $\mathsf{BIC}$ sont des critères très utilisés et très généraux. Ils sont disponibles dès qu'on utilise la méthode du maximum de vraisemblance est utilisée comme méthode d'estimation. Le $R^2$ ajusté a une portée plus limitée car il est spécialisé à la régression linéaire.
 
 ## Division de l'échantillon et validation croisée
 
-La deuxième grande approche après celle consistant à pénaliser le $\mathsf{EMQ}_a$ consiste à tenter d'estimer le $\mathsf{EMQ}$ directement. Nous allons voir deux telles méthodes ici, la division de l'échantillon et la validation croisée (_cross-validation_).
+La deuxième grande approche après celle consistant à pénaliser le $\widehat{\mathsf{EMQ}}_a$ consiste à tenter d'estimer le $\mathsf{EMQ}$ directement. Nous allons voir deux telles méthodes ici, la division de l'échantillon et la validation croisée (_cross-validation_).
 
 Ces deux méthodes s'attaquent directement au problème qu'on ne peut utiliser (sans ajustement) les mêmes données qui ont servi à estimer les paramètres d'un modèle pour estimer sa performance. Pour ce faire, l'échantillon de départ est divisé en deux, ou plusieurs parties, qui vont jouer des rôles différents.
 
@@ -273,7 +281,7 @@ Une manière d'avoir une estimation de l'erreur du modèle retenu consiste à di
 
 Si la taille d'échantillon n'est pas suffisante pour diviser l'échantillon en deux et procéder comme nous venons de l'expliquer, la validation croisée est une bonne alternative. Cette méthode permet d'imiter le processus de division de l'échantillon.
 
-Voici les étapes à suivre pour faire une validation-croisée à $K$ groupes (_$K$-fold cross-validation_) :
+Voici les étapes à suivre pour faire une validation croisée à $K$ groupes (_$K$-fold cross-validation_) :
 
 1. Diviser l'échantillon au hasard en $K$ parties $P_1, P_2, \ldots, P_K$ de taille contenant toutes à peu près le même nombre d'observations. 
 2. Pour $j = 1$ à $K$, 
@@ -288,21 +296,20 @@ Le cas particulier $K=n$ (en anglais _leave-one-out cross validation_, ou $\math
 
 
 Le fichier `selection3_cv.sas` contient une macro SAS permettant de faire une validation croisée pour un modèle de régression linéaire. 
-Revenons à notre exemple où une seule variable explicative est disponible et où l'on cherche à déterminer un bon modèle polynomial.
-Voici le même tableau que celui vu plus haut mais avec une colonne en plus, la dernière, $\mathsf{VC} (K=10)$. Il s'agit des estimations du $\mathsf{EMQ}$ obtenues avec la validation croisée à 10 groupes.  Notez que si vous exécutez le programme, vous n'obtiendrez pas les mêmes valeurs car il y a un élément aléatoire dans ce processus. La colonne représente la moyenne de 100 réplications.
+Revenons à notre exemple où une seule variable explicative est disponible et où l'on cherche à déterminer un bon modèle polynomial. Le Tableau \@ref(tab:02-table2) est le même que le Tableau \@ref(tab:02-table1) mais avec une colonne en plus, la dernière, $\mathsf{VC} (K=10)$. Il s'agit des estimations du $\mathsf{EMQ}$ obtenues avec la validation croisée à 10 groupes.  Notez que si vous exécutez le programme, vous n'obtiendrez pas les mêmes valeurs car il y a un élément aléatoire dans ce processus. La colonne représente la moyenne de 100 réplications.
 
 
-```{r 02-table2, echo=FALSE}
-knitr::kable(x = as.data.frame(cbind(emq[,c(2,1,3:6)], rowMeans(emqcv))), 
+```{r 02-table2, echo=FALSE, eval = TRUE}
+print(knitr::kable(x = as.data.frame(cbind(emq[,c(2,1,3:6)], rowMeans(emqcv))), 
              digits = 2, 
              row.names = TRUE,
             col.names = c("\\(\\mathsf{EMQ}\\)",
-                          "\\(\\mathsf{EMQ}_a\\)",
+                          "\\(\\widehat{\\mathsf{EMQ}}_a\\)",
                           "\\(R^2\\)", "\\(R^2_a\\)",
                           "\\(\\mathsf{AIC}\\)",
                           "\\(\\mathsf{BIC}\\)",
                           "\\(\\mathsf{VC} (K=10)\\)"),
-            escape = FALSE)
+            escape = FALSE))
  
 ```
  
@@ -312,7 +319,7 @@ On voit que le modèle cubique (ordre 3) est aussi choisi par la validation croi
 ```{r plotcv, echo = FALSE, fig.width =6, fig.height=4, fig.align='center', cache = TRUE}
 emqdat <- data.frame(ordre = rep(1:10, length.out = 20), 
            emq = c(emq[,2], rowMeans(emqcv)),
-           echantillon = factor(c(rep("apprentissage",10), rep("validation croisée", 10)))
+           echantillon = factor(c(rep("théorique",10), rep("validation croisée", 10)))
 )
 ggplot(data = emqdat, aes(x=ordre, y=emq)) +
   geom_boxplot(data = data.frame(emq = c(t(emqcv)), 

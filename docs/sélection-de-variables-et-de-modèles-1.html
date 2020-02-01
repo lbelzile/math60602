@@ -136,14 +136,14 @@
 <h2><span class="header-section-number">3.1</span> Introduction</h2>
 <p>Ce chapitre présente des principes, outils et méthodes très généraux pour choisir un « bon » modèle. Nous allons principalement utiliser la régression linéaire pour illustrer les méthodes en supposant que tout le monde connaît ce modèle de base. Les méthodes présentées sont en revanche très générales et peuvent être appliquées avec n’importe quel autre modèle (régression logistique, arbres de classification et régression, réseaux de neurones, analyse de survie, etc.)</p>
 <p>L’expression « sélection de variables » fait référence à la situation où l’on cherche à sélectionner un sous-ensemble de variables à inclure dans notre modèle à partir d’un ensemble de variables <span class="math inline">\(X_1, \ldots, X_p\)</span>. Le terme variable ici inclut autant des variables distinctes que des transformations d’une ou plusieurs variables.</p>
-<p>Par exemple, supposons que les variables <code>age</code>, <code>sexe</code> et <code>revenu</code> sont trois variables explicatives disponibles. Nous pourrions alors considérer choisir entre ces trois variables. Mais aussi, nous pourrions considérer inclure <code>age</code><span class="math inline">\({}^2\)</span>, <code>age</code><span class="math inline">\({}^3\)</span>, <span class="math inline">\(\log(\)</span><code>age</code><span class="math inline">\()\)</span>, etcNous pourrions aussi considérer des termes d’interactions entre les variables, telles <code>age</code><span class="math inline">\(*\)</span><code>revenu</code> ou <code>age</code><span class="math inline">\(*\)</span><code>revenu</code><span class="math inline">\(*\)</span><code>sexe</code>. Le problème est alors de trouver un bon sous-ensemble de variables parmi toutes celles considérées.</p>
+<p>Par exemple, supposons que les variables <code>age</code>, <code>sexe</code> et <code>revenu</code> sont trois variables explicatives disponibles. Nous pourrions alors considérer choisir entre ces trois variables. Mais aussi, nous pourrions considérer inclure <span class="math inline">\(\mathrm{age}^2\)</span>, <span class="math inline">\(\mathrm{age}^3\)</span>, <span class="math inline">\(\log(\mathrm{age})\)</span>, etc. Nous pourrions aussi considérer des termes d’interactions entre les variables, comme <span class="math inline">\(\mathrm{age} \cdot \mathrm{revenu}\)</span> ou <span class="math inline">\(\mathrm{age}\cdot\mathrm{revenu}\cdot\mathrm{sexe}\)</span>. Le problème est alors de trouver un bon sous-ensemble de variables parmi toutes celles considérées.</p>
 <p>L’expression « sélection de modèle » est un peu plus générale. D’une part, elle inclut la sélection de variables car, pour une famille de modèles spécifiques (régression linéaire par exemple), choisir un sous-ensemble de variables revient à choisir un modèle. D’autre part, elle est plus générale car elle peut aussi faire référence à la situation où l’on cherche à trouver le meilleur modèle parmi des modèles de natures différentes. Par exemple, on pourrait choisir entre une régression linéaire, un arbre de régression, une forêt aléatoire, un réseau de neurones, etc.</p>
 </div>
 <div id="sélection-de-variables-et-de-modèles-selon-les-buts-de-létude" class="section level2">
 <h2><span class="header-section-number">3.2</span> Sélection de variables et de modèles selon les buts de l’étude</h2>
 <p>Nous disposons d’une variable réponse <span class="math inline">\(Y\)</span> et d’un ensemble de variables explicatives <span class="math inline">\(X_1, \ldots, X_p\)</span>. L’attitude à adopter dépend des buts de l’étude.</p>
 <p>1e situation : On veut développer un modèle pour faire des prévisions sans qu’il soit important de tester formellement les effets des paramètres individuels.</p>
-<p>Dans ce cas, on désire seulement que notre modèle soit performant pour prédire des valeurs futures de <span class="math inline">\(Y\)</span>. On peut alors baser notre choix de variable (et de modèle) en utilisant des outils qui nous guiderons quant aux performances prédictives futures du modèle (voir <span class="math inline">\(\mathsf{AIC}\)</span>, <span class="math inline">\(\mathsf{BIC}\)</span> et validation-croisée plus loin). On pourra enlever ou rajouter des variables et des transformations de variables au besoin afin d’améliorer les performances prédictives. Les méthodes que nous allons voir concernent essentiellement ce contexte.</p>
+<p>Dans ce cas, on désire seulement que notre modèle soit performant pour prédire des valeurs futures de <span class="math inline">\(Y\)</span>. On peut alors baser notre choix de variable (et de modèle) en utilisant des outils qui nous guiderons quant aux performances prédictives futures du modèle (voir <span class="math inline">\(\mathsf{AIC}\)</span>, <span class="math inline">\(\mathsf{BIC}\)</span> et validation croisée plus loin). On pourra enlever ou rajouter des variables et des transformations de variables au besoin afin d’améliorer les performances prédictives. Les méthodes que nous allons voir concernent essentiellement ce contexte.</p>
 <p>2e situation : On veut développer un modèle pour estimer les effets de certaines variables sur notre <span class="math inline">\(Y\)</span> et tester des hypothèses de recherche spécifiques concernant certaines variables.</p>
 <p>Dans ce cas, il est préférable de spécifier le modèle dès le départ selon des considérations scientifiques et de s’en tenir à lui. Faire une sélection de variables dans ce cas est dangereux car on ne peut pas utiliser directement les valeurs-p des tests d’hypothèses (ou les intervalles de confiance sur les paramètres) concernant les paramètres du modèle final car elles ne tiennent pas compte de la variabilité due au processus de sélection de variables.</p>
 <p>Une bonne planification de l’étude est alors cruciale afin de collecter les bonnes variables, de spécifier le ou les bons modèles, et de s’assurer d’avoir suffisamment d’observations pour ajuster le ou les modèles désirés.</p>
@@ -177,10 +177,10 @@ mais il pourrait aussi avoir été construit selon d’autres méthodes (réseau
 lorsque (<span class="math inline">\(Y, X_1, \ldots, X_p\)</span>) est choisi au hasard dans la population. Cette quantité mesure l’erreur (la différence au carré entre la vraie valeur de <span class="math inline">\(Y\)</span> et la valeur prédite par le modèle) que fait le modèle en moyenne pour l’ensemble de la population. Plus cette quantité est petite, meilleur est le modèle. Le problème est que l’on ne peut pas la calculer, car on ne connaît pas toute la population. Tout au plus peut-on essayer de l’estimer ou bien d’estimer une fonction qui, sans l’estimer directement, classifiera les modèles dans le même ordre qu’elle.</p>
 <p>Une première idée est d’estimer <span class="math inline">\(\mathsf{EMQ}\)</span> avec l’erreur quadratique moyenne de l’échantillon d’apprentissage (<em>training mean squared error</em>),
 <span class="math display">\[\begin{align*}
-\mathsf{EMQ}_a= \frac{1}{n}\sum_{i=1}^n \left\{Y_i-\widehat{f}(X_{i1}, \ldots, X_{ip})\right\}^2.
+\widehat{\mathsf{EMQ}}_a= \frac{1}{n}\sum_{i=1}^n \left\{Y_i-\widehat{f}(X_{i1}, \ldots, X_{ip})\right\}^2.
 \end{align*}\]</span>
 Cette quantité est tout simplement l’équivalent du <span class="math inline">\(\mathsf{EMQ}\)</span>, mais est calculée en utilisant seulement notre échantillon.</p>
-<p>Malheureusement, selon le principe fondamental de la section précédente, cette quantité n’est pas un bon estimateur de l’<span class="math inline">\(\mathsf{EMQ}\)</span>. En effet, comme on utilise les mêmes observations que celles qui ont estimé le modèle, l’<span class="math inline">\(\mathsf{EMQ}_a\)</span> aura tendance à toujours diminuer lorsqu’on augmente la complexité du modèle (par exemple, lorsqu’on augmente le nombre de paramètres). Le <span class="math inline">\(\mathsf{EMQ}_a\)</span> tend à surestimer la qualité du modèle en sous-estimant l’<span class="math inline">\(\mathsf{EMQ}\)</span>. C’est-à-dire, le modèle a l’air meilleur qu’il ne l’est en réalité.</p>
+<p>Malheureusement, selon le principe fondamental de la section précédente, cette quantité n’est pas un bon estimateur de l’<span class="math inline">\(\mathsf{EMQ}\)</span>. En effet, comme on utilise les mêmes observations que celles qui ont estimé le modèle, l’<span class="math inline">\(\widehat{\mathsf{EMQ}}_a\)</span> aura tendance à toujours diminuer lorsqu’on augmente la complexité du modèle (par exemple, lorsqu’on augmente le nombre de paramètres). L’<span class="math inline">\(\widehat{\mathsf{EMQ}}_a\)</span> tend à surestimer la qualité du modèle en sous-estimant l’<span class="math inline">\(\mathsf{EMQ}\)</span>. C’est-à-dire, le modèle a l’air meilleur qu’il ne l’est en réalité.</p>
 <div id="choix-dun-modèle-polynomial-en-régression-linéaire" class="section level3">
 <h3><span class="header-section-number">3.5.1</span> Choix d’un modèle polynomial en régression linéaire</h3>
 <p>Cet exemple simple servira à illustrer le fait qu’on ne peut utiliser directement les mêmes données qui ont servi à ajuster un modèle pour évaluer sa performance.</p>
@@ -189,9 +189,9 @@ Cette quantité est tout simplement l’équivalent du <span class="math inline"
 <p>Il s’agit de l’échantillon d’apprentissage. Ces données ont été obtenues par simulation et le vrai modèle sous-jacent (celui qui a généré les données) est le modèle cubique, c’est-à-dire le modèle d’ordre <span class="math inline">\(k=3\)</span>.</p>
 <p>Afin de simuler une population, j’ai généré selon le même modèle 100 000 observations supplémentaires. Ces observations ne vont pas servir à estimer les modèles mais seulement à évaluer leur performance afin d’avoir une estimation sans biais. Ces données se trouvent dans <code>selection1_test.xls</code></p>
 <p>J’ai ajusté tour à tour à tour les modèles polynomiaux jusqu’à l’ordre 10, avec l’échantillon d’apprentissage de taille 100. C’est-à-dire, le modèle linéaire avec un polynôme d’ordre <span class="math inline">\(k=1\)</span> (linéaire), <span class="math inline">\(k=2\)</span> (quadratique), etc., jusqu’à <span class="math inline">\(k=10\)</span>. J’ai ensuite obtenu la valeur de l’erreur moyenne quadratique d’apprentissage pour chacun de ces modèles. J’ai ensuite utilisé ces modèles afin de prédire les 100 000 autres observations (la population) et calculé les 100 000 observations de l’échantillon test pour obtenir une très bonne approximation de l’erreur quadratique moyenne de généralisation.</p>
-<p>Voici le graphe de l’<span class="math inline">\(\mathsf{EMQ}_a\)</span> et de l’<span class="math inline">\(\mathsf{EMQ}\)</span> de généralisation en fonction de l’ordre (<span class="math inline">\(k\)</span>) du modèle utilisé.</p>
+<p>Voici le graphe de l’<span class="math inline">\(\widehat{\mathsf{EMQ}}_a\)</span> et de l’<span class="math inline">\(\mathsf{EMQ}\)</span> de généralisation en fonction de l’ordre (<span class="math inline">\(k\)</span>) du modèle utilisé.</p>
 <p><img src="MATH60602_files/figure-html/02-plotEMQa-1.png" width="576" style="display: block; margin: auto;" /></p>
-<p>On voit clairement que l’<span class="math inline">\(\mathsf{EMQ}_a\)</span> diminue en fonction de l’ordre sur l’échantillon d’apprentissage. C’est-à-dire, plus le modèle est complexe, plus l’erreur observée sur l’échantillon d’apprentissage est petite. Mais cela est trompeur. La courbe <span class="math inline">\(\mathsf{EMQ}\)</span> donne l’heure juste. Il s’agit d’une estimation de la performance réelle des modèles sur de nouvelles données. On voit que le meilleur modèle est donc le modèle cubique (<span class="math inline">\(k=3\)</span>). Ce qui n’est pas surprenant car il s’agit du modèle que j’ai utilisé pour générer les données. On peut aussi remarquer d’autres éléments intéressants. Premièrement, on obtient un bon gain en performance (<span class="math inline">\(\mathsf{EMQ}\)</span>) en passant de l’ordre <span class="math inline">\(2\)</span> à l’ordre <span class="math inline">\(3\)</span>. Ensuite, la perte de performance en passant de l’ordre <span class="math inline">\(3\)</span> à <span class="math inline">\(4\)</span>, et ensuite à des ordres supérieurs n’est pas si sévère, même si elle est présente. Cela illustre empiriquement qu’il est préférable d’avoir un modèle un peu trop complexe que d’avoir un modèle trop simple. Il serait beaucoup plus grave pour la performance de choisir le modèle avec <span class="math inline">\(k=2\)</span> que celui avec <span class="math inline">\(k=4\)</span>.</p>
+<p>On voit clairement que l’<span class="math inline">\(\widehat{\mathsf{EMQ}}_a\)</span> diminue en fonction de l’ordre sur l’échantillon d’apprentissage. C’est-à-dire, plus le modèle est complexe, plus l’erreur observée sur l’échantillon d’apprentissage est petite. Mais cela est trompeur. La courbe <span class="math inline">\(\mathsf{EMQ}\)</span> donne l’heure juste. Il s’agit d’une estimation de la performance réelle des modèles sur de nouvelles données. On voit que le meilleur modèle est donc le modèle cubique (<span class="math inline">\(k=3\)</span>). Ce qui n’est pas surprenant car il s’agit du modèle que j’ai utilisé pour générer les données. On peut aussi remarquer d’autres éléments intéressants. Premièrement, on obtient un bon gain en performance (<span class="math inline">\(\mathsf{EMQ}\)</span>) en passant de l’ordre <span class="math inline">\(2\)</span> à l’ordre <span class="math inline">\(3\)</span>. Ensuite, la perte de performance en passant de l’ordre <span class="math inline">\(3\)</span> à <span class="math inline">\(4\)</span>, et ensuite à des ordres supérieurs n’est pas si sévère, même si elle est présente. Cela illustre empiriquement qu’il est préférable d’avoir un modèle un peu trop complexe que d’avoir un modèle trop simple. Il serait beaucoup plus grave pour la performance de choisir le modèle avec <span class="math inline">\(k=2\)</span> que celui avec <span class="math inline">\(k=4\)</span>.</p>
 <p>En pratique par contre, on n’a pas accès à la population : les 100 000 observations qui ont servi à estimer l’<span class="math inline">\(\mathsf{EMQ}\)</span> théorique ne seront pas disponible. Si on a seulement l’échantillon d’apprentissage, soit 100 observations dans notre exemple, comment faire alors pour choisir le bon modèle? C’est ce que nous verrons à partir de la section suivante.</p>
 <p>Mais avant cela, nous allons discuter un peu plus en détail au sujet de la régression linéaire et d’une mesure très connue, le coefficient de détermination (<span class="math inline">\(R^2\)</span>). Supposons que l’on a ajusté un modèle de régression linéaire
 <span class="math display">\[\begin{align*}
@@ -201,7 +201,7 @@ La somme du carré des erreurs (<span class="math inline">\(\mathsf{SCE}\)</span
 <span class="math display">\[\begin{align*}
 \mathsf{SCE}=\sum_{i=1}^n (Y_i - \widehat{\beta}_0 + \widehat{\beta}_1X_1+ \cdots + \widehat{\beta}_p X_p)^2 = \sum_{i=1}^n (Y_i-\widehat{Y}_i)^2.
  \end{align*}\]</span>
-On peut démontrer que si on ajoute une variable quelconque au modèle, la valeur de la somme du carré des erreurs va nécessairement baisser. Il est facile de se convaincre de cela. En régression linéaire, les estimations sont obtenues par la méthode des moindres carrés qui consiste justement à minimiser la <span class="math inline">\(\mathsf{SCE}\)</span>. Ainsi, en ajoutant une variable <span class="math inline">\(X_{p+1}\)</span> au modèle, la <span class="math inline">\(\mathsf{SCE}\)</span> ne peut que baisser car, dans le pire des cas, le paramètre de la nouvelle variable sera <span class="math inline">\(\widehat{\beta}_{p+1}=0\)</span> et on retombera sur le modèle sans cette variable. C’est pourquoi, la quantité <span class="math inline">\(\mathsf{EMQ}_a=\mathsf{SCE}/n\)</span> ne peut être utilisée comme outil de sélection de modèles en régression linéaire.</p>
+On peut démontrer que si on ajoute une variable quelconque au modèle, la valeur de la somme du carré des erreurs va nécessairement baisser. Il est facile de se convaincre de cela. En régression linéaire, les estimations sont obtenues par la méthode des moindres carrés qui consiste justement à minimiser la <span class="math inline">\(\mathsf{SCE}\)</span>. Ainsi, en ajoutant une variable <span class="math inline">\(X_{p+1}\)</span> au modèle, la <span class="math inline">\(\mathsf{SCE}\)</span> ne peut que baisser car, dans le pire des cas, le paramètre de la nouvelle variable sera <span class="math inline">\(\widehat{\beta}_{p+1}=0\)</span> et on retombera sur le modèle sans cette variable. C’est pourquoi, la quantité <span class="math inline">\(\widehat{\mathsf{EMQ}}_a=\mathsf{SCE}/n\)</span> ne peut être utilisée comme outil de sélection de modèles en régression linéaire.</p>
 <p>Nous venons d’ailleurs d’illustrer cela avec notre exemple sur les modèles polynomiaux. En effet, augmenter l’ordre du polynôme de <span class="math inline">\(1\)</span> revient à ajouter une variable. Le coefficient de détermination (<span class="math inline">\(R^2\)</span>) est souvent utilisé comme mesure de qualité du modèle. Il peut s’interpréter comme étant la proportion de la variance de <span class="math inline">\(Y\)</span> qui est expliquée par le modèle.</p>
 <p>Le coefficient de détermination est
 <span class="math display">\[\begin{align*}
@@ -212,8 +212,8 @@ Ainsi, on voit que le <span class="math inline">\(R^2\)</span> va nécessairemen
 <p>Le problème principal que nous avons identifié jusqu’à présent afin d’être en mesure de bien estimer la performance d’un modèle est le suivant : si on utilise les mêmes observations pour évaluer la performance d’un modèle que celles qui ont servi à l’ajuster on va surestimer sa performance.</p>
 <p>Il existe deux grandes approches pour contourner ce problème lorsque le but est de faire de la sélection de variables ou de modèle :</p>
 <ul>
-<li>utiliser les données de l’échantillon d’apprentissage (en échantillon) et pénaliser <span class="math inline">\(\mathsf{EMQ}_a\)</span> pour tenir compte de la complexité du modèle (<span class="math inline">\(\mathsf{AIC}\)</span>, <span class="math inline">\(\mathsf{BIC}\)</span>).</li>
-<li>tenter d’estimer le <span class="math inline">\(\mathsf{EMQ}\)</span> directement sur d’autres données (hors échantillon) en utilisant des méthodes de rééchantillonnage, notamment la validation croisée et la division de l’échantillon.</li>
+<li>utiliser les données de l’échantillon d’apprentissage (en échantillon) et pénaliser <span class="math inline">\(\widehat{\mathsf{EMQ}}_a\)</span> pour tenir compte de la complexité du modèle (<span class="math inline">\(\mathsf{AIC}\)</span>, <span class="math inline">\(\mathsf{BIC}\)</span>).</li>
+<li>tenter d’estimer l’<span class="math inline">\(\mathsf{EMQ}\)</span> directement sur d’autres données (hors échantillon) en utilisant des méthodes de rééchantillonnage, notamment la validation croisée et la division de l’échantillon.</li>
 </ul>
 </div>
 </div>
@@ -246,19 +246,125 @@ où <span class="math inline">\(\#\)</span> représente le nombre de paramètres
 model y=x x*x x*x*x /selection=none;
 run;</code></pre>
 <p>Il s’agit du modèle cubique (d’ordre 3) en <span class="math inline">\(x\)</span>.</p>
+<p><img src="figures/02-select-e1.png" width="90%" style="display: block; margin: auto;" />
+<img src="figures/02-select-e2.png" width="90%" style="display: block; margin: auto;" /></p>
 <p>Le tableau qui suit résume ces quantités pour tous les modèles de l’ordre 1 à l’ordre 10.</p>
-
-<p>Les colonnes <span class="math inline">\(\mathsf{EMQ}\)</span> et <span class="math inline">\(\mathsf{EMQ}_a\)</span> ont déjà été expliquées à la section précédente et ont été représentées graphiquement.
-On voit que le augmente toujours au fur et à mesure qu’on ajoute une variable (augmente l’ordre du polynôme). Les critères <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span> choisissent le modèle cubique (<span class="math inline">\(k=3\)</span>), c’est-à-dire le bon modèle. Le <span class="math inline">\(R^2\)</span> ajusté quant à lui choisit le modèle d’ordre <span class="math inline">\(4\)</span> (qui est le deuxième meilleur selon le <span class="math inline">\(\mathsf{EMQ}\)</span>). N’oubliez pas que ces trois critères sont calculés avec l’échantillon d’apprentissage (<span class="math inline">\(n=100\)</span>), mais en pénalisant l’ajout de variables. On est ainsi en mesure de contrecarrer le problème provenant du fait qu’on ne peut pas utiliser directement le <span class="math inline">\(\mathsf{EMQ}_a\)</span>.</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right"><span class="math inline">\(\mathsf{EMQ}\)</span></th>
+<th align="right"><span class="math inline">\(\widehat{\mathsf{EMQ}}_a\)</span></th>
+<th align="right"><span class="math inline">\(R^2\)</span></th>
+<th align="right"><span class="math inline">\(R^2_a\)</span></th>
+<th align="right"><span class="math inline">\(\mathsf{AIC}\)</span></th>
+<th align="right"><span class="math inline">\(\mathsf{BIC}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td align="right">3191.29</td>
+<td align="right">3674.20</td>
+<td align="right">0.65</td>
+<td align="right">0.65</td>
+<td align="right">1110.70</td>
+<td align="right">1118.51</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td align="right">3132.67</td>
+<td align="right">2879.24</td>
+<td align="right">0.73</td>
+<td align="right">0.72</td>
+<td align="right">1088.32</td>
+<td align="right">1098.74</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td align="right">2697.40</td>
+<td align="right">2620.05</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1080.88</td>
+<td align="right">1093.91</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td align="right">2766.68</td>
+<td align="right">2581.70</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1081.41</td>
+<td align="right">1097.04</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td align="right">2771.05</td>
+<td align="right">2580.86</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1083.38</td>
+<td align="right">1101.61</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td align="right">2779.66</td>
+<td align="right">2577.60</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1085.25</td>
+<td align="right">1106.09</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td align="right">2780.21</td>
+<td align="right">2577.49</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1087.24</td>
+<td align="right">1110.69</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td align="right">2797.35</td>
+<td align="right">2531.00</td>
+<td align="right">0.76</td>
+<td align="right">0.74</td>
+<td align="right">1087.42</td>
+<td align="right">1113.48</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td align="right">2811.07</td>
+<td align="right">2527.85</td>
+<td align="right">0.76</td>
+<td align="right">0.73</td>
+<td align="right">1089.30</td>
+<td align="right">1117.96</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td align="right">2848.81</td>
+<td align="right">2519.14</td>
+<td align="right">0.76</td>
+<td align="right">0.73</td>
+<td align="right">1090.95</td>
+<td align="right">1122.22</td>
+</tr>
+</tbody>
+</table>
+<p>Les colonnes <span class="math inline">\(\mathsf{EMQ}\)</span> et <span class="math inline">\(\widehat{\mathsf{EMQ}}_a\)</span> ont déjà été expliquées à la section précédente et ont été représentées graphiquement.
+On voit que le augmente toujours au fur et à mesure qu’on ajoute une variable (augmente l’ordre du polynôme). Les critères <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span> choisissent le modèle cubique (<span class="math inline">\(k=3\)</span>), c’est-à-dire le bon modèle. Le <span class="math inline">\(R^2\)</span> ajusté quant à lui choisit le modèle d’ordre <span class="math inline">\(4\)</span> (qui est le deuxième meilleur selon le <span class="math inline">\(\mathsf{EMQ}\)</span>). N’oubliez pas que ces trois critères sont calculés avec l’échantillon d’apprentissage (<span class="math inline">\(n=100\)</span>), mais en pénalisant l’ajout de variables. On est ainsi en mesure de contrecarrer le problème provenant du fait qu’on ne peut pas utiliser directement le <span class="math inline">\(\widehat{\mathsf{EMQ}}_a\)</span>.</p>
 <p>Le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span> sont des critères très utilisés et très généraux. Ils sont disponibles dès qu’on utilise la méthode du maximum de vraisemblance est utilisée comme méthode d’estimation. Le <span class="math inline">\(R^2\)</span> ajusté a une portée plus limitée car il est spécialisé à la régression linéaire.</p>
 </div>
 <div id="division-de-léchantillon-et-validation-croisée" class="section level2">
 <h2><span class="header-section-number">3.7</span> Division de l’échantillon et validation croisée</h2>
-<p>La deuxième grande approche après celle consistant à pénaliser le <span class="math inline">\(\mathsf{EMQ}_a\)</span> consiste à tenter d’estimer le <span class="math inline">\(\mathsf{EMQ}\)</span> directement. Nous allons voir deux telles méthodes ici, la division de l’échantillon et la validation croisée (<em>cross-validation</em>).</p>
+<p>La deuxième grande approche après celle consistant à pénaliser le <span class="math inline">\(\widehat{\mathsf{EMQ}}_a\)</span> consiste à tenter d’estimer le <span class="math inline">\(\mathsf{EMQ}\)</span> directement. Nous allons voir deux telles méthodes ici, la division de l’échantillon et la validation croisée (<em>cross-validation</em>).</p>
 <p>Ces deux méthodes s’attaquent directement au problème qu’on ne peut utiliser (sans ajustement) les mêmes données qui ont servi à estimer les paramètres d’un modèle pour estimer sa performance. Pour ce faire, l’échantillon de départ est divisé en deux, ou plusieurs parties, qui vont jouer des rôles différents.</p>
 <div id="division-de-léchantillon" class="section level3">
 <h3><span class="header-section-number">3.7.1</span> Division de l’échantillon</h3>
-<p>Cette idée est très simple. Nous avons un échantillon de taille n. Nous pouvons le diviser au hasard en deux parties de tailles respectives <span class="math inline">\(n_1\)</span> et <span class="math inline">\(n_2\)</span> (<span class="math inline">\(n_1+n_2=n\)</span>),</p>
+<p>Cette idée est très simple. Nous avons un échantillon de taille n. Nous pouvons le diviser au hasard en deux parties de tailles respectives <span class="math inline">\(n_1\)</span> et <span class="math inline">\(n_2\)</span> (<span class="math inline">\(n_1+n_2=n\)</span>),</p>
 <ul>
 <li>un échantillon d’apprentissage (<em>training</em>) de taille <span class="math inline">\(n_1\)</span> et</li>
 <li>un échantillon de validation de taille <span class="math inline">\(n_2\)</span>.</li>
@@ -272,7 +378,7 @@ On voit que le augmente toujours au fur et à mesure qu’on ajoute une variable
 <div id="validation-croisée" class="section level3">
 <h3><span class="header-section-number">3.7.2</span> Validation croisée</h3>
 <p>Si la taille d’échantillon n’est pas suffisante pour diviser l’échantillon en deux et procéder comme nous venons de l’expliquer, la validation croisée est une bonne alternative. Cette méthode permet d’imiter le processus de division de l’échantillon.</p>
-<p>Voici les étapes à suivre pour faire une validation-croisée à <span class="math inline">\(K\)</span> groupes (<em><span class="math inline">\(K\)</span>-fold cross-validation</em>) :</p>
+<p>Voici les étapes à suivre pour faire une validation croisée à <span class="math inline">\(K\)</span> groupes (<em><span class="math inline">\(K\)</span>-fold cross-validation</em>) :</p>
 <ol style="list-style-type: decimal">
 <li>Diviser l’échantillon au hasard en <span class="math inline">\(K\)</span> parties <span class="math inline">\(P_1, P_2, \ldots, P_K\)</span> de taille contenant toutes à peu près le même nombre d’observations.</li>
 <li>Pour <span class="math inline">\(j = 1\)</span> à <span class="math inline">\(K\)</span>,</li>
@@ -290,7 +396,20 @@ On voit que le augmente toujours au fur et à mesure qu’on ajoute une variable
 <p>Le fichier <code>selection3_cv.sas</code> contient une macro SAS permettant de faire une validation croisée pour un modèle de régression linéaire.
 Revenons à notre exemple où une seule variable explicative est disponible et où l’on cherche à déterminer un bon modèle polynomial.
 Voici le même tableau que celui vu plus haut mais avec une colonne en plus, la dernière, <span class="math inline">\(\mathsf{VC} (K=10)\)</span>. Il s’agit des estimations du <span class="math inline">\(\mathsf{EMQ}\)</span> obtenues avec la validation croisée à 10 groupes. Notez que si vous exécutez le programme, vous n’obtiendrez pas les mêmes valeurs car il y a un élément aléatoire dans ce processus. La colonne représente la moyenne de 100 réplications.</p>
-
+<pre><code>## 
+## 
+##       \(\mathsf{EMQ}\)   \(\widehat{\mathsf{EMQ}}_a\)   \(R^2\)   \(R^2_a\)   \(\mathsf{AIC}\)   \(\mathsf{BIC}\)   \(\mathsf{VC} (K=10)\)
+## ---  -----------------  -----------------------------  --------  ----------  -----------------  -----------------  -----------------------
+## 1              3191.29                        3674.20      0.65        0.65            1110.70            1118.51                  3675.37
+## 2              3132.67                        2879.24      0.73        0.72            1088.32            1098.74                  2897.94
+## 3              2697.40                        2620.05      0.75        0.74            1080.88            1093.91                  2675.51
+## 4              2766.68                        2581.70      0.75        0.74            1081.41            1097.04                  2666.16
+## 5              2771.05                        2580.86      0.75        0.74            1083.38            1101.61                  2711.11
+## 6              2779.66                        2577.60      0.75        0.74            1085.25            1106.09                  2757.13
+## 7              2780.21                        2577.49      0.75        0.74            1087.24            1110.69                  2787.95
+## 8              2797.35                        2531.00      0.76        0.74            1087.42            1113.48                  2845.78
+## 9              2811.07                        2527.85      0.76        0.73            1089.30            1117.96                  2895.61
+## 10             2848.81                        2519.14      0.76        0.73            1090.95            1122.22                  2976.04</code></pre>
 <p>On voit que le modèle cubique (ordre 3) est aussi choisi par la validation croisée, en moyenne (comme il l’était par le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span>). Le graphe qui suit trace les valeurs de l’estimation par validation croisée (courbe de validation croisée) et aussi le <span class="math inline">\(\mathsf{EMQ}\)</span>. On voit que l’estimation par validation croisée suit assez bien la forme du <span class="math inline">\(\mathsf{EMQ}\)</span> (qu’il est supposé estimer). Les boîtes à moustache permettent d’apprécier la variabilité des estimés de l’erreur moyenne quadratique telles qu’estimée par validation croisée avec 10 groupes.</p>
 <p><img src="MATH60602_files/figure-html/plotcv-1.png" width="576" style="display: block; margin: auto;" /></p>
 
