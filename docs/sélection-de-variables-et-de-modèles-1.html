@@ -108,6 +108,16 @@
 <li class="chapter" data-level="3.7.1" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#division-de-léchantillon"><i class="fa fa-check"></i><b>3.7.1</b> Division de l’échantillon</a></li>
 <li class="chapter" data-level="3.7.2" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#validation-croisée"><i class="fa fa-check"></i><b>3.7.2</b> Validation croisée</a></li>
 </ul></li>
+<li class="chapter" data-level="3.8" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#cibler-les-clients-pour-lenvoi-dun-catalogue"><i class="fa fa-check"></i><b>3.8</b> Cibler les clients pour l’envoi d’un catalogue</a></li>
+<li class="chapter" data-level="3.9" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#recherche-automatique-du-meilleur-modèle"><i class="fa fa-check"></i><b>3.9</b> Recherche automatique du meilleur modèle</a></li>
+<li class="chapter" data-level="3.10" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#recherche-automatique-de-tous-les-sous-ensembles"><i class="fa fa-check"></i><b>3.10</b> Recherche automatique de tous les sous-ensembles</a></li>
+<li class="chapter" data-level="3.11" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#méthodes-classiques-de-sélection-ascendante-descendante-et-séquentielle"><i class="fa fa-check"></i><b>3.11</b> Méthodes classiques de sélection ascendante, descendante et séquentielle</a><ul>
+<li class="chapter" data-level="3.11.1" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#sélection-ascendante"><i class="fa fa-check"></i><b>3.11.1</b> Sélection ascendante</a></li>
+<li class="chapter" data-level="3.11.2" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#sélection-descendante"><i class="fa fa-check"></i><b>3.11.2</b> Sélection descendante</a></li>
+<li class="chapter" data-level="3.11.3" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#méthode-séquentielle"><i class="fa fa-check"></i><b>3.11.3</b> Méthode séquentielle</a></li>
+</ul></li>
+<li class="chapter" data-level="3.12" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#recherche-séquentielle-automatique-limitée"><i class="fa fa-check"></i><b>3.12</b> Recherche séquentielle automatique limitée</a></li>
+<li class="chapter" data-level="3.13" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#moyenne-de-modèles"><i class="fa fa-check"></i><b>3.13</b> Moyenne de modèles</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -142,20 +152,20 @@
 <div id="sélection-de-variables-et-de-modèles-selon-les-buts-de-létude" class="section level2">
 <h2><span class="header-section-number">3.2</span> Sélection de variables et de modèles selon les buts de l’étude</h2>
 <p>Nous disposons d’une variable réponse <span class="math inline">\(Y\)</span> et d’un ensemble de variables explicatives <span class="math inline">\(X_1, \ldots, X_p\)</span>. L’attitude à adopter dépend des buts de l’étude.</p>
-<p>1e situation : On veut développer un modèle pour faire des prévisions sans qu’il soit important de tester formellement les effets des paramètres individuels.</p>
+<p>1e situation : On veut développer un modèle pour faire des prédictions sans qu’il soit important de tester formellement les effets des paramètres individuels.</p>
 <p>Dans ce cas, on désire seulement que notre modèle soit performant pour prédire des valeurs futures de <span class="math inline">\(Y\)</span>. On peut alors baser notre choix de variable (et de modèle) en utilisant des outils qui nous guiderons quant aux performances prédictives futures du modèle (voir <span class="math inline">\(\mathsf{AIC}\)</span>, <span class="math inline">\(\mathsf{BIC}\)</span> et validation croisée plus loin). On pourra enlever ou rajouter des variables et des transformations de variables au besoin afin d’améliorer les performances prédictives. Les méthodes que nous allons voir concernent essentiellement ce contexte.</p>
 <p>2e situation : On veut développer un modèle pour estimer les effets de certaines variables sur notre <span class="math inline">\(Y\)</span> et tester des hypothèses de recherche spécifiques concernant certaines variables.</p>
-<p>Dans ce cas, il est préférable de spécifier le modèle dès le départ selon des considérations scientifiques et de s’en tenir à lui. Faire une sélection de variables dans ce cas est dangereux car on ne peut pas utiliser directement les valeurs-p des tests d’hypothèses (ou les intervalles de confiance sur les paramètres) concernant les paramètres du modèle final car elles ne tiennent pas compte de la variabilité due au processus de sélection de variables.</p>
+<p>Dans ce cas, il est préférable de spécifier le modèle dès le départ selon des considérations scientifiques et de s’en tenir à lui. Faire une sélection de variables dans ce cas est dangereux car on ne peut pas utiliser directement les valeurs-<em>p</em> des tests d’hypothèses (ou les intervalles de confiance sur les paramètres) concernant les paramètres du modèle final car elles ne tiennent pas compte de la variabilité due au processus de sélection de variables.</p>
 <p>Une bonne planification de l’étude est alors cruciale afin de collecter les bonnes variables, de spécifier le ou les bons modèles, et de s’assurer d’avoir suffisamment d’observations pour ajuster le ou les modèles désirés.</p>
 <p>Si procéder à une sélection de variables est quand même nécessaire dans ce contexte, il est quand même possible de le faire en divisant l’échantillon en deux. La sélection de variables pourrait être alors effectuée avec le premier échantillon. Une fois qu’un modèle est retenu, on pourrait alors réajuster ce modèle avec le deuxième échantillon (sans faire de sélection de variables cette fois-ci). L’inférence sur les paramètres (valeurs-<em>p</em>, etc.) sera alors valide. Le désavantage ici qu’il faut avoir une très grande taille d’échantillon au départ afin d’être en mesure de le diviser en deux.</p>
 </div>
 <div id="mieux-vaut-plus-que-moins" class="section level2">
 <h2><span class="header-section-number">3.3</span> Mieux vaut plus que moins</h2>
 <p>Il est préférable d’avoir un modèle un peu trop complexe qu’un modèle trop simple. Plaçons-nous dans le contexte de la régression linéaire et supposons que le vrai modèle est inclus dans le modèle qui a été ajusté. Il y a donc des variables en trop dans le modèle qui a été ajusté. Le modèle ajusté est surspécifié.</p>
-<p>Par exemple, supposons que le vrai modèle est <span class="math inline">\(Y=\beta_0+\beta_1X_1+\varepsilon\)</span> mais que c’est le modèle <span class="math inline">\(Y=\beta_0+\beta_1X_1+\beta_2X_2+\varepsilon\)</span>qui a été ajusté. Dans ce cas, règle générale, les estimateurs des paramètres et les prévisions provenant du modèle sont sans biais. Mais leurs variances estimées seront un peu plus élevées car on estime des paramètres pour des variables superflues.</p>
-<p>Supposons à l’inverse qu’il manque des variables dans le modèle ajusté et que le modèle ajusté est sous-spécifié. Par exemple, supposons que le vrai modèle est <span class="math inline">\(Y=\beta_0+\beta_1X_1+\beta_2X_2+\varepsilon\)</span>, mais que c’est le modèle <span class="math inline">\(Y=\beta_0+\beta_1X_1+\varepsilon\)</span> qui a été ajusté. Dans ce cas, généralement, les estimateurs des paramètres et les prévisions sont biaisés.</p>
+<p>Par exemple, supposons que le vrai modèle est <span class="math inline">\(Y=\beta_0+\beta_1X_1+\varepsilon\)</span> mais que c’est le modèle <span class="math inline">\(Y=\beta_0+\beta_1X_1+\beta_2X_2+\varepsilon\)</span> qui a été ajusté. Dans ce cas, règle générale, les estimateurs des paramètres et les prédictions provenant du modèle sont sans biais. Mais leurs variances estimées seront un peu plus élevées car on estime des paramètres pour des variables superflues.</p>
+<p>Supposons à l’inverse qu’il manque des variables dans le modèle ajusté et que le modèle ajusté est sous-spécifié. Par exemple, supposons que le vrai modèle est <span class="math inline">\(Y=\beta_0+\beta_1X_1+\beta_2X_2+\varepsilon\)</span>, mais que c’est le modèle <span class="math inline">\(Y=\beta_0+\beta_1X_1+\varepsilon\)</span> qui a été ajusté. Dans ce cas, généralement, les estimateurs des paramètres et les prédictions sont biaisés.</p>
 <p>Ainsi, il est généralement préférable d’avoir un modèle légèrement surspécifié qu’un modèle sous-spécifié. Plus généralement, il est préférable d’avoir un peu trop de variables dans le modèle que de prendre le risque d’omettre une ou plusieurs variables importantes. Encore plus généralement, il est préférable d’avoir un modèle un peu trop complexe que d’avoir un modèle trop simple.</p>
-<p>Mais il faut faire attention et ne pas tomber dans l’excès et avoir un modèle trop complexe (avec trop de variables inutiles) car il pourrait souffrir de surajustement (<em>over-fitting</em>). Les exemples qui suivent illustreront ce fait.</p>
+<p>Il faut faire attention et ne pas tomber dans l’excès et avoir un modèle trop complexe (avec trop de variables inutiles) car il pourrait souffrir de surajustement (<em>over-fitting</em>). Les exemples qui suivent illustreront ce fait.</p>
 </div>
 <div id="trop-beau-pour-être-vrai" class="section level2">
 <h2><span class="header-section-number">3.4</span> Trop beau pour être vrai</h2>
@@ -246,10 +256,11 @@ où <span class="math inline">\(\#\)</span> représente le nombre de paramètres
 model y=x x*x x*x*x /selection=none;
 run;</code></pre>
 <p>Il s’agit du modèle cubique (d’ordre 3) en <span class="math inline">\(x\)</span>.</p>
-<p><img src="figures/02-select-e1.png" width="90%" style="display: block; margin: auto;" />
-<img src="figures/02-select-e2.png" width="90%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/02-select-e1.png" width="70%" style="display: block; margin: auto;" />
+<img src="figures/02-select-e2.png" width="70%" style="display: block; margin: auto;" /></p>
 <p>Le tableau qui suit résume ces quantités pour tous les modèles de l’ordre 1 à l’ordre 10.</p>
 <table>
+<caption><span id="tab:02-table1">Tableau 3.1: </span>Mesures d’adéquation du modèle linéaire et estimés de l’erreur</caption>
 <thead>
 <tr class="header">
 <th></th>
@@ -364,7 +375,7 @@ On voit que le augmente toujours au fur et à mesure qu’on ajoute une variable
 <p>Ces deux méthodes s’attaquent directement au problème qu’on ne peut utiliser (sans ajustement) les mêmes données qui ont servi à estimer les paramètres d’un modèle pour estimer sa performance. Pour ce faire, l’échantillon de départ est divisé en deux, ou plusieurs parties, qui vont jouer des rôles différents.</p>
 <div id="division-de-léchantillon" class="section level3">
 <h3><span class="header-section-number">3.7.1</span> Division de l’échantillon</h3>
-<p>Cette idée est très simple. Nous avons un échantillon de taille n. Nous pouvons le diviser au hasard en deux parties de tailles respectives <span class="math inline">\(n_1\)</span> et <span class="math inline">\(n_2\)</span> (<span class="math inline">\(n_1+n_2=n\)</span>),</p>
+<p>Cette idée est très simple. Nous avons un échantillon de taille n. Nous pouvons le diviser au hasard en deux parties de tailles respectives <span class="math inline">\(n_1\)</span> et <span class="math inline">\(n_2\)</span> (<span class="math inline">\(n_1+n_2=n\)</span>),</p>
 <ul>
 <li>un échantillon d’apprentissage (<em>training</em>) de taille <span class="math inline">\(n_1\)</span> et</li>
 <li>un échantillon de validation de taille <span class="math inline">\(n_2\)</span>.</li>
@@ -381,39 +392,563 @@ On voit que le augmente toujours au fur et à mesure qu’on ajoute une variable
 <p>Voici les étapes à suivre pour faire une validation croisée à <span class="math inline">\(K\)</span> groupes (<em><span class="math inline">\(K\)</span>-fold cross-validation</em>) :</p>
 <ol style="list-style-type: decimal">
 <li>Diviser l’échantillon au hasard en <span class="math inline">\(K\)</span> parties <span class="math inline">\(P_1, P_2, \ldots, P_K\)</span> de taille contenant toutes à peu près le même nombre d’observations.</li>
-<li>Pour <span class="math inline">\(j = 1\)</span> à <span class="math inline">\(K\)</span>,</li>
-</ol>
+<li>Pour <span class="math inline">\(j = 1\)</span> à <span class="math inline">\(K\)</span>,
 <ol style="list-style-type: lower-roman">
 <li>Enlever la partie <span class="math inline">\(j\)</span>.</li>
 <li>Estimer les paramètres du modèle en utilisant les observations des <span class="math inline">\(K-1\)</span> autres parties combinées.</li>
 <li>Calculer la mesure de performance (par exemple la somme du carré des erreurs) de ce modèle pour le groupe <span class="math inline">\(P_j\)</span>.</li>
-</ol>
-<ol start="3" style="list-style-type: decimal">
+</ol></li>
 <li>Faire la somme des <span class="math inline">\(K\)</span> estimations de performance pour obtenir une mesure de performance finale et repondérer au besoin.</li>
 </ol>
 <p>On recommande habituellement de prendre entre <span class="math inline">\(K=5\)</span> et <span class="math inline">\(10\)</span> groupes (le choix de 10 groupes est celui qui revient le plus souvent en pratique). Si on prend <span class="math inline">\(K=10\)</span> groupes, alors chaque modèle est estimé avec 90% des données et on prédit ensuite le 10% restant. Comme on passe en boucle les 10 parties, chaque observation est prédite une et une seule fois à la fin. Il est important de souligner que les groupes sont formés de façon aléatoire et donc que l’estimé que l’on obtient peut être très variable, surtout si la taille de l’échantillon d’apprentissage est petite. Il arrive également que le modèle ajusté sur un groupe ne puisse pas être utilisé pour prédire les observations mises de côté, notamment si des varibles catégorielles sont présentes. Un échantillonage stratifié permet de pallier à cette lacune, mais ce problème se présente en pratique quand certaines classes ont peu d’observations.</p>
 <p>Le cas particulier <span class="math inline">\(K=n\)</span> (en anglais <em>leave-one-out cross validation</em>, ou <span class="math inline">\(\mathsf{LOOCV}\)</span>) consiste à enlever une seule observation, à estimer le modèle avec les <span class="math inline">\(n-1\)</span> autres et à valider à l’aide de l’observation laissée de côté et on recommence pour chaque observation. Pour les modèles linéaires, il existe des formules explicites qui nous permettent d’éviter d’ajuster <span class="math inline">\(n\)</span> régressions par moindre carrés.</p>
 <p>Le fichier <code>selection3_cv.sas</code> contient une macro SAS permettant de faire une validation croisée pour un modèle de régression linéaire.
-Revenons à notre exemple où une seule variable explicative est disponible et où l’on cherche à déterminer un bon modèle polynomial.
-Voici le même tableau que celui vu plus haut mais avec une colonne en plus, la dernière, <span class="math inline">\(\mathsf{VC} (K=10)\)</span>. Il s’agit des estimations du <span class="math inline">\(\mathsf{EMQ}\)</span> obtenues avec la validation croisée à 10 groupes. Notez que si vous exécutez le programme, vous n’obtiendrez pas les mêmes valeurs car il y a un élément aléatoire dans ce processus. La colonne représente la moyenne de 100 réplications.</p>
-<pre><code>## 
-## 
-##       \(\mathsf{EMQ}\)   \(\widehat{\mathsf{EMQ}}_a\)   \(R^2\)   \(R^2_a\)   \(\mathsf{AIC}\)   \(\mathsf{BIC}\)   \(\mathsf{VC} (K=10)\)
-## ---  -----------------  -----------------------------  --------  ----------  -----------------  -----------------  -----------------------
-## 1              3191.29                        3674.20      0.65        0.65            1110.70            1118.51                  3675.37
-## 2              3132.67                        2879.24      0.73        0.72            1088.32            1098.74                  2897.94
-## 3              2697.40                        2620.05      0.75        0.74            1080.88            1093.91                  2675.51
-## 4              2766.68                        2581.70      0.75        0.74            1081.41            1097.04                  2666.16
-## 5              2771.05                        2580.86      0.75        0.74            1083.38            1101.61                  2711.11
-## 6              2779.66                        2577.60      0.75        0.74            1085.25            1106.09                  2757.13
-## 7              2780.21                        2577.49      0.75        0.74            1087.24            1110.69                  2787.95
-## 8              2797.35                        2531.00      0.76        0.74            1087.42            1113.48                  2845.78
-## 9              2811.07                        2527.85      0.76        0.73            1089.30            1117.96                  2895.61
-## 10             2848.81                        2519.14      0.76        0.73            1090.95            1122.22                  2976.04</code></pre>
-<p>On voit que le modèle cubique (ordre 3) est aussi choisi par la validation croisée, en moyenne (comme il l’était par le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span>). Le graphe qui suit trace les valeurs de l’estimation par validation croisée (courbe de validation croisée) et aussi le <span class="math inline">\(\mathsf{EMQ}\)</span>. On voit que l’estimation par validation croisée suit assez bien la forme du <span class="math inline">\(\mathsf{EMQ}\)</span> (qu’il est supposé estimer). Les boîtes à moustache permettent d’apprécier la variabilité des estimés de l’erreur moyenne quadratique telles qu’estimée par validation croisée avec 10 groupes.</p>
+Revenons à notre exemple où une seule variable explicative est disponible et où l’on cherche à déterminer un bon modèle polynomial. Le Tableau <a href="sélection-de-variables-et-de-modèles-1.html#tab:02-table2">3.2</a> est le même que le Tableau <a href="sélection-de-variables-et-de-modèles-1.html#tab:02-table1">3.1</a> mais avec une colonne en plus, la dernière, <span class="math inline">\(\mathsf{VC} (K=10)\)</span>. Il s’agit des estimations du <span class="math inline">\(\mathsf{EMQ}\)</span> obtenues avec la validation croisée à 10 groupes. Notez que si vous exécutez le programme, vous n’obtiendrez pas les mêmes valeurs car il y a un élément aléatoire dans ce processus. La colonne représente la moyenne de 100 réplications.</p>
+<table>
+<caption><span id="tab:02-table2">Tableau 3.2: </span>Mesures d’adéquation du modèle linéaire et estimés de l’erreur, incluant la validation croisée.</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right"><span class="math inline">\(\mathsf{EMQ}\)</span></th>
+<th align="right"><span class="math inline">\(\widehat{\mathsf{EMQ}}_a\)</span></th>
+<th align="right"><span class="math inline">\(R^2\)</span></th>
+<th align="right"><span class="math inline">\(R^2_a\)</span></th>
+<th align="right"><span class="math inline">\(\mathsf{AIC}\)</span></th>
+<th align="right"><span class="math inline">\(\mathsf{BIC}\)</span></th>
+<th align="right"><span class="math inline">\(\mathsf{VC} (K=10)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td align="right">3191.29</td>
+<td align="right">3674.20</td>
+<td align="right">0.65</td>
+<td align="right">0.65</td>
+<td align="right">1110.70</td>
+<td align="right">1118.51</td>
+<td align="right">3675.37</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td align="right">3132.67</td>
+<td align="right">2879.24</td>
+<td align="right">0.73</td>
+<td align="right">0.72</td>
+<td align="right">1088.32</td>
+<td align="right">1098.74</td>
+<td align="right">2897.94</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td align="right">2697.40</td>
+<td align="right">2620.05</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1080.88</td>
+<td align="right">1093.91</td>
+<td align="right">2675.51</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td align="right">2766.68</td>
+<td align="right">2581.70</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1081.41</td>
+<td align="right">1097.04</td>
+<td align="right">2666.16</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td align="right">2771.05</td>
+<td align="right">2580.86</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1083.38</td>
+<td align="right">1101.61</td>
+<td align="right">2711.11</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td align="right">2779.66</td>
+<td align="right">2577.60</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1085.25</td>
+<td align="right">1106.09</td>
+<td align="right">2757.13</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td align="right">2780.21</td>
+<td align="right">2577.49</td>
+<td align="right">0.75</td>
+<td align="right">0.74</td>
+<td align="right">1087.24</td>
+<td align="right">1110.69</td>
+<td align="right">2787.95</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td align="right">2797.35</td>
+<td align="right">2531.00</td>
+<td align="right">0.76</td>
+<td align="right">0.74</td>
+<td align="right">1087.42</td>
+<td align="right">1113.48</td>
+<td align="right">2845.78</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td align="right">2811.07</td>
+<td align="right">2527.85</td>
+<td align="right">0.76</td>
+<td align="right">0.73</td>
+<td align="right">1089.30</td>
+<td align="right">1117.96</td>
+<td align="right">2895.61</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td align="right">2848.81</td>
+<td align="right">2519.14</td>
+<td align="right">0.76</td>
+<td align="right">0.73</td>
+<td align="right">1090.95</td>
+<td align="right">1122.22</td>
+<td align="right">2976.04</td>
+</tr>
+</tbody>
+</table>
+<p>Le modèle cubique (ordre 3) est aussi choisi par la validation croisée, en moyenne (comme il l’était par le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span>). Le graphe qui suit trace les valeurs de l’estimation par validation croisée (courbe de validation croisée) et aussi le <span class="math inline">\(\mathsf{EMQ}\)</span>. On voit que l’estimation par validation croisée suit assez bien la forme du <span class="math inline">\(\mathsf{EMQ}\)</span> (qu’il est supposé estimer). Les boîtes à moustache permettent d’apprécier la variabilité des estimés de l’erreur moyenne quadratique telles qu’estimée par validation croisée avec 10 groupes.</p>
 <p><img src="MATH60602_files/figure-html/plotcv-1.png" width="576" style="display: block; margin: auto;" /></p>
-
 </div>
+</div>
+<div id="cibler-les-clients-pour-lenvoi-dun-catalogue" class="section level2">
+<h2><span class="header-section-number">3.8</span> Cibler les clients pour l’envoi d’un catalogue</h2>
+<p>Nous allons présenter un exemple classique de commercialisation de bases de données qui nous servira à illustrer la sélection de modèles, la régression logistique et la gestion de données manquantes.</p>
+<p>Le contexte est le suivant : une entreprise possède une grande base de données client. Elle désire envoyer un catalogue à ses clients mais souhaite maximiser les revenus d’une telle initiative. Il est évidemment possible d’envoyer le catalogue à tous les clients mais ce n’est possiblement pas optimal. La stratégie envisagée est la suivante :</p>
+<ol style="list-style-type: decimal">
+<li>Envoyer le catalogue à un échantillon de clients et attendre les réponses. Le coût de l’envoi d’un catalogue est de 10$.</li>
+<li>Construire un modèle avec cet échantillon afin de décider à quels clients (parmi les autres) le catalogue devrait être envoyé, afin de maximiser les revenus.</li>
+</ol>
+<p>Plus précisément, on s’intéresse aux clients de 18 ans et plus qui ont au moins un an d’historique avec l’entreprise et qui ont fait au moins un achat au cours de la dernière année. Il y a 101 000 clients dans la base de données. La première étape de la stratégie consiste à envoyer le catalogue à un échantillon de 1000 clients. Par la suite, un modèle sera construit avec ces 1000 clients afin de cibler lesquels des 100 000 clients restants seront choisis pour recevoir le catalogue. Les 1000 clients forment l’échantillon d’apprentissage. Pour les 1000 clients de l’échantillon d’apprentissage, les deux variables cibles suivantes sont disponibles :</p>
+<ul>
+<li><code>yachat</code>, une variable binaire qui indique si le client a acheté quelque chose dans le catalogue égale à 1 si oui et 0 sinon.</li>
+<li><code>ymontant</code>, le montant de l’achat si le client a acheté quelque chose.</li>
+</ul>
+<p>Les 10 variables suivantes sont disponibles pour tous les clients et serviront de variables explicatives pour les deux variables cibles. Il s’agit de :</p>
+<ul>
+<li><code>x1</code>: sexe de l’individu, soit homme (0) ou femme (1);</li>
+<li><code>x2</code>: l’âge (en année);</li>
+<li><code>x3</code>: variable catégorielle indiquant le revenu, soit moins de 35 000$ (1), entre 35 000$ et 75 000$ (2) ou plus de 75 000$ (3);</li>
+<li><code>x4</code>: variable catégorielle indiquant la région où habite le client (de 1 à 5);</li>
+<li><code>x5</code>: conjoint : le client a-t-il un conjoint (0=non, 1=oui);</li>
+<li><code>x6</code>: nombre d’année depuis que le client est avec la compagnie;</li>
+<li><code>x7</code>: nombre de semaines depuis le dernier achat;</li>
+<li><code>x8</code>: montant (en dollars) du dernier achat;</li>
+<li><code>x9</code>: montant total (en dollars) dépensé depuis un an;</li>
+<li><code>x10</code>: nombre d’achats différents depuis un an.</li>
+</ul>
+<p>Les données se trouvent dans le fichier <code>DBM.sas7bdat</code>. Lors d’une vraie application, nous aurions seulement les valeurs des variables cibles <code>yachat</code> et <code>ymontant</code> pour l’échantillon d’apprentissage (car eux seuls ont reçu le catalogue). Dans notre exemple, elles sont fournies pour tous les clients afin de pouvoir évaluer la performance des différentes stratégies testées. Les modèles seront déterminés (sélectionnés et ajustés) en utilisant seulement l’échantillon d’apprentissage (1000 clients). Les 100 000 autres clients serviront d’échantillon test pour évaluer la performance des modèles et, plus précisément, afin d’évaluer les revenus (ou d’autres mesures de performance) si ces modèles avaient été utilisés. L’échantillon test nous donnera donc l’heure juste quant aux mérites des différentes approches que nous allons comparer.</p>
+<p>Voici d’abord des statistiques descriptives pour l’échantillon d’apprentissage.</p>
+<p><img src="figures/02-select-e3.png" width="60%" style="display: block; margin: auto;" />
+Il y a donc <span class="math inline">\(46,6\)</span>% de femmes parmi les 1000 clients de l’échantillon. De plus, <span class="math inline">\(39,7\)</span>% ont un revenu de moins de 35 000$, <span class="math inline">\(33,7\)</span>% sont entre 35 000$ et 75 000$ et <span class="math inline">\(26,6\)</span>% ont plus de 75 000$. <span class="math inline">\(42,5\)</span>% de ces clients qui ont un conjoint.
+<img src="figures/02-select-e4.png" width="90%" style="display: block; margin: auto;" />
+Le nombre d’achats différents depuis un an par ces clients varie entre 1 et 14. Un peu plus de la moitié (<span class="math inline">\(51,4\)</span>%) ont fait 5 achats ou moins. Parmi les 1000 clients de l’échantillon d’apprentissage, 210 ont acheté quelque chose dans le catalogue. La variable yachat sera l’une des variables que nous allons chercher à modéliser en vue d’obtenir des prédictions.
+<img src="figures/02-select-e5.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>L’âge des 1000 clients de l’échantillon d’apprentissage varie entre 20 et 70 avec une moyenne de <span class="math inline">\(37,1\)</span> ans. En moyenne, ces clients ont acheté pour <span class="math inline">\(229,3\)</span>$ depuis un an. Le dernier achat de ces clients remonte, en moyenne, à 10 semaines. Nous chercherons également à modéliser la variable <code>ymontant</code>. Seuls 210 clients ont acheté quelque chose dans le catalogue et les statistiques rapportées correspondent seulement à ces derniers, car la variable <code>ymontant</code> est manquante si le client n’a rien acheté dans le catalogue. On pourrait également remplacer ces valeurs par des zéros et les modéliser, mais nous aborderons cet aspect ultérieurement. Les clients qui ont acheté quelque chose ont dépensé en moyenne <span class="math inline">\(67,3\)</span>$, et au minimum <span class="math inline">\(25\)</span>$. Les histogrammes de quelques unes de ces variables permet de mieux visualiser la répartition des observations.
+<img src="figures/02-select-e6.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>Il y a plusieurs façons d’utiliser l’échantillon d’apprentissage afin de mieux cibler les clients à qui envoyer le catalogue et maximiser les revenus. En voici quelques unes.</p>
+<ol style="list-style-type: lower-alpha">
+<li>On pourrait développer un modèle afin d’estimer la probabilité qu’un client achète quelque chose si on lui envoie un catalogue. Plus précisément, on peut développer un modèle pour <span class="math inline">\(\Pr(\texttt{yachat}=1)\)</span>. Comme la variable <code>yachat</code> est binaire, un modèle possible est la régression logistique, que nous décrirons au chapitre suivant. Ainsi, en appliquant le modèle aux 100 000 clients restant, on pourra cibler les clients susceptibles d’acheter (ceux avec une probabilité élevée).</li>
+<li>Une autre façon serait de tenter de prévoir le montant d’argent dépensé. Nous venons de voir la distribution de la variable <code>ymontant</code>. Il y a deux situations, ceux qui ont acheté et ceux qui n’ont pas achetés. En conditionnant sur le fait d’avoir acheté quelque chose, il est possible de décomposer le problème de la manière suivante :</li>
+</ol>
+<p><span class="math display">\[\begin{align*} 
+{\mathsf E}\left(\texttt{ymontant}\right) &amp;= {\mathsf E}\left(\texttt{ymontant} \mid \texttt{yachat}=1\right) {\mathsf P}\left(\texttt{yachat}=1\right) \\&amp; \qquad \qquad \qquad +
+{\mathsf E}\left(\texttt{ymontant} \mid \texttt{yachat}=0\right) {\mathsf P}\left(\texttt{yachat}=0\right) \\
+ &amp;= {\mathsf E}\left(\texttt{ymontant} \mid \texttt{yachat}=1\right) {\mathsf P}\left(\texttt{yachat}=1\right)
+\end{align*}\]</span>
+En mots, la moyenne du montant dépensé est égale à la moyenne du montant dépensé étant donné qu’il y a eu achat, fois la probabilité qu’il ait eu achat.</p>
+<p>On peut donc estimer <span class="math inline">\({\mathsf E}\left(\texttt{ymontant} \mid \texttt{yachat}=1\right)\)</span> et <span class="math inline">\({\mathsf P}\left(\texttt{yachat}=1\right)\)</span>, pour ensuite les combiner et avoir une estimation de <span class="math inline">\({\mathsf E}\left(\texttt{ymontant}\right)\)</span>. Le développement du modèle pour <span class="math inline">\({\mathsf E}\left(\texttt{ymontant} \mid \texttt{yachat}=1\right)\)</span> peut se faire avec la régression linéaire, en utilisant seulement les clients qui ont acheté dans l’échantillon d’apprentissage, car ymontant est une variable continue dans ce cas. Le développement du modèle pour <span class="math inline">\({\mathsf P}\left(\texttt{yachat}=1\right)\)</span> peut se faire avec la régression logistique, tel que mentionné plus haut, en utilisant tous les 1000 clients de l’échantillon d’apprentissage. En fait, nous verrons plus loin qu’il est possible d’estimer conjointement les deux modèles avec un modèle Tobit. En appliquant le modèle aux 100 000 clients restants, on pourra cibler les clients qui risquent de dépenser un assez grand montant.</p>
+<p>Comme nous n’avons pas encore vu la régression logistique, nous allons nous limiter à illustrer les méthodes qui restent à voir dans ce chapitre avec la régression linéaire en cherchant à développer un modèle pour <span class="math inline">\({\mathsf E}\left(\texttt{ymontant} \mid \texttt{yachat}=1\right)\)</span>, le montant d’argent dépensé par les clients qui ont acheté quelque chose.</p>
+<p>Le fichier <code>prepare_DBM.sas</code> contient des commandes afin de préparer les données aux analyses qui seront présentées dans les sections qui suivent. En particulier, nous avons deux variables explicatives catégorielles. Il s’agit de revenu (<code>x3</code>) et région (<code>x4</code>). Il faut coder d’une manière appropriée afin de pouvoir les incorporer dans les modèles. La manière habituelle est de créer des variables indicatrices (binaires) qui indiquent si la variable prend ou non une valeur particulière. En général, si une variable catégorielle possède <span class="math inline">\(K\)</span> valeurs possibles, il est suffisant de créer <span class="math inline">\(K-1\)</span> indicatrices, en laissant une modalité comme référence. Par exemple, pour <code>X3</code>, nous allons créer deux variables,</p>
+<ul>
+<li><code>x31</code>: variable binaire égale à 1 si <code>x3</code> égale 1 et 0 sinon,</li>
+<li><code>x32</code>: variable binaire égale à 1 si <code>x3</code> égale 2 et 0 sinon.</li>
+</ul>
+<p>Ainsi, la valeur 3 est celle de référence. Ces deux indicatrices sont suffisantes pour récupérer toute l’information comme le démontre le tableau qui suit.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center"><code>x3</code></th>
+<th align="center"><code>x31</code></th>
+<th align="center"><code>x32</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center">0</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+</tbody>
+</table>
+<p>En pratique, il suffit d’incorporer les indicatrices (<code>x31</code> et <code>x32</code>) dans le modèle comme variables explicatives et de ne plus utiliser la variable originale <code>x3</code>. On peut aussi procéder ainsi pour la variable <code>x4</code>, en créant quatre indicatrices.</p>
+</div>
+<div id="recherche-automatique-du-meilleur-modèle" class="section level2">
+<h2><span class="header-section-number">3.9</span> Recherche automatique du meilleur modèle</h2>
+<p>Lorsque nous voulons comparer un petit nombre de modèles, il est relativement aisé d’obtenir les critères (<span class="math inline">\(\mathsf{AIC}\)</span>, <span class="math inline">\(\mathsf{BIC}\)</span> ou autre) pour tous les modèles et de choisir le meilleur. C’était le cas dans l’exemple du choix de l’ordre du polynôme où il y avait seulement 10 modèles en compétitions.
+Mais lorsqu’il y a plusieurs variables en jeu, le nombre de modèles potentiel augmente très rapidement.</p>
+<p>En fait, supposons qu’on a <span class="math inline">\(p\)</span> variables distinctes disponibles. Avant même de considérer les transformations des variables et les interactions entre elles, il y a déjà modèles possibles. En effet, chaque variable est soit incluse ou pas (deux possibilités) et donc il y a <span class="math inline">\(2^p=2\times 2 \times \cdots \times 2\)</span> (<span class="math inline">\(p\)</span> fois) modèles en tout à considérer. Ce nombre augmente très rapidement comme en témoigne le tableau <a href="sélection-de-variables-et-de-modèles-1.html#tab:02-table3">3.3</a>.</p>
+<table>
+<caption><span id="tab:02-table3">Tableau 3.3: </span>Nombres de modèles en fonction du nombre de paramètres <span class="math inline">\(p\)</span>.</caption>
+<thead>
+<tr class="header">
+<th align="right"><span class="math inline">\(p\)</span></th>
+<th align="right">nombre de paramètres</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">5</td>
+<td align="right">32</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="right">1024</td>
+</tr>
+<tr class="odd">
+<td align="right">15</td>
+<td align="right">32768</td>
+</tr>
+<tr class="even">
+<td align="right">20</td>
+<td align="right">1048576</td>
+</tr>
+<tr class="odd">
+<td align="right">25</td>
+<td align="right">33554432</td>
+</tr>
+<tr class="even">
+<td align="right">30</td>
+<td align="right">1073741824</td>
+</tr>
+</tbody>
+</table>
+<p>Ainsi, si le nombre de variables est restreint, il est possible de comparer tous les modèles potentiels et de choisir le meilleur (selon un critère). II existe même des algorithmes très efficaces qui permettent de trouver le meilleur modèle sans devoir examiner tous les modèles possibles. Le nombre de variables qu’il est possible d’avoir dépend de la puissance de calcul et augmente d’année en année. Par contre, dans plusieurs applications, il ne sera pas possible de comparer tous les modèles et il faudra effectuer une recherche limitée.</p>
+<p>Faire une recherche exhaustive parmi tous les modèles possibles s’appelle sélection de tous les sous-ensembles (<em>best subsets</em>). La procédure <code>reg</code> de <strong>SAS</strong> permet de faire cela pour la régression linéaire.</p>
+</div>
+<div id="recherche-automatique-de-tous-les-sous-ensembles" class="section level2">
+<h2><span class="header-section-number">3.10</span> Recherche automatique de tous les sous-ensembles</h2>
+<p>On veut trouver un bon modèle pour prévoir la valeur de <code>ymontant</code> des clients qui ont acheté quelque chose. On a vu qu’il y a 210 clients qui ont acheté dans l’échantillon d’apprentissage. Nous allons chercher à développer un « bon » modèle avec ces 210 clients. Dans ce premier exemple, nous allons seulement utiliser les 10 variables explicatives de base (14 variables avec les indicatrices). Le code suivant montre comment faire une sélection de variables selon le critère du <span class="math inline">\(R^2\)</span> et demande à <strong>SAS</strong> de présenter le modèle à <span class="math inline">\(k\)</span> variables (<span class="math inline">\(k=1, \ldots, 14\)</span>) qui a le plus grand <span class="math inline">\(R^2\)</span>; voir <code>selection2_all_subset.sas</code> pour plus de détails.</p>
+<pre class="sas"><code>proc reg data=trainymontant;
+model ymontant=x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 
+  x7 x8 x9 x10 / selection=rsquare best=1 aic bic;
+run;</code></pre>
+<p>Ainsi, le modèle linéaire simple qui a le plus grand <span class="math inline">\(R^2\)</span> est celui qui inclut le conjoint (<code>x5</code>). Le meilleur modèle (selon le <span class="math inline">\(R^2\)</span>) parmi tous les modèles avec deux variables est celui avec <code>x5</code> et <code>x6</code>.</p>
+<p>Pour un nombre de variables fixé, le meilleur modèle selon le <span class="math inline">\(R^2\)</span> est aussi le meilleur selon les critères d’information <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span>, pour ce nombre fixé de variables. Pour vous convaincre de cette affirmation, fixons le nombre de variables et restreignons-nous seulement aux modèles avec ce nombre de variables. Comme = <span class="math inline">\(1 - \mathsf{SCE}/\mathsf{SCT}\)</span> et que <span class="math inline">\(\mathsf{SCT}\)</span> est une constante indépendante du modèle, le modèle avec le plus grand coefficient de détermination, <span class="math inline">\(R^2\)</span>, est aussi celui avec la plus petite somme du carré des erreurs (<span class="math inline">\(\mathsf{SCE}\)</span>). Comme <span class="math inline">\(\mathsf{AIC}=n (\ln (\mathsf{SCE}/n)) + 2p\)</span>, ce sera aussi celui avec le plus petit <span class="math inline">\(\mathsf{AIC}\)</span> car la pénalité <span class="math inline">\(2p\)</span> est la même si on fixe le nombre de variables; la même remarque est valide pour le <span class="math inline">\(\mathsf{BIC}\)</span>.</p>
+<p>Ainsi, pour trouver le meilleur modèle globalement (sans fixer le nombre de variables), il suffit de trouver le modèle à <span class="math inline">\(k\)</span> variables explicatives ayant le coefficient de détermination le plus élevé pour tous les nombres de variables fixés et d’ensuite de trouver celui qui minimise le <span class="math inline">\(\mathsf{AIC}\)</span> (ou le <span class="math inline">\(\mathsf{BIC}\)</span>) parmi ces modèles. Cette astuce est utile dans la mesure où <strong>SAS</strong> ne permet pas de faire cette même recherche avec les critères d’information.</p>
+<p><img src="figures/02-select-e7.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>Dans l’exemple, on voit que le modèle avec les variables <code>x1</code> <code>x2</code> <code>x31</code> <code>x44</code> <code>x5</code> <code>x6</code> <code>x7</code> <code>x8</code> <code>x9</code> et <code>x10</code> est celui qui minimise le <span class="math inline">\(\mathsf{AIC}\)</span> globalement (<span class="math inline">\(\mathsf{AIC}=660.15\)</span>). Le modèle choisi par le <span class="math inline">\(\mathsf{BIC}\)</span> contient seulement sept variables explicatives (plutôt que 10), soit <code>x1</code> <code>x31</code> <code>x5</code> <code>x6</code> <code>x7</code> <code>x8</code> <code>x10</code>.</p>
+<p>Nous allons utiliser les 100 000 autres clients pour évaluer la performance réelle des modèles qui nous sont suggérés par nos différents critères. En pratique, nous ne pourrions pas faire cela car la valeur de la variable cible ne serait pas connue pour ces clients. En fait, dans une vraie application, nous utiliserions plutôt les modèles pour obtenir des prédictions pour les clients à « scorer ». Les valeurs des variables cibles pour les 100 000 clients nous permettront de voir à quel point différentes stratégies auraient été profitables si elles avaient été mises en place. Parmi, les 100 000 clients restants, il y en a 23 179 qui auraient acheté quelque chose si on leur avait envoyé le catalogue. Ces 23 179 observations vont nous servir pour estimer l’erreur moyenne quadratique (théorique) des modèles retenus par nos critères (voir le fichier <code>selection2_all_subset.sas</code> pour les manipulations).</p>
+<p>Voici l’estimation de l’erreur moyenne quadratique (moyenne des carrés des erreurs) pour les deux modèles retenus par le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span>. Le tableau @ref(#tab:02-gmse-base) contient aussi l’estimation de l’erreur moyenne quadratique si on utilise toutes les variables (14 en incluant les indicatrices) sans faire de sélection.</p>
+<table>
+<caption><span id="tab:02-gmse-base">Tableau 3.4: </span> Estimation de l’erreur moyenne quadratique sur l’échantillon test avec les variables de base. Les meilleurs modèles selon les critères d’informations découlent d’une recherche exhaustive de tous les sous-ensembles.</caption>
+<thead>
+<tr class="header">
+<th align="center">nombre de variables</th>
+<th align="center"><span class="math inline">\(\mathsf{EMQ}\)</span></th>
+<th align="left">méthode</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">14</td>
+<td align="center">25,69</td>
+<td align="left">toutes les variables</td>
+</tr>
+<tr class="even">
+<td align="center">10</td>
+<td align="center">24,72</td>
+<td align="left">exhaustive - <span class="math inline">\(\mathsf{AIC}\)</span></td>
+</tr>
+<tr class="odd">
+<td align="center">7</td>
+<td align="center">23,83</td>
+<td align="left">exhaustive - <span class="math inline">\(\mathsf{BIC}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>On voit que le modèle choisi par le <span class="math inline">\(\mathsf{BIC}\)</span> est le meilleur des trois, car l’erreur moyenne quadratique sur l’échantillon test est de <span class="math inline">\(3,6\)</span>% inférieure à celle du modèle choisi par le <span class="math inline">\(\mathsf{AIC}\)</span>. Ces deux méthodes font mieux que le modèle qui inclut toutes les variables sans faire de sélection.</p>
+<p>Nous avons seulement inclus les variables de base pour ce premier essai. Il est possible qu’ajouter des variables supplémentaires améliore la performance du modèle. Pour cet exemple, nous allons considérer les variables suivantes:</p>
+<ul>
+<li>les variables continues au carré, comme <span class="math inline">\(\texttt{age}^2\)</span>.</li>
+<li>toutes les interactions d’ordre deux entre les variables de base, comme <span class="math inline">\(\texttt{sexe}\cdot\texttt{age}\)</span>.</li>
+</ul>
+<p>Toutes ces variables sont créées dans <code>prepare_DBM.sas</code>. Aux variables de base (10 variables explicatives, mais 14 avec les indicatrices pour les variables catégorielles), s’ajoutent ainsi 90 autres variables. Il y a donc 104 variables explicatives potentielles. Notez qu’il y a des interactions entre chacune des variables indicatrices et chacune des autres variables, mais il ne sert à rien de calculer une interaction entre deux indicatrices d’une même variable (car une telle variable est zéro pour tous les individus). De même, il ne sert à rien de calculer le carré d’une variable binaire.</p>
+<p>Lancer une sélection exhaustive de tous les sous-modèles avec 104 variables risque de prendre un temps énorme. Que faire alors? Il y a plusieurs possibilités. Nous pourrions faire une recherche limitée avec les méthodes que nous allons voir à partir de la section suivante. Nous pourrions aussi combiner les deux approches. Supposons que notre ordinateur permet de faire une recherche exhaustive de tous les sous-modèles avec 40 variables. Nous pourrions alors commencer avec une recherche limitée pour trouver un sous-ensemble de 40 « bonnes » variables et faire une recherche exhaustive, mais en se restraignant à ces 40 variables.</p>
+</div>
+<div id="méthodes-classiques-de-sélection-ascendante-descendante-et-séquentielle" class="section level2">
+<h2><span class="header-section-number">3.11</span> Méthodes classiques de sélection ascendante, descendante et séquentielle</h2>
+<p>Les méthodes de sélection ascendante, descendante et séquentielle sont des algorithmes gloutons qui permettent de choisir des variables. Elles ont été développées à une époque où la puissance de calcul était bien moindre, et où il était impossible de faire une recherche exhaustive des sous-modèles. Avec l’approche classique, ces méthodes font une recherche séquentielle guidée parmi un nombre limité de modèles, à l’aide des valeurs-<em>p</em> du test-<em>t</em> pour la significativité des paramètres individuels du modèle avec <span class="math inline">\(p\)</span> prédicteurs potentiels <span class="math inline">\(X_1,\ldots, X_p\)</span>. Les procédures <code>glmselect</code> et <code>reg</code> permettent une sélection de modèle avec une approche séquentielle, ascendante ou descendante.</p>
+<div id="sélection-ascendante" class="section level3">
+<h3><span class="header-section-number">3.11.1</span> Sélection ascendante</h3>
+<p>L’idée de la sélection ascendante est de tester l’ajout de chaque variable individuellement et d’ajouter celle qui est la plus significative selon le test-<em>t</em> si elle a une valeur-<em>p</em> assez petite.</p>
+<ul>
+<li><em>Initialisation</em>: le modèle linéaire de départ est celui qui n’inclut que l’ordonnée à l’origine, <span class="math inline">\(Y=\beta_0+\varepsilon\)</span>, où <span class="math inline">\(\varepsilon\)</span> est une erreur centrée.</li>
+<li><em>Critère d’entrée</em>: <span class="math inline">\(c\)</span>, valeur-<em>p</em> minimale à partir de laquelle une variable peut être incluse dans le modèle (<code>proc reg</code> utilise par défaut 0.5).</li>
+<li><em>Boucle</em> soit <span class="math inline">\(X_{(1)}, \ldots, X_{(k)}\)</span>, les variables explicatives à l’étape <span class="math inline">\(k&lt;p\)</span>.
+<ul>
+<li>pour chaque <span class="math inline">\(j\)</span> (<span class="math inline">\(j=\{1,\ldots, p\}\setminus \{(1), \ldots (k)\}\)</span>), on ajuste tour à tour le modèle <span class="math inline">\(Y=\beta_0+\sum_{i=1}^k \beta_i X_{(i)} + \beta_{k+1}X_{j}\)</span> et on calcule la valeur-<em>p</em> du test-<em>t</em> pour les hypothèses <span class="math inline">\(\mathcal{H}_0: \beta_{k+1}=0\)</span> contre l’alternative bilatérale <span class="math inline">\(\mathcal{H}_1: \beta_{k+1} \neq 0\)</span>.</li>
+<li>Soit <span class="math inline">\(p_{\min}\)</span> la plus petite des <span class="math inline">\(p-k\)</span> valeurs-<em>p</em> qui correspond à <span class="math inline">\(X_{(k+1)}\)</span>, disons.
+<ul>
+<li>si <span class="math inline">\(p_{\min}&lt;c\)</span>, continuer la procédure.</li>
+<li>si <span class="math inline">\(p_{\min} \geq c\)</span>, retourner le modèle <span class="math inline">\(Y=\beta_0 + \sum_{i=1}^k \beta_iX_{(i)}+\varepsilon\)</span>.</li>
+</ul></li>
+</ul></li>
+</ul>
+<p>On continue ainsi à ajouter des variables jusqu’à ce que le critère d’entrée ne soit pas satisfait. Si on se rend jusqu’au bout, on va terminer avec le modèle complet qui contient toutes les variables.</p>
+</div>
+<div id="sélection-descendante" class="section level3">
+<h3><span class="header-section-number">3.11.2</span> Sélection descendante</h3>
+<ul>
+<li><em>Initialisation</em>: le modèle linéaire de départ est celui qui inclut toutes les variables explicatives, <span class="math inline">\(Y=\beta_0+\sum_{j=1}^p \beta_j X_{(j)}+\varepsilon\)</span>, où <span class="math inline">\(\varepsilon\)</span> est une erreur centrée.</li>
+<li><em>Critère de sortie</em>: <span class="math inline">\(c\)</span>, valeur-<em>p</em> maximale à partir de laquelle une variable peut être excluse du modèle (<code>proc reg</code> utilise par défaut 0.1).</li>
+<li><em>Boucle</em> soit <span class="math inline">\(X_{(1)}, \ldots, X_{(p-k)}\)</span>, les variables explicatives présentes dans le modèle à l’étape <span class="math inline">\(k&lt;p\)</span>.
+<ul>
+<li>pour chaque <span class="math inline">\(j\)</span> (<span class="math inline">\(j =1, \ldots, p-k\)</span>), on calcule la valeur-<em>p</em> du test-<em>t</em> <span class="math inline">\(\mathcal{H}_0: \beta_{j}=0\)</span> contre l’alternative bilatérale <span class="math inline">\(\mathcal{H}_1: \beta_{j} \neq 0\)</span>.</li>
+<li>si toutes ces valeurs sont inférieures à <span class="math inline">\(c\)</span>, on retourne le modèle <span class="math inline">\(Y=\beta_0 + \sum_{j=1}^{p-k} \beta_j X_{(j)}\)</span>.</li>
+<li>sinon, on enlève la variable qui a la plus grande valeur-<em>p</em> (disons <span class="math inline">\(X_{(p-k)}\)</span>), on réajuste le modèle sans cette variable et on recommence la procédure.</li>
+</ul></li>
+</ul>
+<p>L’idée est l’inverse de la méthode ascendante. On va tester le retrait de chaque variable individuellement et retirer celle qui est la moins significative, si sa valeur-<em>p</em> est assez grande. Si la procédure se termine après <span class="math inline">\(p\)</span> itérations, aucune variable explicative n’est retenue.</p>
+</div>
+<div id="méthode-séquentielle" class="section level3">
+<h3><span class="header-section-number">3.11.3</span> Méthode séquentielle</h3>
+<p>Il s’agit d’une méthode hybride entre ascendante et descendante. On sélectionne un critère d’entrée et de sortie pour chacune des deux (0.15 dans <code>proc reg</code>) et on début la recherche à partir du modèle ne contenant que l’ordonnée à l’origine. À chaque étape, on fait une étape ascendante suivie de une (ou plusieurs) étapes descendantes. On continue ainsi tant que le modèle retourné par l’algorithme n’est pas identique à celui de l’étape précédente. Le dernier modèle est celui retenu.</p>
+<p>Avec la méthode séquentielle, une fois qu’on entre une variable (étape ascendante), on fait autant d’étapes descendante afin de retirer toutes les variables qui satisfont le critère de sortie (il peut ne pas y en avoir). Une fois cela effectué, on refait une étape ascendante pour voir si on peut ajouter une nouvelle variable.</p>
+<p>Remarques sur ces méthodes: avec la méthode ascendante, une fois qu’une variable est dans le modèle, elle y reste. Avec la méthode descendante, une fois qu’une variable est sortie du modèle, elle ne peut plus y entrer. Avec la méthode séquentielle, une variable peut entrer dans le modèle et sortir plus tard dans le processus. Par conséquent, parmi les trois, la méthode séquentielle est généralement préférable aux méthodes ascendante et descendante, car elle inspecte potentiellement un plus grand nombre de modèles.</p>
+<p>On peut soi-même spécifier les critères d’entrée et de sortie. Plus le critère d’entrée est élevé, plus il y aura de variables dans le modèle final. De même, plus le critère de sortie est élevé, plus il y aura de variables dans le modèle.</p>
+<p>Utilisons la méthode de sélection séquentielle classique avec des critères d’entrée et de sortie de 0.15 et les 104 variables. Le code suivant, extrait de <code>selection2_all_subset.sas</code>, donne la syntaxe <strong>SAS</strong>.</p>
+<pre class="sas"><code>proc reg data=trainymontant;
+model ymontant=
+x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10
+cx2 cx6 cx7 cx8 cx9 cx10
+i_x2_x1 i_x2_x5 i_x2_x31 i_x2_x32 i_x2_x41 i_x2_x42 i_x2_x43 i_x2_x44
+i_x2_x7 i_x2_x6 i_x2_x8 i_x2_x9 i_x2_x10
+i_x1_x5 i_x1_x31 i_x1_x32 i_x1_x41 i_x1_x42 i_x1_x43 i_x1_x44
+i_x1_x7 i_x1_x6 i_x1_x8 i_x1_x9 i_x1_x10
+i_x5_x31 i_x5_x32 i_x5_x41 i_x5_x42 i_x5_x43 i_x5_x44
+i_x5_x7 i_x5_x6 i_x5_x8 i_x5_x9 i_x5_x10
+i_x31_x41 i_x31_x42 i_x31_x43 i_x31_x44
+i_x31_x7 i_x31_x6 i_x31_x8 i_x31_x9 i_x31_x10
+i_x32_x41 i_x32_x42 i_x32_x43 i_x32_x44
+i_x32_x7 i_x32_x6 i_x32_x8 i_x32_x9 i_x32_x10
+i_x41_x7 i_x41_x6 i_x41_x8 i_x41_x9 i_x41_x10
+i_x42_x7 i_x42_x6 i_x42_x8 i_x42_x9 i_x42_x10
+i_x43_x7 i_x43_x6 i_x43_x8 i_x43_x9 i_x43_x10
+i_x44_x7 i_x44_x6 i_x44_x8 i_x44_x9 i_x44_x10
+i_x7_x6 i_x7_x8 i_x7_x9 i_x7_x10
+i_x6_x8 i_x6_x9 i_x6_x10
+i_x8_x9 i_x8_x10
+i_x9_x10 / selection=stepwise sle=.15 sls=.15 ;
+run;</code></pre>
+<p>Notez que les variables <code>cx2</code> à <code>cx10</code> sont les carrés des variables <code>x2</code> à <code>x10</code> que nous avons créées au préalable. De plus, les variables débutant par <em>i</em> sont les interactions entre les variables binaires et les variables continues. Par exemple, <code>i_x2_x1</code> est l’interaction entre <code>x1</code> et <code>x2</code>, c’est-à-dire le produit des deux.</p>
+<p>La sortie <strong>SAS</strong> est assez volumineuse car elle retrace toutes étapes de la sélection séquentielle. L’historique montre qu’à l’étape 1, la variable <code>i_x5_x6</code> a été ajoutée, suivie de <code>i_x31_x10</code> à l’étape 2. Un peu plus loin, à l’étape 6, <code>i_x5_x6</code> est retirée et ainsi de suite. Il y a eu 40 étapes en tout et, à la fin, il reste 22 variables (parmi les 104) dans le modèle final. Le <span class="math inline">\(R^2\)</span> du modèle final est <span class="math inline">\(0,966\)</span>.</p>
+<p><img src="figures/02-select-e8.png" width="90%" style="display: block; margin: auto;" />
+<img src="figures/02-select-e9.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>Voici les estimés des paramètres du modèle final retenu. On voit bien que toutes les valeurs-<em>p</em> (qui ne sont pas valides à cause de la sélection de modèles) sont toutes inférieures à <span class="math inline">\(0,15\)</span>.</p>
+<p><img src="figures/02-select-e10.png" width="70%" style="display: block; margin: auto;" /><img src="figures/02-select-e11.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>La performance de ce modèle a, comme pour les modèles précédents, été évaluée avec l’échantillon test de 23 179 observations. Le tableau <a href="sélection-de-variables-et-de-modèles-1.html#tab:02-comparaisonseqclas">3.5</a> présente la performance de la méthode de sélection séquentielle classique et celle du modèle dans lequel les 104 variables sont incluses sans faire de sélection.</p>
+<table>
+<caption><span id="tab:02-comparaisonseqclas">Tableau 3.5: </span> Comparaison des méthodes selon l’erreur moyenne quadratique pour la méthode de sélection séquentielle classique et pour le modèle incluant toutes les variables, les termes quadratiques et les interactions.</caption>
+<thead>
+<tr class="header">
+<th align="center">nombre de variables</th>
+<th align="center"><span class="math inline">\(\mathsf{EMQ}\)</span></th>
+<th align="left">méthode</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">104</td>
+<td align="center">19,63</td>
+<td align="left">toutes les variables</td>
+</tr>
+<tr class="even">
+<td align="center">22</td>
+<td align="center">12,25</td>
+<td align="left">séquentielle classique</td>
+</tr>
+</tbody>
+</table>
+<p>On voit donc qu’utiliser toutes les 104 variables sans faire de sélection fait mieux (<span class="math inline">\(\mathsf{EMQ}=19,63\)</span>) que les modèles précédents basés sur les 10 variables originales. Mais faire une sélection séquentielle classique permet une amélioration très importante de la performance (<span class="math inline">\(\mathsf{EMQ}=12,25\)</span>). On voit que dans cet exemple, utiliser les 104 variables fait du surajustement (<em>over-fitting</em>).</p>
+<p>Le choix de <span class="math inline">\(0,15\)</span> comme critère d’entrée et de sortie est assez arbitraire. Il est fort possible que d’autres valeurs donnent de meilleurs résultats. Mais il n’est pas évident de les choisir.</p>
+<p>Une façon de contourner le problème de devoir spécifier les critères d’entrée et de sortie est de procéder en deux étapes. Supposons que notre ordinateur permet de faire une recherche exhaustive de tous les sous-modèles avec près de 60 variables. L’idée est alors de passer de 104 à un sous-ensemble d’environ 60 variables, avec une sélection séquentielle gloutonne, et d’ensuite utiliser une recherche exhaustive avec ce sous-ensemble de variables. Plus précisément:</p>
+<ol style="list-style-type: decimal">
+<li>On fait une sélection séquentielle classique avec des valeurs élevées pour les critères d’entrée et de sortie afin que le modèle retenu contienne le nombre voulu de variables (par exemple, 60).</li>
+<li>En utilisant seulement ce sous-ensemble de variables, on choisit le meilleur modèle selon le <span class="math inline">\(\mathsf{AIC}\)</span> ou le <span class="math inline">\(\mathsf{BIC}\)</span> en faisant une recherche exhaustive de tous les sous-modèles.</li>
+</ol>
+<p>En fixant, les critères d’entrée et de sortie à <span class="math inline">\(0,6\)</span> pour la recherche séquentielle, le modèle retenu aura 56 variables. Il est possible de faire une recherche exhaustive avec 56 variables sur un ordinateur portable avec <strong>SAS</strong>. Le <span class="math inline">\(\mathsf{AIC}\)</span> est mène à un modèle avec 38 de ces 56 variables. Le <span class="math inline">\(\mathsf{BIC}\)</span> est quant à lui beaucoup plus parcimonieux et choisit 15 de ces variables pour le modèle final. Encore une fois, ces deux modèles sont testés sur les 23 179 clients restants. Les résultats sont présentés dans le tableau <a href="sélection-de-variables-et-de-modèles-1.html#tab:02-comparaisonseqexha">3.6</a>.</p>
+<table style="width:100%;">
+<caption><span id="tab:02-comparaisonseqexha">Tableau 3.6: </span> Comparaison des méthodes selon l’erreur moyenne quadratique pour la méthode de sélection séquentielle suivie d’une recherche exhaustive.</caption>
+<colgroup>
+<col width="31%" />
+<col width="36%" />
+<col width="31%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">nombre de variables</th>
+<th align="center"><span class="math inline">\(\mathsf{EMQ}\)</span></th>
+<th align="left">méthode</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">38</td>
+<td align="center">14,83</td>
+<td align="left">séquentielle classique, recherche exhaustive avec 56 variables <span class="math inline">\((\mathsf{AIC})\)</span></td>
+</tr>
+<tr class="even">
+<td align="center">15</td>
+<td align="center">11,96</td>
+<td align="left">séquentielle classique, recherche exhaustive avec 56 variables <span class="math inline">\((\mathsf{BIC})\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>La stratégie consistant à sélectionner un sous-ensemble de 56 variables avec la méthode séquentielle classique pour ensuite faire une recherche exhaustive de tous les sous-modèles possibles avec ces 56 variables, selon le <span class="math inline">\(\mathsf{BIC}\)</span>, donne le meilleur résultat jusqu’à présent (<span class="math inline">\(\mathsf{EMQ}=11,96\)</span>). Le <span class="math inline">\(\mathsf{AIC}\)</span> fait moins bien dans ce cas, avec une erreur moyenne quadratique estimée de <span class="math inline">\(14,83\)</span>. Nous verrons à la section suivante qu’il est possible de faire une recherche séquentielle en utilisant d’autres critères que la valeur-<em>p</em> du test-<em>t</em> pour faire ajouter ou enlever des variables.</p>
+</div>
+</div>
+<div id="recherche-séquentielle-automatique-limitée" class="section level2">
+<h2><span class="header-section-number">3.12</span> Recherche séquentielle automatique limitée</h2>
+<p>L’idée de la procédure séquentielle classique est d’inclure ou d’exclure une variable à la fois sur la base des valeurs-<em>p</em>. La procédure <code>glmselect</code> permet de faire une sélection séquentielle en utilisant d’autres critères, comme le <span class="math inline">\(\mathsf{AIC}\)</span> ou le <span class="math inline">\(\mathsf{BIC}\)</span>. Cette procédure permet de contrôler très finement le processus de sélection de variables. Le code qui suit fait une recherche séquentielle avec les particularités suivantes. À chaque étape ascendante de la procédure séquentielle, c’est la variable qui améliore le plus le <span class="math inline">\(\mathsf{AIC}\)</span> (<code>select=aic</code>) qui est entrée. De plus, à chaque étape descendante de la procédure séquenctielle, c’est la (ou les) variable(s) qui détériore(nt) le plus le <span class="math inline">\(\mathsf{AIC}\)</span> qui est (sont) retirée(s). À la toute fin du processus, c’est le modèle qui a le meilleur <span class="math inline">\(\mathsf{BIC}\)</span> (<code>choose=BIC</code>) qui est retenu.</p>
+<pre class="sas"><code>proc glmselect data=trainymontant;
+model ymontant= /*(mettre les 104 variables ici) */
+/  selection=stepwise(select=aic choose=bic)  ; 
+score data=testymontant out=predglmselectaicbic p=predymontant;
+run;</code></pre>
+<p>Voici l’historique de la procédure séquentielle avec cette combinaison.</p>
+<p><img src="figures/02-select-e12.png" width="70%" style="display: block; margin: auto;" /><img src="figures/02-select-e13.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>À l’étape 1, la variable <code>i_x5_x6</code> est ajoutée au modèle de base car c’est celle qui fait diminuer le plus le <span class="math inline">\(\mathsf{AIC}\)</span>. À l’étape 2, la variable <code>i_x31_x10</code> est ajoutée, À l’étape 6, la variable <code>i_x5_x6</code> est retirée car cela fait baisser le <span class="math inline">\(\mathsf{AIC}\)</span>. Notez que le <span class="math inline">\(\mathsf{AIC}\)</span> décroit toujours d’une étape à l’autre. <strong>SAS</strong> garde aussi la trace du <span class="math inline">\(\mathsf{BIC}\)</span> car le modèle final sera choisi selon ce critère. Finalement le processus séquentiel se termine à l’étape 40, car il n’y a plus moyen de faire dimiuer le <span class="math inline">\(\mathsf{AIC}\)</span>. Le modèle final retenu est celui de l’étape 18, car c’est celui qui a le <span class="math inline">\(\mathsf{BIC}\)</span> le plus petit parmi tous ces modèles (<span class="math inline">\(\mathsf{BIC}=484.22\)</span>).</p>
+<p>Voici différentes statistiques ainsi que les estimations des paramètres de ce modèle qui contient 10 variables.</p>
+<p><img src="figures/02-select-e14.png" width="65%" style="display: block; margin: auto;" />
+<img src="figures/02-select-e15.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Il s’avère que ce modèle performe très bien avec une erreur moyenne quadratique estimé à <span class="math inline">\(10,08\)</span> sur les 23 179 clients de l’échantillon test. Il s’agit du meilleur jusqu’à maintenant.</p>
+</div>
+<div id="moyenne-de-modèles" class="section level2">
+<h2><span class="header-section-number">3.13</span> Moyenne de modèles</h2>
+<p>Une idée importante et moderne en statistique est qu’il est souvent préférable de combiner plusieurs modèles plutôt que d’en choisir un seul. La technique des forêts aléatoires (<em>random forests</em>) est une des meilleures techniques de prédiction disponibles de nos jours. Elle est basée sur cette idée, en combinant plusieurs arbres de classification (ou de régression) individuels. C’est une des techniques de base en exploitation de données.</p>
+<p>Ici, nous allons voir comment cette idée peut être appliquée à notre contexte. Toutes les méthodes que nous avons vues jusqu’à maintenant font une sélection « rigide » de variables, dans le sens que chaque variable est soit sélectionnée pour faire partie du modèle, soit elle ne l’est pas. C’est donc tout ou rien pour chaque variable. Il y a beaucoup de variabilité associée à une telle forme de sélection. Une variable peut avoir été très près d’être choisie, mais elle ne l’a pas été et est éliminée complètement. Construire plusieurs modèles et en faire la moyenne permet d’adoucir le processus de sélection car une variable peut alors être partiellement sélectionnée.</p>
+<p>Supposons qu’on dispose de deux échantillons et qu’on fasse une sélection de variables séparément pour les deux échantillons, avec l’une des approches que nous avons vues jusqu’à maintenant. Il est alors très probable qu’on ne va pas avoir exactement les mêmes variables sélectionnées pour les deux échantillons. Supposons ensuite qu’on fasse la moyenne des coefficients pour les deux modèles. Si une variable, disons <span class="math inline">\(X_1\)</span>, a été choisie les deux fois, alors la moyenne des deux coefficients devrait estimer en quelque sorte un effet global pour cette variable. Si une autre variable, disons <span class="math inline">\(X_2\)</span>, n’a pas été choisie du tout pour les deux échantillons, alors la moyenne de ses deux coefficients est nulle. Mais si une variable, disons, <span class="math inline">\(X_3\)</span>, a été choisie pour seulement l’un des deux échantillons, alors la moyenne de ses deux coefficients est la moitié du coefficient pour le modèle dans lequel elle a été choisie (car l’autre est zéro). Ainsi, cette variable est donc représentée par une « moitié » d’effet dans la moyenne des modèles. Donc au lieu d’être totalement là ou totalement absente, elle est présente en fonction de sa probabilité d’être sélectionnée. Ceci diminue de beaucoup la variabilité engendrée par une sélection « rigide » de variables et permet souvent de produire un modèle fort raisonnable.</p>
+<p>Le problème est que l’on n’a pas plusieurs échantillons mais un seul. Une solution possible est de générer nous-mêmes des échantillons différents à partir de l‘échantillon original. Cela peut être fait avec l’autoamorçage (<em>bootstrap</em>). Un échantillon d’autoamorçage est tout simplement un échantillon choisi au hasard et <strong>avec remise</strong> dans l’échantillon original. Ainsi, une même observation peut être sélectionnée plus d’une fois tandis qu’une autre peut ne pas être sélectionnée du tout.</p>
+<p>L’idée est alors la suivante :</p>
+<ol style="list-style-type: decimal">
+<li>Générer plusieurs échantillons par autoamorçage nonparamétrique à partir de l‘échantillon original.</li>
+<li>Faire une sélection de variables pour chaque échantillon.</li>
+<li>Faire la moyenne des paramètres de ces modèles.</li>
+</ol>
+<p>La procédure <code>glmselect</code> a une commande expérimentale, <code>modelaverage</code>, qui permet de faire une moyenne de modèles. Comme elle est expérimentale, les particularités (options et sorties) de cette commande risquent de changer au cours des versions à venir. Le code suivant permet de faire une moyenne de modèles.</p>
+<pre class="sas"><code>proc glmselect data=trainymontant seed=57484765;
+model ymontant= 
+  ... /* mettre les 104 variables ici */
+/ selection=stepwise(select=bic choose=bic) ; 
+score data=testymontant out=predaverage p=predymontant;
+modelaverage nsamples=500 sampling=urs subset(best=500);
+run;</code></pre>
+<p>Chaque modèle est construit à l’aide d’un échantillon aléatoire avec remise (<code>sampling=urs</code>). Il y aura 500 échantillons, et donc modèles, en tout (<code>nsamples=500</code>). L’option <code>subset(best=500)</code> indique à <strong>SAS</strong> de faire la moyenne des paramètres des 500 modèles. Notez l’option <code>seed</code> qui permet de reproduire les résultats, car elle fixe une valeur pour le générateur de nombre aléatoire (qui sera utilisé pour générer les échantillons d’autoamorçage). Cette fois-ci la sélection se fait avec le critère <span class="math inline">\(\mathsf{BIC}\)</span> à tous les niveaux (<code>select=bic choose=bic</code>).</p>
+<p><img src="figures/02-select-e16.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>Ce tableau présente les variables qui ont été choisies dans an moins 20% des modèles, c’est-à-dire, dans au moins 100 des 500 modèles ici. Il y a deux variables qui ont été retenues dans tous les modèles, <code>i_x1_x6</code> et <code>i_x31_x8</code>. Le tableau rapporte aussi la moyenne des estimations pour ces paramètres.</p>
+<p>Il s’avère que cette approche performe très bien sur l’échantillon test de 23 179 clients avec une erreur moyenne quadratique estimé de <span class="math inline">\(10,57\)</span>. Le tableau <a href="sélection-de-variables-et-de-modèles-1.html#tab:02-modelcomparaisonfull">3.7</a> résume la performance des différentes méthodes que nous avons utilisé sur notre échantillon test.</p>
+<table>
+<caption><span id="tab:02-modelcomparaisonfull">Tableau 3.7: </span> Comparaison des méthodes selon l’erreur moyenne quadratique.</caption>
+<colgroup>
+<col width="20%" />
+<col width="25%" />
+<col width="29%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">variables</th>
+<th align="center">nombre de variables</th>
+<th align="center"><span class="math inline">\(\mathsf{EMQ}\)</span></th>
+<th align="left">méthode</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">de base</td>
+<td align="center">14</td>
+<td align="center">25,69</td>
+<td align="left">toutes les variables</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">10</td>
+<td align="center">24,72</td>
+<td align="left">exhaustive - <span class="math inline">\(\mathsf{AIC}\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center">7</td>
+<td align="center">23,83</td>
+<td align="left">exhaustive - <span class="math inline">\(\mathsf{BIC}\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">interactions et termes quadratiques</td>
+<td align="center">104</td>
+<td align="center">19,63</td>
+<td align="left">toutes les variables</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center">22</td>
+<td align="center">12,25</td>
+<td align="left">séquentielle classique</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">38</td>
+<td align="center">14,83</td>
+<td align="left">séquentielle classique, recherche exhaustive avec 56 variables <span class="math inline">\((\mathsf{AIC})\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center">15</td>
+<td align="center">11,96</td>
+<td align="left">séquentielle classique, recherche exhaustive avec 56 variables <span class="math inline">\((\mathsf{BIC})\)</span></td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="center">10</td>
+<td align="center">10,08</td>
+<td align="left">séquentielle avec critère <span class="math inline">\(\mathsf{AIC}\)</span> (choix selon le <span class="math inline">\(\mathsf{BIC}\)</span>)</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="center"></td>
+<td align="center">10,57</td>
+<td align="left">moyenne de modèles</td>
+</tr>
+</tbody>
+</table>
+<p>Dans cet exemple, la méthode séquentielle de <code>glmselect</code> avec les options <code>select=aic</code> et <code>choose=bic</code> aurait donné le meilleur résultat pour prévoir le montant acheté des clients restants (de ceux qui auraient acheté quelque chose). Le deuxième meilleur aurait été la moyenne des modèles.</p>
+<p>Il y aurait plusieurs autres approches/combinaisons qui pourraient être testées. Le but de ce chapitre était simplement de présenter les principes de base en sélection de modèles et de variables ainsi que certaines approches pratiques. Il y a d’autres approches intéressantes, tels le LASSO et LARS (<em>least-angle regression</em>) qui sont disponibles dans <code>glmselect</code>. Ces méthodes sont dans la même mouvance moderne que celle qui consiste à faire la moyenne de plusieurs modèles, en performant à la fois une sélection de variables et en permettant d’avoir des parties d’effet par le rétrécissement (<em>shrinkage</em>). De récents développements théoriques permettent de corriger les valeurs-<em>p</em> pour faire de l’inférence post-sélection.</p>
+<p>Il faut bien comprendre qu’il ne s’agit que d’un seul exemple: il ne faut surtout pas conclure que la méthode séquentielle de <code>glmselect</code> avec les options <code>select=aic</code> et <code>choose=bic</code> sera toujours la meilleure. En fait, il est impossible de prévoir quelle méthode donnera les meilleurs résultats.</p>
+
 </div>
 </div>
             </section>
