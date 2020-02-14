@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapitre 4 Régression logistique | Analyse multidimensionnelle appliquée</title>
   <meta name="description" content="Ce recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
-  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapitre 4 Régression logistique | Analyse multidimensionnelle appliquée" />
   <meta property="og:type" content="book" />
@@ -131,7 +131,9 @@
 <li class="chapter" data-level="4.4.2" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#interprétation-du-paramètre"><i class="fa fa-check"></i><b>4.4.2</b> Interprétation du paramètre</a></li>
 <li class="chapter" data-level="4.4.3" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#modèle-avec-toutes-les-variables-explicatives"><i class="fa fa-check"></i><b>4.4.3</b> Modèle avec toutes les variables explicatives</a></li>
 <li class="chapter" data-level="4.4.4" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#test-du-rapport-de-vraisemblance"><i class="fa fa-check"></i><b>4.4.4</b> Test du rapport de vraisemblance</a></li>
+<li class="chapter" data-level="4.4.5" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#multicolinéarité"><i class="fa fa-check"></i><b>4.4.5</b> Multicolinéarité</a></li>
 </ul></li>
+<li class="chapter" data-level="4.5" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#classification-et-prédiction-à-laide-de-la-régression-logistique"><i class="fa fa-check"></i><b>4.5</b> Classification et prédiction à l’aide de la régression logistique</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -455,9 +457,64 @@ pval=1-CDF(&#39;CHISQ&#39;, 566.447 - 516.196, 2);
 run;
 proc print data=pval;
 run;</code></pre>
-<p>Comme la statistique du test de rapport de vraisemblance <span class="math inline">\(D=49,487\)</span> est encore plus grande</p>
-
+<p>Comme la statistique du test de rapport de vraisemblance <span class="math inline">\(D=50,25\)</span> est encore plus grande est encore plus grande que la statistique de Wald (42,9364), qui suit la même loi de probabilité sous <span class="math inline">\(\mathcal{H}_0\)</span>, cela indique que le test du rapport de vraisemblance est encore plus significatif que le test de Wald. Cela ne fait pas de différence ici mais, dans certains cas, il est possible que le test de Wald ne soit pas significatif (valeur-<span class="math inline">\(p\)</span> plus grande que 0,05) tandis que le test du rapport de vraisemblance le soit (valeur-<span class="math inline">\(p\)</span> inférieure à 0,05).</p>
 </div>
+<div id="multicolinéarité" class="section level3">
+<h3><span class="header-section-number">4.4.5</span> Multicolinéarité</h3>
+<p>Rappelez-vous que le terme multicolinéarité fait référence à la situation où les variables explicatives sont très corrélées entre elles ou bien, plus généralement, à la situation où une (ou plusieurs) variable(s) explicative(s) est (sont) très corrélée(s) à une combinaison linéaire des autres variables explicatives.</p>
+<p>L’effet potentiellement néfaste de la multicolinéarité est le même qu’en régression linéaire, c’est-à-dire, elle peut réduire la précision des estimations des paramètres (augmenter leurs écarts-types estimés).</p>
+<p>En pratique, le problème est qu’il devient difficile de départager l’effet individuel d’une variable explicative lorsqu’elle est fortement corrélée avec d’autres variables explicatives.</p>
+<p>Comme la multicolinéarité est une propriété des variables explicatives (le <span class="math inline">\(Y\)</span> n’intervient pas) on peut utiliser les mêmes outils qu’en régression linéaire pour tenter de la détecter, par exemple, le facteur d’inflation de la variance (<em>variance inflation factor</em>). Cette quantité ne dépend que des variables explicatives <span class="math inline">\(\boldsymbol{X}\)</span>, pas du modèle ou de la variable réponse.</p>
+<p>La multicolinéarité est surtout un problème lorsque vient le temps d’interpréter et tester l’effet des paramètres individuels. Si le but est seulement de faire de la classification (prédiction) et que l’interprétation des paramètres individuels n’est pas cruciale alors il n’y a pas lieu de se soucier de la multicolinéarité. Il faut alors plutôt comparer correctement la performance de classification des modèles en utilisant des méthodes permettant d’obtenir un bon modèle tout en se protégeant contre le surajustement. Certaines de ces méthodes (division de l’échantillon, validation croisée) ont déjà été présentées.</p>
+</div>
+</div>
+<div id="classification-et-prédiction-à-laide-de-la-régression-logistique" class="section level2">
+<h2><span class="header-section-number">4.5</span> Classification et prédiction à l’aide de la régression logistique</h2>
+<p>Une des utilisations les plus fréquentes de la régression logistique est de se servir d’un modèle ajusté pour obtenir des prédictions. Une fois qu’on a ajusté un modèle,
+on peut l’utiliser pour prévoir la valeur de Y pour de nouvelles observations. Ceci consiste à assigner une classe (0 ou 1) à ces observations (pour lesquels <span class="math inline">\(Y\)</span> est inconnue) à partir des valeurs prises par <span class="math inline">\(X_1, \ldots, X_p\)</span>.</p>
+<p>Le modèle ajusté nous fournit une estimation de <span class="math inline">\({\mathsf P}\left(Y=1 \mid \boldsymbol{X}=\boldsymbol{x}\right)\)</span> pour des valeurs <span class="math inline">\(X_1=x_1, \ldots, X_p=x_p\)</span> données. Cet estimé est
+<span class="math display">\[\begin{align*}
+ \hat{p} = \frac{1}{1+ \exp\{- ( \hat{\beta}_0 + \hat{\beta}_1x_1 + \cdots + \hat{\beta}_p x_p)\}}.
+\end{align*}\]</span></p>
+<p>Classification de base: pour classifier des observations, il suffit de choisir un point de coupure <span class="math inline">\(c\)</span>, souvent <span class="math inline">\(c=0,5\)</span>, et de classifier une observation de la manière suivante:</p>
+<ul>
+<li>Si <span class="math inline">\(\hat{p} &lt; c\)</span>, alors <span class="math inline">\(\hat{Y}=0\)</span> (c’est-à-dire, on assigne cette observation à la catégorie zéro).</li>
+<li>Si <span class="math inline">\(\hat{p} \geq c\)</span>, alors <span class="math inline">\(\hat{Y}=1\)</span> (c’est-à-dire, on assigne cette observation à la catégorie 1).</li>
+</ul>
+<p>Si on prend <span class="math inline">\(c=0,5\)</span> comme point de coupure, cela revient à assigner l’observation à la classe (catégorie) la plus probable, un choix fort raisonnable. Nous verrons dans une section suivante que, lorsque les conséquences de faussement classifier une observation à 0 lorsqu’elle vaut 1 en réalité et que les conséquences de faussement classifier une observation à 1 lorsqu’elle vaut 0 en réalité, ne sont pas les mêmes, il peut être avantageux d’utiliser un autre point de coupure.</p>
+<p>Dans un cadre de prédiction, il nous faudra un critère pour juger de la qualité de l’ajustement du modèle.
+Rappelez-vous que pour une réponse continue, nous avons utilisé l’erreur moyenne quadratique,
+<span class="math inline">\(\mathsf{EMQ} = {\mathsf E}\left((Y-\hat{Y})^2\right)\)</span>,
+pour juger de la performance d’un modèle. Comme la réponse <span class="math inline">\(Y\)</span> est binaire ici, nous allons utiliser des critères différents.</p>
+<p>Voyons d’abord un premier critère pour juger de la qualité d’un modèle de prédiction. Soit <span class="math inline">\(Y\)</span> la vraie valeur de la réponse binaire et <span class="math inline">\(\hat{Y}\)</span> (soit 0 ou 1) la valeur de <span class="math inline">\(Y\)</span> prédite par un modèle pour une observation choisie au hasard dans la population. Un premier critère pour juger de la performance d’un modèle est <span class="math inline">\({\mathsf P}\left(Y \neq\hat{Y}\right)\)</span>, soit la probabilité de mal classifier une observation choisie au hasard dans
+la population. Ce critère est le <strong>taux de mauvaise classification</strong>. Plus <span class="math inline">\({\mathsf P}\left(Y \neq\hat{Y}\right)\)</span> est petite, meilleure est la capacité prédictive du modèle.</p>
+<p>Tout comme l’erreur moyenne quadratique, on ne peut pas calculer exactement le taux de mauvaise classification; tout au plus peut-on l’estimer. Pour les raisons vues au chapitre précédent, l’estimer en
+calculant le taux de mauvaise classification des observations ayant servi à
+l’ajustement du modèle sans aucune correction n’est pas une bonne approche.
+Les approches couvertes dans le dernier chapitre pour l’estimation de l’erreur moyenne quadratique, telles la validation-croisée et la
+division de l’échantillon, peuvent être utilisées pour estimer le taux de mauvaise classification <span class="math inline">\({\mathsf P}\left(Y \neq \hat{Y}\right)\)</span>.</p>
+<p>Cette utilisation d’un modèle de régression logistique sera illustrée avec l’exemple que nous avons traité au chapitre précédent. Rappelez-vous le contexte. Un catalogue a été envoyé à un échantillon de 1000 clients. Le but final est de construire un modèle, avec ces 1000 clients, afin de cibler lesquels des 100 000 clients restants seront choisis pour recevoir le catalogue. Les 1000 clients forment l’échantillon d’apprentissage.</p>
+<p>Des données sont disponibles pour les 1000 clients. Les variables cibles sont:</p>
+<ul>
+<li><code>yachat</code>: variable binaire égale à un si le client a acheté quelque chose dans le catalogue et zéro sinon.</li>
+<li><code>ymontant</code>: le montant de l’achat si le client a acheté quelque chose</li>
+</ul>
+<p>Les 10 variables suivantes sont disponibles pour tous les clients et serviront de variables explicatives,</p>
+<ul>
+<li><code>x1</code>: sexe de l’individu, soit homme (0) ou femme (1);</li>
+<li><code>x2</code>: l’âge (en année);</li>
+<li><code>x3</code>: variable catégorielle indiquant le revenu, soit moins de 35 000$ (1), entre 35 000$ et 75 000$ (2) ou plus de 75 000$ (3);</li>
+<li><code>x4</code>: variable catégorielle indiquant la région où habite le client (de 1 à 5);</li>
+<li><code>x5</code>: conjoint : le client a-t-il un conjoint (0=non, 1=oui);</li>
+<li><code>x6</code>: nombre d’année depuis que le client est avec la compagnie;</li>
+<li><code>x7</code>: nombre de semaines depuis le dernier achat;</li>
+<li><code>x8</code>: montant (en dollars) du dernier achat;</li>
+<li><code>x9</code>: montant total (en dollars) dépensé depuis un an;</li>
+<li><code>x10</code>: nombre d’achats différents depuis un an.</li>
+</ul>
+<p>Dans le chapitre précédent, nous avons cherché à développer un modèle pour prévoir <code>ymontant</code>, le montant dépensé, étant donné que le client achète quelque chose. Cette fois-ci, nous allons travailler avec la variable <code>yachat</code>, qui est binaire, à l’aide de la régression logistique.</p>
+<p>Afin d’introduire différentes notions, nous allons, dans un premier temps, simplement utiliser les 10 variables de base. À partir de la section suivante, nous chercherons à optimiser le modèle en considérant les interactions d’ordre deux. Pour ce faire, nous utiliserons des méthodes de sélections de variables. Les commandes se trouvent dans le fichier <code>logit2_classification_base.sas</code>. Dans le code qui suit, le fichier <code>train</code> contient les 1000 clients de l’échantillon d’apprentissage et le fichier <code>test</code> contient les 100 000 clients pour lesquels on vet prédire l’intention d’achat.</p>
+
 </div>
 </div>
             </section>

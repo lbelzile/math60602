@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapitre 3 Sélection de variables et de modèles | Analyse multidimensionnelle appliquée</title>
   <meta name="description" content="Ce recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
-  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapitre 3 Sélection de variables et de modèles | Analyse multidimensionnelle appliquée" />
   <meta property="og:type" content="book" />
@@ -131,7 +131,9 @@
 <li class="chapter" data-level="4.4.2" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#interprétation-du-paramètre"><i class="fa fa-check"></i><b>4.4.2</b> Interprétation du paramètre</a></li>
 <li class="chapter" data-level="4.4.3" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#modèle-avec-toutes-les-variables-explicatives"><i class="fa fa-check"></i><b>4.4.3</b> Modèle avec toutes les variables explicatives</a></li>
 <li class="chapter" data-level="4.4.4" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#test-du-rapport-de-vraisemblance"><i class="fa fa-check"></i><b>4.4.4</b> Test du rapport de vraisemblance</a></li>
+<li class="chapter" data-level="4.4.5" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#multicolinéarité"><i class="fa fa-check"></i><b>4.4.5</b> Multicolinéarité</a></li>
 </ul></li>
+<li class="chapter" data-level="4.5" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#classification-et-prédiction-à-laide-de-la-régression-logistique"><i class="fa fa-check"></i><b>4.5</b> Classification et prédiction à l’aide de la régression logistique</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -274,108 +276,263 @@ run;</code></pre>
 <img src="figures/02-select-e2.png" width="70%" style="display: block; margin: auto;" /></p>
 <p>Le tableau qui suit résume ces quantités pour tous les modèles de l’ordre 1 à l’ordre 10.</p>
 <table>
-<caption><span id="tab:02-table1">Tableau 3.1: </span>Mesures d’adéquation du modèle linéaire et estimés de l’erreur</caption>
+<caption>
+<span id="tab:02-table1">Tableau 3.1: </span>Mesures d’adéquation du modèle linéaire et estimés de l’erreur
+</caption>
 <thead>
-<tr class="header">
-<th></th>
-<th align="right"><span class="math inline">\(\mathsf{EMQ}\)</span></th>
-<th align="right"><span class="math inline">\(\widehat{\mathsf{EMQ}}_a\)</span></th>
-<th align="right"><span class="math inline">\(R^2\)</span></th>
-<th align="right"><span class="math inline">\(R^2_a\)</span></th>
-<th align="right"><span class="math inline">\(\mathsf{AIC}\)</span></th>
-<th align="right"><span class="math inline">\(\mathsf{BIC}\)</span></th>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\mathsf{EMQ}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\widehat{\mathsf{EMQ}}_a\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(R^2\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(R^2_a\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\mathsf{AIC}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\mathsf{BIC}\)</span>
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td>1</td>
-<td align="right">3191.29</td>
-<td align="right">3674.20</td>
-<td align="right">0.65</td>
-<td align="right">0.65</td>
-<td align="right">1110.70</td>
-<td align="right">1118.51</td>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+3191.29
+</td>
+<td style="text-align:right;">
+3674.20
+</td>
+<td style="text-align:right;">
+0.65
+</td>
+<td style="text-align:right;">
+0.65
+</td>
+<td style="text-align:right;">
+1110.70
+</td>
+<td style="text-align:right;">
+1118.51
+</td>
 </tr>
-<tr class="even">
-<td>2</td>
-<td align="right">3132.67</td>
-<td align="right">2879.24</td>
-<td align="right">0.73</td>
-<td align="right">0.72</td>
-<td align="right">1088.32</td>
-<td align="right">1098.74</td>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:right;">
+3132.67
+</td>
+<td style="text-align:right;">
+2879.24
+</td>
+<td style="text-align:right;">
+0.73
+</td>
+<td style="text-align:right;">
+0.72
+</td>
+<td style="text-align:right;">
+1088.32
+</td>
+<td style="text-align:right;">
+1098.74
+</td>
 </tr>
-<tr class="odd">
-<td>3</td>
-<td align="right">2697.40</td>
-<td align="right">2620.05</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1080.88</td>
-<td align="right">1093.91</td>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:right;">
+2697.40
+</td>
+<td style="text-align:right;">
+2620.05
+</td>
+<td style="text-align:right;">
+0.75
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+1080.88
+</td>
+<td style="text-align:right;">
+1093.91
+</td>
 </tr>
-<tr class="even">
-<td>4</td>
-<td align="right">2766.68</td>
-<td align="right">2581.70</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1081.41</td>
-<td align="right">1097.04</td>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:right;">
+2766.68
+</td>
+<td style="text-align:right;">
+2581.70
+</td>
+<td style="text-align:right;">
+0.75
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+1081.41
+</td>
+<td style="text-align:right;">
+1097.04
+</td>
 </tr>
-<tr class="odd">
-<td>5</td>
-<td align="right">2771.05</td>
-<td align="right">2580.86</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1083.38</td>
-<td align="right">1101.61</td>
+<tr>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:right;">
+2771.05
+</td>
+<td style="text-align:right;">
+2580.86
+</td>
+<td style="text-align:right;">
+0.75
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+1083.38
+</td>
+<td style="text-align:right;">
+1101.61
+</td>
 </tr>
-<tr class="even">
-<td>6</td>
-<td align="right">2779.66</td>
-<td align="right">2577.60</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1085.25</td>
-<td align="right">1106.09</td>
+<tr>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:right;">
+2779.66
+</td>
+<td style="text-align:right;">
+2577.60
+</td>
+<td style="text-align:right;">
+0.75
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+1085.25
+</td>
+<td style="text-align:right;">
+1106.09
+</td>
 </tr>
-<tr class="odd">
-<td>7</td>
-<td align="right">2780.21</td>
-<td align="right">2577.49</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1087.24</td>
-<td align="right">1110.69</td>
+<tr>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:right;">
+2780.21
+</td>
+<td style="text-align:right;">
+2577.49
+</td>
+<td style="text-align:right;">
+0.75
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+1087.24
+</td>
+<td style="text-align:right;">
+1110.69
+</td>
 </tr>
-<tr class="even">
-<td>8</td>
-<td align="right">2797.35</td>
-<td align="right">2531.00</td>
-<td align="right">0.76</td>
-<td align="right">0.74</td>
-<td align="right">1087.42</td>
-<td align="right">1113.48</td>
+<tr>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:right;">
+2797.35
+</td>
+<td style="text-align:right;">
+2531.00
+</td>
+<td style="text-align:right;">
+0.76
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+1087.42
+</td>
+<td style="text-align:right;">
+1113.48
+</td>
 </tr>
-<tr class="odd">
-<td>9</td>
-<td align="right">2811.07</td>
-<td align="right">2527.85</td>
-<td align="right">0.76</td>
-<td align="right">0.73</td>
-<td align="right">1089.30</td>
-<td align="right">1117.96</td>
+<tr>
+<td style="text-align:left;">
+9
+</td>
+<td style="text-align:right;">
+2811.07
+</td>
+<td style="text-align:right;">
+2527.85
+</td>
+<td style="text-align:right;">
+0.76
+</td>
+<td style="text-align:right;">
+0.73
+</td>
+<td style="text-align:right;">
+1089.30
+</td>
+<td style="text-align:right;">
+1117.96
+</td>
 </tr>
-<tr class="even">
-<td>10</td>
-<td align="right">2848.81</td>
-<td align="right">2519.14</td>
-<td align="right">0.76</td>
-<td align="right">0.73</td>
-<td align="right">1090.95</td>
-<td align="right">1122.22</td>
+<tr>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:right;">
+2848.81
+</td>
+<td style="text-align:right;">
+2519.14
+</td>
+<td style="text-align:right;">
+0.76
+</td>
+<td style="text-align:right;">
+0.73
+</td>
+<td style="text-align:right;">
+1090.95
+</td>
+<td style="text-align:right;">
+1122.22
+</td>
 </tr>
 </tbody>
 </table>
@@ -389,7 +546,7 @@ On voit que le augmente toujours au fur et à mesure qu’on ajoute une variable
 <p>Ces deux méthodes s’attaquent directement au problème qu’on ne peut utiliser (sans ajustement) les mêmes données qui ont servi à estimer les paramètres d’un modèle pour estimer sa performance. Pour ce faire, l’échantillon de départ est divisé en deux, ou plusieurs parties, qui vont jouer des rôles différents.</p>
 <div id="division-de-léchantillon" class="section level3">
 <h3><span class="header-section-number">3.7.1</span> Division de l’échantillon</h3>
-<p>Cette idée est très simple. Nous avons un échantillon de taille n. Nous pouvons le diviser au hasard en deux parties de tailles respectives <span class="math inline">\(n_1\)</span> et <span class="math inline">\(n_2\)</span> (<span class="math inline">\(n_1+n_2=n\)</span>),</p>
+<p>Cette idée est très simple. Nous avons un échantillon de taille n. Nous pouvons le diviser au hasard en deux parties de tailles respectives <span class="math inline">\(n_1\)</span> et <span class="math inline">\(n_2\)</span> (<span class="math inline">\(n_1+n_2=n\)</span>),</p>
 <ul>
 <li>un échantillon d’apprentissage (<em>training</em>) de taille <span class="math inline">\(n_1\)</span> et</li>
 <li>un échantillon de validation de taille <span class="math inline">\(n_2\)</span>.</li>
@@ -419,119 +576,296 @@ On voit que le augmente toujours au fur et à mesure qu’on ajoute une variable
 <p>Le fichier <code>selection3_cv.sas</code> contient une macro SAS permettant de faire une validation croisée pour un modèle de régression linéaire.
 Revenons à notre exemple où une seule variable explicative est disponible et où l’on cherche à déterminer un bon modèle polynomial. Le Tableau <a href="sélection-de-variables-et-de-modèles-1.html#tab:02-table2">3.2</a> est le même que le Tableau <a href="sélection-de-variables-et-de-modèles-1.html#tab:02-table1">3.1</a> mais avec une colonne en plus, la dernière, <span class="math inline">\(\mathsf{VC} (K=10)\)</span>. Il s’agit des estimations du <span class="math inline">\(\mathsf{EMQ}\)</span> obtenues avec la validation croisée à 10 groupes. Notez que si vous exécutez le programme, vous n’obtiendrez pas les mêmes valeurs car il y a un élément aléatoire dans ce processus. La colonne représente la moyenne de 100 réplications.</p>
 <table>
-<caption><span id="tab:02-table2">Tableau 3.2: </span>Mesures d’adéquation du modèle linéaire et estimés de l’erreur, incluant la validation croisée.</caption>
+<caption>
+<span id="tab:02-table2">Tableau 3.2: </span>Mesures d’adéquation du modèle linéaire et estimés de l’erreur, incluant la validation croisée.
+</caption>
 <thead>
-<tr class="header">
-<th></th>
-<th align="right"><span class="math inline">\(\mathsf{EMQ}\)</span></th>
-<th align="right"><span class="math inline">\(\widehat{\mathsf{EMQ}}_a\)</span></th>
-<th align="right"><span class="math inline">\(R^2\)</span></th>
-<th align="right"><span class="math inline">\(R^2_a\)</span></th>
-<th align="right"><span class="math inline">\(\mathsf{AIC}\)</span></th>
-<th align="right"><span class="math inline">\(\mathsf{BIC}\)</span></th>
-<th align="right"><span class="math inline">\(\mathsf{VC} (K=10)\)</span></th>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\mathsf{EMQ}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\widehat{\mathsf{EMQ}}_a\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(R^2\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(R^2_a\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\mathsf{AIC}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\mathsf{BIC}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\mathsf{VC} (K=10)\)</span>
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td>1</td>
-<td align="right">3191.29</td>
-<td align="right">3674.20</td>
-<td align="right">0.65</td>
-<td align="right">0.65</td>
-<td align="right">1110.70</td>
-<td align="right">1118.51</td>
-<td align="right">3675.37</td>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+3191.29
+</td>
+<td style="text-align:right;">
+3674.20
+</td>
+<td style="text-align:right;">
+0.65
+</td>
+<td style="text-align:right;">
+0.65
+</td>
+<td style="text-align:right;">
+1110.70
+</td>
+<td style="text-align:right;">
+1118.51
+</td>
+<td style="text-align:right;">
+3675.37
+</td>
 </tr>
-<tr class="even">
-<td>2</td>
-<td align="right">3132.67</td>
-<td align="right">2879.24</td>
-<td align="right">0.73</td>
-<td align="right">0.72</td>
-<td align="right">1088.32</td>
-<td align="right">1098.74</td>
-<td align="right">2897.94</td>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:right;">
+3132.67
+</td>
+<td style="text-align:right;">
+2879.24
+</td>
+<td style="text-align:right;">
+0.73
+</td>
+<td style="text-align:right;">
+0.72
+</td>
+<td style="text-align:right;">
+1088.32
+</td>
+<td style="text-align:right;">
+1098.74
+</td>
+<td style="text-align:right;">
+2897.94
+</td>
 </tr>
-<tr class="odd">
-<td>3</td>
-<td align="right">2697.40</td>
-<td align="right">2620.05</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1080.88</td>
-<td align="right">1093.91</td>
-<td align="right">2675.51</td>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:right;">
+2697.40
+</td>
+<td style="text-align:right;">
+2620.05
+</td>
+<td style="text-align:right;">
+0.75
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+1080.88
+</td>
+<td style="text-align:right;">
+1093.91
+</td>
+<td style="text-align:right;">
+2675.51
+</td>
 </tr>
-<tr class="even">
-<td>4</td>
-<td align="right">2766.68</td>
-<td align="right">2581.70</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1081.41</td>
-<td align="right">1097.04</td>
-<td align="right">2666.16</td>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:right;">
+2766.68
+</td>
+<td style="text-align:right;">
+2581.70
+</td>
+<td style="text-align:right;">
+0.75
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+1081.41
+</td>
+<td style="text-align:right;">
+1097.04
+</td>
+<td style="text-align:right;">
+2666.16
+</td>
 </tr>
-<tr class="odd">
-<td>5</td>
-<td align="right">2771.05</td>
-<td align="right">2580.86</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1083.38</td>
-<td align="right">1101.61</td>
-<td align="right">2711.11</td>
+<tr>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:right;">
+2771.05
+</td>
+<td style="text-align:right;">
+2580.86
+</td>
+<td style="text-align:right;">
+0.75
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+1083.38
+</td>
+<td style="text-align:right;">
+1101.61
+</td>
+<td style="text-align:right;">
+2711.11
+</td>
 </tr>
-<tr class="even">
-<td>6</td>
-<td align="right">2779.66</td>
-<td align="right">2577.60</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1085.25</td>
-<td align="right">1106.09</td>
-<td align="right">2757.13</td>
+<tr>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:right;">
+2779.66
+</td>
+<td style="text-align:right;">
+2577.60
+</td>
+<td style="text-align:right;">
+0.75
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+1085.25
+</td>
+<td style="text-align:right;">
+1106.09
+</td>
+<td style="text-align:right;">
+2757.13
+</td>
 </tr>
-<tr class="odd">
-<td>7</td>
-<td align="right">2780.21</td>
-<td align="right">2577.49</td>
-<td align="right">0.75</td>
-<td align="right">0.74</td>
-<td align="right">1087.24</td>
-<td align="right">1110.69</td>
-<td align="right">2787.95</td>
+<tr>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:right;">
+2780.21
+</td>
+<td style="text-align:right;">
+2577.49
+</td>
+<td style="text-align:right;">
+0.75
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+1087.24
+</td>
+<td style="text-align:right;">
+1110.69
+</td>
+<td style="text-align:right;">
+2787.95
+</td>
 </tr>
-<tr class="even">
-<td>8</td>
-<td align="right">2797.35</td>
-<td align="right">2531.00</td>
-<td align="right">0.76</td>
-<td align="right">0.74</td>
-<td align="right">1087.42</td>
-<td align="right">1113.48</td>
-<td align="right">2845.78</td>
+<tr>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:right;">
+2797.35
+</td>
+<td style="text-align:right;">
+2531.00
+</td>
+<td style="text-align:right;">
+0.76
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+1087.42
+</td>
+<td style="text-align:right;">
+1113.48
+</td>
+<td style="text-align:right;">
+2845.78
+</td>
 </tr>
-<tr class="odd">
-<td>9</td>
-<td align="right">2811.07</td>
-<td align="right">2527.85</td>
-<td align="right">0.76</td>
-<td align="right">0.73</td>
-<td align="right">1089.30</td>
-<td align="right">1117.96</td>
-<td align="right">2895.61</td>
+<tr>
+<td style="text-align:left;">
+9
+</td>
+<td style="text-align:right;">
+2811.07
+</td>
+<td style="text-align:right;">
+2527.85
+</td>
+<td style="text-align:right;">
+0.76
+</td>
+<td style="text-align:right;">
+0.73
+</td>
+<td style="text-align:right;">
+1089.30
+</td>
+<td style="text-align:right;">
+1117.96
+</td>
+<td style="text-align:right;">
+2895.61
+</td>
 </tr>
-<tr class="even">
-<td>10</td>
-<td align="right">2848.81</td>
-<td align="right">2519.14</td>
-<td align="right">0.76</td>
-<td align="right">0.73</td>
-<td align="right">1090.95</td>
-<td align="right">1122.22</td>
-<td align="right">2976.04</td>
+<tr>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:right;">
+2848.81
+</td>
+<td style="text-align:right;">
+2519.14
+</td>
+<td style="text-align:right;">
+0.76
+</td>
+<td style="text-align:right;">
+0.73
+</td>
+<td style="text-align:right;">
+1090.95
+</td>
+<td style="text-align:right;">
+1122.22
+</td>
+<td style="text-align:right;">
+2976.04
+</td>
 </tr>
 </tbody>
 </table>
@@ -627,37 +961,67 @@ En mots, la moyenne du montant dépensé est égale à la moyenne du montant dé
 Mais lorsqu’il y a plusieurs variables en jeu, le nombre de modèles potentiel augmente très rapidement.</p>
 <p>En fait, supposons qu’on a <span class="math inline">\(p\)</span> variables distinctes disponibles. Avant même de considérer les transformations des variables et les interactions entre elles, il y a déjà modèles possibles. En effet, chaque variable est soit incluse ou pas (deux possibilités) et donc il y a <span class="math inline">\(2^p=2\times 2 \times \cdots \times 2\)</span> (<span class="math inline">\(p\)</span> fois) modèles en tout à considérer. Ce nombre augmente très rapidement comme en témoigne le tableau <a href="sélection-de-variables-et-de-modèles-1.html#tab:02-table3">3.3</a>.</p>
 <table>
-<caption><span id="tab:02-table3">Tableau 3.3: </span>Nombres de modèles en fonction du nombre de paramètres <span class="math inline">\(p\)</span>.</caption>
+<caption>
+<span id="tab:02-table3">Tableau 3.3: </span>Nombres de modèles en fonction du nombre de paramètres <span class="math inline">\(p\)</span>.
+</caption>
 <thead>
-<tr class="header">
-<th align="right"><span class="math inline">\(p\)</span></th>
-<th align="right">nombre de paramètres</th>
+<tr>
+<th style="text-align:right;">
+<span class="math inline">\(p\)</span>
+</th>
+<th style="text-align:right;">
+nombre de paramètres
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="right">5</td>
-<td align="right">32</td>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+32
+</td>
 </tr>
-<tr class="even">
-<td align="right">10</td>
-<td align="right">1024</td>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+1024
+</td>
 </tr>
-<tr class="odd">
-<td align="right">15</td>
-<td align="right">32768</td>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+32768
+</td>
 </tr>
-<tr class="even">
-<td align="right">20</td>
-<td align="right">1048576</td>
+<tr>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+1048576
+</td>
 </tr>
-<tr class="odd">
-<td align="right">25</td>
-<td align="right">33554432</td>
+<tr>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+33554432
+</td>
 </tr>
-<tr class="even">
-<td align="right">30</td>
-<td align="right">1073741824</td>
+<tr>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+1073741824
+</td>
 </tr>
 </tbody>
 </table>

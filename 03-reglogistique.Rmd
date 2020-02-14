@@ -346,4 +346,78 @@ run;
 proc print data=pval;
 run;
 ```
-Comme la statistique du test de rapport de vraisemblance $D=49,487$ est encore plus grande 
+Comme la statistique du test de rapport de vraisemblance $D=50,25$ est encore plus grande est encore plus grande que la statistique de Wald (42,9364), qui suit la même loi de probabilité sous $\Hy_0$, cela indique que le test du rapport de vraisemblance est encore plus significatif que le test de Wald. Cela ne fait pas de différence ici mais, dans certains cas, il est possible que le test de Wald ne soit pas significatif (valeur-$p$ plus grande que 0,05) tandis que le test du rapport de vraisemblance le soit (valeur-$p$ inférieure à 0,05). 
+
+### Multicolinéarité
+
+Rappelez-vous que le terme multicolinéarité fait référence à la situation où les variables explicatives sont très corrélées entre elles ou bien, plus généralement, à la situation où une (ou plusieurs) variable(s) explicative(s) est (sont) très corrélée(s) à une combinaison linéaire des autres variables explicatives.
+
+L’effet potentiellement néfaste de la multicolinéarité est le même qu’en régression linéaire, c’est-à-dire, elle peut réduire la précision des estimations des paramètres (augmenter leurs écarts-types estimés).
+
+En pratique, le problème est qu’il devient difficile de départager l’effet individuel d’une variable explicative lorsqu’elle est fortement corrélée avec d’autres variables explicatives.
+
+Comme la multicolinéarité est une propriété des variables explicatives (le $Y$ n’intervient pas) on peut utiliser les mêmes outils qu’en régression linéaire pour tenter de la détecter, par exemple, le facteur d'inflation de la variance (_variance inflation factor_). Cette quantité ne dépend que des variables explicatives $\bs{X}$, pas du modèle ou de la variable réponse.
+
+La multicolinéarité est surtout un problème lorsque vient le temps d’interpréter et tester l’effet des paramètres individuels. Si le but est seulement de faire de la classification (prédiction) et que l’interprétation des paramètres individuels n’est pas cruciale alors il n’y a pas lieu de se soucier de la multicolinéarité. Il faut alors plutôt comparer correctement la performance de classification des modèles en utilisant des méthodes permettant d’obtenir un bon modèle tout en se protégeant contre le surajustement. Certaines de ces méthodes (division de l’échantillon, validation croisée) ont déjà été présentées.
+
+## Classification et prédiction à l’aide de la régression logistique
+
+
+Une des utilisations les plus fréquentes de la régression logistique est de se servir d’un modèle ajusté pour obtenir des prédictions.  Une fois qu’on a ajusté un modèle,
+on peut l’utiliser pour prévoir la valeur de Y pour de nouvelles observations. Ceci consiste à assigner une classe (0 ou 1) à ces observations (pour lesquels $Y$ est inconnue) à partir des valeurs prises par $X_1, \ldots, X_p$.
+
+Le modèle ajusté nous fournit une estimation de $\P{Y=1 \mid \bs{X}=\bs{x}}$ pour des valeurs $X_1=x_1, \ldots, X_p=x_p$ données. Cet estimé est
+\begin{align*}
+ \hat{p} = \frac{1}{1+ \exp\{- ( \hat{\beta}_0 + \hat{\beta}_1x_1 + \cdots + \hat{\beta}_p x_p)\}}.
+\end{align*}
+
+
+Classification de base: pour classifier des observations, il suffit de choisir un point de coupure $c$, souvent $c=0,5$, et de classifier une observation de la manière suivante:
+
+- Si $\hat{p} < c$, alors $\hat{Y}=0$ (c’est-à-dire, on assigne cette observation à la catégorie zéro).
+- Si $\hat{p} \geq c$, alors $\hat{Y}=1$ (c’est-à-dire, on assigne cette observation à la catégorie 1).
+
+Si on prend $c=0,5$ comme point de coupure, cela revient à assigner l’observation à la classe (catégorie) la plus probable, un choix fort raisonnable. Nous verrons dans une section suivante que, lorsque les conséquences de faussement classifier une observation à 0 lorsqu’elle vaut 1 en réalité et que les conséquences de faussement classifier une observation à 1 lorsqu’elle vaut 0 en réalité, ne sont pas les mêmes, il peut être avantageux d’utiliser un autre point de coupure.
+
+
+Dans un cadre de prédiction, il nous faudra un critère pour juger de la qualité de l'ajustement du modèle.
+Rappelez-vous que pour une réponse continue, nous avons utilisé l'erreur moyenne quadratique,
+$\mathsf{EMQ} = \E{(Y-\hat{Y})^2}$,
+pour juger de la performance d’un modèle. Comme la réponse $Y$ est binaire ici, nous allons utiliser des critères différents.
+
+Voyons d’abord un premier critère pour juger de la qualité d’un modèle de prédiction. Soit $Y$ la vraie valeur de la réponse binaire et $\hat{Y}$ (soit 0 ou 1) la valeur de $Y$ prédite par un modèle pour une observation choisie au hasard dans la population. Un premier critère pour juger de la performance d’un modèle est $\P{Y \neq\hat{Y}}$, soit la probabilité de mal classifier une observation choisie au hasard dans
+la population. Ce critère est le **taux de mauvaise classification**. Plus $\P{Y \neq\hat{Y}}$ est petite, meilleure est la capacité prédictive du modèle.
+
+
+Tout comme l'erreur moyenne quadratique, on ne peut pas calculer exactement le taux de mauvaise classification; tout au plus peut-on l'estimer. Pour les raisons vues au chapitre précédent, l’estimer en
+calculant le taux de mauvaise classification des observations ayant servi à
+l’ajustement du modèle sans aucune correction n’est pas une bonne approche.
+Les approches couvertes dans le dernier chapitre pour l'estimation de l'erreur moyenne quadratique, telles la validation-croisée et la
+division de l’échantillon, peuvent être utilisées pour estimer le taux de mauvaise classification $\P{Y \neq \hat{Y}}$.
+
+
+Cette utilisation d’un modèle de régression logistique sera illustrée avec l’exemple que nous avons traité au chapitre précédent. Rappelez-vous le contexte. Un catalogue a été envoyé à un échantillon de 1000 clients. Le but final est de construire un modèle, avec ces 1000 clients, afin de cibler lesquels des 100 000 clients restants seront choisis pour recevoir le catalogue. Les 1000 clients forment l’échantillon d’apprentissage.
+
+Des données sont disponibles pour les 1000 clients. Les variables cibles sont:
+
+- `yachat`: variable binaire égale à un si le client a acheté quelque chose dans le catalogue et zéro sinon.
+- `ymontant`: le montant de l’achat si le client a acheté quelque chose
+
+
+Les 10 variables suivantes sont disponibles pour tous les clients et serviront de variables explicatives,
+
+- `x1`: sexe de l'individu, soit homme (0) ou femme (1);
+- `x2`: l'âge (en année);
+- `x3`: variable catégorielle indiquant le revenu, soit moins de 35 000\$ (1), entre 35 000\$ et 75 000\$ (2) ou plus de 75 000$ (3);
+- `x4`: variable catégorielle indiquant la région où habite le client (de 1 à 5);
+- `x5`: conjoint : le client a-t-il un conjoint (0=non, 1=oui);
+- `x6`: nombre d’année depuis que le client est avec la compagnie;
+- `x7`: nombre de semaines depuis le dernier achat;
+- `x8`: montant (en dollars) du dernier achat;
+- `x9`: montant total (en dollars) dépensé depuis un an;
+- `x10`: nombre d’achats différents depuis un an.
+
+
+Dans le chapitre précédent, nous avons cherché à développer un modèle pour prévoir `ymontant`, le montant dépensé, étant donné que le client achète quelque chose. Cette fois-ci, nous allons travailler avec la variable `yachat`, qui est binaire, à l’aide de la régression logistique. 
+
+Afin d’introduire différentes notions, nous allons, dans un premier temps, simplement utiliser les 10 variables de base. À partir de la section suivante, nous chercherons à optimiser le modèle en considérant les interactions d’ordre deux. Pour ce faire, nous utiliserons des méthodes de sélections de variables. Les commandes se trouvent dans le fichier `logit2_classification_base.sas`. Dans le code qui suit, le fichier `train` contient les 1000 clients de l’échantillon d’apprentissage et le fichier `test` contient les 100 000 clients pour lesquels on vet prédire l'intention d'achat.
