@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
 <head>
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapitre 4 Régression logistique | Analyse multidimensionnelle appliquée</title>
   <meta name="description" content="Ce recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
-  <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapitre 4 Régression logistique | Analyse multidimensionnelle appliquée" />
   <meta property="og:type" content="book" />
@@ -436,7 +436,7 @@ Le modèle ajusté est
 <p>Prenons l’exemple de la variable <span class="math inline">\(X_6\)</span>, qui représente le nombre de fois où l’individu a assisté à un rodéo au cours de la dernière année. Cette variable est modélisée à l’aide de deux variables indicatrices, <span class="math inline">\({\mathbf 1}_{X_6=1}\)</span> égale à un si <span class="math inline">\(X_6=1\)</span> et zéro autrement, et <span class="math inline">\({\mathbf 1}_{X_6=2}\)</span> égale à un si <span class="math inline">\(X_6=2\)</span> et zéro sinon. La catégorie de référence est <span class="math inline">\(X_6=3\)</span>, c’est-à-dire les personnes ayant assisté 5 fois ou moins à un rodéo au cours de la dernière année. Pour tester la significativité globale d’une variable catégorielle qui est modélisée avec plusieurs indicatrices, il faut aller dans le tableau <code>Analyse des effets Type 3</code>. On voit que la statistique de test est 42,9364 et que la valeur-<span class="math inline">\(p\)</span> associée est négligeable: la variable <span class="math inline">\(X_6\)</span> est donc globalement significative. En fait, il s’agit du test conjoint sur toutes les indicatrices associées à cette variable. Plus précisément, il s’agit du test de l’hypothèse nulle <span class="math inline">\(\mathcal{H}_0: \beta_{6_{\texttt{1}}}=\beta_{6_{\texttt{2}}}=0\)</span> versus la contre-hypothèse qu’au moins un de ces deux paramètres est différent de zéro.</p>
 <p>L’interprétation des variables catégorielles est analogue à celle faite en régression linéaire. On peut aussi interpréter individuellement les paramètres des indicatrices: pour <span class="math inline">\({\mathbf 1}_{X_6=1}\)</span>, lorsque les autres variables demeurent fixes, les personnes ayant assisté 10 fois ou plus à un rodéo au cours de la dernière année voient leur cote multipliée par <span class="math inline">\(\exp(2,4122)=11,158\)</span> par rapport aux personnes ayant assisté cinq fois ou moins. Ce paramètre est significativement différent de zéro car sa valeur-<span class="math inline">\(p\)</span> est négligeable (tableau <code>Analyse des valeurs estimées du maximum de vraisemblance</code>); l’intervalle de confiance à 95% pour le rapport de cotes, basé sur la vraisemblance profilée, est [5,456; 23,882] et un n’est pas dans l’intervalle. Ainsi, il y a une différence significative entre les gens qui ont assisté à 10 rodéos ou plus et les gens qui ont assisté à 5 rodéos ou moins, pour ce qui est de l’intérêt à acheter un produit recommandé par le PRCA.</p>
 <p>On procède de la même façon pour <span class="math inline">\({\mathbf 1}_{X_6=2}\)</span>: lorsque les autres variables demeurent fixes, les personnes ayant assisté entre six et neuf fois à un rodéo au cours de la dernière année voient leur cote multipliée par 2,842 par rapport aux personnes ayant assisté 5 fois ou moins. Ce paramètre est aussi significativement différent de zéro. Il y a donc une progression. Plus une personne a assisté à un grand nombre de rodéo au cours de la dernière année, plus elle est intéressée à acheter un produit recommandé par la PRCA.</p>
-<p>Si on désire comparer les deux modalités <span class="math inline">\(X_6=1\)</span> et <span class="math inline">\(X_6=2\)</span>, il suffit de changer la modalité de référence dans la commande CLASS et d’exécuter le modèle à nouveau. Une alternative est de calculer le rapport (de rapport) de cotes pour ces deux modalités.</p>
+<p>Si on désire comparer les deux modalités <span class="math inline">\(X_6=1\)</span> et <span class="math inline">\(X_6=2\)</span>, il suffit de changer la modalité de référence dans la commande <code>class</code> et d’exécuter le modèle à nouveau. Une alternative est de calculer le rapport (de rapport) de cotes pour ces deux modalités.</p>
 </div>
 <div id="test-du-rapport-de-vraisemblance" class="section level3">
 <h3><span class="header-section-number">4.4.4</span> Test du rapport de vraisemblance</h3>
@@ -513,7 +513,16 @@ division de l’échantillon, peuvent être utilisées pour estimer le taux de m
 <li><code>x10</code>: nombre d’achats différents depuis un an.</li>
 </ul>
 <p>Dans le chapitre précédent, nous avons cherché à développer un modèle pour prévoir <code>ymontant</code>, le montant dépensé, étant donné que le client achète quelque chose. Cette fois-ci, nous allons travailler avec la variable <code>yachat</code>, qui est binaire, à l’aide de la régression logistique.</p>
-<p>Afin d’introduire différentes notions, nous allons, dans un premier temps, simplement utiliser les 10 variables de base. À partir de la section suivante, nous chercherons à optimiser le modèle en considérant les interactions d’ordre deux. Pour ce faire, nous utiliserons des méthodes de sélections de variables. Les commandes se trouvent dans le fichier <code>logit2_classification_base.sas</code>. Dans le code qui suit, le fichier <code>train</code> contient les 1000 clients de l’échantillon d’apprentissage et le fichier <code>test</code> contient les 100 000 clients pour lesquels on vet prédire l’intention d’achat.</p>
+<p>Afin d’introduire différentes notions, nous allons, dans un premier temps, simplement utiliser les 10 variables de base. À partir de la section suivante, nous chercherons à optimiser le modèle en considérant les interactions d’ordre deux. Pour ce faire, nous utiliserons des méthodes de sélections de variables. Les commandes se trouvent dans le fichier <code>logit2_classification_base.sas</code>. Dans le code qui suit, le fichier <code>train</code> contient les 1000 clients de l’échantillon d’apprentissage et le fichier <code>test</code> contient les 100 000 clients pour lesquels on veut prédire l’intention d’achat.</p>
+<pre class="sas"><code>proc logistic data=train;
+model yachat(ref=&#39;0&#39;) = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10;
+output out=pred predprobs=crossvalidate;
+run;</code></pre>
+<p>Le modèle utilise seulement les 10 variables de base (en fait 14 avec les indicatrices pour les variables catégorielles). Des prévisions pour les clients restants seront exportées dans le fichier <code>pred</code>, grâce à la commande <code>score</code>. L’option <code>ctable</code> permet d’obtenir la <code>Table de classification</code> (sic). Tel que nous l’avons vu au chapitre précédent, il y a 210 clients qui ont acheté quelque chose parmi les 1000. Les estimations des paramètres sont données dans le tableau qui suit mais ce n’est pas ce qui nous intéresse ici. Le tableau de classification contient des estimations de plusieurs quantités intéressantes, en faisant varier le point de coupure (<code>Niveau de proba</code>). Pour chaque point de coupure, ces estimations ont été obtenues à l’aide d’une approximation de la méthode de validation croisée à <span class="math inline">\(n\)</span> groupes (en anglais, <em>leave-one-out cross-validation</em>, ou LOOCV). Ainsi, ces estimations sont valides car elles ne sont pas obtenues en utilisant les mêmes observations que celles qui ont servi à estimer le modèle.</p>
+<p><img src="figures/03-logistic-e10.png" width="100%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/03-logistic-e11.png" width="100%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/03-logistic-e12.png" width="100%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/03-logistic-e13.png" width="100%" style="display: block; margin: auto;" /></p>
 
 </div>
 </div>

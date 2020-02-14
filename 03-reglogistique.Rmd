@@ -318,7 +318,7 @@ L'interprétation des variables catégorielles est analogue à celle faite en r�
 
 On procède de la même façon pour $\I{X_6=2}$: lorsque les autres variables demeurent fixes, les personnes ayant assisté entre six et neuf fois à un rodéo au cours de la dernière année voient leur cote multipliée par 2,842 par rapport aux personnes ayant assisté 5 fois ou moins. Ce paramètre est aussi significativement différent de zéro. Il y a donc une progression. Plus une personne a assisté à un grand nombre de rodéo au cours de la dernière année, plus elle est intéressée à acheter un produit recommandé par la PRCA.
 
-Si on désire comparer les deux modalités $X_6=1$ et $X_6=2$, il suffit de changer la modalité de référence dans la commande CLASS et d’exécuter le modèle à nouveau. Une alternative est de calculer le rapport (de rapport) de cotes pour ces deux modalités.
+Si on désire comparer les deux modalités $X_6=1$ et $X_6=2$, il suffit de changer la modalité de référence dans la commande `class` et d’exécuter le modèle à nouveau. Une alternative est de calculer le rapport (de rapport) de cotes pour ces deux modalités.
 
 ### Test du rapport de vraisemblance
 
@@ -420,4 +420,30 @@ Les 10 variables suivantes sont disponibles pour tous les clients et serviront d
 
 Dans le chapitre précédent, nous avons cherché à développer un modèle pour prévoir `ymontant`, le montant dépensé, étant donné que le client achète quelque chose. Cette fois-ci, nous allons travailler avec la variable `yachat`, qui est binaire, à l’aide de la régression logistique. 
 
-Afin d’introduire différentes notions, nous allons, dans un premier temps, simplement utiliser les 10 variables de base. À partir de la section suivante, nous chercherons à optimiser le modèle en considérant les interactions d’ordre deux. Pour ce faire, nous utiliserons des méthodes de sélections de variables. Les commandes se trouvent dans le fichier `logit2_classification_base.sas`. Dans le code qui suit, le fichier `train` contient les 1000 clients de l’échantillon d’apprentissage et le fichier `test` contient les 100 000 clients pour lesquels on vet prédire l'intention d'achat.
+Afin d’introduire différentes notions, nous allons, dans un premier temps, simplement utiliser les 10 variables de base. À partir de la section suivante, nous chercherons à optimiser le modèle en considérant les interactions d’ordre deux. Pour ce faire, nous utiliserons des méthodes de sélections de variables. Les commandes se trouvent dans le fichier `logit2_classification_base.sas`. Dans le code qui suit, le fichier `train` contient les 1000 clients de l’échantillon d’apprentissage et le fichier `test` contient les 100 000 clients pour lesquels on veut prédire l'intention d'achat.
+
+```{sas 03-score, eval = FALSE, echo = TRUE}
+proc logistic data=train;
+model yachat(ref='0') = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10;
+output out=pred predprobs=crossvalidate;
+run;
+```
+
+Le modèle utilise seulement les 10 variables de base (en fait 14 avec les indicatrices pour les variables catégorielles). Des prévisions pour les clients restants seront exportées dans le fichier `pred`, grâce à la commande `score`. L’option `ctable` permet d'obtenir la `Table de classification` (sic). Tel que nous l’avons vu au chapitre précédent, il y a 210 clients qui ont acheté quelque chose parmi les 1000. Les estimations des paramètres sont données dans le tableau qui suit mais ce n’est pas ce qui nous intéresse ici. Le tableau de classification contient des estimations de plusieurs quantités intéressantes, en faisant varier le point de coupure (`Niveau de proba`). Pour chaque point de coupure, ces estimations ont été obtenues à l’aide d’une approximation de la méthode de validation croisée à $n$ groupes (en anglais, _leave-one-out cross-validation_, ou LOOCV). Ainsi, ces estimations sont valides car elles ne sont pas obtenues en utilisant les mêmes observations que celles qui ont servi à estimer le modèle.
+
+```{r fig3_e10, echo = FALSE, out.width='100%', fig.align = "center"}
+knitr::include_graphics("figures/03-logistic-e10.png")
+```
+
+```{r fig3_e11, echo = FALSE, out.width='100%', fig.align = "center"}
+knitr::include_graphics("figures/03-logistic-e11.png")
+```
+
+```{r fig3_e12, echo = FALSE, out.width='100%', fig.align = "center"}
+knitr::include_graphics("figures/03-logistic-e12.png")
+```
+
+```{r fig3_e13, echo = FALSE, out.width='100%', fig.align = "center"}
+knitr::include_graphics("figures/03-logistic-e13.png")
+```
+
