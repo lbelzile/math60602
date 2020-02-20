@@ -134,6 +134,7 @@
 <li class="chapter" data-level="4.4.5" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#multicolinéarité"><i class="fa fa-check"></i><b>4.4.5</b> Multicolinéarité</a></li>
 </ul></li>
 <li class="chapter" data-level="4.5" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#classification-et-prédiction-à-laide-de-la-régression-logistique"><i class="fa fa-check"></i><b>4.5</b> Classification et prédiction à l’aide de la régression logistique</a></li>
+<li class="chapter" data-level="4.6" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#classification-avec-une-matrice-de-gain"><i class="fa fa-check"></i><b>4.6</b> Classification avec une matrice de gain</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -415,7 +416,7 @@ model y(ref=&#39;0&#39;) =x1-x6 / clparm=pl clodds=pl expb;
 run;</code></pre>
 <p>Dans <strong>SAS</strong>, les variables incluses dans la commande <code>class</code> sont modélisées à l’aide d’un ensemble de variables indicatrices. Cette commande nous évite de créer nous-même les indicatrices; cette option est disponible dans la plupart des procédures <strong>SAS</strong>, bien que la procédure <code>reg</code> est une exception notable.</p>
 <p>On peut changer la catégorie de référence (<code>ref=</code>) qui est par défaut la dernière modalité (en ordre alphanumérique). L’option <code>param=ref</code> pour <code>class</code> permet d’imprimer un tableau indiquant le code pour les variables indicatrices.
-Les variables incluses dans la commande CLASS sont modélisées à l’aide d’un ensemble de variables indicatrices. Prenons l’exemple de la variable <span class="math inline">\(X_1\)</span>: la modalité de référence est (), soit agriculture est spécifiée dans le tableau <code>Informations sur les niveaux de classe</code>.</p>
+Les variables incluses dans la commande <code>class</code> sont modélisées à l’aide d’un ensemble de variables indicatrices. Prenons l’exemple de la variable <span class="math inline">\(X_1\)</span>: la modalité de référence est (), soit agriculture est spécifiée dans le tableau <code>Informations sur les niveaux de classe</code>.</p>
 <p><img src="figures/03-logistic-e9.png" width="75%" style="display: block; margin: auto;" /></p>
 <p>Le fichier <code>logit1_intro.sas</code> contient le code pour ajuster le même modèle sans la commande <code>class</code>, c’est-à-dire en créant nous-mêmes les variables indicatrices pour inclure les variables explicatives catégorielles. Vous pouvez l’exécuter afin de vous convaincre qu’il s’agit du même modèle. Les estimés seront les mêmes.</p>
 <p><img src="figures/03-logistic-e5.png" width="65%" style="display: block; margin: auto;" />
@@ -435,7 +436,7 @@ Le modèle ajusté est
 <p>N’oubliez pas la nuance suivante concernant l’interprétation d’un test lorsque plusieurs variables explicatives font partie du modèle. Si un paramètre n’est pas significativement différent de zéro, cela ne veut pas dire qu’il n’y a pas de lien entre la variable correspondante et <span class="math inline">\(Y\)</span>. Cela veut seulement dire qu’il n’y a pas de lien significatif une fois que les autres variables sont dans le modèle.</p>
 <p>Prenons l’exemple de la variable <span class="math inline">\(X_6\)</span>, qui représente le nombre de fois où l’individu a assisté à un rodéo au cours de la dernière année. Cette variable est modélisée à l’aide de deux variables indicatrices, <span class="math inline">\({\mathbf 1}_{X_6=1}\)</span> égale à un si <span class="math inline">\(X_6=1\)</span> et zéro autrement, et <span class="math inline">\({\mathbf 1}_{X_6=2}\)</span> égale à un si <span class="math inline">\(X_6=2\)</span> et zéro sinon. La catégorie de référence est <span class="math inline">\(X_6=3\)</span>, c’est-à-dire les personnes ayant assisté cinq fois ou moins à un rodéo au cours de la dernière année. Pour tester la significativité globale d’une variable catégorielle qui est modélisée avec plusieurs indicatrices, il faut aller dans le tableau <code>Analyse des effets Type 3</code>. On voit que la statistique de test est <span class="math inline">\(42,9364\)</span> et que la valeur-<span class="math inline">\(p\)</span> associée est négligeable: la variable <span class="math inline">\(X_6\)</span> est donc globalement significative. En fait, il s’agit du test conjoint sur toutes les indicatrices associées à cette variable. Plus précisément, il s’agit du test de l’hypothèse nulle <span class="math inline">\(\mathcal{H}_0: \beta_{6_{\texttt{1}}}=\beta_{6_{\texttt{2}}}=0\)</span> versus la contre-hypothèse qu’au moins un de ces deux paramètres est différent de zéro.</p>
 <p>L’interprétation des variables catégorielles est analogue à celle faite en régression linéaire. On peut aussi interpréter individuellement les paramètres des indicatrices: pour <span class="math inline">\({\mathbf 1}_{X_6=1}\)</span>, lorsque les autres variables demeurent fixes, les personnes ayant assisté 10 fois ou plus à un rodéo au cours de la dernière année voient leur cote multipliée par <span class="math inline">\(\exp(2,4122)=11,158\)</span> par rapport aux personnes ayant assisté cinq fois ou moins. Ce paramètre est significativement différent de zéro car sa valeur-<span class="math inline">\(p\)</span> est négligeable (tableau <code>Analyse des valeurs estimées du maximum de vraisemblance</code>); l’intervalle de confiance à 95% pour le rapport de cotes, basé sur la vraisemblance profilée, est [<span class="math inline">\(5,456; 23,882\)</span>] et un n’est pas dans l’intervalle. Ainsi, il y a une différence significative entre les gens qui ont assisté à 10 rodéos ou plus et les gens qui ont assisté à 5 rodéos ou moins, pour ce qui est de l’intérêt à acheter un produit recommandé par le PRCA.</p>
-<p>On procède de la même façon pour <span class="math inline">\({\mathbf 1}_{X_6=2}\)</span>: lorsque les autres variables demeurent fixes, les personnes ayant assisté entre six et neuf fois à un rodéo au cours de la dernière année voient leur cote multipliée par 2,842 par rapport aux personnes ayant assisté 5 fois ou moins. Ce paramètre est aussi significativement différent de zéro. Il y a donc une progression. Plus une personne a assisté à un grand nombre de rodéo au cours de la dernière année, plus elle est intéressée à acheter un produit recommandé par la PRCA.</p>
+<p>On procède de la même façon pour <span class="math inline">\({\mathbf 1}_{X_6=2}\)</span>: lorsque les autres variables demeurent fixes, les personnes ayant assisté entre six et neuf fois à un rodéo au cours de la dernière année voient leur cote multipliée par <span class="math inline">\(2,842\)</span> par rapport aux personnes ayant assisté cinq fois ou moins. Ce paramètre est aussi significativement différent de zéro. Il y a donc une progression. Plus une personne a assisté à un grand nombre de rodéo au cours de la dernière année, plus elle est intéressée à acheter un produit recommandé par la PRCA.</p>
 <p>Si on désire comparer les deux modalités <span class="math inline">\(X_6=1\)</span> et <span class="math inline">\(X_6=2\)</span>, il suffit de changer la modalité de référence dans la commande <code>class</code> et d’exécuter le modèle à nouveau. Une alternative est de calculer le rapport (de rapport) de cotes pour ces deux modalités.</p>
 </div>
 <div id="test-du-rapport-de-vraisemblance" class="section level3">
@@ -451,7 +452,7 @@ Le modèle ajusté est
  D = -2\{\ell(\widehat{\boldsymbol{\beta}}_0)-\ell(\widehat{\boldsymbol{\beta}})\}
 \end{align*}\]</span>
 ou la différence entre <code>-2 Log L</code> pour le modèle réduit et <code>-2 Log L</code> pour le modèle complet. Cette différence <span class="math inline">\(D\)</span>, lorsque l’hypothèse <span class="math inline">\(\mathcal{H}_0\)</span> est vraie suit approximativement une loi khi-deux avec un nombre de degrés de liberté égal au nombre de paramètre testé (le nombre de restrictions sous <span class="math inline">\(\mathcal{H}_0\)</span>). On peut donc calculer la valeur-<span class="math inline">\(p\)</span> en utilisant la distribution du khi-deux.</p>
-<p>Prenons comme exemple le test de la significativité de <span class="math inline">\(X_6\)</span>, qui est modélisée à l’aide deux variables binaires <span class="math inline">\({\mathbf 1}_{X_6=1}\)</span> et <span class="math inline">\({\mathbf 1}_{X_6=2}\)</span> et dont les paramètres correspondants sont <span class="math inline">\(\beta_{6_{\texttt{1}}}\)</span> et <span class="math inline">\(\beta_{6_{\texttt{2}}}\)</span>. Nous avons déjà étudié la sortie pour le test de Wald de significativité globale de <span class="math inline">\(X_6\)</span>, soit le test de l’hypothèse <span class="math inline">\(\mathcal{H}_0: \beta_{6_{\texttt{1}}}=\beta_{6_{\texttt{2}}}=0\)</span> versus l’alternative qu’au moins un de ces deux paramètres est différent de zéro. La statistique de test (de Wald) est 42,93 et la valeur-<span class="math inline">\(p\)</span> est moins de <span class="math inline">\(10^{-4}\)</span>. Pour effectuer le test du rapport de vraisemblance, il suffit de retirer la variable <span class="math inline">\(X_6\)</span> et de réajuster le modeèl à nouveau avec toutes les autres variables; cette manipulation est effectuée dans <code>logit1_intro.sas</code>. On obtient donc
+<p>Prenons comme exemple le test de la significativité de <span class="math inline">\(X_6\)</span>, qui est modélisée à l’aide deux variables binaires <span class="math inline">\({\mathbf 1}_{X_6=1}\)</span> et <span class="math inline">\({\mathbf 1}_{X_6=2}\)</span> et dont les paramètres correspondants sont <span class="math inline">\(\beta_{6_{\texttt{1}}}\)</span> et <span class="math inline">\(\beta_{6_{\texttt{2}}}\)</span>. Nous avons déjà étudié la sortie pour le test de Wald de significativité globale de <span class="math inline">\(X_6\)</span>, soit le test de l’hypothèse <span class="math inline">\(\mathcal{H}_0: \beta_{6_{\texttt{1}}}=\beta_{6_{\texttt{2}}}=0\)</span> versus l’alternative qu’au moins un de ces deux paramètres est différent de zéro. La statistique de test (de Wald) est 42,93 et la valeur-<span class="math inline">\(p\)</span> est moins de <span class="math inline">\(10^{-4}\)</span>. Pour effectuer le test du rapport de vraisemblance, il suffit de retirer la variable <span class="math inline">\(X_6\)</span> et de réajuster le modèle à nouveau avec toutes les autres variables; cette manipulation est effectuée dans <code>logit1_intro.sas</code>. On obtient donc
 <code>-2 Log L</code> de 516,196 pour le modèle complet sans contrainte et <span class="math inline">\(566,447\)</span> pour le modèle excluant la variable <span class="math inline">\(X_6\)</span>.</p>
 <p>La différence <span class="math inline">\(D = 566,447 - 516,196 = 50,25\)</span>. Il s’agit de la statistique du test de rapport de vraisemblance. La valeur-<span class="math inline">\(p\)</span> peut-être obtenue de la loi du khi-deux avec 2 degrés de liberté via le code suivant permet d’imprimer la valeur-<span class="math inline">\(p\)</span>, qui est <span class="math inline">\(1,22 \times 10^{-11}\)</span>.</p>
 <pre class="sas"><code>data pval;
@@ -519,10 +520,1912 @@ model yachat(ref=&#39;0&#39;) = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10
 output out=pred predprobs=crossvalidate;
 run;</code></pre>
 <p>Le modèle utilise seulement les 10 variables de base (en fait 14 avec les indicatrices pour les variables catégorielles). Des prévisions pour les clients restants seront exportées dans le fichier <code>pred</code>, grâce à la commande <code>score</code>. L’option <code>ctable</code> permet d’obtenir la <code>Table de classification</code> (sic). Tel que nous l’avons vu au chapitre précédent, il y a 210 clients qui ont acheté quelque chose parmi les 1000. Le tableau de classification contient des estimations de plusieurs quantités intéressantes, en faisant varier le point de coupure (<code>Niveau de proba</code>). Pour chaque point de coupure, ces estimations ont été obtenues à l’aide d’une approximation de la méthode de validation croisée à <span class="math inline">\(n\)</span> groupes (en anglais, <em>leave-one-out cross-validation</em>, ou LOOCV). Ainsi, ces estimations sont valides car elles ne sont pas obtenues en utilisant les mêmes observations que celles qui ont servi à estimer le modèle.</p>
-<p><img src="figures/03-logistic-e12.png" width="100%" style="display: block; margin: auto;" />
-<img src="figures/03-logistic-e13.png" width="100%" style="display: block; margin: auto;" />
-<img src="figures/03-logistic-e14.png" width="100%" style="display: block; margin: auto;" /></p>
+<img src="MATH60602_files/figure-html/classification-1.png" width="672" />
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+coupe
+</th>
+<th style="text-align:right;">
+vrai positif
+</th>
+<th style="text-align:right;">
+vrai négatif
+</th>
+<th style="text-align:right;">
+faux positif
+</th>
+<th style="text-align:right;">
+faux négatif
+</th>
+<th style="text-align:right;">
+correct (%)
+</th>
+<th style="text-align:right;">
+sensibilité (%)
+</th>
+<th style="text-align:right;">
+spécificité (%)
+</th>
+<th style="text-align:right;">
+faux positif (%)
+</th>
+<th style="text-align:right;">
+faux négatif (%)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:right;">
+0.02
+</td>
+<td style="text-align:right;">
+210
+</td>
+<td style="text-align:right;">
+209
+</td>
+<td style="text-align:right;">
+581
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+41.9
+</td>
+<td style="text-align:right;">
+100.0
+</td>
+<td style="text-align:right;">
+26.5
+</td>
+<td style="text-align:right;">
+73.5
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:right;">
+0.04
+</td>
+<td style="text-align:right;">
+207
+</td>
+<td style="text-align:right;">
+320
+</td>
+<td style="text-align:right;">
+470
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+52.7
+</td>
+<td style="text-align:right;">
+98.6
+</td>
+<td style="text-align:right;">
+40.5
+</td>
+<td style="text-align:right;">
+69.4
+</td>
+<td style="text-align:right;">
+0.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:right;">
+0.06
+</td>
+<td style="text-align:right;">
+201
+</td>
+<td style="text-align:right;">
+398
+</td>
+<td style="text-align:right;">
+392
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+59.9
+</td>
+<td style="text-align:right;">
+95.7
+</td>
+<td style="text-align:right;">
+50.4
+</td>
+<td style="text-align:right;">
+66.1
+</td>
+<td style="text-align:right;">
+2.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:right;">
+0.08
+</td>
+<td style="text-align:right;">
+199
+</td>
+<td style="text-align:right;">
+451
+</td>
+<td style="text-align:right;">
+339
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+65.0
+</td>
+<td style="text-align:right;">
+94.8
+</td>
+<td style="text-align:right;">
+57.1
+</td>
+<td style="text-align:right;">
+63.0
+</td>
+<td style="text-align:right;">
+2.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+20
+</td>
+<td style="text-align:right;">
+0.10
+</td>
+<td style="text-align:right;">
+193
+</td>
+<td style="text-align:right;">
+480
+</td>
+<td style="text-align:right;">
+310
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+67.3
+</td>
+<td style="text-align:right;">
+91.9
+</td>
+<td style="text-align:right;">
+60.8
+</td>
+<td style="text-align:right;">
+61.6
+</td>
+<td style="text-align:right;">
+3.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+24
+</td>
+<td style="text-align:right;">
+0.12
+</td>
+<td style="text-align:right;">
+191
+</td>
+<td style="text-align:right;">
+512
+</td>
+<td style="text-align:right;">
+278
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+70.3
+</td>
+<td style="text-align:right;">
+91.0
+</td>
+<td style="text-align:right;">
+64.8
+</td>
+<td style="text-align:right;">
+59.3
+</td>
+<td style="text-align:right;">
+3.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+28
+</td>
+<td style="text-align:right;">
+0.14
+</td>
+<td style="text-align:right;">
+184
+</td>
+<td style="text-align:right;">
+547
+</td>
+<td style="text-align:right;">
+243
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+73.1
+</td>
+<td style="text-align:right;">
+87.6
+</td>
+<td style="text-align:right;">
+69.2
+</td>
+<td style="text-align:right;">
+56.9
+</td>
+<td style="text-align:right;">
+4.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+32
+</td>
+<td style="text-align:right;">
+0.16
+</td>
+<td style="text-align:right;">
+176
+</td>
+<td style="text-align:right;">
+572
+</td>
+<td style="text-align:right;">
+218
+</td>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:right;">
+74.8
+</td>
+<td style="text-align:right;">
+83.8
+</td>
+<td style="text-align:right;">
+72.4
+</td>
+<td style="text-align:right;">
+55.3
+</td>
+<td style="text-align:right;">
+5.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+36
+</td>
+<td style="text-align:right;">
+0.18
+</td>
+<td style="text-align:right;">
+172
+</td>
+<td style="text-align:right;">
+598
+</td>
+<td style="text-align:right;">
+192
+</td>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+77.0
+</td>
+<td style="text-align:right;">
+81.9
+</td>
+<td style="text-align:right;">
+75.7
+</td>
+<td style="text-align:right;">
+52.7
+</td>
+<td style="text-align:right;">
+6.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+40
+</td>
+<td style="text-align:right;">
+0.20
+</td>
+<td style="text-align:right;">
+164
+</td>
+<td style="text-align:right;">
+611
+</td>
+<td style="text-align:right;">
+179
+</td>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:right;">
+77.5
+</td>
+<td style="text-align:right;">
+78.1
+</td>
+<td style="text-align:right;">
+77.3
+</td>
+<td style="text-align:right;">
+52.2
+</td>
+<td style="text-align:right;">
+7.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+44
+</td>
+<td style="text-align:right;">
+0.22
+</td>
+<td style="text-align:right;">
+162
+</td>
+<td style="text-align:right;">
+626
+</td>
+<td style="text-align:right;">
+164
+</td>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:right;">
+78.8
+</td>
+<td style="text-align:right;">
+77.1
+</td>
+<td style="text-align:right;">
+79.2
+</td>
+<td style="text-align:right;">
+50.3
+</td>
+<td style="text-align:right;">
+7.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+48
+</td>
+<td style="text-align:right;">
+0.24
+</td>
+<td style="text-align:right;">
+158
+</td>
+<td style="text-align:right;">
+639
+</td>
+<td style="text-align:right;">
+151
+</td>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:right;">
+79.7
+</td>
+<td style="text-align:right;">
+75.2
+</td>
+<td style="text-align:right;">
+80.9
+</td>
+<td style="text-align:right;">
+48.9
+</td>
+<td style="text-align:right;">
+7.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+52
+</td>
+<td style="text-align:right;">
+0.26
+</td>
+<td style="text-align:right;">
+153
+</td>
+<td style="text-align:right;">
+645
+</td>
+<td style="text-align:right;">
+145
+</td>
+<td style="text-align:right;">
+57
+</td>
+<td style="text-align:right;">
+79.8
+</td>
+<td style="text-align:right;">
+72.9
+</td>
+<td style="text-align:right;">
+81.6
+</td>
+<td style="text-align:right;">
+48.7
+</td>
+<td style="text-align:right;">
+8.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+56
+</td>
+<td style="text-align:right;">
+0.28
+</td>
+<td style="text-align:right;">
+150
+</td>
+<td style="text-align:right;">
+657
+</td>
+<td style="text-align:right;">
+133
+</td>
+<td style="text-align:right;">
+60
+</td>
+<td style="text-align:right;">
+80.7
+</td>
+<td style="text-align:right;">
+71.4
+</td>
+<td style="text-align:right;">
+83.2
+</td>
+<td style="text-align:right;">
+47.0
+</td>
+<td style="text-align:right;">
+8.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+60
+</td>
+<td style="text-align:right;">
+0.30
+</td>
+<td style="text-align:right;">
+143
+</td>
+<td style="text-align:right;">
+667
+</td>
+<td style="text-align:right;">
+123
+</td>
+<td style="text-align:right;">
+67
+</td>
+<td style="text-align:right;">
+81.0
+</td>
+<td style="text-align:right;">
+68.1
+</td>
+<td style="text-align:right;">
+84.4
+</td>
+<td style="text-align:right;">
+46.2
+</td>
+<td style="text-align:right;">
+9.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+64
+</td>
+<td style="text-align:right;">
+0.32
+</td>
+<td style="text-align:right;">
+138
+</td>
+<td style="text-align:right;">
+679
+</td>
+<td style="text-align:right;">
+111
+</td>
+<td style="text-align:right;">
+72
+</td>
+<td style="text-align:right;">
+81.7
+</td>
+<td style="text-align:right;">
+65.7
+</td>
+<td style="text-align:right;">
+85.9
+</td>
+<td style="text-align:right;">
+44.6
+</td>
+<td style="text-align:right;">
+9.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+68
+</td>
+<td style="text-align:right;">
+0.34
+</td>
+<td style="text-align:right;">
+134
+</td>
+<td style="text-align:right;">
+695
+</td>
+<td style="text-align:right;">
+95
+</td>
+<td style="text-align:right;">
+76
+</td>
+<td style="text-align:right;">
+82.9
+</td>
+<td style="text-align:right;">
+63.8
+</td>
+<td style="text-align:right;">
+88.0
+</td>
+<td style="text-align:right;">
+41.5
+</td>
+<td style="text-align:right;">
+9.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+72
+</td>
+<td style="text-align:right;">
+0.36
+</td>
+<td style="text-align:right;">
+130
+</td>
+<td style="text-align:right;">
+699
+</td>
+<td style="text-align:right;">
+91
+</td>
+<td style="text-align:right;">
+80
+</td>
+<td style="text-align:right;">
+82.9
+</td>
+<td style="text-align:right;">
+61.9
+</td>
+<td style="text-align:right;">
+88.5
+</td>
+<td style="text-align:right;">
+41.2
+</td>
+<td style="text-align:right;">
+10.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+76
+</td>
+<td style="text-align:right;">
+0.38
+</td>
+<td style="text-align:right;">
+126
+</td>
+<td style="text-align:right;">
+708
+</td>
+<td style="text-align:right;">
+82
+</td>
+<td style="text-align:right;">
+84
+</td>
+<td style="text-align:right;">
+83.4
+</td>
+<td style="text-align:right;">
+60.0
+</td>
+<td style="text-align:right;">
+89.6
+</td>
+<td style="text-align:right;">
+39.4
+</td>
+<td style="text-align:right;">
+10.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+80
+</td>
+<td style="text-align:right;">
+0.40
+</td>
+<td style="text-align:right;">
+120
+</td>
+<td style="text-align:right;">
+715
+</td>
+<td style="text-align:right;">
+75
+</td>
+<td style="text-align:right;">
+90
+</td>
+<td style="text-align:right;">
+83.5
+</td>
+<td style="text-align:right;">
+57.1
+</td>
+<td style="text-align:right;">
+90.5
+</td>
+<td style="text-align:right;">
+38.5
+</td>
+<td style="text-align:right;">
+11.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+84
+</td>
+<td style="text-align:right;">
+0.42
+</td>
+<td style="text-align:right;">
+115
+</td>
+<td style="text-align:right;">
+723
+</td>
+<td style="text-align:right;">
+67
+</td>
+<td style="text-align:right;">
+95
+</td>
+<td style="text-align:right;">
+83.8
+</td>
+<td style="text-align:right;">
+54.8
+</td>
+<td style="text-align:right;">
+91.5
+</td>
+<td style="text-align:right;">
+36.8
+</td>
+<td style="text-align:right;">
+11.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+88
+</td>
+<td style="text-align:right;">
+0.44
+</td>
+<td style="text-align:right;">
+112
+</td>
+<td style="text-align:right;">
+731
+</td>
+<td style="text-align:right;">
+59
+</td>
+<td style="text-align:right;">
+98
+</td>
+<td style="text-align:right;">
+84.3
+</td>
+<td style="text-align:right;">
+53.3
+</td>
+<td style="text-align:right;">
+92.5
+</td>
+<td style="text-align:right;">
+34.5
+</td>
+<td style="text-align:right;">
+11.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+92
+</td>
+<td style="text-align:right;">
+0.46
+</td>
+<td style="text-align:right;">
+109
+</td>
+<td style="text-align:right;">
+736
+</td>
+<td style="text-align:right;">
+54
+</td>
+<td style="text-align:right;">
+101
+</td>
+<td style="text-align:right;">
+84.5
+</td>
+<td style="text-align:right;">
+51.9
+</td>
+<td style="text-align:right;">
+93.2
+</td>
+<td style="text-align:right;">
+33.1
+</td>
+<td style="text-align:right;">
+12.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+96
+</td>
+<td style="text-align:right;">
+0.48
+</td>
+<td style="text-align:right;">
+106
+</td>
+<td style="text-align:right;">
+739
+</td>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:right;">
+104
+</td>
+<td style="text-align:right;">
+84.5
+</td>
+<td style="text-align:right;">
+50.5
+</td>
+<td style="text-align:right;">
+93.5
+</td>
+<td style="text-align:right;">
+32.5
+</td>
+<td style="text-align:right;">
+12.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+100
+</td>
+<td style="text-align:right;">
+0.50
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+744
+</td>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:right;">
+110
+</td>
+<td style="text-align:right;">
+84.4
+</td>
+<td style="text-align:right;">
+47.6
+</td>
+<td style="text-align:right;">
+94.2
+</td>
+<td style="text-align:right;">
+31.5
+</td>
+<td style="text-align:right;">
+12.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+104
+</td>
+<td style="text-align:right;">
+0.52
+</td>
+<td style="text-align:right;">
+98
+</td>
+<td style="text-align:right;">
+748
+</td>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:right;">
+112
+</td>
+<td style="text-align:right;">
+84.6
+</td>
+<td style="text-align:right;">
+46.7
+</td>
+<td style="text-align:right;">
+94.7
+</td>
+<td style="text-align:right;">
+30.0
+</td>
+<td style="text-align:right;">
+13.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+108
+</td>
+<td style="text-align:right;">
+0.54
+</td>
+<td style="text-align:right;">
+92
+</td>
+<td style="text-align:right;">
+750
+</td>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+118
+</td>
+<td style="text-align:right;">
+84.2
+</td>
+<td style="text-align:right;">
+43.8
+</td>
+<td style="text-align:right;">
+94.9
+</td>
+<td style="text-align:right;">
+30.3
+</td>
+<td style="text-align:right;">
+13.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+112
+</td>
+<td style="text-align:right;">
+0.56
+</td>
+<td style="text-align:right;">
+87
+</td>
+<td style="text-align:right;">
+753
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+123
+</td>
+<td style="text-align:right;">
+84.0
+</td>
+<td style="text-align:right;">
+41.4
+</td>
+<td style="text-align:right;">
+95.3
+</td>
+<td style="text-align:right;">
+29.8
+</td>
+<td style="text-align:right;">
+14.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+116
+</td>
+<td style="text-align:right;">
+0.58
+</td>
+<td style="text-align:right;">
+83
+</td>
+<td style="text-align:right;">
+761
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+127
+</td>
+<td style="text-align:right;">
+84.4
+</td>
+<td style="text-align:right;">
+39.5
+</td>
+<td style="text-align:right;">
+96.3
+</td>
+<td style="text-align:right;">
+25.9
+</td>
+<td style="text-align:right;">
+14.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+120
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+80
+</td>
+<td style="text-align:right;">
+766
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+130
+</td>
+<td style="text-align:right;">
+84.6
+</td>
+<td style="text-align:right;">
+38.1
+</td>
+<td style="text-align:right;">
+97.0
+</td>
+<td style="text-align:right;">
+23.1
+</td>
+<td style="text-align:right;">
+14.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+124
+</td>
+<td style="text-align:right;">
+0.62
+</td>
+<td style="text-align:right;">
+77
+</td>
+<td style="text-align:right;">
+769
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+133
+</td>
+<td style="text-align:right;">
+84.6
+</td>
+<td style="text-align:right;">
+36.7
+</td>
+<td style="text-align:right;">
+97.3
+</td>
+<td style="text-align:right;">
+21.4
+</td>
+<td style="text-align:right;">
+14.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+128
+</td>
+<td style="text-align:right;">
+0.64
+</td>
+<td style="text-align:right;">
+74
+</td>
+<td style="text-align:right;">
+771
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+136
+</td>
+<td style="text-align:right;">
+84.5
+</td>
+<td style="text-align:right;">
+35.2
+</td>
+<td style="text-align:right;">
+97.6
+</td>
+<td style="text-align:right;">
+20.4
+</td>
+<td style="text-align:right;">
+15.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+132
+</td>
+<td style="text-align:right;">
+0.66
+</td>
+<td style="text-align:right;">
+68
+</td>
+<td style="text-align:right;">
+772
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+142
+</td>
+<td style="text-align:right;">
+84.0
+</td>
+<td style="text-align:right;">
+32.4
+</td>
+<td style="text-align:right;">
+97.7
+</td>
+<td style="text-align:right;">
+20.9
+</td>
+<td style="text-align:right;">
+15.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+136
+</td>
+<td style="text-align:right;">
+0.68
+</td>
+<td style="text-align:right;">
+62
+</td>
+<td style="text-align:right;">
+774
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+148
+</td>
+<td style="text-align:right;">
+83.6
+</td>
+<td style="text-align:right;">
+29.5
+</td>
+<td style="text-align:right;">
+98.0
+</td>
+<td style="text-align:right;">
+20.5
+</td>
+<td style="text-align:right;">
+16.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+140
+</td>
+<td style="text-align:right;">
+0.70
+</td>
+<td style="text-align:right;">
+54
+</td>
+<td style="text-align:right;">
+775
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+156
+</td>
+<td style="text-align:right;">
+82.9
+</td>
+<td style="text-align:right;">
+25.7
+</td>
+<td style="text-align:right;">
+98.1
+</td>
+<td style="text-align:right;">
+21.7
+</td>
+<td style="text-align:right;">
+16.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+144
+</td>
+<td style="text-align:right;">
+0.72
+</td>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:right;">
+777
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+159
+</td>
+<td style="text-align:right;">
+82.8
+</td>
+<td style="text-align:right;">
+24.3
+</td>
+<td style="text-align:right;">
+98.4
+</td>
+<td style="text-align:right;">
+20.3
+</td>
+<td style="text-align:right;">
+17.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+148
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+49
+</td>
+<td style="text-align:right;">
+778
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+161
+</td>
+<td style="text-align:right;">
+82.7
+</td>
+<td style="text-align:right;">
+23.3
+</td>
+<td style="text-align:right;">
+98.5
+</td>
+<td style="text-align:right;">
+19.7
+</td>
+<td style="text-align:right;">
+17.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+152
+</td>
+<td style="text-align:right;">
+0.76
+</td>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:right;">
+778
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+164
+</td>
+<td style="text-align:right;">
+82.4
+</td>
+<td style="text-align:right;">
+21.9
+</td>
+<td style="text-align:right;">
+98.5
+</td>
+<td style="text-align:right;">
+20.7
+</td>
+<td style="text-align:right;">
+17.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+156
+</td>
+<td style="text-align:right;">
+0.78
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+781
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+169
+</td>
+<td style="text-align:right;">
+82.2
+</td>
+<td style="text-align:right;">
+19.5
+</td>
+<td style="text-align:right;">
+98.9
+</td>
+<td style="text-align:right;">
+18.0
+</td>
+<td style="text-align:right;">
+17.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+160
+</td>
+<td style="text-align:right;">
+0.80
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+783
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+175
+</td>
+<td style="text-align:right;">
+81.8
+</td>
+<td style="text-align:right;">
+16.7
+</td>
+<td style="text-align:right;">
+99.1
+</td>
+<td style="text-align:right;">
+16.7
+</td>
+<td style="text-align:right;">
+18.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+164
+</td>
+<td style="text-align:right;">
+0.82
+</td>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+783
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+177
+</td>
+<td style="text-align:right;">
+81.6
+</td>
+<td style="text-align:right;">
+15.7
+</td>
+<td style="text-align:right;">
+99.1
+</td>
+<td style="text-align:right;">
+17.5
+</td>
+<td style="text-align:right;">
+18.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+168
+</td>
+<td style="text-align:right;">
+0.84
+</td>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:right;">
+783
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+178
+</td>
+<td style="text-align:right;">
+81.5
+</td>
+<td style="text-align:right;">
+15.2
+</td>
+<td style="text-align:right;">
+99.1
+</td>
+<td style="text-align:right;">
+17.9
+</td>
+<td style="text-align:right;">
+18.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+172
+</td>
+<td style="text-align:right;">
+0.86
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+784
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+182
+</td>
+<td style="text-align:right;">
+81.2
+</td>
+<td style="text-align:right;">
+13.3
+</td>
+<td style="text-align:right;">
+99.2
+</td>
+<td style="text-align:right;">
+17.6
+</td>
+<td style="text-align:right;">
+18.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+176
+</td>
+<td style="text-align:right;">
+0.88
+</td>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+786
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+185
+</td>
+<td style="text-align:right;">
+81.1
+</td>
+<td style="text-align:right;">
+11.9
+</td>
+<td style="text-align:right;">
+99.5
+</td>
+<td style="text-align:right;">
+13.8
+</td>
+<td style="text-align:right;">
+19.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+180
+</td>
+<td style="text-align:right;">
+0.90
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+787
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+189
+</td>
+<td style="text-align:right;">
+80.8
+</td>
+<td style="text-align:right;">
+10.0
+</td>
+<td style="text-align:right;">
+99.6
+</td>
+<td style="text-align:right;">
+12.5
+</td>
+<td style="text-align:right;">
+19.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+184
+</td>
+<td style="text-align:right;">
+0.92
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+787
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+192
+</td>
+<td style="text-align:right;">
+80.5
+</td>
+<td style="text-align:right;">
+8.6
+</td>
+<td style="text-align:right;">
+99.6
+</td>
+<td style="text-align:right;">
+14.3
+</td>
+<td style="text-align:right;">
+19.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+188
+</td>
+<td style="text-align:right;">
+0.94
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+788
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+196
+</td>
+<td style="text-align:right;">
+80.2
+</td>
+<td style="text-align:right;">
+6.7
+</td>
+<td style="text-align:right;">
+99.7
+</td>
+<td style="text-align:right;">
+12.5
+</td>
+<td style="text-align:right;">
+19.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+192
+</td>
+<td style="text-align:right;">
+0.96
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+788
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+204
+</td>
+<td style="text-align:right;">
+79.4
+</td>
+<td style="text-align:right;">
+2.9
+</td>
+<td style="text-align:right;">
+99.7
+</td>
+<td style="text-align:right;">
+25.0
+</td>
+<td style="text-align:right;">
+20.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+196
+</td>
+<td style="text-align:right;">
+0.98
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+790
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+208
+</td>
+<td style="text-align:right;">
+79.2
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+100.0
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+<td style="text-align:right;">
+20.8
+</td>
+</tr>
+</tbody>
+</table>
+<p>Ce tableau contient des estimations de plusieurs quantités intéressantes, en faisant varier le point de coupure (<em>Niveau de proba</em>). Pour chaque point de coupure, ces estimations ont été obtenues à l’aide de la validation-croisée <span class="math inline">\(n\)</span> observations, soit autant de groupes que d’observations. Ainsi, ces estimations sont valides car elles ne sont pas obtenues en utilisant les mêmes observations que celles qui ont servi à estimer le modèle.
+La colonne <code>correct</code> donne une estimation du taux de bonne classification, <span class="math inline">\({\mathsf P}\left(Y = \hat{Y}\right) = 1-{\mathsf P}\left(Y \neq \hat{Y}\right)\)</span>, ou de manière équivalente un moins le taux de mauvaise classification.</p>
+<p>Avec un point de coupure de <span class="math inline">\(0\)</span>, on classifie toutes les observations à la classe achat (<span class="math inline">\(1\)</span>), car <span class="math inline">\(\hat{p}\)</span> est forcément plus grande que zéro. Le taux de bonne classification dans ce cas de figure sera de <span class="math inline">\(21\)</span>%, puisque 210 individus ont acheté un produit dans le catalogue dans l’échantillon d’apprentissage.
+L’autre extrême, avec un point de coupure <span class="math inline">\(c=1\)</span>, donne un taux de bonne classification de <span class="math inline">\(79\)</span>%.</p>
+<p>On peut chercher dans le tableau les points de coupure qui donnent le meilleur taux de bonne classification. Ce dernier est de 84,6% et est atteint par trois points de coupure, soit 0,52, soit 0,6, soit 0,62. Une recherche plus fine donne 0,465 comme point de coupure optimal, avec un taux de mauvaise classification de 15,3%.</p>
+<p>La <strong>matrice de confusion</strong>, qui compare les vraies valeurs avec les prédictions, peut être construite à partir des colonnes <code>Correct - Événement</code>, <code>Correct - Non-événement</code>, <code>Incorrect - Événement</code>, <code>Incorrect - Non-événement</code>. Il y a deux classifications possibles et le tableau contient, en partant du coin supérieur gauche et dans le sens des aiguilles d’une montre, le nombre de vrai positif (<span class="math inline">\(Y=1, \hat{Y}=1\)</span>), de faux positif (<span class="math inline">\(Y=0, \hat{Y}=1\)</span>), de vrai négatif (<span class="math inline">\(Y=0, \hat{Y}=0\)</span>) et finalement de faux négatif (<span class="math inline">\(Y=1, \hat{Y}=0\)</span>). Ces nombres proviennent de la validation croisée à <span class="math inline">\(n\)</span> groupes et ne sont pas ceux qu’on obtiendrait si on appliquait directement le modèle ajusté à notre échantillon. Le taux de classification est <span class="math inline">\((\mathsf{FP}+\mathsf{FN})/n\)</span>.</p>
+<table>
+<caption>
+<span id="tab:confumat">Tableau 4.2: </span>Matrice de confusion avec point de coupure 0.465
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(Y=0\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(Y=1\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<span class="math inline">\(\hat{Y}=0\)</span>
+</td>
+<td style="text-align:right;">
+109
+</td>
+<td style="text-align:right;">
+52
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span class="math inline">\(\hat{Y}=1\)</span>
+</td>
+<td style="text-align:right;">
+101
+</td>
+<td style="text-align:right;">
+738
+</td>
+</tr>
+</tbody>
+</table>
+<p>Quatre autres quantités, dérivées à partir de la matrice de confusion, sont parfois utilisées:</p>
+<ul>
+<li>la <strong>sensibilité</strong> (<em>sensitivity</em>), <span class="math inline">\({\mathsf P}\left(\hat{Y}=1 \mid Y=1\right)\)</span>, ou <span class="math inline">\(\mathsf{VP}/(\mathsf{VP}+\mathsf{FN})\)</span>;</li>
+<li>la <strong>spécificité</strong> (<em>specificity</em>), <span class="math inline">\({\mathsf P}\left(\hat{Y}=0 \mid Y=0\right)\)</span>, ou <span class="math inline">\(\mathsf{VN}/(\mathsf{VN}+\mathsf{FP})\)</span>;</li>
+<li>le <strong>taux de faux positifs</strong>, <span class="math inline">\({\mathsf P}\left(Y=0 \mid \hat{Y}=1\right)\)</span>, ou <span class="math inline">\(\mathsf{FP}/(\mathsf{VP}+\mathsf{FP})\)</span>;</li>
+<li>le <strong>taux de faux négatifs</strong>, <span class="math inline">\({\mathsf P}\left(Y=1 \mid \hat{Y}=0\right)\)</span>, ou <span class="math inline">\(\mathsf{FN}/(\mathsf{VN}+\mathsf{FN})\)</span>.</li>
+</ul>
+<p>Les estimés empiriques sont simplement obtenus en calculant les rapports du nombre d’observations dans chaque classe. La sensibilité mesure à quel point notre modèle est performant pour détecter un vrai positif (classe 1). La spécificité mesure à quel point notre modèle est performant pour détecter un résultat négatif (classe 0).</p>
+<p>Plus le point de coupure augmente, plus la sensibilité et le taux de faux positifs diminuent mais plus la spécificité et le taux de faux négatifs augmentent.</p>
+<p>La ** fonction d’efficacité du récepteur<strong>, parfois appelée courbe ROC (<em>receiver operating characteristic</em>) est parfois utilisée pour représenter globalement la performance du modèle. Elle
+est obtenue avec l’option <code>plots(only)=(roc)</code> dans </strong>SAS<strong>. Il s’agit du graphe de la sensibilité
+en fonction de un moins la spécificité, en faisant varier le point de coupure. Un modèle
+parfait aurait une sensibilité et une spécificité égales à 1 (correspondant au coin supérieur gauche de la fonction d’efficacité du récepteur). Ainsi, plus le couple (<span class="math inline">\(1-\)</span>spécificité,
+sensibilité) est près de (<span class="math inline">\(0,1\)</span>), meilleur est le modèle. Par conséquent, plus la
+courbe ROC tend vers (<span class="math inline">\(0,1\)</span>) meilleur est le pouvoir prévisionnel des variables.
+L’</strong>aire sous la courbe** (<em>area under the curve</em>) est souvent utilisée en parallèle
+est simplement l’aire sous la courbe de la fonction d’efficacité du récepteur. Pour le modèle logistique ajusté, on a une aire sous la courbe de 0,8847. Plus cette valeur est élevée (au plus <span class="math inline">\(1\)</span>), mieux c’est.</p>
 <p><img src="figures/03-logistic-e11.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>La courbe ROC et la valeur de l’aire sous la courbe (avec l’option <code>plots(only)=(roc)</code>), sont calculées avec les données d’apprentissage et ne sont pas corrigées. Si on veut les utiliser pour comparer des modèles, il faut plutôt utiliser l’option <code>crossvalidate</code> qui permet d’obtenir des estimations des probabilités par validation-croisée avec <span class="math inline">\(n\)</span> groupes tout comme celle utilisée dans le tableau de classification.</p>
+<pre class="sas"><code>proc logistic data=train;
+model yachat(ref=&#39;0&#39;) = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10;
+output out=pred predprobs=crossvalidate;
+run;
+
+proc logistic data=pred ;
+model yachat(ref=&#39;0&#39;) = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10;
+roc pred=xp_1;
+run;</code></pre>
+<p>On sauvegarde d’abord les probabilités estimées par validation-croisée dans le
+fichier <code>pred</code> avec la commande <code>output out=pred predprobs=crossvalidate</code>
+La variable <code>xp_1</code> désigne cette probabilité dans le fichier <code>pred</code>. Ensuite, on
+exécute de nouveau la procédure <code>logistic</code> avec ce fichier et la commande <code>roc</code>.
+L’aire sous la courbe pour les prédictions avec la validation-croisée à <span class="math inline">\(n\)</span> groupes est 0,8723: cet estimé est légèrement inférieur à celui obtenu sans
+la correction (trop optimiste) qui est 0,8847.</p>
+<p><img src="figures/03-logistic-e15.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>Un autre type de graphe qui est souvent utilisé dans des contextes de gestion
+est la courbe lift (sic) (en anglais, _lift chart). Cette courbe est obtenue en ordonnant les probabilités de succès estimées par le modèle, <span class="math inline">\(\hat{p}\)</span>, en ordre croissant et en regardant quelle pourcentage de ces derniers seraient bien classifiés (le nombre de vrais positifs sur le nombre de succès).</p>
+<p><strong>SAS</strong> ne permet pas de la tracer directement, mais le fichier <code>logit3_lift_chart.sas</code> contient une macro <strong>SAS</strong> qui permet de le faire.</p>
+<pre class="sas"><code>proc logistic data=train;
+model yachat(ref=&#39;0&#39;) = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10; 
+output out=pred predprobs=crossvalidate;
+run;
+%liftchart1(pred,yachat,xp_1,10);</code></pre>
+<p>Ici, le tableau présente les 10 déciles. Si on classifiait comme acheteurs les 10% qui ont la plus forte probabilité estimée d’achat, on détecterait 79 des 210 clients (37,6%). En comparaison, on s’attend que 21 clients soient sélectionnés en moyenne si on prend un échantillon aléatoire de 100 personnes. Le ratio 79/21 (dernière colonne) est le <em>lift</em> du modèle: il permet de détecter 3,76 fois plus de succès que le hasard.</p>
+<p><img src="figures/03-logistic-e16.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>Le graphe @ref(fig:fig3_e17) présente le pourcentage d’observations bien classées parmi les variables (pourcentage des probabilités prédites qui correspondent à un succès parmi les <span class="math inline">\(k\)</span> plus susceptibles selon le modèle). La référence est la ligne diagonale, qui correspond à une détection aléatoire.</p>
+<p><img src="figures/03-logistic-e17.png" width="80%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="classification-avec-une-matrice-de-gain" class="section level2">
+<h2><span class="header-section-number">4.6</span> Classification avec une matrice de gain</h2>
+<p>Utiliser le taux de mauvaise classification P(Y), comme critère de performance, revient au même que d’utiliser le taux de bonne classification P(Y), car P(Y) = 1- P(Y). On veut un modèle avec un haut taux de bonne classification (ou un faible taux de mauvaise classification).</p>
+<p>Lorsqu’on utilise <span class="math inline">\({\mathsf P}\left((\right)Y \neq \hat{Y}}\)</span> comme critère pour juger de la qualité d’un modèle prévisionnel, on fait l’hypothèse que le gain associé à bien classifier une observation dans la catégorie 0 lorsqu’elle est réellement dans la catégorie 0 est le même que celui associé à classifier une observation dans la catégorie 1 lorsqu’elle est réellement dans la catégorie 1: cela correspond à la matrice de gain</p>
+<p>Table: (#tab:03-gain1) Matrice de gain correspondant au taux de bonne classification
+| | | observation | |
+|————|————-|————-|——-|
+| | gain | <span class="math inline">\(Y=1\)</span> | <span class="math inline">\(Y=0\)</span> |
+| prédiction | <span class="math inline">\(\hat{Y}=1\)</span> | 1 | 0 |
+| | <span class="math inline">\(\hat{Y}=0\)</span> | 0 | 1 |</p>
+<p>C’est-à-dire, le gain vaut 1 lorsque la prévision est bonne (les deux cas sur la diagonale) et 0 lorsque le modèle se trompe (les deux autres cas). L’unité de mesure du gain n’est pas importante pour l’instant. Le gain total est</p>
+<p><span class="math display">\[\begin{align*}
+\text{gain} &amp;= 1 {\mathsf P}\left(\hat{Y}=1, Y=1\right) + 1 {\mathsf P}\left(\hat{Y}=0, Y=0\right) 
+\\ &amp;\quad + 0 {\mathsf P}\left(\hat{Y}=1, Y=0\right)  + 0 {\mathsf P}\left(\hat{Y}=0, Y=1\right)
+\\&amp; = {\mathsf P}\left(Y = \hat{Y}\right).
+\end{align*}\]</span>
+Maximiser le gain total revient donc à maximiser le taux de bonne classification.</p>
+<p>Dans certaines situations, les gains (ou la perte si le gain est négatif) associés aux bonnes décisions et aux erreurs ne sont pas équivalents. Par exemple, un des types d’erreurs peut être plus grave que l’autre. Il peut alors être souhaitable d’en tenir compte dans le choix du modèle de classification.</p>
+<p>Supposons que le gain de classer une observation à <span class="math inline">\(i\)</span> (0 ou 1) lorsqu’elle vaut <span class="math inline">\(j\)</span> (0 ou 1) en réalité est de <span class="math inline">\(c_{ij}\)</span>. La matrice de gain est alors</p>
+<p>Table: (#tab:03-gain2) Matrice de gain pondérée en fonction d’un coût
+| | | observation | |
+|————|————-|————-|———-|
+| | gain | <span class="math inline">\(Y=1\)</span> | <span class="math inline">\(Y=0\)</span> |
+| prédiction | <span class="math inline">\(\hat{Y}=1\)</span> | <span class="math inline">\(c_{11}\)</span> | <span class="math inline">\(c_{10}\)</span> |
+| | <span class="math inline">\(\hat{Y}=0\)</span> | <span class="math inline">\(c_{01}\)</span> | <span class="math inline">\(c_{00}\)</span> |</p>
+<p>En pratique, l’une de ces quatre quantités peut être fixée à 1 car seulement les poids relatifs (les ratios) des gains sont importants. Dans ce cas, le gain moyen est
+<span class="math display">\[\begin{align*}
+\text{gain} &amp;= c_{11} {\mathsf P}\left(\hat{Y}=1, Y=1\right) + c_{00}{\mathsf P}\left(\hat{Y}=0, Y=0\right) 
+\\ &amp;\quad + c_{10} {\mathsf P}\left(\hat{Y}=1, Y=0\right)  + c_{01} {\mathsf P}\left(\hat{Y}=0, Y=1\right)
+\\&amp; = {\mathsf P}\left(Y = \hat{Y}\right).
+\end{align*}\]</span></p>
+<p>Le meilleur modèle est alors celui qui maximise le gain moyen. Le fichier <code>logit4_macro_gain.sas</code> contient des macros <strong>SAS</strong> qui permettent d’estimer le gain moyen à l’aide de la validation croisée.</p>
+<p>Nous allons encore une fois seulement utiliser les 10 variables de base. Mais nous allons intégrer des revenus et coûts afin de trouver le meilleur point de coupure. Rappelez-vous que le coût de l’envoi d’un catalogue est de 10$. Le tableau des variables descriptives qui suit montre que, pour les 210 clients qui ont acheté quelque chose, le revenu moyen est de 67,29$ (moyenne de la variable <code>ymontant</code>).</p>
+<p><img src="figures/03-logistic-e18.png" width="60%" style="display: block; margin: auto;" /></p>
+<p>Nous allons travailler en termes de revenu net. Nous pouvons donc spécifier la matrice de gain du tableau <a href="#tab:03-gain3">4.5</a> pour notre problème. Si on n’envoit pas de catalogue, notre gain est nul. Si on envoie le catalogue à un client qui n’achète pas, on perd 10$ (le coût de l’envoi). En revanche, notre revenu net est de 57$ (revenu moyen moins coût de l’envoi).</p>
+<p>Table: (#tab:03-gain3) Matrice de gain pour l’envoi de catalogue
+| | | observation | |
+|————|————-|————-|——-|
+| | gain | <span class="math inline">\(Y=1\)</span> | <span class="math inline">\(Y=0\)</span> |
+| prédiction | <span class="math inline">\(\hat{Y}=1\)</span> | 57 | <span class="math inline">\(-10\)</span> |
+| | <span class="math inline">\(\hat{Y}=0\)</span> | 0 | 0 |</p>
+<p>L’apel de la macro <code>manycut_cvlogistic</code> se fait de la manière suivante:</p>
+<pre class="sas"><code>%manycut_cvlogistic(yvar=yachat,xvar=x1  x2 x31 x32 x41 x42 x43 x44  x5  x6 x7 x8 x9 x10, n=1000,k=10,ncv=10,dataset=train,c00=0,c01=0,c10=-10,c11=57,
+manycut=.05 .06 .07 .08 .09 .1 .11 .12 .13 .14 .15 .16 .17 .18 .5);</code></pre>
+<p>Les paramètres sont expliqués dans le fichier.</p>
+<p>Cette macro produit le tableau suivant. Il donne l’estimation du gain moyen (<code>gain</code>) pour différents points de coupures (<code>cutpoint</code>). Cette estimation provient d’une validation-croisée avec 10 groupes (<code>k=10</code> dans la macro). En fait, on a répété 10 fois (<code>ncv=10</code> dans la macro) la validation croisée avec 10 groupes et fait la moyenne des 10 répétitions afin d’avoir plus de précisions. Il faut essayer plusieurs points de coupure afin de trouver le meilleur.</p>
+<p>On voit que le meilleur point de coupure, celui qui maximise le gain est 0,12. Avec ce point de coupure, on estime que le taux de bonne classification est de 0,707 et que la sensitivité est de 0,899. Ainsi, on estime qu’on va détecter 90% des clients qui achètent.
+<img src="figures/03-logistic-e19.png" width="60%" style="display: block; margin: auto;" /></p>
+<p>On est loin du point de coupure usuel de 0,5 (présenté à la dernière ligne). La raison est simple. Comme il est très coûteux de rater un client qui aurait acheté quelque chose, il est préférable d’envoyer le catalogue à plus de clients, quitte à ce que plusieurs d’entre eux n’achètent rien. En fait, le point de coupure de 0,5 donne un meilleur taux de bonne classification mais un gain moyen plus faible car on rate trop de clients qui achètent (la sensitivité est seulement de 48,8%). Travailler avec la matrice de gain permet de trouver le point de coupure optimal en incorporant des notions de coûts et profits.</p>
+<p>Ici, nous avons ajusté un seul modèle, celui contenant uniquement les 10 variables de base et nous nous sommes attardés au choix du point de coupure pour l’assignation aux classes. Il est possible qu’un autre modèle, contenant par exemple des termes d’interactions, des termes quadratiques ou d’autres transformations des variables, soit supérieur à celui-ci. Le choix du modèle de prévision se fait donc souvent en deux étapes</p>
+<ol style="list-style-type: decimal">
+<li>trouver les bonnes variables</li>
+<li>trouver le bon point de coupure.</li>
+</ol>
+<p>Nous avons déjà vu des méthodes de sélections de variables au chapitre précédent. La section suivante reviendra sur ces méthodes dans le contexte de la régression logistique.</p>
 
 </div>
 </div>
