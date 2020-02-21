@@ -115,11 +115,11 @@ Un modèle ajusté peut ensuite être utilisé pour faire de la classification (
 
 On reviendra en détail sur cet aspect dans une section suivante.
 
-La méthode d’estimation des paramètres habituellement utilisée est la méthode du maximum de vraisemblance. Pour les applications, il est suffisant de savoir manipuler trois quantités importantes: la log-vraisemblance $\ell$, le $\mathsf{AIC}$ et le $\mathsf{BIC}$. Les deux critères d'information, que nous avons couvert dans les chapitres précédent, servent à la sélection de modèles tandis que la log-vraisemblance servira à construire un test d’hypothèse. 
+La méthode d’estimation des paramètres habituellement utilisée est la méthode du maximum de vraisemblance. Pour les applications, il est suffisant de savoir manipuler trois quantités importantes: la log-vraisemblance, le $\mathsf{AIC}$ et le $\mathsf{BIC}$. Les deux critères d'information, que nous avons couvert dans les chapitres précédent, servent à la sélection de modèles tandis que la log-vraisemblance $\ell$servira à construire un test d’hypothèse. 
 
 ### Méthode du maximum de vraisemblance
 
-Cette sous-section est facultative. Elle donne plus de détails sur la méthode du maximum de vraisemblance et les quantités en découlant ($\mathsf{AIC}$, $\mathsf{BIC}$ et -2LL).
+Cette sous-section est facultative. Elle donne plus de détails sur la méthode du maximum de vraisemblance et les quantités en découlant ($\mathsf{AIC}$, $\mathsf{BIC}$ et $\ell(\widehat{\boldsymbol{\beta}})$).
 
 La méthode du maximum de vraisemblance (_maximum likelihood_) est possiblement la méthode d'estimation la plus utilisée en statistique. En général, pour un échantillon donné et un modèle avec des paramètres inconnus $\boldsymbol{\theta}$, on peut calculer la « probabilité » d’avoir obtenu les observations de notre échantillon selon les paramètre. Si on traite cette « probabilité » comme étant une fonction des paramètres du modèle, $\boldsymbol{\theta}$, on l’appelle alors la vraisemblance (_likelihood_). La méthode du maximum de vraisemblance consiste à trouver les valeurs des paramètres qui maximisent la vraisemblance. On cherche donc les estimations qui sont les plus vraisemblables étant donné nos observations. 
 
@@ -138,7 +138,7 @@ Dans le cas de la régression logistique, la fonction de log-vraisemblance s'éc
  \ell(\boldsymbol{\beta}) = \sum_{i=1}^n Y_i ( \beta_0 + \beta_1 X_{i1} + \cdots + \beta_p X_{ip}) - \sum_{i=1}^n \ln\left\{1+\exp(\beta_0 + \cdots + \beta_pX_{ip})\right\}
 \end{align*}
 
-Contrairement au cas de la régression linéaire, on ne peut trouver une fonction explicite pour les valeurs des paramètres qui maximisent cette fonction. Des méthodes numériques doivent alors être utilisées pour l'optimisation. Une fois la maximisation accomplie, on obtient les estimés du maximum de vraisemblance, $\widehat{\boldsymbol{\beta}}$. On peut alors calculer la valeur maximale (numérique) du $\ell(\widehat{\boldsymbol{\beta}}$. La quantité $-2\ell(\widehat{\boldsymbol{\beta}})$ (`-2 Log L`) est rapportée dans les sorties **SAS**. Par analogie avec la régression linéaire la valeur de la log-vraisemblance évaluée à $\widehat{\boldsymbol{\beta}}$, $\ell(\widehat{\boldsymbol{\beta}})$, augmente toujours lorsqu'on ajoute des régresseurs et c'est pourquoi on ne pourra pas l’utiliser comme outil de sélection de variables. 
+Contrairement au cas de la régression linéaire, on ne peut trouver une fonction explicite pour les valeurs des paramètres qui maximisent cette fonction. Des méthodes numériques doivent alors être utilisées pour l'optimisation. Une fois la maximisation accomplie, on obtient les estimés du maximum de vraisemblance, $\widehat{\boldsymbol{\beta}}$. On peut alors calculer la valeur maximale (numérique) de la log-vraisemblance,  $\ell(\widehat{\boldsymbol{\beta}})$. La quantité $-2\ell(\widehat{\boldsymbol{\beta}})$ (`-2 Log L`) est rapportée dans les sorties **SAS**. Par analogie avec la régression linéaire la valeur de la log-vraisemblance évaluée à $\widehat{\boldsymbol{\beta}}$, $\ell(\widehat{\boldsymbol{\beta}})$, augmente toujours lorsqu'on ajoute des régresseurs et c'est pourquoi on ne pourra pas l’utiliser comme outil de sélection de variables. 
 
 Les critères d'information sont fonctions de a log-vraisemblance et sont 
 \begin{align*}
@@ -252,7 +252,7 @@ Dans notre exemple, on peut exprimer le modèle ajusté en termes de cote,
 \begin{align*}
  \frac{\P{Y=1 \mid X_5=x_5}}{\P{Y=0 \mid X_5=x_5}} = \exp(-3,05)\exp(0,0749x_5).
 \end{align*}
-Ainsi, lorsque $X_5$ augmente d'une année, la cote est multipliée par $\exp(0,0749) = 1,078$ peut importe la valeur de $x_5$. Pour deux personnes dont la différence d'âge est un an, la cote de la personne plus âgée est 7,8\% plus élevée. On peut aussi quantifier l’effet d’une augmentation d’un nombre d’unités quelconque.  Par exemple, pour chaque augmentation de 10 ans de $X_5$, la cote est multiplié par $1,078^10 = 2,12$, soit une augmentation de 112\%.
+Ainsi, lorsque $X_5$ augmente d'une année, la cote est multipliée par $\exp(0,0749) = 1,078$ peut importe la valeur de $x_5$. Pour deux personnes dont la différence d'âge est un an, la cote de la personne plus âgée est 7,8\% plus élevée. On peut aussi quantifier l’effet d’une augmentation d’un nombre d’unités quelconque.  Par exemple, pour chaque augmentation de 10 ans de $X_5$, la cote est multiplié par $1,078^{10} = 2,12$, soit une augmentation de 112\%.
 
 
 La cote est rapportée à la dernière colonne du tableau des coefficients. En  général, si on veut une interprétation globale de l’effet d’une variable, il faudra baser l’interprétation sur l'exponentielle du coefficient, $\exp(\widehat{\beta})$. **SAS** dénomme cette quantité rapport de cote (_odds ratio_).
@@ -539,8 +539,8 @@ La **matrice de confusion**, qui compare les vraies valeurs avec les prédiction
 
 ```{r confumat, eval = TRUE, echo = FALSE, }
 confumat <- perfo1$confusion
-rownames(confumat) <- c("$\\widehat{Y}=0$","$\\widehat{Y}=1$")
-colnames(confumat) <- c("$Y=0$","$Y=1$")
+rownames(confumat) <- c("$\\widehat{Y}=1$","$\\widehat{Y}=0$")
+colnames(confumat) <- c("$Y=1$","$Y=0$")
 knitr::kable(x = confumat, align = "r", 
              caption = paste0("Matrice de confusion avec point de coupure ", perfo1$cut))  
 
@@ -553,7 +553,9 @@ Quatre autres quantités, dérivées à partir de la matrice de confusion, sont 
 - le **taux de faux positifs**, $\P{Y=0 \mid \widehat{Y}=1}$, ou $\mathsf{FP}/(\mathsf{VP}+\mathsf{FP})$;
 - le **taux de faux négatifs**, $\P{Y=1 \mid \widehat{Y}=0}$, ou $\mathsf{FN}/(\mathsf{VN}+\mathsf{FN})$.
 
-Les estimés empiriques sont simplement obtenus en calculant les rapports du nombre d'observations dans chaque classe. La sensibilité mesure à quel point notre modèle est performant pour détecter un vrai positif (classe 1). La spécificité mesure à quel point notre modèle est performant pour détecter un résultat négatif (classe 0).
+Les estimés empiriques sont simplement obtenus en calculant les rapports du nombre d'observations dans chaque classe. **SAS** rapporte ces quantités, mais notez les vieilles versions retournent le taux de faux positifs et de faux négatifs dans les deux dernières colonnes, tandis que les sorties des nouvelles version du logiciel donnent les taux de vrais positifs et de vrais négatifs.
+
+La sensibilité mesure à quel point notre modèle est performant pour détecter un vrai positif (classe 1). La spécificité mesure à quel point notre modèle est performant pour détecter un résultat négatif (classe 0).
 
 
 Plus le point de coupure augmente, plus la sensibilité et le taux de faux positifs diminuent mais plus la spécificité et le taux de faux négatifs augmentent.
@@ -619,7 +621,7 @@ knitr::include_graphics("figures/03-logistic-e16.png")
 
 Le graphe \@ref(fig:fig3_e17) présente le pourcentage d'observations bien classées parmi les variables (pourcentage des probabilités prédites qui correspondent à un succès parmi les $k$ plus susceptibles selon le modèle). La référence est la ligne diagonale, qui correspond à une détection aléatoire.
 
-```{r fig3_e17, echo = FALSE, out.width='80%', fig.align = "center"}
+```{r fig3_e17, fig.cap="Taux de classement aléatoire, selon l'ordre et estimé du lift", echo = FALSE, out.width='80%', fig.align = "center"}
 knitr::include_graphics("figures/03-logistic-e17.png")
 ```
 
@@ -664,7 +666,6 @@ En pratique, l’une de ces quatre quantités peut être fixée à un car seulem
 \begin{align*}
 \text{gain} &= c_{11} \P{\widehat{Y}=1, Y=1} + c_{00}\P{\widehat{Y}=0, Y=0} 
 \\ &\quad + c_{10} \P{\widehat{Y}=1, Y=0}  + c_{01} \P{\widehat{Y}=0, Y=1}
-\\& = \P{Y = \widehat{Y}}.
 \end{align*}
 
 Le meilleur modèle est alors celui qui maximise le gain moyen. Le fichier `logit4_macro_gain.sas` contient des macros **SAS** qui permettent d’estimer le gain moyen à l’aide de la validation croisée.
@@ -699,7 +700,7 @@ On voit que le meilleur point de coupure, celui qui maximise le gain est 0,12. A
 knitr::include_graphics("figures/03-logistic-e19.png")
 ```
 
- On est loin du point de coupure usuel de 0,5 (présenté à la dernière ligne). La raison est simple. Comme il est très coûteux de rater un client qui aurait acheté quelque chose, il est préférable d’envoyer le catalogue à plus de clients, quitte à ce que plusieurs d’entre eux n’achètent rien. En fait, le point de coupure de 0,5 donne un meilleur taux de bonne classification mais un gain moyen plus faible car on rate trop de clients qui achètent (la sensitivité est seulement de 48,8%). Travailler avec la matrice de gain permet de trouver le point de coupure optimal en incorporant des notions de coûts et profits.
+ On est loin du point de coupure usuel de 0,5 (présenté à la dernière ligne). La raison est simple. Comme il est très coûteux de rater un client qui aurait acheté quelque chose, il est préférable d’envoyer le catalogue à plus de clients, quitte à ce que plusieurs d’entre eux n’achètent rien. En fait, le point de coupure de 0,5 donne un meilleur taux de bonne classification mais un gain moyen plus faible car on rate trop de clients qui achètent (la sensitivité est seulement de 48,8\%). Travailler avec la matrice de gain permet de trouver le point de coupure optimal en incorporant des notions de coûts et profits.
 
 Ici, nous avons ajusté un seul modèle, celui contenant uniquement les 10 variables de base et nous nous sommes attardés au choix du point de coupure pour l’assignation aux classes. Il est possible qu’un autre modèle, contenant par exemple des termes d’interactions, des termes quadratiques ou d’autres transformations des variables, soit supérieur à celui-ci. Le choix du modèle de prévision se fait donc souvent en deux étapes
 
@@ -720,9 +721,8 @@ Une stratégie similaire est possible avec la procédure `logistic` sauf qu’au
 
 Ce paragraphe est plus technique et peut être omis. Parce qu'il n'y a pas de solution explicite pour les estimateurs du maximum de vraisemblance du modèle logistique, ajuster chacun de ces modèles est coûteux. La statistique de score, qui est basée sur la vraisemblance, ne nécessite que d'obtenir le maximum de vraisemblance sous l'hypothèse nulle; cela permet d'éviter des ajustements coûteux lors de comparaisons. L'algorithme employé par **SAS** utilise une méthode de recherche arborescente dite méthode de séparation et d'évaluation, qui ne nécessite pas de tester tous les modèles; à noter que la solution à $k$ variables n'est pas nécessairement imbriquée dans celle à $k+1$ variables.   Lorsque la taille d’échantillon tend vers l’infini, la statistique du rapport de vraisemblance et la statistique de score sont équivalentes. Choisir le modèle selon la statistique du score équivaut alors à choisir le modèle qui maximise la vraisemblance (ou qui minimise la quantité $-2 \ell$). Ainsi, pour ce nombre fixé de variables, cela va donner le modèle avec le meilleur $\mathsf{AIC}$ (et $\mathsf{BIC}$). Par conséquent, on peut trouver le meilleur modèle, globalement, en minimisant le $\mathsf{AIC}$ (ou le $\mathsf{BIC}$) en faisant varier le nombre de variables. Par contre, cela n’est pas nécessairement vrai pour une taille d’échantillon finie. Le meilleur modèle selon le critère score n’est pas nécessairement celui qui maximise la vraisemblance. Mais en pratique, cette approximation est plus que suffisante et on va procéder comme on a fait avec la procédure `reg`.
 
-**Exemple**
 
-À la section précédente, nous avons inclus les 10 variables de base (14 avec les indicatrices pour les variables catégorielles). Nous allons ici faire une recherche de type `all-subset` parmi ces 14 variables. Le code est dans le fichier `logit5_selection_variables.sas`.
+À la section précédente, nous avons inclus les 10 variables de base (14 avec les indicatrices pour les variables catégorielles) dans notre exemple d'envoi ciblé. Nous allons ici faire une recherche de type `all-subset` parmi ces 14 variables. Le code est dans le fichier `logit5_selection_variables.sas`.
 
 ```{sas 03-scorebranchandbound, eval = FALSE, echo = TRUE}
 proc logistic data=train;
@@ -752,7 +752,7 @@ On voit que le meilleur modèle selon le $\mathsf{AIC}$ a neuf variables, contre
 
 ### Recherche séquentielle
 
-Faire une recherche de tous les sous-modèles possibles devient impraticable lorsqu’il y a trop de variables en jeu. La procédure `logistic` permet aussi une recherche de type séquentielle classique. Ceci permet aussi d’utiliser la même approche en deux temps présentée au chapitre précédent. Dans un premier temps, on fait une recherche séquentiellepour sélectionner un nombre de variables qui sera assez petit afin qu’une recherche exhaustive de tous les sous-modèles soit possible. Dans un second temps, on fait cette recherche avec ces variables uniquement. 
+Faire une recherche de tous les sous-modèles possibles devient impraticable lorsqu’il y a trop de variables en jeu. La procédure `logistic` permet aussi une recherche de type séquentielle classique. Ceci permet aussi d’utiliser la même approche en deux temps présentée au chapitre précédent. Dans un premier temps, on fait une recherche séquentielle pour sélectionner un nombre de variables qui sera assez petit afin qu’une recherche exhaustive de tous les sous-modèles soit possible. Dans un second temps, on fait cette recherche avec ces variables uniquement. 
 
 
 Si on inclut tous les termes quadratiques et les termes d’interactions d’ordre deux, nous avons 104 variables potentielles: c'est trop pour une recherche exhaustive. 
@@ -796,7 +796,7 @@ Le modèle qui a le plus petit $\mathsf{AIC}$, soit 579,701, est un modèle avec
 
 ### Algorithme glouton et critères alternatifs avec `hpgenselect`
 
-Nous avons vu au chapitre précédent que la procédure `glmselect` permet de faire une recherche de type séquentielle avec un critère autre que la valeur-$p$ du test de Wald pour rajouter ou retirer des variables explicatives du modèle final. Cette procédure est limitée à la régression linéaire, mais la procédure `hpgenselect` permet de faire une sélection de variables pour d’autres types de modèles, incluant la régression logistique. 
+Nous avons vu au chapitre précédent que la procédure `glmselect` permet de faire une recherche de type séquentielle avec un critère autre que la valeur-$p$ du test de Wald pour rajouter ou retirer des variables explicatives du modèle final. Cette procédure est limitée à la régression linéaire, mais la procédure `hpgenselect` permet de faire une sélection de variables pour d’autres types de modèles, incluant la régression logistique. Cette fonction n'est pas disponible dans **SAS University Edition**.
 
 Le code suivant fait une recherche séquentielle en ajoutant ou retranchant les variables selon leur valeur-$p$ (`select=sl`), la seule méthode disponible pour l’instant. En revanche, le modèle final peut-être choisi selon d'autres critères.
 
@@ -829,3 +829,6 @@ run;
 
 
 Avec le critère $\mathsf{BIC}$, on  obtient 12 variables tandis que `choose=aic` donne 13 variables (seule la variable `x41` est ajoutée). Il s’agit des mêmes variables que celles sélectionnées par une sélection séquentielle classique en prenant 0,05 comme critère d’entrée et de sortie.
+
+
+## Performance des différents modèles pour l’exemple des clients cibles

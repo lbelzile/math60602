@@ -52,7 +52,7 @@
 
 
 
-<link rel="stylesheet" href="style.css" type="text/css" />
+<link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
 
 <body>
@@ -298,11 +298,11 @@ On obtient ainsi les estimés des paramètres <span class="math inline">\(\wideh
 <li>Si <span class="math inline">\(\widehat{p} \geq c\)</span>, alors <span class="math inline">\(\widehat{Y}=1\)</span> (c’est-à-dire, on assigne cette observation à la catégorie 1).</li>
 </ul>
 <p>On reviendra en détail sur cet aspect dans une section suivante.</p>
-<p>La méthode d’estimation des paramètres habituellement utilisée est la méthode du maximum de vraisemblance. Pour les applications, il est suffisant de savoir manipuler trois quantités importantes: la log-vraisemblance <span class="math inline">\(\ell\)</span>, le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span>. Les deux critères d’information, que nous avons couvert dans les chapitres précédent, servent à la sélection de modèles tandis que la log-vraisemblance servira à construire un test d’hypothèse.</p>
+<p>La méthode d’estimation des paramètres habituellement utilisée est la méthode du maximum de vraisemblance. Pour les applications, il est suffisant de savoir manipuler trois quantités importantes: la log-vraisemblance, le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span>. Les deux critères d’information, que nous avons couvert dans les chapitres précédent, servent à la sélection de modèles tandis que la log-vraisemblance <span class="math inline">\(\ell\)</span>servira à construire un test d’hypothèse.</p>
 </div>
 <div id="méthode-du-maximum-de-vraisemblance" class="section level3">
 <h3><span class="header-section-number">4.3.2</span> Méthode du maximum de vraisemblance</h3>
-<p>Cette sous-section est facultative. Elle donne plus de détails sur la méthode du maximum de vraisemblance et les quantités en découlant (<span class="math inline">\(\mathsf{AIC}\)</span>, <span class="math inline">\(\mathsf{BIC}\)</span> et -2LL).</p>
+<p>Cette sous-section est facultative. Elle donne plus de détails sur la méthode du maximum de vraisemblance et les quantités en découlant (<span class="math inline">\(\mathsf{AIC}\)</span>, <span class="math inline">\(\mathsf{BIC}\)</span> et <span class="math inline">\(\ell(\widehat{\boldsymbol{\beta}})\)</span>).</p>
 <p>La méthode du maximum de vraisemblance (<em>maximum likelihood</em>) est possiblement la méthode d’estimation la plus utilisée en statistique. En général, pour un échantillon donné et un modèle avec des paramètres inconnus <span class="math inline">\(\boldsymbol{\theta}\)</span>, on peut calculer la « probabilité » d’avoir obtenu les observations de notre échantillon selon les paramètre. Si on traite cette « probabilité » comme étant une fonction des paramètres du modèle, <span class="math inline">\(\boldsymbol{\theta}\)</span>, on l’appelle alors la vraisemblance (<em>likelihood</em>). La méthode du maximum de vraisemblance consiste à trouver les valeurs des paramètres qui maximisent la vraisemblance. On cherche donc les estimations qui sont les plus vraisemblables étant donné nos observations.</p>
 <p>En pratique, il est habituellement plus simple de chercher à maximiser le log de la vraisemblance (ce qui revient au même car le log est une fonction croissante) et on nomme cette fonction la log-vraisemblance (<em>log-likelihood</em>).</p>
 <p>Vous connaissez déjà des exemples d’estimateurs du maximum de vraisemblance. La moyenne d’un échantillon est l’estimateur du maximum de vraisemblance pour la moyenne de la population <span class="math inline">\(\mu\)</span> si les observations représentent un échantillon aléatoire simple tiré d’une loi normale.</p>
@@ -315,7 +315,7 @@ Puisque le premier terme ne dépend pas des paramètres <span class="math inline
 <span class="math display">\[\begin{align*}
  \ell(\boldsymbol{\beta}) = \sum_{i=1}^n Y_i ( \beta_0 + \beta_1 X_{i1} + \cdots + \beta_p X_{ip}) - \sum_{i=1}^n \ln\left\{1+\exp(\beta_0 + \cdots + \beta_pX_{ip})\right\}
 \end{align*}\]</span></p>
-<p>Contrairement au cas de la régression linéaire, on ne peut trouver une fonction explicite pour les valeurs des paramètres qui maximisent cette fonction. Des méthodes numériques doivent alors être utilisées pour l’optimisation. Une fois la maximisation accomplie, on obtient les estimés du maximum de vraisemblance, <span class="math inline">\(\widehat{\boldsymbol{\beta}}\)</span>. On peut alors calculer la valeur maximale (numérique) du <span class="math inline">\(\ell(\widehat{\boldsymbol{\beta}}\)</span>. La quantité <span class="math inline">\(-2\ell(\widehat{\boldsymbol{\beta}})\)</span> (<code>-2 Log L</code>) est rapportée dans les sorties <strong>SAS</strong>. Par analogie avec la régression linéaire la valeur de la log-vraisemblance évaluée à <span class="math inline">\(\widehat{\boldsymbol{\beta}}\)</span>, <span class="math inline">\(\ell(\widehat{\boldsymbol{\beta}})\)</span>, augmente toujours lorsqu’on ajoute des régresseurs et c’est pourquoi on ne pourra pas l’utiliser comme outil de sélection de variables.</p>
+<p>Contrairement au cas de la régression linéaire, on ne peut trouver une fonction explicite pour les valeurs des paramètres qui maximisent cette fonction. Des méthodes numériques doivent alors être utilisées pour l’optimisation. Une fois la maximisation accomplie, on obtient les estimés du maximum de vraisemblance, <span class="math inline">\(\widehat{\boldsymbol{\beta}}\)</span>. On peut alors calculer la valeur maximale (numérique) de la log-vraisemblance, <span class="math inline">\(\ell(\widehat{\boldsymbol{\beta}})\)</span>. La quantité <span class="math inline">\(-2\ell(\widehat{\boldsymbol{\beta}})\)</span> (<code>-2 Log L</code>) est rapportée dans les sorties <strong>SAS</strong>. Par analogie avec la régression linéaire la valeur de la log-vraisemblance évaluée à <span class="math inline">\(\widehat{\boldsymbol{\beta}}\)</span>, <span class="math inline">\(\ell(\widehat{\boldsymbol{\beta}})\)</span>, augmente toujours lorsqu’on ajoute des régresseurs et c’est pourquoi on ne pourra pas l’utiliser comme outil de sélection de variables.</p>
 <p>Les critères d’information sont fonctions de a log-vraisemblance et sont
 <span class="math display">\[\begin{align*}
  \mathsf{AIC} &amp; = -2 \ell(\widehat{\boldsymbol{\beta}}) + 2(p+1)\\
@@ -407,7 +407,7 @@ Le graphe de cette fonction pour <span class="math inline">\(X_5\)</span> allant
 <span class="math display">\[\begin{align*}
  \frac{{\mathsf P}\left(Y=1 \mid X_5=x_5\right)}{{\mathsf P}\left(Y=0 \mid X_5=x_5\right)} = \exp(-3,05)\exp(0,0749x_5).
 \end{align*}\]</span>
-Ainsi, lorsque <span class="math inline">\(X_5\)</span> augmente d’une année, la cote est multipliée par <span class="math inline">\(\exp(0,0749) = 1,078\)</span> peut importe la valeur de <span class="math inline">\(x_5\)</span>. Pour deux personnes dont la différence d’âge est un an, la cote de la personne plus âgée est 7,8% plus élevée. On peut aussi quantifier l’effet d’une augmentation d’un nombre d’unités quelconque. Par exemple, pour chaque augmentation de 10 ans de <span class="math inline">\(X_5\)</span>, la cote est multiplié par <span class="math inline">\(1,078^10 = 2,12\)</span>, soit une augmentation de 112%.</p>
+Ainsi, lorsque <span class="math inline">\(X_5\)</span> augmente d’une année, la cote est multipliée par <span class="math inline">\(\exp(0,0749) = 1,078\)</span> peut importe la valeur de <span class="math inline">\(x_5\)</span>. Pour deux personnes dont la différence d’âge est un an, la cote de la personne plus âgée est 7,8% plus élevée. On peut aussi quantifier l’effet d’une augmentation d’un nombre d’unités quelconque. Par exemple, pour chaque augmentation de 10 ans de <span class="math inline">\(X_5\)</span>, la cote est multiplié par <span class="math inline">\(1,078^{10} = 2,12\)</span>, soit une augmentation de 112%.</p>
 <p>La cote est rapportée à la dernière colonne du tableau des coefficients. En général, si on veut une interprétation globale de l’effet d’une variable, il faudra baser l’interprétation sur l’exponentielle du coefficient, <span class="math inline">\(\exp(\widehat{\beta})\)</span>. <strong>SAS</strong> dénomme cette quantité rapport de cote (<em>odds ratio</em>).</p>
 <p>Un des avantages d’utiliser la vraisemblance comme fonction objective est que les intervalles de confiance et les estimateurs basés sur la vraisemblance (profilée) sont invariant aux reparametrisations. Ainsi, l’intervalle de confiance à niveau 95% pour <span class="math inline">\(\exp(\beta_{\texttt{age}})\)</span> est obtenu en prenant l’exponentielle des bornes de l’intervalle pour <span class="math inline">\(\beta_{\texttt{age}}\)</span>, [<span class="math inline">\(\exp(0,0465); \exp(0,1043)\)</span>], soit [<span class="math inline">\(1,048; 1,110\)</span>] tel que rapporté dans la sortie. Ce n’est <strong>pas</strong> le cas des intervalles de Wald qui ont la forme <span class="math inline">\(\widehat{\beta} \pm 1.96 \mathrm{se}(\widehat{\beta})\)</span>.
 Comme l’exponentielle est une transformation monotone croissante, on a <span class="math inline">\(\beta&gt;0\)</span> si et seulement si <span class="math inline">\(\exp(\beta)&gt;1\)</span>, etc. On peut ainsi utiliser les intervalles de confiance pour tester l’hypothèse <span class="math inline">\(\mathcal{H}_0: \beta_j=0\)</span> ou de façon équivalente <span class="math inline">\(\mathcal{H}_0: \exp(\beta_j)=1\)</span> à niveau 95%.</p>
@@ -2143,18 +2143,18 @@ L’autre extrême, avec un point de coupure <span class="math inline">\(c=1\)</
 <thead>
 <tr class="header">
 <th></th>
-<th align="right"><span class="math inline">\(Y=0\)</span></th>
 <th align="right"><span class="math inline">\(Y=1\)</span></th>
+<th align="right"><span class="math inline">\(Y=0\)</span></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><span class="math inline">\(\widehat{Y}=0\)</span></td>
+<td><span class="math inline">\(\widehat{Y}=1\)</span></td>
 <td align="right">109</td>
 <td align="right">52</td>
 </tr>
 <tr class="even">
-<td><span class="math inline">\(\widehat{Y}=1\)</span></td>
+<td><span class="math inline">\(\widehat{Y}=0\)</span></td>
 <td align="right">101</td>
 <td align="right">738</td>
 </tr>
@@ -2167,7 +2167,8 @@ L’autre extrême, avec un point de coupure <span class="math inline">\(c=1\)</
 <li>le <strong>taux de faux positifs</strong>, <span class="math inline">\({\mathsf P}\left(Y=0 \mid \widehat{Y}=1\right)\)</span>, ou <span class="math inline">\(\mathsf{FP}/(\mathsf{VP}+\mathsf{FP})\)</span>;</li>
 <li>le <strong>taux de faux négatifs</strong>, <span class="math inline">\({\mathsf P}\left(Y=1 \mid \widehat{Y}=0\right)\)</span>, ou <span class="math inline">\(\mathsf{FN}/(\mathsf{VN}+\mathsf{FN})\)</span>.</li>
 </ul>
-<p>Les estimés empiriques sont simplement obtenus en calculant les rapports du nombre d’observations dans chaque classe. La sensibilité mesure à quel point notre modèle est performant pour détecter un vrai positif (classe 1). La spécificité mesure à quel point notre modèle est performant pour détecter un résultat négatif (classe 0).</p>
+<p>Les estimés empiriques sont simplement obtenus en calculant les rapports du nombre d’observations dans chaque classe. <strong>SAS</strong> rapporte ces quantités, mais notez les vieilles versions retournent le taux de faux positifs et de faux négatifs dans les deux dernières colonnes, tandis que les sorties des nouvelles version du logiciel donnent les taux de vrais positifs et de vrais négatifs.</p>
+<p>La sensibilité mesure à quel point notre modèle est performant pour détecter un vrai positif (classe 1). La spécificité mesure à quel point notre modèle est performant pour détecter un résultat négatif (classe 0).</p>
 <p>Plus le point de coupure augmente, plus la sensibilité et le taux de faux positifs diminuent mais plus la spécificité et le taux de faux négatifs augmentent.</p>
 <p>La <strong>fonction d’efficacité du récepteur</strong>, parfois appelée courbe ROC (<em>receiver operating characteristic</em>) est parfois utilisée pour représenter globalement la performance du modèle. Elle est obtenue avec l’option <code>plots(only)=(roc)</code> dans <strong>SAS</strong>. Il s’agit du graphe de la sensibilité en fonction de un moins la spécificité, en faisant varier le point de coupure. Un modèle parfait aurait une sensibilité et une spécificité égales à 1 (correspondant au coin supérieur gauche de la fonction d’efficacité du récepteur). Ainsi, plus le couple (<span class="math inline">\(1-\)</span>spécificité, sensibilité) est près de (<span class="math inline">\(0\)</span>, <span class="math inline">\(1\)</span>), meilleur est le modèle. Par conséquent, plus la courbe ROC tend vers (<span class="math inline">\(0\)</span>, <span class="math inline">\(1\)</span>) meilleur est le pouvoir prévisionnel des variables.</p>
 <p>L’<strong>aire sous la courbe</strong> (<em>area under the curve</em>) est souvent utilisée en parallèle
@@ -2201,7 +2202,12 @@ run;
 <p>Ici, le tableau présente les 10 déciles. Si on classifiait comme acheteurs les 10% qui ont la plus forte probabilité estimée d’achat, on détecterait 79 des 210 clients (37,6%). En comparaison, on s’attend que 21 clients soient sélectionnés en moyenne si on prend un échantillon aléatoire de 100 personnes. Le ratio 79/21 (dernière colonne) est le <em>lift</em> du modèle: il permet de détecter 3,76 fois plus de succès que le hasard.</p>
 <p><img src="figures/03-logistic-e16.png" width="80%" style="display: block; margin: auto;" /></p>
 <p>Le graphe @ref(fig:fig3_e17) présente le pourcentage d’observations bien classées parmi les variables (pourcentage des probabilités prédites qui correspondent à un succès parmi les <span class="math inline">\(k\)</span> plus susceptibles selon le modèle). La référence est la ligne diagonale, qui correspond à une détection aléatoire.</p>
-<p><img src="figures/03-logistic-e17.png" width="80%" style="display: block; margin: auto;" /></p>
+<div class="figure" style="text-align: center">
+<img src="figures/03-logistic-e17.png" alt="Taux de classement aléatoire, selon l'ordre et estimé du lift" width="80%" />
+<p class="caption">
+(#fig:fig3_e17)Taux de classement aléatoire, selon l’ordre et estimé du lift
+</p>
+</div>
 </div>
 <div id="classification-avec-une-matrice-de-gain" class="section level2">
 <h2><span class="header-section-number">4.6</span> Classification avec une matrice de gain</h2>
@@ -2282,7 +2288,6 @@ Maximiser le gain total revient donc à maximiser le taux de bonne classificatio
 <span class="math display">\[\begin{align*}
 \text{gain} &amp;= c_{11} {\mathsf P}\left(\widehat{Y}=1, Y=1\right) + c_{00}{\mathsf P}\left(\widehat{Y}=0, Y=0\right) 
 \\ &amp;\quad + c_{10} {\mathsf P}\left(\widehat{Y}=1, Y=0\right)  + c_{01} {\mathsf P}\left(\widehat{Y}=0, Y=1\right)
-\\&amp; = {\mathsf P}\left(Y = \widehat{Y}\right).
 \end{align*}\]</span></p>
 <p>Le meilleur modèle est alors celui qui maximise le gain moyen. Le fichier <code>logit4_macro_gain.sas</code> contient des macros <strong>SAS</strong> qui permettent d’estimer le gain moyen à l’aide de la validation croisée.</p>
 <p>Nous allons encore une fois seulement utiliser les 10 variables de base. Mais nous allons intégrer des revenus et coûts afin de trouver le meilleur point de coupure. Rappelez-vous que le coût de l’envoi d’un catalogue est de 10$. Le tableau des variables descriptives qui suit montre que, pour les 210 clients qui ont acheté quelque chose, le revenu moyen est de 67,29$ (moyenne de la variable <code>ymontant</code>).</p>
@@ -2341,8 +2346,7 @@ manycut=.05 .06 .07 .08 .09 .1 .11 .12 .13 .14 .15 .16 .17 .18 .5);</code></pre>
 <p>Rappelez-vous qu’avec une variable cible continue, nous avons utilisé avec la procédure <code>reg</code> pour faire une recherche du meilleur sous-ensemble de variables parmi tous les ensembles. Pour ce faire, on sélectionnait le meilleur modèle selon le <span class="math inline">\(R^2\)</span> pour un nombre de variables fixe et il suffisait ensuite de trouver parmi ces variables le meilleur selon le critère d’information choisi.</p>
 <p>Une stratégie similaire est possible avec la procédure <code>logistic</code> sauf qu’au lieu de trouver une suite de meilleurs modèles selon le <span class="math inline">\(R^2\)</span>, un autre critère est retenu. Il s’agit de la statistique du score (ou test des multiplicateurs de Lagrange) pour tester si l’ajout d’une variable est utile ou pas.</p>
 <p>Ce paragraphe est plus technique et peut être omis. Parce qu’il n’y a pas de solution explicite pour les estimateurs du maximum de vraisemblance du modèle logistique, ajuster chacun de ces modèles est coûteux. La statistique de score, qui est basée sur la vraisemblance, ne nécessite que d’obtenir le maximum de vraisemblance sous l’hypothèse nulle; cela permet d’éviter des ajustements coûteux lors de comparaisons. L’algorithme employé par <strong>SAS</strong> utilise une méthode de recherche arborescente dite méthode de séparation et d’évaluation, qui ne nécessite pas de tester tous les modèles; à noter que la solution à <span class="math inline">\(k\)</span> variables n’est pas nécessairement imbriquée dans celle à <span class="math inline">\(k+1\)</span> variables. Lorsque la taille d’échantillon tend vers l’infini, la statistique du rapport de vraisemblance et la statistique de score sont équivalentes. Choisir le modèle selon la statistique du score équivaut alors à choisir le modèle qui maximise la vraisemblance (ou qui minimise la quantité <span class="math inline">\(-2 \ell\)</span>). Ainsi, pour ce nombre fixé de variables, cela va donner le modèle avec le meilleur <span class="math inline">\(\mathsf{AIC}\)</span> (et <span class="math inline">\(\mathsf{BIC}\)</span>). Par conséquent, on peut trouver le meilleur modèle, globalement, en minimisant le <span class="math inline">\(\mathsf{AIC}\)</span> (ou le <span class="math inline">\(\mathsf{BIC}\)</span>) en faisant varier le nombre de variables. Par contre, cela n’est pas nécessairement vrai pour une taille d’échantillon finie. Le meilleur modèle selon le critère score n’est pas nécessairement celui qui maximise la vraisemblance. Mais en pratique, cette approximation est plus que suffisante et on va procéder comme on a fait avec la procédure <code>reg</code>.</p>
-<p><strong>Exemple</strong></p>
-<p>À la section précédente, nous avons inclus les 10 variables de base (14 avec les indicatrices pour les variables catégorielles). Nous allons ici faire une recherche de type <code>all-subset</code> parmi ces 14 variables. Le code est dans le fichier <code>logit5_selection_variables.sas</code>.</p>
+<p>À la section précédente, nous avons inclus les 10 variables de base (14 avec les indicatrices pour les variables catégorielles) dans notre exemple d’envoi ciblé. Nous allons ici faire une recherche de type <code>all-subset</code> parmi ces 14 variables. Le code est dans le fichier <code>logit5_selection_variables.sas</code>.</p>
 <pre class="sas"><code>proc logistic data=train;
 model yachat(ref=&#39;0&#39;) = x1 x2 x31 x32 x41 x42 x43 x44 x5 
     x6 x7 x8 x9 x10 / selection=score best=1;
@@ -2357,7 +2361,7 @@ run;</code></pre>
 </div>
 <div id="recherche-séquentielle" class="section level3">
 <h3><span class="header-section-number">4.7.2</span> Recherche séquentielle</h3>
-<p>Faire une recherche de tous les sous-modèles possibles devient impraticable lorsqu’il y a trop de variables en jeu. La procédure <code>logistic</code> permet aussi une recherche de type séquentielle classique. Ceci permet aussi d’utiliser la même approche en deux temps présentée au chapitre précédent. Dans un premier temps, on fait une recherche séquentiellepour sélectionner un nombre de variables qui sera assez petit afin qu’une recherche exhaustive de tous les sous-modèles soit possible. Dans un second temps, on fait cette recherche avec ces variables uniquement.</p>
+<p>Faire une recherche de tous les sous-modèles possibles devient impraticable lorsqu’il y a trop de variables en jeu. La procédure <code>logistic</code> permet aussi une recherche de type séquentielle classique. Ceci permet aussi d’utiliser la même approche en deux temps présentée au chapitre précédent. Dans un premier temps, on fait une recherche séquentielle pour sélectionner un nombre de variables qui sera assez petit afin qu’une recherche exhaustive de tous les sous-modèles soit possible. Dans un second temps, on fait cette recherche avec ces variables uniquement.</p>
 <p>Si on inclut tous les termes quadratiques et les termes d’interactions d’ordre deux, nous avons 104 variables potentielles: c’est trop pour une recherche exhaustive.</p>
 <p>Faisons d’abord une recherche séquentielle classique avec les 104 variables, en prenant 0,05 comme critère d’entrée et de sortie. Le code est</p>
 <pre class="sas"><code>proc logistic data=train;
@@ -2390,7 +2394,7 @@ En faisant une recherche séquentielle avec 0,5 comme comme critère d’entrée
 </div>
 <div id="algorithme-glouton-et-critères-alternatifs-avec-hpgenselect" class="section level3">
 <h3><span class="header-section-number">4.7.3</span> Algorithme glouton et critères alternatifs avec <code>hpgenselect</code></h3>
-<p>Nous avons vu au chapitre précédent que la procédure <code>glmselect</code> permet de faire une recherche de type séquentielle avec un critère autre que la valeur-<span class="math inline">\(p\)</span> du test de Wald pour rajouter ou retirer des variables explicatives du modèle final. Cette procédure est limitée à la régression linéaire, mais la procédure <code>hpgenselect</code> permet de faire une sélection de variables pour d’autres types de modèles, incluant la régression logistique.</p>
+<p>Nous avons vu au chapitre précédent que la procédure <code>glmselect</code> permet de faire une recherche de type séquentielle avec un critère autre que la valeur-<span class="math inline">\(p\)</span> du test de Wald pour rajouter ou retirer des variables explicatives du modèle final. Cette procédure est limitée à la régression linéaire, mais la procédure <code>hpgenselect</code> permet de faire une sélection de variables pour d’autres types de modèles, incluant la régression logistique. Cette fonction n’est pas disponible dans <strong>SAS University Edition</strong>.</p>
 <p>Le code suivant fait une recherche séquentielle en ajoutant ou retranchant les variables selon leur valeur-<span class="math inline">\(p\)</span> (<code>select=sl</code>), la seule méthode disponible pour l’instant. En revanche, le modèle final peut-être choisi selon d’autres critères.</p>
 <pre class="sas"><code>proc hpgenselect data=train;
 model yachat(ref=&#39;0&#39;) = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10
