@@ -140,6 +140,9 @@
 <li class="chapter" data-level="4.7.2" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#recherche-séquentielle"><i class="fa fa-check"></i><b>4.7.2</b> Recherche séquentielle</a></li>
 <li class="chapter" data-level="4.7.3" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#algorithme-glouton-et-critères-alternatifs-avec-hpgenselect"><i class="fa fa-check"></i><b>4.7.3</b> Algorithme glouton et critères alternatifs avec <code>hpgenselect</code></a></li>
 </ul></li>
+<li class="chapter" data-level="4.8" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#performance-des-différents-modèles-pour-lexemple-des-clients-cibles"><i class="fa fa-check"></i><b>4.8</b> Performance des différents modèles pour l’exemple des clients cibles</a><ul>
+<li class="chapter" data-level="4.8.1" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#stratégies-en-utilisant-seulement-la-régression-logistique"><i class="fa fa-check"></i><b>4.8.1</b> Stratégies en utilisant seulement la régression logistique</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -2421,6 +2424,116 @@ i_x9_x10
 selection method=stepwise(select=sl choose=BIC);
 run;</code></pre>
 <p>Avec le critère <span class="math inline">\(\mathsf{BIC}\)</span>, on obtient 12 variables tandis que <code>choose=aic</code> donne 13 variables (seule la variable <code>x41</code> est ajoutée). Il s’agit des mêmes variables que celles sélectionnées par une sélection séquentielle classique en prenant 0,05 comme critère d’entrée et de sortie.</p>
+</div>
+</div>
+<div id="performance-des-différents-modèles-pour-lexemple-des-clients-cibles" class="section level2">
+<h2><span class="header-section-number">4.8</span> Performance des différents modèles pour l’exemple des clients cibles</h2>
+<p>Nous allons conclure, pour l’instant, notre exemple dans cette section, en évaluant la performance de différentes stratégies. Le critère de performance sera le suivant : revenu net de la stratégie si elle était appliquée aux 100 000 clients restants. Pour chacun des 100 000 clients à catégoriser, nous allons calculer la quantité suivante :</p>
+<ul>
+<li>Si le client n’est pas ciblé pour l’envoi d’un catalogue par le modèle, alors le revenu est nul.</li>
+<li>Si le client est ciblé pour l’envoi d’un catalogue par le modèle et qu’il n’achète rien, le revenu est de <span class="math inline">\(-10\)</span>$ (le coût de l’envoi).</li>
+<li>Si le client est ciblé pour l’envoi d’un catalogue par le modèle et qu’il achète quelque chose, le revenu est de (<code>ymontant</code><span class="math inline">\(-10\)</span>)$, c’est-à-dire, le montant qu’il dépense moins le <span class="math inline">\(10\)</span>$ du coût de l’envoi.</li>
+</ul>
+<p>Pour une stratégie donnée, chaque individu n’appartient qu’à une seule des catégories. Le revenu net de la stratégie est la somme des revenus pour les 100 000 clients. Parmi ces derniers, 23 179 auraient acheté si on leur avait envoyé le catalogue et ces clients auraient généré des revenus de 1 601 212$. Si on enlève le coût des envois (100 000 X 10$ = 1 000 000$), on obtient que la stratégie de référence permet un revenu net de 601 212$.</p>
+<p>Nous allons investiguer deux types de stratégies :</p>
+<ol style="list-style-type: decimal">
+<li>une basée sur la régression logistique seulement en utilisant le modèle pour prévoir l’achat et</li>
+<li>une basée sur la combinaison de la régression logistique et la régression linéaire en utilisant un modèle pour prévoir l’achat et un autre pour prévoir le montant.</li>
+</ol>
+<div id="stratégies-en-utilisant-seulement-la-régression-logistique" class="section level3">
+<h3><span class="header-section-number">4.8.1</span> Stratégies en utilisant seulement la régression logistique</h3>
+<p>Dans ce cas, nous allons estimer la probabilité d’achat avec un modèle de régression logistique. Nous allons ensuite trouver le meilleur point de coupure, avec une matrice de gain adéquatement choisie, afin d’avoir une règle d’assignation optimale. Nous avons déterminé des modèles potentiels à la section précédente. De plus, nous avons déjà vu comment trouver le meilleur point de coupure en spécifiant une matrice de gain, afin de maximiser le gain moyen à partir de la matrice de gain du tableau <a href="régression-logistique-1.html#tab:03-gain3">4.5</a>. Nous allons donc trouver le meilleur point de coupure pour quelques-uns des modèles choisis à la section précédente, pour ensuite évaluer le revenu net de ces modèles.</p>
+<p>Il faut encore une fois bien comprendre qu’en pratique, on ne pourrait pas faire cette comparaison, car on ne sait pas d’avance si les clients futurs vont acheter ou non. Mais dans cet exemple, les variables <code>yachat</code> et <code>ymontant</code> sont fournies pour ces 100 000 clients afin qu’on puisse voir ce qui se serait passé avec les différentes stratégies.</p>
+<p>La stratégie de référence est celle qui consiste à envoyer le catalogue aux 100 000 clients sans les sélectionner. Le tableau qui suit montre des statistiques pour les variables <code>ymontant</code> et <code>yachat</code> pour les 100 000 clients à scorer. Le tableau <a href="régression-logistique-1.html#tab:03-summarylog">4.6</a> résume la performance des différentes stratégies basées exclusivement sur le modèle logistique.</p>
+<table style="width:100%;">
+<caption><span id="tab:03-summarylog">Tableau 4.6: </span> Résumé des caractéristiques des modèles logistiques avec (a) référence, soit l’envoi sans sélection à tous les clients; (b) 10 variables de base sans sélection; (c) toutes les variables, incluant les termes quadratiques et les interactions d’ordre 2; (d) sélection séquentielle classique avec critère d’entrée et de sortie à 0,05; (e) idem que (d), mais avec meilleur modèle selon le <span class="math inline">\(\mathsf{AIC}\)</span>; (f) idem que (d), mais avec meilleur modèle selon le <span class="math inline">\(\mathsf{BIC}\)</span>; (g) recherche exhaustive avec 47 variables sélectionnées par recherche séquentielle et modèle final sélectionné selon le <span class="math inline">\(\mathsf{BIC}\)</span>; (h), idem mais sélection avec <span class="math inline">\(\mathsf{AIC}\)</span>. Les points de coupure optimaux ont été déterminés par validation-croisée sur l’échantillon d’apprentissage, tandis que la performance du modèle (sensibilité, taux de faux positifs et taux de bonne classification) ont été calculés à partir de l’échantillon test de 100 000 individus.</caption>
+<colgroup>
+<col width="46%" />
+<col width="5%" />
+<col width="11%" />
+<col width="13%" />
+<col width="7%" />
+<col width="8%" />
+<col width="6%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>modèle</th>
+<th># variables</th>
+<th>point de coupure</th>
+<th>sensibilité</th>
+<th>taux de faux positifs</th>
+<th>taux de bonne classification</th>
+<th>revenu net</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(a)</td>
+<td>—</td>
+<td>—</td>
+<td>100</td>
+<td>76,8</td>
+<td>23,2</td>
+<td>601212</td>
+</tr>
+<tr class="even">
+<td>(b)</td>
+<td>14</td>
+<td>0,12</td>
+<td>89</td>
+<td>56,2</td>
+<td>70,9</td>
+<td>940569</td>
+</tr>
+<tr class="odd">
+<td>(c)</td>
+<td>104</td>
+<td>0,08</td>
+<td>85,8</td>
+<td>52,6</td>
+<td>74,6</td>
+<td>937150</td>
+</tr>
+<tr class="even">
+<td>(d), (e)</td>
+<td>13</td>
+<td>0,14</td>
+<td>85,7</td>
+<td>49,1</td>
+<td>77,5</td>
+<td>969350</td>
+</tr>
+<tr class="odd">
+<td>(f)</td>
+<td>12</td>
+<td>0,19</td>
+<td>81</td>
+<td>44,7</td>
+<td>80,4</td>
+<td>943935</td>
+</tr>
+<tr class="even">
+<td>(g)</td>
+<td>8</td>
+<td>0,16</td>
+<td>86</td>
+<td>48,1</td>
+<td>78,3</td>
+<td>985069</td>
+</tr>
+<tr class="odd">
+<td>(h)</td>
+<td>28</td>
+<td>0,15</td>
+<td>83,5</td>
+<td>47,4</td>
+<td>78,8</td>
+<td>952672</td>
+</tr>
+</tbody>
+</table>
+<p>Nous avons vu plus tôt, qu’avec les 10 variables de base, le meilleur point de coupure est de 0,12. En utilisant cette stratégie sur les 100 000 clients, le revenu net aurait été de 940 569$. C’est une énorme amélioration, de plus de 56%, par rapport à la stratégie de référence qui consiste à envoyer le catalogue à tout le monde (revenu net de 601 212$). Si on inclut tous les termes quadratiques et les termes les interactions d’ordre deux (104 variables en tout), le revenu net est inférieur avec une valeur de 937 150$. Ici, le modèle est trop complexe et surajusté. Si on fait une sélection de variables (4 méthodes sont présentées), suivie de la détermination du meilleur point de coupure, on fait alors toujours mieux qu’avec le modèle incluant les 10 variables de base seulement. L’approche qui aurait fait le mieux est la recherche séquentielle pour réduire le nombre de variables considérées à 47, suivi d’une recherche exhaustive pour trouver le modèle avec le plus petit <span class="math inline">\(\mathsf{BIC}\)</span> : cette approche aurait généré 985 069$ de revenus nets. Il s’agit d’un gain de 4,7% par rapport au modèle avec les 10 variables de base.</p>
 
 </div>
 </div>
