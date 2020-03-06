@@ -157,31 +157,31 @@ L’exemple suivant est inspiré de l’article
 Dans cet article, les auteurs cherchent à voir si le fait qu’un produit soit recommandé par le _Professional Rodeo Cowboys Association_ (PRCA) a un effet sur les intentions d’achats. On dispose de 500 observations sur les variables suivantes:
 
 - $Y$: seriez-vous intéressé à acheter un produit recommandé par le PRCA
-    - $\code{0}$: non
-    - $\code{1}$: oui
+    - $\texttt{0}$: non
+    - $\texttt{1}$: oui
 - $X_1$: quel genre d’emploi occupez-vous?
-    - $\code{1}$: à la maison
-    - $\code{2}$: employé
-    - $\code{3}$: ventes/services
-    - $\code{4}$: professionnel
-    - $\code{5}$: agriculture/ferme
+    - $\texttt{1}$: à la maison
+    - $\texttt{2}$: employé
+    - $\texttt{3}$: ventes/services
+    - $\texttt{4}$: professionnel
+    - $\texttt{5}$: agriculture/ferme
 - $X_2$: revenu familial annuel
-    - $\code{1}$: moins de 25 000
-    - $\code{2}$: 25 000 à 39 999
-    - $\code{3}$: 40 000 à 59 999
-    - $\code{4}$: 60 000 à 79 999
-    - $\code{5}$: 80 000 et plus
+    - $\texttt{1}$: moins de 25 000
+    - $\texttt{2}$: 25 000 à 39 999
+    - $\texttt{3}$: 40 000 à 59 999
+    - $\texttt{4}$: 60 000 à 79 999
+    - $\texttt{5}$: 80 000 et plus
 - $X_3$: sexe
-    - $\code{0}$: homme
-    - $\code{1}$: femme
+    - $\texttt{0}$: homme
+    - $\texttt{1}$: femme
 - $X_4$: avez-vous déjà fréquenté une université?
-    - $\code{0}$: non
-    - $\code{1}$: oui
+    - $\texttt{0}$: non
+    - $\texttt{1}$: oui
 - $X_5$: âge (en années)
 - $X_6$: combien de fois avez-vous assisté à un rodéo au cours de la dernière année?
-    - $\code{1}$: 10 fois ou plus
-    - $\code{2}$: entre six et neuf fois
-    - $\code{3}$: cinq fois ou moins
+    - $\texttt{1}$: 10 fois ou plus
+    - $\texttt{2}$: entre six et neuf fois
+    - $\texttt{3}$: cinq fois ou moins
 
 Le but est d’examiner les effets de ces variables sur l'intentions d’achat ($Y$). Les données se trouvent dans le fichier `logit1.sas7bdat`.
 
@@ -217,8 +217,8 @@ knitr::include_graphics("figures/03-logistic-e3.png")
 knitr::include_graphics("figures/03-logistic-e4.png")
 ```
 
-- On voit qu'il y a 272 personnes ($\code{0}$) qui ne sont pas intéressées à acheter un produit recommandé par le PRCA et 228 personnes ($\code{1}$) qui le sont. 
-- Les estimés des paramètres sont $\widehat{\beta}_0 = -3,05$ et $\widehat{\beta}_{\code{age}}=0,0749$.
+- On voit qu'il y a 272 personnes ($\texttt{0}$) qui ne sont pas intéressées à acheter un produit recommandé par le PRCA et 228 personnes ($\texttt{1}$) qui le sont. 
+- Les estimés des paramètres sont $\widehat{\beta}_0 = -3,05$ et $\widehat{\beta}_{\texttt{age}}=0,0749$.
 - Un intervalle de confiance de niveau 95\% pour l’effet de l’âge est [$0,0465; 0,1043$]. 
 - Le modèle ajusté est $\logit\{\P{Y=1 \mid X_5=x_5}\} = -3,05 + 0,0749 x_5$. On peut également exprimer ce modèle directement en terme de la probabilité de succès,
 \begin{align*}
@@ -237,7 +237,7 @@ curve(expit(-3.05+0.0749*x),
 
 ```
 
-- La valeur-$p$ pour $\widehat{\beta}_{\code{age}}$ (`Pr > khi-2`), correspondant aux test des hypothèses $\Hy_0: \beta_{\code{age}}=0$ versus $\Hy_1: \beta_{\code{age}} \neq 0$, est plus petite que $10^{-4}$ et donc l'effet de la variable âge est statistiquement différent de zéro. Plus l’âge augmente, plus la probabilité d’être intéressé à acheter un produit recommandé par le PRCA augmente.
+- La valeur-$p$ pour $\widehat{\beta}_{\texttt{age}}$ (`Pr > khi-2`), correspondant aux test des hypothèses $\Hy_0: \beta_{\texttt{age}}=0$ versus $\Hy_1: \beta_{\texttt{age}} \neq 0$, est plus petite que $10^{-4}$ et donc l'effet de la variable âge est statistiquement différent de zéro. Plus l’âge augmente, plus la probabilité d’être intéressé à acheter un produit recommandé par le PRCA augmente.
 - Le tableau `Test de l'hypothèse nulle globale : BETA=0` contient les résultats de trois tests pour l'hypothèse nulle que tous les paramètres sont nuls, contre l'alternative qu'au moins un des paramètres est différent de zéro. Comme il y a un seul paramètre ici, ces tests reviennent à tester l’effet de la variable âge. Le test de Wald est le même que celui que nous venons de voir dans le tableau des coefficients. 
 
 ### Interprétation du paramètre
@@ -257,7 +257,7 @@ Ainsi, lorsque $X_5$ augmente d'une année, la cote est multipliée par $\exp(0,
 
 La cote est rapportée à la dernière colonne du tableau des coefficients. En  général, si on veut une interprétation globale de l’effet d’une variable, il faudra baser l’interprétation sur l'exponentielle du coefficient, $\exp(\widehat{\beta})$. **SAS** dénomme cette quantité rapport de cote (_odds ratio_).
 
-Un des avantages d'utiliser la vraisemblance comme fonction objective est que les intervalles de confiance et les estimateurs basés sur la vraisemblance (profilée) sont invariant aux reparametrisations. Ainsi, l'intervalle de confiance à niveau 95\% pour $\exp(\beta_{\code{age}})$ est obtenu en prenant l'exponentielle des bornes de l'intervalle pour $\beta_{\code{age}}$, [$\exp(0,0465); \exp(0,1043)$], soit [$1,048; 1,110$] tel que rapporté dans la sortie. Ce n'est **pas** le cas des intervalles de Wald qui ont la forme $\widehat{\beta} \pm 1.96 \mathrm{se}(\widehat{\beta})$.
+Un des avantages d'utiliser la vraisemblance comme fonction objective est que les intervalles de confiance et les estimateurs basés sur la vraisemblance (profilée) sont invariant aux reparametrisations. Ainsi, l'intervalle de confiance à niveau 95\% pour $\exp(\beta_{\texttt{age}})$ est obtenu en prenant l'exponentielle des bornes de l'intervalle pour $\beta_{\texttt{age}}$, [$\exp(0,0465); \exp(0,1043)$], soit [$1,048; 1,110$] tel que rapporté dans la sortie. Ce n'est **pas** le cas des intervalles de Wald qui ont la forme $\widehat{\beta} \pm 1.96 \mathrm{se}(\widehat{\beta})$.
 Comme l'exponentielle est une transformation monotone croissante, on a $\beta>0$ si et seulement si $\exp(\beta)>1$, etc. On peut ainsi utiliser les intervalles de confiance pour tester l’hypothèse $\mathcal{H}_0: \beta_j=0$ ou de façon équivalente $\mathcal{H}_0: \exp(\beta_j)=1$ à niveau 95\%.
 
 ### Modèle avec toutes les variables explicatives
@@ -276,7 +276,7 @@ Dans **SAS**, les variables incluses dans la commande `class` sont modélisées 
 
 
 On peut changer la catégorie de référence (`ref=`) qui est par défaut la dernière modalité (en ordre alphanumérique). L'option `param=ref` pour `class` permet d'imprimer un tableau indiquant le code pour les variables indicatrices.
-Les variables incluses dans la commande `class` sont modélisées à l’aide d’un ensemble de variables indicatrices. Prenons l’exemple de la variable $X_1$: la modalité de référence est (\code{5}), soit agriculture est spécifiée dans le tableau `Informations sur les niveaux de classe`.
+Les variables incluses dans la commande `class` sont modélisées à l’aide d’un ensemble de variables indicatrices. Prenons l’exemple de la variable $X_1$: la modalité de référence est (\texttt{5}), soit agriculture est spécifiée dans le tableau `Informations sur les niveaux de classe`.
 
 ```{r fig3_e9, echo = FALSE, out.width='75%', fig.align = "center"}
 knitr::include_graphics("figures/03-logistic-e9.png")
@@ -308,12 +308,12 @@ Le modèle ajusté est
 Notez que les variables $\I{X_1=1}$ (`x11`), $\I{X_1=21}$ (`x12`), $\I{X_1=3}$ (`x13`) et $\I{X_1=4}$ (`x14`) représentent les quatre indicatrices pour la variable $X_1$ (et de même pour $X_2$ et $X_6$). L’interprétation se fait comme en régression linéaire multiple. Ici, il n’y a pas de terme quadratique, ni d’interaction. Les paramètres estimés représentent donc l’effet de la variable correspondante sur le logit une fois que les autres variables sont dans le modèle, et demeurent fixes. 
 
 
-Prenons le coefficient associé à l'âge ($X_5$) comme exmple. Le paramètre estimé est $\widehat{\beta}_{\code{age}}=0,1095$ et il est significativement différent de zéro. Ainsi, plus l’âge augmente, plus $\P{Y=1\mid \boldsymbol{X}}$ augmente, toutes autres choses étant égales par ailleurs. Pour chaque augmentation d'un an de $X_5$, la cote est multipliée par $\exp(0,1095)=1,116$, lorsque les autres variables demeurent fixes. 
+Prenons le coefficient associé à l'âge ($X_5$) comme exmple. Le paramètre estimé est $\widehat{\beta}_{\texttt{age}}=0,1095$ et il est significativement différent de zéro. Ainsi, plus l’âge augmente, plus $\P{Y=1\mid \boldsymbol{X}}$ augmente, toutes autres choses étant égales par ailleurs. Pour chaque augmentation d'un an de $X_5$, la cote est multipliée par $\exp(0,1095)=1,116$, lorsque les autres variables demeurent fixes. 
 
 N’oubliez pas la nuance suivante concernant l’interprétation d’un test lorsque plusieurs variables explicatives font partie du modèle. Si un paramètre n’est pas significativement différent de zéro, cela ne veut pas dire qu’il n’y a pas de lien entre la variable correspondante et $Y$. Cela veut seulement dire qu’il n’y a pas de lien significatif une fois que les autres variables sont dans le modèle. 
 
 
- Prenons l'exemple de la variable $X_6$, qui représente le nombre de fois où l'individu a assisté à un rodéo au cours de la dernière année. Cette variable est modélisée à l’aide de deux variables indicatrices, $\I{X_6=1}$ égale à un si $X_6=1$ et zéro autrement, et $\I{X_6=2}$  égale à un si $X_6=2$ et zéro sinon. La catégorie de référence est $X_6=3$, c’est-à-dire les personnes ayant assisté cinq fois ou moins à un rodéo au cours de la dernière année. Pour tester la significativité globale d’une variable catégorielle qui est modélisée avec plusieurs indicatrices, il faut aller dans le tableau `Analyse des effets Type 3`. On voit que la statistique de test est $42,9364$ et que la valeur-$p$ associée est négligeable: la variable $X_6$ est donc globalement significative. En fait, il s’agit du test conjoint sur toutes les indicatrices associées à cette variable. Plus précisément, il s’agit du test de l'hypothèse nulle $\Hy_0: \beta_{6_{\code{1}}}=\beta_{6_{\code{2}}}=0$ versus la contre-hypothèse qu'au moins un de ces deux paramètres est différent de zéro.
+ Prenons l'exemple de la variable $X_6$, qui représente le nombre de fois où l'individu a assisté à un rodéo au cours de la dernière année. Cette variable est modélisée à l’aide de deux variables indicatrices, $\I{X_6=1}$ égale à un si $X_6=1$ et zéro autrement, et $\I{X_6=2}$  égale à un si $X_6=2$ et zéro sinon. La catégorie de référence est $X_6=3$, c’est-à-dire les personnes ayant assisté cinq fois ou moins à un rodéo au cours de la dernière année. Pour tester la significativité globale d’une variable catégorielle qui est modélisée avec plusieurs indicatrices, il faut aller dans le tableau `Analyse des effets Type 3`. On voit que la statistique de test est $42,9364$ et que la valeur-$p$ associée est négligeable: la variable $X_6$ est donc globalement significative. En fait, il s’agit du test conjoint sur toutes les indicatrices associées à cette variable. Plus précisément, il s’agit du test de l'hypothèse nulle $\Hy_0: \beta_{6_{\texttt{1}}}=\beta_{6_{\texttt{2}}}=0$ versus la contre-hypothèse qu'au moins un de ces deux paramètres est différent de zéro.
 
 L'interprétation des variables catégorielles est analogue à celle faite en régression linéaire. On peut aussi interpréter individuellement les paramètres des indicatrices: pour $\I{X_6=1}$, lorsque les autres variables demeurent fixes, les personnes ayant assisté 10 fois ou plus à un rodéo au cours de la dernière année voient leur cote multipliée par $\exp(2,4122)=11,158$ par rapport aux personnes ayant assisté cinq fois ou moins. Ce paramètre est significativement différent de zéro car sa valeur-$p$ est négligeable (tableau `Analyse des valeurs estimées du maximum de vraisemblance`); l'intervalle de confiance à 95\% pour le  rapport de cotes, basé sur la vraisemblance profilée, est [$5,456; 23,882$] et un n'est pas dans l'intervalle.  Ainsi, il y a une différence significative entre les gens qui ont assisté à 10 rodéos ou plus et les gens qui ont assisté à 5 rodéos ou moins, pour ce qui est de l’intérêt à acheter un produit recommandé par le PRCA.
 
@@ -337,7 +337,7 @@ Le test est basé sur la statistique
 \end{align*}
 ou la différence entre `-2 Log L` pour le modèle réduit et `-2 Log L` pour le modèle complet. Cette différence $D$, lorsque l’hypothèse $\Hy_0$ est vraie suit approximativement une loi khi-deux avec un nombre de degrés de liberté égal au nombre de paramètre testé (le nombre de restrictions sous $\Hy_0$). On peut donc calculer la valeur-$p$ en utilisant la distribution du khi-deux.
 
-Prenons comme exemple le test de la significativité de $X_6$, qui est modélisée à l'aide deux variables binaires $\I{X_6=1}$ et $\I{X_6=2}$ et dont les paramètres correspondants sont $\beta_{6_{\code{1}}}$ et $\beta_{6_{\code{2}}}$. Nous avons déjà étudié la sortie pour le test de Wald de significativité globale de $X_6$, soit le test de l'hypothèse $\Hy_0: \beta_{6_{\code{1}}}=\beta_{6_{\code{2}}}=0$ versus l'alternative qu'au moins un de ces deux paramètres est différent de zéro. La statistique de test (de Wald) est 42,93 et la valeur-$p$ est moins de $10^{-4}$. Pour effectuer le test du rapport de vraisemblance, il suffit de retirer la variable $X_6$ et de réajuster le modèle à nouveau avec toutes les autres variables; cette manipulation est effectuée dans `logit1_intro.sas`. On obtient donc 
+Prenons comme exemple le test de la significativité de $X_6$, qui est modélisée à l'aide deux variables binaires $\I{X_6=1}$ et $\I{X_6=2}$ et dont les paramètres correspondants sont $\beta_{6_{\texttt{1}}}$ et $\beta_{6_{\texttt{2}}}$. Nous avons déjà étudié la sortie pour le test de Wald de significativité globale de $X_6$, soit le test de l'hypothèse $\Hy_0: \beta_{6_{\texttt{1}}}=\beta_{6_{\texttt{2}}}=0$ versus l'alternative qu'au moins un de ces deux paramètres est différent de zéro. La statistique de test (de Wald) est 42,93 et la valeur-$p$ est moins de $10^{-4}$. Pour effectuer le test du rapport de vraisemblance, il suffit de retirer la variable $X_6$ et de réajuster le modèle à nouveau avec toutes les autres variables; cette manipulation est effectuée dans `logit1_intro.sas`. On obtient donc 
 `-2 Log L` de 516,196 pour le modèle complet sans contrainte et $566,447$ pour le modèle excluant la variable $X_6$.
 
 La différence $D = 566,447 - 516,196 = 50,25$.  Il s’agit de la statistique du test de rapport de vraisemblance. La valeur-$p$ peut-être obtenue de la loi du khi-deux avec 2 degrés de liberté via le code suivant permet d'imprimer la valeur-$p$, qui est $1,22 \times 10^{-11}$.
@@ -598,7 +598,7 @@ knitr::include_graphics("figures/03-logistic-e15.png")
 
 
 Un autre type de graphe qui est souvent utilisé dans des contextes de gestion
-est la courbe lift (sic) (en anglais, _lift chart). Cette courbe est obtenue en ordonnant les probabilités de succès estimées par le modèle, $\widehat{p}$, en ordre croissant et en regardant quelle pourcentage de ces derniers seraient bien classifiés (le nombre de vrais positifs sur le nombre de succès).
+est la courbe lift (sic) (en anglais, _lift chart_). Cette courbe est obtenue en ordonnant les probabilités de succès estimées par le modèle, $\widehat{p}$, en ordre croissant et en regardant quelle pourcentage de ces derniers seraient bien classifiés (le nombre de vrais positifs sur le nombre de succès).
 
 
 
@@ -873,3 +873,236 @@ Table: (\#tab:03-summarylog) Résumé des caractéristiques des modèles logisti
 
 Nous avons vu plus tôt, qu’avec les 10 variables de base, le meilleur point de coupure est de 0,12. En utilisant cette stratégie sur les 100 000 clients, le revenu net aurait été de 940 569\$. C’est une énorme amélioration, de plus de 56%, par rapport à la stratégie de référence qui consiste à envoyer le catalogue à tout le monde (revenu net de 601 212\$). Si on inclut tous les termes quadratiques et les termes les interactions d’ordre deux (104 variables en tout), le revenu net est inférieur avec une valeur de 937 150\$. Ici, le modèle est trop complexe et surajusté.  Si on fait une sélection de variables (4 méthodes sont présentées), suivie de la détermination du meilleur point de coupure, on fait alors toujours mieux qu’avec le modèle incluant les 10 variables de base seulement. L’approche qui aurait fait le mieux est la recherche séquentielle pour réduire le nombre de variables considérées à 47, suivi d'une recherche exhaustive pour trouver le modèle avec le plus petit $\mathsf{BIC}$ : cette approche aurait généré 985 069\$ de revenus nets. Il s’agit d’un gain de 4,7% par rapport au modèle avec les 10 variables de base.
 
+### Stratégies alternatives
+
+Nous venons tout juste d’étudier des stratégies qui consistent essentiellement, à estimer $\P{\texttt{yachat}=1}$ et un point de coupure afin de décider à qui envoyer le catalogue en partant du postulat que tous les clients dépensent le même montant; le tout est basé uniquement sur la régression logistique. Le revenu moyen peut être estimé à partir de l'équation
+\[\E{\texttt{ymontant}} = \E{\texttt{ymontant} \mid \texttt{yachat}=1} \P{\texttt{yachat
+}=1},
+\]
+c’est-à-dire, la moyenne du montant dépensé est égale à la moyenne du montant dépensé étant donné qu’il y a eu achat, fois la probabilité qu’il ait eu achat. Une autre stratégie possible consiste donc à développer deux modèles : un pour $\E{\texttt{ymontant} \mid \texttt{yachat}=1}$ et un autre pour $\P{\texttt{yachat}=1}$ et à les combiner afin d’obtenir des prévisions du montant dépensé. 
+
+Nous avons déjà développé des modèles de régression linéaire pour $\E{\texttt{ymontant} \mid \texttt{yachat}=1}$ au chapitre précédent et nous venons de développer des modèles de régression logistique pour $\P{\texttt{yachat}=1}$ dans ce chapitre. Nous avons donc tous les ingrédients pour implanter cette stratégie.
+
+Nous allons cibler les clients dont la prévision du montant dépensé est plus grande que 10$ (le coût de l’envoi du catalogue). 
+
+Les possibilités de modèles sont nombreuses. Par exemple, si on a cinq modèles potentiels pour $\E{\texttt{ymontant} \mid \texttt{yachat}=1}$ et cinq pour $\P{\texttt{yachat}=1}$, il y a 25 combinaisons possibles. Ici, nous allons seulement présenter les résultats pour deux combinaisons : 
+
+1) pour $\texttt{ymontant}$, nous allons utiliser les variables choisies par `glmselect` avec les options `select=aic, choose=bic`, tandis que pour $\texttt{yachat}$, nous allons utiliser les variables choisies par la procédure séquentielle suivie d'une recherche exhaustive avec le critère BIC 
+2) à la fois pour $\texttt{ymontant}$ et $\texttt{yachat}$, nous allons utiliser les variables choisies en faisant une sélection séquentielle classique (tests-$t$) avec critères d'entrée et de sortie fixés à 0,05.
+
+Pour obtenir les prévisions, nous allons estimer conjointement les modèles pour $\E{\texttt{ymontant} \mid \texttt{yachat}=1}$ et pour $\P{\texttt{yachat}=1}$ avec un modèle Tobit de type 2, donc une brève description est donnée dans la section \@ref(tobit2). Les résultats du modèle Tobit sur l'échantillon de validation sont rapportés dans le tableau \@ref(tab:03-tobit).
+
+Table: (\#tab:03-tobit) Matrice de gain pour l'envoi de catalogue
+
+|   modèle Tobit de type II         | sensibilité | faux positifs (\%) | bonne classification (\%) | revenu net |
+|:----------:|-------------|-------------|-------|---:|
+| (1)        | 88,3 | 50,9 | 76,1 | 997 238 |
+| (2)        | 86,3 | 49,9 | 76,9 | 977 422 |
+
+Il s’avère qu’on aurait eu des performances semblables aux stratégies basées uniquement sur la régression logistique vues à la sous-section précédente. La première combinaison aurait tout de même produit un revenu net de 997 238\$, supérieur au revenu net de 985 069\$, qui était le meilleur trouvé à la sous-section précédente.
+
+Pour conclure cet exemple, il s’avère donc que la régression logistique permet d’effectuer un bon ciblage des clients potentiels afin de maximiser les revenus. L’approche générale consistant à obtenir des prévisions pour $\P{\texttt{yachat}=1}$ et ensuite trouver le meilleur point de coupure est très générale. D’autres types de modèles (arbre de classification, forêt aléatoire, réseau de neurones) pourraient être utilisés à la place de la régression logistique.
+
+Nous reviendrons une dernière fois sur cet exemple dans le chapitre traitant des données manquantes. Nous verrons alors comment procéder si des valeurs manquantes sont présentes dans les variables explicatives. 
+
+### Modèle Tobit de type 2 {#tobit2}
+
+Cette partie est plus technique et peut être omise. 
+
+Il ne serait pas justifié d’ajuster séparément les deux modèles pour $\E{\texttt{ymontant} \mid \texttt{yachat}=1}$ et $\P{\texttt{yachat}=1}$  et de calculer les prévisions en prenant le produit: $\E{\texttt{ymontant} \mid \texttt{yachat}=1}\P{\texttt{yachat}=1}$. Cela provient du fait que le modèle pour $\E{\texttt{ymontant} \mid \texttt{yachat}=1}$ aurait été estimé seulement avec les clients qui ont acheté quelque chose et qu’ensuite on l‘appliquerait (au moment de calculer les prévisions) à la fois aux clients qui vont acheter et à ceux qui ne vont pas acheter. Il y a donc un biais de sélection dans l’échantillon qui a servi à ajuster le modèle au départ. Une manière de contourner ce problème est d’ajuster conjointement les deux modèles. Le modèle de Tobit de type 2 permet de faire cela. Ce modèle est basé sur l’hypothèse que les deux variables observées ($Y_1$ et $Y_2$) proviennent de deux variables latentes non observées ($Y_1^{\star}$ et $Y_2^{\star}$), où
+\begin{align*}
+Y_1 = \begin{cases}
+1 & \text{ si } Y_1^{\star} \ge 0, \\
+0 & \text{ si } Y_1^{\star} < 0,
+\end{cases}
+\qquad \qquad 
+Y_2 = \begin{cases}
+Y_2^{\star} & \text{ si } Y_1^{\star} \ge 0, \\
+0 & \text{ si } Y_1^{\star} < 0.
+\end{cases}
+\end{align*}
+Dans notre exemple, $Y_1$ correspond à $\texttt{yachat}$ et $Y_2$ à $\texttt{ymontant}$. 
+Ce qui lie les deux équations est le fait qu’on suppose que les variables sont binormales: les deux termes d’erreur sont de loi normale et sont corrélés, $\bs{\eps} \sim \mathcal{N}_2(\bs{0}_2, \bs{\Sigma})$. Les variables dépendantes observées sont :
+\begin{align*}
+Y_{1}^{\star} &= \beta_{01} + \beta_{11} X_{11} + \cdots + \beta_{1p}X_{p1} + \eps_{1}\\
+Y_{2}^{\star} &= \beta_{02} + \beta_{12} X_{12} + \cdots + \beta_{1p}X_{q2} + \eps_{2}
+\end{align*}
+Notez que les variables explicatives ne sont pas nécessairement les mêmes dans les deux équations. En estimant conjointement les deux équations, on élimine le biais de sélection mentionné plus haut. La procédure `qlim` (de **SAS/ETS**, pas disponible dans *SAS University Edition*) permet d’estimer ce modèle. Cependant, `qlim` ne fait pas de sélection de variables. Le choix des variables doit être fait avant avec les méthodes qu’on a vues. De plus, pour être précis, le modèle Tobit ajuste un modèle probit et non logistique à la variable binaire. 
+
+
+## Extensions du modèle de régression logistique à plus de deux catégories
+
+Supposons que la variable Y que vous cherchez à modéliser est une variable catégorielle pouvant prendre 3 valeurs ou plus. Voici quelques exemples :
+
+
+- Destination de vacances l’année dernière (Québec, États-Unis, ailleurs).
+- Si les élections avaient lieu aujourd’hui au Québec, pour quel parti voteriez-vous (PLQ, PQ, CAQ, QS).
+- Combien de fois êtes-vous allé au cinéma l’année dernière: moins de 5 fois ($\texttt{1}$), entre 5 et 10 fois ($\texttt{2}$), ou plus de 10 fois ($\texttt{3}$).
+- Quelle importance accordez-vous au service après-vente? Un parmi « pas important » ($\texttt{1}$),  « peu important »($\texttt{2}$), « moyennement important » ($\texttt{3}$), « assez important » ($\texttt{4}$), « très important » ($\texttt{5}$).
+
+Dans les deux premiers exemples, la variable réponse $Y$ est nominale (elle n’a pas d’ordre) alors qu’elle est ordinale dans les deux derniers. Pour une variable ordinale, le modèle logit multinomial peut être utilisé mais il existe d’autres possibilités comme le modèle logit cumulé. Nous couvrirons ces deux modèles.
+
+### Régression logistique multinomiale
+
+Afin de simplifier la notation, on suppose qu'il y a une seule variable explicative $X$ à disposition et que la variable $Y$  représente trois catégories, une parmi 0, 1 et 2. 
+
+En régression logistique, $Y$ est une variable binaire qui vaut soit 0, soit 1 et la probabilité de succès est
+\begin{align*}
+\ln\left(\frac{p_i}{1-p_i}\right) = \beta_0 + \beta_1 X_{i}, \qquad p_i = \P{Y_i=1 \mid X_i} = \expit(\beta_0 + \beta_1X_i).
+\end{align*}
+Dans ce modèle logistique, $\ln(p_i)-\ln(1-p_i) = \ln\{\P{Y_i=1 \mid X_i}\} -  \ln\{\P{Y_i=0 \mid X_i}\}$ peut être vu comme étant le logit de la catégorie 1 en utilisant 0 comme catégorie de référence. 
+Le modèle logistique multinomial procède de même en fixant une catégorie de référence et en modélisant le logit de chacune des autres catégories par rapport à la catégorie de référence. Avec $K+1$ catégories et en choisissant la catégorie 0 comme référence, le modèle devient
+\begin{align*}
+ \ln\left(\frac{p_{i1}}{p_{i0}}\right) = \beta_{01} + \beta_{11} X_i, \, \ldots, \, \ln\left(\frac{p_{iK}}{p_{i0}}\right) = \beta_{0K} + \beta_{1K} X_i,
+\end{align*}
+où $p_{ik} = \P{Y_i=k \mid X_i}$ $(k=0, \ldots, K)$. Comme en régression logistique, on peut facilement exprimer ce modèle en termes des différentes probabilités,
+\begin{align*}
+ p_{i0} &= \P{Y_i=0 \mid X_i} = \frac{1}{1+ \sum_{j=1}^K\exp(\beta_{0j}+\beta_{1j}X_i)}\\
+ p_{ik} &= \P{Y_i=k \mid X_i} = \frac{\exp(\beta_{0k}+\beta_{1k}X_i)}{1+ \sum_{j=1}^K\exp(\beta_{0k}+\beta_{1k}X_i)}, \qquad k =1, \ldots, K.
+\end{align*}
+On voit facilement que la somme des probabilités égale 1, c'est-à-dire $p_{i0} + \cdots + p_{iK} = 1$. En fait, le modèle logit multinomial ne fait que combiner plusieurs logit dans un seul modèle. L’interprétation des paramètres se fait comme en régression logistique sauf qu’il faut y aller équation par équation.
+
+
+Destination vacances. Le fichier `logit6.sas7bdat` contient 100 observations obtenues par voie de sondage auprès d’adultes âgés de 18 à 45 ans. Le fichier contient les réponses aux questions suivantes:
+
+- `y1`: quelle a été votre destination vacances l’année dernière: Québec ($\texttt{0}$), États-Unis ($\texttt{1}$) ou ailleurs ($\texttt{2}$)?
+- `y2`: combien de fois êtes-vous allé au cinéma l’année dernière: moins de 5 fois ($\texttt{1}$), entre 5 et 10 fois ($\texttt{2}$), ou plus de 10 fois ($\texttt{3}$).
+- `x`: âge (en année) du répondant.
+
+Nous allons modéliser la destination vacance $Y_1$ à l'aide d'une régression logistique multinomiale avec l'âge comme variable explicative.
+
+```{r fig3_e31, echo = FALSE, out.width='50%', fig.align = "center"}
+knitr::include_graphics("figures/03-logistic-e31.png")
+```
+
+On voit que les gens qui ont passé leurs vacances au Québec ($Y_1=0$) ont 26,5 ans en moyenne. Ils sont plus jeunes que ceux qui ont passé leurs vacances aux États-Unis (âge moyen de 33 ans). Finalement, ceux dont la destination vacances était ailleurs sont les plus vieux avec une moyenne de 37,3 ans.
+
+Pour le modèle logit multinomial, nous allons prendre $Y_1=0$ comme catégorie de référence. Les commandes sont
+
+```{sas mullogit, eval = FALSE, echo = TRUE}
+proc logistic data=multi.logit6 ;
+model y1(ref='0') = x / clparm=pl clodds=pl expb link=glogit;
+run; 
+```
+L’option `link=glogit` spécifie le type de fonction de lien, ici celle du modèle logistique multinomial. 
+
+```{r fig3_e23, echo = FALSE, out.width='75%', fig.align = "center"}
+knitr::include_graphics("figures/03-logistic-e23.png")
+```
+
+```{r fig3_e24, echo = FALSE, out.width='80%', fig.align = "center"}
+knitr::include_graphics("figures/03-logistic-e24.png")
+```
+
+```{r fig3_e25, echo = FALSE, out.width='82%', fig.align = "center"}
+knitr::include_graphics("figures/03-logistic-e25.png")
+```
+
+
+Comme il y a trois catégories pour la variable dépendante, il y a deux équations pour le modèle ajusté,
+\begin{align*}
+\ln \left\{\frac{\P{Y_{1i}=1 \mid X_i}}{\P{Y_{1i}=0 \mid X_i}} \right\} = -4,10 + 0,13X_i, \qquad \qquad \ln \left\{\frac{\P{Y_{1i}=2 \mid X_i}}{\P{Y_{1i}=0 \mid X_i}} \right\} = -7,98+0,22X_i. 
+\end{align*}
+
+Plus l’âge du répondant augmente, plus la probabilité qu’il ait passé ses vacances aux États-Unis par rapport au Québec augmente. En fait, pour chaque augmentation de 1 de l’âge, le rapport des cote pour $Y_1=1$ par rapport à $Y_1=0$ est multipliée par ${1,133}=\exp({0,1253})$. Cette valeur est donnée dans la dernière colonne du tableau. De plus, cet effet est significatif car la valeur-$p$ est inférieure à $10^{-4}$.
+
+De même, plus l’âge du répondant augmente, plus la probabilité qu’il ait passé ses vacances ailleurs qu’aux États-Unis ou au Québec par rapport au Québec augmente. En fait, pour chaque augmentation de l’âge d'un an, le rapport des cote pour $Y_1=1$ par rapport à $Y_1=0$ est multiplié par ${1,25}$. Cet effet est également statistiquement significatif.
+
+Nous venons donc de comparer chacune des catégories $Y_1=1$ et $Y_1=2$ à la catégorie de référence $Y_1=0$. Pour une comparaison directe entre $Y_1=1$ et $Y_1=2$, il suffit de changer la catégorie de référence et de resoumettre le programme **SAS**.
+
+### Régression logistique cumulative à cotes proportionnelles
+
+
+Si les modalités de la réponse sont ordinales, la régression logistique multinomiale est toujours appropriée. Il peut néanmoins être préférable d’utiliser un modèle qui utilise l'ordre des modalités pour obtenir un modèle plus facile à interpréter et plus parcimonieux. Le modèle de régression logistique cumulative à cotes proportionnelles est un simplification sous l'hypothèse que les cotes sont proportionnelles.
+
+Supposons que la variable $Y$ est ordinale et peut prendre les $K+1$ valeurs ordonnées de la plus petite à la plus grande selon les catégories de $Y$ ($0, 1, 2, \ldots, K$). Supposons que l’on dispose de $p$ variables explicatives $X_1, \ldots, X_p$.
+
+Soit $p_{ik}=\P{Y_i \mid X_{i1}, \ldots, X_{ip}}$ ($k=0, 1, \ldots, K$) la probabilité que $Y_{ik}$ prenne la valeur $k$. On dénote la fonction de survie
+\[S_{ij}=\sum_{k=j}^K p_{ik}= \P{Y_{i} \geq j\mid X_{i1}, \ldots, X_{ip}}, \qquad j=1, \ldots, K.
+\]
+La quantité $S_{ij}$ est la probabilité que $Y_i$ soit plus grand ou égal à $j$; $S_{i0}$ est égal à 1 et $S_{ik} = \P{Y_i=K \mid X_{i1}, \ldots, X_{ip}}=p_{iK}$.
+
+Le modèle logistique cumulé spécifie que 
+\begin{align*}
+\ln \left( \frac{S_{ij}}{1-S_{ij}}\right) = \beta_{0j} + \beta_1 X_{i1} + \cdots + \beta_p X_{ip}, \qquad \qquad  j=1, \ldots, K.
+\end{align*}
+
+Il y a donc $K-1$ équations logistiques. Les paramètres quantifiant les effets des variables explicatives, $\beta_1, \ldots, \beta_K$ sont les mêmes pour chacune des log-cotes, mais il y a une ordonnée à l’origine différente par log de rapport de cote. Par conséquent, pour modéliser une variable ordinale $Y$ ayant $K+1$ valeurs possibles avec p variables explicatives, le modèle cumulatif logistique utilise $p + K$ paramètres. Le modèle logit multinomial, qui peut également être utilisé pour les données ordinales, utilise $p\cdot (K+1)$ paramètres. Le modèle multinomial ordonné est donc plus parcimonieux et, pour autan qu’il soit approprié, mènera à des estimations des paramètres plus précises qu’avec le modèle de régression logistique multinomiale. Les deux modèles sont identiques au modèle de régression logistique si la variable ordinale a deux modalités.
+
+La cote $S_{ij}/(1-S_{ij})$ mesure à quel point il est plus probable que $Y_i$ prenne une valeur plus grande ou égale à $j$ par rapport à une valeur plus petite que $j$, viz.
+\begin{align*}
+\frac{S_{ij}}{1-S_{ij}} = \exp( \beta_{0j} + \beta_1X_{i1} + \cdots + \beta_p X_{ip}).
+\end{align*}
+Dans cet exemple, aucune fonction autre qu'additive en $X$, ni aucune interaction n'est présente. Si le paramètre $\beta_j$ est positif, cela indique que plus $X_j$ prend une valeur élevée, plus la variable $Y$ a tendance à prendre aussi une valeur élevée. Inversement, si le paramètre $\beta_j$ est négatif, cela indique que plus $X_j$ prend une valeur élevée, plus la variable $Y$ a tendance à prendre une valeur basse. Plus précisément, pour chaque augmentation d'une unité de $X_j$, la cote $S_k/(1-S_k)$ est multipliée par $\exp(\beta_j)$, peu importe la valeur de $Y$. Ainsi, la cote d'être dans une catégorie plus élevée, par rapport à une catégorie moins élevée, est multipliée par $\exp(\beta_j)$. En terme de probabilités cumulées d'excéder $k$,
+\begin{align*}
+S_{ik} = \P{Y_i \geq k \mid X_{i1}, \ldots, X_{ip}} = \expit(\beta_{0k} + \beta_1 X_{i1} + \cdots + \beta_p X_{ip}), \qquad j =1, \ldots, K.
+\end{align*}
+En utilisant ces expressions, on peut obtenir la probabilité de chaque catégorie,
+\begin{align*}
+\P{Y_i = k \mid X_{i1}, \ldots, X_{ip}} =\P{Y_i \geq k \mid X_{i1}, \ldots, X_{ip}} -\P{Y_i \geq k+1 \mid X_{i1}, \ldots, X_{ip}} = S_{k} - S_{k+1}.
+\end{align*}
+
+Nous considérons maintenant la variable $Y_2$ du fichier `logit6.sas7bdat`, qui donne le nombre de visites au cinéma. Pour cet exemple, nous allons chercher à modéliser $Y_2$ à l’aide de $X$ (âge) en utilisant le modèle multinomial cumulé à cotes proportionnelles.
+
+```{r 03-multinom_meansy2, echo = FALSE, eval = TRUE}
+url <- "https://lbelzile.bitbucket.io/MATH60602/logit6.sas7bdat"
+logit6 <- haven::read_sas(url)
+suppressMessages(library(dplyr, quietly = TRUE, 
+                         warn.conflicts = FALSE, 
+                         verbose = FALSE))
+
+tab <- logit6 %>%
+  group_by(y2) %>%
+  summarize(n = n(), 
+            mean = round(mean(x),2), 
+            "std.err" =round(sd(x),2), 
+            "min" = min(x), 
+            "max" = max(x))
+kableExtra::kable(tab)
+```
+
+Ainsi, les répondants qui sont allés moins de cinq fois au cinéma ont en moyenne 33,5 ans, ceux qui sont allés entre cinq et 10 fois ont 30,4 ans en moyenne, et ceux qui sont allés plus de 10 fois ont 25,1 ans en moyenne. Il y a une progression et on voit que les répondants plus jeunes vont plus souvent au cinéma.
+
+Nous utilisons exactement le même programme que pour une régression logistique habituelle. Si la variable $Y$ prend plus de deux valeurs, **SAS** utilisera automatiquement le modèle de régression multinomiale cumulé.
+
+```{sas 03-multilogistcum, eval = FALSE, echo = TRUE}
+proc logistic data=multi.logit6 descending;
+model y2 = x / clparm=pl clodds=pl expb;
+run;
+```
+
+L’option `descending` impose la paramétrisation discutée précédemment. Sans cette option, ce serait plutôt les probabilités de prendre une valeur plus petite, par rapport à une plus grande qui serait modélisée. Le modèle est le même, mais les signes des paramètres des variables explicatives seraient inversés. 
+
+```{r fig3_e26, echo = FALSE, out.width='80%', fig.align = "center"}
+knitr::include_graphics("figures/03-logistic-e26.png")
+```
+
+
+```{r fig3_e27, echo = FALSE, out.width='80%', fig.align = "center"}
+knitr::include_graphics("figures/03-logistic-e27.png")
+```
+
+
+```{r fig3_e28, echo = FALSE, out.width='80%', fig.align = "center"}
+knitr::include_graphics("figures/03-logistic-e28.png")
+```
+
+
+```{r fig3_e29, echo = FALSE, out.width='80%', fig.align = "center"}
+knitr::include_graphics("figures/03-logistic-e29.png")
+```
+
+
+```{r fig3_e30, echo = FALSE, out.width='80%', fig.align = "center"}
+knitr::include_graphics("figures/03-logistic-e30.png")
+```
+
+Avant toute chose, il faut s’assurer que le modèle est approprié. Rappelez-vous que l’une des hypothèses de ce modèle est que les effets des variables explicatives sont les mêmes pour chaque équation. Le tableau « Test de score pour l'hypothèse des cotes proportionnelles » est un test de l'hypothèse nulle
+
+- $\Hy_0$ : l’effet de chaque variable est le même pour les $K$ logit du modèle multinomial logistique, soit $\beta_{11} = \cdots =\beta_{1K}$, $\ldots$, $\beta_{p1} = \cdots =\beta_{pK}$.
+
+Une très petite valeur-$p$ (rejet de $\Hy_0$) pour ce test serait une indication que le modèle de régression multinomiale ordinale n’est pas approprié. Comme la valeur-$p$ est 0,2577 ici, on ne rejette pas $\Hy_0$ et il n’y a pas lieu de douter de cette hypothèse. On peut donc aller de l’avant et interpréter le modèle.
+
+Ici, l’effet estimé de l’âge ($X$) est $-{0,0916}$ et ce paramètre est significativement différent de zéro (valeur-$p$ de 0,0004). Rappelez-vous que $Y_2$ représente le nombre d'entrées au cinéma dans la dernière année.
+
+Ainsi, plus l’âge augmente, plus $Y_2$ a tendance à prendre une petite valeur, c’est-à-dire, plus la personne a tendance à aller moins souvent au cinéma. Plus précisément, lorsque l’âge augmente de 1, la cote d’être dans une catégorie plus élevée de $Y_2$, par rapport à une catégorie plus basse, est multipliée par 0,912 (la cote diminue donc et aussi la probabilité d’être dans une catégorie plus élevée).

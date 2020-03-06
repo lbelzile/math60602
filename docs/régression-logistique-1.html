@@ -142,6 +142,12 @@
 </ul></li>
 <li class="chapter" data-level="4.8" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#performance-des-différents-modèles-pour-lexemple-des-clients-cibles"><i class="fa fa-check"></i><b>4.8</b> Performance des différents modèles pour l’exemple des clients cibles</a><ul>
 <li class="chapter" data-level="4.8.1" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#stratégies-en-utilisant-seulement-la-régression-logistique"><i class="fa fa-check"></i><b>4.8.1</b> Stratégies en utilisant seulement la régression logistique</a></li>
+<li class="chapter" data-level="4.8.2" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#stratégies-alternatives"><i class="fa fa-check"></i><b>4.8.2</b> Stratégies alternatives</a></li>
+<li class="chapter" data-level="4.8.3" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#tobit2"><i class="fa fa-check"></i><b>4.8.3</b> Modèle Tobit de type 2</a></li>
+</ul></li>
+<li class="chapter" data-level="4.9" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#extensions-du-modèle-de-régression-logistique-à-plus-de-deux-catégories"><i class="fa fa-check"></i><b>4.9</b> Extensions du modèle de régression logistique à plus de deux catégories</a><ul>
+<li class="chapter" data-level="4.9.1" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#régression-logistique-multinomiale"><i class="fa fa-check"></i><b>4.9.1</b> Régression logistique multinomiale</a></li>
+<li class="chapter" data-level="4.9.2" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#régression-logistique-cumulative-à-cotes-proportionnelles"><i class="fa fa-check"></i><b>4.9.2</b> Régression logistique cumulative à cotes proportionnelles</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
@@ -2195,7 +2201,7 @@ L’aire sous la courbe pour les prédictions avec la validation-croisée à <sp
 la correction (trop optimiste) qui est 0,8847.</p>
 <p><img src="figures/03-logistic-e15.png" width="80%" style="display: block; margin: auto;" /></p>
 <p>Un autre type de graphe qui est souvent utilisé dans des contextes de gestion
-est la courbe lift (sic) (en anglais, _lift chart). Cette courbe est obtenue en ordonnant les probabilités de succès estimées par le modèle, <span class="math inline">\(\widehat{p}\)</span>, en ordre croissant et en regardant quelle pourcentage de ces derniers seraient bien classifiés (le nombre de vrais positifs sur le nombre de succès).</p>
+est la courbe lift (sic) (en anglais, <em>lift chart</em>). Cette courbe est obtenue en ordonnant les probabilités de succès estimées par le modèle, <span class="math inline">\(\widehat{p}\)</span>, en ordre croissant et en regardant quelle pourcentage de ces derniers seraient bien classifiés (le nombre de vrais positifs sur le nombre de succès).</p>
 <p><strong>SAS</strong> ne permet pas de la tracer directement, mais le fichier <code>logit3_lift_chart.sas</code> contient une macro <strong>SAS</strong> qui permet de le faire.</p>
 <pre class="sas"><code>proc logistic data=train;
 model yachat(ref=&#39;0&#39;) = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10; 
@@ -2534,6 +2540,268 @@ run;</code></pre>
 </tbody>
 </table>
 <p>Nous avons vu plus tôt, qu’avec les 10 variables de base, le meilleur point de coupure est de 0,12. En utilisant cette stratégie sur les 100 000 clients, le revenu net aurait été de 940 569$. C’est une énorme amélioration, de plus de 56%, par rapport à la stratégie de référence qui consiste à envoyer le catalogue à tout le monde (revenu net de 601 212$). Si on inclut tous les termes quadratiques et les termes les interactions d’ordre deux (104 variables en tout), le revenu net est inférieur avec une valeur de 937 150$. Ici, le modèle est trop complexe et surajusté. Si on fait une sélection de variables (4 méthodes sont présentées), suivie de la détermination du meilleur point de coupure, on fait alors toujours mieux qu’avec le modèle incluant les 10 variables de base seulement. L’approche qui aurait fait le mieux est la recherche séquentielle pour réduire le nombre de variables considérées à 47, suivi d’une recherche exhaustive pour trouver le modèle avec le plus petit <span class="math inline">\(\mathsf{BIC}\)</span> : cette approche aurait généré 985 069$ de revenus nets. Il s’agit d’un gain de 4,7% par rapport au modèle avec les 10 variables de base.</p>
+</div>
+<div id="stratégies-alternatives" class="section level3">
+<h3><span class="header-section-number">4.8.2</span> Stratégies alternatives</h3>
+<p>Nous venons tout juste d’étudier des stratégies qui consistent essentiellement, à estimer <span class="math inline">\({\mathsf P}\left(\texttt{yachat}=1\right)\)</span> et un point de coupure afin de décider à qui envoyer le catalogue en partant du postulat que tous les clients dépensent le même montant; le tout est basé uniquement sur la régression logistique. Le revenu moyen peut être estimé à partir de l’équation
+<span class="math display">\[{\mathsf E}\left(\texttt{ymontant}\right) = {\mathsf E}\left(\texttt{ymontant} \mid \texttt{yachat}=1\right) {\mathsf P}\left(\texttt{yachat
+}=1\right),
+\]</span>
+c’est-à-dire, la moyenne du montant dépensé est égale à la moyenne du montant dépensé étant donné qu’il y a eu achat, fois la probabilité qu’il ait eu achat. Une autre stratégie possible consiste donc à développer deux modèles : un pour <span class="math inline">\({\mathsf E}\left(\texttt{ymontant} \mid \texttt{yachat}=1\right)\)</span> et un autre pour <span class="math inline">\({\mathsf P}\left(\texttt{yachat}=1\right)\)</span> et à les combiner afin d’obtenir des prévisions du montant dépensé.</p>
+<p>Nous avons déjà développé des modèles de régression linéaire pour <span class="math inline">\({\mathsf E}\left(\texttt{ymontant} \mid \texttt{yachat}=1\right)\)</span> au chapitre précédent et nous venons de développer des modèles de régression logistique pour <span class="math inline">\({\mathsf P}\left(\texttt{yachat}=1\right)\)</span> dans ce chapitre. Nous avons donc tous les ingrédients pour implanter cette stratégie.</p>
+<p>Nous allons cibler les clients dont la prévision du montant dépensé est plus grande que 10$ (le coût de l’envoi du catalogue).</p>
+<p>Les possibilités de modèles sont nombreuses. Par exemple, si on a cinq modèles potentiels pour <span class="math inline">\({\mathsf E}\left(\texttt{ymontant} \mid \texttt{yachat}=1\right)\)</span> et cinq pour <span class="math inline">\({\mathsf P}\left(\texttt{yachat}=1\right)\)</span>, il y a 25 combinaisons possibles. Ici, nous allons seulement présenter les résultats pour deux combinaisons :</p>
+<ol style="list-style-type: decimal">
+<li>pour <span class="math inline">\(\texttt{ymontant}\)</span>, nous allons utiliser les variables choisies par <code>glmselect</code> avec les options <code>select=aic, choose=bic</code>, tandis que pour <span class="math inline">\(\texttt{yachat}\)</span>, nous allons utiliser les variables choisies par la procédure séquentielle suivie d’une recherche exhaustive avec le critère BIC</li>
+<li>à la fois pour <span class="math inline">\(\texttt{ymontant}\)</span> et <span class="math inline">\(\texttt{yachat}\)</span>, nous allons utiliser les variables choisies en faisant une sélection séquentielle classique (tests-<span class="math inline">\(t\)</span>) avec critères d’entrée et de sortie fixés à 0,05.</li>
+</ol>
+<p>Pour obtenir les prévisions, nous allons estimer conjointement les modèles pour <span class="math inline">\({\mathsf E}\left(\texttt{ymontant} \mid \texttt{yachat}=1\right)\)</span> et pour <span class="math inline">\({\mathsf P}\left(\texttt{yachat}=1\right)\)</span> avec un modèle Tobit de type 2, donc une brève description est donnée dans la section <a href="régression-logistique-1.html#tobit2">4.8.3</a>. Les résultats du modèle Tobit sur l’échantillon de validation sont rapportés dans le tableau <a href="régression-logistique-1.html#tab:03-tobit">4.7</a>.</p>
+<table style="width:100%;">
+<caption><span id="tab:03-tobit">Tableau 4.7: </span> Matrice de gain pour l’envoi de catalogue</caption>
+<colgroup>
+<col width="24%" />
+<col width="26%" />
+<col width="26%" />
+<col width="14%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">modèle Tobit de type II</th>
+<th>sensibilité</th>
+<th>faux positifs (%)</th>
+<th>bonne classification (%)</th>
+<th align="right">revenu net</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">(1)</td>
+<td>88,3</td>
+<td>50,9</td>
+<td>76,1</td>
+<td align="right">997 238</td>
+</tr>
+<tr class="even">
+<td align="center">(2)</td>
+<td>86,3</td>
+<td>49,9</td>
+<td>76,9</td>
+<td align="right">977 422</td>
+</tr>
+</tbody>
+</table>
+<p>Il s’avère qu’on aurait eu des performances semblables aux stratégies basées uniquement sur la régression logistique vues à la sous-section précédente. La première combinaison aurait tout de même produit un revenu net de 997 238$, supérieur au revenu net de 985 069$, qui était le meilleur trouvé à la sous-section précédente.</p>
+<p>Pour conclure cet exemple, il s’avère donc que la régression logistique permet d’effectuer un bon ciblage des clients potentiels afin de maximiser les revenus. L’approche générale consistant à obtenir des prévisions pour <span class="math inline">\({\mathsf P}\left(\texttt{yachat}=1\right)\)</span> et ensuite trouver le meilleur point de coupure est très générale. D’autres types de modèles (arbre de classification, forêt aléatoire, réseau de neurones) pourraient être utilisés à la place de la régression logistique.</p>
+<p>Nous reviendrons une dernière fois sur cet exemple dans le chapitre traitant des données manquantes. Nous verrons alors comment procéder si des valeurs manquantes sont présentes dans les variables explicatives.</p>
+</div>
+<div id="tobit2" class="section level3">
+<h3><span class="header-section-number">4.8.3</span> Modèle Tobit de type 2</h3>
+<p>Cette partie est plus technique et peut être omise.</p>
+<p>Il ne serait pas justifié d’ajuster séparément les deux modèles pour <span class="math inline">\({\mathsf E}\left(\texttt{ymontant} \mid \texttt{yachat}=1\right)\)</span> et <span class="math inline">\({\mathsf P}\left(\texttt{yachat}=1\right)\)</span> et de calculer les prévisions en prenant le produit: <span class="math inline">\({\mathsf E}\left(\texttt{ymontant} \mid \texttt{yachat}=1\right){\mathsf P}\left(\texttt{yachat}=1\right)\)</span>. Cela provient du fait que le modèle pour <span class="math inline">\({\mathsf E}\left(\texttt{ymontant} \mid \texttt{yachat}=1\right)\)</span> aurait été estimé seulement avec les clients qui ont acheté quelque chose et qu’ensuite on l‘appliquerait (au moment de calculer les prévisions) à la fois aux clients qui vont acheter et à ceux qui ne vont pas acheter. Il y a donc un biais de sélection dans l’échantillon qui a servi à ajuster le modèle au départ. Une manière de contourner ce problème est d’ajuster conjointement les deux modèles. Le modèle de Tobit de type 2 permet de faire cela. Ce modèle est basé sur l’hypothèse que les deux variables observées (<span class="math inline">\(Y_1\)</span> et <span class="math inline">\(Y_2\)</span>) proviennent de deux variables latentes non observées (<span class="math inline">\(Y_1^{\star}\)</span> et <span class="math inline">\(Y_2^{\star}\)</span>), où
+<span class="math display">\[\begin{align*}
+Y_1 = \begin{cases}
+1 &amp; \text{ si } Y_1^{\star} \ge 0, \\
+0 &amp; \text{ si } Y_1^{\star} &lt; 0,
+\end{cases}
+\qquad \qquad 
+Y_2 = \begin{cases}
+Y_2^{\star} &amp; \text{ si } Y_1^{\star} \ge 0, \\
+0 &amp; \text{ si } Y_1^{\star} &lt; 0.
+\end{cases}
+\end{align*}\]</span>
+Dans notre exemple, <span class="math inline">\(Y_1\)</span> correspond à <span class="math inline">\(\texttt{yachat}\)</span> et <span class="math inline">\(Y_2\)</span> à <span class="math inline">\(\texttt{ymontant}\)</span>.
+Ce qui lie les deux équations est le fait qu’on suppose que les variables sont binormales: les deux termes d’erreur sont de loi normale et sont corrélés, <span class="math inline">\(\boldsymbol{\varepsilon} \sim \mathcal{N}_2(\boldsymbol{0}_2, \boldsymbol{\Sigma})\)</span>. Les variables dépendantes observées sont :
+<span class="math display">\[\begin{align*}
+Y_{1}^{\star} &amp;= \beta_{01} + \beta_{11} X_{11} + \cdots + \beta_{1p}X_{p1} + \varepsilon_{1}\\
+Y_{2}^{\star} &amp;= \beta_{02} + \beta_{12} X_{12} + \cdots + \beta_{1p}X_{q2} + \varepsilon_{2}
+\end{align*}\]</span>
+Notez que les variables explicatives ne sont pas nécessairement les mêmes dans les deux équations. En estimant conjointement les deux équations, on élimine le biais de sélection mentionné plus haut. La procédure <code>qlim</code> (de <strong>SAS/ETS</strong>, pas disponible dans <em>SAS University Edition</em>) permet d’estimer ce modèle. Cependant, <code>qlim</code> ne fait pas de sélection de variables. Le choix des variables doit être fait avant avec les méthodes qu’on a vues. De plus, pour être précis, le modèle Tobit ajuste un modèle probit et non logistique à la variable binaire.</p>
+</div>
+</div>
+<div id="extensions-du-modèle-de-régression-logistique-à-plus-de-deux-catégories" class="section level2">
+<h2><span class="header-section-number">4.9</span> Extensions du modèle de régression logistique à plus de deux catégories</h2>
+<p>Supposons que la variable Y que vous cherchez à modéliser est une variable catégorielle pouvant prendre 3 valeurs ou plus. Voici quelques exemples :</p>
+<ul>
+<li>Destination de vacances l’année dernière (Québec, États-Unis, ailleurs).</li>
+<li>Si les élections avaient lieu aujourd’hui au Québec, pour quel parti voteriez-vous (PLQ, PQ, CAQ, QS).</li>
+<li>Combien de fois êtes-vous allé au cinéma l’année dernière: moins de 5 fois (<span class="math inline">\(\texttt{1}\)</span>), entre 5 et 10 fois (<span class="math inline">\(\texttt{2}\)</span>), ou plus de 10 fois (<span class="math inline">\(\texttt{3}\)</span>).</li>
+<li>Quelle importance accordez-vous au service après-vente? Un parmi « pas important » (<span class="math inline">\(\texttt{1}\)</span>), « peu important »(<span class="math inline">\(\texttt{2}\)</span>), « moyennement important » (<span class="math inline">\(\texttt{3}\)</span>), « assez important » (<span class="math inline">\(\texttt{4}\)</span>), « très important » (<span class="math inline">\(\texttt{5}\)</span>).</li>
+</ul>
+<p>Dans les deux premiers exemples, la variable réponse <span class="math inline">\(Y\)</span> est nominale (elle n’a pas d’ordre) alors qu’elle est ordinale dans les deux derniers. Pour une variable ordinale, le modèle logit multinomial peut être utilisé mais il existe d’autres possibilités comme le modèle logit cumulé. Nous couvrirons ces deux modèles.</p>
+<div id="régression-logistique-multinomiale" class="section level3">
+<h3><span class="header-section-number">4.9.1</span> Régression logistique multinomiale</h3>
+<p>Afin de simplifier la notation, on suppose qu’il y a une seule variable explicative <span class="math inline">\(X\)</span> à disposition et que la variable <span class="math inline">\(Y\)</span> représente trois catégories, une parmi 0, 1 et 2.</p>
+<p>En régression logistique, <span class="math inline">\(Y\)</span> est une variable binaire qui vaut soit 0, soit 1 et la probabilité de succès est
+<span class="math display">\[\begin{align*}
+\ln\left(\frac{p_i}{1-p_i}\right) = \beta_0 + \beta_1 X_{i}, \qquad p_i = {\mathsf P}\left(Y_i=1 \mid X_i\right) = \mathrm{expit}(\beta_0 + \beta_1X_i).
+\end{align*}\]</span>
+Dans ce modèle logistique, <span class="math inline">\(\ln(p_i)-\ln(1-p_i) = \ln\{{\mathsf P}\left(Y_i=1 \mid X_i\right)\} - \ln\{{\mathsf P}\left(Y_i=0 \mid X_i\right)\}\)</span> peut être vu comme étant le logit de la catégorie 1 en utilisant 0 comme catégorie de référence.
+Le modèle logistique multinomial procède de même en fixant une catégorie de référence et en modélisant le logit de chacune des autres catégories par rapport à la catégorie de référence. Avec <span class="math inline">\(K+1\)</span> catégories et en choisissant la catégorie 0 comme référence, le modèle devient
+<span class="math display">\[\begin{align*}
+ \ln\left(\frac{p_{i1}}{p_{i0}}\right) = \beta_{01} + \beta_{11} X_i, \, \ldots, \, \ln\left(\frac{p_{iK}}{p_{i0}}\right) = \beta_{0K} + \beta_{1K} X_i,
+\end{align*}\]</span>
+où <span class="math inline">\(p_{ik} = {\mathsf P}\left(Y_i=k \mid X_i\right)\)</span> <span class="math inline">\((k=0, \ldots, K)\)</span>. Comme en régression logistique, on peut facilement exprimer ce modèle en termes des différentes probabilités,
+<span class="math display">\[\begin{align*}
+ p_{i0} &amp;= {\mathsf P}\left(Y_i=0 \mid X_i\right) = \frac{1}{1+ \sum_{j=1}^K\exp(\beta_{0j}+\beta_{1j}X_i)}\\
+ p_{ik} &amp;= {\mathsf P}\left(Y_i=k \mid X_i\right) = \frac{\exp(\beta_{0k}+\beta_{1k}X_i)}{1+ \sum_{j=1}^K\exp(\beta_{0k}+\beta_{1k}X_i)}, \qquad k =1, \ldots, K.
+\end{align*}\]</span>
+On voit facilement que la somme des probabilités égale 1, c’est-à-dire <span class="math inline">\(p_{i0} + \cdots + p_{iK} = 1\)</span>. En fait, le modèle logit multinomial ne fait que combiner plusieurs logit dans un seul modèle. L’interprétation des paramètres se fait comme en régression logistique sauf qu’il faut y aller équation par équation.</p>
+<p>Destination vacances. Le fichier <code>logit6.sas7bdat</code> contient 100 observations obtenues par voie de sondage auprès d’adultes âgés de 18 à 45 ans. Le fichier contient les réponses aux questions suivantes:</p>
+<ul>
+<li><code>y1</code>: quelle a été votre destination vacances l’année dernière: Québec (<span class="math inline">\(\texttt{0}\)</span>), États-Unis (<span class="math inline">\(\texttt{1}\)</span>) ou ailleurs (<span class="math inline">\(\texttt{2}\)</span>)?</li>
+<li><code>y2</code>: combien de fois êtes-vous allé au cinéma l’année dernière: moins de 5 fois (<span class="math inline">\(\texttt{1}\)</span>), entre 5 et 10 fois (<span class="math inline">\(\texttt{2}\)</span>), ou plus de 10 fois (<span class="math inline">\(\texttt{3}\)</span>).</li>
+<li><code>x</code>: âge (en année) du répondant.</li>
+</ul>
+<p>Nous allons modéliser la destination vacance <span class="math inline">\(Y_1\)</span> à l’aide d’une régression logistique multinomiale avec l’âge comme variable explicative.</p>
+<p><img src="figures/03-logistic-e31.png" width="50%" style="display: block; margin: auto;" /></p>
+<p>On voit que les gens qui ont passé leurs vacances au Québec (<span class="math inline">\(Y_1=0\)</span>) ont 26,5 ans en moyenne. Ils sont plus jeunes que ceux qui ont passé leurs vacances aux États-Unis (âge moyen de 33 ans). Finalement, ceux dont la destination vacances était ailleurs sont les plus vieux avec une moyenne de 37,3 ans.</p>
+<p>Pour le modèle logit multinomial, nous allons prendre <span class="math inline">\(Y_1=0\)</span> comme catégorie de référence. Les commandes sont</p>
+<pre class="sas"><code>proc logistic data=multi.logit6 ;
+model y1(ref=&#39;0&#39;) = x / clparm=pl clodds=pl expb link=glogit;
+run; </code></pre>
+<p>L’option <code>link=glogit</code> spécifie le type de fonction de lien, ici celle du modèle logistique multinomial.</p>
+<p><img src="figures/03-logistic-e23.png" width="75%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/03-logistic-e24.png" width="80%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/03-logistic-e25.png" width="82%" style="display: block; margin: auto;" /></p>
+<p>Comme il y a trois catégories pour la variable dépendante, il y a deux équations pour le modèle ajusté,
+<span class="math display">\[\begin{align*}
+\ln \left\{\frac{{\mathsf P}\left(Y_{1i}=1 \mid X_i\right)}{{\mathsf P}\left(Y_{1i}=0 \mid X_i\right)} \right\} = -4,10 + 0,13X_i, \qquad \qquad \ln \left\{\frac{{\mathsf P}\left(Y_{1i}=2 \mid X_i\right)}{{\mathsf P}\left(Y_{1i}=0 \mid X_i\right)} \right\} = -7,98+0,22X_i. 
+\end{align*}\]</span></p>
+<p>Plus l’âge du répondant augmente, plus la probabilité qu’il ait passé ses vacances aux États-Unis par rapport au Québec augmente. En fait, pour chaque augmentation de 1 de l’âge, le rapport des cote pour <span class="math inline">\(Y_1=1\)</span> par rapport à <span class="math inline">\(Y_1=0\)</span> est multipliée par <span class="math inline">\({1,133}=\exp({0,1253})\)</span>. Cette valeur est donnée dans la dernière colonne du tableau. De plus, cet effet est significatif car la valeur-<span class="math inline">\(p\)</span> est inférieure à <span class="math inline">\(10^{-4}\)</span>.</p>
+<p>De même, plus l’âge du répondant augmente, plus la probabilité qu’il ait passé ses vacances ailleurs qu’aux États-Unis ou au Québec par rapport au Québec augmente. En fait, pour chaque augmentation de l’âge d’un an, le rapport des cote pour <span class="math inline">\(Y_1=1\)</span> par rapport à <span class="math inline">\(Y_1=0\)</span> est multiplié par <span class="math inline">\({1,25}\)</span>. Cet effet est également statistiquement significatif.</p>
+<p>Nous venons donc de comparer chacune des catégories <span class="math inline">\(Y_1=1\)</span> et <span class="math inline">\(Y_1=2\)</span> à la catégorie de référence <span class="math inline">\(Y_1=0\)</span>. Pour une comparaison directe entre <span class="math inline">\(Y_1=1\)</span> et <span class="math inline">\(Y_1=2\)</span>, il suffit de changer la catégorie de référence et de resoumettre le programme <strong>SAS</strong>.</p>
+</div>
+<div id="régression-logistique-cumulative-à-cotes-proportionnelles" class="section level3">
+<h3><span class="header-section-number">4.9.2</span> Régression logistique cumulative à cotes proportionnelles</h3>
+<p>Si les modalités de la réponse sont ordinales, la régression logistique multinomiale est toujours appropriée. Il peut néanmoins être préférable d’utiliser un modèle qui utilise l’ordre des modalités pour obtenir un modèle plus facile à interpréter et plus parcimonieux. Le modèle de régression logistique cumulative à cotes proportionnelles est un simplification sous l’hypothèse que les cotes sont proportionnelles.</p>
+<p>Supposons que la variable <span class="math inline">\(Y\)</span> est ordinale et peut prendre les <span class="math inline">\(K+1\)</span> valeurs ordonnées de la plus petite à la plus grande selon les catégories de <span class="math inline">\(Y\)</span> (<span class="math inline">\(0, 1, 2, \ldots, K\)</span>). Supposons que l’on dispose de <span class="math inline">\(p\)</span> variables explicatives <span class="math inline">\(X_1, \ldots, X_p\)</span>.</p>
+<p>Soit <span class="math inline">\(p_{ik}={\mathsf P}\left(Y_i \mid X_{i1}, \ldots, X_{ip}\right)\)</span> (<span class="math inline">\(k=0, 1, \ldots, K\)</span>) la probabilité que <span class="math inline">\(Y_{ik}\)</span> prenne la valeur <span class="math inline">\(k\)</span>. On dénote la fonction de survie
+<span class="math display">\[S_{ij}=\sum_{k=j}^K p_{ik}= {\mathsf P}\left(Y_{i} \geq j\mid X_{i1}, \ldots, X_{ip}\right), \qquad j=1, \ldots, K.
+\]</span>
+La quantité <span class="math inline">\(S_{ij}\)</span> est la probabilité que <span class="math inline">\(Y_i\)</span> soit plus grand ou égal à <span class="math inline">\(j\)</span>; <span class="math inline">\(S_{i0}\)</span> est égal à 1 et <span class="math inline">\(S_{ik} = {\mathsf P}\left(Y_i=K \mid X_{i1}, \ldots, X_{ip}\right)=p_{iK}\)</span>.</p>
+<p>Le modèle logistique cumulé spécifie que
+<span class="math display">\[\begin{align*}
+\ln \left( \frac{S_{ij}}{1-S_{ij}}\right) = \beta_{0j} + \beta_1 X_{i1} + \cdots + \beta_p X_{ip}, \qquad \qquad  j=1, \ldots, K.
+\end{align*}\]</span></p>
+<p>Il y a donc <span class="math inline">\(K-1\)</span> équations logistiques. Les paramètres quantifiant les effets des variables explicatives, <span class="math inline">\(\beta_1, \ldots, \beta_K\)</span> sont les mêmes pour chacune des log-cotes, mais il y a une ordonnée à l’origine différente par log de rapport de cote. Par conséquent, pour modéliser une variable ordinale <span class="math inline">\(Y\)</span> ayant <span class="math inline">\(K+1\)</span> valeurs possibles avec p variables explicatives, le modèle cumulatif logistique utilise <span class="math inline">\(p + K\)</span> paramètres. Le modèle logit multinomial, qui peut également être utilisé pour les données ordinales, utilise <span class="math inline">\(p\cdot (K+1)\)</span> paramètres. Le modèle multinomial ordonné est donc plus parcimonieux et, pour autan qu’il soit approprié, mènera à des estimations des paramètres plus précises qu’avec le modèle de régression logistique multinomiale. Les deux modèles sont identiques au modèle de régression logistique si la variable ordinale a deux modalités.</p>
+<p>La cote <span class="math inline">\(S_{ij}/(1-S_{ij})\)</span> mesure à quel point il est plus probable que <span class="math inline">\(Y_i\)</span> prenne une valeur plus grande ou égale à <span class="math inline">\(j\)</span> par rapport à une valeur plus petite que <span class="math inline">\(j\)</span>, viz.
+<span class="math display">\[\begin{align*}
+\frac{S_{ij}}{1-S_{ij}} = \exp( \beta_{0j} + \beta_1X_{i1} + \cdots + \beta_p X_{ip}).
+\end{align*}\]</span>
+Dans cet exemple, aucune fonction autre qu’additive en <span class="math inline">\(X\)</span>, ni aucune interaction n’est présente. Si le paramètre <span class="math inline">\(\beta_j\)</span> est positif, cela indique que plus <span class="math inline">\(X_j\)</span> prend une valeur élevée, plus la variable <span class="math inline">\(Y\)</span> a tendance à prendre aussi une valeur élevée. Inversement, si le paramètre <span class="math inline">\(\beta_j\)</span> est négatif, cela indique que plus <span class="math inline">\(X_j\)</span> prend une valeur élevée, plus la variable <span class="math inline">\(Y\)</span> a tendance à prendre une valeur basse. Plus précisément, pour chaque augmentation d’une unité de <span class="math inline">\(X_j\)</span>, la cote <span class="math inline">\(S_k/(1-S_k)\)</span> est multipliée par <span class="math inline">\(\exp(\beta_j)\)</span>, peu importe la valeur de <span class="math inline">\(Y\)</span>. Ainsi, la cote d’être dans une catégorie plus élevée, par rapport à une catégorie moins élevée, est multipliée par <span class="math inline">\(\exp(\beta_j)\)</span>. En terme de probabilités cumulées d’excéder <span class="math inline">\(k\)</span>,
+<span class="math display">\[\begin{align*}
+S_{ik} = {\mathsf P}\left(Y_i \geq k \mid X_{i1}, \ldots, X_{ip}\right) = \mathrm{expit}(\beta_{0k} + \beta_1 X_{i1} + \cdots + \beta_p X_{ip}), \qquad j =1, \ldots, K.
+\end{align*}\]</span>
+En utilisant ces expressions, on peut obtenir la probabilité de chaque catégorie,
+<span class="math display">\[\begin{align*}
+{\mathsf P}\left(Y_i = k \mid X_{i1}, \ldots, X_{ip}\right) ={\mathsf P}\left(Y_i \geq k \mid X_{i1}, \ldots, X_{ip}\right) -{\mathsf P}\left(Y_i \geq k+1 \mid X_{i1}, \ldots, X_{ip}\right) = S_{k} - S_{k+1}.
+\end{align*}\]</span></p>
+<p>Nous considérons maintenant la variable <span class="math inline">\(Y_2\)</span> du fichier <code>logit6.sas7bdat</code>, qui donne le nombre de visites au cinéma. Pour cet exemple, nous allons chercher à modéliser <span class="math inline">\(Y_2\)</span> à l’aide de <span class="math inline">\(X\)</span> (âge) en utilisant le modèle multinomial cumulé à cotes proportionnelles.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right;">
+y2
+</th>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+mean
+</th>
+<th style="text-align:right;">
+std.err
+</th>
+<th style="text-align:right;">
+min
+</th>
+<th style="text-align:right;">
+max
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+44
+</td>
+<td style="text-align:right;">
+33.50
+</td>
+<td style="text-align:right;">
+7.23
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+44
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+30.45
+</td>
+<td style="text-align:right;">
+8.16
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+44
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+25.11
+</td>
+<td style="text-align:right;">
+6.58
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+39
+</td>
+</tr>
+</tbody>
+</table>
+<p>Ainsi, les répondants qui sont allés moins de cinq fois au cinéma ont en moyenne 33,5 ans, ceux qui sont allés entre cinq et 10 fois ont 30,4 ans en moyenne, et ceux qui sont allés plus de 10 fois ont 25,1 ans en moyenne. Il y a une progression et on voit que les répondants plus jeunes vont plus souvent au cinéma.</p>
+<p>Nous utilisons exactement le même programme que pour une régression logistique habituelle. Si la variable <span class="math inline">\(Y\)</span> prend plus de deux valeurs, <strong>SAS</strong> utilisera automatiquement le modèle de régression multinomiale cumulé.</p>
+<pre class="sas"><code>proc logistic data=multi.logit6 descending;
+model y2 = x / clparm=pl clodds=pl expb;
+run;</code></pre>
+<p>L’option <code>descending</code> impose la paramétrisation discutée précédemment. Sans cette option, ce serait plutôt les probabilités de prendre une valeur plus petite, par rapport à une plus grande qui serait modélisée. Le modèle est le même, mais les signes des paramètres des variables explicatives seraient inversés.</p>
+<p><img src="figures/03-logistic-e26.png" width="80%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/03-logistic-e27.png" width="80%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/03-logistic-e28.png" width="80%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/03-logistic-e29.png" width="80%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/03-logistic-e30.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>Avant toute chose, il faut s’assurer que le modèle est approprié. Rappelez-vous que l’une des hypothèses de ce modèle est que les effets des variables explicatives sont les mêmes pour chaque équation. Le tableau « Test de score pour l’hypothèse des cotes proportionnelles » est un test de l’hypothèse nulle</p>
+<ul>
+<li><span class="math inline">\(\mathcal{H}_0\)</span> : l’effet de chaque variable est le même pour les <span class="math inline">\(K\)</span> logit du modèle multinomial logistique, soit <span class="math inline">\(\beta_{11} = \cdots =\beta_{1K}\)</span>, <span class="math inline">\(\ldots\)</span>, <span class="math inline">\(\beta_{p1} = \cdots =\beta_{pK}\)</span>.</li>
+</ul>
+<p>Une très petite valeur-<span class="math inline">\(p\)</span> (rejet de <span class="math inline">\(\mathcal{H}_0\)</span>) pour ce test serait une indication que le modèle de régression multinomiale ordinale n’est pas approprié. Comme la valeur-<span class="math inline">\(p\)</span> est 0,2577 ici, on ne rejette pas <span class="math inline">\(\mathcal{H}_0\)</span> et il n’y a pas lieu de douter de cette hypothèse. On peut donc aller de l’avant et interpréter le modèle.</p>
+<p>Ici, l’effet estimé de l’âge (<span class="math inline">\(X\)</span>) est <span class="math inline">\(-{0,0916}\)</span> et ce paramètre est significativement différent de zéro (valeur-<span class="math inline">\(p\)</span> de 0,0004). Rappelez-vous que <span class="math inline">\(Y_2\)</span> représente le nombre d’entrées au cinéma dans la dernière année.</p>
+<p>Ainsi, plus l’âge augmente, plus <span class="math inline">\(Y_2\)</span> a tendance à prendre une petite valeur, c’est-à-dire, plus la personne a tendance à aller moins souvent au cinéma. Plus précisément, lorsque l’âge augmente de 1, la cote d’être dans une catégorie plus élevée de <span class="math inline">\(Y_2\)</span>, par rapport à une catégorie plus basse, est multipliée par 0,912 (la cote diminue donc et aussi la probabilité d’être dans une catégorie plus élevée).</p>
 
 </div>
 </div>
