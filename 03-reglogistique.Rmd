@@ -621,7 +621,7 @@ knitr::include_graphics("figures/03-logistic-e16.png")
 
 Le graphe \@ref(fig:fig3_e17) présente le pourcentage d'observations bien classées parmi les variables (pourcentage des probabilités prédites qui correspondent à un succès parmi les $k$ plus susceptibles selon le modèle). La référence est la ligne diagonale, qui correspond à une détection aléatoire.
 
-```{r fig3_e17, fig.cap="Taux de classement aléatoire, selon l'ordre et estimé du lift", echo = FALSE, out.width='80%', fig.align = "center"}
+```{r fig3_e17, fig.cap="Taux de classement en fonction du lift", echo = FALSE, out.width='80%', fig.align = "center"}
 knitr::include_graphics("figures/03-logistic-e17.png")
 ```
 
@@ -890,7 +890,9 @@ Les possibilités de modèles sont nombreuses. Par exemple, si on a cinq modèle
 1) pour $\texttt{ymontant}$, nous allons utiliser les variables choisies par `glmselect` avec les options `select=aic, choose=bic`, tandis que pour $\texttt{yachat}$, nous allons utiliser les variables choisies par la procédure séquentielle suivie d'une recherche exhaustive avec le critère BIC 
 2) à la fois pour $\texttt{ymontant}$ et $\texttt{yachat}$, nous allons utiliser les variables choisies en faisant une sélection séquentielle classique (tests-$t$) avec critères d'entrée et de sortie fixés à 0,05.
 
-Pour obtenir les prévisions, nous allons estimer conjointement les modèles pour $\E{\texttt{ymontant} \mid \texttt{yachat}=1}$ et pour $\P{\texttt{yachat}=1}$ avec un modèle Tobit de type 2, donc une brève description est donnée dans la section \@ref(tobit2). Les résultats du modèle Tobit sur l'échantillon de validation sont rapportés dans le tableau \@ref(tab:03-tobit).
+Pour obtenir les prévisions, nous allons estimer conjointement les modèles pour $\E{\texttt{ymontant} \mid \texttt{yachat}=1}$ et pour $\P{\texttt{yachat}=1}$ avec un modèle Tobit de type 2 (aussi appelé modèle Heckit), dont une brève description est donnée dans la section \@ref(tobit2).
+L'avantage de l'estimation simultanée est que l'on a pas à sélectionner le point de coupure, puisque l'on enverra le catalogue uniquement si le montant prédit pour $\E{\texttt{ymontant}}$ (non-conditionnel) est supérieur à 10\$.
+Les résultats du modèle Tobit sur l'échantillon de validation sont rapportés dans le tableau \@ref(tab:03-tobit).
 
 Table: (\#tab:03-tobit) Matrice de gain pour l'envoi de catalogue
 
@@ -932,12 +934,12 @@ Notez que les variables explicatives ne sont pas nécessairement les mêmes dans
 
 ## Extensions du modèle de régression logistique à plus de deux catégories
 
-Supposons que la variable Y que vous cherchez à modéliser est une variable catégorielle pouvant prendre 3 valeurs ou plus. Voici quelques exemples :
+Supposons que la variable $Y$ que vous cherchez à modéliser est une variable catégorielle pouvant prendre trois valeurs ou plus. Voici quelques exemples :
 
 
 - Destination de vacances l’année dernière (Québec, États-Unis, ailleurs).
 - Si les élections avaient lieu aujourd’hui au Québec, pour quel parti voteriez-vous (PLQ, PQ, CAQ, QS).
-- Combien de fois êtes-vous allé au cinéma l’année dernière: moins de 5 fois ($\texttt{1}$), entre 5 et 10 fois ($\texttt{2}$), ou plus de 10 fois ($\texttt{3}$).
+- Combien de fois êtes-vous allé au cinéma l’année dernière: moins de cinq fois ($\texttt{1}$), entre cinq et 10 fois ($\texttt{2}$), ou plus de 10 fois ($\texttt{3}$).
 - Quelle importance accordez-vous au service après-vente? Un parmi « pas important » ($\texttt{1}$),  « peu important »($\texttt{2}$), « moyennement important » ($\texttt{3}$), « assez important » ($\texttt{4}$), « très important » ($\texttt{5}$).
 
 Dans les deux premiers exemples, la variable réponse $Y$ est nominale (elle n’a pas d’ordre) alors qu’elle est ordinale dans les deux derniers. Pour une variable ordinale, le modèle logit multinomial peut être utilisé mais il existe d’autres possibilités comme le modèle logit cumulé. Nous couvrirons ces deux modèles.

@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="sélection-de-variables-et-de-modèles-1.html"/>
-<link rel="next" href="references.html"/>
+<link rel="next" href="analyse-de-regroupements-1.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -149,6 +149,23 @@
 <li class="chapter" data-level="4.9.1" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#régression-logistique-multinomiale"><i class="fa fa-check"></i><b>4.9.1</b> Régression logistique multinomiale</a></li>
 <li class="chapter" data-level="4.9.2" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#régression-logistique-cumulative-à-cotes-proportionnelles"><i class="fa fa-check"></i><b>4.9.2</b> Régression logistique cumulative à cotes proportionnelles</a></li>
 </ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html"><i class="fa fa-check"></i><b>5</b> Analyse de regroupements</a><ul>
+<li class="chapter" data-level="5.1" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#introduction-4"><i class="fa fa-check"></i><b>5.1</b> Introduction</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#mesures-de-dissemblance"><i class="fa fa-check"></i><b>5.1.1</b> Mesures de dissemblance</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#segmentation-de-seniors-en-voyage-organisé"><i class="fa fa-check"></i><b>5.2</b> Segmentation de seniors en voyage organisé</a></li>
+<li class="chapter" data-level="5.3" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#méthodes-hiérarchiques"><i class="fa fa-check"></i><b>5.3</b> Méthodes hiérarchiques</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#méthode-de-ward"><i class="fa fa-check"></i><b>5.3.1</b> Méthode de Ward</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#méthodes-non-hiérarchiques"><i class="fa fa-check"></i><b>5.4</b> Méthodes non hiérarchiques</a></li>
+<li class="chapter" data-level="5.5" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#standardisation-des-variables"><i class="fa fa-check"></i><b>5.5</b> Standardisation des variables</a></li>
+<li class="chapter" data-level="5.6" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#considérations-pratiques"><i class="fa fa-check"></i><b>5.6</b> Considérations pratiques</a></li>
+<li class="chapter" data-level="5.7" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#exploration-graphique-préalable-et-analyse-en-composantes-principales"><i class="fa fa-check"></i><b>5.7</b> Exploration graphique préalable et analyse en composantes principales</a><ul>
+<li class="chapter" data-level="5.7.1" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#analyse-en-composantes-principales"><i class="fa fa-check"></i><b>5.7.1</b> Analyse en composantes principales</a></li>
+</ul></li>
+<li class="chapter" data-level="5.8" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#calcul-alternatif-des-distances-pour-le-regroupement-hiérarchique"><i class="fa fa-check"></i><b>5.8</b> Calcul alternatif des distances pour le regroupement hiérarchique</a></li>
+<li class="chapter" data-level="5.9" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#autres-mesures-de-dissemblance"><i class="fa fa-check"></i><b>5.9</b> Autres mesures de dissemblance</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -534,1610 +551,610 @@ model yachat(ref=&#39;0&#39;) = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10
 output out=pred predprobs=crossvalidate;
 run;</code></pre>
 <p>Le modèle utilise seulement les 10 variables de base (en fait 14 avec les indicatrices pour les variables catégorielles). Des prévisions pour les clients restants seront exportées dans le fichier <code>pred</code>, grâce à la commande <code>score</code>. L’option <code>ctable</code> permet d’obtenir la <code>Table de classification</code> (sic). Tel que nous l’avons vu au chapitre précédent, il y a 210 clients qui ont acheté quelque chose parmi les 1000. Le tableau de classification contient des estimations de plusieurs quantités intéressantes, en faisant varier le point de coupure (<code>Niveau de proba</code>). Pour chaque point de coupure, ces estimations ont été obtenues à l’aide d’une approximation de la méthode de validation croisée à <span class="math inline">\(n\)</span> groupes (en anglais, <em>leave-one-out cross-validation</em>, ou LOOCV). Ainsi, ces estimations sont valides car elles ne sont pas obtenues en utilisant les mêmes observations que celles qui ont servi à estimer le modèle.</p>
-<img src="MATH60602_files/figure-html/classification-1.png" width="672" />
+<p><img src="MATH60602_files/figure-html/classification-1.png" width="672" /></p>
 <table>
 <thead>
-<tr>
-<th style="text-align:right;">
-coupe
-</th>
-<th style="text-align:right;">
-vrai positif
-</th>
-<th style="text-align:right;">
-vrai négatif
-</th>
-<th style="text-align:right;">
-faux positif
-</th>
-<th style="text-align:right;">
-faux négatif
-</th>
-<th style="text-align:right;">
-correct (%)
-</th>
-<th style="text-align:right;">
-sensibilité (%)
-</th>
-<th style="text-align:right;">
-spécificité (%)
-</th>
-<th style="text-align:right;">
-faux positif (%)
-</th>
-<th style="text-align:right;">
-faux négatif (%)
-</th>
+<tr class="header">
+<th align="right">coupe</th>
+<th align="right">vrai positif</th>
+<th align="right">vrai négatif</th>
+<th align="right">faux positif</th>
+<th align="right">faux négatif</th>
+<th align="right">correct (%)</th>
+<th align="right">sensibilité (%)</th>
+<th align="right">spécificité (%)</th>
+<th align="right">faux positif (%)</th>
+<th align="right">faux négatif (%)</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:right;">
-0.02
-</td>
-<td style="text-align:right;">
-210
-</td>
-<td style="text-align:right;">
-209
-</td>
-<td style="text-align:right;">
-581
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-41.9
-</td>
-<td style="text-align:right;">
-100.0
-</td>
-<td style="text-align:right;">
-26.5
-</td>
-<td style="text-align:right;">
-73.5
-</td>
-<td style="text-align:right;">
-0.0
-</td>
+<tr class="odd">
+<td align="right">0.02</td>
+<td align="right">210</td>
+<td align="right">209</td>
+<td align="right">581</td>
+<td align="right">0</td>
+<td align="right">41.9</td>
+<td align="right">100.0</td>
+<td align="right">26.5</td>
+<td align="right">73.5</td>
+<td align="right">0.0</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.04
-</td>
-<td style="text-align:right;">
-207
-</td>
-<td style="text-align:right;">
-320
-</td>
-<td style="text-align:right;">
-470
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-52.7
-</td>
-<td style="text-align:right;">
-98.6
-</td>
-<td style="text-align:right;">
-40.5
-</td>
-<td style="text-align:right;">
-69.4
-</td>
-<td style="text-align:right;">
-0.9
-</td>
+<tr class="even">
+<td align="right">0.04</td>
+<td align="right">207</td>
+<td align="right">320</td>
+<td align="right">470</td>
+<td align="right">3</td>
+<td align="right">52.7</td>
+<td align="right">98.6</td>
+<td align="right">40.5</td>
+<td align="right">69.4</td>
+<td align="right">0.9</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.06
-</td>
-<td style="text-align:right;">
-201
-</td>
-<td style="text-align:right;">
-398
-</td>
-<td style="text-align:right;">
-392
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-59.9
-</td>
-<td style="text-align:right;">
-95.7
-</td>
-<td style="text-align:right;">
-50.4
-</td>
-<td style="text-align:right;">
-66.1
-</td>
-<td style="text-align:right;">
-2.2
-</td>
+<tr class="odd">
+<td align="right">0.06</td>
+<td align="right">201</td>
+<td align="right">398</td>
+<td align="right">392</td>
+<td align="right">9</td>
+<td align="right">59.9</td>
+<td align="right">95.7</td>
+<td align="right">50.4</td>
+<td align="right">66.1</td>
+<td align="right">2.2</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.08
-</td>
-<td style="text-align:right;">
-199
-</td>
-<td style="text-align:right;">
-451
-</td>
-<td style="text-align:right;">
-339
-</td>
-<td style="text-align:right;">
-11
-</td>
-<td style="text-align:right;">
-65.0
-</td>
-<td style="text-align:right;">
-94.8
-</td>
-<td style="text-align:right;">
-57.1
-</td>
-<td style="text-align:right;">
-63.0
-</td>
-<td style="text-align:right;">
-2.4
-</td>
+<tr class="even">
+<td align="right">0.08</td>
+<td align="right">199</td>
+<td align="right">451</td>
+<td align="right">339</td>
+<td align="right">11</td>
+<td align="right">65.0</td>
+<td align="right">94.8</td>
+<td align="right">57.1</td>
+<td align="right">63.0</td>
+<td align="right">2.4</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.10
-</td>
-<td style="text-align:right;">
-193
-</td>
-<td style="text-align:right;">
-480
-</td>
-<td style="text-align:right;">
-310
-</td>
-<td style="text-align:right;">
-17
-</td>
-<td style="text-align:right;">
-67.3
-</td>
-<td style="text-align:right;">
-91.9
-</td>
-<td style="text-align:right;">
-60.8
-</td>
-<td style="text-align:right;">
-61.6
-</td>
-<td style="text-align:right;">
-3.4
-</td>
+<tr class="odd">
+<td align="right">0.10</td>
+<td align="right">193</td>
+<td align="right">480</td>
+<td align="right">310</td>
+<td align="right">17</td>
+<td align="right">67.3</td>
+<td align="right">91.9</td>
+<td align="right">60.8</td>
+<td align="right">61.6</td>
+<td align="right">3.4</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.12
-</td>
-<td style="text-align:right;">
-191
-</td>
-<td style="text-align:right;">
-512
-</td>
-<td style="text-align:right;">
-278
-</td>
-<td style="text-align:right;">
-19
-</td>
-<td style="text-align:right;">
-70.3
-</td>
-<td style="text-align:right;">
-91.0
-</td>
-<td style="text-align:right;">
-64.8
-</td>
-<td style="text-align:right;">
-59.3
-</td>
-<td style="text-align:right;">
-3.6
-</td>
+<tr class="even">
+<td align="right">0.12</td>
+<td align="right">191</td>
+<td align="right">512</td>
+<td align="right">278</td>
+<td align="right">19</td>
+<td align="right">70.3</td>
+<td align="right">91.0</td>
+<td align="right">64.8</td>
+<td align="right">59.3</td>
+<td align="right">3.6</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.14
-</td>
-<td style="text-align:right;">
-184
-</td>
-<td style="text-align:right;">
-547
-</td>
-<td style="text-align:right;">
-243
-</td>
-<td style="text-align:right;">
-26
-</td>
-<td style="text-align:right;">
-73.1
-</td>
-<td style="text-align:right;">
-87.6
-</td>
-<td style="text-align:right;">
-69.2
-</td>
-<td style="text-align:right;">
-56.9
-</td>
-<td style="text-align:right;">
-4.5
-</td>
+<tr class="odd">
+<td align="right">0.14</td>
+<td align="right">184</td>
+<td align="right">547</td>
+<td align="right">243</td>
+<td align="right">26</td>
+<td align="right">73.1</td>
+<td align="right">87.6</td>
+<td align="right">69.2</td>
+<td align="right">56.9</td>
+<td align="right">4.5</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.16
-</td>
-<td style="text-align:right;">
-176
-</td>
-<td style="text-align:right;">
-572
-</td>
-<td style="text-align:right;">
-218
-</td>
-<td style="text-align:right;">
-34
-</td>
-<td style="text-align:right;">
-74.8
-</td>
-<td style="text-align:right;">
-83.8
-</td>
-<td style="text-align:right;">
-72.4
-</td>
-<td style="text-align:right;">
-55.3
-</td>
-<td style="text-align:right;">
-5.6
-</td>
+<tr class="even">
+<td align="right">0.16</td>
+<td align="right">176</td>
+<td align="right">572</td>
+<td align="right">218</td>
+<td align="right">34</td>
+<td align="right">74.8</td>
+<td align="right">83.8</td>
+<td align="right">72.4</td>
+<td align="right">55.3</td>
+<td align="right">5.6</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.18
-</td>
-<td style="text-align:right;">
-172
-</td>
-<td style="text-align:right;">
-598
-</td>
-<td style="text-align:right;">
-192
-</td>
-<td style="text-align:right;">
-38
-</td>
-<td style="text-align:right;">
-77.0
-</td>
-<td style="text-align:right;">
-81.9
-</td>
-<td style="text-align:right;">
-75.7
-</td>
-<td style="text-align:right;">
-52.7
-</td>
-<td style="text-align:right;">
-6.0
-</td>
+<tr class="odd">
+<td align="right">0.18</td>
+<td align="right">172</td>
+<td align="right">598</td>
+<td align="right">192</td>
+<td align="right">38</td>
+<td align="right">77.0</td>
+<td align="right">81.9</td>
+<td align="right">75.7</td>
+<td align="right">52.7</td>
+<td align="right">6.0</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.20
-</td>
-<td style="text-align:right;">
-164
-</td>
-<td style="text-align:right;">
-611
-</td>
-<td style="text-align:right;">
-179
-</td>
-<td style="text-align:right;">
-46
-</td>
-<td style="text-align:right;">
-77.5
-</td>
-<td style="text-align:right;">
-78.1
-</td>
-<td style="text-align:right;">
-77.3
-</td>
-<td style="text-align:right;">
-52.2
-</td>
-<td style="text-align:right;">
-7.0
-</td>
+<tr class="even">
+<td align="right">0.20</td>
+<td align="right">164</td>
+<td align="right">611</td>
+<td align="right">179</td>
+<td align="right">46</td>
+<td align="right">77.5</td>
+<td align="right">78.1</td>
+<td align="right">77.3</td>
+<td align="right">52.2</td>
+<td align="right">7.0</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.22
-</td>
-<td style="text-align:right;">
-162
-</td>
-<td style="text-align:right;">
-626
-</td>
-<td style="text-align:right;">
-164
-</td>
-<td style="text-align:right;">
-48
-</td>
-<td style="text-align:right;">
-78.8
-</td>
-<td style="text-align:right;">
-77.1
-</td>
-<td style="text-align:right;">
-79.2
-</td>
-<td style="text-align:right;">
-50.3
-</td>
-<td style="text-align:right;">
-7.1
-</td>
+<tr class="odd">
+<td align="right">0.22</td>
+<td align="right">162</td>
+<td align="right">626</td>
+<td align="right">164</td>
+<td align="right">48</td>
+<td align="right">78.8</td>
+<td align="right">77.1</td>
+<td align="right">79.2</td>
+<td align="right">50.3</td>
+<td align="right">7.1</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.24
-</td>
-<td style="text-align:right;">
-158
-</td>
-<td style="text-align:right;">
-639
-</td>
-<td style="text-align:right;">
-151
-</td>
-<td style="text-align:right;">
-52
-</td>
-<td style="text-align:right;">
-79.7
-</td>
-<td style="text-align:right;">
-75.2
-</td>
-<td style="text-align:right;">
-80.9
-</td>
-<td style="text-align:right;">
-48.9
-</td>
-<td style="text-align:right;">
-7.5
-</td>
+<tr class="even">
+<td align="right">0.24</td>
+<td align="right">158</td>
+<td align="right">639</td>
+<td align="right">151</td>
+<td align="right">52</td>
+<td align="right">79.7</td>
+<td align="right">75.2</td>
+<td align="right">80.9</td>
+<td align="right">48.9</td>
+<td align="right">7.5</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.26
-</td>
-<td style="text-align:right;">
-153
-</td>
-<td style="text-align:right;">
-645
-</td>
-<td style="text-align:right;">
-145
-</td>
-<td style="text-align:right;">
-57
-</td>
-<td style="text-align:right;">
-79.8
-</td>
-<td style="text-align:right;">
-72.9
-</td>
-<td style="text-align:right;">
-81.6
-</td>
-<td style="text-align:right;">
-48.7
-</td>
-<td style="text-align:right;">
-8.1
-</td>
+<tr class="odd">
+<td align="right">0.26</td>
+<td align="right">153</td>
+<td align="right">645</td>
+<td align="right">145</td>
+<td align="right">57</td>
+<td align="right">79.8</td>
+<td align="right">72.9</td>
+<td align="right">81.6</td>
+<td align="right">48.7</td>
+<td align="right">8.1</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.28
-</td>
-<td style="text-align:right;">
-150
-</td>
-<td style="text-align:right;">
-657
-</td>
-<td style="text-align:right;">
-133
-</td>
-<td style="text-align:right;">
-60
-</td>
-<td style="text-align:right;">
-80.7
-</td>
-<td style="text-align:right;">
-71.4
-</td>
-<td style="text-align:right;">
-83.2
-</td>
-<td style="text-align:right;">
-47.0
-</td>
-<td style="text-align:right;">
-8.4
-</td>
+<tr class="even">
+<td align="right">0.28</td>
+<td align="right">150</td>
+<td align="right">657</td>
+<td align="right">133</td>
+<td align="right">60</td>
+<td align="right">80.7</td>
+<td align="right">71.4</td>
+<td align="right">83.2</td>
+<td align="right">47.0</td>
+<td align="right">8.4</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.30
-</td>
-<td style="text-align:right;">
-143
-</td>
-<td style="text-align:right;">
-667
-</td>
-<td style="text-align:right;">
-123
-</td>
-<td style="text-align:right;">
-67
-</td>
-<td style="text-align:right;">
-81.0
-</td>
-<td style="text-align:right;">
-68.1
-</td>
-<td style="text-align:right;">
-84.4
-</td>
-<td style="text-align:right;">
-46.2
-</td>
-<td style="text-align:right;">
-9.1
-</td>
+<tr class="odd">
+<td align="right">0.30</td>
+<td align="right">143</td>
+<td align="right">667</td>
+<td align="right">123</td>
+<td align="right">67</td>
+<td align="right">81.0</td>
+<td align="right">68.1</td>
+<td align="right">84.4</td>
+<td align="right">46.2</td>
+<td align="right">9.1</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.32
-</td>
-<td style="text-align:right;">
-138
-</td>
-<td style="text-align:right;">
-679
-</td>
-<td style="text-align:right;">
-111
-</td>
-<td style="text-align:right;">
-72
-</td>
-<td style="text-align:right;">
-81.7
-</td>
-<td style="text-align:right;">
-65.7
-</td>
-<td style="text-align:right;">
-85.9
-</td>
-<td style="text-align:right;">
-44.6
-</td>
-<td style="text-align:right;">
-9.6
-</td>
+<tr class="even">
+<td align="right">0.32</td>
+<td align="right">138</td>
+<td align="right">679</td>
+<td align="right">111</td>
+<td align="right">72</td>
+<td align="right">81.7</td>
+<td align="right">65.7</td>
+<td align="right">85.9</td>
+<td align="right">44.6</td>
+<td align="right">9.6</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.34
-</td>
-<td style="text-align:right;">
-134
-</td>
-<td style="text-align:right;">
-695
-</td>
-<td style="text-align:right;">
-95
-</td>
-<td style="text-align:right;">
-76
-</td>
-<td style="text-align:right;">
-82.9
-</td>
-<td style="text-align:right;">
-63.8
-</td>
-<td style="text-align:right;">
-88.0
-</td>
-<td style="text-align:right;">
-41.5
-</td>
-<td style="text-align:right;">
-9.9
-</td>
+<tr class="odd">
+<td align="right">0.34</td>
+<td align="right">134</td>
+<td align="right">695</td>
+<td align="right">95</td>
+<td align="right">76</td>
+<td align="right">82.9</td>
+<td align="right">63.8</td>
+<td align="right">88.0</td>
+<td align="right">41.5</td>
+<td align="right">9.9</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.36
-</td>
-<td style="text-align:right;">
-130
-</td>
-<td style="text-align:right;">
-699
-</td>
-<td style="text-align:right;">
-91
-</td>
-<td style="text-align:right;">
-80
-</td>
-<td style="text-align:right;">
-82.9
-</td>
-<td style="text-align:right;">
-61.9
-</td>
-<td style="text-align:right;">
-88.5
-</td>
-<td style="text-align:right;">
-41.2
-</td>
-<td style="text-align:right;">
-10.3
-</td>
+<tr class="even">
+<td align="right">0.36</td>
+<td align="right">130</td>
+<td align="right">699</td>
+<td align="right">91</td>
+<td align="right">80</td>
+<td align="right">82.9</td>
+<td align="right">61.9</td>
+<td align="right">88.5</td>
+<td align="right">41.2</td>
+<td align="right">10.3</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.38
-</td>
-<td style="text-align:right;">
-126
-</td>
-<td style="text-align:right;">
-708
-</td>
-<td style="text-align:right;">
-82
-</td>
-<td style="text-align:right;">
-84
-</td>
-<td style="text-align:right;">
-83.4
-</td>
-<td style="text-align:right;">
-60.0
-</td>
-<td style="text-align:right;">
-89.6
-</td>
-<td style="text-align:right;">
-39.4
-</td>
-<td style="text-align:right;">
-10.6
-</td>
+<tr class="odd">
+<td align="right">0.38</td>
+<td align="right">126</td>
+<td align="right">708</td>
+<td align="right">82</td>
+<td align="right">84</td>
+<td align="right">83.4</td>
+<td align="right">60.0</td>
+<td align="right">89.6</td>
+<td align="right">39.4</td>
+<td align="right">10.6</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.40
-</td>
-<td style="text-align:right;">
-120
-</td>
-<td style="text-align:right;">
-715
-</td>
-<td style="text-align:right;">
-75
-</td>
-<td style="text-align:right;">
-90
-</td>
-<td style="text-align:right;">
-83.5
-</td>
-<td style="text-align:right;">
-57.1
-</td>
-<td style="text-align:right;">
-90.5
-</td>
-<td style="text-align:right;">
-38.5
-</td>
-<td style="text-align:right;">
-11.2
-</td>
+<tr class="even">
+<td align="right">0.40</td>
+<td align="right">120</td>
+<td align="right">715</td>
+<td align="right">75</td>
+<td align="right">90</td>
+<td align="right">83.5</td>
+<td align="right">57.1</td>
+<td align="right">90.5</td>
+<td align="right">38.5</td>
+<td align="right">11.2</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.42
-</td>
-<td style="text-align:right;">
-115
-</td>
-<td style="text-align:right;">
-723
-</td>
-<td style="text-align:right;">
-67
-</td>
-<td style="text-align:right;">
-95
-</td>
-<td style="text-align:right;">
-83.8
-</td>
-<td style="text-align:right;">
-54.8
-</td>
-<td style="text-align:right;">
-91.5
-</td>
-<td style="text-align:right;">
-36.8
-</td>
-<td style="text-align:right;">
-11.6
-</td>
+<tr class="odd">
+<td align="right">0.42</td>
+<td align="right">115</td>
+<td align="right">723</td>
+<td align="right">67</td>
+<td align="right">95</td>
+<td align="right">83.8</td>
+<td align="right">54.8</td>
+<td align="right">91.5</td>
+<td align="right">36.8</td>
+<td align="right">11.6</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.44
-</td>
-<td style="text-align:right;">
-112
-</td>
-<td style="text-align:right;">
-731
-</td>
-<td style="text-align:right;">
-59
-</td>
-<td style="text-align:right;">
-98
-</td>
-<td style="text-align:right;">
-84.3
-</td>
-<td style="text-align:right;">
-53.3
-</td>
-<td style="text-align:right;">
-92.5
-</td>
-<td style="text-align:right;">
-34.5
-</td>
-<td style="text-align:right;">
-11.8
-</td>
+<tr class="even">
+<td align="right">0.44</td>
+<td align="right">112</td>
+<td align="right">731</td>
+<td align="right">59</td>
+<td align="right">98</td>
+<td align="right">84.3</td>
+<td align="right">53.3</td>
+<td align="right">92.5</td>
+<td align="right">34.5</td>
+<td align="right">11.8</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.46
-</td>
-<td style="text-align:right;">
-109
-</td>
-<td style="text-align:right;">
-736
-</td>
-<td style="text-align:right;">
-54
-</td>
-<td style="text-align:right;">
-101
-</td>
-<td style="text-align:right;">
-84.5
-</td>
-<td style="text-align:right;">
-51.9
-</td>
-<td style="text-align:right;">
-93.2
-</td>
-<td style="text-align:right;">
-33.1
-</td>
-<td style="text-align:right;">
-12.1
-</td>
+<tr class="odd">
+<td align="right">0.46</td>
+<td align="right">109</td>
+<td align="right">736</td>
+<td align="right">54</td>
+<td align="right">101</td>
+<td align="right">84.5</td>
+<td align="right">51.9</td>
+<td align="right">93.2</td>
+<td align="right">33.1</td>
+<td align="right">12.1</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.48
-</td>
-<td style="text-align:right;">
-106
-</td>
-<td style="text-align:right;">
-739
-</td>
-<td style="text-align:right;">
-51
-</td>
-<td style="text-align:right;">
-104
-</td>
-<td style="text-align:right;">
-84.5
-</td>
-<td style="text-align:right;">
-50.5
-</td>
-<td style="text-align:right;">
-93.5
-</td>
-<td style="text-align:right;">
-32.5
-</td>
-<td style="text-align:right;">
-12.3
-</td>
+<tr class="even">
+<td align="right">0.48</td>
+<td align="right">106</td>
+<td align="right">739</td>
+<td align="right">51</td>
+<td align="right">104</td>
+<td align="right">84.5</td>
+<td align="right">50.5</td>
+<td align="right">93.5</td>
+<td align="right">32.5</td>
+<td align="right">12.3</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.50
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-744
-</td>
-<td style="text-align:right;">
-46
-</td>
-<td style="text-align:right;">
-110
-</td>
-<td style="text-align:right;">
-84.4
-</td>
-<td style="text-align:right;">
-47.6
-</td>
-<td style="text-align:right;">
-94.2
-</td>
-<td style="text-align:right;">
-31.5
-</td>
-<td style="text-align:right;">
-12.9
-</td>
+<tr class="odd">
+<td align="right">0.50</td>
+<td align="right">100</td>
+<td align="right">744</td>
+<td align="right">46</td>
+<td align="right">110</td>
+<td align="right">84.4</td>
+<td align="right">47.6</td>
+<td align="right">94.2</td>
+<td align="right">31.5</td>
+<td align="right">12.9</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.52
-</td>
-<td style="text-align:right;">
-98
-</td>
-<td style="text-align:right;">
-748
-</td>
-<td style="text-align:right;">
-42
-</td>
-<td style="text-align:right;">
-112
-</td>
-<td style="text-align:right;">
-84.6
-</td>
-<td style="text-align:right;">
-46.7
-</td>
-<td style="text-align:right;">
-94.7
-</td>
-<td style="text-align:right;">
-30.0
-</td>
-<td style="text-align:right;">
-13.0
-</td>
+<tr class="even">
+<td align="right">0.52</td>
+<td align="right">98</td>
+<td align="right">748</td>
+<td align="right">42</td>
+<td align="right">112</td>
+<td align="right">84.6</td>
+<td align="right">46.7</td>
+<td align="right">94.7</td>
+<td align="right">30.0</td>
+<td align="right">13.0</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.54
-</td>
-<td style="text-align:right;">
-92
-</td>
-<td style="text-align:right;">
-750
-</td>
-<td style="text-align:right;">
-40
-</td>
-<td style="text-align:right;">
-118
-</td>
-<td style="text-align:right;">
-84.2
-</td>
-<td style="text-align:right;">
-43.8
-</td>
-<td style="text-align:right;">
-94.9
-</td>
-<td style="text-align:right;">
-30.3
-</td>
-<td style="text-align:right;">
-13.6
-</td>
+<tr class="odd">
+<td align="right">0.54</td>
+<td align="right">92</td>
+<td align="right">750</td>
+<td align="right">40</td>
+<td align="right">118</td>
+<td align="right">84.2</td>
+<td align="right">43.8</td>
+<td align="right">94.9</td>
+<td align="right">30.3</td>
+<td align="right">13.6</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.56
-</td>
-<td style="text-align:right;">
-87
-</td>
-<td style="text-align:right;">
-753
-</td>
-<td style="text-align:right;">
-37
-</td>
-<td style="text-align:right;">
-123
-</td>
-<td style="text-align:right;">
-84.0
-</td>
-<td style="text-align:right;">
-41.4
-</td>
-<td style="text-align:right;">
-95.3
-</td>
-<td style="text-align:right;">
-29.8
-</td>
-<td style="text-align:right;">
-14.0
-</td>
+<tr class="even">
+<td align="right">0.56</td>
+<td align="right">87</td>
+<td align="right">753</td>
+<td align="right">37</td>
+<td align="right">123</td>
+<td align="right">84.0</td>
+<td align="right">41.4</td>
+<td align="right">95.3</td>
+<td align="right">29.8</td>
+<td align="right">14.0</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.58
-</td>
-<td style="text-align:right;">
-83
-</td>
-<td style="text-align:right;">
-761
-</td>
-<td style="text-align:right;">
-29
-</td>
-<td style="text-align:right;">
-127
-</td>
-<td style="text-align:right;">
-84.4
-</td>
-<td style="text-align:right;">
-39.5
-</td>
-<td style="text-align:right;">
-96.3
-</td>
-<td style="text-align:right;">
-25.9
-</td>
-<td style="text-align:right;">
-14.3
-</td>
+<tr class="odd">
+<td align="right">0.58</td>
+<td align="right">83</td>
+<td align="right">761</td>
+<td align="right">29</td>
+<td align="right">127</td>
+<td align="right">84.4</td>
+<td align="right">39.5</td>
+<td align="right">96.3</td>
+<td align="right">25.9</td>
+<td align="right">14.3</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.60
-</td>
-<td style="text-align:right;">
-80
-</td>
-<td style="text-align:right;">
-766
-</td>
-<td style="text-align:right;">
-24
-</td>
-<td style="text-align:right;">
-130
-</td>
-<td style="text-align:right;">
-84.6
-</td>
-<td style="text-align:right;">
-38.1
-</td>
-<td style="text-align:right;">
-97.0
-</td>
-<td style="text-align:right;">
-23.1
-</td>
-<td style="text-align:right;">
-14.5
-</td>
+<tr class="even">
+<td align="right">0.60</td>
+<td align="right">80</td>
+<td align="right">766</td>
+<td align="right">24</td>
+<td align="right">130</td>
+<td align="right">84.6</td>
+<td align="right">38.1</td>
+<td align="right">97.0</td>
+<td align="right">23.1</td>
+<td align="right">14.5</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.62
-</td>
-<td style="text-align:right;">
-77
-</td>
-<td style="text-align:right;">
-769
-</td>
-<td style="text-align:right;">
-21
-</td>
-<td style="text-align:right;">
-133
-</td>
-<td style="text-align:right;">
-84.6
-</td>
-<td style="text-align:right;">
-36.7
-</td>
-<td style="text-align:right;">
-97.3
-</td>
-<td style="text-align:right;">
-21.4
-</td>
-<td style="text-align:right;">
-14.7
-</td>
+<tr class="odd">
+<td align="right">0.62</td>
+<td align="right">77</td>
+<td align="right">769</td>
+<td align="right">21</td>
+<td align="right">133</td>
+<td align="right">84.6</td>
+<td align="right">36.7</td>
+<td align="right">97.3</td>
+<td align="right">21.4</td>
+<td align="right">14.7</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.64
-</td>
-<td style="text-align:right;">
-74
-</td>
-<td style="text-align:right;">
-771
-</td>
-<td style="text-align:right;">
-19
-</td>
-<td style="text-align:right;">
-136
-</td>
-<td style="text-align:right;">
-84.5
-</td>
-<td style="text-align:right;">
-35.2
-</td>
-<td style="text-align:right;">
-97.6
-</td>
-<td style="text-align:right;">
-20.4
-</td>
-<td style="text-align:right;">
-15.0
-</td>
+<tr class="even">
+<td align="right">0.64</td>
+<td align="right">74</td>
+<td align="right">771</td>
+<td align="right">19</td>
+<td align="right">136</td>
+<td align="right">84.5</td>
+<td align="right">35.2</td>
+<td align="right">97.6</td>
+<td align="right">20.4</td>
+<td align="right">15.0</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.66
-</td>
-<td style="text-align:right;">
-68
-</td>
-<td style="text-align:right;">
-772
-</td>
-<td style="text-align:right;">
-18
-</td>
-<td style="text-align:right;">
-142
-</td>
-<td style="text-align:right;">
-84.0
-</td>
-<td style="text-align:right;">
-32.4
-</td>
-<td style="text-align:right;">
-97.7
-</td>
-<td style="text-align:right;">
-20.9
-</td>
-<td style="text-align:right;">
-15.5
-</td>
+<tr class="odd">
+<td align="right">0.66</td>
+<td align="right">68</td>
+<td align="right">772</td>
+<td align="right">18</td>
+<td align="right">142</td>
+<td align="right">84.0</td>
+<td align="right">32.4</td>
+<td align="right">97.7</td>
+<td align="right">20.9</td>
+<td align="right">15.5</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.68
-</td>
-<td style="text-align:right;">
-62
-</td>
-<td style="text-align:right;">
-774
-</td>
-<td style="text-align:right;">
-16
-</td>
-<td style="text-align:right;">
-148
-</td>
-<td style="text-align:right;">
-83.6
-</td>
-<td style="text-align:right;">
-29.5
-</td>
-<td style="text-align:right;">
-98.0
-</td>
-<td style="text-align:right;">
-20.5
-</td>
-<td style="text-align:right;">
-16.1
-</td>
+<tr class="even">
+<td align="right">0.68</td>
+<td align="right">62</td>
+<td align="right">774</td>
+<td align="right">16</td>
+<td align="right">148</td>
+<td align="right">83.6</td>
+<td align="right">29.5</td>
+<td align="right">98.0</td>
+<td align="right">20.5</td>
+<td align="right">16.1</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.70
-</td>
-<td style="text-align:right;">
-54
-</td>
-<td style="text-align:right;">
-775
-</td>
-<td style="text-align:right;">
-15
-</td>
-<td style="text-align:right;">
-156
-</td>
-<td style="text-align:right;">
-82.9
-</td>
-<td style="text-align:right;">
-25.7
-</td>
-<td style="text-align:right;">
-98.1
-</td>
-<td style="text-align:right;">
-21.7
-</td>
-<td style="text-align:right;">
-16.8
-</td>
+<tr class="odd">
+<td align="right">0.70</td>
+<td align="right">54</td>
+<td align="right">775</td>
+<td align="right">15</td>
+<td align="right">156</td>
+<td align="right">82.9</td>
+<td align="right">25.7</td>
+<td align="right">98.1</td>
+<td align="right">21.7</td>
+<td align="right">16.8</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.72
-</td>
-<td style="text-align:right;">
-51
-</td>
-<td style="text-align:right;">
-777
-</td>
-<td style="text-align:right;">
-13
-</td>
-<td style="text-align:right;">
-159
-</td>
-<td style="text-align:right;">
-82.8
-</td>
-<td style="text-align:right;">
-24.3
-</td>
-<td style="text-align:right;">
-98.4
-</td>
-<td style="text-align:right;">
-20.3
-</td>
-<td style="text-align:right;">
-17.0
-</td>
+<tr class="even">
+<td align="right">0.72</td>
+<td align="right">51</td>
+<td align="right">777</td>
+<td align="right">13</td>
+<td align="right">159</td>
+<td align="right">82.8</td>
+<td align="right">24.3</td>
+<td align="right">98.4</td>
+<td align="right">20.3</td>
+<td align="right">17.0</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.74
-</td>
-<td style="text-align:right;">
-49
-</td>
-<td style="text-align:right;">
-778
-</td>
-<td style="text-align:right;">
-12
-</td>
-<td style="text-align:right;">
-161
-</td>
-<td style="text-align:right;">
-82.7
-</td>
-<td style="text-align:right;">
-23.3
-</td>
-<td style="text-align:right;">
-98.5
-</td>
-<td style="text-align:right;">
-19.7
-</td>
-<td style="text-align:right;">
-17.1
-</td>
+<tr class="odd">
+<td align="right">0.74</td>
+<td align="right">49</td>
+<td align="right">778</td>
+<td align="right">12</td>
+<td align="right">161</td>
+<td align="right">82.7</td>
+<td align="right">23.3</td>
+<td align="right">98.5</td>
+<td align="right">19.7</td>
+<td align="right">17.1</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.76
-</td>
-<td style="text-align:right;">
-46
-</td>
-<td style="text-align:right;">
-778
-</td>
-<td style="text-align:right;">
-12
-</td>
-<td style="text-align:right;">
-164
-</td>
-<td style="text-align:right;">
-82.4
-</td>
-<td style="text-align:right;">
-21.9
-</td>
-<td style="text-align:right;">
-98.5
-</td>
-<td style="text-align:right;">
-20.7
-</td>
-<td style="text-align:right;">
-17.4
-</td>
+<tr class="even">
+<td align="right">0.76</td>
+<td align="right">46</td>
+<td align="right">778</td>
+<td align="right">12</td>
+<td align="right">164</td>
+<td align="right">82.4</td>
+<td align="right">21.9</td>
+<td align="right">98.5</td>
+<td align="right">20.7</td>
+<td align="right">17.4</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.78
-</td>
-<td style="text-align:right;">
-41
-</td>
-<td style="text-align:right;">
-781
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-169
-</td>
-<td style="text-align:right;">
-82.2
-</td>
-<td style="text-align:right;">
-19.5
-</td>
-<td style="text-align:right;">
-98.9
-</td>
-<td style="text-align:right;">
-18.0
-</td>
-<td style="text-align:right;">
-17.8
-</td>
+<tr class="odd">
+<td align="right">0.78</td>
+<td align="right">41</td>
+<td align="right">781</td>
+<td align="right">9</td>
+<td align="right">169</td>
+<td align="right">82.2</td>
+<td align="right">19.5</td>
+<td align="right">98.9</td>
+<td align="right">18.0</td>
+<td align="right">17.8</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.80
-</td>
-<td style="text-align:right;">
-35
-</td>
-<td style="text-align:right;">
-783
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-175
-</td>
-<td style="text-align:right;">
-81.8
-</td>
-<td style="text-align:right;">
-16.7
-</td>
-<td style="text-align:right;">
-99.1
-</td>
-<td style="text-align:right;">
-16.7
-</td>
-<td style="text-align:right;">
-18.3
-</td>
+<tr class="even">
+<td align="right">0.80</td>
+<td align="right">35</td>
+<td align="right">783</td>
+<td align="right">7</td>
+<td align="right">175</td>
+<td align="right">81.8</td>
+<td align="right">16.7</td>
+<td align="right">99.1</td>
+<td align="right">16.7</td>
+<td align="right">18.3</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.82
-</td>
-<td style="text-align:right;">
-33
-</td>
-<td style="text-align:right;">
-783
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-177
-</td>
-<td style="text-align:right;">
-81.6
-</td>
-<td style="text-align:right;">
-15.7
-</td>
-<td style="text-align:right;">
-99.1
-</td>
-<td style="text-align:right;">
-17.5
-</td>
-<td style="text-align:right;">
-18.4
-</td>
+<tr class="odd">
+<td align="right">0.82</td>
+<td align="right">33</td>
+<td align="right">783</td>
+<td align="right">7</td>
+<td align="right">177</td>
+<td align="right">81.6</td>
+<td align="right">15.7</td>
+<td align="right">99.1</td>
+<td align="right">17.5</td>
+<td align="right">18.4</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.84
-</td>
-<td style="text-align:right;">
-32
-</td>
-<td style="text-align:right;">
-783
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-178
-</td>
-<td style="text-align:right;">
-81.5
-</td>
-<td style="text-align:right;">
-15.2
-</td>
-<td style="text-align:right;">
-99.1
-</td>
-<td style="text-align:right;">
-17.9
-</td>
-<td style="text-align:right;">
-18.5
-</td>
+<tr class="even">
+<td align="right">0.84</td>
+<td align="right">32</td>
+<td align="right">783</td>
+<td align="right">7</td>
+<td align="right">178</td>
+<td align="right">81.5</td>
+<td align="right">15.2</td>
+<td align="right">99.1</td>
+<td align="right">17.9</td>
+<td align="right">18.5</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.86
-</td>
-<td style="text-align:right;">
-28
-</td>
-<td style="text-align:right;">
-784
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-182
-</td>
-<td style="text-align:right;">
-81.2
-</td>
-<td style="text-align:right;">
-13.3
-</td>
-<td style="text-align:right;">
-99.2
-</td>
-<td style="text-align:right;">
-17.6
-</td>
-<td style="text-align:right;">
-18.8
-</td>
+<tr class="odd">
+<td align="right">0.86</td>
+<td align="right">28</td>
+<td align="right">784</td>
+<td align="right">6</td>
+<td align="right">182</td>
+<td align="right">81.2</td>
+<td align="right">13.3</td>
+<td align="right">99.2</td>
+<td align="right">17.6</td>
+<td align="right">18.8</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.88
-</td>
-<td style="text-align:right;">
-25
-</td>
-<td style="text-align:right;">
-786
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-185
-</td>
-<td style="text-align:right;">
-81.1
-</td>
-<td style="text-align:right;">
-11.9
-</td>
-<td style="text-align:right;">
-99.5
-</td>
-<td style="text-align:right;">
-13.8
-</td>
-<td style="text-align:right;">
-19.1
-</td>
+<tr class="even">
+<td align="right">0.88</td>
+<td align="right">25</td>
+<td align="right">786</td>
+<td align="right">4</td>
+<td align="right">185</td>
+<td align="right">81.1</td>
+<td align="right">11.9</td>
+<td align="right">99.5</td>
+<td align="right">13.8</td>
+<td align="right">19.1</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.90
-</td>
-<td style="text-align:right;">
-21
-</td>
-<td style="text-align:right;">
-787
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-189
-</td>
-<td style="text-align:right;">
-80.8
-</td>
-<td style="text-align:right;">
-10.0
-</td>
-<td style="text-align:right;">
-99.6
-</td>
-<td style="text-align:right;">
-12.5
-</td>
-<td style="text-align:right;">
-19.4
-</td>
+<tr class="odd">
+<td align="right">0.90</td>
+<td align="right">21</td>
+<td align="right">787</td>
+<td align="right">3</td>
+<td align="right">189</td>
+<td align="right">80.8</td>
+<td align="right">10.0</td>
+<td align="right">99.6</td>
+<td align="right">12.5</td>
+<td align="right">19.4</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.92
-</td>
-<td style="text-align:right;">
-18
-</td>
-<td style="text-align:right;">
-787
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-192
-</td>
-<td style="text-align:right;">
-80.5
-</td>
-<td style="text-align:right;">
-8.6
-</td>
-<td style="text-align:right;">
-99.6
-</td>
-<td style="text-align:right;">
-14.3
-</td>
-<td style="text-align:right;">
-19.6
-</td>
+<tr class="even">
+<td align="right">0.92</td>
+<td align="right">18</td>
+<td align="right">787</td>
+<td align="right">3</td>
+<td align="right">192</td>
+<td align="right">80.5</td>
+<td align="right">8.6</td>
+<td align="right">99.6</td>
+<td align="right">14.3</td>
+<td align="right">19.6</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.94
-</td>
-<td style="text-align:right;">
-14
-</td>
-<td style="text-align:right;">
-788
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-196
-</td>
-<td style="text-align:right;">
-80.2
-</td>
-<td style="text-align:right;">
-6.7
-</td>
-<td style="text-align:right;">
-99.7
-</td>
-<td style="text-align:right;">
-12.5
-</td>
-<td style="text-align:right;">
-19.9
-</td>
+<tr class="odd">
+<td align="right">0.94</td>
+<td align="right">14</td>
+<td align="right">788</td>
+<td align="right">2</td>
+<td align="right">196</td>
+<td align="right">80.2</td>
+<td align="right">6.7</td>
+<td align="right">99.7</td>
+<td align="right">12.5</td>
+<td align="right">19.9</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.96
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-788
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-204
-</td>
-<td style="text-align:right;">
-79.4
-</td>
-<td style="text-align:right;">
-2.9
-</td>
-<td style="text-align:right;">
-99.7
-</td>
-<td style="text-align:right;">
-25.0
-</td>
-<td style="text-align:right;">
-20.6
-</td>
+<tr class="even">
+<td align="right">0.96</td>
+<td align="right">6</td>
+<td align="right">788</td>
+<td align="right">2</td>
+<td align="right">204</td>
+<td align="right">79.4</td>
+<td align="right">2.9</td>
+<td align="right">99.7</td>
+<td align="right">25.0</td>
+<td align="right">20.6</td>
 </tr>
-<tr>
-<td style="text-align:right;">
-0.98
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-790
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-208
-</td>
-<td style="text-align:right;">
-79.2
-</td>
-<td style="text-align:right;">
-1.0
-</td>
-<td style="text-align:right;">
-100.0
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-20.8
-</td>
+<tr class="odd">
+<td align="right">0.98</td>
+<td align="right">2</td>
+<td align="right">790</td>
+<td align="right">0</td>
+<td align="right">208</td>
+<td align="right">79.2</td>
+<td align="right">1.0</td>
+<td align="right">100.0</td>
+<td align="right">0.0</td>
+<td align="right">20.8</td>
 </tr>
 </tbody>
 </table>
@@ -2555,7 +1572,9 @@ c’est-à-dire, la moyenne du montant dépensé est égale à la moyenne du mon
 <li>pour <span class="math inline">\(\texttt{ymontant}\)</span>, nous allons utiliser les variables choisies par <code>glmselect</code> avec les options <code>select=aic, choose=bic</code>, tandis que pour <span class="math inline">\(\texttt{yachat}\)</span>, nous allons utiliser les variables choisies par la procédure séquentielle suivie d’une recherche exhaustive avec le critère BIC</li>
 <li>à la fois pour <span class="math inline">\(\texttt{ymontant}\)</span> et <span class="math inline">\(\texttt{yachat}\)</span>, nous allons utiliser les variables choisies en faisant une sélection séquentielle classique (tests-<span class="math inline">\(t\)</span>) avec critères d’entrée et de sortie fixés à 0,05.</li>
 </ol>
-<p>Pour obtenir les prévisions, nous allons estimer conjointement les modèles pour <span class="math inline">\({\mathsf E}\left(\texttt{ymontant} \mid \texttt{yachat}=1\right)\)</span> et pour <span class="math inline">\({\mathsf P}\left(\texttt{yachat}=1\right)\)</span> avec un modèle Tobit de type 2, donc une brève description est donnée dans la section <a href="régression-logistique-1.html#tobit2">4.8.3</a>. Les résultats du modèle Tobit sur l’échantillon de validation sont rapportés dans le tableau <a href="régression-logistique-1.html#tab:03-tobit">4.7</a>.</p>
+<p>Pour obtenir les prévisions, nous allons estimer conjointement les modèles pour <span class="math inline">\({\mathsf E}\left(\texttt{ymontant} \mid \texttt{yachat}=1\right)\)</span> et pour <span class="math inline">\({\mathsf P}\left(\texttt{yachat}=1\right)\)</span> avec un modèle Tobit de type 2 (aussi appelé modèle Heckit), dont une brève description est donnée dans la section <a href="régression-logistique-1.html#tobit2">4.8.3</a>.
+L’avantage de l’estimation simultanée est que l’on a pas à sélectionner le point de coupure, puisque l’on enverra le catalogue uniquement si le montant prédit pour <span class="math inline">\({\mathsf E}\left(\texttt{ymontant}\right)\)</span> (non-conditionnel) est supérieur à 10$.
+Les résultats du modèle Tobit sur l’échantillon de validation sont rapportés dans le tableau <a href="régression-logistique-1.html#tab:03-tobit">4.7</a>.</p>
 <table style="width:100%;">
 <caption><span id="tab:03-tobit">Tableau 4.7: </span> Matrice de gain pour l’envoi de catalogue</caption>
 <colgroup>
@@ -2621,11 +1640,11 @@ Notez que les variables explicatives ne sont pas nécessairement les mêmes dans
 </div>
 <div id="extensions-du-modèle-de-régression-logistique-à-plus-de-deux-catégories" class="section level2">
 <h2><span class="header-section-number">4.9</span> Extensions du modèle de régression logistique à plus de deux catégories</h2>
-<p>Supposons que la variable Y que vous cherchez à modéliser est une variable catégorielle pouvant prendre 3 valeurs ou plus. Voici quelques exemples :</p>
+<p>Supposons que la variable <span class="math inline">\(Y\)</span> que vous cherchez à modéliser est une variable catégorielle pouvant prendre trois valeurs ou plus. Voici quelques exemples :</p>
 <ul>
 <li>Destination de vacances l’année dernière (Québec, États-Unis, ailleurs).</li>
 <li>Si les élections avaient lieu aujourd’hui au Québec, pour quel parti voteriez-vous (PLQ, PQ, CAQ, QS).</li>
-<li>Combien de fois êtes-vous allé au cinéma l’année dernière: moins de 5 fois (<span class="math inline">\(\texttt{1}\)</span>), entre 5 et 10 fois (<span class="math inline">\(\texttt{2}\)</span>), ou plus de 10 fois (<span class="math inline">\(\texttt{3}\)</span>).</li>
+<li>Combien de fois êtes-vous allé au cinéma l’année dernière: moins de cinq fois (<span class="math inline">\(\texttt{1}\)</span>), entre cinq et 10 fois (<span class="math inline">\(\texttt{2}\)</span>), ou plus de 10 fois (<span class="math inline">\(\texttt{3}\)</span>).</li>
 <li>Quelle importance accordez-vous au service après-vente? Un parmi « pas important » (<span class="math inline">\(\texttt{1}\)</span>), « peu important »(<span class="math inline">\(\texttt{2}\)</span>), « moyennement important » (<span class="math inline">\(\texttt{3}\)</span>), « assez important » (<span class="math inline">\(\texttt{4}\)</span>), « très important » (<span class="math inline">\(\texttt{5}\)</span>).</li>
 </ul>
 <p>Dans les deux premiers exemples, la variable réponse <span class="math inline">\(Y\)</span> est nominale (elle n’a pas d’ordre) alors qu’elle est ordinale dans les deux derniers. Pour une variable ordinale, le modèle logit multinomial peut être utilisé mais il existe d’autres possibilités comme le modèle logit cumulé. Nous couvrirons ces deux modèles.</p>
@@ -2812,7 +1831,7 @@ run;</code></pre>
         </div>
       </div>
 <a href="sélection-de-variables-et-de-modèles-1.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="analyse-de-regroupements-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
