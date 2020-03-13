@@ -1,4 +1,4 @@
-  # Analyse de regroupements
+# Analyse de regroupements
 
 ## Introduction
 
@@ -33,6 +33,7 @@ d(S_i, S_j) = \sqrt{(X_{i1}-X_{j1})^2 + \cdots + (X_{ip}-X_{jp})^2}.
 La distance euclidienne est tout simplement la longueur du segment qui relie les deux points dans l’espace.
 
 Nous verrons plus tard d’autres mesures de dissemblances incluant des mesures qui peuvent être utilisées avec des variables binaires, nominales et ordinales. 
+
 ### Méthodes hiérarchiques et non hiérarchiques
 
 Les **méthodes hiérarchiques** assignent les individus aux groupes à l'aide d'un algorithme glouton en partant du cas à $n$ groupes où chaque sujet est un groupe à part entière. La distance entre chaque paire de groupe est calculée. Les deux groupes ayant la distance la plus petite sont regroupés pour ne laisser que $n-1$ groupes. La distance entre chaque paire de groupe est à nouveau calculée (pour les  groupes). Les deux groupes ayant la distance la plus petite sont regroupés pour ne former qu’un seul groupe et ainsi de suite. Le processus se continue ainsi jusqu’à ce que tous les sujets soient regroupés en un seul groupe.
@@ -66,7 +67,7 @@ Au lieu de faire une analyse de regroupements avec les 55 items du questionnaire
 
 On voit donc que 22 items, parmi les 55, sont utilisés dans la définition de ces six facteurs. Dans l’article, les auteurs ont décidé d’inclure ces 22 items dans l’analyse de regroupements. Pour notre part et afin de simplifier l’exemple, nous allons plutôt créer six nouvelles échelles en faisant la moyenne des items de chaque facteur ci-haut et utiliser seulement ces six échelles dans l’analyse de regroupements. Les valeurs de ces six variables pour les 150 sujets se trouvent dans le fichier `cluster1a.sas7bdat` et sont toutes dans l'intervalle $[1,5]$, puisqu'elles représentent la moyenne d'échelles de Likert.
 
-```{r fig4_e1, echo = FALSE, out.width='60%', fig.align = "center"}
+```{r fig4-e1, echo = FALSE, out.width='60%', fig.align = "center"}
 knitr::include_graphics("figures/04-clustering-e1.png")
 ```
 
@@ -82,7 +83,7 @@ Cette méthode est basée sur un critère d’homogénéité global des groupes.
 
 Plus précisément, supposons qu’à une étape du processus hiérarchique, nous avons $M$ groupes et que nous voulons passer à $M-1$ groupes. Pour un groupe $k$ (parmi $1, 2, \ldots, M$), définissons la somme des carrés des distances par rapport à la moyenne du groupe, $\mathsf{SCD}_k$. Plus $\mathsf{SCD}_k$ est petite, plus le groupe est compact et homogène.
 
-On peut calculer cette distance pour tous les $M$ groups et définir l'**homogénéité globale** comme la somme de l'homogénéité de tous les groupes,
+On peut calculer cette distance pour tous les $M$ groupes et définir l'**homogénéité globale** comme la somme de l'homogénéité de tous les groupes,
 \begin{align*}
 \mathsf{SCD}_G = \mathsf{SCD}_1 + \cdots + \mathsf{SCD}_M.
 \end{align*}
@@ -96,7 +97,9 @@ cluster1a <- haven::read_sas(url)
 attach(cluster1a)
 par(mar = c(4,4,1,2))
 plot(y = x1, x = x2, col = cluster_vrai, pch = 14 + cluster_vrai, 
-     bty = "l", xlab = expression(x[2]), ylab = expression(x[1]))
+     bty = "l", xlab = expression(x[2]), 
+     ylab = expression(x[1]), 
+     xlim = c(1,5.4))
 text(x2, x1, 1:nrow(cluster1a), pos = 4)
 detach(cluster1a)
 ```
@@ -105,18 +108,18 @@ Comme souvent, les données ont été simulées et le nombre de regroupements es
 
 La première analyse utilise la méthode de Ward. Les commandes **SAS** se trouvent dans `cluster1_simplifie.sas`; la présentation de la procédure et de la syntaxe est différée. L’historique de regroupement est décrit dans la sortie **SAS**. La première colonne donne le nombre de groupes. Au départ, les observations 16 et 19 sont regroupées, il y a maintenant 19 groupes. Ensuite, les observations 11 et 13 sont regroupées, il y a maintenant 18 groupes. Au moment de passer de 14 à 13 groupes, c’est le groupe formé à l’étape 16 qui est fusionné avec l’observation 2 et ainsi de suite. La colonne `Fréq` donne le nombre d’observations dans le groupe qui vient d’être formé.
 
-```{r fig4_e3, echo = FALSE, out.width='80%', fig.align = "center"}
+```{r fig4-e3, echo = FALSE, out.width='80%', fig.align = "center"}
 knitr::include_graphics("figures/04-clustering-e3.png")
 ```
 
 Les quantités `sprsq` et `rsq` sont des statistiques qui peuvent servir de guide pour choisir le nombre de groupes. Le $\mathsf{RSQ}$ est une mesure similaire au $R^2$ régression linéaire qui mesure globalement à quel point les groupes sont homogènes.  Elle prend une valeur entre 0 et 1 où 0 et plus le $\mathsf{RSQ}$ est élevé, meilleur le regroupement.
 On définit le $\mathsf{RSQ}$ comme la proportion de la variabilité expliquée par les groupes. C'est une version standardisée de la somme des homogénéités, $\mathsf{SCD}_G$, 
 \begin{align*}
-\mathsf{RSQ} = \frac{\mathsf{SCD}_G}{\mathsf{SCD}_T},
+\mathsf{RSQ} = 1-\frac{\mathsf{SCD}_G}{\mathsf{SCD}_T},
 \end{align*}
- où $\mathsf{SCD}_T$ est la somme des carrés des distances par rapport à la moyenne lorsque toutes les observations sont dans un même groupe. Le graphique \@ref(fig:fig4_e4) montre l'évolution du $\mathsf{RSQ}$ en fonction du nombre de groupes. 
+ où $\mathsf{SCD}_T$ est la somme des carrés des distances par rapport à la moyenne lorsque toutes les observations sont dans un même groupe. Le graphique \@ref(fig:fig4-e4) montre l'évolution du $\mathsf{RSQ}$ en fonction du nombre de groupes. 
 
-```{r fig4_e4, echo = FALSE, out.width='80%', fig.align = "center"}
+```{r fig4-e4, echo = FALSE, out.width='80%', fig.align = "center", fig.cap = "R carré en fonction du nombre de groupes"}
 knitr::include_graphics("figures/04-clustering-e4.png")
 ```
 
@@ -128,9 +131,9 @@ On définit la perte d’homogénéité (relative) en combinant ces deux groupes
 \begin{align*}
 \mathsf{SPRSQ} = \frac{\mathsf{SCD}_k - \mathsf{SCD}_{k_1} - \mathsf{SCD}_{k_2}}{\mathsf{SCD}_T}
 \end{align*}
-On peut ainsi tracer une courbe pour le $\mathsf{SPRSQ}$ en fonction du nombre de groupes, comme dans le graphique \@ref(fig:fig4_e5). 
+On peut ainsi tracer une courbe pour le $\mathsf{SPRSQ}$ en fonction du nombre de groupes, comme dans le graphique \@ref(fig:fig4-e5). 
 
-```{r fig4_e5, echo = FALSE, out.width='80%', fig.align = "center"}
+```{r fig4-e5, echo = FALSE, out.width='80%', fig.align = "center", fig.cap = "Courbe du $R^2$ semi-partiel en fonction des groupements hiérarchiques"}
 knitr::include_graphics("figures/04-clustering-e5.png")
 ```
 
@@ -145,17 +148,17 @@ run;
 ```
 
 
-On peut représenter graphique le R carré (Figure \@ref(fig:fig4_e7)), le Rcarré semi partiel (Figure \@ref(fig:fig4_e8)) et le critère de classification cubique (Figure \@ref(fig:fig4_e9)) en fonction du nombre de groupes. Ce derniers est plus technique mais son interprétation est simple, plus sa valeur est élevée, mieux c’est. Par contre, il peut avoir plusieurs maximums locaux et, de ce fait, ce n’est donc pas toujours évident de choisir le nombre de groupes avec ce critère. Il semble encore une fois que choisir trois groupes semble raisonnable.
+On peut représenter graphique le R carré (Figure \@ref(fig:fig4-e7)), le Rcarré semi partiel (Figure \@ref(fig:fig4-e8)) et le critère de classification cubique (Figure \@ref(fig:fig4-e9)) en fonction du nombre de groupes. Ce derniers est plus technique mais son interprétation est simple, plus sa valeur est élevée, mieux c’est. Par contre, il peut avoir plusieurs maximums locaux et, de ce fait, ce n’est donc pas toujours évident de choisir le nombre de groupes avec ce critère. Il semble encore une fois que choisir trois groupes semble raisonnable.
 
-```{r fig4_e7, echo = FALSE, out.width='80%', fig.align = "center"}
+```{r fig4-e7, echo = FALSE, out.width='80%', fig.align = "center", fig.cap = "R carré en fonction des regroupements hiérarchiques"}
 knitr::include_graphics("figures/04-clustering-e8.png")
 ```
 
-```{r fig4_e8, echo = FALSE, out.width='80%', fig.align = "center"}
+```{r fig4-e8, echo = FALSE, out.width='80%', fig.align = "center", fig.cap = "R carré semi-partiel en fonction des regroupements hiérarchiques"}
 knitr::include_graphics("figures/04-clustering-e9.png")
 ```
 
-```{r fig4_e9, echo = FALSE, out.width='80%', fig.align = "center"}
+```{r fig4-e9, echo = FALSE, out.width='80%', fig.align = "center",fig.cap = "Critère de classification cubique en fonction des regroupements hiérarchiques"}
 knitr::include_graphics("figures/04-clustering-e10.png")
 ```
 
@@ -166,15 +169,15 @@ En pratique, on ne peut jamais savoir si on a bel et bien regroupé ensemble les
 **Interprétation des groupes**: la méthode la plus simple consiste à inspecter les moyennes des variables de chaque groupe et de voir s’il en découle une interprétation raisonnable. La procédure `tree` permet d’extraire la solution avec un nombre spécifié de groupes et il est ensuite facile (avec la procédure `means`) d’obtenir ces moyennes (voir le fichier `cluster2_complet.sas`).
 
 
-```{r fig4_e11, echo = FALSE, out.width='55%', fig.align = "center"}
+```{r fig4-e11, echo = FALSE, out.width='55%', fig.align = "center"}
 knitr::include_graphics("figures/04-clustering-e11.png")
 ```
 
-```{r fig4_e12, echo = FALSE, out.width='55%', fig.align = "center"}
+```{r fig4-e12, echo = FALSE, out.width='55%', fig.align = "center"}
 knitr::include_graphics("figures/04-clustering-e12.png")
 ```
 
-```{r fig4_e13, echo = FALSE, out.width='55%', fig.align = "center"}
+```{r fig4-e13, echo = FALSE, out.width='55%', fig.align = "center"}
 knitr::include_graphics("figures/04-clustering-e13.png")
 ```
 
@@ -188,7 +191,7 @@ Dans l’article, les auteurs ont baptisé les sujets du groupe 1, les « indép
 
 Contrairement aux méthodes hiérarchiques, il faut spécifier le nombre de groupe désiré dès le départ pour les méthodes non hiérarchiques. La méthode des $k$ moyennes ($k$ *means*) sera la seule décrite ici. Cette méthode utilise la distance euclidienne et est donc seulement applicable avec des variables quantitatives. Supposons que l’on veuille $k$ groupes. La méthode des $k$ moyennes peut être décrite en trois étapes :
 
-1) On sélectionne $k$ germes (« seeds ») qui vont agir comme centres préliminaires des groupes.
+1) On sélectionne $k$ germes (*seeds*) qui vont agir comme centres préliminaires des groupes.
     i) Ces germes peuvent être les centres des groupes obtenus à partir d’une autre méthode comme une méthode hiérarchique.
     ii) Ces germes peuvent être choisis à même l’ensemble de données. Par exemple, on peut choisir $k$ sujets au hasard.
 2) On assigne dans l’ordre les observations au groupe le plus proche (distance euclidienne par rapport au germe). Soit on assigne toutes les observations avant de mettre à jour les germes, soit on met à jour les germes après chaque assignation d’un sujet. Le nouveau germe d’un groupe est la moyenne des observations faisant partie du groupe.
@@ -205,17 +208,17 @@ run;
 Voici une partie de la sortie **SAS**:
 
 
-```{r fig4_e14, echo = FALSE, out.width='70%', fig.align = "center"}
+```{r fig4-e14, echo = FALSE, out.width='70%', fig.align = "center"}
 knitr::include_graphics("figures/04-clustering-e14.png")
 ```
 
 
-```{r fig4_e15, echo = FALSE, out.width='90%', fig.align = "center"}
+```{r fig4-e15, echo = FALSE, out.width='90%', fig.align = "center"}
 knitr::include_graphics("figures/04-clustering-e15.png")
 ```
 
 
-```{r fig4_e16, echo = FALSE, out.width='50%', fig.align = "center"}
+```{r fig4-e16, echo = FALSE, out.width='50%', fig.align = "center"}
 knitr::include_graphics("figures/04-clustering-e16.png")
 ```
 
@@ -225,7 +228,7 @@ knitr::include_graphics("figures/04-clustering-e16.png")
 L’interprétation des groupes est la même que précédemment.
 
 
-```{r fig4_e17, echo = FALSE, out.width='70%', fig.align = "center"}
+```{r fig4-e17, echo = FALSE, out.width='70%', fig.align = "center"}
 knitr::include_graphics("figures/04-clustering-e17.png")
 ```
 
@@ -290,7 +293,7 @@ et ainsi de suite. Les contraintes sont nécessaires afin de standardiser le pro
 On espère donc en général qu’un petit nombre de composantes principales réussira à expliquer la plus grande partie de la variance totale. On pourra alors se servir de ces dernières dans d’autres analyses mais ici, on va seulement s’en servir comme outil graphique préalable à une analyse de regroupements.
 
 
-```{r fig4_e18, echo = FALSE, out.width='80%', fig.align = "center"}
+```{r fig4-e18, echo = FALSE, out.width='80%', fig.align = "center"}
 knitr::include_graphics("figures/04-clustering-e18.png")
 ```
 
@@ -298,9 +301,9 @@ knitr::include_graphics("figures/04-clustering-e18.png")
 Cette étape est généralement effectuée avant l’analyse de regroupement.
 Le fichier `cluster5_acp.sas` contient les commandes pour faire une analyse en composantes principales et sauvegarder les composantes principales afin d’en faire des graphiques. La sortie inclut une mesure de la variance cumulée des $k$ premières valeurs propres. La colonne `Proportion` donne la proportion de la variance totale qui est expliquée par la composante correspondante. La colonne `Cumulé` donne le cumul de variance totale expliquée par les composantes jusque là. Ainsi, les deux premières composantes principales reproduisent 76,7\% de la variance totale originale.
 
-Même en ne connaissant pas l'appartenance des observations au regroupement, on distingue assez clairement trois groupes. Le panneau droit du graphique \@ref(fig:04_acp) montre les deux composantes principales, mais avec l’identification des vrais groupes (qu'on ne connaîtra pas en pratique).
+Même en ne connaissant pas l'appartenance des observations au regroupement, on distingue assez clairement trois groupes. Le panneau droit du graphique \@ref(fig:04-acp) montre les deux composantes principales, mais avec l’identification des vrais groupes (qu'on ne connaîtra pas en pratique).
 
-```{r 04_acp, eval = TRUE, echo = FALSE, out.width='90%', fig.align = "center"}
+```{r 04-acp, eval = TRUE, echo = FALSE, out.width='90%', fig.align = "center", fig.cap = "Projection des observations sur les composantes principales avec la vraie identité des groupes"}
 url <- "https://lbelzile.bitbucket.io/MATH60602/cluster1.sas7bdat"
 cluster1 <- haven::read_sas(url)
 par(mar = c(4,4,1,1), mfrow = c(1,2))
@@ -325,7 +328,7 @@ plot(princomp(cluster1)$scores[,1:2],
 Nous avons utilisé la méthode de Ward afin de calculer la distance entre les groupes et procéder au passage de $n$  groupes à un groupe, avec l’approche hiérarchique. Supposons que nous avons choisi une mesure de dissemblance $d(S_i, S_j)$  quelconque (distance euclidienne par exemple) pour mesurer la distance entre deux sujets. D'autres méthodes sont disponibles dans la procédure `cluster`, et les regroupements utilisent 
 Voici comment sont choisis les regroupements avec ces méthodes.
 
-- Méthode du plus proche voisin ou méthode de liaison simple (*nearest neighbor*, _single linkage*): utilise la distance minimale entre chaque paire de sujets (un pour chaque groupe) provenant des deux groupes.
+- Méthode du plus proche voisin ou méthode de liaison simple (*nearest neighbor*, *single linkage*): utilise la distance minimale entre chaque paire de sujets (un pour chaque groupe) provenant des deux groupes.
 - Méthode du voisin le plus éloigné ou méthode de liaison complète (*complete linkage*): utilise la distance maximale entre toutes les paires de sujets (un pour chaque groupe) provenant des deux groupes.
 - Méthode de liaison moyenne (*average linkage*): utilise la moyenne des distances entre toutes les paires de sujets (un pour chaque groupe) provenant des deux groupes.
 - Méthode du barycentre (*centroid*): utilise la distance entre les représentants moyens de chaque groupe où le représentant moyen d’un groupe est le barycentre, soit la moyenne variable par variable, des sujets formant le groupe. 
@@ -334,16 +337,20 @@ Voici comment sont choisis les regroupements avec ces méthodes.
 Le fichier `cluster6_voisin_eloigne.sas` contient les commandes pour utiliser la méthode du voisin le plus éloigné (avec l’option `method=complete`). Le graphe plus bas donne cette distance pour les deux groupes qui viennent d’être fusionnés. Il s’agit donc du maximum des distances entre chaque paire de sujets (un pour chaque groupe) provenant des deux groupes fusionnés.
 
 
-```{r fig4_e19, echo = FALSE, out.width='80%', fig.align = "center"}
-knitr::include_graphics("figures/04-clustering-e19.png")
+```{r fig4-e21, echo = FALSE, out.width='80%', fig.align = "center", fig.cap = "Distance maximale entre groupes en fonction des regroupements hiérarchiques pour la méthode du voisin le plus éloigné."}
+knitr::include_graphics("figures/04-clustering-e21.png")
 ```
 
 
-Comme on veut que cette distance soit petite pour les groupes fusionnés, on pourrait être tenté d’arrêter à trois groupes ici sur la base de la Figure \@ref(fig:fig4_e19). L’interprétation des groupes ne change pas comparativement aux analyses précédentes. La taille des groupes, (44, 71, 35) change un peu par rapport à la solution avec la méthode de Ward qui donnait des tailles de (43, 75, 32). En fait, avec la méthode du voisin le plus éloigné, 141 des 150 sujets sont dans le bon groupe (comparativement à 146 avec la méthode de Ward). Elle fait donc un peu moins bien pour cet exemple. 
+Comme on veut que cette distance soit petite pour les groupes fusionnés, on pourrait être tenté d’arrêter à trois groupes ici sur la base de la Figure \@ref(fig:fig4-e20). L’interprétation des groupes ne change pas comparativement aux analyses précédentes. La taille des groupes, (44, 71, 35) change un peu par rapport à la solution avec la méthode de Ward qui donnait des tailles de (43, 75, 32). En fait, avec la méthode du voisin le plus éloigné, 141 des 150 sujets sont dans le bon groupe (comparativement à 146 avec la méthode de Ward). Elle fait donc un peu moins bien pour cet exemple. 
 
 
 
 On peut comparer les performances des regroupements hiérarchiques selon la méthode de groupement. La [page web de scikit-learn developers](https://scikit-learn.org/stable/auto_examples/cluster/plot_linkage_comparison.html) montre la performance sur des exemples jouets, qui montre que selon les hypothèses et la structure, aucune ne performe mieux que les autres dans tous les exemples.
+
+```{r fig4-e20, echo = FALSE, out.width='80%', fig.align = "center", fig.cap = "Comparaison des méthodes de groupement sur des données test."}
+knitr::include_graphics("figures/04-clustering-e20.png")
+```
 
 ##  Autres mesures de dissemblance
 

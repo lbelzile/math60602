@@ -153,6 +153,7 @@
 <li class="chapter" data-level="5" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html"><i class="fa fa-check"></i><b>5</b> Analyse de regroupements</a><ul>
 <li class="chapter" data-level="5.1" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#introduction-4"><i class="fa fa-check"></i><b>5.1</b> Introduction</a><ul>
 <li class="chapter" data-level="5.1.1" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#mesures-de-dissemblance"><i class="fa fa-check"></i><b>5.1.1</b> Mesures de dissemblance</a></li>
+<li class="chapter" data-level="5.1.2" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#méthodes-hiérarchiques-et-non-hiérarchiques"><i class="fa fa-check"></i><b>5.1.2</b> Méthodes hiérarchiques et non hiérarchiques</a></li>
 </ul></li>
 <li class="chapter" data-level="5.2" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#segmentation-de-seniors-en-voyage-organisé"><i class="fa fa-check"></i><b>5.2</b> Segmentation de seniors en voyage organisé</a></li>
 <li class="chapter" data-level="5.3" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#méthodes-hiérarchiques"><i class="fa fa-check"></i><b>5.3</b> Méthodes hiérarchiques</a><ul>
@@ -218,8 +219,10 @@ Nous disposons des observations pour <span class="math inline">\(n\)</span> indi
 d(S_i, S_j) = \sqrt{(X_{i1}-X_{j1})^2 + \cdots + (X_{ip}-X_{jp})^2}.
 \end{align*}\]</span></p>
 <p>La distance euclidienne est tout simplement la longueur du segment qui relie les deux points dans l’espace.</p>
-<p>Nous verrons plus tard d’autres mesures de dissemblances incluant des mesures qui peuvent être utilisées avec des variables binaires, nominales et ordinales.
-### Méthodes hiérarchiques et non hiérarchiques</p>
+<p>Nous verrons plus tard d’autres mesures de dissemblances incluant des mesures qui peuvent être utilisées avec des variables binaires, nominales et ordinales.</p>
+</div>
+<div id="méthodes-hiérarchiques-et-non-hiérarchiques" class="section level3">
+<h3><span class="header-section-number">5.1.2</span> Méthodes hiérarchiques et non hiérarchiques</h3>
 <p>Les <strong>méthodes hiérarchiques</strong> assignent les individus aux groupes à l’aide d’un algorithme glouton en partant du cas à <span class="math inline">\(n\)</span> groupes où chaque sujet est un groupe à part entière. La distance entre chaque paire de groupe est calculée. Les deux groupes ayant la distance la plus petite sont regroupés pour ne laisser que <span class="math inline">\(n-1\)</span> groupes. La distance entre chaque paire de groupe est à nouveau calculée (pour les groupes). Les deux groupes ayant la distance la plus petite sont regroupés pour ne former qu’un seul groupe et ainsi de suite. Le processus se continue ainsi jusqu’à ce que tous les sujets soient regroupés en un seul groupe.</p>
 <p>Avec une méthode hiérarchique, on n’a pas besoin de spécifier le nombre de groupes à priori. Cependant, une fois qu’un sujet est assigné à un groupe, il ne peut le quitter pour être réassigné à un autre groupe plus tard. Ce qui différencie les différentes méthodes hiérarchiques est la manière dont est calculée la distance entre deux groupes.</p>
 <p>Pour les <strong>méthodes non hiérarchiques</strong>, le nombre de groupe est spécifié au départ et un algorithme cherche, à partir d’une solution initiale, la meilleure distribution des sujets à travers ce nombre de groupe d’une manière itérative. Avec ces méthodes, l’assignation d’un sujet peut être modifiée d’une itération à l’autre. Il faut cependant spécifier le nombre de groupe et les « centres » de ces groupes au départ. La solution peut être très sensible au choix des centres initiaux.</p>
@@ -258,7 +261,7 @@ d(S_i, S_j) = \sqrt{(X_{i1}-X_{j1})^2 + \cdots + (X_{ip}-X_{jp})^2}.
 <h3><span class="header-section-number">5.3.1</span> Méthode de Ward</h3>
 <p>Cette méthode est basée sur un critère d’homogénéité global des groupes. Pour un groupe donné, cette homogénéité est mesurée par la somme des carrés des observations par rapport à la moyenne du groupe. L’homogénéité globale est alors la somme des homogénéités de tous les groupes. Plus l’homogénéité globale est petite, plus les groupes sont homogènes. À une étape donnée, les deux groupes qui causent la plus petite hausse de l’homogénéité globale (la plus petite perte d’information) sont regroupés. La méthode de Ward donne des groupes compacts d’apparence sphérique.</p>
 <p>Plus précisément, supposons qu’à une étape du processus hiérarchique, nous avons <span class="math inline">\(M\)</span> groupes et que nous voulons passer à <span class="math inline">\(M-1\)</span> groupes. Pour un groupe <span class="math inline">\(k\)</span> (parmi <span class="math inline">\(1, 2, \ldots, M\)</span>), définissons la somme des carrés des distances par rapport à la moyenne du groupe, <span class="math inline">\(\mathsf{SCD}_k\)</span>. Plus <span class="math inline">\(\mathsf{SCD}_k\)</span> est petite, plus le groupe est compact et homogène.</p>
-<p>On peut calculer cette distance pour tous les <span class="math inline">\(M\)</span> groups et définir l’<strong>homogénéité globale</strong> comme la somme de l’homogénéité de tous les groupes,
+<p>On peut calculer cette distance pour tous les <span class="math inline">\(M\)</span> groupes et définir l’<strong>homogénéité globale</strong> comme la somme de l’homogénéité de tous les groupes,
 <span class="math display">\[\begin{align*}
 \mathsf{SCD}_G = \mathsf{SCD}_1 + \cdots + \mathsf{SCD}_M.
 \end{align*}\]</span>
@@ -271,10 +274,15 @@ Plus l’homogénéité globale <span class="math inline">\(\mathsf{SCD}_G\)</sp
 <p>Les quantités <code>sprsq</code> et <code>rsq</code> sont des statistiques qui peuvent servir de guide pour choisir le nombre de groupes. Le <span class="math inline">\(\mathsf{RSQ}\)</span> est une mesure similaire au <span class="math inline">\(R^2\)</span> régression linéaire qui mesure globalement à quel point les groupes sont homogènes. Elle prend une valeur entre 0 et 1 où 0 et plus le <span class="math inline">\(\mathsf{RSQ}\)</span> est élevé, meilleur le regroupement.
 On définit le <span class="math inline">\(\mathsf{RSQ}\)</span> comme la proportion de la variabilité expliquée par les groupes. C’est une version standardisée de la somme des homogénéités, <span class="math inline">\(\mathsf{SCD}_G\)</span>,
 <span class="math display">\[\begin{align*}
-\mathsf{RSQ} = \frac{\mathsf{SCD}_G}{\mathsf{SCD}_T},
+\mathsf{RSQ} = 1-\frac{\mathsf{SCD}_G}{\mathsf{SCD}_T},
 \end{align*}\]</span>
-où <span class="math inline">\(\mathsf{SCD}_T\)</span> est la somme des carrés des distances par rapport à la moyenne lorsque toutes les observations sont dans un même groupe. Le graphique @ref(fig:fig4_e4) montre l’évolution du <span class="math inline">\(\mathsf{RSQ}\)</span> en fonction du nombre de groupes.</p>
-<p><img src="figures/04-clustering-e4.png" width="80%" style="display: block; margin: auto;" /></p>
+où <span class="math inline">\(\mathsf{SCD}_T\)</span> est la somme des carrés des distances par rapport à la moyenne lorsque toutes les observations sont dans un même groupe. Le graphique <a href="analyse-de-regroupements-1.html#fig:fig4-e4">5.1</a> montre l’évolution du <span class="math inline">\(\mathsf{RSQ}\)</span> en fonction du nombre de groupes.</p>
+<div class="figure" style="text-align: center"><span id="fig:fig4-e4"></span>
+<img src="figures/04-clustering-e4.png" alt="R carré en fonction du nombre de groupes" width="80%" />
+<p class="caption">
+Figure 5.1: R carré en fonction du nombre de groupes
+</p>
+</div>
 <p>L’idée est généralement de choisir un petit nombre de groupe avec un <span class="math inline">\(\mathsf{RSQ}\)</span> assez élevé.
 Ici, on voit que le <span class="math inline">\(\mathsf{RSQ}\)</span> chute brutalement en passant de trois à deux groupes (il passe de 78,2% de variabilité expliquée à 48,6%). Ainsi, choisir trois groupes semble raisonnable.</p>
 <p>L’autre mesure, le <span class="math inline">\(\mathsf{SPRSQ}\)</span> ou <span class="math inline">\(R\)</span> carré semi-partiel, mesure la perte d’homogénéité résultant du fait que l’on vient de former un nouveau groupe. Comme on veut des groupes homogènes, on veut qu’elle soit petite. Plus précisément, supposons que les groupes <span class="math inline">\(k_1\)</span> et <span class="math inline">\(k_2\)</span> viennent d’être regroupés à une étape donnée. Soient <span class="math inline">\(\mathsf{SCD}_{k_1}\)</span> et <span class="math inline">\(\mathsf{SCD}_{k_2}\)</span> les homogénéités de ces deux groupes et <span class="math inline">\(\mathsf{SCD}_{k}\)</span> l’homogénéité du nouveau groupe formé en fusionnant les deux.
@@ -282,18 +290,38 @@ On définit la perte d’homogénéité (relative) en combinant ces deux groupes
 <span class="math display">\[\begin{align*}
 \mathsf{SPRSQ} = \frac{\mathsf{SCD}_k - \mathsf{SCD}_{k_1} - \mathsf{SCD}_{k_2}}{\mathsf{SCD}_T}
 \end{align*}\]</span>
-On peut ainsi tracer une courbe pour le <span class="math inline">\(\mathsf{SPRSQ}\)</span> en fonction du nombre de groupes, comme dans le graphique @ref(fig:fig4_e5).</p>
-<p><img src="figures/04-clustering-e5.png" width="80%" style="display: block; margin: auto;" /></p>
+On peut ainsi tracer une courbe pour le <span class="math inline">\(\mathsf{SPRSQ}\)</span> en fonction du nombre de groupes, comme dans le graphique <a href="analyse-de-regroupements-1.html#fig:fig4-e5">5.2</a>.</p>
+<div class="figure" style="text-align: center"><span id="fig:fig4-e5"></span>
+<img src="figures/04-clustering-e5.png" alt="Courbe du $R^2$ semi-partiel en fonction des groupements hiérarchiques" width="80%" />
+<p class="caption">
+Figure 5.2: Courbe du <span class="math inline">\(R^2\)</span> semi-partiel en fonction des groupements hiérarchiques
+</p>
+</div>
 <p>La procédure <strong>SAS</strong> qui permet d’effectuer une analyse de regroupements hiérarchique est <code>cluster</code>. Le fichier <code>cluster2_complet.sas</code> explique les différentes options disponibles.</p>
 <pre class="sas"><code>proc cluster data=temp method=ward outtree=temp1 nonorm rsquare ccc;
 var x1-x6;
 copy id cluster_vrai x1-x6;
 ods output stat.cluster.ClusterHistory=criteres;
 run;</code></pre>
-<p>On peut représenter graphique le R carré (Figure @ref(fig:fig4_e7)), le Rcarré semi partiel (Figure @ref(fig:fig4_e8)) et le critère de classification cubique (Figure @ref(fig:fig4_e9)) en fonction du nombre de groupes. Ce derniers est plus technique mais son interprétation est simple, plus sa valeur est élevée, mieux c’est. Par contre, il peut avoir plusieurs maximums locaux et, de ce fait, ce n’est donc pas toujours évident de choisir le nombre de groupes avec ce critère. Il semble encore une fois que choisir trois groupes semble raisonnable.</p>
-<p><img src="figures/04-clustering-e8.png" width="80%" style="display: block; margin: auto;" /></p>
-<p><img src="figures/04-clustering-e9.png" width="80%" style="display: block; margin: auto;" /></p>
-<p><img src="figures/04-clustering-e10.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>On peut représenter graphique le R carré (Figure <a href="analyse-de-regroupements-1.html#fig:fig4-e7">5.3</a>), le Rcarré semi partiel (Figure <a href="analyse-de-regroupements-1.html#fig:fig4-e8">5.4</a>) et le critère de classification cubique (Figure <a href="analyse-de-regroupements-1.html#fig:fig4-e9">5.5</a>) en fonction du nombre de groupes. Ce derniers est plus technique mais son interprétation est simple, plus sa valeur est élevée, mieux c’est. Par contre, il peut avoir plusieurs maximums locaux et, de ce fait, ce n’est donc pas toujours évident de choisir le nombre de groupes avec ce critère. Il semble encore une fois que choisir trois groupes semble raisonnable.</p>
+<div class="figure" style="text-align: center"><span id="fig:fig4-e7"></span>
+<img src="figures/04-clustering-e8.png" alt="R carré en fonction des regroupements hiérarchiques" width="80%" />
+<p class="caption">
+Figure 5.3: R carré en fonction des regroupements hiérarchiques
+</p>
+</div>
+<div class="figure" style="text-align: center"><span id="fig:fig4-e8"></span>
+<img src="figures/04-clustering-e9.png" alt="R carré semi-partiel en fonction des regroupements hiérarchiques" width="80%" />
+<p class="caption">
+Figure 5.4: R carré semi-partiel en fonction des regroupements hiérarchiques
+</p>
+</div>
+<div class="figure" style="text-align: center"><span id="fig:fig4-e9"></span>
+<img src="figures/04-clustering-e10.png" alt="Critère de classification cubique en fonction des regroupements hiérarchiques" width="80%" />
+<p class="caption">
+Figure 5.5: Critère de classification cubique en fonction des regroupements hiérarchiques
+</p>
+</div>
 <p>Parfois, l’information est présentée sous forme de dendogramme, qui trace l’arbre et la fusion des groupes. On peut ainsi retracer l’historique de la procédure hiérarchique. Celui produit par <strong>SAS</strong> donne, à un facteur multiplicatif près, le <span class="math inline">\(\mathsf{SPRSQ}\)</span>. Il n’y a donc pas de nouvelles informations ici. On voit que c’est lorsqu’on passe de trois à deux groupes, qu’il y a une bonne perte d’homogénéité.</p>
 <p>En pratique, on ne peut jamais savoir si on a bel et bien regroupé ensemble les bons sujets. Mais ici, comme il s’agit de données artificielles qui ont été générées, nous connaissons la composition des vrais groupes. Il s’avère qu’il y en a effectivement trois. De plus, la solution à trois groupes obtenue avec la méthode de Ward a bien réussi à retrouver les groupes car il y a 146 sujets sur 150 (97,3%) qui sont bien regroupés, et quatre qui font partie d’un mauvais groupe. Ceci est un exemple facile où les observations sont bien séparées. Ce n’est pas toujours aussi simple en pratique.</p>
 <p><strong>Interprétation des groupes</strong>: la méthode la plus simple consiste à inspecter les moyennes des variables de chaque groupe et de voir s’il en découle une interprétation raisonnable. La procédure <code>tree</code> permet d’extraire la solution avec un nombre spécifié de groupes et il est ensuite facile (avec la procédure <code>means</code>) d’obtenir ces moyennes (voir le fichier <code>cluster2_complet.sas</code>).</p>
@@ -308,7 +336,7 @@ run;</code></pre>
 <h2><span class="header-section-number">5.4</span> Méthodes non hiérarchiques</h2>
 <p>Contrairement aux méthodes hiérarchiques, il faut spécifier le nombre de groupe désiré dès le départ pour les méthodes non hiérarchiques. La méthode des <span class="math inline">\(k\)</span> moyennes (<span class="math inline">\(k\)</span> <em>means</em>) sera la seule décrite ici. Cette méthode utilise la distance euclidienne et est donc seulement applicable avec des variables quantitatives. Supposons que l’on veuille <span class="math inline">\(k\)</span> groupes. La méthode des <span class="math inline">\(k\)</span> moyennes peut être décrite en trois étapes :</p>
 <ol style="list-style-type: decimal">
-<li>On sélectionne <span class="math inline">\(k\)</span> germes (« seeds ») qui vont agir comme centres préliminaires des groupes.
+<li>On sélectionne <span class="math inline">\(k\)</span> germes (<em>seeds</em>) qui vont agir comme centres préliminaires des groupes.
 <ol style="list-style-type: lower-roman">
 <li>Ces germes peuvent être les centres des groupes obtenus à partir d’une autre méthode comme une méthode hiérarchique.</li>
 <li>Ces germes peuvent être choisis à même l’ensemble de données. Par exemple, on peut choisir <span class="math inline">\(k\)</span> sujets au hasard.</li>
@@ -368,8 +396,13 @@ de telle sorte que</p>
 <p><img src="figures/04-clustering-e18.png" width="80%" style="display: block; margin: auto;" /></p>
 <p>Cette étape est généralement effectuée avant l’analyse de regroupement.
 Le fichier <code>cluster5_acp.sas</code> contient les commandes pour faire une analyse en composantes principales et sauvegarder les composantes principales afin d’en faire des graphiques. La sortie inclut une mesure de la variance cumulée des <span class="math inline">\(k\)</span> premières valeurs propres. La colonne <code>Proportion</code> donne la proportion de la variance totale qui est expliquée par la composante correspondante. La colonne <code>Cumulé</code> donne le cumul de variance totale expliquée par les composantes jusque là. Ainsi, les deux premières composantes principales reproduisent 76,7% de la variance totale originale.</p>
-<p>Même en ne connaissant pas l’appartenance des observations au regroupement, on distingue assez clairement trois groupes. Le panneau droit du graphique @ref(fig:04_acp) montre les deux composantes principales, mais avec l’identification des vrais groupes (qu’on ne connaîtra pas en pratique).</p>
-<p><img src="MATH60602_files/figure-html/04_acp-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>Même en ne connaissant pas l’appartenance des observations au regroupement, on distingue assez clairement trois groupes. Le panneau droit du graphique <a href="analyse-de-regroupements-1.html#fig:04-acp">5.6</a> montre les deux composantes principales, mais avec l’identification des vrais groupes (qu’on ne connaîtra pas en pratique).</p>
+<div class="figure" style="text-align: center"><span id="fig:04-acp"></span>
+<img src="MATH60602_files/figure-html/04-acp-1.png" alt="Projection des observations sur les composantes principales avec la vraie identité des groupes" width="90%" />
+<p class="caption">
+Figure 5.6: Projection des observations sur les composantes principales avec la vraie identité des groupes
+</p>
+</div>
 </div>
 </div>
 <div id="calcul-alternatif-des-distances-pour-le-regroupement-hiérarchique" class="section level2">
@@ -377,15 +410,26 @@ Le fichier <code>cluster5_acp.sas</code> contient les commandes pour faire une a
 <p>Nous avons utilisé la méthode de Ward afin de calculer la distance entre les groupes et procéder au passage de <span class="math inline">\(n\)</span> groupes à un groupe, avec l’approche hiérarchique. Supposons que nous avons choisi une mesure de dissemblance <span class="math inline">\(d(S_i, S_j)\)</span> quelconque (distance euclidienne par exemple) pour mesurer la distance entre deux sujets. D’autres méthodes sont disponibles dans la procédure <code>cluster</code>, et les regroupements utilisent
 Voici comment sont choisis les regroupements avec ces méthodes.</p>
 <ul>
-<li>Méthode du plus proche voisin ou méthode de liaison simple (<em>nearest neighbor</em>, _single linkage*): utilise la distance minimale entre chaque paire de sujets (un pour chaque groupe) provenant des deux groupes.</li>
+<li>Méthode du plus proche voisin ou méthode de liaison simple (<em>nearest neighbor</em>, <em>single linkage</em>): utilise la distance minimale entre chaque paire de sujets (un pour chaque groupe) provenant des deux groupes.</li>
 <li>Méthode du voisin le plus éloigné ou méthode de liaison complète (<em>complete linkage</em>): utilise la distance maximale entre toutes les paires de sujets (un pour chaque groupe) provenant des deux groupes.</li>
 <li>Méthode de liaison moyenne (<em>average linkage</em>): utilise la moyenne des distances entre toutes les paires de sujets (un pour chaque groupe) provenant des deux groupes.</li>
 <li>Méthode du barycentre (<em>centroid</em>): utilise la distance entre les représentants moyens de chaque groupe où le représentant moyen d’un groupe est le barycentre, soit la moyenne variable par variable, des sujets formant le groupe.</li>
 </ul>
 <p>Le fichier <code>cluster6_voisin_eloigne.sas</code> contient les commandes pour utiliser la méthode du voisin le plus éloigné (avec l’option <code>method=complete</code>). Le graphe plus bas donne cette distance pour les deux groupes qui viennent d’être fusionnés. Il s’agit donc du maximum des distances entre chaque paire de sujets (un pour chaque groupe) provenant des deux groupes fusionnés.</p>
-<p><img src="figures/04-clustering-e19.png" width="80%" style="display: block; margin: auto;" /></p>
-<p>Comme on veut que cette distance soit petite pour les groupes fusionnés, on pourrait être tenté d’arrêter à trois groupes ici sur la base de la Figure @ref(fig:fig4_e19). L’interprétation des groupes ne change pas comparativement aux analyses précédentes. La taille des groupes, (44, 71, 35) change un peu par rapport à la solution avec la méthode de Ward qui donnait des tailles de (43, 75, 32). En fait, avec la méthode du voisin le plus éloigné, 141 des 150 sujets sont dans le bon groupe (comparativement à 146 avec la méthode de Ward). Elle fait donc un peu moins bien pour cet exemple.</p>
+<div class="figure" style="text-align: center"><span id="fig:fig4-e21"></span>
+<img src="figures/04-clustering-e21.png" alt="Distance maximale entre groupes en fonction des regroupements hiérarchiques pour la méthode du voisin le plus éloigné." width="80%" />
+<p class="caption">
+Figure 5.7: Distance maximale entre groupes en fonction des regroupements hiérarchiques pour la méthode du voisin le plus éloigné.
+</p>
+</div>
+<p>Comme on veut que cette distance soit petite pour les groupes fusionnés, on pourrait être tenté d’arrêter à trois groupes ici sur la base de la Figure <a href="analyse-de-regroupements-1.html#fig:fig4-e20">5.8</a>. L’interprétation des groupes ne change pas comparativement aux analyses précédentes. La taille des groupes, (44, 71, 35) change un peu par rapport à la solution avec la méthode de Ward qui donnait des tailles de (43, 75, 32). En fait, avec la méthode du voisin le plus éloigné, 141 des 150 sujets sont dans le bon groupe (comparativement à 146 avec la méthode de Ward). Elle fait donc un peu moins bien pour cet exemple.</p>
 <p>On peut comparer les performances des regroupements hiérarchiques selon la méthode de groupement. La <a href="https://scikit-learn.org/stable/auto_examples/cluster/plot_linkage_comparison.html">page web de scikit-learn developers</a> montre la performance sur des exemples jouets, qui montre que selon les hypothèses et la structure, aucune ne performe mieux que les autres dans tous les exemples.</p>
+<div class="figure" style="text-align: center"><span id="fig:fig4-e20"></span>
+<img src="figures/04-clustering-e20.png" alt="Comparaison des méthodes de groupement sur des données test." width="80%" />
+<p class="caption">
+Figure 5.8: Comparaison des méthodes de groupement sur des données test.
+</p>
+</div>
 </div>
 <div id="autres-mesures-de-dissemblance" class="section level2">
 <h2><span class="header-section-number">5.9</span> Autres mesures de dissemblance</h2>
