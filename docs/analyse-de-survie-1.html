@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapitre 6 Analyse de survie | Analyse multidimensionnelle appliquée</title>
+  <meta name="description" content="Ce recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapitre 6 Analyse de survie | Analyse multidimensionnelle appliquée" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Ce recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapitre 6 Analyse de survie | Analyse multidimensionnelle appliquée" />
+  
+  <meta name="twitter:description" content="Ce recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
+  
+
+<meta name="author" content="Denis Larocque, Léo Belzile" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="analyse-de-regroupements-1.html"/>
+<link rel="next" href="données-manquantes-1.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">MATH60602</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#survol-du-cours"><i class="fa fa-check"></i><b>1.1</b> Survol du cours</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#analyse-factorielle-exploratoire"><i class="fa fa-check"></i><b>1.1.1</b> Analyse factorielle exploratoire</a></li>
+<li class="chapter" data-level="1.1.2" data-path="index.html"><a href="index.html#sélection-de-variables-et-de-modèles"><i class="fa fa-check"></i><b>1.1.2</b> Sélection de variables et de modèles</a></li>
+<li class="chapter" data-level="1.1.3" data-path="index.html"><a href="index.html#régression-logistique"><i class="fa fa-check"></i><b>1.1.3</b> Régression logistique</a></li>
+<li class="chapter" data-level="1.1.4" data-path="index.html"><a href="index.html#analyse-de-regroupements"><i class="fa fa-check"></i><b>1.1.4</b> Analyse de regroupements</a></li>
+<li class="chapter" data-level="1.1.5" data-path="index.html"><a href="index.html#analyse-de-survie"><i class="fa fa-check"></i><b>1.1.5</b> Analyse de survie</a></li>
+<li class="chapter" data-level="1.1.6" data-path="index.html"><a href="index.html#données-manquantes"><i class="fa fa-check"></i><b>1.1.6</b> Données manquantes</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html"><i class="fa fa-check"></i><b>2</b> Analyse factorielle exploratoire</a><ul>
+<li class="chapter" data-level="2.1" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#rappels-sur-le-coefficient-de-corrélation-linéaire"><i class="fa fa-check"></i><b>2.2</b> Rappels sur le coefficient de corrélation linéaire</a></li>
+<li class="chapter" data-level="2.3" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#exemple-de-questionnaire"><i class="fa fa-check"></i><b>2.3</b> Exemple de questionnaire</a></li>
+<li class="chapter" data-level="2.4" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#description-du-modèle-danalyse-factorielle"><i class="fa fa-check"></i><b>2.4</b> Description du modèle d’analyse factorielle</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#rotation-des-facteurs"><i class="fa fa-check"></i><b>2.4.1</b> Rotation des facteurs</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#estimation-des-facteurs"><i class="fa fa-check"></i><b>2.5</b> Estimation des facteurs</a></li>
+<li class="chapter" data-level="2.6" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#choix-du-nombre-de-facteurs"><i class="fa fa-check"></i><b>2.6</b> Choix du nombre de facteurs</a></li>
+<li class="chapter" data-level="2.7" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#construction-déchelles-à-partir-des-facteurs"><i class="fa fa-check"></i><b>2.7</b> Construction d’échelles à partir des facteurs</a></li>
+<li class="chapter" data-level="2.8" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#compléments-dinformation"><i class="fa fa-check"></i><b>2.8</b> Compléments d’information</a><ul>
+<li class="chapter" data-level="2.8.1" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#variables-ordinales"><i class="fa fa-check"></i><b>2.8.1</b> Variables ordinales</a></li>
+<li class="chapter" data-level="2.8.2" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#autres-méthodes-dextractions-de-facteurs"><i class="fa fa-check"></i><b>2.8.2</b> Autres méthodes d’extractions de facteurs</a></li>
+<li class="chapter" data-level="2.8.3" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#autres-méthodes-de-rotation-des-facteurs"><i class="fa fa-check"></i><b>2.8.3</b> Autres méthodes de rotation des facteurs</a></li>
+<li class="chapter" data-level="2.8.4" data-path="analyse-factorielle-exploratoire-1.html"><a href="analyse-factorielle-exploratoire-1.html#scores-factoriels"><i class="fa fa-check"></i><b>2.8.4</b> Scores factoriels</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html"><i class="fa fa-check"></i><b>3</b> Sélection de variables et de modèles</a><ul>
+<li class="chapter" data-level="3.1" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#introduction-2"><i class="fa fa-check"></i><b>3.1</b> Introduction</a></li>
+<li class="chapter" data-level="3.2" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#sélection-de-variables-et-de-modèles-selon-les-buts-de-létude"><i class="fa fa-check"></i><b>3.2</b> Sélection de variables et de modèles selon les buts de l’étude</a></li>
+<li class="chapter" data-level="3.3" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#mieux-vaut-plus-que-moins"><i class="fa fa-check"></i><b>3.3</b> Mieux vaut plus que moins</a></li>
+<li class="chapter" data-level="3.4" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#trop-beau-pour-être-vrai"><i class="fa fa-check"></i><b>3.4</b> Trop beau pour être vrai</a></li>
+<li class="chapter" data-level="3.5" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#principes-généraux"><i class="fa fa-check"></i><b>3.5</b> Principes généraux</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#choix-dun-modèle-polynomial-en-régression-linéaire"><i class="fa fa-check"></i><b>3.5.1</b> Choix d’un modèle polynomial en régression linéaire</a></li>
+</ul></li>
+<li class="chapter" data-level="3.6" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#critères-dinformation"><i class="fa fa-check"></i><b>3.6</b> Critères d’information</a></li>
+<li class="chapter" data-level="3.7" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#division-de-léchantillon-et-validation-croisée"><i class="fa fa-check"></i><b>3.7</b> Division de l’échantillon et validation croisée</a><ul>
+<li class="chapter" data-level="3.7.1" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#division-de-léchantillon"><i class="fa fa-check"></i><b>3.7.1</b> Division de l’échantillon</a></li>
+<li class="chapter" data-level="3.7.2" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#validation-croisée"><i class="fa fa-check"></i><b>3.7.2</b> Validation croisée</a></li>
+</ul></li>
+<li class="chapter" data-level="3.8" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#cibler-les-clients-pour-lenvoi-dun-catalogue"><i class="fa fa-check"></i><b>3.8</b> Cibler les clients pour l’envoi d’un catalogue</a></li>
+<li class="chapter" data-level="3.9" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#recherche-automatique-du-meilleur-modèle"><i class="fa fa-check"></i><b>3.9</b> Recherche automatique du meilleur modèle</a></li>
+<li class="chapter" data-level="3.10" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#recherche-automatique-de-tous-les-sous-ensembles"><i class="fa fa-check"></i><b>3.10</b> Recherche automatique de tous les sous-ensembles</a></li>
+<li class="chapter" data-level="3.11" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#méthodes-classiques-de-sélection-ascendante-descendante-et-séquentielle"><i class="fa fa-check"></i><b>3.11</b> Méthodes classiques de sélection ascendante, descendante et séquentielle</a><ul>
+<li class="chapter" data-level="3.11.1" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#sélection-ascendante"><i class="fa fa-check"></i><b>3.11.1</b> Sélection ascendante</a></li>
+<li class="chapter" data-level="3.11.2" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#sélection-descendante"><i class="fa fa-check"></i><b>3.11.2</b> Sélection descendante</a></li>
+<li class="chapter" data-level="3.11.3" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#méthode-séquentielle"><i class="fa fa-check"></i><b>3.11.3</b> Méthode séquentielle</a></li>
+</ul></li>
+<li class="chapter" data-level="3.12" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#recherche-séquentielle-automatique-limitée"><i class="fa fa-check"></i><b>3.12</b> Recherche séquentielle automatique limitée</a></li>
+<li class="chapter" data-level="3.13" data-path="sélection-de-variables-et-de-modèles-1.html"><a href="sélection-de-variables-et-de-modèles-1.html#moyenne-de-modèles"><i class="fa fa-check"></i><b>3.13</b> Moyenne de modèles</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html"><i class="fa fa-check"></i><b>4</b> Régression logistique</a><ul>
+<li class="chapter" data-level="4.1" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#introduction-3"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#modèle-de-régression-logistique"><i class="fa fa-check"></i><b>4.2</b> Modèle de régression logistique</a></li>
+<li class="chapter" data-level="4.3" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#estimation-des-paramètres"><i class="fa fa-check"></i><b>4.3</b> Estimation des paramètres</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#principes-de-base"><i class="fa fa-check"></i><b>4.3.1</b> Principes de base</a></li>
+<li class="chapter" data-level="4.3.2" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#méthode-du-maximum-de-vraisemblance"><i class="fa fa-check"></i><b>4.3.2</b> Méthode du maximum de vraisemblance</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#cowboy"><i class="fa fa-check"></i><b>4.4</b> Exemple du <em>Professional Rodeo Cowboys Association</em></a><ul>
+<li class="chapter" data-level="4.4.1" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#modèle-avec-une-seule-variable-explicative"><i class="fa fa-check"></i><b>4.4.1</b> Modèle avec une seule variable explicative</a></li>
+<li class="chapter" data-level="4.4.2" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#interprétation-du-paramètre"><i class="fa fa-check"></i><b>4.4.2</b> Interprétation du paramètre</a></li>
+<li class="chapter" data-level="4.4.3" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#modèle-avec-toutes-les-variables-explicatives"><i class="fa fa-check"></i><b>4.4.3</b> Modèle avec toutes les variables explicatives</a></li>
+<li class="chapter" data-level="4.4.4" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#test-du-rapport-de-vraisemblance"><i class="fa fa-check"></i><b>4.4.4</b> Test du rapport de vraisemblance</a></li>
+<li class="chapter" data-level="4.4.5" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#multicolinéarité"><i class="fa fa-check"></i><b>4.4.5</b> Multicolinéarité</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#classification-et-prédiction-à-laide-de-la-régression-logistique"><i class="fa fa-check"></i><b>4.5</b> Classification et prédiction à l’aide de la régression logistique</a></li>
+<li class="chapter" data-level="4.6" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#classification-avec-une-matrice-de-gain"><i class="fa fa-check"></i><b>4.6</b> Classification avec une matrice de gain</a></li>
+<li class="chapter" data-level="4.7" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#sélection-de-variables-en-régression-logistique"><i class="fa fa-check"></i><b>4.7</b> Sélection de variables en régression logistique</a><ul>
+<li class="chapter" data-level="4.7.1" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#recherche-exhaustive-de-tous-les-sous-modèles"><i class="fa fa-check"></i><b>4.7.1</b> Recherche exhaustive de tous les sous-modèles</a></li>
+<li class="chapter" data-level="4.7.2" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#recherche-séquentielle"><i class="fa fa-check"></i><b>4.7.2</b> Recherche séquentielle</a></li>
+<li class="chapter" data-level="4.7.3" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#algorithme-glouton-et-critères-alternatifs-avec-hpgenselect"><i class="fa fa-check"></i><b>4.7.3</b> Algorithme glouton et critères alternatifs avec <code>hpgenselect</code></a></li>
+</ul></li>
+<li class="chapter" data-level="4.8" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#performance-des-différents-modèles-pour-lexemple-des-clients-cibles"><i class="fa fa-check"></i><b>4.8</b> Performance des différents modèles pour l’exemple des clients cibles</a><ul>
+<li class="chapter" data-level="4.8.1" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#stratégies-en-utilisant-seulement-la-régression-logistique"><i class="fa fa-check"></i><b>4.8.1</b> Stratégies en utilisant seulement la régression logistique</a></li>
+<li class="chapter" data-level="4.8.2" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#stratégies-alternatives"><i class="fa fa-check"></i><b>4.8.2</b> Stratégies alternatives</a></li>
+<li class="chapter" data-level="4.8.3" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#tobit2"><i class="fa fa-check"></i><b>4.8.3</b> Modèle Tobit de type 2</a></li>
+</ul></li>
+<li class="chapter" data-level="4.9" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#extensions-du-modèle-de-régression-logistique-à-plus-de-deux-catégories"><i class="fa fa-check"></i><b>4.9</b> Extensions du modèle de régression logistique à plus de deux catégories</a><ul>
+<li class="chapter" data-level="4.9.1" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#régression-logistique-multinomiale"><i class="fa fa-check"></i><b>4.9.1</b> Régression logistique multinomiale</a></li>
+<li class="chapter" data-level="4.9.2" data-path="régression-logistique-1.html"><a href="régression-logistique-1.html#régression-logistique-cumulative-à-cotes-proportionnelles"><i class="fa fa-check"></i><b>4.9.2</b> Régression logistique cumulative à cotes proportionnelles</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html"><i class="fa fa-check"></i><b>5</b> Analyse de regroupements</a><ul>
+<li class="chapter" data-level="5.1" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#introduction-4"><i class="fa fa-check"></i><b>5.1</b> Introduction</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#mesures-de-dissemblance"><i class="fa fa-check"></i><b>5.1.1</b> Mesures de dissemblance</a></li>
+<li class="chapter" data-level="5.1.2" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#méthodes-hiérarchiques-et-non-hiérarchiques"><i class="fa fa-check"></i><b>5.1.2</b> Méthodes hiérarchiques et non hiérarchiques</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#segmentation-de-seniors-en-voyage-organisé"><i class="fa fa-check"></i><b>5.2</b> Segmentation de seniors en voyage organisé</a></li>
+<li class="chapter" data-level="5.3" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#méthodes-hiérarchiques"><i class="fa fa-check"></i><b>5.3</b> Méthodes hiérarchiques</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#méthode-de-ward"><i class="fa fa-check"></i><b>5.3.1</b> Méthode de Ward</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#méthodes-non-hiérarchiques"><i class="fa fa-check"></i><b>5.4</b> Méthodes non hiérarchiques</a></li>
+<li class="chapter" data-level="5.5" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#standardisation-des-variables"><i class="fa fa-check"></i><b>5.5</b> Standardisation des variables</a></li>
+<li class="chapter" data-level="5.6" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#considérations-pratiques"><i class="fa fa-check"></i><b>5.6</b> Considérations pratiques</a></li>
+<li class="chapter" data-level="5.7" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#exploration-graphique-préalable-et-analyse-en-composantes-principales"><i class="fa fa-check"></i><b>5.7</b> Exploration graphique préalable et analyse en composantes principales</a><ul>
+<li class="chapter" data-level="5.7.1" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#analyse-en-composantes-principales"><i class="fa fa-check"></i><b>5.7.1</b> Analyse en composantes principales</a></li>
+</ul></li>
+<li class="chapter" data-level="5.8" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#calcul-alternatif-des-distances-pour-le-regroupement-hiérarchique"><i class="fa fa-check"></i><b>5.8</b> Calcul alternatif des distances pour le regroupement hiérarchique</a></li>
+<li class="chapter" data-level="5.9" data-path="analyse-de-regroupements-1.html"><a href="analyse-de-regroupements-1.html#autres-mesures-de-dissemblance"><i class="fa fa-check"></i><b>5.9</b> Autres mesures de dissemblance</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="analyse-de-survie-1.html"><a href="analyse-de-survie-1.html"><i class="fa fa-check"></i><b>6</b> Analyse de survie</a><ul>
+<li class="chapter" data-level="6.1" data-path="analyse-de-survie-1.html"><a href="analyse-de-survie-1.html#introduction-5"><i class="fa fa-check"></i><b>6.1</b> Introduction</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="analyse-de-survie-1.html"><a href="analyse-de-survie-1.html#exemple-du-temps-dabonnement"><i class="fa fa-check"></i><b>6.1.1</b> Exemple du temps d’abonnement</a></li>
+<li class="chapter" data-level="6.1.2" data-path="analyse-de-survie-1.html"><a href="analyse-de-survie-1.html#contexte"><i class="fa fa-check"></i><b>6.1.2</b> Contexte</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="analyse-de-survie-1.html"><a href="analyse-de-survie-1.html#fonctions-de-survie-et-de-risque"><i class="fa fa-check"></i><b>6.2</b> Fonctions de survie et de risque</a></li>
+<li class="chapter" data-level="6.3" data-path="analyse-de-survie-1.html"><a href="analyse-de-survie-1.html#estimation-dune-courbe-de-survie-et-de-risque"><i class="fa fa-check"></i><b>6.3</b> Estimation d’une courbe de survie et de risque</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="analyse-de-survie-1.html"><a href="analyse-de-survie-1.html#calcul-de-lestimateur-de-kaplanmeier"><i class="fa fa-check"></i><b>6.3.1</b> Calcul de l’estimateur de Kaplan–Meier</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="analyse-de-survie-1.html"><a href="analyse-de-survie-1.html#comparaison-de-deux-courbes-de-survie"><i class="fa fa-check"></i><b>6.4</b> Comparaison de deux courbes de survie</a></li>
+<li class="chapter" data-level="6.5" data-path="analyse-de-survie-1.html"><a href="analyse-de-survie-1.html#modèle-à-risques-proportionnels-de-cox"><i class="fa fa-check"></i><b>6.5</b> Modèle à risques proportionnels de Cox</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="analyse-de-survie-1.html"><a href="analyse-de-survie-1.html#description-du-modèle-de-cox"><i class="fa fa-check"></i><b>6.5.1</b> Description du modèle de Cox</a></li>
+<li class="chapter" data-level="6.5.2" data-path="analyse-de-survie-1.html"><a href="analyse-de-survie-1.html#estimation-de-la-fonction-de-survie-pour-des-valeurs-particulières-des-variables-explicatives"><i class="fa fa-check"></i><b>6.5.2</b> Estimation de la fonction de survie pour des valeurs particulières des variables explicatives</a></li>
+</ul></li>
+<li class="chapter" data-level="6.6" data-path="analyse-de-survie-1.html"><a href="analyse-de-survie-1.html#extensions-du-modèle-de-cox"><i class="fa fa-check"></i><b>6.6</b> Extensions du modèle de Cox</a><ul>
+<li class="chapter" data-level="6.6.1" data-path="analyse-de-survie-1.html"><a href="analyse-de-survie-1.html#variables-explicatives-dont-la-valeur-change-dans-le-temps"><i class="fa fa-check"></i><b>6.6.1</b> Variables explicatives dont la valeur change dans le temps</a></li>
+<li class="chapter" data-level="6.6.2" data-path="analyse-de-survie-1.html"><a href="analyse-de-survie-1.html#modèle-à-risques-compétitifs"><i class="fa fa-check"></i><b>6.6.2</b> Modèle à risques compétitifs</a></li>
+</ul></li>
+<li class="chapter" data-level="6.7" data-path="analyse-de-survie-1.html"><a href="analyse-de-survie-1.html#risques-non-proportionnels"><i class="fa fa-check"></i><b>6.7</b> Risques non proportionnels</a><ul>
+<li class="chapter" data-level="6.7.1" data-path="analyse-de-survie-1.html"><a href="analyse-de-survie-1.html#non-proportionnalité-avec-un-terme-dinteraction-avec-le-temps"><i class="fa fa-check"></i><b>6.7.1</b> Non-proportionnalité avec un terme d’interaction avec le temps</a></li>
+<li class="chapter" data-level="6.7.2" data-path="analyse-de-survie-1.html"><a href="analyse-de-survie-1.html#stratification"><i class="fa fa-check"></i><b>6.7.2</b> Stratification</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="données-manquantes-1.html"><a href="données-manquantes-1.html"><i class="fa fa-check"></i><b>7</b> Données manquantes</a><ul>
+<li class="chapter" data-level="7.1" data-path="données-manquantes-1.html"><a href="données-manquantes-1.html#terminologie"><i class="fa fa-check"></i><b>7.1</b> Terminologie</a></li>
+<li class="chapter" data-level="7.2" data-path="données-manquantes-1.html"><a href="données-manquantes-1.html#quelques-méthodes"><i class="fa fa-check"></i><b>7.2</b> Quelques méthodes</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="données-manquantes-1.html"><a href="données-manquantes-1.html#cas-complets"><i class="fa fa-check"></i><b>7.2.1</b> Cas complets</a></li>
+<li class="chapter" data-level="7.2.2" data-path="données-manquantes-1.html"><a href="données-manquantes-1.html#imputation-simple"><i class="fa fa-check"></i><b>7.2.2</b> Imputation simple</a></li>
+<li class="chapter" data-level="7.2.3" data-path="données-manquantes-1.html"><a href="données-manquantes-1.html#imputation-multiple"><i class="fa fa-check"></i><b>7.2.3</b> Imputation multiple</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="données-manquantes-1.html"><a href="données-manquantes-1.html#example-dapplication-de-limputation"><i class="fa fa-check"></i><b>7.3</b> Example d’application de l’imputation</a></li>
+<li class="chapter" data-level="7.4" data-path="données-manquantes-1.html"><a href="données-manquantes-1.html#valeurs-manquantes-dans-un-contexte-de-prédiction"><i class="fa fa-check"></i><b>7.4</b> Valeurs manquantes dans un contexte de prédiction</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Publié avec bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Analyse multidimensionnelle appliquée</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="analyse-de-survie-1" class="section level1">
+<h1><span class="header-section-number">Chapitre 6</span> Analyse de survie</h1>
+<div id="introduction-5" class="section level2">
+<h2><span class="header-section-number">6.1</span> Introduction</h2>
+<p>Le but de cette section est d’étudier l’effet de variables explicatives sur le temps de survie. Plusieurs méchanismes de survie peuvent impacter la survie, de façon aléatoire ou pas.
+Considérons l’exmple d’une étude sur le chômage dû à la crise du coronavirus. On s’intéresse à tous ceux qui étaient en recherche active d’emploi entre mars et juin. Seuls ceux qui étaient au chômage durant cette période seront considérés. Certaines personnes seront déjà au chômage en avril et donc leur durée de chômage sera plus longue (troncature à gauche). Lors de notre suivi, d’autre mentionneront avoir trouvé un emploi lors de notre appel, mais ne pourront nous renseigner sur la date de leur embauche (censure à gauche); cette dernière précèdera notre prise de contact, mais nous est inconnue. D’autres personnes seront toujours au chômage en juin à la fin de l’étude et on ignorera le nombre réel de mois passés au chômage (censure à droite). Enfin, certaines personnes cesseront de chercher activement un emploi et donc quitteront l’étude. Tous ces méchanismes (complexes) peuvent être dictés par certaines covariables (employabilité, découragement) et être aléatoires ou pas. Pour estimer le taux de chômage, il faudra prendre en compte les méchanismes de survie dans notre modèle. On se concentrera sur le cas simple des données censurées à droite de façon aléatoire.</p>
+<div id="exemple-du-temps-dabonnement" class="section level3">
+<h3><span class="header-section-number">6.1.1</span> Exemple du temps d’abonnement</h3>
+<p>Une entreprise œuvrant dans le secteur des télécommunications s’intéresse aux facteurs influençant le temps qu’un client reste abonné à son service de téléphone cellulaire. Des données provenant d’un échantillon de clients se trouvent dans le fichier <code>survival1.sas7bdat</code>, qui contient les variables suivantes:</p>
+<ul>
+<li><span class="math inline">\(\texttt{t}\)</span>: temps (en semaines) que le client est resté abonné au service de téléphone cellulaire. Il s’agit du vrai temps si le client n’est plus abonné et d’un temps censuré à droite si le client est toujours abonné.</li>
+<li><span class="math inline">\(\texttt{censure}\)</span>: variable binaire qui indique si la variable <span class="math inline">\(\texttt{t}\)</span> est censurée (<span class="math inline">\(1\)</span> si le client est toujours abonné) ou non (<span class="math inline">\(0\)</span>, la variable <span class="math inline">\(\texttt{t}\)</span> est la durée finale de l’abonnement).</li>
+<li><span class="math inline">\(\texttt{age}\)</span>: âge du client au début de l’abonnement.</li>
+<li><span class="math inline">\(\texttt{sexe}\)</span>: sexe du client, soit femme (<span class="math inline">\(1\)</span>), soit homme (<span class="math inline">\(0\)</span>).</li>
+<li><span class="math inline">\(\texttt{service}\)</span>: nombre de services en plus du cellulaire auquel le client est abonné parmi internet, téléphone fixe, télévision (câble ou antenne parabolique).</li>
+<li><span class="math inline">\(\texttt{region}\)</span>: région où habite le client en ce moment (valeurs entre 1 et 5).</li>
+</ul>
+</div>
+<div id="contexte" class="section level3">
+<h3><span class="header-section-number">6.1.2</span> Contexte</h3>
+<p>On s’intéresse au temps avant qu’un événement survienne. On observe chaque sujet jusqu’à ce que l’une des deux choses suivantes se produise : l’événement survient avant la fin de la période d’observation ou bien l’étude se termine et l’événement n’est toujours pas survenu. Dans l’exemple, l’événement correspond au fait d’interrompre son abonnement. On dispose donc d’une variable « temps », que l’on nomme <span class="math inline">\(T\)</span>, pour chaque individu qui est soit censurée soit non censurée. Si l’individu a expérimenté l’événement avant la fin de la période d’observation, la valeur de <span class="math inline">\(T\)</span> n’est pas censurée. Si l’événement n’est toujours pas survenu à la fin de la période d’observation, la valeur de <span class="math inline">\(T\)</span> est censurée. Pour chaque individu, on dispose également d’un ensemble de variables explicatives <span class="math inline">\(X_1, \ldots, X_p\)</span>. Pour l’instant, supposons que les valeurs de ces variables sont fixes dans le temps mais on reviendra plus loin au cas où leurs valeurs peuvent varier dans le temps. Bien que le terme analyse de survie semble implicitement référer à la santé, de nombreux autres exemples sont envisageables</p>
+<ul>
+<li>temps qu’un client demeure abonné à un service offert par notre compagnie.</li>
+<li>temps de survie d’un individu après avoir été diagnostiqué avec un certain type de cancer.</li>
+<li>ancienneté d’un travailleur au service d’une compagnie.</li>
+<li>durée de vie d’une franchise.</li>
+<li>temps avant la faillite d’une entreprise (ou d’un particulier).</li>
+<li>temps avant le prochain achat d’un client.</li>
+<li>temps durant lequel un(e) employé(e) est au chômage.</li>
+</ul>
+<p>Si aucune observation n’est censurée, c’est-à-dire, si on a observé le « vrai » temps pour chaque sujet, on pourrait alors simplement modéliser <span class="math inline">\(T\)</span> en incluant des covariables dans les paramètres de vraisemblance d’une loi positive (par exemple, une régression log-linéaire). En revanche, si des observations sont censurées dans l’échantillon, leur omission biaiserait l’analyse.</p>
+<p>Ce chapitre se veut une introduction à l’analyse de données de survie. Comme le développement de la théorie de l’analyse de survie est assez complexe (plus encore que celle de la régression linéaire ou logistique), on s’intéressera ici uniquement aux principes de base afin d’être en mesure d’appliquer les méthodes et de bien interpréter les résultats. Plusieurs extensions sont également possibles. Un survol de ces dernières sera effectué dans des sections plus loin.</p>
+<p>Il existe deux grandes approches pour analyser des données de survies :</p>
+<ol style="list-style-type: lower-roman">
+<li>nonparamétrique ou semi-paramétrique: estimateur de Kaplan-Meier, modèle de Cox (à risques proportionnels).</li>
+<li>paramétrique : modèle paramétrique avec loi continue (Weibull, log-normal, log-logistique, gamma).</li>
+</ol>
+<p>Nous discuterons seulement de la première approche dans ce chapitre. Le tableau suivant fait une analogie entre ce que nous ferons dans ce chapitre et des méthodes que vous connaissez.</p>
+<table>
+<colgroup>
+<col width="23%" />
+<col width="28%" />
+<col width="33%" />
+<col width="14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>réponse <span class="math inline">\(Y\)</span></th>
+<th>résumé descriptif</th>
+<th>comparaison de deux groupes</th>
+<th>modèle général</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>continue</td>
+<td>moyenne</td>
+<td>test-<span class="math inline">\(t\)</span> pour deux échantillons</td>
+<td>régression linéaire</td>
+</tr>
+<tr class="even">
+<td>binaire</td>
+<td>proportion</td>
+<td>test d’indépendance du khi-deux</td>
+<td>régression logistique</td>
+</tr>
+<tr class="odd">
+<td>temps de survie (censure à droite)</td>
+<td>fonction de survie temps de survie médian</td>
+<td>test log-rang test de Wilcoxon généralisé (Gehan)</td>
+<td>modèle de Cox</td>
+</tr>
+</tbody>
+</table>
+<p>La structure de données de base que l’on doit avoir pour travailler en <strong>SAS</strong> (et avec la plupart des autres logiciels) est la suivante:</p>
+<ol style="list-style-type: decimal">
+<li>une variable temps, <span class="math inline">\(T\)</span>.</li>
+<li>une variable <span class="math inline">\(C\)</span> (censure), qui vaut un si l’observation est censurée et zéro sinon.</li>
+<li>d’autres variables explicatives <span class="math inline">\(X_1, \ldots, X_p\)</span>, une par colonne.</li>
+</ol>
+</div>
+</div>
+<div id="fonctions-de-survie-et-de-risque" class="section level2">
+<h2><span class="header-section-number">6.2</span> Fonctions de survie et de risque</h2>
+<p>Un des éléments de base d’une analyse de survie (<em>survival analysis</em>) est la <strong>fonction (ou courbe) de survie</strong>. Soit <span class="math inline">\(F(t)={\mathsf P}\left(T \leq t\right)\)</span> la fonction de répartition du temps de survie <span class="math inline">\(t\)</span> et <span class="math inline">\(f(t) = \mathrm{d}/ \mathrm{d}t F(t)\)</span>. La fonction de survie est
+<span class="math display">\[\begin{align*}
+S(t)= {\mathsf P}\left(T &gt; t\right) = 1-F(t)
+\end{align*}\]</span>
+et donne la probabilité que le temps de survie soit supérieur à <span class="math inline">\(t\)</span>. On verra plus loin comment estimer cette fonction avec un échantillon et comment tester l’égalité de deux (ou plusieurs) fonctions de survie.</p>
+<p>La <strong>fonction de risque</strong> (en anglais, <em>hazard</em>) est
+<span class="math display">\[h(t) =  \frac{f(t)}{S(t)}\]</span>
+où <span class="math inline">\(f(t)\)</span> est la fonction de densité (pour <span class="math inline">\(T\)</span> continu) ou de masse pour <span class="math inline">\(T\)</span> discret.
+Dans le cas discret où le temps peut seulement prendre les valeurs <span class="math inline">\(0, 1, 2, \ldots\)</span>, la fonction de risque est donc simplement la probabilité que l’événement survienne au temps <span class="math inline">\(t\)</span>, étant donné qu’il n’était pas survenu avant, <span class="math inline">\({\mathsf P}\left(T=t \mid T &gt; t\right) = {\mathsf P}\left(T=t\right) / {\mathsf P}\left(T &gt;t\right) = f(t)/S(t)\)</span>; c’est une probabilité conditionnelle. Dans le cas général, la fonction de risque est nécessairement positive mais peut prendre des valeurs supérieures à un. On ne peut donc pas, à strictement parler, la voir comme une probabilité et c’est pourquoi on parle plutôt de risque. En fait, cette fonction mesure le risque instantané que l’événement survienne au temps <span class="math inline">\(t\)</span>, étant donné qu’il n’était pas survenu avant.</p>
+<p>Cette fonction est importante car il s’agit de celle que nous allons modéliser avec le modèle de régression de Cox. Si, en régression logistique, on modélise le logarithme des cotes, on modélise plutôt la fonction de risque en analyse de survie.
+Les fonctions de survie et de risque sont intimement reliées et
+<span class="math display">\[ h(t) = - \frac{\mathrm{d}\log\{S(t)\}}{\mathrm{d}t}, \qquad \qquad S(t) = \exp \left\{ -\int_0^t h(u) \mathrm{d}u\right\}. \]</span>
+Ainsi, si on connaît la fonction de survie, on peut retrouver la fonction de risque et vice-versa. Par conséquent, un modèle pour la fonction de survie spécifie une fonction de risque (et vice-versa).</p>
+</div>
+<div id="estimation-dune-courbe-de-survie-et-de-risque" class="section level2">
+<h2><span class="header-section-number">6.3</span> Estimation d’une courbe de survie et de risque</h2>
+<p>L’estimateur nonparamétrique le plus couramment utilisé est l’stimateur de Kaplan–Meier. Cette méthode permet d’estimer la fonction de survie pour un échantillon contenant des observations censurées. De plus, elle est nonparamétrique en ce sens qu’on ne suppose aucun modèle ou hypothèse particulière. Dans <strong>SAS</strong>, la procédure <code>lifetest</code> fournit l’estimation de Kaplan–Meier de la courbe de survie et permet aussi d’estimer la fonction de risque correspondante.</p>
+<p>Supposons par exemple que l’échantillon ne contient aucune observation censurée (on a des temps exacts pour tous les sujets), l’estimateur de Kaplan–Meier de la fonction de survie à un temps <span class="math inline">\(t\)</span> donné est alors simplement la proportion des observations dans l’échantillon qui possède un temps de survie supérieur à <span class="math inline">\(t\)</span> — on ne tient pas compte des observations censurées pour estimer la courbe de survie.</p>
+<p>On considère l’exemple des temps d’abonnement pour illustrer le concept; les commandes <strong>SAS</strong> sont dans <code>survival1_fonction_survie.sas</code>. L’estimation de la fonction de survie selon la méthode Kaplan–Meier est obtenue grâce aux commandes suivantes:</p>
+<pre class="sas"><code>proc lifetest data=multi.survival1 method=km
+       plots=(s(cl)) censoredsymbol=none;
+time t*censure(1);
+run;</code></pre>
+<p>Le premier tableau renvoyé par <strong>SAS</strong> contient une ligne par observation et permet de lire l’estimé de la fonction de survie. Par exemple, on voit que l’estimation de la probabilité que le temps d’abonnement soit supérieur à 30 semaines est <span class="math inline">\(\widehat{S}(30) = 0,986\)</span>.</p>
+<p><img src="figures/05-survie-e1.png" width="70%" style="display: block; margin: auto;" />
+<span class="math display">\[\begin{align*} \vdots \end{align*}\]</span>
+<img src="figures/05-survie-e2.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>La sortie contient également un tableau contenant les quartiles. On utilise généralement le temps de survie médian (au lieu de la moyenne) dans ce type d’étude. Ici, le temps de survie médian est estimé à 114 semaines: on estime que la moitié des clients vont avoir une durée d’abonnement supérieure à 114 semaines. De même, la moitié des clients vont avoir une durée d’abonnement inférieure à 114 semaines. Un intervalle de confiance de niveau 95% pour ce temps médian est [<span class="math inline">\(110; 119\)</span>].</p>
+<p>Un estimé de la moyenne et de l’écart-type est donné, mais ce dernier est biaisé (trop bas) puisque les données censurées ne donnent qu’une borne inférieure pour la vraie valeur. Avec un modèle paramétrique pour la survie (par ex., une loi exponentielle), les paramètres estimés du modèle dicteraient ces deux valeurs. Le modèle de Kaplan–Meier estime la survie, mais si la plus grande observation est censurée, la courbe n’atteindra pas zéro.</p>
+<p>Le graphique de la fonction de survie permet de lire le temps de survie pour une probabilité donnée. Les bandes donnent un intervalle de confiance ponctuel de niveau 95% pour chaque temps donné.</p>
+<div class="figure" style="text-align: center"><span id="fig:fig5-e5"></span>
+<img src="figures/05-survie-e5.png" alt="Fraction de valeurs censurées" width="60%" />
+<p class="caption">
+Figure 6.1: Fraction de valeurs censurées
+</p>
+</div>
+<p>Le tableau <a href="analyse-de-survie-1.html#fig:fig5-e5">6.1</a> donne le nombre de données censurées: parmi les 500 observations, il y a 334 clients qui ont terminé leur abonnement et 166 qui sont censurées (le client est toujours abonné et le temps est donc une borne inférieure de la durée d’abonnement).</p>
+<div id="calcul-de-lestimateur-de-kaplanmeier" class="section level3">
+<h3><span class="header-section-number">6.3.1</span> Calcul de l’estimateur de Kaplan–Meier</h3>
+<p>Cette partie peut être omise; elle est incluse seulement par souci de complétude. Soit <span class="math inline">\(T_1, \ldots, T_n\)</span> les <span class="math inline">\(n\)</span> réalisations aléatoires de la variable temps (certaines censurées, d’autres pas). Supposons qu’il y a <span class="math inline">\(m\)</span> temps distincts où au moins un individu expérimente l’événement. Soient <span class="math inline">\(t_{(1)} &lt; \cdots &lt; t_{(m)}\)</span>, ces temps ordonnés en ordre croissant et <span class="math inline">\(n_i\)</span> le nombre d’individus à risque au temps <span class="math inline">\(t_{(i)}\)</span> (les individus qui n’ont pas encore expérimenté l‘événement, et qui ne sont pas encore censurés avant <span class="math inline">\(t_{(i)}\)</span>). On note <span class="math inline">\(d_i\)</span> le nombre d’individus qui expérimentent l’événement au temps <span class="math inline">\(t_{(i)}\)</span>. L’estimateur de Kaplan–Meier de la fonction de survie à un temps <span class="math inline">\(t\)</span> est
+<span class="math display">\[ \widehat{S}(t) = \left( 1- \frac{d_1}{n_1}\right) \times \cdots \left( 1- \frac{d_{i(t)}}{n_{i(t)}}\right), \qquad t_{(1)} \leq t \leq t_{(m)},
+\]</span>
+où <span class="math inline">\(i(t) =\max(j \in \{1, \ldots, m\}: t \geq t_{j})\)</span>, soit le plus grand indice parmi <span class="math inline">\(1, \ldots, m\)</span> tel que <span class="math inline">\(t \geq t_{i(t)}\)</span>. Par convention, si <span class="math inline">\(t &lt; t_{(1)}\)</span>, on fixe <span class="math inline">\(\widehat{S}(t)=1\)</span>.</p>
+</div>
+</div>
+<div id="comparaison-de-deux-courbes-de-survie" class="section level2">
+<h2><span class="header-section-number">6.4</span> Comparaison de deux courbes de survie</h2>
+<p>Supposons que les individus ont été divisés en deux groupes et que <span class="math inline">\(S_1(t)\)</span> et <span class="math inline">\(S_2(t)\)</span> dénotent respectivement la fonction de survie du premier groupe et dudeuxième groupe. On est souvent intéressé à tester l’égalité des fonctions de survie, c’est-à-dire, les hypothèses <span class="math inline">\(\mathcal{H}_0: S_1(t) = S_2(t)\)</span> pour tout <span class="math inline">\(t\)</span> et <span class="math inline">\(\mathcal{H}_1: S_1(t) \neq S_2(t)\)</span> pour au moins une valeur de <span class="math inline">\(t\)</span>.</p>
+<p>Par exemple, dans une étude sur le temps de survie après avoir été diagnostiqué avec un certain type de cancer, on pourrait vouloir comparer le temps de survie des individus ayant reçu le traitement standard (groupe 1) au temps de survie des individus ayant reçu un nouveau traitement (groupe 2).</p>
+<p>Les deux tests utilisés habituellement sont le test du log-rang (<em>log-rank test</em>) et le test de Wilcoxon généralisé (ou test de Gehan).</p>
+<p>Testons l’hypothèse que la courbe de survie des clients masculins est la même que celle des clients féminins dans l’exmple des données d’abonnement. Ce test est effectué grâce à l’option <code>strata</code> de la procédure <code>lifetest</code> à l’aide des commandes suivantes (voir le fichier <code>survival1_fonction_survie.sas</code>):</p>
+<pre class="sas"><code>proc lifetest data=multi.survival1 method=km plots=(s) censoredsymbol=none;
+time t*censure(1);
+strata sexe;
+run;</code></pre>
+<p>On retrouve dans la sortie les estimés de la fonction de survie, de même que les quartiles par strate: la première strate correspond aux hommes (<code>sexe=0</code>) et la deuxième aux femmes (<code>sexe=1</code>).</p>
+<p><img src="figures/05-survie-e6.png" width="75%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/05-survie-e7.png" width="75%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/05-survie-e8.png" width="75%" style="display: block; margin: auto;" /></p>
+<p>On voit qu’il y a 309 hommes et 191 femmes. L’estimation du temps de survie médian est de 110 semaines pour les hommes et de 123 semaines pour les femmes.
+<img src="figures/05-survie-e9.png" width="55%" style="display: block; margin: auto;" /></p>
+<p>Un des tableaux contient les statistiques et valeurs-<span class="math inline">\(p\)</span> pour trois tests de l’hypothèse d’égalité des fonctions de survie, le test du log-rang et le test de Gehan. Le troisième test dans le tableau (<code>-2Log(LR)</code>) est un test du rapport de vraisemblance sous l’hypothèse que les temps de survie des deux groupes suivent une loi exponentielle. Il est préférable d’utiliser les deux premiers qui ne font pas d’hypothèses quant à la distribution du temps de survie. Les valeurs-<span class="math inline">\(p\)</span> des tests log-rang et de Wilcoxon généralisé sont toutes les deux inférieures à <span class="math inline">\(10^{-4}\)</span>. On rejette donc <span class="math inline">\(\mathcal{H}_0\)</span> pour conclure qu’il y a donc une différence significative entre les deux courbes de survie.</p>
+<p>Le test de Wilcoxon généralisé accorde plus de poids au temps près du début de la distribution qu’au temps plus loin. Il est donc, en général, plus puissant lorsque la différence entre les deux fonctions de survie survient tôt dans la distribution. Le test log-rang quant à lui suppose que le ratio des fonctions de risques des deux groupes est constant pour toute la période d’intérêt.</p>
+<p>Ces courbes sont représentées dans la Figure <a href="analyse-de-survie-1.html#fig:fig5-e10">6.2</a>. On voit que la courbe des femmes est systématiquement au-dessus de celle des hommes. Les femmes ont donc tendance à rester abonnées plus longtemps que les hommes, et cette différence est significative.</p>
+<div class="figure" style="text-align: center"><span id="fig:fig5-e10"></span>
+<img src="figures/05-survie-e10.png" alt="Courbes de survie estimées par sexe (Kaplan--Meier)" width="83%" />
+<p class="caption">
+Figure 6.2: Courbes de survie estimées par sexe (Kaplan–Meier)
+</p>
+</div>
+<p>Il est également possible de tester l’égalité des courbes de survie avec plus de deux groupes. Par exemple, s’il y a trois groupes, l’hypothèse nulle est alors <span class="math inline">\(\mathcal{H}_0: S_1(t)=S_2(t)=S_3(t)\)</span> pour tout <span class="math inline">\(t\)</span>, versus l’alternative qu’au moins deux des fonctions ont une valeur différente pour au moins une valeur de <span class="math inline">\(t\)</span>. Les commandes <strong>SAS</strong> pour exécuter le test sont les mêmes: il suffit de mettre la variable identifiant les groupes à la ligne <code>strata</code>.</p>
+</div>
+<div id="modèle-à-risques-proportionnels-de-cox" class="section level2">
+<h2><span class="header-section-number">6.5</span> Modèle à risques proportionnels de Cox</h2>
+<p>Le modèle à risques proportionnels de Cox (<em>proportional hazard model</em>) est l’un des modèles les plus utilisés pour analyser des données de survie. C’est un modèle semi-paramétrique, car seulement une partie du modèle doit être spécifié. Il postule que les valeurs des variables explicatives ne changent pas dans le temps. Nous verrons subséquemment une extension qui permet d’incorporer des variables explicatives dont la valeur change dans le temps.</p>
+<div id="description-du-modèle-de-cox" class="section level3">
+<h3><span class="header-section-number">6.5.1</span> Description du modèle de Cox</h3>
+<p>Soit <span class="math inline">\(h(t; \boldsymbol{x})\)</span> la valeur de la fonction de risque au temps pour un individu dont les valeurs des variables explicatives sont <span class="math inline">\(X_1=x_1, \ldots, X_p=x_p\)</span>. Le modèle à risques proportionnels est
+<span class="math display">\[\begin{align*}
+h(t; \boldsymbol{x}) = h_0(t)\exp(\beta_1x_1 + \cdots + \beta_p x_p)
+\end{align*}\]</span>
+où <span class="math inline">\(h_0(t)\)</span> est la fonction de risque de base; il n’est pas nécessaire de spécifier cette dernière, d’où la nature semiparamétrique du modèle de Cox.</p>
+<p>Lorsque toutes les variables explicatives prennent la valeur zéro, <span class="math inline">\(\boldsymbol{X}=\boldsymbol{0}\)</span>, on recouvre <span class="math inline">\(h(t; \boldsymbol{0})= h_0(t)\)</span>. Par conséquent, la fonction <span class="math inline">\(h_0(t)\)</span> peut être interprétée comme la fonction de risque lorsque toutes les variables explicatives valent zéro. Toutefois, tout comme la valeur de l’ordonnée à l’origine dans un modèle de régression linéaire, cette interprétation n’est pas nécessairement valide si la situation où toutes les variables explicatives valent zéro n’est pas possible ou si elle ne survient pas dans notre échantillon.</p>
+<p>La deuxième partie du modèle, <span class="math inline">\(\exp(\beta_1x_1 + \cdots + \beta_p x_p)\)</span>, vient modéliser l’effet d’un changement des valeurs des variables explicatives sur la fonction de risque de base. Tout comme dans le cas de la régression logistique (l’effet des variables sur la cote), c’est un effet multiplicatif, d’où le terme <strong>risques proportionnels</strong>.</p>
+<p>Pour l’interprétation des paramètres, il sera plus simple de penser en termes de rapport de risque (<em>hazard ratio</em>), qui est défini comme étant le rapport des fonctions de risque pour deux ensembles de valeurs des variables explicatives. Pour simplifier l’illustration, supposons que nous avons seulement une variable explicative <span class="math inline">\(X\)</span> et que <span class="math inline">\(h(t; x) = h_0(t)\exp(\beta x)\)</span>. Le rapport de risque lorsque <span class="math inline">\(X=x_1\)</span> par rapport à <span class="math inline">\(X=x_0\)</span> est
+<span class="math display">\[\begin{align*}
+\frac{h(t; x_1)}{h(t; x_0)} = \exp\{\beta(x_1-x_0)\}.
+\end{align*}\]</span>
+Par conséquent, l’impact d’une augmentation de <span class="math inline">\(X\)</span> d’une unité (quand <span class="math inline">\(x_1-x_0=1\)</span>) est <span class="math inline">\(\exp(\beta)\)</span>. Ainsi, pour chaque augmentation d’une unité pour <span class="math inline">\(X\)</span>, le risque que l’événement survienne est multiplié par <span class="math inline">\(\exp(\beta)\)</span>.</p>
+<p>Le terme <strong>risques proportionnels</strong> fait référence à la situation où le rapport de risque dépend seulement de la différence <span class="math inline">\(x_1-x_0\)</span> et non pas du temps lui-même. Le rapport de risque est constant par rapport au temps <span class="math inline">\(t\)</span>. Cela implique que l’effet d’une variable est stable dans le temps. Nous verrons plus loin comment faire en sorte que l’effet d’une variable puisse varier dans le temps.</p>
+<p>Débutons avec un exemple simple en utilisant les données d’abonnement: on ajuste un modèle de Cox en utilisant seulement la variable binaire sexe (<code>survival2_cox.sas</code>). Ceci peut être fait avec la procédure <code>phreg</code>, comme suit:</p>
+<pre class="sas"><code>proc phreg data=multi.survival1;
+model t*censure(1)=sexe / ties=exact; 
+run;</code></pre>
+<p>La sortie inclut notamment des tests de significativité globale basés sur la vraisemblance pour les variables explicatives (rapport de vraisemblance, score et Wald) ainsi qu’un tableau des coefficients et des statistiques sur la qualité de l’ajustement pour le modèle sans variable explicative et celui qui inclut sexe.</p>
+<p><img src="figures/05-survie-e11.png" width="45%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/05-survie-e12.png" width="85%" style="display: block; margin: auto;" /></p>
+<p>Il y a une seule variable explicative, le sexe de l’individu. L’estimation du paramètre de l’effet de sexe est <span class="math inline">\(\hat{\beta}=-0,466\)</span>. Ce paramètre est significativement différent de <span class="math inline">\(0\)</span> (valeur-<span class="math inline">\(p\)</span> inférieure à <span class="math inline">\(10^{-4}\)</span>). Pour l’interprétation, on utilise la colonne « Rapport de risque » qui contient la valeur <span class="math inline">\(\exp(\hat{\beta}_{\texttt{sexe}}) = \exp(-0,466) = 0,628\)</span>. Ainsi, le rapport du risque d’une femme par rapport à un homme est
+<span class="math display">\[\begin{align*}
+ \frac{\hat{h}(t; \texttt{sexe}=1)}{\hat{h}(t; \texttt{sexe}=0)}= 0,628.
+\end{align*}\]</span>
+Par conséquent, le risque qu’une femme interrompe son abonnement est 0,628 fois celui d’un homme. Une femme est donc moins à risque de quitter qu’un homme. Nous avions déjà vu cela à la section précédente lorsque nous avions comparé les courbes de survie des hommes et des femmes. Il est important de se rappeler qu’avec ce modèle, l’effet d’une variable est le même dans le temps (peu importe la valeur de <span class="math inline">\(t\)</span>). Donc, une femme est moins à risque de quitter qu’un homme à tout moment, d’après ce modèle. Inversement, le ratio du risque d’un homme par rapport à une femme est <span class="math inline">\(1/0,628=1,59\)</span>. Ainsi, à tout moment, un homme a un risque d’interrompre son abonnement qui est 59% plus élevé que celui d’une femme.</p>
+<p>Comme il y a un seul paramètre ici, les tests basés sur la vraisemblance pour <span class="math inline">\(\mathcal{H}_0: \boldsymbol{\beta}=\boldsymbol{0}\)</span> reviennent à tester l’effet de la variable sexe. Le test de Wald est le même que celui du tableau des coefficients. Dans le cas particulier où il y a une seule variable explicative binaire (comme ici), le test du score est équivalent au test du log-rang que nous avons vu à la section précédente (à une petite différence près lorsqu’il y a des ex aequo dans les temps de survie).</p>
+<p>On pourrait également utiliser une variable explicative continue plutôt qu’une variable binaire; le principe est le même.</p>
+<p><img src="figures/05-survie-e13.png" width="45%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/05-survie-e14.png" width="85%" style="display: block; margin: auto;" /></p>
+<p>Le rapport de risque pour âge est <span class="math inline">\(0,959\)</span> et donc le risque diminue de 4,1% chaque fois que l’âge augmente d’un an — le risque d’interrompre l’abonnement diminue lorsque l’âge augmente et cet effet est significatif (valeur-<span class="math inline">\(p\)</span> des tests inférieures à <span class="math inline">\(10^{-4}\)</span>).</p>
+<p>Généralement, on considérera le modèle de Cox avec toutes les variables explicatives simultanément. La variable <span class="math inline">\(\texttt{region}\)</span> est nominale tandis que la variable <span class="math inline">\(\texttt{service}\)</span> est ordinale (avec quatre modalités). Nous allons les incorporer, comme d’habitude, en utilisant des variables indicatrices avec La valeur <span class="math inline">\(\texttt{region=5}\)</span> et <span class="math inline">\(\texttt{service=0}\)</span> (le client n’est abonné à aucun autre service) comme catégories de référence.</p>
+<pre class="sas"><code>proc phreg data=multi.survival1;
+class region(ref=&#39;5&#39;) service(ref=&#39;0&#39;) / param=ref;
+model t*censure(1)=age sexe region service / ties=exact; 
+run;</code></pre>
+<p><img src="figures/05-survie-e15.png" width="45%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/05-survie-e16.png" width="45%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/05-survie-e17.png" width="45%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/05-survie-e18.png" width="85%" style="display: block; margin: auto;" /></p>
+<p>Les effets des variables sont maintenant des effets marginaux. Ainsi, lorsque les autres variables demeurent fixes, le risque de quitter d’une femme est <span class="math inline">\(0,514\)</span> fois plus petit que celui d’un homme. L’effet marginal (une fois que les autres variables sont incluses) de la variable sexe est significatif (valeur-<span class="math inline">\(p\)</span> inférieure à <span class="math inline">\(10^{-4}\)</span>).</p>
+<p>Toutes autres choses étant égales, chaque augmentation de l’âge d’un an fait diminuer le risque d’interrompre l’abonnement. Plus précisément, le risque est multiplié par <span class="math inline">\(0,95\)</span> lorsque l’âge augmente d’un an et cet effet est significatif.</p>
+<p>Pour la variable service, l’interprétation se fait par rapport à la catégorie de référence, qui est la catégorie <span class="math inline">\(\texttt{0}\)</span> (abonné à aucun autre service). Ainsi, si le client est abonné à un autre service, son risque de quitter est <span class="math inline">\(0,358\)</span> fois celui d’un client qui n’est pas abonné à un autre service (toutes autres choses étant égales). Si le client est abonné à deux autres services, son risque de quitter est encore plus petit comparativement à un client qui n’est pas abonné à un autre service (rapport de risque de <span class="math inline">\(0,177\)</span>) Finalement, si le client est abonné à trois autres services, son risque de quiter est encore plus petit (rapport de risque de <span class="math inline">\(0,118\)</span>). Les paramètres de ces trois variables sont tous significatifs. Ainsi, les clients qui sont abonnés à un, deux ou trois services ont un risque de quitter qui est significativement plus faible que celui d’un client qui n’est pas abonné à un autre service. Le tableau <code>Tests Type 3</code> permet de tester globalement la significativité d’une variable explicative modélisée avec plusieurs indicatrices. Pour la variable <span class="math inline">\(\texttt{service}\)</span>, le test présenté teste l’hypothèse nulle <span class="math inline">\(\mathcal{H}_0: \beta_{\texttt{service}_1}=\beta_{\texttt{service}_2}=\beta_{\texttt{service}_3}=0\)</span> contre l’alternative qu’un moins un de ces trois paramètres est non-nul. Le test est largement significatif (statistique de Wald du <span class="math inline">\(\chi^2_4\)</span> valant <span class="math inline">\(149,52\)</span> avec une valeur-<span class="math inline">\(p\)</span> inférieure à <span class="math inline">\(10^{-4}\)</span>). L’effet de la variable <span class="math inline">\(\texttt{service}\)</span> est donc globalement significatif. Afin de comparer les autres modalités entre elles, par exemple afin de voir si le risque de quitter est différent entre un client qui a deux services et un autre qui a trois services, il suffit de changer la catégorie de référence à la commande <code>class</code> et de réajuster le modèle.</p>
+<p>Finalement, la variable <span class="math inline">\(\texttt{region}\)</span> n’est pas globalement significative (statistique de Wald de <span class="math inline">\(7,56\)</span> avec une valeur-<span class="math inline">\(p\)</span> de <span class="math inline">\(0,11\)</span>).</p>
+</div>
+<div id="estimation-de-la-fonction-de-survie-pour-des-valeurs-particulières-des-variables-explicatives" class="section level3">
+<h3><span class="header-section-number">6.5.2</span> Estimation de la fonction de survie pour des valeurs particulières des variables explicatives</h3>
+<p>Il est possible d’obtenir l’estimation de la fonction de survie pour des valeurs particulières des variables explicatives avec la commande <code>baseline</code> (voir le script <code>survival2_cox.sas</code> pour plus de détails). Pour ce faire, il faut avoir un autre fichier de données qui contient les valeurs des variables explicatives pour lesquelles on veut une estimation de la fonction de survie.</p>
+<p>Si on ajuste le modèle avec aucune variable explicative, on retrouvera alors l’estimation de Kaplan–Meier de la fonction de survie comme avec la procédure <code>lifetest</code>.</p>
+<p>Supposons qu’on ajuste le modèle avec les variables sexe et âge seulement dans l’exemple du temps d’abonnement, et que l’on désire la fonction de survie pour les hommes de 25 et 60 ans et pour les femmes de 25 et 60 ans. Le fichier <code>survival2.xls</code> contient les données qui seront utilisées à cette fin. Il contient seulement les quatre lignes suivantes.</p>
+<p><img src="figures/05-survie-e19.png" width="15%" style="display: block; margin: auto;" /></p>
+<p>Les quatre fonctions de la Figure <a href="#fig:fig-e20"><strong>??</strong></a> correspondent aux profils pour lesquels nous désirons une estimation de la courbe de survie. La courbe 1 est pour les hommes de 25 ans, la courbe 2 pour les femmes de 25 ans, la courbe 3 pour les hommes de 60 ans et la courbe 4 pour les femmes de 60 ans. On voit donc que, parmi ces quatre profils, les hommes de 25 ans sont le plus à risque de quitter tandis que les femmes de 60 ans sont le moins à risque de quitter.</p>
+<p><img src="figures/05-survie-e20.png" width="80%" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="extensions-du-modèle-de-cox" class="section level2">
+<h2><span class="header-section-number">6.6</span> Extensions du modèle de Cox</h2>
+<p>Dans cette section, nous allons voir deux extensions du modèle à risques proportionnels de base.</p>
+<ol style="list-style-type: lower-roman">
+<li>Inclusion de variables explicatives dont la valeur change dans le temps.</li>
+<li>Modèle à risques compétitifs (<em>competing risks</em>) pour étudier la situation où il y a plusieurs manières de quitter l’état.</li>
+</ol>
+<div id="variables-explicatives-dont-la-valeur-change-dans-le-temps" class="section level3">
+<h3><span class="header-section-number">6.6.1</span> Variables explicatives dont la valeur change dans le temps</h3>
+<p>Il est clair que certaines caractéristiques d’un individu évoluent dans le temps (<em>time-varying covariates</em>). Si le sexe d’un individu est stable dans le temps, son revenu, son statut matrimonial, l’endroit où il habite, sont par contre des caractéristiques qui peuvent changer dans le temps. Il peut alors être intéressant d’en tenir compte dans l’analyse. Rappelez-vous que le modèle à risques proportionnels est
+<span class="math display">\[\begin{align*}
+h(t; \boldsymbol{x}) = h_0(t) \exp(\beta_1x_1 + \cdots + \beta_px_p).
+\end{align*}\]</span></p>
+<p>Supposons que la variable <span class="math inline">\(X_1\)</span> change au fil du temps et que les autres demeurent fixes. On peut alors réécrire le modèle
+<span class="math display">\[\begin{align*}
+h(t; \boldsymbol{x}) = h_0(t) \exp\{\beta_1x_1(t) + \cdots + \beta_px_p\},
+\end{align*}\]</span>
+où <span class="math inline">\(x_1(t)\)</span> indique que la valeur de <span class="math inline">\(X_1\)</span> dépend du temps <span class="math inline">\(t\)</span>.</p>
+<p>Supposons que la variable <span class="math inline">\(\texttt{service}\)</span>, qui représente le nombre d’autres services souscrits, est la seule que nous voulons modéliser comme une variable qui varie dans le temps. Pour l’âge, nous prenons simplement l’âge au début de l’abonnement, idem pour la région.</p>
+<p>Le plus difficile est de créer correctement le fichier de données pour effectuer ce genre d’analyse. Supposons pour cet exemple qu’il y a eu au plus un changement dans la variable <span class="math inline">\(\texttt{service}\)</span>, comme présenté dans le fichier <code>survival3.sas7bdat</code>. Les variables <span class="math inline">\(\texttt{t}\)</span>, $\texttt{censure, <span class="math inline">\(\texttt{age}\)</span>, <span class="math inline">\(\texttt{sexe}\)</span> et <span class="math inline">\(\texttt{region}\)</span> sont comme précédemment. Trois nouvelles variables remplacent l’ancienne variable service.</p>
+<ul>
+<li><span class="math inline">\(\texttt{service\_avant}\)</span>: nombre d’autres services auxquels le client est abonné au début de son abonnement.</li>
+<li><span class="math inline">\(\texttt{temps\_ch}\)</span>: temps au moment où un changement est survenu quant au nombre d’autres services. En l’absence de changement, l’observation est remplacée par une valeur manquante (<code>.</code>).</li>
+<li><span class="math inline">\(\texttt{service\_apres}\)</span>: nombre d’autres services auxquels le client est abonné à partir du temps <span class="math inline">\(\texttt{temps\_ch}\)</span>.</li>
+</ul>
+<p><img src="figures/05-survie-e21.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>On regarde plus en détail le profil des cinq premiers clients, dont seuls deux ont changé le nombre d’abonnements; les individus 3–5 se sont désabonnés du service cellulaire à un moment donné. Le premier client était abonné à deux autres services au début de son abonnement au téléphone cellulaire mais, après 130 semaines d’abonnement, a effectué un changement à son forfait pour ne conserver qu’un autre service en plus du cellulaire. Pour le deuxième client, comme <span class="math inline">\(\texttt{temps\_ch}\)</span> est manquante, il est toujours abonné à deux autres services et ce, jusqu’à la fin de l’étude.</p>
+<p>Les commandes <strong>SAS</strong> permettant d’ajuster le modèle avec point de rupture se trouvent dans le fichier <code>survival3_varie_temps.sas</code>. Notez que lorsqu’on a une variable catégorielle qui varie dans le temps (comme ici avec la variable service), on ne peut pas utiliser <code>class</code> pour la déclarer catégorielle; il faut plutôt créer nous-mêmes les variables indicatrices nécessaires ’a l’intérieur même de l’appel à la fonction <code>phreg</code> (voir le script). Ici, nous utiliserons la catégorie <span class="math inline">\(\texttt{0}\)</span> (aucun autre service) comme catégorie de référence.</p>
+<p><img src="figures/05-survie-e22.png" width="85%" style="display: block; margin: auto;" /></p>
+<p>L’interprétation se fait comme précédemment. Ici, c’est la valeur d’une variable qui varie dans le temps et non pas son effet. Ainsi, le ratio de risque de quitter pour un client qui a un autre service est 0,604 fois celui d’un client qui n’a aucun autre service (référence). Le fait d’avoir deux ou trois services diminue encore plus le risque de quitter (ratios de risque de 0,267 et 0,21, respectivement).</p>
+</div>
+<div id="modèle-à-risques-compétitifs" class="section level3">
+<h3><span class="header-section-number">6.6.2</span> Modèle à risques compétitifs</h3>
+<p>Parfois, la raison pour laquelle un individu quitte l’état étudié peut avoir un intérêt en soi. Par exemple si on s’intéresse au temps qu’un employé demeure au service de la compagnie, la distinction entre le fait qu’il ait démissionné ou bien qu’il ait été renvoyé peut avoir un impact sur l’effet des variables explicatives. Comme autre exemple, si on s’intéresse au temps de survie d’un individu après qu’il ait été diagnostiqué avec un certain type de cancer, il pourrait être important de distinguer selon la cause exacte de la mort.</p>
+<p>De manière générale, supposons qu’il y a <span class="math inline">\(K\)</span> manières possibles que l’événement survienne. On peut alors spécifier <span class="math inline">\(K\)</span> fonctions de risques (une pour chaque manière) et obtenir le modèle de Cox à risques compétitifs (<em>competing risks</em>),
+<span class="math display">\[\begin{align*}
+h_1(t; \boldsymbol{x})&amp;= h_{01}(t) \exp(\beta_{11}x_1 + \cdots + \beta_{p1} x_p)\\
+&amp;\vdots\\
+h_K(t; \boldsymbol{x})&amp;= h_{0K}(t) \exp(\beta_{1K}x_1 + \cdots + \beta_{pK} x_p)\\
+\end{align*}\]</span>
+Notez que les coefficients <span class="math inline">\(K\)</span> sont différents d’une équation à l’autre. En estimant ce modèle, on obtient donc une estimation de l’effet des variables selon la raison du départ de l’état. De plus, on peut aussi inclure des variables dont la valeur change dans le temps, comme vu précédemment.
+Ce qui simplifie énormément la situation est qu’il est prouvé qu’on peut estimer les paramètres de chaque équation séparément sans perte de précision. Par conséquent, en pratique, il suffira d’ajuster <span class="math inline">\(K\)</span> modèles séparément.</p>
+<p>Dans notre exemple d’abonnement ellulaire, supposons que nous avons trois causes possibles pour la perte d’un client: soit il a interrompu son abonnement pour aller chez le compétiteur A, soit pour aller chez le compétiteur B, soit il n’a plus de cellulaire du tout.</p>
+<p>Les données pour cet exemple se trouvent dans le fichier <code>survival4.xls</code> et le programme dans le fichier <code>survival4_risques_competitifs.sas</code>. La seule nouveauté par rapport au fichier original est la variable <span class="math inline">\(\texttt{censure}\)</span> qui est maintenant codée ainsi</p>
+<ul>
+<li>1, si le temps est censuré (l’individu est toujours abonné à notre service)</li>
+<li>2, si l’individu a quitté pour aller chez le compétiteur A</li>
+<li>3, si l’individu a quitté pour aller chez le compétiteur B</li>
+<li>4, si l’individu a quitté parce qu’il n’a plus besoin de cellulaire.</li>
+</ul>
+<p>On peut calculer la fréquence de chaque modalité.</p>
+<p><img src="figures/05-survie-e23.png" width="65%" style="display: block; margin: auto;" />
+Ainsi, il y a donc 166 clients toujours abonnés, 170 qui nous ont quitté pour aller chez A, 121 pour aller chez B, et 43 qui n’ont plus de cellulaires.</p>
+<p>Pour ajuster le modèle lorsque la cause du départ est le compétiteur A, le code est</p>
+<pre class="sas"><code>proc phreg data=multi.survival4;
+class region(ref=&#39;5&#39;) service(ref=&#39;0&#39;) / param=ref;
+model t*censure(1,3,4)=age sexe region service / ties=exact; 
+run;</code></pre>
+<p>Notez qu’on précise que les valeurs 1, 3 et 4 sont des observations censurées. Ici, l’événement d’intérêt est que le client est parti chez le compétiteur A. S’il est toujours abonné (<span class="math inline">\(\texttt{censure=1}\)</span>), s’il est parti chez le compétiteur B (<span class="math inline">\(\texttt{censure=3}\)</span>) ou s’il nous a quitté car il n’a plus de cellulaire (<span class="math inline">\(\texttt{censure=4}\)</span>), alors l’événement « quitter pour aller chez A » n’est pas survenu. C’est pourquoi on doit traiter ces situations comme des censures.</p>
+<p><img src="figures/05-survie-e24.png" width="65%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/05-survie-e25.png" width="85%" style="display: block; margin: auto;" /></p>
+<p>Ainsi, on voit que l’événement est survenu 170 fois et qu’il y a 330 censures. L’interprétation des paramètres se fait comme précédemment. Sauf qu’il faut préciser qu’il s’agit du risque de quitter pour aller chez le compétiteur A. Par exemple, le risque de quitter pour aller chez le compétiteur A d’une femme est 0,444 fois le risque de quitter pour aller chez le compétiteur A d’un homme. Ainsi, les femmes sont moins à risque de quitter pour aller chez le compétiteur A que les hommes.</p>
+<p>Pour ajuster le modèle lorsque la cause du départ est le compétiteur B, procède de la même manière. Notez que cette fois-ci, ce sont les valeurs 1, 2 et 4 de la variable censure qui correspondent au fait que l’événement n’est pas survenu; on spécifie donc <code>censure(1,2,4)</code> dans l’appel à la fonction <code>phreg</code>. Il y a 121 clients qui ont quitté pour aller chez B et 379 cas autre (censure). L’interprétation des paramètres se fait en termes de risque de quitter pour aller chez le compétiteur B.</p>
+<p><img src="figures/05-survie-e26.png" width="65%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/05-survie-e27.png" width="85%" style="display: block; margin: auto;" /></p>
+<p>Si on ajuste le modèle pour le cas de figure où la cause de départ est que le client n’a plus besoin de cellulaire, on obtient une sortie similaire. On voit, que contrairement aux deux premiers modèles, l’effet de la variable sexe n’est pas significatif ici.</p>
+<p><img src="figures/05-survie-e28.png" width="65%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/05-survie-e29.png" width="85%" style="display: block; margin: auto;" /></p>
+<p>En fait, comme il y a seulement 43 événements (quitter car on n’a plus besoin de cellulaire), les estimations des paramètres sont moins précises, ce qu’on peut voir avec les erreurs-types qui sont plus élevés. Les observations censurées contiennent moins d’information que les événements, d’où cette perte de précision.</p>
+</div>
+</div>
+<div id="risques-non-proportionnels" class="section level2">
+<h2><span class="header-section-number">6.7</span> Risques non proportionnels</h2>
+<p>Comme son nom l’indique, le modèle à risques proportionnels suppose que les risques sont proportionnels. Cela implique que l’effet d’une variable est stable dans le temps. Nous verrons dans cette section deux façons de modéliser le cas de risques non proportionnels.</p>
+<div id="non-proportionnalité-avec-un-terme-dinteraction-avec-le-temps" class="section level3">
+<h3><span class="header-section-number">6.7.1</span> Non-proportionnalité avec un terme d’interaction avec le temps</h3>
+<p>Pour simplifier l’exposition, supposons que nous avons une seule variable explicative <span class="math inline">\(X\)</span>. L’équation du modèle à risques proportionnels est <span class="math inline">\(h(t; x) = h_0(t)\exp(\beta x)\)</span> et suppose que la fonction de risque de base <span class="math inline">\(h_0(t)\)</span> est indépendante de la variable explicative <span class="math inline">\(X\)</span>. Une manière de modéliser la non-proportionnalité est d’inclure un terme d’interaction entre la variable et le temps. Il existe plusieurs façons de le faire, l’une d’entre elles consiste à inclure une nouvelle variable qui est le produit entre le temps et la variable <span class="math inline">\(X\)</span>. Le modèle est alors <span class="math display">\[h(t; x) = h_0(t) \exp(\beta_1x + \beta_2xt).\]</span>
+Pour ce modèle, le rapport de risque, pour une augmentation d’une unité de <span class="math inline">\(X\)</span> est <span class="math inline">\(\exp(\beta_1+ \beta_2t)\)</span> et dépend du temps <span class="math inline">\(t\)</span>: c’est un modèle avec risques non proportionnels. On retombe sur le modèle à risques proportionnels lorsque <span class="math inline">\(\beta_2=0\)</span>.</p>
+<p>Ajustons le modèle pour l’abonnement cellulaire en ajoutant une interaction entre l’âge et le temps. Les commandes se trouvent dans <code>survival5_non_proportionnel.sas</code>, dont l’extrait montre comment créer la variable produit.</p>
+<pre class="sas"><code>proc phreg data=temp;
+class region(ref=&#39;5&#39;) service(ref=&#39;0&#39;) / param=ref;
+model t*censure(1)=age iaget sexe region service / ties=exact;
+iaget=age*t; 
+run;</code></pre>
+<p>L’interaction entre l’âge et le temps est spécifiée en incluant une nouvelle variable, <span class="math inline">\(\texttt{iaget}\)</span>, créée à l’intérieur de l’appel à la procédure <code>phreg</code>, et qui est égale au produit entre l’<span class="math inline">\(\texttt{age}\)</span> et <span class="math inline">\(\texttt{t}\)</span>. On remarque que le terme d’interaction est tout juste non significatif (valeur-<span class="math inline">\(p\)</span> de 0,061).</p>
+<p><img src="figures/05-survie-e30.png" width="85%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="stratification" class="section level3">
+<h3><span class="header-section-number">6.7.2</span> Stratification</h3>
+<p>Une autre manière de modéliser la non-proportionnalité est par la stratification. Il est important de comprendre qu’on ne pourra pas estimer l’effet de la variable de stratification. On devrait donc seulement utiliser une variable qui ne nous intéresse pas en soi, mais qui peut avoir un effet sur le temps de survie.</p>
+<p>Encore une fois, pour simplifier, supposons que nous avons deux variables <span class="math inline">\(X\)</span> et <span class="math inline">\(Z\)</span>; cette dernière est binaire et prend les valeurs <span class="math inline">\(0\)</span> et <span class="math inline">\(1\)</span>. On s’intéresse à l’effet de la variable <span class="math inline">\(X\)</span> mais pas à celui de la variable <span class="math inline">\(Z\)</span>; néanmoins, on croit que <span class="math inline">\(Z\)</span> impacte le temps de survie et que, de ce fait, le postulat de proportionnalité de la fonction de risque n’est pas validé. Le modèle de Cox avec stratification (pour la variable <span class="math inline">\(Z\)</span>) est
+<span class="math display">\[\begin{align*}
+h(t; x, z) = h_z(t) \exp(\beta x),
+\end{align*}\]</span>
+où <span class="math inline">\(h_0(t)\)</span> est la fonction de risque de base quand <span class="math inline">\(Z=0\)</span> et <span class="math inline">\(h_1(t)\)</span> est la fonction de risque de base lorsque <span class="math inline">\(Z=1\)</span>. L’effet de la variable <span class="math inline">\(X\)</span> est supposé être le même peut importe la valeur de <span class="math inline">\(Z\)</span>, mais la fonction de risque de base peut différer. Le rapport de risque pour <span class="math inline">\(Z=1\)</span> versus <span class="math inline">\(Z=0\)</span> est <span class="math inline">\(h_1(t)/h_0(t)\)</span>; cette quantité dépend du temps <span class="math inline">\(t\)</span>. L’effet de la variable est donc variable dans le temps (et non pas constant). Ce modèle permet donc de modéliser la non-proportionnalité pour la variable <span class="math inline">\(Z\)</span>. Si on stratifie par rapport à une variable, il ne faut pas l’inclure dans le modèle en plus car elle est déjà modélisée via la stratification.</p>
+<p>L’avantage de la stratification est que cette méthode permet de modéliser n’importe quel changement dans l’effet d’une variable dans le temps sans devoir spécifier un type de changement particulier, comme lorsqu’on doit choisir la forme de l’interaction. Par contre, on perd la possibilité de tester l’effet de la variable de stratification on réduit la taille de l’échantillon pour l’estimation de la fonction de risque de base. On devrait donc utiliser la stratification seulement avec des variables pour lesquelles nous n’avons pas besoin d’estimer l’effet (variables secondaires ou de contrôles).</p>
+<p>On considère la stratification par rapport à la région pour notre modèle pour le temps d’abonnement à un forfait cellulaire; un test permet de voir que l’hypothèse de non-proportionnalité des fonctions de risque n’est pas valide pour région. Le modèle contient toutes les variables explicative, hormis région qui est utilisée pour la stratification.</p>
+<p>Les commandes pour ajuster le modèle sont</p>
+<pre class="sas"><code>proc phreg data=multi.survival1;
+class service(ref=&#39;0&#39;) / param=ref;
+model t*censure(1)=âge sexe service / ties=exact;
+strata region;
+run;</code></pre>
+<p><img src="figures/05-survie-e31.png" width="75%" style="display: block; margin: auto;" /></p>
+<p><img src="figures/05-survie-e32.png" width="85%" style="display: block; margin: auto;" /></p>
+<p>On voit à la lecture de la sortie <strong>SAS</strong> qu’il n’y a pas de paramètres pour la variable région. Les paramètres des autres variables s’interprètent comme d’habitude.</p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="analyse-de-regroupements-1.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="données-manquantes-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["MATH60602.pdf", "MATH60602.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

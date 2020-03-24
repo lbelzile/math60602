@@ -341,74 +341,74 @@ ggplot(data = emqdat, aes(x=ordre, y=emq)) +
 
 Nous allons présenter un exemple classique de commercialisation de bases de données qui nous servira à illustrer la sélection de modèles, la régression logistique et la gestion de données manquantes. 
 
-Le contexte est le suivant : une entreprise possède une grande base de données client. Elle désire envoyer un catalogue à ses clients mais souhaite maximiser les revenus d’une telle initiative. Il est évidemment possible d’envoyer le catalogue à tous les clients mais ce n’est possiblement pas optimal. La stratégie envisagée est la suivante :
+Le contexte est le suivant : une entreprise possède une grande base de données client. Elle désire envoyer un catalogue à ses clients mais souhaite maximiser les revenus d'une telle initiative. Il est évidemment possible d'envoyer le catalogue à tous les clients mais ce n'est possiblement pas optimal. La stratégie envisagée est la suivante :
 
-1. Envoyer le catalogue à un échantillon de clients et attendre les réponses. Le coût de l’envoi d’un catalogue est de 10\$. 
+1. Envoyer le catalogue à un échantillon de clients et attendre les réponses. Le coût de l'envoi d'un catalogue est de 10\$. 
 2. Construire un modèle avec cet échantillon afin de décider à quels clients (parmi les autres) le catalogue devrait être envoyé, afin de maximiser les revenus.
 
-Plus précisément, on s’intéresse aux clients de 18 ans et plus qui ont au moins un an d’historique avec l’entreprise et qui ont fait au moins un achat au cours de la dernière année.  Il y a 101 000  clients dans la base de données. La première étape de la stratégie consiste à envoyer le catalogue à un échantillon de 1000 clients. Par la suite, un modèle sera construit avec ces 1000 clients afin de cibler lesquels des 100 000 clients restants seront choisis pour recevoir le catalogue. Les 1000 clients forment l’échantillon d’apprentissage. Pour les 1000 clients de l’échantillon d’apprentissage, les deux variables cibles suivantes sont disponibles :
+Plus précisément, on s'intéresse aux clients de 18 ans et plus qui ont au moins un an d'historique avec l'entreprise et qui ont fait au moins un achat au cours de la dernière année.  Il y a 101 000  clients dans la base de données. La première étape de la stratégie consiste à envoyer le catalogue à un échantillon de 1000 clients. Par la suite, un modèle sera construit avec ces 1000 clients afin de cibler lesquels des 100 000 clients restants seront choisis pour recevoir le catalogue. Les 1000 clients forment l'échantillon d'apprentissage. Pour les 1000 clients de l'échantillon d'apprentissage, les deux variables cibles suivantes sont disponibles :
 
 - `yachat`, une variable binaire qui indique si le client a acheté quelque chose dans le catalogue égale à 1 si oui et 0 sinon.
-- `ymontant`, le montant de l’achat si le client a acheté quelque chose.
+- `ymontant`, le montant de l'achat si le client a acheté quelque chose.
 
-Les 10 variables suivantes sont disponibles pour tous les clients et serviront de variables explicatives pour les deux variables cibles. Il s’agit de : 
+Les 10 variables suivantes sont disponibles pour tous les clients et serviront de variables explicatives pour les deux variables cibles. Il s'agit de : 
 
 - `x1`: sexe de l'individu, soit homme (0) ou femme (1);
 - `x2`: l'âge (en année);
 - `x3`: variable catégorielle indiquant le revenu, soit moins de 35 000\$ (1), entre 35 000\$ et 75 000\$ (2) ou plus de 75 000$ (3);
 - `x4`: variable catégorielle indiquant la région où habite le client (de 1 à 5);
 - `x5`: conjoint : le client a-t-il un conjoint (0=non, 1=oui);
-- `x6`: nombre d’année depuis que le client est avec la compagnie;
+- `x6`: nombre d'année depuis que le client est avec la compagnie;
 - `x7`: nombre de semaines depuis le dernier achat;
 - `x8`: montant (en dollars) du dernier achat;
 - `x9`: montant total (en dollars) dépensé depuis un an;
-- `x10`: nombre d’achats différents depuis un an.
+- `x10`: nombre d'achats différents depuis un an.
 
-Les données se trouvent dans le fichier `DBM.sas7bdat`. Lors d’une vraie application, nous aurions seulement les valeurs des variables cibles `yachat` et `ymontant` pour l'échantillon d'apprentissage (car eux seuls ont reçu le catalogue).  Dans notre exemple, elles sont fournies pour tous les clients afin de pouvoir évaluer la performance des différentes stratégies testées. Les modèles seront déterminés (sélectionnés et ajustés) en utilisant seulement l'échantillon d'apprentissage (1000 clients). Les 100 000 autres clients serviront d'échantillon test pour évaluer la performance des modèles et, plus précisément, afin d’évaluer les revenus (ou d’autres mesures de performance) si ces modèles avaient été utilisés. L’échantillon test nous donnera donc l’heure juste quant aux mérites des différentes approches que nous allons comparer.
+Les données se trouvent dans le fichier `DBM.sas7bdat`. Lors d'une vraie application, nous aurions seulement les valeurs des variables cibles `yachat` et `ymontant` pour l'échantillon d'apprentissage (car eux seuls ont reçu le catalogue).  Dans notre exemple, elles sont fournies pour tous les clients afin de pouvoir évaluer la performance des différentes stratégies testées. Les modèles seront déterminés (sélectionnés et ajustés) en utilisant seulement l'échantillon d'apprentissage (1000 clients). Les 100 000 autres clients serviront d'échantillon test pour évaluer la performance des modèles et, plus précisément, afin d'évaluer les revenus (ou d'autres mesures de performance) si ces modèles avaient été utilisés. L'échantillon test nous donnera donc l'heure juste quant aux mérites des différentes approches que nous allons comparer.
 
-Voici d’abord des statistiques descriptives pour l’échantillon d’apprentissage.
+Voici d'abord des statistiques descriptives pour l'échantillon d'apprentissage.
 
 ```{r fig2p1_fig3, echo = FALSE, out.width='60%', fig.align = "center"}
 knitr::include_graphics("figures/02-select-e3.png")
 ```
-Il y a donc $46,6$% de femmes parmi les 1000 clients de l’échantillon. De plus, $39,7$% ont un revenu de moins de 35 000\$, $33,7$% sont entre 35 000\$ et 75 000\$ et $26,6$% ont plus de 75 000\$. $42,5$% de ces clients qui ont un conjoint. 
+Il y a donc $46,6$% de femmes parmi les 1000 clients de l'échantillon. De plus, $39,7$% ont un revenu de moins de 35 000\$, $33,7$% sont entre 35 000\$ et 75 000\$ et $26,6$% ont plus de 75 000\$. $42,5$% de ces clients qui ont un conjoint. 
 ```{r fig2p1_fig4, echo = FALSE, out.width='90%', fig.align = "center"}
 knitr::include_graphics("figures/02-select-e4.png")
 ```
-Le nombre d’achats différents depuis un an par ces clients varie entre 1 et 14. Un peu plus de la moitié ($51,4$%) ont fait 5 achats ou moins. Parmi les 1000 clients de l’échantillon d’apprentissage, 210 ont acheté quelque chose dans le catalogue. La variable yachat sera l’une des variables que nous allons chercher à modéliser en vue d’obtenir des prédictions.
+Le nombre d'achats différents depuis un an par ces clients varie entre 1 et 14. Un peu plus de la moitié ($51,4$%) ont fait 5 achats ou moins. Parmi les 1000 clients de l'échantillon d'apprentissage, 210 ont acheté quelque chose dans le catalogue. La variable yachat sera l'une des variables que nous allons chercher à modéliser en vue d'obtenir des prédictions.
 ```{r fig2p1_fig5, echo = FALSE, out.width='90%', fig.align = "center"}
 knitr::include_graphics("figures/02-select-e5.png")
 ```
 
-L’âge des 1000 clients de l'échantillon d'apprentissage varie entre 20 et 70 avec une moyenne de $37,1$ ans. En moyenne, ces clients ont acheté pour $229,3$\$ depuis un an. Le dernier achat de ces clients remonte, en moyenne, à 10 semaines. Nous chercherons également à modéliser la variable `ymontant`. Seuls 210 clients ont acheté quelque chose dans le catalogue et les statistiques rapportées correspondent seulement à ces derniers, car la variable `ymontant` est manquante si le client n’a rien acheté dans le catalogue. On pourrait également remplacer ces valeurs par des zéros et les modéliser, mais nous aborderons cet aspect ultérieurement. Les clients qui ont acheté quelque chose ont dépensé en moyenne $67,3$\$, et au minimum $25$\$. Les histogrammes de quelques unes de ces variables permet de mieux visualiser la répartition des observations.
+L'âge des 1000 clients de l'échantillon d'apprentissage varie entre 20 et 70 avec une moyenne de $37,1$ ans. En moyenne, ces clients ont acheté pour $229,3$\$ depuis un an. Le dernier achat de ces clients remonte, en moyenne, à 10 semaines. Nous chercherons également à modéliser la variable `ymontant`. Seuls 210 clients ont acheté quelque chose dans le catalogue et les statistiques rapportées correspondent seulement à ces derniers, car la variable `ymontant` est manquante si le client n'a rien acheté dans le catalogue. On pourrait également remplacer ces valeurs par des zéros et les modéliser, mais nous aborderons cet aspect ultérieurement. Les clients qui ont acheté quelque chose ont dépensé en moyenne $67,3$\$, et au minimum $25$\$. Les histogrammes de quelques unes de ces variables permet de mieux visualiser la répartition des observations.
 ```{r fig2p1_fig6, echo = FALSE, out.width='90%', fig.align = "center"}
 knitr::include_graphics("figures/02-select-e6.png")
 ```
 
-Il y a plusieurs façons d’utiliser l’échantillon d’apprentissage afin de mieux cibler les clients à qui envoyer le catalogue et maximiser les revenus.  En voici quelques unes.
+Il y a plusieurs façons d'utiliser l'échantillon d'apprentissage afin de mieux cibler les clients à qui envoyer le catalogue et maximiser les revenus.  En voici quelques unes.
 
-a) On pourrait développer un modèle afin d’estimer la probabilité qu’un client achète quelque chose si on lui envoie un catalogue. Plus précisément, on peut développer un modèle pour $\Pr(\texttt{yachat}=1)$. Comme la variable `yachat` est binaire, un modèle possible est la régression logistique, que nous décrirons au chapitre suivant. Ainsi, en appliquant le modèle aux 100 000 clients restant, on pourra cibler les clients susceptibles d’acheter (ceux avec une probabilité élevée). 
-b) Une autre façon serait de tenter de prévoir le montant d’argent dépensé. Nous venons de voir la distribution de la variable `ymontant`. Il y a deux situations, ceux qui ont acheté et ceux qui n’ont pas achetés.  En conditionnant sur le fait d’avoir acheté quelque chose, il est possible de décomposer le problème de la manière suivante :
+a) On pourrait développer un modèle afin d'estimer la probabilité qu'un client achète quelque chose si on lui envoie un catalogue. Plus précisément, on peut développer un modèle pour $\Pr(\texttt{yachat}=1)$. Comme la variable `yachat` est binaire, un modèle possible est la régression logistique, que nous décrirons au chapitre suivant. Ainsi, en appliquant le modèle aux 100 000 clients restant, on pourra cibler les clients susceptibles d'acheter (ceux avec une probabilité élevée). 
+b) Une autre façon serait de tenter de prévoir le montant d'argent dépensé. Nous venons de voir la distribution de la variable `ymontant`. Il y a deux situations, ceux qui ont acheté et ceux qui n'ont pas achetés.  En conditionnant sur le fait d'avoir acheté quelque chose, il est possible de décomposer le problème de la manière suivante :
 
 \begin{align*} 
 \E{\texttt{ymontant}} &= \E{\texttt{ymontant} \mid \texttt{yachat}=1} \P{\texttt{yachat}=1} \\& \qquad \qquad \qquad +
 \E{\texttt{ymontant} \mid \texttt{yachat}=0} \P{\texttt{yachat}=0} \\
  &= \E{\texttt{ymontant} \mid \texttt{yachat}=1} \P{\texttt{yachat}=1}
 \end{align*}
-En mots, la moyenne du montant dépensé est égale à la moyenne du montant dépensé étant donné qu’il y a eu achat, fois la probabilité qu’il ait eu achat. 
+En mots, la moyenne du montant dépensé est égale à la moyenne du montant dépensé étant donné qu'il y a eu achat, fois la probabilité qu'il ait eu achat. 
 
-On peut donc estimer $\E{\texttt{ymontant} \mid \texttt{yachat}=1}$ et $\P{\texttt{yachat}=1}$, pour ensuite les combiner et avoir une estimation de $\E{\texttt{ymontant}}$. Le développement du modèle pour $\E{\texttt{ymontant} \mid \texttt{yachat}=1}$ peut se faire avec la régression linéaire, en utilisant seulement les clients qui ont acheté dans l’échantillon d’apprentissage, car ymontant est une variable continue dans ce cas. Le développement du modèle pour $\P{\texttt{yachat}=1}$ peut se faire avec la régression logistique, tel que mentionné plus haut, en utilisant tous les 1000 clients de l’échantillon d’apprentissage. En fait, nous verrons plus loin qu’il est possible d’estimer conjointement les deux modèles avec un modèle Tobit. En appliquant le modèle aux 100 000 clients restants, on pourra cibler les clients qui risquent de dépenser un assez grand montant.
+On peut donc estimer $\E{\texttt{ymontant} \mid \texttt{yachat}=1}$ et $\P{\texttt{yachat}=1}$, pour ensuite les combiner et avoir une estimation de $\E{\texttt{ymontant}}$. Le développement du modèle pour $\E{\texttt{ymontant} \mid \texttt{yachat}=1}$ peut se faire avec la régression linéaire, en utilisant seulement les clients qui ont acheté dans l'échantillon d'apprentissage, car ymontant est une variable continue dans ce cas. Le développement du modèle pour $\P{\texttt{yachat}=1}$ peut se faire avec la régression logistique, tel que mentionné plus haut, en utilisant tous les 1000 clients de l'échantillon d'apprentissage. En fait, nous verrons plus loin qu'il est possible d'estimer conjointement les deux modèles avec un modèle Tobit. En appliquant le modèle aux 100 000 clients restants, on pourra cibler les clients qui risquent de dépenser un assez grand montant.
 
-Comme nous n’avons pas encore vu la régression logistique, nous allons nous limiter à illustrer les méthodes qui restent à voir dans ce chapitre avec la régression linéaire en cherchant à développer un modèle pour $\E{\texttt{ymontant} \mid \texttt{yachat}=1}$, le montant d’argent dépensé par les clients qui ont acheté quelque chose.
+Comme nous n'avons pas encore vu la régression logistique, nous allons nous limiter à illustrer les méthodes qui restent à voir dans ce chapitre avec la régression linéaire en cherchant à développer un modèle pour $\E{\texttt{ymontant} \mid \texttt{yachat}=1}$, le montant d'argent dépensé par les clients qui ont acheté quelque chose.
 
-Le fichier `prepare_DBM.sas` contient des commandes afin de préparer les données aux analyses qui seront présentées dans les sections qui suivent. En particulier, nous avons deux variables explicatives catégorielles. Il s’agit de revenu (`x3`) et région (`x4`). Il faut coder d’une manière appropriée afin de pouvoir les incorporer dans les modèles. La manière habituelle est de créer des variables indicatrices (binaires) qui indiquent si la variable prend ou non une valeur particulière. En général, si une variable catégorielle possède $K$ valeurs possibles, il est suffisant de créer $K-1$ indicatrices, en laissant une modalité comme référence. Par exemple, pour `X3`, nous allons créer deux variables,
+Le fichier `prepare_DBM.sas` contient des commandes afin de préparer les données aux analyses qui seront présentées dans les sections qui suivent. En particulier, nous avons deux variables explicatives catégorielles. Il s'agit de revenu (`x3`) et région (`x4`). Il faut coder d'une manière appropriée afin de pouvoir les incorporer dans les modèles. La manière habituelle est de créer des variables indicatrices (binaires) qui indiquent si la variable prend ou non une valeur particulière. En général, si une variable catégorielle possède $K$ valeurs possibles, il est suffisant de créer $K-1$ indicatrices, en laissant une modalité comme référence. Par exemple, pour `x3`, nous allons créer deux variables,
 
 - `x31`: variable binaire égale à 1 si `x3` égale 1 et 0 sinon,
 - `x32`: variable binaire égale à 1 si `x3` égale 2 et 0 sinon.
 
-Ainsi, la valeur 3 est celle de référence. Ces deux indicatrices sont suffisantes pour récupérer toute l’information comme le démontre le tableau @\ref(tab:02-dummy).
+Ainsi, la valeur 3 est celle de référence. Ces deux indicatrices sont suffisantes pour récupérer toute l'information comme le démontre le tableau \@ref(tab:02-dummy).
 
-Table: (\#tab:02-dummy) Valeur des indicateurs en fonction du niveau de la variable catégorique  
+Table: (\#tab:02-dummy) Valeur des indicateurs en fonction du niveau de la variable catégorielle 
 
 | `x3` | `x31` | `x32` |
 |:----:|:-----:|:-----:|
@@ -416,14 +416,14 @@ Table: (\#tab:02-dummy) Valeur des indicateurs en fonction du niveau de la varia
 |   2  |   0   |   1   |
 |   3  |   0   |   0   |
 
-En pratique, il suffit d’incorporer les indicatrices (`x31` et `x32`) dans le modèle comme variables explicatives et de ne plus utiliser la variable originale `x3`. On peut aussi procéder ainsi pour la variable `x4`, en créant quatre indicatrices.
+En pratique, il suffit d'incorporer les indicatrices (`x31` et `x32`) dans le modèle comme variables explicatives et de ne plus utiliser la variable originale `x3`. On peut aussi procéder ainsi pour la variable `x4`, en créant quatre indicatrices.
 
 ## Recherche automatique du meilleur modèle
 
-Lorsque nous voulons comparer un petit nombre de modèles, il est relativement aisé d’obtenir les critères ($\mathsf{AIC}$, $\mathsf{BIC}$ ou autre) pour tous les modèles et de choisir le meilleur. C’était le cas dans l’exemple du choix de l’ordre du polynôme où il y avait seulement 10 modèles en compétitions. 
-Mais lorsqu’il y a plusieurs variables en jeu, le nombre de modèles potentiel augmente très rapidement. 
+Lorsque nous voulons comparer un petit nombre de modèles, il est relativement aisé d'obtenir les critères ($\mathsf{AIC}$, $\mathsf{BIC}$ ou autre) pour tous les modèles et de choisir le meilleur. C'était le cas dans l'exemple du choix de l'ordre du polynôme où il y avait seulement 10 modèles en compétitions. 
+Mais lorsqu'il y a plusieurs variables en jeu, le nombre de modèles potentiel augmente très rapidement. 
 
-En fait, supposons qu’on a $p$ variables distinctes disponibles. Avant même de considérer les transformations des variables et les interactions entre elles, il y a déjà  modèles possibles. En effet, chaque variable est soit incluse ou pas (deux possibilités) et donc il y a $2^p=2\times 2 \times \cdots \times 2$ ($p$ fois) modèles en tout à considérer. Ce nombre augmente très rapidement comme en témoigne le tableau \@ref(tab:02-table3). 
+En fait, supposons qu'on a $p$ variables distinctes disponibles. Avant même de considérer les transformations des variables et les interactions entre elles, il y a déjà  modèles possibles. En effet, chaque variable est soit incluse ou pas (deux possibilités) et donc il y a $2^p=2\times 2 \times \cdots \times 2$ ($p$ fois) modèles en tout à considérer. Ce nombre augmente très rapidement comme en témoigne le tableau \@ref(tab:02-table3). 
 
 ```{r 02-table3, echo=FALSE, eval = TRUE}
 p <- c(5,10,15,20,25,30)
@@ -437,14 +437,14 @@ knitr::kable(x = data.frame(p = p, npar = npar),
             caption = "Nombres de modèles en fonction du nombre de paramètres $p$.")
 ```
 
-Ainsi, si le nombre de variables est restreint, il est possible de comparer tous les modèles potentiels et de choisir le meilleur (selon un critère). II existe même des algorithmes très efficaces qui permettent de trouver le meilleur modèle sans devoir examiner tous les modèles possibles. Le nombre de variables qu’il est possible d’avoir dépend de la puissance de calcul et augmente d’année en année.  Par contre, dans plusieurs applications, il ne sera pas possible de comparer tous les modèles et il faudra effectuer une recherche limitée. 
+Ainsi, si le nombre de variables est restreint, il est possible de comparer tous les modèles potentiels et de choisir le meilleur (selon un critère). II existe même des algorithmes très efficaces qui permettent de trouver le meilleur modèle sans devoir examiner tous les modèles possibles. Le nombre de variables qu'il est possible d'avoir dépend de la puissance de calcul et augmente d'année en année.  Par contre, dans plusieurs applications, il ne sera pas possible de comparer tous les modèles et il faudra effectuer une recherche limitée. 
 
-Faire une recherche exhaustive parmi tous les modèles possibles s’appelle sélection de tous les sous-ensembles (_best subsets_). La procédure `reg` de **SAS** permet de faire cela pour la régression linéaire. 
+Faire une recherche exhaustive parmi tous les modèles possibles s'appelle sélection de tous les sous-ensembles (_best subsets_). La procédure `reg` de **SAS** permet de faire cela pour la régression linéaire. 
 
 
 ## Recherche automatique de tous les sous-ensembles
 
-On veut trouver un bon modèle pour prévoir la valeur de `ymontant` des clients qui ont acheté quelque chose. On a vu qu’il y a 210 clients qui ont acheté dans l’échantillon d’apprentissage. Nous allons chercher à développer un « bon » modèle avec ces 210 clients. Dans ce premier exemple, nous allons seulement utiliser les 10 variables explicatives de base (14 variables avec les indicatrices). Le code suivant montre comment faire une sélection de variables selon le critère du $R^2$ et demande à **SAS** de présenter le modèle à $k$ variables ($k=1, \ldots, 14$) qui a le plus grand $R^2$; voir `selection2_all_subset.sas` pour plus de détails. 
+On veut trouver un bon modèle pour prévoir la valeur de `ymontant` des clients qui ont acheté quelque chose. On a vu qu'il y a 210 clients qui ont acheté dans l'échantillon d'apprentissage. Nous allons chercher à développer un « bon » modèle avec ces 210 clients. Dans ce premier exemple, nous allons seulement utiliser les 10 variables explicatives de base (14 variables avec les indicatrices). Le code suivant montre comment faire une sélection de variables selon le critère du $R^2$ et demande à **SAS** de présenter le modèle à $k$ variables ($k=1, \ldots, 14$) qui a le plus grand $R^2$; voir `selection2_all_subset.sas` pour plus de détails. 
 
 ```{sas, eval = FALSE}
 proc reg data=trainymontant;
@@ -457,18 +457,18 @@ Ainsi, le modèle linéaire simple qui a le plus grand $R^2$ est celui qui inclu
 
 Pour un nombre de variables fixé, le meilleur modèle selon le $R^2$ est aussi le meilleur selon les critères d'information $\mathsf{AIC}$ et $\mathsf{BIC}$, pour ce nombre fixé de variables. Pour vous convaincre de cette affirmation, fixons le nombre de variables et restreignons-nous seulement aux modèles avec ce nombre de variables. Comme = $1 - \mathsf{SCE}/\mathsf{SCT}$ et que $\mathsf{SCT}$ est une constante indépendante du modèle, le modèle avec le plus grand coefficient de détermination, $R^2$, est aussi celui avec la plus petite somme du carré des erreurs ($\mathsf{SCE}$). Comme $\mathsf{AIC}=n (\ln (\mathsf{SCE}/n)) + 2p$, ce sera aussi celui avec le plus petit $\mathsf{AIC}$ car la pénalité $2p$ est la même si on fixe le nombre de variables; la même remarque est valide pour le $\mathsf{BIC}$. 
 
-Ainsi, pour trouver le meilleur modèle globalement (sans fixer le nombre de variables), il suffit de trouver le modèle à $k$ variables explicatives ayant le coefficient de détermination le plus élevé pour tous les nombres de variables fixés et d’ensuite de trouver celui qui minimise le $\mathsf{AIC}$ (ou le $\mathsf{BIC}$) parmi ces modèles. Cette astuce est utile dans la mesure où **SAS** ne permet pas de faire cette même recherche avec les critères d'information.
+Ainsi, pour trouver le meilleur modèle globalement (sans fixer le nombre de variables), il suffit de trouver le modèle à $k$ variables explicatives ayant le coefficient de détermination le plus élevé pour tous les nombres de variables fixés et d'ensuite de trouver celui qui minimise le $\mathsf{AIC}$ (ou le $\mathsf{BIC}$) parmi ces modèles. Cette astuce est utile dans la mesure où **SAS** ne permet pas de faire cette même recherche avec les critères d'information.
 
 ```{r fig2p2_fig7, echo = FALSE, out.width='90%', fig.align = "center"}
 knitr::include_graphics("figures/02-select-e7.png")
 ```
 
 
-Dans l’exemple, on voit que le modèle avec les variables `x1` `x2` `x31` `x44` `x5` `x6` `x7` `x8` `x9` et `x10` est celui qui minimise le $\mathsf{AIC}$ globalement ($\mathsf{AIC}=660.15$). Le modèle choisi par le $\mathsf{BIC}$ contient seulement sept variables explicatives (plutôt que 10), soit `x1` `x31` `x5` `x6` `x7` `x8` `x10`.
+Dans l'exemple, on voit que le modèle avec les variables `x1` `x2` `x31` `x44` `x5` `x6` `x7` `x8` `x9` et `x10` est celui qui minimise le $\mathsf{AIC}$ globalement ($\mathsf{AIC}=660.15$). Le modèle choisi par le $\mathsf{BIC}$ contient seulement sept variables explicatives (plutôt que 10), soit `x1` `x31` `x5` `x6` `x7` `x8` `x10`.
 
 Nous allons utiliser les 100 000 autres clients pour évaluer la performance réelle des modèles qui nous sont suggérés par nos différents critères. En pratique, nous ne pourrions pas faire cela car la valeur de la variable cible ne serait pas connue pour ces clients. En fait, dans une vraie application, nous utiliserions plutôt les modèles pour obtenir des prédictions pour les clients à « scorer ». Les valeurs des variables cibles pour les 100 000 clients nous permettront de voir à quel point différentes stratégies auraient été profitables si elles avaient été mises en place. Parmi, les 100 000 clients restants, il y en a 23 179 qui auraient acheté quelque chose si on leur avait envoyé le catalogue. Ces 23 179 observations vont nous servir pour estimer l'erreur moyenne quadratique (théorique) des modèles retenus par nos critères (voir le fichier `selection2_all_subset.sas` pour les manipulations).
 
-Voici l’estimation de l'erreur moyenne quadratique (moyenne des carrés des erreurs) pour les deux modèles retenus par le $\mathsf{AIC}$ et le $\mathsf{BIC}$. Le tableau \@ref(tab:02-gmse-base) contient aussi l’estimation de l'erreur moyenne quadratique si on utilise toutes les variables (14 en incluant les indicatrices) sans faire de sélection.
+Voici l'estimation de l'erreur moyenne quadratique (moyenne des carrés des erreurs) pour les deux modèles retenus par le $\mathsf{AIC}$ et le $\mathsf{BIC}$. Le tableau \@ref(tab:02-gmse-base) contient aussi l'estimation de l'erreur moyenne quadratique si on utilise toutes les variables (14 en incluant les indicatrices) sans faire de sélection.
 
 
 Table: (\#tab:02-gmse-base) Estimation de l'erreur moyenne quadratique sur l'échantillon test avec les variables de base. Les meilleurs modèles selon les  critères d'informations découlent d'une recherche exhaustive de tous les sous-ensembles.
@@ -481,24 +481,24 @@ Table: (\#tab:02-gmse-base) Estimation de l'erreur moyenne quadratique sur l'éc
 
 On voit que le modèle choisi par le $\mathsf{BIC}$ est le meilleur des trois, car l'erreur moyenne quadratique sur l'échantillon test est de $3,6$\% inférieure à celle du modèle choisi par le $\mathsf{AIC}$. Ces deux méthodes font mieux que le modèle qui inclut toutes les variables sans faire de sélection.
 
-Nous avons seulement inclus les variables de base pour ce premier essai. Il est possible qu’ajouter des variables supplémentaires améliore la performance du modèle. Pour cet exemple, nous allons considérer les variables suivantes:
+Nous avons seulement inclus les variables de base pour ce premier essai. Il est possible qu'ajouter des variables supplémentaires améliore la performance du modèle. Pour cet exemple, nous allons considérer les variables suivantes:
 
 - les variables continues au carré, comme $\texttt{age}^2$.
-- toutes les interactions d’ordre deux entre les variables de base, comme $\texttt{sexe}\cdot\texttt{age}$. 
+- toutes les interactions d'ordre deux entre les variables de base, comme $\texttt{sexe}\cdot\texttt{age}$. 
 
-Toutes ces variables sont créées dans `prepare_DBM.sas`. Aux variables de base (10 variables explicatives, mais 14 avec les indicatrices pour les variables catégorielles), s’ajoutent ainsi 90 autres variables. Il y a donc 104 variables explicatives potentielles. Notez qu’il y a des interactions entre chacune des variables indicatrices et chacune des autres variables, mais il ne sert à rien de calculer une interaction entre deux indicatrices d’une même variable (car une telle variable est zéro pour tous les individus). De même, il ne sert à rien de calculer le carré d’une variable binaire. 
+Toutes ces variables sont créées dans `prepare_DBM.sas`. Aux variables de base (10 variables explicatives, mais 14 avec les indicatrices pour les variables catégorielles), s'ajoutent ainsi 90 autres variables. Il y a donc 104 variables explicatives potentielles. Notez qu'il y a des interactions entre chacune des variables indicatrices et chacune des autres variables, mais il ne sert à rien de calculer une interaction entre deux indicatrices d'une même variable (car une telle variable est zéro pour tous les individus). De même, il ne sert à rien de calculer le carré d'une variable binaire. 
 
 Lancer une sélection exhaustive de tous les sous-modèles avec 104 variables risque de prendre un temps énorme. Que faire alors? Il y a plusieurs possibilités. Nous pourrions faire une recherche limitée avec les méthodes que nous allons voir à partir de la section suivante. Nous pourrions aussi combiner les deux approches. Supposons que notre ordinateur permet de faire une recherche exhaustive de tous les sous-modèles avec 40 variables. Nous pourrions alors commencer avec une recherche limitée pour trouver un sous-ensemble de 40 « bonnes » variables et faire une recherche exhaustive, mais en se restraignant à ces 40 variables.
 
 
 ## Méthodes classiques de sélection ascendante, descendante et séquentielle
 
-Les méthodes de sélection ascendante, descendante et séquentielle sont des algorithmes gloutons qui permettent de choisir des variables. Elles ont été développées à une époque où la puissance de calcul était bien moindre, et où il était impossible de faire une recherche exhaustive des sous-modèles. Avec l’approche classique, ces méthodes font une recherche séquentielle guidée parmi un nombre limité de modèles, à l’aide des valeurs-_p_ du test-_t_ pour la significativité des paramètres individuels du modèle avec $p$ prédicteurs potentiels $X_1,\ldots, X_p$. Les procédures `glmselect` et `reg` permettent une sélection de modèle avec une approche séquentielle, ascendante ou descendante.
+Les méthodes de sélection ascendante, descendante et séquentielle sont des algorithmes gloutons qui permettent de choisir des variables. Elles ont été développées à une époque où la puissance de calcul était bien moindre, et où il était impossible de faire une recherche exhaustive des sous-modèles. Avec l'approche classique, ces méthodes font une recherche séquentielle guidée parmi un nombre limité de modèles, à l'aide des valeurs-_p_ du test-_t_ pour la significativité des paramètres individuels du modèle avec $p$ prédicteurs potentiels $X_1,\ldots, X_p$. Les procédures `glmselect` et `reg` permettent une sélection de modèle avec une approche séquentielle, ascendante ou descendante.
 
 
 ### Sélection ascendante
 
-L’idée de la sélection ascendante est de tester l’ajout de chaque variable individuellement et d’ajouter celle qui est la plus significative selon le test-_t_ si elle a une valeur-_p_ assez petite. 
+L'idée de la sélection ascendante est de tester l'ajout de chaque variable individuellement et d'ajouter celle qui est la plus significative selon le test-_t_ si elle a une valeur-_p_ assez petite. 
 
 - *Initialisation*: le modèle linéaire de départ est celui qui n'inclut que l'ordonnée à l'origine, $Y=\beta_0+\eps$, où $\eps$ est une erreur centrée.
 - *Critère d'entrée*: $c$, valeur-_p_ minimale à partir de laquelle une variable peut être incluse dans le modèle (`proc reg` utilise par défaut 0.5).
@@ -508,7 +508,7 @@ L’idée de la sélection ascendante est de tester l’ajout de chaque variable
         - si $p_{\min}<c$, continuer la procédure.
         - si $p_{\min} \geq c$, retourner le modèle $Y=\beta_0 + \sum_{i=1}^k \beta_iX_{(i)}+\eps$.
 
-On continue ainsi à ajouter des variables jusqu’à ce que le critère d’entrée ne soit pas satisfait. Si on se rend jusqu’au bout, on va terminer avec le modèle complet qui contient toutes les variables.
+On continue ainsi à ajouter des variables jusqu'à ce que le critère d'entrée ne soit pas satisfait. Si on se rend jusqu'au bout, on va terminer avec le modèle complet qui contient toutes les variables.
 
 
 ### Sélection descendante
@@ -522,19 +522,19 @@ On continue ainsi à ajouter des variables jusqu’à ce que le critère d’ent
     - sinon, on enlève la variable qui a la plus grande valeur-_p_ (disons $X_{(p-k)}$), on réajuste le modèle sans cette variable et on recommence la procédure.
 
 
-L’idée est l’inverse de la méthode ascendante. On va tester le retrait de chaque variable individuellement et retirer celle qui est la moins significative, si sa valeur-_p_ est assez grande. Si la procédure se termine après $p$ itérations, aucune variable explicative n'est retenue.
+L'idée est l'inverse de la méthode ascendante. On va tester le retrait de chaque variable individuellement et retirer celle qui est la moins significative, si sa valeur-_p_ est assez grande. Si la procédure se termine après $p$ itérations, aucune variable explicative n'est retenue.
 
 ### Méthode séquentielle
 
-Il s’agit d’une méthode hybride entre ascendante et descendante. On sélectionne un critère d'entrée et de sortie pour chacune des deux (0.15 dans `proc reg`) et on début la recherche à partir du modèle ne contenant que l'ordonnée à l'origine. À chaque étape, on fait une étape ascendante suivie de une (ou plusieurs) étapes descendantes. On continue ainsi tant que le modèle retourné par l'algorithme n'est pas identique à celui de l'étape précédente. Le dernier modèle est celui retenu. 
+Il s'agit d'une méthode hybride entre ascendante et descendante. On sélectionne un critère d'entrée et de sortie pour chacune des deux (0.15 dans `proc reg`) et on début la recherche à partir du modèle ne contenant que l'ordonnée à l'origine. À chaque étape, on fait une étape ascendante suivie de une (ou plusieurs) étapes descendantes. On continue ainsi tant que le modèle retourné par l'algorithme n'est pas identique à celui de l'étape précédente. Le dernier modèle est celui retenu. 
 
-Avec la méthode séquentielle, une fois qu’on entre une variable (étape ascendante), on fait autant d’étapes descendante afin de retirer toutes les variables qui satisfont le critère de sortie (il peut ne pas y en avoir). Une fois cela effectué, on refait une étape ascendante pour voir si on peut ajouter une nouvelle variable. 
+Avec la méthode séquentielle, une fois qu'on entre une variable (étape ascendante), on fait autant d'étapes descendante afin de retirer toutes les variables qui satisfont le critère de sortie (il peut ne pas y en avoir). Une fois cela effectué, on refait une étape ascendante pour voir si on peut ajouter une nouvelle variable. 
 
-Remarques sur ces méthodes: avec la méthode ascendante, une fois qu’une variable est dans le modèle, elle y reste. Avec la méthode descendante, une fois qu’une variable est sortie du modèle, elle ne peut plus y entrer. Avec la méthode séquentielle, une variable peut entrer dans le modèle et sortir plus tard dans le processus. Par conséquent, parmi les trois, la méthode séquentielle est généralement préférable aux méthodes ascendante et descendante, car elle inspecte potentiellement un plus grand nombre de modèles. 
+Remarques sur ces méthodes: avec la méthode ascendante, une fois qu'une variable est dans le modèle, elle y reste. Avec la méthode descendante, une fois qu'une variable est sortie du modèle, elle ne peut plus y entrer. Avec la méthode séquentielle, une variable peut entrer dans le modèle et sortir plus tard dans le processus. Par conséquent, parmi les trois, la méthode séquentielle est généralement préférable aux méthodes ascendante et descendante, car elle inspecte potentiellement un plus grand nombre de modèles. 
 
-On peut soi-même spécifier les critères d’entrée et de sortie. Plus le critère d’entrée est élevé, plus il y aura de variables dans le modèle final. De même, plus le critère de sortie est élevé, plus il y aura de variables dans le modèle.
+On peut soi-même spécifier les critères d'entrée et de sortie. Plus le critère d'entrée est élevé, plus il y aura de variables dans le modèle final. De même, plus le critère de sortie est élevé, plus il y aura de variables dans le modèle.
 
-Utilisons la méthode de sélection séquentielle classique avec des critères d’entrée et de sortie de 0.15 et les 104 variables. Le code suivant, extrait de `selection2_all_subset.sas`, donne la syntaxe **SAS**.
+Utilisons la méthode de sélection séquentielle classique avec des critères d'entrée et de sortie de 0.15 et les 104 variables. Le code suivant, extrait de `selection2_all_subset.sas`, donne la syntaxe **SAS**.
 
 ```{sas, 02-stepwise, eval = FALSE}
 proc reg data=trainymontant;
@@ -562,9 +562,9 @@ i_x9_x10 / selection=stepwise sle=.15 sls=.15 ;
 run;
 ```
 
-Notez que les variables `cx2` à `cx10` sont les carrés des variables `x2` à `x10` que nous avons créées au préalable. De plus, les variables débutant par _i_ sont les interactions entre les variables binaires et les variables continues. Par exemple, `i_x2_x1` est l’interaction entre `x1` et `x2`, c’est-à-dire le produit des deux.
+Notez que les variables `cx2` à `cx10` sont les carrés des variables `x2` à `x10` que nous avons créées au préalable. De plus, les variables débutant par _i_ sont les interactions entre les variables binaires et les variables continues. Par exemple, `i_x2_x1` est l'interaction entre `x1` et `x2`, c'est-à-dire le produit des deux.
 
-La sortie **SAS** est assez volumineuse car elle retrace toutes étapes de la sélection séquentielle. L'historique montre qu'à l’étape 1, la variable `i_x5_x6` a été ajoutée, suivie de `i_x31_x10` à l'étape 2. Un peu plus loin, à l’étape 6, `i_x5_x6` est retirée et ainsi de suite. Il y a eu 40 étapes en tout et, à la fin, il reste 22 variables (parmi les 104) dans le modèle final. Le $R^2$ du modèle final est $0,966$. 
+La sortie **SAS** est assez volumineuse car elle retrace toutes étapes de la sélection séquentielle. L'historique montre qu'à l'étape 1, la variable `i_x5_x6` a été ajoutée, suivie de `i_x31_x10` à l'étape 2. Un peu plus loin, à l'étape 6, `i_x5_x6` est retirée et ainsi de suite. Il y a eu 40 étapes en tout et, à la fin, il reste 22 variables (parmi les 104) dans le modèle final. Le $R^2$ du modèle final est $0,966$. 
 
 
 ```{r fig2p2_fig8, echo = FALSE, out.width='90%', fig.align = "center"}
@@ -582,7 +582,7 @@ knitr::include_graphics("figures/02-select-e10.png")
 knitr::include_graphics("figures/02-select-e11.png")
 ```
 
-La performance de ce modèle a, comme pour les modèles précédents, été évaluée avec l’échantillon test de 23 179 observations. Le tableau \@ref(tab:02-comparaisonseqclas) présente la performance de la méthode de sélection séquentielle classique et celle du modèle dans lequel les 104 variables sont incluses sans faire de sélection.
+La performance de ce modèle a, comme pour les modèles précédents, été évaluée avec l'échantillon test de 23 179 observations. Le tableau \@ref(tab:02-comparaisonseqclas) présente la performance de la méthode de sélection séquentielle classique et celle du modèle dans lequel les 104 variables sont incluses sans faire de sélection.
 
 Table: (\#tab:02-comparaisonseqclas) Comparaison des méthodes selon l'erreur moyenne quadratique pour la méthode de sélection séquentielle classique et pour le modèle incluant toutes les variables, les termes quadratiques et les interactions.
 
@@ -591,16 +591,16 @@ Table: (\#tab:02-comparaisonseqclas) Comparaison des méthodes selon l'erreur mo
 | 104 | 19,63 | toutes les variables |
 |22 | 12,25 | séquentielle classique | 
 
-On voit donc qu’utiliser toutes les 104 variables sans faire de sélection fait mieux ($\mathsf{EMQ}=19,63$) que les modèles précédents basés sur les 10 variables originales. Mais faire une sélection séquentielle classique permet une amélioration très importante de la performance ($\mathsf{EMQ}=12,25$). On voit que dans cet exemple, utiliser les 104 variables fait du surajustement (_over-fitting_).  
+On voit donc qu'utiliser toutes les 104 variables sans faire de sélection fait mieux ($\mathsf{EMQ}=19,63$) que les modèles précédents basés sur les 10 variables originales. Mais faire une sélection séquentielle classique permet une amélioration très importante de la performance ($\mathsf{EMQ}=12,25$). On voit que dans cet exemple, utiliser les 104 variables fait du surajustement (_over-fitting_).  
 
-Le choix de $0,15$ comme critère d’entrée et de sortie est assez arbitraire. Il est fort possible que d’autres valeurs donnent de meilleurs résultats. Mais il n’est pas évident de les choisir.
+Le choix de $0,15$ comme critère d'entrée et de sortie est assez arbitraire. Il est fort possible que d'autres valeurs donnent de meilleurs résultats. Mais il n'est pas évident de les choisir.
 
-Une façon de contourner le problème de devoir spécifier les critères d’entrée et de sortie est de procéder en deux étapes. Supposons que notre ordinateur permet de faire une recherche exhaustive de tous les sous-modèles avec près de 60 variables. L’idée est alors de passer de 104 à un sous-ensemble d’environ 60 variables, avec une sélection séquentielle gloutonne, et d’ensuite utiliser une recherche exhaustive avec ce sous-ensemble de variables. Plus précisément:
+Une façon de contourner le problème de devoir spécifier les critères d'entrée et de sortie est de procéder en deux étapes. Supposons que notre ordinateur permet de faire une recherche exhaustive de tous les sous-modèles avec près de 60 variables. L'idée est alors de passer de 104 à un sous-ensemble d'environ 60 variables, avec une sélection séquentielle gloutonne, et d'ensuite utiliser une recherche exhaustive avec ce sous-ensemble de variables. Plus précisément:
 
-1) On fait une sélection séquentielle classique avec des valeurs élevées pour les critères d’entrée et de sortie afin que le modèle retenu contienne le nombre voulu de variables (par exemple, 60). 
+1) On fait une sélection séquentielle classique avec des valeurs élevées pour les critères d'entrée et de sortie afin que le modèle retenu contienne le nombre voulu de variables (par exemple, 60). 
 2) En utilisant seulement ce sous-ensemble de variables, on choisit le meilleur modèle selon le $\mathsf{AIC}$ ou le $\mathsf{BIC}$ en faisant une recherche exhaustive de tous les sous-modèles.
 
-En fixant, les critères d’entrée et de sortie à $0,6$ pour la recherche séquentielle, le modèle retenu aura 56 variables. Il est possible de faire une recherche exhaustive avec 56 variables sur un ordinateur portable avec **SAS**. Le $\mathsf{AIC}$ est mène à un modèle avec 38 de ces 56 variables. Le $\mathsf{BIC}$ est quant à lui beaucoup plus parcimonieux et choisit 15 de ces variables pour le modèle final. Encore une fois, ces deux modèles sont testés sur les 23 179 clients restants. Les résultats sont présentés dans le tableau \@ref(tab:02-comparaisonseqexha).
+En fixant, les critères d'entrée et de sortie à $0,6$ pour la recherche séquentielle, le modèle retenu aura 56 variables. Il est possible de faire une recherche exhaustive avec 56 variables sur un ordinateur portable avec **SAS**. Le $\mathsf{AIC}$ est mène à un modèle avec 38 de ces 56 variables. Le $\mathsf{BIC}$ est quant à lui beaucoup plus parcimonieux et choisit 15 de ces variables pour le modèle final. Encore une fois, ces deux modèles sont testés sur les 23 179 clients restants. Les résultats sont présentés dans le tableau \@ref(tab:02-comparaisonseqexha).
 
 
 Table: (\#tab:02-comparaisonseqexha) Comparaison des méthodes selon l'erreur moyenne quadratique pour la méthode de sélection séquentielle suivie d'une recherche exhaustive.
@@ -610,21 +610,22 @@ Table: (\#tab:02-comparaisonseqexha) Comparaison des méthodes selon l'erreur mo
 | 38 | 14,83 |séquentielle classique, recherche exhaustive avec 56 variables $(\mathsf{AIC})$ |
 | 15 | 11,96 |séquentielle classique, recherche exhaustive avec 56 variables $(\mathsf{BIC})$|
 
-La stratégie consistant à sélectionner un sous-ensemble de 56 variables avec la méthode séquentielle classique pour ensuite faire une recherche exhaustive de tous les sous-modèles possibles avec ces 56 variables, selon le $\mathsf{BIC}$, donne le meilleur résultat jusqu’à présent ($\mathsf{EMQ}=11,96$). Le $\mathsf{AIC}$ fait moins bien dans ce cas, avec une erreur moyenne quadratique estimée de $14,83$. Nous verrons à la section suivante qu’il est possible de faire une recherche séquentielle en utilisant d’autres critères que la valeur-_p_ du test-_t_ pour faire ajouter ou enlever des variables.
+La stratégie consistant à sélectionner un sous-ensemble de 56 variables avec la méthode séquentielle classique pour ensuite faire une recherche exhaustive de tous les sous-modèles possibles avec ces 56 variables, selon le $\mathsf{BIC}$, donne le meilleur résultat jusqu'à présent ($\mathsf{EMQ}=11,96$). Le $\mathsf{AIC}$ fait moins bien dans ce cas, avec une erreur moyenne quadratique estimée de $14,83$. Nous verrons à la section suivante qu'il est possible de faire une recherche séquentielle en utilisant d'autres critères que la valeur-_p_ du test-_t_ pour faire ajouter ou enlever des variables.
 
 ## Recherche séquentielle automatique limitée
 
-L’idée de la procédure séquentielle classique est d'inclure ou d'exclure une variable à la fois sur la base des valeurs-_p_. La procédure `glmselect` permet de faire une sélection séquentielle en utilisant d’autres critères, comme le $\mathsf{AIC}$ ou le $\mathsf{BIC}$. Cette procédure permet de contrôler très finement le processus de sélection de variables. Le code qui suit fait une recherche séquentielle avec les particularités suivantes. À chaque étape ascendante de la procédure séquentielle, c’est la variable qui améliore le plus le $\mathsf{AIC}$ (`select=aic`) qui est entrée. De plus, à chaque étape descendante de la procédure séquenctielle, c’est la (ou les) variable(s) qui détériore(nt) le plus le $\mathsf{AIC}$ qui est (sont) retirée(s). À la toute fin du processus, c’est le modèle qui a le meilleur $\mathsf{BIC}$ (`choose=BIC`) qui est retenu.
+L'idée de la procédure séquentielle classique est d'inclure ou d'exclure une variable à la fois sur la base des valeurs-_p_. La procédure `glmselect` permet de faire une sélection séquentielle en utilisant d'autres critères, comme le $\mathsf{AIC}$ ou le $\mathsf{BIC}$. Cette procédure permet de contrôler très finement le processus de sélection de variables. Le code qui suit fait une recherche séquentielle avec les particularités suivantes. À chaque étape ascendante de la procédure séquentielle, c'est la variable qui améliore le plus le $\mathsf{AIC}$ (`select=aic`) qui est entrée. De plus, à chaque étape descendante de la procédure séquenctielle, c'est la (ou les) variable(s) qui détériore(nt) le plus le $\mathsf{AIC}$ qui est (sont) retirée(s). À la toute fin du processus, c'est le modèle qui a le meilleur $\mathsf{BIC}$ (`choose=BIC`) qui est retenu.
 
 ```{sas 02-glmselectseq, eval=FALSE}
 proc glmselect data=trainymontant;
-model ymontant= /*(mettre les 104 variables ici) */
-/  selection=stepwise(select=aic choose=bic)  ; 
-score data=testymontant out=predglmselectaicbic p=predymontant;
+class x3 x4;
+model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10@2 cx2 cx6 cx7 cx8 cx9 cx10  /   
+selection=stepwise(select=aic choose=sbc); 
+score data=testymontant out=predglmselectaicsbc p=predymontant;
 run;
 ```
 
-Voici l’historique de la procédure séquentielle avec cette combinaison. 
+Voici l'historique de la procédure séquentielle avec cette combinaison. 
 
 ```{r fig2p2_fig12-13, echo = FALSE, out.width='70%', fig.align = "center"}
 knitr::include_graphics("figures/02-select-e12.png")
@@ -632,7 +633,7 @@ knitr::include_graphics("figures/02-select-e13.png")
 ```
 
 
-À l’étape 1, la variable `i_x5_x6` est ajoutée au modèle de base car c’est celle qui fait diminuer le plus le $\mathsf{AIC}$. À l’étape 2, la variable `i_x31_x10` est ajoutée,  À l’étape 6, la variable `i_x5_x6` est retirée car cela fait baisser le $\mathsf{AIC}$. Notez que le $\mathsf{AIC}$ décroit toujours d’une étape à l’autre. **SAS** garde aussi la trace du $\mathsf{BIC}$ car le modèle final sera choisi selon ce critère. Finalement le processus séquentiel se termine à l’étape 40, car il n’y a plus moyen de faire dimiuer le $\mathsf{AIC}$. Le modèle final retenu est celui de l’étape 18, car c’est celui qui a le $\mathsf{BIC}$ le plus petit parmi tous ces modèles ($\mathsf{BIC}=484.22$). 
+À l'étape 1, la variable `i_x5_x6` est ajoutée au modèle de base car c'est celle qui fait diminuer le plus le $\mathsf{AIC}$. À l'étape 2, la variable `i_x31_x10` est ajoutée,  À l'étape 6, la variable `i_x5_x6` est retirée car cela fait baisser le $\mathsf{AIC}$. Notez que le $\mathsf{AIC}$ décroit toujours d'une étape à l'autre. **SAS** garde aussi la trace du $\mathsf{BIC}$ car le modèle final sera choisi selon ce critère. Finalement le processus séquentiel se termine à l'étape 40, car il n'y a plus moyen de faire dimiuer le $\mathsf{AIC}$. Le modèle final retenu est celui de l'étape 18, car c'est celui qui a le $\mathsf{BIC}$ le plus petit parmi tous ces modèles ($\mathsf{BIC}=484.22$). 
 
 Voici différentes statistiques ainsi que les estimations des paramètres de ce modèle qui contient 10 variables.
 
@@ -643,19 +644,19 @@ knitr::include_graphics("figures/02-select-e14.png")
 knitr::include_graphics("figures/02-select-e15.png")
 ```
 
-Il s’avère que ce modèle performe très bien avec une erreur moyenne quadratique estimé à $10,08$ sur les 23 179 clients de l’échantillon test. Il s’agit du meilleur jusqu’à maintenant. 
+Il s'avère que ce modèle performe très bien avec une erreur moyenne quadratique estimé à $10,08$ sur les 23 179 clients de l'échantillon test. Il s'agit du meilleur jusqu'à maintenant. 
 
 ## Moyenne de modèles 
 
-Une idée importante et moderne en statistique est qu’il est souvent préférable de combiner plusieurs modèles plutôt que d’en choisir un seul. La technique des forêts aléatoires (_random forests_) est une des meilleures techniques de prédiction disponibles de nos jours. Elle est basée sur cette idée, en combinant plusieurs arbres de classification (ou de régression) individuels. C’est une des techniques de base en exploitation de données.
+Une idée importante et moderne en statistique est qu'il est souvent préférable de combiner plusieurs modèles plutôt que d'en choisir un seul. La technique des forêts aléatoires (_random forests_) est une des meilleures techniques de prédiction disponibles de nos jours. Elle est basée sur cette idée, en combinant plusieurs arbres de classification (ou de régression) individuels. C'est une des techniques de base en exploitation de données.
 
-Ici, nous allons voir comment cette idée peut être appliquée à notre contexte. Toutes les méthodes que nous avons vues jusqu’à maintenant font une sélection « rigide » de variables, dans le sens que chaque variable est soit sélectionnée pour faire partie du modèle, soit elle ne l’est pas. C’est donc tout ou rien pour chaque variable. Il y a beaucoup de variabilité associée à une telle forme de sélection. Une variable peut avoir été très près d’être choisie, mais elle ne l’a pas été et est éliminée complètement. Construire plusieurs modèles et en faire la moyenne permet d’adoucir le processus de sélection car une variable peut alors être partiellement sélectionnée. 
+Ici, nous allons voir comment cette idée peut être appliquée à notre contexte. Toutes les méthodes que nous avons vues jusqu'à maintenant font une sélection « rigide » de variables, dans le sens que chaque variable est soit sélectionnée pour faire partie du modèle, soit elle ne l'est pas. C'est donc tout ou rien pour chaque variable. Il y a beaucoup de variabilité associée à une telle forme de sélection. Une variable peut avoir été très près d'être choisie, mais elle ne l'a pas été et est éliminée complètement. Construire plusieurs modèles et en faire la moyenne permet d'adoucir le processus de sélection car une variable peut alors être partiellement sélectionnée. 
 
-Supposons qu’on dispose de deux échantillons et qu’on fasse une sélection de variables séparément pour les deux échantillons, avec l’une des approches que nous avons vues jusqu’à maintenant. Il est alors très probable qu’on ne va pas avoir exactement les mêmes variables sélectionnées pour les deux échantillons. Supposons ensuite qu’on fasse la moyenne des coefficients pour les deux modèles. Si une variable, disons $X_1$, a été choisie les deux fois, alors la moyenne des deux coefficients devrait estimer en quelque sorte un effet global pour cette variable. Si une autre variable, disons $X_2$, n’a pas été choisie du tout pour les deux échantillons, alors la moyenne de ses deux coefficients est nulle. Mais si une variable, disons, $X_3$, a été choisie pour seulement l’un des deux échantillons, alors la moyenne de ses deux coefficients est la moitié du coefficient pour le modèle dans lequel elle a été choisie (car l’autre est zéro). Ainsi, cette variable est donc représentée par une « moitié » d’effet dans la moyenne des modèles. Donc au lieu d’être totalement là ou totalement absente, elle est présente en fonction de sa probabilité d’être sélectionnée. Ceci diminue de beaucoup la variabilité engendrée par une sélection « rigide » de variables et permet souvent de produire un modèle fort raisonnable.  
+Supposons qu'on dispose de deux échantillons et qu'on fasse une sélection de variables séparément pour les deux échantillons, avec l'une des approches que nous avons vues jusqu'à maintenant. Il est alors très probable qu'on ne va pas avoir exactement les mêmes variables sélectionnées pour les deux échantillons. Supposons ensuite qu'on fasse la moyenne des coefficients pour les deux modèles. Si une variable, disons $X_1$, a été choisie les deux fois, alors la moyenne des deux coefficients devrait estimer en quelque sorte un effet global pour cette variable. Si une autre variable, disons $X_2$, n'a pas été choisie du tout pour les deux échantillons, alors la moyenne de ses deux coefficients est nulle. Mais si une variable, disons, $X_3$, a été choisie pour seulement l'un des deux échantillons, alors la moyenne de ses deux coefficients est la moitié du coefficient pour le modèle dans lequel elle a été choisie (car l'autre est zéro). Ainsi, cette variable est donc représentée par une « moitié » d'effet dans la moyenne des modèles. Donc au lieu d'être totalement là ou totalement absente, elle est présente en fonction de sa probabilité d'être sélectionnée. Ceci diminue de beaucoup la variabilité engendrée par une sélection « rigide » de variables et permet souvent de produire un modèle fort raisonnable.  
 
-Le problème est que l’on n’a pas plusieurs échantillons mais un seul. Une solution possible est de générer nous-mêmes des échantillons différents à partir de l‘échantillon original. Cela peut être fait avec l'autoamorçage (_bootstrap_). Un échantillon d'autoamorçage est tout simplement un échantillon choisi au hasard et **avec remise** dans l’échantillon original.  Ainsi, une même observation peut être sélectionnée plus d’une fois tandis qu’une autre peut ne pas être sélectionnée du tout.
+Le problème est que l'on n'a pas plusieurs échantillons mais un seul. Une solution possible est de générer nous-mêmes des échantillons différents à partir de l‘échantillon original. Cela peut être fait avec l'autoamorçage (_bootstrap_). Un échantillon d'autoamorçage est tout simplement un échantillon choisi au hasard et **avec remise** dans l'échantillon original.  Ainsi, une même observation peut être sélectionnée plus d'une fois tandis qu'une autre peut ne pas être sélectionnée du tout.
 
-L’idée est alors la suivante :  
+L'idée est alors la suivante :  
 
 1) Générer plusieurs échantillons par autoamorçage nonparamétrique à partir de l‘échantillon original.
 2) Faire une sélection de variables pour chaque échantillon.
@@ -665,23 +666,23 @@ La procédure `glmselect` a une commande expérimentale, `modelaverage`, qui per
 
 ```{sas modelaverage, eval=FALSE}
 proc glmselect data=trainymontant seed=57484765;
-model ymontant= 
-  ... /* mettre les 104 variables ici */
-/ selection=stepwise(select=bic choose=bic) ; 
+class x3 x4;
+model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10@2 cx2 cx6 cx7 cx8 cx9 cx10  /   
+selection=stepwise(select=aic choose=sbc); 
 score data=testymontant out=predaverage p=predymontant;
 modelaverage nsamples=500 sampling=urs subset(best=500);
 run;
 ```
 
-Chaque modèle est construit à l’aide d’un échantillon aléatoire avec remise (`sampling=urs`). Il y aura 500 échantillons, et donc modèles, en tout (`nsamples=500`). L’option `subset(best=500)` indique à **SAS** de faire la moyenne des paramètres des 500 modèles. Notez l’option `seed` qui permet de reproduire les résultats, car elle fixe une valeur pour le générateur de nombre aléatoire (qui sera utilisé pour générer les échantillons d'autoamorçage). Cette fois-ci la sélection se fait avec le critère $\mathsf{BIC}$ à tous les niveaux (`select=bic choose=bic`).
+Chaque modèle est construit à l'aide d'un échantillon aléatoire avec remise (`sampling=urs`). Il y aura 500 échantillons, et donc modèles, en tout (`nsamples=500`). L'option `subset(best=500)` indique à **SAS** de faire la moyenne des paramètres des 500 modèles. Notez l'option `seed` qui permet de reproduire les résultats, car elle fixe une valeur pour le générateur de nombre aléatoire (qui sera utilisé pour générer les échantillons d'autoamorçage). Cette fois-ci la sélection se fait avec le critère $\mathsf{BIC}$ à tous les niveaux (`select=bic choose=bic`).
 
 ```{r fig2p2_fig16, echo = FALSE, out.width='90%', fig.align = "center"}
 knitr::include_graphics("figures/02-select-e16.png")
 ```
 
-Ce tableau présente les variables qui ont été choisies dans an moins 20% des modèles, c’est-à-dire, dans au moins 100 des 500 modèles ici. Il y a deux variables qui ont été retenues dans tous les modèles, `i_x1_x6` et `i_x31_x8`. Le tableau rapporte aussi la moyenne des estimations pour ces paramètres.
+Ce tableau présente les variables qui ont été choisies dans an moins 20% des modèles, c'est-à-dire, dans au moins 100 des 500 modèles ici. Il y a deux variables qui ont été retenues dans tous les modèles, `i_x1_x6` et `i_x31_x8`. Le tableau rapporte aussi la moyenne des estimations pour ces paramètres.
 
-Il s’avère que cette approche performe très bien sur l’échantillon test de 23 179 clients avec une erreur moyenne quadratique estimé de $10,57$. Le tableau \@ref(tab:02-modelcomparaisonfull) résume la performance des différentes méthodes que nous avons utilisé sur notre échantillon test.
+Il s'avère que cette approche performe très bien sur l'échantillon test de 23 179 clients avec une erreur moyenne quadratique estimé de $10,57$. Le tableau \@ref(tab:02-modelcomparaisonfull) résume la performance des différentes méthodes que nous avons utilisé sur notre échantillon test.
 
 Table: (\#tab:02-modelcomparaisonfull) Comparaison des méthodes selon l'erreur moyenne quadratique.
 
@@ -699,6 +700,6 @@ Table: (\#tab:02-modelcomparaisonfull) Comparaison des méthodes selon l'erreur 
 
 Dans cet exemple, la méthode séquentielle de `glmselect` avec les options  `select=aic` et `choose=bic` aurait donné le meilleur résultat pour prévoir le montant acheté des clients restants (de ceux qui auraient acheté quelque chose). Le deuxième meilleur aurait été la moyenne des modèles. 
 
-Il y aurait plusieurs autres approches/combinaisons qui pourraient être testées. Le but de ce chapitre était simplement de présenter les principes de base en sélection de modèles et de variables ainsi que certaines approches pratiques. Il y a d’autres approches intéressantes, tels le LASSO et LARS (_least-angle regression_) qui sont disponibles dans `glmselect`. Ces méthodes sont dans la même mouvance moderne que celle qui consiste à faire la moyenne de plusieurs modèles, en performant à la fois une sélection de variables et en permettant d’avoir des parties d’effet par le rétrécissement (_shrinkage_). De récents développements théoriques permettent de corriger les valeurs-_p_ pour faire de l'inférence post-sélection.
+Il y aurait plusieurs autres approches/combinaisons qui pourraient être testées. Le but de ce chapitre était simplement de présenter les principes de base en sélection de modèles et de variables ainsi que certaines approches pratiques. Il y a d'autres approches intéressantes, tels le LASSO et LARS (_least-angle regression_) qui sont disponibles dans `glmselect`. Ces méthodes sont dans la même mouvance moderne que celle qui consiste à faire la moyenne de plusieurs modèles, en performant à la fois une sélection de variables et en permettant d'avoir des parties d'effet par le rétrécissement (_shrinkage_). De récents développements théoriques permettent de corriger les valeurs-_p_ pour faire de l'inférence post-sélection.
 
-Il faut bien comprendre qu’il ne s’agit que d’un seul exemple: il ne faut surtout pas conclure que la méthode séquentielle de `glmselect` avec les options `select=aic` et `choose=bic` sera toujours la meilleure. En fait, il est impossible de prévoir quelle méthode donnera les meilleurs résultats.
+Il faut bien comprendre qu'il ne s'agit que d'un seul exemple: il ne faut surtout pas conclure que la méthode séquentielle de `glmselect` avec les options `select=aic` et `choose=bic` sera toujours la meilleure. En fait, il est impossible de prévoir quelle méthode donnera les meilleurs résultats.
