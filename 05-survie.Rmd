@@ -239,7 +239,7 @@ knitr::include_graphics("figures/05-survie-e14.png")
 
 Le rapport de risque pour âge est $0,959$ et donc le risque diminue de 4,1% chaque fois que l'âge augmente d'un an --- le risque d'interrompre l'abonnement diminue lorsque l'âge augmente et cet effet est significatif (valeur-$p$ des tests inférieures à $10^{-4}$). 
 
-Généralement, on considérera le modèle de Cox avec toutes les variables explicatives simultanément. La variable $\texttt{region}$ est nominale tandis que la variable $\texttt{service}$ est ordinale (avec quatre modalités). Nous allons les incorporer, comme d'habitude, en utilisant des variables indicatrices avec La valeur $\texttt{region=5}$ et $\texttt{service=0}$ (le client n'est abonné à aucun autre service) comme catégories de référence.
+Généralement, on considérera le modèle de Cox avec toutes les variables explicatives simultanément. La variable $\texttt{region}$ est nominale tandis que la variable $\texttt{service}$ est ordinale (avec quatre modalités). Nous allons les incorporer, comme d'habitude, en utilisant des variables indicatrices avec  $\texttt{region=5}$ et $\texttt{service=0}$ (le client n'est abonné à aucun autre service) comme catégories de référence.
 
 ```{sas survie4, eval = FALSE, echo = TRUE}
 proc phreg data=multi.survival1;
@@ -282,7 +282,7 @@ Il est possible d'obtenir l'estimation de la fonction de survie pour des valeurs
 
 Si on ajuste le modèle avec aucune variable explicative, on retrouvera alors l'estimation de Kaplan--Meier de la fonction de survie comme avec la procédure `lifetest`.
 
-Supposons qu'on ajuste le modèle avec les variables sexe et âge seulement dans l'exemple du temps d'abonnement, et que l'on désire la fonction de survie pour les hommes de 25 et 60 ans et pour les femmes de 25 et 60 ans. Le fichier `survival2.xls` contient les données qui seront utilisées à cette fin. Il contient seulement les quatre lignes suivantes.
+Supposons qu'on ajuste le modèle avec les variables sexe et âge seulement dans l'exemple du temps d'abonnement, et que l'on désire la fonction de survie pour les hommes de 25 et 60 ans et pour les femmes de 25 et 60 ans. Le fichier `survival2.sas7bdat` contient les données qui seront utilisées à cette fin. Il contient seulement les quatre lignes suivantes.
 
 
 ```{r fig5_e19, echo = FALSE, out.width='15%', fig.align = "center"}
@@ -320,20 +320,20 @@ où $x_1(t)$ indique que la valeur de $X_1$ dépend du temps $t$.
 
 Supposons que la variable $\texttt{service}$, qui représente le nombre d'autres services souscrits, est la seule que nous voulons modéliser comme une variable qui varie dans le temps. Pour l'âge, nous prenons simplement l'âge au début de l'abonnement, idem pour la région.
 
-Le plus difficile est de créer correctement le fichier de données pour effectuer ce genre d'analyse. Supposons pour cet exemple qu'il y a eu au plus un changement dans la variable $\texttt{service}$, comme présenté dans le fichier `survival3.sas7bdat`. Les variables $\texttt{t}$, $\texttt{censure, $\texttt{age}$, $\texttt{sexe}$ et $\texttt{region}$ sont comme précédemment. Trois nouvelles variables remplacent l'ancienne variable service.
+Le plus difficile est de créer correctement le fichier de données pour effectuer ce genre d'analyse. Supposons pour cet exemple qu'il y a eu au plus un changement dans la variable $\texttt{service}$, comme présenté dans le fichier `survival3.sas7bdat`. Les variables $\texttt{t}$, $\texttt{censure}$, $\texttt{age}$, $\texttt{sexe}$ et $\texttt{region}$ sont comme précédemment. Trois nouvelles variables remplacent l'ancienne variable service.
 
-- $\texttt{service\_avant}$: nombre d'autres services auxquels le client est abonné au début de son abonnement.
-- $\texttt{temps\_ch}$: temps au moment où un changement est survenu quant au nombre d'autres services. En l'absence de changement, l'observation est remplacée par une valeur manquante (`.`).
-- $\texttt{service\_apres}$: nombre d'autres services auxquels le client est abonné à partir du temps $\texttt{temps\_ch}$.
+- $\texttt{service_avant}$: nombre d'autres services auxquels le client est abonné au début de son abonnement.
+- $\texttt{temps_ch}$: temps au moment où un changement est survenu quant au nombre d'autres services. En l'absence de changement, l'observation est remplacée par une valeur manquante (`.`).
+- $\texttt{service_apres}$: nombre d'autres services auxquels le client est abonné à partir du temps $\texttt{temps_ch}$.
 
 
 ```{r fig5_e21, echo = FALSE, out.width='80%', fig.align = "center"}
 knitr::include_graphics("figures/05-survie-e21.png")
 ```
 
-On regarde plus en détail le profil des cinq premiers clients, dont seuls deux ont changé le nombre d'abonnements; les individus 3--5 se sont désabonnés du service cellulaire à un moment donné. Le premier client était abonné à deux autres services au début de son abonnement au téléphone cellulaire mais, après 130 semaines d'abonnement, a effectué un changement à son forfait pour ne conserver qu'un autre service en plus du cellulaire. Pour le deuxième client, comme $\texttt{temps\_ch}$ est manquante, il est toujours abonné à deux autres services et ce, jusqu'à la fin de l'étude. 
+On regarde plus en détail le profil des cinq premiers clients, dont seuls deux ont changé le nombre d'abonnements; les individus 3--5 se sont désabonnés du service cellulaire à un moment donné. Le premier client était abonné à deux autres services au début de son abonnement au téléphone cellulaire mais, après 130 semaines d'abonnement, a effectué un changement à son forfait pour ne conserver qu'un autre service en plus du cellulaire. Pour le deuxième client, comme $\texttt{temps_ch}$ est manquante, il est toujours abonné à deux autres services et ce, jusqu'à la fin de l'étude. 
 
-Les commandes **SAS** permettant d'ajuster le modèle avec point de rupture se trouvent dans le fichier `survival3_varie_temps.sas`. Notez que lorsqu'on a une variable catégorielle qui varie dans le temps (comme ici avec la variable service), on ne peut pas utiliser `class` pour la déclarer catégorielle; il faut plutôt créer nous-mêmes les variables indicatrices nécessaires 'a l'intérieur même de l'appel à la fonction `phreg` (voir le script). Ici, nous utiliserons la catégorie $\texttt{0}$ (aucun autre service) comme catégorie de référence.
+Les commandes **SAS** permettant d'ajuster le modèle avec point de rupture se trouvent dans le fichier `survival3_varie_temps.sas`. Notez que lorsqu'on a une variable catégorielle qui varie dans le temps (comme ici avec la variable service), on ne peut pas utiliser `class` pour la déclarer catégorielle; il faut plutôt créer nous-mêmes les variables indicatrices nécessaires à l'intérieur même de l'appel à la fonction `phreg` (voir le script). Ici, nous utiliserons la catégorie $\texttt{0}$ (aucun autre service) comme catégorie de référence.
 
 
 ```{r fig5_e22, echo = FALSE, out.width='85%', fig.align = "center"}
@@ -357,9 +357,9 @@ Notez que les coefficients $K$ sont différents d'une équation à l'autre. En e
 Ce qui simplifie énormément la situation est qu'il est prouvé qu'on peut estimer les paramètres de chaque équation séparément sans perte de précision. Par conséquent, en pratique, il suffira d'ajuster $K$ modèles séparément.
 
 
-Dans notre exemple d'abonnement ellulaire, supposons que nous avons trois causes possibles pour la perte d'un client: soit il a interrompu son abonnement pour aller chez le compétiteur A, soit pour aller chez le compétiteur B, soit il n'a plus de cellulaire du tout.
+Dans notre exemple d'abonnement cellulaire, supposons que nous avons trois causes possibles pour la perte d'un client: soit il a interrompu son abonnement pour aller chez le compétiteur A, soit pour aller chez le compétiteur B, soit il n'a plus de cellulaire du tout.
 
-Les données pour cet exemple se trouvent dans le fichier `survival4.xls` et le programme dans le fichier `survival4_risques_competitifs.sas`. La seule nouveauté par rapport au fichier original est la variable $\texttt{censure}$ qui est maintenant codée ainsi
+Les données pour cet exemple se trouvent dans le fichier `survival4.sas7bdat` et le programme dans le fichier `survival4_risques_competitifs.sas`. La seule nouveauté par rapport au fichier original est la variable $\texttt{censure}$ qui est maintenant codée ainsi
 
 - 1, si le temps est censuré (l'individu est toujours abonné à notre service)
 - 2, si l'individu a quitté pour aller chez le compétiteur A
@@ -456,7 +456,7 @@ Encore une fois, pour simplifier, supposons que nous avons deux variables $X$ et
 \begin{align*}
 h(t; x, z) = h_z(t) \exp(\beta x),
 \end{align*}
-où $h_0(t)$ est la fonction de risque de base quand $Z=0$ et $h_1(t)$ est la fonction de risque de base lorsque $Z=1$. L'effet de la variable $X$ est supposé être le même peut importe la valeur de $Z$, mais la fonction de risque de base peut différer. Le rapport de risque pour $Z=1$ versus $Z=0$ est $h_1(t)/h_0(t)$; cette quantité dépend du temps $t$. L'effet de la variable  est donc variable dans le temps (et non pas constant). Ce modèle permet donc de modéliser la non-proportionnalité pour la variable $Z$. Si on stratifie par rapport à une variable, il ne faut pas l'inclure dans le modèle en plus car elle est déjà modélisée via la stratification.
+où $h_0(t)$ est la fonction de risque de base quand $Z=0$ et $h_1(t)$ est la fonction de risque de base lorsque $Z=1$. L'effet de la variable $X$ est supposé être le même peut importe la valeur de $Z$, mais la fonction de risque de base peut différer. Le rapport de risque pour $Z=1$ versus $Z=0$ est $h_1(t)/h_0(t)$; cette quantité dépend du temps $t$. L'effet de la variable  est donc variable dans le temps (et non pas constant). Ce modèle permet donc de modéliser la non-proportionnalité pour la variable $Z$. Si on stratifie par rapport à une variable, il ne faut pas l'inclure dans le modèle en plus car elle est déjà modélisée via la stratification. Notez que les paramètres $\boldsymbol{\beta}$ seront estimés à l'aide des données de toutes les strates.
 
 L'avantage de la stratification est que cette méthode permet de modéliser n'importe quel changement dans l'effet d'une variable dans le temps sans devoir spécifier un type de changement particulier, comme lorsqu'on doit choisir la forme de l'interaction. Par contre, on perd la possibilité de tester l'effet de la variable de stratification on réduit la taille de l'échantillon pour l'estimation de la fonction de risque de base. On devrait donc utiliser la stratification seulement avec des variables pour lesquelles nous n'avons pas besoin d'estimer l'effet (variables secondaires ou de contrôles).
 
