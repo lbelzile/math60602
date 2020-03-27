@@ -3,7 +3,7 @@
 ## Introduction
 
 Le but de cette section est d'étudier l'effet de variables explicatives sur le temps de survie. Plusieurs méchanismes de survie peuvent impacter la survie, de façon aléatoire ou pas. 
-Considérons l'exmple d'une étude sur le chômage dû à la crise du coronavirus. On s'intéresse à tous ceux qui étaient en recherche active d'emploi entre mars et juin. Seuls ceux qui étaient au chômage durant cette période seront considérés. Certaines personnes seront déjà au chômage en avril et donc leur durée de chômage sera plus longue (troncature à gauche). Lors de notre suivi, d'autre mentionneront avoir trouvé un emploi lors de notre appel, mais ne pourront nous renseigner sur la date de leur embauche (censure à gauche); cette dernière précèdera notre prise de contact, mais nous est inconnue. D'autres personnes seront toujours au chômage en juin à la fin de l'étude et on ignorera le nombre réel de mois passés au chômage (censure à droite). Enfin, certaines personnes cesseront de chercher activement un emploi et donc quitteront l'étude. Tous ces méchanismes (complexes) peuvent être dictés par certaines covariables (employabilité, découragement) et être aléatoires ou pas. Pour estimer le taux de chômage, il faudra prendre en compte les méchanismes de survie dans notre modèle. On se concentrera sur le cas simple des données censurées à droite de façon aléatoire.
+Considérons l'exemple d'une étude sur le chômage dû à la crise du coronavirus. On s'intéresse à tous ceux qui étaient en recherche active d'emploi entre mars et juin; seuls ceux qui étaient au chômage durant cette période seront considérés. Certaines personnes seront déjà au chômage en avril et donc leur durée de chômage sera plus longue (troncature à gauche). Lors de notre suivi, d'autre mentionneront avoir trouvé un emploi lors de notre appel, mais ne pourront nous renseigner sur la date exacte de leur embauche (censure à gauche); cette dernière précèdera notre prise de contact, mais nous est inconnue. D'autres personnes seront toujours au chômage en juin à la fin de l'étude et on ignorera le nombre réel de mois passés au chômage (censure à droite). Enfin, certaines personnes cesseront de chercher activement un emploi et donc quitteront l'étude. Tous ces méchanismes (complexes) peuvent être dictés par certaines covariables (employabilité, découragement) et être aléatoires ou pas. Pour estimer le taux de chômage, il faudra prendre en compte les méchanismes de survie dans notre modèle. On se concentrera sur le cas simple des données censurées à droite de façon aléatoire.
 
 
 ### Exemple du temps d'abonnement 
@@ -72,7 +72,7 @@ Ainsi, si on connaît la fonction de survie, on peut retrouver la fonction de ri
 
 ## Estimation d'une courbe de survie et de risque
 
-L'estimateur nonparamétrique le plus couramment utilisé est l'stimateur de Kaplan--Meier. Cette méthode permet d'estimer la fonction de survie pour un échantillon contenant des observations censurées. De plus, elle est nonparamétrique en ce sens qu'on ne suppose aucun modèle ou hypothèse particulière. Dans **SAS**, la procédure `lifetest` fournit l'estimation de Kaplan--Meier de la courbe de survie et permet aussi d'estimer la fonction de risque correspondante.
+L'estimateur nonparamétrique le plus couramment utilisé est l'estimateur de Kaplan--Meier. Cette méthode permet d'estimer la fonction de survie pour un échantillon contenant des observations censurées. De plus, elle est nonparamétrique en ce sens qu'on ne suppose aucun modèle ou hypothèse particulière. Dans **SAS**, la procédure `lifetest` fournit l'estimation de Kaplan--Meier de la courbe de survie et permet aussi d'estimer la fonction de risque correspondante.
 
 Supposons par exemple que l'échantillon ne contient aucune observation censurée (on a des temps exacts pour tous les sujets), l'estimateur de Kaplan--Meier de la fonction de survie à un temps $t$ donné est alors simplement la proportion des observations dans l'échantillon qui possède un temps de survie supérieur à $t$ --- on ne tient pas compte des observations censurées pour estimer la courbe de survie.
 
@@ -102,12 +102,16 @@ Un estimé de la moyenne et de l'écart-type est donné, mais ce dernier est bia
 
 Le graphique de la fonction de survie permet de lire le temps de survie pour une probabilité donnée. Les bandes donnent un intervalle de confiance ponctuel de niveau 95% pour chaque temps donné.
 
-```{r fig5-e5, fig.cap="Fraction de valeurs censurées", echo = FALSE, out.width='60%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e5.png")
+```{r fig5_e4, echo = FALSE, out.width='90%', fig.align = "center"}
+knitr::include_graphics("figures/05-survie-e4.png")
 ```
 
 Le tableau \@ref(fig:fig5-e5) donne le nombre de données censurées: parmi les 500 observations, il y a 334 clients qui ont terminé leur abonnement et 166 qui sont censurées (le client est toujours abonné et le temps est donc une borne inférieure de la durée d'abonnement).
 
+
+```{r fig5-e5, fig.cap="Fraction de valeurs censurées", echo = FALSE, out.width='60%', fig.align = "center"}
+knitr::include_graphics("figures/05-survie-e5.png")
+```
 
 
 ### Calcul de l'estimateur de Kaplan--Meier
@@ -126,7 +130,7 @@ Par exemple, dans une étude sur le temps de survie après avoir été diagnosti
 
 Les deux tests utilisés habituellement sont le test du log-rang (_log-rank test_) et le test de Wilcoxon généralisé (ou test de Gehan).
 
-Testons l'hypothèse que la courbe de survie des clients masculins est la même que celle des clients féminins dans l'exmple des données d'abonnement. Ce test est effectué grâce à l'option `strata` de la procédure `lifetest`  à l'aide des commandes suivantes (voir le fichier `survival1_fonction_survie.sas`):
+Testons l'hypothèse que la courbe de survie des clients masculins est la même que celle des clients féminins dans l'exemple des données d'abonnement. Ce test est effectué grâce à l'option `strata` de la procédure `lifetest`  à l'aide des commandes suivantes (voir le fichier `survival1_fonction_survie.sas`):
 
 ```{sas survie2, eval = FALSE, echo = TRUE}
 proc lifetest data=multi.survival1 method=km plots=(s) censoredsymbol=none;
