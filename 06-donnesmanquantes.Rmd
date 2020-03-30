@@ -40,18 +40,18 @@ En général, l'approche des cas complet est la première étape d'une analyse a
 
 La deuxième approche est l'**imputation simple**. L'idée ici est de ne pas enlever les observations avec des valeurs manquantes mais de remplacer ces valeurs par des valeurs raisonnables. Par exemple, on peut remplacer les valeurs manquantes d'une variable par la moyenne de cette variable dans notre échantillon. On peut aussi ajuster un modèle de régression avec cette variable comme variable dépendante et d'autres variables explicatives comme variables indépendantes et utiliser les valeurs prédites comme remplacement. Une fois que les valeurs manquantes ont été remplacées, on fait l'analyse avec toutes les observations.
 
-Il existe d'autres façons d'imputer les valeurs manquantes mais le problème de toutes ces approches est que l'on ne tient pas compte du fait que des valeurs ont été remplacées et on fait comme si c'était de vraies observations. Cela va en général sous-évaluer la variabilité dans les données. Par conséquent, les écarts-types des paramètres estimés seront en général sous-estimés et l'inférence (tests et intervalles de confiance) ne sera pas valide.
+Il existe d'autres façons d'imputer les valeurs manquantes mais le problème de toutes ces approches est que l'on ne tient pas compte du fait que des valeurs ont été remplacées et on fait comme si c'était de vraies observations. Cela va en général sous-évaluer la variabilité dans les données. Par conséquent, les écarts-type des paramètres estimés seront en général sous-estimés et l'inférence (tests et intervalles de confiance) ne sera pas valide.
 Cette approche n'est donc **pas recommandée**.
 
-Une manière de tenter de reproduire correctement la variabilité dans les données consiste à ajouter un terme aléatoire dans l'imputation. C'est ce que fait la méthode suivante, qui possédera l'avantage de corriger automatiquement les écarts-types des paramètres estimés.
+Une manière de tenter de reproduire correctement la variabilité dans les données consiste à ajouter un terme aléatoire dans l'imputation. C'est ce que fait la méthode suivante, qui possédera l'avantage de corriger automatiquement les écarts-type des paramètres estimés.
 
 ### Imputation multiple
 
-Cette méthode peut être appliquée dans à peu près n'importe quelle situation et permet d'ajuster les écarts-types des paramètres estimés. Elle peut être appliquée lorsque le processus est MAR (et donc aussi MCAR).
+Cette méthode peut être appliquée dans à peu près n'importe quelle situation et permet d'ajuster les écarts-type des paramètres estimés. Elle peut être appliquée lorsque le processus est MAR (et donc aussi MCAR).
 
 L'idée consiste à procéder à une imputation aléatoire, selon une certaine technique, pour obtenir un échantillon complet et à ajuster le modèle d'intérêt avec cet échantillon. On répète ce processus plusieurs fois et on combine les résultats obtenus. 
 
-L'estimation finale des paramètres du modèle est alors simplement la moyenne des estimations pour les différentes répétitions et on peut également obtenir une estimation des écarts-types des paramètres qui tient compte du processus d'imputation.
+L'estimation finale des paramètres du modèle est alors simplement la moyenne des estimations pour les différentes répétitions et on peut également obtenir une estimation des écarts-type des paramètres qui tient compte du processus d'imputation.
 
 Plus précisément, supposons qu'on s'intéresse à un seul paramètre $\theta$ dans un modèle donné. Ce modèle pourrait être un modèle de régression linéaire, de régression logistique, etc. Le paramètre $\theta$ serait alors un des $\bs{\beta}$ du modèle.
 
@@ -71,7 +71,7 @@ Ainsi, le terme $W$ est la moyenne des variances et $B$ est la variance entre le
 
 C'est ici qu'on voit l'intérêt à procéder à de l'imputation multiple. Si on procédait à une seule imputation (même en ajoutant une part d'aléatoire pour essayer de reproduire la variabilité des données), on ne serait pas en mesure d'estimer la variance inter-groupe de l'estimateur. Notez que la formule présentée n'est valide que pour le cas unidimensionnel; l'estimation de la variance dans le cas multidimensionnel est différente (voir Little et Rubin, 2002).
 
-Les procédures `mi` et `mianalyze` de **SAS** permettent d'effectuer de l'imputation multiple et d'obtenir des estimations valides des paramètres et de leurs écarts-types pour à peu près n'importe quel modèle. Plus spécifiquement, la procédure `mi` permet d'examiner la configuration des valeurs manquantes et de procéder à l'imputation. De son côté, la procédure `mianalyze` permet de combiner les résultats des estimations provenant des échantillons combinés afin d'obtenir les estimations finales. La structure habituelle du code **SAS** est la suivante:
+Les procédures `mi` et `mianalyze` de **SAS** permettent d'effectuer de l'imputation multiple et d'obtenir des estimations valides des paramètres et de leurs écarts-type pour à peu près n'importe quel modèle. Plus spécifiquement, la procédure `mi` permet d'examiner la configuration des valeurs manquantes et de procéder à l'imputation. De son côté, la procédure `mianalyze` permet de combiner les résultats des estimations provenant des échantillons combinés afin d'obtenir les estimations finales. La structure habituelle du code **SAS** est la suivante:
 
 1. procédure `mi` pour obtenir des échantillons imputés.
 2. procédure quelconque pour ajuster le modèle voulu (par exemple, `proc reg` ou `proc logistic`). Il faut ajuster les modèles séparément pour chaque échantillon imputé avec la commande `by`.
@@ -211,14 +211,14 @@ knitr::kable(combif, col.names = rep(c("estimé", "erreur-type","valeur-$p$"), 3
 
 ```
 
-On peut remarquer que la précision est systématiquement meilleure avec l'imputation multiple, comparativement à celle du modèle qui retire les manquantes. En effet, les SE sont plus petits. 
+On peut remarquer que la précision est systématiquement meilleure avec l'imputation multiple; les erreurs-type pour l'imputation multiple sont plus petits que celle du modèleles erreurs-type sont plus petits qui retire les données incomplètes. 
 
-On voit que la variable $X_3$ (sexe) est significative avec l'imputation multiple. Son paramètre estimé est 1,202, comparativement à 1,349 s'il n'y avait pas eu de valeurs manquantes. La précision dans l'estimation avec l'imputation multiple est seulement un peu moins bonne (erreur-type de 0,282) que celle s'il n'y avait pas eu de manquantes (erreur type de 0,26). Le paramètre de $\I{X_6=2}$ redevient aussi significatif, alors qu'il ne l'était plus si on retirait les manquantes. Il est peut probable que les données soit MCAR et donc les résultats de l'analyse des cas complets étaient biaisés et moins précis car ils écartaient les observations partielles, réduisant ce faisant la taille de l'échantillon utilisé pour l'ajustement.
+On voit que la variable $X_3$ (sexe) est significative avec l'imputation multiple. Son paramètre estimé est 1,202, comparativement à 1,349 s'il n'y avait pas eu de valeurs manquantes. La précision dans l'estimation avec l'imputation multiple est seulement un peu moins bonne (erreur-type de 0,282) que celle s'il n'y avait pas eu de manquantes (erreur type de 0,26). Le paramètre de $\I{X_6=2}$ redevient aussi significatif, alors qu'il ne l'était plus si on retirait les manquantes. Il est peu probable que les données soit $\mathsf{MCAR}$ et donc les résultats de l'analyse des cas complets seraient biaisés.
 
 
 ## Valeurs manquantes dans un contexte de prédiction
 
-Nous avons vu que l'imputation multiple permet de corriger les écarts-types des paramètres estimés afin d'obtenir une inférence valide. Mais cette fois-ci, le but n'est pas d'estimer un modèle afin de tester formellement certaines hypothèses, mais plutôt de développer un modèle pour obtenir des prédictions. Dans ce cas, l'imputation multiple peut aussi être utile.
+Nous avons vu que l'imputation multiple permet de corriger les écarts-type des paramètres estimés afin d'obtenir une inférence valide. Mais cette fois-ci, le but n'est pas d'estimer un modèle afin de tester formellement certaines hypothèses, mais plutôt de développer un modèle pour obtenir des prédictions. Dans ce cas, l'imputation multiple peut aussi être utile.
 
 
 Nous allons revenir une dernière fois sur l'exemple de ciblage de clients pour l'envoi d'un catalogue. Rappelez-vous qu'on a un échantillon d'apprentissage de 1000 clients pour lesquels la variable $\texttt{yachat}$ est disponible (est-ce que le client a acheté quelque chose lorsqu'on lui a envoyé un catalogue). Nous avons développé des modèles avec ces 1000 clients afin de décider à qui, parmi les 100 000 clients restants, envoyer le catalogue. Nous avions alors utilisé des données sans valeurs manquantes.  Cette fois-ci, nous allons faire comme s'il y avait des valeurs manquantes pour les variables explicatives à la fois dans l'échantillon d'apprentissage mais aussi dans l'échantillon à prédire. Nous allons chercher à développer un modèle de régression logistique pour $\P{\texttt{yachat}=1}$. Plusieurs approches sont possibles et il n'est pas clair à priori laquelle est la meilleure. Voici la description de deux approches.
@@ -246,4 +246,4 @@ Nous allons seulement utiliser une approximation de la première approche ici et
 
 En utilisant l'approche 1 présentée plus haut, nous allons imputer simultanément les valeurs manquantes pour l'échantillon d'apprentissage et l'échantillon test à prédire avec $K=5$ échantillons imputés. La méthode de sélection de variables utilisée est la procédure séquentielle classique avec 0,05 comme critère d'entrée et de sortie. De plus, afin de simplifier le tout, le point de coupure a été fixé à 0,14 (celui que l'on avait obtenu dans le cas où il n'y a pas de valeurs manquantes) et non pas estimé par validation-croisée.
 
-Il s'avère que le revenu net, sur les 100 000 clients restants, aurait été de 926 349\$. S'il n'y avait pas eu de valeurs manquantes, le stepwise classique aurait généré un revenu net de 969 350\$. Les données manquantes rendent plus difficile le développement du modèle. Mais on fait quand même encore beaucoup mieux que la stratégie de référence qui consiste à envoyer le catalogue aux 100 000 clients, qui aurait généré un revenu net de 601 112\$.
+Il s'avère que le revenu net, sur les 100 000 clients restants, aurait été de 926 349\$. S'il n'y avait pas eu de valeurs manquantes, la sélection basée sur une procédure séquentielle classique aurait généré un revenu net de 969 350\$. Les données manquantes rendent plus difficile le développement du modèle. Mais on fait quand même encore beaucoup mieux que la stratégie de référence qui consiste à envoyer le catalogue aux 100 000 clients, qui aurait généré un revenu net de 601 112\$.
