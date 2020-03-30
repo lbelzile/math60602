@@ -49,9 +49,9 @@ Une manière de tenter de reproduire correctement la variabilité dans les donn�
 
 Cette méthode peut être appliquée dans à peu près n'importe quelle situation et permet d'ajuster les écarts-types des paramètres estimés. Elle peut être appliquée lorsque le processus est MAR (et donc aussi MCAR).
 
-L'idée consiste à procéder à une imputation aléatoire, selon une certaine technique, pour obtenir un échantillon complet et à ajuster le modèle d'intérêt avec cet échantillon. On répète ce processus plusieurs fois (habituellement entre cinq et 10) et on combine les résultats obtenus. 
+L'idée consiste à procéder à une imputation aléatoire, selon une certaine technique, pour obtenir un échantillon complet et à ajuster le modèle d'intérêt avec cet échantillon. On répète ce processus plusieurs fois et on combine les résultats obtenus. 
 
-L'estimation finale des paramètres du modèle est alors simplement la moyenne des estimations pour les différentes répétitions et on peut également obtenir une estimation des écarts types des paramètres qui tient compte du processus d'imputation.
+L'estimation finale des paramètres du modèle est alors simplement la moyenne des estimations pour les différentes répétitions et on peut également obtenir une estimation des écarts-types des paramètres qui tient compte du processus d'imputation.
 
 Plus précisément, supposons qu'on s'intéresse à un seul paramètre $\theta$ dans un modèle donné. Ce modèle pourrait être un modèle de régression linéaire, de régression logistique, etc. Le paramètre $\theta$ serait alors un des $\bs{\beta}$ du modèle.
 
@@ -71,7 +71,7 @@ Ainsi, le terme $W$ est la moyenne des variances et $B$ est la variance entre le
 
 C'est ici qu'on voit l'intérêt à procéder à de l'imputation multiple. Si on procédait à une seule imputation (même en ajoutant une part d'aléatoire pour essayer de reproduire la variabilité des données), on ne serait pas en mesure d'estimer la variance inter-groupe de l'estimateur. Notez que la formule présentée n'est valide que pour le cas unidimensionnel; l'estimation de la variance dans le cas multidimensionnel est différente (voir Little et Rubin, 2002).
 
-Les procédures `mi` et `mianalyze` de **SAS** permettent d'effectuer de l'imputation multiple et d'obtenir des estimations valides des paramètres et de leurs écarts-types pour à peu près n'importe quel modèle. Plus spécifiquement, la procédure `mi` permet d'examiner la configuration des valeurs manquantes et de procéder à l'imputation. De son côté, la procédure `mianalyze` permet de combiner les résultats des estimations provenant des échantillons combinés afin d'obtenir les estimations finales. La structure habituelle du code SAS est la suivante:
+Les procédures `mi` et `mianalyze` de **SAS** permettent d'effectuer de l'imputation multiple et d'obtenir des estimations valides des paramètres et de leurs écarts-types pour à peu près n'importe quel modèle. Plus spécifiquement, la procédure `mi` permet d'examiner la configuration des valeurs manquantes et de procéder à l'imputation. De son côté, la procédure `mianalyze` permet de combiner les résultats des estimations provenant des échantillons combinés afin d'obtenir les estimations finales. La structure habituelle du code **SAS** est la suivante:
 
 1. procédure `mi` pour obtenir des échantillons imputés.
 2. procédure quelconque pour ajuster le modèle voulu (par exemple, `proc reg` ou `proc logistic`). Il faut ajuster les modèles séparément pour chaque échantillon imputé avec la commande `by`.
@@ -79,23 +79,23 @@ Les procédures `mi` et `mianalyze` de **SAS** permettent d'effectuer de l'imput
 
 La méthode d'imputation multiple possède l'avantage d'être applicable avec n'importe quel modèle sous-jacent. Une fois qu'on a des échantillons complets (imputés), on ajuste le modèle comme d'habitude. Mais une observation imputée ne remplacera jamais une vraie observation. Il faut donc faire tout ce qu'on peut pour limiter le plus possible les données manquantes. 
 
-Il faut utiliser son jugement. Par exemple, si la proportion d'observations perdues est petite (moins de 5%), ça ne vaut peut-être pas la peine de prendre des mesures particulières et on peut faire une analyse avec les données complètes seulement. S'il y a un doute, on peut faire une analyse avec les données complètes seulement et une autre avec imputations multiples afin de valider la première. 
+Il faut utiliser son jugement. Par exemple, si la proportion d'observations perdues est petite (moins de 5\%), ça ne vaut peut-être pas la peine de prendre des mesures particulières et on peut faire une analyse avec les données complètes seulement. S'il y a un doute, on peut faire une analyse avec les données complètes seulement et une autre avec imputations multiples afin de valider la première. 
  
-Si, à l'inverse, une variable secondaire cause à elle seule une grande proportion de valeurs manquantes, on peut alors considérer l'éliminer afin de récupérer des observations. Par exemple, si vous avez une proportion de 30% de valeurs manquantes en utilisant toutes vos variables et que cette proportion baisse à 3% lorsque vous éliminez quelques variables peu importantes pour votre étude (ou qui peuvent être remplacées par d'autres jouant à peu près le même rôle qui elles sont disponibles), alors vous pourriez considérer la possibilité de les éliminer. Il est donc nécessaire d'examiner la configuration des valeurs manquantes avant de faire quoi que ce soit. La procédure `mi` permet de faire cela, comme nous le verrons dans l'exemple qui suit.
+Si, à l'inverse, une variable secondaire cause à elle seule une grande proportion de valeurs manquantes, on peut alors considérer l'éliminer afin de récupérer des observations. Par exemple, si vous avez une proportion de 30\% de valeurs manquantes en utilisant toutes vos variables et que cette proportion baisse à 3\% lorsque vous éliminez quelques variables peu importantes pour votre étude (ou qui peuvent être remplacées par d'autres jouant à peu près le même rôle qui elles sont disponibles), alors vous pourriez considérer la possibilité de les éliminer. Il est donc nécessaire d'examiner la configuration des valeurs manquantes avant de faire quoi que ce soit. La procédure `mi` permet de faire cela, comme nous le verrons dans l'exemple qui suit.
 
 ## Example d'application de l'imputation 
 
 On examine l'exemple de recommandations de l'association professionnelle des vachers de la section \@ref(cowboy).
 
 
-Le but est d'examiner les effets des variables $X_1$ à $X_6$ sur les intentions d'achat ($Y$); la base de données `missing1.sas7bdat` contientlest observations et les commandes **SAS** se trouvent dans le fichier `missing1.sas`. Il s'agit des mêmes données que celles du fichier `logit1.sas7bdat` mais avec des valeurs manquantes.
+Le but est d'examiner les effets des variables $X_1$ à $X_6$ sur les intentions d'achat ($Y$); la base de données `missing1.sas7bdat` contient les observations et les commandes **SAS** se trouvent dans le fichier `missing1.sas`. Il s'agit des mêmes données que celles du fichier `logit1.sas7bdat` mais avec des valeurs manquantes.
 
 ```{r missing1r, eval = TRUE, echo = FALSE}
 url <- "https://lbelzile.bitbucket.io/MATH60602/missing1.sas7bdat"
 missing1 <- haven::read_sas(url)
 smallmiss <- missing1[1:10,]
 smallmiss[is.na(smallmiss)] <- "."
-knitr::kable(smallmiss)
+knitr::kable(smallmiss, booktabs = TRUE)
 ```
 Les points (`.`) indiquent des valeurs manquantes. Le premier sujet n'a pas de valeur manquante. Le deuxième a une valeur manquante pour $X_1$ (emploi) et $X_4$ (éducation), etc.
 
@@ -122,10 +122,10 @@ knitr::include_graphics("figures/06-manquantes-e2.png")
 Dans la partie de gauche, les `X` indiquent que la variable est présente dans cette configuration et le point indique qu'elle est manquante. Ainsi, il y a 180 sujets (36\% de l'échantillon) avec aucune observation manquante. Il y en a 99 avec seulement $X_4$ manquante et ainsi de suite. On voit donc, par exemple, que pour 14 sujets, à la fois $X_1$ et $X_2$ sont manquantes.  La partie de droite donne la moyenne des variables dans chaque configuration.
 
 
-La recommandation d'usage est d'imputer au moins le pourcentage de cas incomplet, ici 36\% donc 36 imputations. Si la procédure est trop gloutonne en calcul, on peut diminuer le nombre d'imputations, mais au moins cinq ou 10 réplications sont de mise.
+La recommandation d'usage est d'imputer au moins le pourcentage de cas incomplet, ici 72\% donc 72 imputations. Si la procédure est trop gloutonne en calcul, on peut diminuer le nombre d'imputations, mais au moins cinq ou 10 réplications sont de mise.
 
 On peut comparer l'inférence avec toutes les variables explicatives pour les données sans valeurs manquantes ($n=500$ observations), avec les cas complets uniquement ($n=180$ observations). 
-Le tableau présente les estimations des paramètres du modèle de régression logistique s'il n'y avait pas eu de valeurs manquantes, avec les cas complets et les résultats de l'imputation multiple.
+Le Tableau \@ref(tab:missing3r) présente les estimations des paramètres du modèle de régression logistique s'il n'y avait pas eu de valeurs manquantes, avec les cas complets et les résultats de l'imputation multiple.
   
   
 
@@ -138,11 +138,11 @@ Ceci est clairement indiqué dans la partie de la sortie qui est reproduite ci-a
 knitr::include_graphics("figures/06-manquantes-e3.png")
 ```
 
-Il ne serait pas raisonnable de faire l'analyse avec seulement 180 observations et de laisser tomber les 320 autres. De plus, comme nous l'avons vu plus haut, ce n'est pas valide à moins que le processus ne soit MCAR. La partie du milieu du tableau précédent présente les estimations obtenues. On voit par exemple que la variable $X_3$ (sexe), qui était clairement significative lorsqu'il n'y avait pas de valeurs manquantes, est maintenant non-significative (valeur-$p$ de 0,068). La même chose est vraie pour quelques autres variables incluant $\I{X_6=2}$. Il y a même pire, non seulement la variable $\I{X_2=1}$ est passée de significative à non significative, mais en plus l'estimé de son paramètre a changé de signe.  
+Il ne serait pas raisonnable de faire l'analyse avec seulement 180 observations et de laisser tomber les 320 autres. De plus, comme nous l'avons vu plus haut, ce n'est pas valide à moins que le processus ne soit MCAR. La partie du milieu du Tableau  \@ref(tab:missing3r) présente les estimations obtenues. On voit par exemple que la variable $X_3$ (sexe), qui était clairement significative lorsqu'il n'y avait pas de valeurs manquantes, est maintenant non-significative (valeur-$p$ de 0,068). La même chose est vraie pour quelques autres variables incluant $\I{X_6=2}$. Il y a même pire, non seulement la variable $\I{X_2=1}$ est passée de significative à non significative, mais en plus l'estimé de son paramètre a changé de signe.  
 
 Nous allons donc faire l'analyse avec l'imputation multiple, en prenant la méthode d'imputation par défaut dans la procédure `mi`. Le code **SAS** est
 ```{sas missing2, eval = FALSE, echo = TRUE}
-proc mi data= multi.missing1 out=outmi 
+proc mi data=multi.missing1 out=outmi 
     nimpute=pctmissing seed=746382643;
 var x11 x12 x13 x14 x21 x22 x23 x24 x3 x4 x5 x61 x62;
 run;
@@ -199,7 +199,7 @@ summar_comp <- summary(glm(formula = form,
                        )$coefficients[,c(1,2,4)]
 url <- "https://lbelzile.bitbucket.io/MATH60602/mi.sas7bdat"
 summar_mi <- haven::read_sas(url)
-combi <- cbind(summar_mi, summar_full, summar_comp, 
+combi <- cbind(summar_full, summar_comp, summar_mi, 
                row.names = c("Intercept","x1=1","x1=2","x1=3",
                              "x1=4","x2=1","x2=2","x2=3","x2=4",
                              "x3","x4","x5","x6=1","x6=2"))
@@ -221,7 +221,7 @@ On voit que la variable $X_3$ (sexe) est significative avec l'imputation multipl
 Nous avons vu que l'imputation multiple permet de corriger les écarts-types des paramètres estimés afin d'obtenir une inférence valide. Mais cette fois-ci, le but n'est pas d'estimer un modèle afin de tester formellement certaines hypothèses, mais plutôt de développer un modèle pour obtenir des prédictions. Dans ce cas, l'imputation multiple peut aussi être utile.
 
 
-Nous allons revenir une dernière fois sur l'exemple de ciblagede clients pour l'envoi d'un catalogue. Rappelez-vous qu'on a un échantillon d'apprentissage de 1000 clients pour lesquels la variable $\texttt{yachat}$ est disponible (est-ce que le client a acheté quelque chose lorsqu'on lui a envoyé un catalogue). Nous avons développé des modèles avec ces 1000 clients afin de décider à qui, parmi les 100 000 clients restants, envoyer le catalogue. Nous avions alors utilisé des données sans valeurs manquantes.  Cette fois-ci, nous allons faire comme s'il y avait des valeurs manquantes pour les variables explicatives à la fois dans l'échantillon d'apprentissage mais aussi dans l'échantillon à prédire. Nous allons chercher à développer un modèle de régression logistique pour $\P{\texttt{yachat}=1}$. Plusieurs approches sont possibles et il n'est pas clair à priori laquelle est la meilleure. Voici la description de deux approches.
+Nous allons revenir une dernière fois sur l'exemple de ciblage de clients pour l'envoi d'un catalogue. Rappelez-vous qu'on a un échantillon d'apprentissage de 1000 clients pour lesquels la variable $\texttt{yachat}$ est disponible (est-ce que le client a acheté quelque chose lorsqu'on lui a envoyé un catalogue). Nous avons développé des modèles avec ces 1000 clients afin de décider à qui, parmi les 100 000 clients restants, envoyer le catalogue. Nous avions alors utilisé des données sans valeurs manquantes.  Cette fois-ci, nous allons faire comme s'il y avait des valeurs manquantes pour les variables explicatives à la fois dans l'échantillon d'apprentissage mais aussi dans l'échantillon à prédire. Nous allons chercher à développer un modèle de régression logistique pour $\P{\texttt{yachat}=1}$. Plusieurs approches sont possibles et il n'est pas clair à priori laquelle est la meilleure. Voici la description de deux approches.
 
 **Approche 1: **
 

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapitre 4 Régression logistique | Analyse multidimensionnelle appliquée</title>
   <meta name="description" content="Ce recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
-  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapitre 4 Régression logistique | Analyse multidimensionnelle appliquée" />
   <meta property="og:type" content="book" />
@@ -584,20 +584,20 @@ model yachat(ref=&#39;0&#39;) = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10
 output out=pred predprobs=crossvalidate;
 run;</code></pre>
 <p>Le modèle utilise seulement les 10 variables de base (en fait 14 avec les indicatrices pour les variables catégorielles). Des prévisions pour les clients restants seront exportées dans le fichier <code>pred</code>, grâce à la commande <code>score</code>. L’option <code>ctable</code> permet d’obtenir la <code>Table de classification</code> (sic). Tel que nous l’avons vu au chapitre précédent, il y a 210 clients qui ont acheté quelque chose parmi les 1000. Le tableau de classification contient des estimations de plusieurs quantités intéressantes, en faisant varier le point de coupure (<code>Niveau de proba</code>). Pour chaque point de coupure, ces estimations ont été obtenues à l’aide d’une approximation de la méthode de validation croisée à <span class="math inline">\(n\)</span> groupes (en anglais, <em>leave-one-out cross-validation</em>, ou LOOCV). Ainsi, ces estimations sont valides car elles ne sont pas obtenues en utilisant les mêmes observations que celles qui ont servi à estimer le modèle.</p>
-<p><img src="MATH60602_files/figure-html/classification-1.png" width="672" /></p>
+<p><img src="MATH60602_files/figure-html/classification0-1.png" width="672" /></p>
 <table>
 <thead>
 <tr class="header">
 <th align="right">coupe</th>
-<th align="right">vrai positif</th>
-<th align="right">vrai négatif</th>
-<th align="right">faux positif</th>
-<th align="right">faux négatif</th>
+<th align="right">VP</th>
+<th align="right">VN</th>
+<th align="right">FP</th>
+<th align="right">FN</th>
 <th align="right">correct (%)</th>
 <th align="right">sensibilité (%)</th>
 <th align="right">spécificité (%)</th>
-<th align="right">faux positif (%)</th>
-<th align="right">faux négatif (%)</th>
+<th align="right">FP (%)</th>
+<th align="right">FN (%)</th>
 </tr>
 </thead>
 <tbody>

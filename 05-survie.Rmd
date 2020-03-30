@@ -8,7 +8,7 @@ Considérons l'exemple d'une étude sur le chômage dû à la crise du coronavir
 
 ### Exemple du temps d'abonnement 
 
-Une entreprise œuvrant dans le secteur des télécommunications s'intéresse aux facteurs influençant le temps qu'un client reste abonné à son service de téléphone cellulaire. Des données provenant d'un échantillon de clients se trouvent dans le fichier `survival1.sas7bdat`, qui contient les variables suivantes:
+Une entreprise oeuvrant dans le secteur des télécommunications s'intéresse aux facteurs influençant le temps qu'un client reste abonné à son service de téléphone cellulaire. Des données provenant d'un échantillon de clients se trouvent dans le fichier `survival1.sas7bdat`, qui contient les variables suivantes:
 
 - $\texttt{t}$: temps (en semaines) que le client est resté abonné au service de téléphone cellulaire. Il s'agit du vrai temps si le client n'est plus abonné et d'un temps censuré à droite si le client est toujours abonné.
 - $\texttt{censure}$: variable binaire qui indique si la variable $\texttt{t}$ est censurée ($1$ si le client est toujours abonné) ou non ($0$, la variable $\texttt{t}$ est la durée finale de l'abonnement).
@@ -322,16 +322,16 @@ Supposons que la variable $\texttt{service}$, qui représente le nombre d'autres
 
 Le plus difficile est de créer correctement le fichier de données pour effectuer ce genre d'analyse. Supposons pour cet exemple qu'il y a eu au plus un changement dans la variable $\texttt{service}$, comme présenté dans le fichier `survival3.sas7bdat`. Les variables $\texttt{t}$, $\texttt{censure}$, $\texttt{age}$, $\texttt{sexe}$ et $\texttt{region}$ sont comme précédemment. Trois nouvelles variables remplacent l'ancienne variable service.
 
-- $\texttt{service_avant}$: nombre d'autres services auxquels le client est abonné au début de son abonnement.
-- $\texttt{temps_ch}$: temps au moment où un changement est survenu quant au nombre d'autres services. En l'absence de changement, l'observation est remplacée par une valeur manquante (`.`).
-- $\texttt{service_apres}$: nombre d'autres services auxquels le client est abonné à partir du temps $\texttt{temps_ch}$.
+- $\verb+service_avant+$: nombre d'autres services auxquels le client est abonné au début de son abonnement.
+- $\verb+temps_ch+$: temps au moment où un changement est survenu quant au nombre d'autres services. En l'absence de changement, l'observation est remplacée par une valeur manquante (`.`).
+- $\verb+service_apres+$: nombre d'autres services auxquels le client est abonné à partir du temps $\verb+temps_ch+$.
 
 
 ```{r fig5_e21, echo = FALSE, out.width='80%', fig.align = "center"}
 knitr::include_graphics("figures/05-survie-e21.png")
 ```
 
-On regarde plus en détail le profil des cinq premiers clients, dont seuls deux ont changé le nombre d'abonnements; les individus 3--5 se sont désabonnés du service cellulaire à un moment donné. Le premier client était abonné à deux autres services au début de son abonnement au téléphone cellulaire mais, après 130 semaines d'abonnement, a effectué un changement à son forfait pour ne conserver qu'un autre service en plus du cellulaire. Pour le deuxième client, comme $\texttt{temps_ch}$ est manquante, il est toujours abonné à deux autres services et ce, jusqu'à la fin de l'étude. 
+On regarde plus en détail le profil des cinq premiers clients, dont seuls deux ont changé le nombre d'abonnements; les individus 3--5 se sont désabonnés du service cellulaire à un moment donné. Le premier client était abonné à deux autres services au début de son abonnement au téléphone cellulaire mais, après 130 semaines d'abonnement, a effectué un changement à son forfait pour ne conserver qu'un autre service en plus du cellulaire. Pour le deuxième client, comme $\verb+temps_ch+$ est manquante, il est toujours abonné à deux autres services et ce, jusqu'à la fin de l'étude. 
 
 Les commandes **SAS** permettant d'ajuster le modèle avec point de rupture se trouvent dans le fichier `survival3_varie_temps.sas`. Notez que lorsqu'on a une variable catégorielle qui varie dans le temps (comme ici avec la variable service), on ne peut pas utiliser `class` pour la déclarer catégorielle; il faut plutôt créer nous-mêmes les variables indicatrices nécessaires à l'intérieur même de l'appel à la fonction `phreg` (voir le script). Ici, nous utiliserons la catégorie $\texttt{0}$ (aucun autre service) comme catégorie de référence.
 

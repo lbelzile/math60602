@@ -429,7 +429,7 @@ run;
 
 Le modèle utilise seulement les 10 variables de base (en fait 14 avec les indicatrices pour les variables catégorielles). Des prévisions pour les clients restants seront exportées dans le fichier `pred`, grâce à la commande `score`. L'option `ctable` permet d'obtenir la `Table de classification` (sic). Tel que nous l'avons vu au chapitre précédent, il y a 210 clients qui ont acheté quelque chose parmi les 1000.  Le tableau de classification contient des estimations de plusieurs quantités intéressantes, en faisant varier le point de coupure (`Niveau de proba`). Pour chaque point de coupure, ces estimations ont été obtenues à l'aide d'une approximation de la méthode de validation croisée à $n$ groupes (en anglais, _leave-one-out cross-validation_, ou LOOCV). Ainsi, ces estimations sont valides car elles ne sont pas obtenues en utilisant les mêmes observations que celles qui ont servi à estimer le modèle.
 
-```{r classification, echo = FALSE, eval = TRUE, cache = TRUE}
+```{r classification0, echo = FALSE, eval = TRUE, cache = TRUE}
 url <- "https://lbelzile.bitbucket.io/MATH60602/dbm.sas7bdat"
 dbm <- haven::read_sas(url)
 # Transformer les variables catégorielles en facteurs
@@ -499,23 +499,27 @@ perfo <- function(prob, resp, plot = FALSE){
         table = tab[seq(4, by = 4, length.out = 49),]))
    
 }
-
 # Performance du modèle avec données d'apprentissage
 perfo0 <- perfo(prob = train_prob, resp = train$yachat)
 perfo1 <- perfo(prob = loocv_prob, resp = train$yachat)
+```
+
+```{r classification, echo = FALSE, eval = TRUE, cache = TRUE}
 knitr::kable(perfo1$table, digits = c(2, rep(0,4), rep(1,5)), 
              col.names = c("coupe",
-                            "vrai positif",
-                           "vrai négatif",
-                           "faux positif",
-                           "faux négatif",
-                           "correct (%)",
-                           "sensibilité (%)",
-                           "spécificité (%)",
-                           "faux positif (%)",
-                           "faux négatif (%)"),
+                            "VP",
+                           "VN",
+                           "FP",
+                           "FN",
+                           "correct (\\%)",
+                           "sensibilité (\\%)",
+                           "spécificité (\\%)",
+                           "FP (\\%)",
+                           "FN (\\%)"),
              row.names = FALSE,
-             escape = TRUE)
+             booktabs = TRUE,
+             longtable = TRUE,
+             escape = FALSE)
 
 # La fonction cv.glm permet aussi de faire la validation croisée, 
 # Définir une fonction de coût, mais pour un seul point de coupure
@@ -1060,7 +1064,7 @@ tab <- logit6 %>%
             "std.err" =round(sd(x),2), 
             "min" = min(x), 
             "max" = max(x))
-kableExtra::kable(tab)
+kableExtra::kable(tab, booktabs = TRUE)
 ```
 
 Ainsi, les répondants qui sont allés moins de cinq fois au cinéma ont en moyenne 33,5 ans, ceux qui sont allés entre cinq et 10 fois ont 30,4 ans en moyenne, et ceux qui sont allés plus de 10 fois ont 25,1 ans en moyenne. Il y a une progression et on voit que les répondants plus jeunes vont plus souvent au cinéma.

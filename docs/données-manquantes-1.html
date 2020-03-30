@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapitre 7 Données manquantes | Analyse multidimensionnelle appliquée</title>
   <meta name="description" content="Ce recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
-  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapitre 7 Données manquantes | Analyse multidimensionnelle appliquée" />
   <meta property="og:type" content="book" />
@@ -263,8 +263,8 @@ Cette approche n’est donc <strong>pas recommandée</strong>.</p>
 <div id="imputation-multiple" class="section level3">
 <h3><span class="header-section-number">7.2.3</span> Imputation multiple</h3>
 <p>Cette méthode peut être appliquée dans à peu près n’importe quelle situation et permet d’ajuster les écarts-types des paramètres estimés. Elle peut être appliquée lorsque le processus est MAR (et donc aussi MCAR).</p>
-<p>L’idée consiste à procéder à une imputation aléatoire, selon une certaine technique, pour obtenir un échantillon complet et à ajuster le modèle d’intérêt avec cet échantillon. On répète ce processus plusieurs fois (habituellement entre cinq et 10) et on combine les résultats obtenus.</p>
-<p>L’estimation finale des paramètres du modèle est alors simplement la moyenne des estimations pour les différentes répétitions et on peut également obtenir une estimation des écarts types des paramètres qui tient compte du processus d’imputation.</p>
+<p>L’idée consiste à procéder à une imputation aléatoire, selon une certaine technique, pour obtenir un échantillon complet et à ajuster le modèle d’intérêt avec cet échantillon. On répète ce processus plusieurs fois et on combine les résultats obtenus.</p>
+<p>L’estimation finale des paramètres du modèle est alors simplement la moyenne des estimations pour les différentes répétitions et on peut également obtenir une estimation des écarts-types des paramètres qui tient compte du processus d’imputation.</p>
 <p>Plus précisément, supposons qu’on s’intéresse à un seul paramètre <span class="math inline">\(\theta\)</span> dans un modèle donné. Ce modèle pourrait être un modèle de régression linéaire, de régression logistique, etc. Le paramètre <span class="math inline">\(\theta\)</span> serait alors un des <span class="math inline">\(\boldsymbol{\beta}\)</span> du modèle.</p>
 <p>Supposons qu’on procède à <span class="math inline">\(K\)</span> imputations, c’est-à-dire, qu’on construit <span class="math inline">\(K\)</span> ensemble de données complets à partir de l’ensemble de données initial contenant des valeurs manquantes. On estime alors les paramètres du modèle séparément pour chacun des ensembles de données imputés. Soit <span class="math inline">\(\widehat{\theta}_k\)</span>, l’estimé du paramètre <span class="math inline">\(\theta\)</span> pour l’échantillon <span class="math inline">\(k \in \{1, \ldots, K\}\)</span> et <span class="math inline">\(\widehat{\sigma}_k^2={\mathsf{Var}}\left(\widehat{\theta}_k\right)\)</span> l’estimé de la variance de <span class="math inline">\(\widehat{\theta}_k\)</span> produite par le modèle estimé.</p>
 <p>L’estimation finale de <span class="math inline">\(\theta\)</span>, dénotée <span class="math inline">\(\widehat{\theta}\)</span>, est obtenue tout simplement en faisant la moyenne des estimations de tous les modèles, c’est-à-dire,
@@ -279,7 +279,7 @@ B &amp;= \frac{1}{K-1} \sum_{k=1}^K (\widehat{\theta}_k - \widehat{\theta})^2.
 \end{align*}\]</span>
 Ainsi, le terme <span class="math inline">\(W\)</span> est la moyenne des variances et <span class="math inline">\(B\)</span> est la variance entre les imputations. Le terme <span class="math inline">\((1+1/K)B\)</span> est celui qui vient corriger le fait qu’on travaille avec des données imputées et non pas des vraies données en augmentant la variance estimée du paramètre.</p>
 <p>C’est ici qu’on voit l’intérêt à procéder à de l’imputation multiple. Si on procédait à une seule imputation (même en ajoutant une part d’aléatoire pour essayer de reproduire la variabilité des données), on ne serait pas en mesure d’estimer la variance inter-groupe de l’estimateur. Notez que la formule présentée n’est valide que pour le cas unidimensionnel; l’estimation de la variance dans le cas multidimensionnel est différente (voir Little et Rubin, 2002).</p>
-<p>Les procédures <code>mi</code> et <code>mianalyze</code> de <strong>SAS</strong> permettent d’effectuer de l’imputation multiple et d’obtenir des estimations valides des paramètres et de leurs écarts-types pour à peu près n’importe quel modèle. Plus spécifiquement, la procédure <code>mi</code> permet d’examiner la configuration des valeurs manquantes et de procéder à l’imputation. De son côté, la procédure <code>mianalyze</code> permet de combiner les résultats des estimations provenant des échantillons combinés afin d’obtenir les estimations finales. La structure habituelle du code SAS est la suivante:</p>
+<p>Les procédures <code>mi</code> et <code>mianalyze</code> de <strong>SAS</strong> permettent d’effectuer de l’imputation multiple et d’obtenir des estimations valides des paramètres et de leurs écarts-types pour à peu près n’importe quel modèle. Plus spécifiquement, la procédure <code>mi</code> permet d’examiner la configuration des valeurs manquantes et de procéder à l’imputation. De son côté, la procédure <code>mianalyze</code> permet de combiner les résultats des estimations provenant des échantillons combinés afin d’obtenir les estimations finales. La structure habituelle du code <strong>SAS</strong> est la suivante:</p>
 <ol style="list-style-type: decimal">
 <li>procédure <code>mi</code> pour obtenir des échantillons imputés.</li>
 <li>procédure quelconque pour ajuster le modèle voulu (par exemple, <code>proc reg</code> ou <code>proc logistic</code>). Il faut ajuster les modèles séparément pour chaque échantillon imputé avec la commande <code>by</code>.</li>
@@ -293,7 +293,7 @@ Ainsi, le terme <span class="math inline">\(W\)</span> est la moyenne des varian
 <div id="example-dapplication-de-limputation" class="section level2">
 <h2><span class="header-section-number">7.3</span> Example d’application de l’imputation</h2>
 <p>On examine l’exemple de recommandations de l’association professionnelle des vachers de la section <a href="régression-logistique-1.html#cowboy">4.4</a>.</p>
-<p>Le but est d’examiner les effets des variables <span class="math inline">\(X_1\)</span> à <span class="math inline">\(X_6\)</span> sur les intentions d’achat (<span class="math inline">\(Y\)</span>); la base de données <code>missing1.sas7bdat</code> contientlest observations et les commandes <strong>SAS</strong> se trouvent dans le fichier <code>missing1.sas</code>. Il s’agit des mêmes données que celles du fichier <code>logit1.sas7bdat</code> mais avec des valeurs manquantes.</p>
+<p>Le but est d’examiner les effets des variables <span class="math inline">\(X_1\)</span> à <span class="math inline">\(X_6\)</span> sur les intentions d’achat (<span class="math inline">\(Y\)</span>); la base de données <code>missing1.sas7bdat</code> contient les observations et les commandes <strong>SAS</strong> se trouvent dans le fichier <code>missing1.sas</code>. Il s’agit des mêmes données que celles du fichier <code>logit1.sas7bdat</code> mais avec des valeurs manquantes.</p>
 <table>
 <thead>
 <tr>
@@ -563,15 +563,15 @@ var y x1-x6;
 run;</code></pre>
 <p><img src="figures/06-manquantes-e2.png" width="100%" style="display: block; margin: auto;" /></p>
 <p>Dans la partie de gauche, les <code>X</code> indiquent que la variable est présente dans cette configuration et le point indique qu’elle est manquante. Ainsi, il y a 180 sujets (36% de l’échantillon) avec aucune observation manquante. Il y en a 99 avec seulement <span class="math inline">\(X_4\)</span> manquante et ainsi de suite. On voit donc, par exemple, que pour 14 sujets, à la fois <span class="math inline">\(X_1\)</span> et <span class="math inline">\(X_2\)</span> sont manquantes. La partie de droite donne la moyenne des variables dans chaque configuration.</p>
-<p>La recommandation d’usage est d’imputer au moins le pourcentage de cas incomplet, ici 36% donc 36 imputations. Si la procédure est trop gloutonne en calcul, on peut diminuer le nombre d’imputations, mais au moins cinq ou 10 réplications sont de mise.</p>
+<p>La recommandation d’usage est d’imputer au moins le pourcentage de cas incomplet, ici 72% donc 72 imputations. Si la procédure est trop gloutonne en calcul, on peut diminuer le nombre d’imputations, mais au moins cinq ou 10 réplications sont de mise.</p>
 <p>On peut comparer l’inférence avec toutes les variables explicatives pour les données sans valeurs manquantes (<span class="math inline">\(n=500\)</span> observations), avec les cas complets uniquement (<span class="math inline">\(n=180\)</span> observations).
-Le tableau présente les estimations des paramètres du modèle de régression logistique s’il n’y avait pas eu de valeurs manquantes, avec les cas complets et les résultats de l’imputation multiple.</p>
+Le Tableau <a href="données-manquantes-1.html#tab:missing3r">7.1</a> présente les estimations des paramètres du modèle de régression logistique s’il n’y avait pas eu de valeurs manquantes, avec les cas complets et les résultats de l’imputation multiple.</p>
 <p>Revenons à présent à notre fichier avec des valeurs manquantes. Si on demande à <strong>SAS</strong> d’ajuster le modèle de régression logistique, il va par défaut retirer les observations qui ont au moins une valeur manquante pour une des variables nécessaires à l’analyse. Ainsi, le modèle va être ajusté avec seulement 180 observations. Cette analyse est présentée seulement pour montrer l’effet des valeurs manquantes.</p>
 <p>Ceci est clairement indiqué dans la partie de la sortie qui est reproduite ci-après.</p>
 <p><img src="figures/06-manquantes-e3.png" width="80%" style="display: block; margin: auto;" /></p>
-<p>Il ne serait pas raisonnable de faire l’analyse avec seulement 180 observations et de laisser tomber les 320 autres. De plus, comme nous l’avons vu plus haut, ce n’est pas valide à moins que le processus ne soit MCAR. La partie du milieu du tableau précédent présente les estimations obtenues. On voit par exemple que la variable <span class="math inline">\(X_3\)</span> (sexe), qui était clairement significative lorsqu’il n’y avait pas de valeurs manquantes, est maintenant non-significative (valeur-<span class="math inline">\(p\)</span> de 0,068). La même chose est vraie pour quelques autres variables incluant <span class="math inline">\({\mathbf 1}_{X_6=2}\)</span>. Il y a même pire, non seulement la variable <span class="math inline">\({\mathbf 1}_{X_2=1}\)</span> est passée de significative à non significative, mais en plus l’estimé de son paramètre a changé de signe.</p>
+<p>Il ne serait pas raisonnable de faire l’analyse avec seulement 180 observations et de laisser tomber les 320 autres. De plus, comme nous l’avons vu plus haut, ce n’est pas valide à moins que le processus ne soit MCAR. La partie du milieu du Tableau <a href="données-manquantes-1.html#tab:missing3r">7.1</a> présente les estimations obtenues. On voit par exemple que la variable <span class="math inline">\(X_3\)</span> (sexe), qui était clairement significative lorsqu’il n’y avait pas de valeurs manquantes, est maintenant non-significative (valeur-<span class="math inline">\(p\)</span> de 0,068). La même chose est vraie pour quelques autres variables incluant <span class="math inline">\({\mathbf 1}_{X_6=2}\)</span>. Il y a même pire, non seulement la variable <span class="math inline">\({\mathbf 1}_{X_2=1}\)</span> est passée de significative à non significative, mais en plus l’estimé de son paramètre a changé de signe.</p>
 <p>Nous allons donc faire l’analyse avec l’imputation multiple, en prenant la méthode d’imputation par défaut dans la procédure <code>mi</code>. Le code <strong>SAS</strong> est</p>
-<pre class="sas"><code>proc mi data= multi.missing1 out=outmi 
+<pre class="sas"><code>proc mi data=multi.missing1 out=outmi 
     nimpute=pctmissing seed=746382643;
 var x11 x12 x13 x14 x21 x22 x23 x24 x3 x4 x5 x61 x62;
 run;
@@ -633,15 +633,6 @@ valeur-<span class="math inline">\(p\)</span>
 Intercept
 </td>
 <td style="text-align:right;">
-<span class="math inline">\(-6.575\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(1.037\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.000\)</span>
-</td>
-<td style="text-align:right;">
 <span class="math inline">\(-6.888\)</span>
 </td>
 <td style="text-align:right;">
@@ -659,19 +650,19 @@ Intercept
 <td style="text-align:right;">
 <span class="math inline">\(0.002\)</span>
 </td>
+<td style="text-align:right;">
+<span class="math inline">\(-6.575\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(1.037\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.000\)</span>
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 x1=1
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.546\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.540\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.312\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(0.358\)</span>
@@ -691,19 +682,19 @@ x1=1
 <td style="text-align:right;">
 <span class="math inline">\(0.919\)</span>
 </td>
+<td style="text-align:right;">
+<span class="math inline">\(0.546\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.540\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.312\)</span>
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 x1=2
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(-0.125\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.446\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.779\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(-0.468\)</span>
@@ -723,19 +714,19 @@ x1=2
 <td style="text-align:right;">
 <span class="math inline">\(0.387\)</span>
 </td>
+<td style="text-align:right;">
+<span class="math inline">\(-0.125\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.446\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.779\)</span>
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 x1=3
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.072\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.436\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.869\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(-0.311\)</span>
@@ -755,19 +746,19 @@ x1=3
 <td style="text-align:right;">
 <span class="math inline">\(0.474\)</span>
 </td>
+<td style="text-align:right;">
+<span class="math inline">\(0.072\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.436\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.869\)</span>
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 x1=4
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(-0.043\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.485\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.930\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(-0.317\)</span>
@@ -787,19 +778,19 @@ x1=4
 <td style="text-align:right;">
 <span class="math inline">\(0.210\)</span>
 </td>
+<td style="text-align:right;">
+<span class="math inline">\(-0.043\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.485\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.930\)</span>
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 x2=1
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(1.098\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.647\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.090\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(1.331\)</span>
@@ -819,19 +810,19 @@ x2=1
 <td style="text-align:right;">
 <span class="math inline">\(0.521\)</span>
 </td>
+<td style="text-align:right;">
+<span class="math inline">\(1.098\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.647\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.090\)</span>
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 x2=2
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(1.032\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.545\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.059\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(1.148\)</span>
@@ -851,19 +842,19 @@ x2=2
 <td style="text-align:right;">
 <span class="math inline">\(0.613\)</span>
 </td>
+<td style="text-align:right;">
+<span class="math inline">\(1.032\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.545\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.059\)</span>
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 x2=3
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.524\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.520\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.314\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(0.773\)</span>
@@ -883,19 +874,19 @@ x2=3
 <td style="text-align:right;">
 <span class="math inline">\(0.644\)</span>
 </td>
+<td style="text-align:right;">
+<span class="math inline">\(0.524\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.520\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.314\)</span>
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 x2=4
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(-1.043\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.568\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.066\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(-1.109\)</span>
@@ -915,19 +906,19 @@ x2=4
 <td style="text-align:right;">
 <span class="math inline">\(0.007\)</span>
 </td>
+<td style="text-align:right;">
+<span class="math inline">\(-1.043\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.568\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.066\)</span>
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 x3
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(1.190\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.268\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.000\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(1.349\)</span>
@@ -947,19 +938,19 @@ x3
 <td style="text-align:right;">
 <span class="math inline">\(0.068\)</span>
 </td>
+<td style="text-align:right;">
+<span class="math inline">\(1.190\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.268\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.000\)</span>
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 x4
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(1.516\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.372\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.000\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(1.830\)</span>
@@ -979,19 +970,19 @@ x4
 <td style="text-align:right;">
 <span class="math inline">\(0.000\)</span>
 </td>
+<td style="text-align:right;">
+<span class="math inline">\(1.516\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.372\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.000\)</span>
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 x5
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.104\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.019\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.000\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(0.109\)</span>
@@ -1011,19 +1002,19 @@ x5
 <td style="text-align:right;">
 <span class="math inline">\(0.001\)</span>
 </td>
+<td style="text-align:right;">
+<span class="math inline">\(0.104\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.019\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.000\)</span>
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 x6=1
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(2.261\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.380\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.000\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(2.412\)</span>
@@ -1043,19 +1034,19 @@ x6=1
 <td style="text-align:right;">
 <span class="math inline">\(0.001\)</span>
 </td>
+<td style="text-align:right;">
+<span class="math inline">\(2.261\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.380\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.000\)</span>
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
 x6=2
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.995\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.250\)</span>
-</td>
-<td style="text-align:right;">
-<span class="math inline">\(0.000\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(1.045\)</span>
@@ -1075,6 +1066,15 @@ x6=2
 <td style="text-align:right;">
 <span class="math inline">\(0.057\)</span>
 </td>
+<td style="text-align:right;">
+<span class="math inline">\(0.995\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.250\)</span>
+</td>
+<td style="text-align:right;">
+<span class="math inline">\(0.000\)</span>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1084,7 +1084,7 @@ x6=2
 <div id="valeurs-manquantes-dans-un-contexte-de-prédiction" class="section level2">
 <h2><span class="header-section-number">7.4</span> Valeurs manquantes dans un contexte de prédiction</h2>
 <p>Nous avons vu que l’imputation multiple permet de corriger les écarts-types des paramètres estimés afin d’obtenir une inférence valide. Mais cette fois-ci, le but n’est pas d’estimer un modèle afin de tester formellement certaines hypothèses, mais plutôt de développer un modèle pour obtenir des prédictions. Dans ce cas, l’imputation multiple peut aussi être utile.</p>
-<p>Nous allons revenir une dernière fois sur l’exemple de ciblagede clients pour l’envoi d’un catalogue. Rappelez-vous qu’on a un échantillon d’apprentissage de 1000 clients pour lesquels la variable <span class="math inline">\(\texttt{yachat}\)</span> est disponible (est-ce que le client a acheté quelque chose lorsqu’on lui a envoyé un catalogue). Nous avons développé des modèles avec ces 1000 clients afin de décider à qui, parmi les 100 000 clients restants, envoyer le catalogue. Nous avions alors utilisé des données sans valeurs manquantes. Cette fois-ci, nous allons faire comme s’il y avait des valeurs manquantes pour les variables explicatives à la fois dans l’échantillon d’apprentissage mais aussi dans l’échantillon à prédire. Nous allons chercher à développer un modèle de régression logistique pour <span class="math inline">\({\mathsf P}\left(\texttt{yachat}=1\right)\)</span>. Plusieurs approches sont possibles et il n’est pas clair à priori laquelle est la meilleure. Voici la description de deux approches.</p>
+<p>Nous allons revenir une dernière fois sur l’exemple de ciblage de clients pour l’envoi d’un catalogue. Rappelez-vous qu’on a un échantillon d’apprentissage de 1000 clients pour lesquels la variable <span class="math inline">\(\texttt{yachat}\)</span> est disponible (est-ce que le client a acheté quelque chose lorsqu’on lui a envoyé un catalogue). Nous avons développé des modèles avec ces 1000 clients afin de décider à qui, parmi les 100 000 clients restants, envoyer le catalogue. Nous avions alors utilisé des données sans valeurs manquantes. Cette fois-ci, nous allons faire comme s’il y avait des valeurs manquantes pour les variables explicatives à la fois dans l’échantillon d’apprentissage mais aussi dans l’échantillon à prédire. Nous allons chercher à développer un modèle de régression logistique pour <span class="math inline">\({\mathsf P}\left(\texttt{yachat}=1\right)\)</span>. Plusieurs approches sont possibles et il n’est pas clair à priori laquelle est la meilleure. Voici la description de deux approches.</p>
 <p><strong>Approche 1: </strong></p>
 <ol style="list-style-type: decimal">
 <li>Obtenir <span class="math inline">\(K\)</span> ensembles de données complets par imputations multiples (simultanément pour les échantillons tests et d’apprentissage).</li>
