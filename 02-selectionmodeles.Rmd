@@ -616,16 +616,18 @@ La stratégie consistant à sélectionner un sous-ensemble de 56 variables avec 
 
 L'idée de la procédure séquentielle classique est d'inclure ou d'exclure une variable à la fois sur la base des valeurs-_p_. La procédure `glmselect` permet de faire une sélection séquentielle en utilisant d'autres critères, comme le $\mathsf{AIC}$ ou le $\mathsf{BIC}$. Cette procédure permet de contrôler très finement le processus de sélection de variables. Le code qui suit fait une recherche séquentielle avec les particularités suivantes. À chaque étape ascendante de la procédure séquentielle, c'est la variable qui améliore le plus le $\mathsf{AIC}$ (`select=aic`) qui est entrée. De plus, à chaque étape descendante de la procédure séquenctielle, c'est la (ou les) variable(s) qui détériore(nt) le plus le $\mathsf{AIC}$ qui est (sont) retirée(s). À la toute fin du processus, c'est le modèle qui a le meilleur $\mathsf{BIC}$ (`choose=BIC`) qui est retenu.
 
+Si la procédure `reg` ne supporte pas la déclaration de variables catégorielles (`class`), `glmselect` et les autres fonctions que nous utiliserons permettent de simplifier la syntaxe et d'éviter de créer les variables binaires une par une. En revanche, lors de la sélection, les variables catégorielles sont enlevées en bloc et donc la sortie de la procédure peut différer de celle où on appelle la fonction en listant les 104 variables indicatrices et continues. Par défaut, **SAS** ne met les interactions que si les effets principaux sont présents; l'option `hier=none` permet de contourner cette règle.
+
 ```{sas 02-glmselectseq, eval=FALSE}
 proc glmselect data=trainymontant;
 class x3 x4;
 model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10@2 cx2 cx6 cx7 cx8 cx9 cx10  /   
-selection=stepwise(select=aic choose=sbc); 
+selection=stepwise(select=aic choose=sbc hier=none); 
 score data=testymontant out=predglmselectaicsbc p=predymontant;
 run;
 ```
 
-Voici l'historique de la procédure séquentielle avec cette combinaison. 
+Voici l'historique de la procédure séquentielle avec les 104 variables insérées manuellement. 
 
 ```{r fig2p2_fig12-13, echo = FALSE, out.width='70%', fig.align = "center"}
 knitr::include_graphics("figures/02-select-e12.png")

@@ -1420,7 +1420,7 @@ run;</code></pre>
 </div>
 <div id="recherche-séquentielle" class="section level3">
 <h3><span class="header-section-number">4.7.2</span> Recherche séquentielle</h3>
-<p>Faire une recherche de tous les sous-modèles possibles devient impraticable lorsqu’il y a trop de variables en jeu. La procédure <code>logistic</code> permet aussi une recherche de type séquentielle classique. Ceci permet aussi d’utiliser la même approche en deux temps présentée au chapitre précédent. Dans un premier temps, on fait une recherche séquentielle pour sélectionner un nombre de variables qui sera assez petit afin qu’une recherche exhaustive de tous les sous-modèles soit possible. Dans un second temps, on fait cette recherche avec ces variables uniquement.</p>
+<p>Faire une recherche de tous les sous-modèles possibles devient impraticable lorsqu’il y a trop de variables en jeu. La procédure <code>logistic</code> permet aussi une recherche de type séquentielle classique. Ceci permet aussi d’utiliser la même approche en deux temps présentée au chapitre précédent. Dans un premier temps, on fait une recherche séquentielle pour sélectionner un nombre de variables qui sera assez petit afin qu’une recherche exhaustive de tous les sous-modèles soit possible. Dans un second temps, on fait cette recherche avec ces variables uniquement. Idéalement, on débute la sélection avec le modèle qui contient toutes les variables, soit <code>start=n</code> où <span class="math inline">\(n=104\)</span> dans notre cas.</p>
 <p>Si on inclut tous les termes quadratiques et les termes d’interactions d’ordre deux, nous avons 104 variables potentielles: c’est trop pour une recherche exhaustive.</p>
 <p>Faisons d’abord une recherche séquentielle classique avec les 104 variables, en prenant 0,05 comme critère d’entrée et de sortie. Le code est</p>
 <pre class="sas"><code>proc logistic data=train;
@@ -1444,10 +1444,10 @@ i_x7_x6 i_x7_x8 i_x7_x9 i_x7_x10
 i_x6_x8 i_x6_x9 i_x6_x10
 i_x8_x9 i_x8_x10
 i_x9_x10 
-  / selection=stepwise  sle=.05 sls=.05;  
+  / selection=stepwise  start=104, sle=.05 sls=.05;  
 run;</code></pre>
 <p><img src="figures/03-logistic-e22.png" width="80%" style="display: block; margin: auto;" /></p>
-<p>Il y a eu 17 étapes dans la recherche séquentielle. La variable <code>i_x7_x8</code> est la première à être incluse, suivie de <code>x2</code> et ainsi de suite. Le modèle final contient 13 variables.
+<p>Il y a eu 17 étapes dans la recherche séquentielle débutant avec le modèle qui ne contient que l’ordonnée à l’origine. La variable <code>i_x7_x8</code> est la première à être incluse, suivie de <code>x2</code> et ainsi de suite. Le modèle final contient 13 variables.
 En faisant une recherche séquentielle avec 0,5 comme comme critère d’entrée et de sortie, nous obtenons un sous-ensemble de 47 variables. On peut ensuite faire une recherche exhaustive de tous les sous-modèles avec ces 47 variables en utilisant la macro; le fichier <code>logit5_selection_variables.sas</code> contient le code commenté.</p>
 <p>Le modèle qui a le plus petit <span class="math inline">\(\mathsf{AIC}\)</span>, soit 579,701, est un modèle avec 28 variables. Le <span class="math inline">\(\mathsf{BIC}\)</span> mène à un modèle beaucoup plus parcimonieux qui inclut huit variables.</p>
 </div>

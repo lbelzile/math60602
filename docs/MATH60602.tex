@@ -86,26 +86,12 @@
 
 \usepackage{icomma}
 % }
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \usepackage[]{natbib}
 \bibliographystyle{apalike}
 
 \title{Analyse multidimensionnelle appliquée}
 \author{Denis Larocque, Léo Belzile}
-\date{Version du 2020-03-30}
+\date{Version du 2020-04-03}
 
 \usepackage{amsthm}
 \newtheorem{theorem}{Théorème}[chapter]
@@ -1049,28 +1035,159 @@ Il s'agit du modèle cubique (d'ordre 3) en \(x\).
 
 Le tableau qui suit résume ces quantités pour tous les modèles de l'ordre 1 à l'ordre 10.
 
-\begin{table}
+\label{tab:02-table1}Mesures d'adéquation du modèle linéaire et estimés de l'erreur
 
-\caption{\label{tab:02-table1}Mesures d'adéquation du modèle linéaire et estimés de l'erreur}
-\centering
-\begin{tabular}[t]{lrrrrrr}
-\toprule
-  & \(\mathsf{EMQ}\) & \(\widehat{\mathsf{EMQ}}_a\) & \(R^2\) & \(R^2_a\) & \(\mathsf{AIC}\) & \(\mathsf{BIC}\)\\
-\midrule
-1 & 3191.29 & 3674.20 & 0.65 & 0.65 & 1110.70 & 1118.51\\
-2 & 3132.67 & 2879.24 & 0.73 & 0.72 & 1088.32 & 1098.74\\
-3 & 2697.40 & 2620.05 & 0.75 & 0.74 & 1080.88 & 1093.91\\
-4 & 2766.68 & 2581.70 & 0.75 & 0.74 & 1081.41 & 1097.04\\
-5 & 2771.05 & 2580.86 & 0.75 & 0.74 & 1083.38 & 1101.61\\
-\addlinespace
-6 & 2779.66 & 2577.60 & 0.75 & 0.74 & 1085.25 & 1106.09\\
-7 & 2780.21 & 2577.49 & 0.75 & 0.74 & 1087.24 & 1110.69\\
-8 & 2797.35 & 2531.00 & 0.76 & 0.74 & 1087.42 & 1113.48\\
-9 & 2811.07 & 2527.85 & 0.76 & 0.73 & 1089.30 & 1117.96\\
-10 & 2848.81 & 2519.14 & 0.76 & 0.73 & 1090.95 & 1122.22\\
-\bottomrule
-\end{tabular}
-\end{table}
+\(\mathsf{EMQ}\)
+
+\(\widehat{\mathsf{EMQ}}_a\)
+
+\(R^2\)
+
+\(R^2_a\)
+
+\(\mathsf{AIC}\)
+
+\(\mathsf{BIC}\)
+
+1
+
+3191.29
+
+3674.20
+
+0.65
+
+0.65
+
+1110.70
+
+1118.51
+
+2
+
+3132.67
+
+2879.24
+
+0.73
+
+0.72
+
+1088.32
+
+1098.74
+
+3
+
+2697.40
+
+2620.05
+
+0.75
+
+0.74
+
+1080.88
+
+1093.91
+
+4
+
+2766.68
+
+2581.70
+
+0.75
+
+0.74
+
+1081.41
+
+1097.04
+
+5
+
+2771.05
+
+2580.86
+
+0.75
+
+0.74
+
+1083.38
+
+1101.61
+
+6
+
+2779.66
+
+2577.60
+
+0.75
+
+0.74
+
+1085.25
+
+1106.09
+
+7
+
+2780.21
+
+2577.49
+
+0.75
+
+0.74
+
+1087.24
+
+1110.69
+
+8
+
+2797.35
+
+2531.00
+
+0.76
+
+0.74
+
+1087.42
+
+1113.48
+
+9
+
+2811.07
+
+2527.85
+
+0.76
+
+0.73
+
+1089.30
+
+1117.96
+
+10
+
+2848.81
+
+2519.14
+
+0.76
+
+0.73
+
+1090.95
+
+1122.22
 
 Les colonnes \(\mathsf{EMQ}\) et \(\widehat{\mathsf{EMQ}}_a\) ont déjà été expliquées à la section précédente et ont été représentées graphiquement.
 On voit que le augmente toujours au fur et à mesure qu'on ajoute une variable (augmente l'ordre du polynôme). Les critères \(\mathsf{AIC}\) et \(\mathsf{BIC}\) choisissent le modèle cubique (\(k=3\)), c'est-à-dire le bon modèle. Le \(R^2\) ajusté quant à lui choisit le modèle d'ordre \(4\) (qui est le deuxième meilleur selon le \(\mathsf{EMQ}\)). N'oubliez pas que ces trois critères sont calculés avec l'échantillon d'apprentissage (\(n=100\)), mais en pénalisant l'ajout de variables. On est ainsi en mesure de contrecarrer le problème provenant du fait qu'on ne peut pas utiliser directement le \(\widehat{\mathsf{EMQ}}_a\).
@@ -1143,28 +1260,181 @@ Le cas particulier \(K=n\) (en anglais \emph{leave-one-out cross validation}, ou
 Le fichier \texttt{selection3\_cv.sas} contient une macro SAS permettant de faire une validation croisée pour un modèle de régression linéaire.
 Revenons à notre exemple où une seule variable explicative est disponible et où l'on cherche à déterminer un bon modèle polynomial. Le Tableau \ref{tab:02-table2} est le même que le Tableau \ref{tab:02-table1} mais avec une colonne en plus, la dernière, \(\mathsf{VC} (K=10)\). Il s'agit des estimations du \(\mathsf{EMQ}\) obtenues avec la validation croisée à 10 groupes. Notez que si vous exécutez le programme, vous n'obtiendrez pas les mêmes valeurs car il y a un élément aléatoire dans ce processus. La colonne représente la moyenne de 100 réplications.
 
-\begin{table}
+\label{tab:02-table2}Mesures d'adéquation du modèle linéaire et estimés de l'erreur, incluant la validation croisée.
 
-\caption{\label{tab:02-table2}Mesures d'adéquation du modèle linéaire et estimés de l'erreur, incluant la validation croisée.}
-\centering
-\begin{tabular}[t]{lrrrrrrr}
-\toprule
-  & \(\mathsf{EMQ}\) & \(\widehat{\mathsf{EMQ}}_a\) & \(R^2\) & \(R^2_a\) & \(\mathsf{AIC}\) & \(\mathsf{BIC}\) & \(\mathsf{VC} (K=10)\)\\
-\midrule
-1 & 3191.29 & 3674.20 & 0.65 & 0.65 & 1110.70 & 1118.51 & 3675.37\\
-2 & 3132.67 & 2879.24 & 0.73 & 0.72 & 1088.32 & 1098.74 & 2897.94\\
-3 & 2697.40 & 2620.05 & 0.75 & 0.74 & 1080.88 & 1093.91 & 2675.51\\
-4 & 2766.68 & 2581.70 & 0.75 & 0.74 & 1081.41 & 1097.04 & 2666.16\\
-5 & 2771.05 & 2580.86 & 0.75 & 0.74 & 1083.38 & 1101.61 & 2711.11\\
-\addlinespace
-6 & 2779.66 & 2577.60 & 0.75 & 0.74 & 1085.25 & 1106.09 & 2757.13\\
-7 & 2780.21 & 2577.49 & 0.75 & 0.74 & 1087.24 & 1110.69 & 2787.95\\
-8 & 2797.35 & 2531.00 & 0.76 & 0.74 & 1087.42 & 1113.48 & 2845.78\\
-9 & 2811.07 & 2527.85 & 0.76 & 0.73 & 1089.30 & 1117.96 & 2895.61\\
-10 & 2848.81 & 2519.14 & 0.76 & 0.73 & 1090.95 & 1122.22 & 2976.04\\
-\bottomrule
-\end{tabular}
-\end{table}
+\(\mathsf{EMQ}\)
+
+\(\widehat{\mathsf{EMQ}}_a\)
+
+\(R^2\)
+
+\(R^2_a\)
+
+\(\mathsf{AIC}\)
+
+\(\mathsf{BIC}\)
+
+\(\mathsf{VC} (K=10)\)
+
+1
+
+3191.29
+
+3674.20
+
+0.65
+
+0.65
+
+1110.70
+
+1118.51
+
+3675.37
+
+2
+
+3132.67
+
+2879.24
+
+0.73
+
+0.72
+
+1088.32
+
+1098.74
+
+2897.94
+
+3
+
+2697.40
+
+2620.05
+
+0.75
+
+0.74
+
+1080.88
+
+1093.91
+
+2675.51
+
+4
+
+2766.68
+
+2581.70
+
+0.75
+
+0.74
+
+1081.41
+
+1097.04
+
+2666.16
+
+5
+
+2771.05
+
+2580.86
+
+0.75
+
+0.74
+
+1083.38
+
+1101.61
+
+2711.11
+
+6
+
+2779.66
+
+2577.60
+
+0.75
+
+0.74
+
+1085.25
+
+1106.09
+
+2757.13
+
+7
+
+2780.21
+
+2577.49
+
+0.75
+
+0.74
+
+1087.24
+
+1110.69
+
+2787.95
+
+8
+
+2797.35
+
+2531.00
+
+0.76
+
+0.74
+
+1087.42
+
+1113.48
+
+2845.78
+
+9
+
+2811.07
+
+2527.85
+
+0.76
+
+0.73
+
+1089.30
+
+1117.96
+
+2895.61
+
+10
+
+2848.81
+
+2519.14
+
+0.76
+
+0.73
+
+1090.95
+
+1122.22
+
+2976.04
 
 Le modèle cubique (ordre 3) est aussi choisi par la validation croisée, en moyenne (comme il l'était par le \(\mathsf{AIC}\) et le \(\mathsf{BIC}\)). Le graphe qui suit trace les valeurs de l'estimation par validation croisée (courbe de validation croisée) et aussi le \(\mathsf{EMQ}\). On voit que l'estimation par validation croisée suit assez bien la forme du \(\mathsf{EMQ}\) (qu'il est supposé estimer). Les boîtes à moustache permettent d'apprécier la variabilité des estimés de l'erreur moyenne quadratique telles qu'estimée par validation croisée avec 10 groupes.
 
@@ -1300,24 +1570,35 @@ Mais lorsqu'il y a plusieurs variables en jeu, le nombre de modèles potentiel a
 
 En fait, supposons qu'on a \(p\) variables distinctes disponibles. Avant même de considérer les transformations des variables et les interactions entre elles, il y a déjà modèles possibles. En effet, chaque variable est soit incluse ou pas (deux possibilités) et donc il y a \(2^p=2\times 2 \times \cdots \times 2\) (\(p\) fois) modèles en tout à considérer. Ce nombre augmente très rapidement comme en témoigne le tableau \ref{tab:02-table3}.
 
-\begin{table}
+\label{tab:02-table3}Nombres de modèles en fonction du nombre de paramètres \(p\).
 
-\caption{\label{tab:02-table3}Nombres de modèles en fonction du nombre de paramètres $p$.}
-\centering
-\begin{tabular}[t]{rr}
-\toprule
-$p$ & nombre de paramètres\\
-\midrule
-5 & 32\\
-10 & 1024\\
-15 & 32768\\
-20 & 1048576\\
-25 & 33554432\\
-\addlinespace
-30 & 1073741824\\
-\bottomrule
-\end{tabular}
-\end{table}
+\(p\)
+
+nombre de paramètres
+
+5
+
+32
+
+10
+
+1024
+
+15
+
+32768
+
+20
+
+1048576
+
+25
+
+33554432
+
+30
+
+1073741824
 
 Ainsi, si le nombre de variables est restreint, il est possible de comparer tous les modèles potentiels et de choisir le meilleur (selon un critère). II existe même des algorithmes très efficaces qui permettent de trouver le meilleur modèle sans devoir examiner tous les modèles possibles. Le nombre de variables qu'il est possible d'avoir dépend de la puissance de calcul et augmente d'année en année. Par contre, dans plusieurs applications, il ne sera pas possible de comparer tous les modèles et il faudra effectuer une recherche limitée.
 
@@ -1577,16 +1858,18 @@ La stratégie consistant à sélectionner un sous-ensemble de 56 variables avec 
 
 L'idée de la procédure séquentielle classique est d'inclure ou d'exclure une variable à la fois sur la base des valeurs-\emph{p}. La procédure \texttt{glmselect} permet de faire une sélection séquentielle en utilisant d'autres critères, comme le \(\mathsf{AIC}\) ou le \(\mathsf{BIC}\). Cette procédure permet de contrôler très finement le processus de sélection de variables. Le code qui suit fait une recherche séquentielle avec les particularités suivantes. À chaque étape ascendante de la procédure séquentielle, c'est la variable qui améliore le plus le \(\mathsf{AIC}\) (\texttt{select=aic}) qui est entrée. De plus, à chaque étape descendante de la procédure séquenctielle, c'est la (ou les) variable(s) qui détériore(nt) le plus le \(\mathsf{AIC}\) qui est (sont) retirée(s). À la toute fin du processus, c'est le modèle qui a le meilleur \(\mathsf{BIC}\) (\texttt{choose=BIC}) qui est retenu.
 
+Si la procédure \texttt{reg} ne supporte pas la déclaration de variables catégorielles (\texttt{class}), \texttt{glmselect} et les autres fonctions que nous utiliserons permettent de simplifier la syntaxe et d'éviter de créer les variables binaires une par une. En revanche, lors de la sélection, les variables catégorielles sont enlevées en bloc et donc la sortie de la procédure peut différer de celle où on appelle la fonction en listant les 104 variables indicatrices et continues. Par défaut, \textbf{SAS} ne met les interactions que si les effets principaux sont présents; l'option \texttt{hier=none} permet de contourner cette règle.
+
 \begin{verbatim}
 proc glmselect data=trainymontant;
 class x3 x4;
 model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10@2 cx2 cx6 cx7 cx8 cx9 cx10  /   
-selection=stepwise(select=aic choose=sbc); 
+selection=stepwise(select=aic choose=sbc hier=none); 
 score data=testymontant out=predglmselectaicsbc p=predymontant;
 run;
 \end{verbatim}
 
-Voici l'historique de la procédure séquentielle avec cette combinaison.
+Voici l'historique de la procédure séquentielle avec les 104 variables insérées manuellement.
 
 \begin{center}\includegraphics[width=0.7\linewidth]{figures/02-select-e12} \end{center}
 
@@ -2431,20 +2714,23 @@ On peut chercher dans le tableau les points de coupure qui donnent le meilleur t
 
 La \textbf{matrice de confusion}, qui compare les vraies valeurs avec les prédictions, peut être construite à partir des colonnes \texttt{Correct\ -\ Événement}, \texttt{Correct\ -\ Non-événement}, \texttt{Incorrect\ -\ Événement}, \texttt{Incorrect\ -\ Non-événement}. Il y a deux classifications possibles et le tableau contient, en partant du coin supérieur gauche et dans le sens des aiguilles d'une montre, le nombre de vrai positif (\(Y=1\), \(\widehat{Y}=1\)), de faux positif (\(Y=0\), \(\widehat{Y}=1\)), de vrai négatif (\(Y=0\), \(\widehat{Y}=0\)) et finalement de faux négatif (\(Y=1\), \(\widehat{Y}=0\)). Ces nombres proviennent de la validation croisée à \(n\) groupes et ne sont pas ceux qu'on obtiendrait si on appliquait directement le modèle ajusté à notre échantillon. Le taux de classification est \((\mathsf{FP}+\mathsf{FN})/n\).
 
-\begin{table}
+\label{tab:confumat}Matrice de confusion avec point de coupure 0.465
 
-\caption{\label{tab:confumat}Matrice de confusion avec point de coupure 0.465}
-\centering
-\begin{tabular}[t]{l|r|r}
-\hline
-  & \$Y=1\$ & \$Y=0\$\\
-\hline
-\$\textbackslash{}widehat\{Y\}=1\$ & 109 & 52\\
-\hline
-\$\textbackslash{}widehat\{Y\}=0\$ & 101 & 738\\
-\hline
-\end{tabular}
-\end{table}
+\(Y=1\)
+
+\(Y=0\)
+
+\(\widehat{Y}=1\)
+
+109
+
+52
+
+\(\widehat{Y}=0\)
+
+101
+
+738
 
 Quatre autres quantités, dérivées à partir de la matrice de confusion, sont parfois utilisées:
 
@@ -2674,7 +2960,7 @@ On voit que le meilleur modèle selon le \(\mathsf{AIC}\) a neuf variables, cont
 \hypertarget{recherche-suxe9quentielle}{%
 \subsection{Recherche séquentielle}\label{recherche-suxe9quentielle}}
 
-Faire une recherche de tous les sous-modèles possibles devient impraticable lorsqu'il y a trop de variables en jeu. La procédure \texttt{logistic} permet aussi une recherche de type séquentielle classique. Ceci permet aussi d'utiliser la même approche en deux temps présentée au chapitre précédent. Dans un premier temps, on fait une recherche séquentielle pour sélectionner un nombre de variables qui sera assez petit afin qu'une recherche exhaustive de tous les sous-modèles soit possible. Dans un second temps, on fait cette recherche avec ces variables uniquement.
+Faire une recherche de tous les sous-modèles possibles devient impraticable lorsqu'il y a trop de variables en jeu. La procédure \texttt{logistic} permet aussi une recherche de type séquentielle classique. Ceci permet aussi d'utiliser la même approche en deux temps présentée au chapitre précédent. Dans un premier temps, on fait une recherche séquentielle pour sélectionner un nombre de variables qui sera assez petit afin qu'une recherche exhaustive de tous les sous-modèles soit possible. Dans un second temps, on fait cette recherche avec ces variables uniquement. Idéalement, on débute la sélection avec le modèle qui contient toutes les variables, soit \texttt{start=n} où \(n=104\) dans notre cas.
 
 Si on inclut tous les termes quadratiques et les termes d'interactions d'ordre deux, nous avons 104 variables potentielles: c'est trop pour une recherche exhaustive.
 
@@ -2702,13 +2988,13 @@ i_x7_x6 i_x7_x8 i_x7_x9 i_x7_x10
 i_x6_x8 i_x6_x9 i_x6_x10
 i_x8_x9 i_x8_x10
 i_x9_x10 
-  / selection=stepwise  sle=.05 sls=.05;  
+  / selection=stepwise  start=104, sle=.05 sls=.05;  
 run;
 \end{verbatim}
 
 \begin{center}\includegraphics[width=0.8\linewidth]{figures/03-logistic-e22} \end{center}
 
-Il y a eu 17 étapes dans la recherche séquentielle. La variable \texttt{i\_x7\_x8} est la première à être incluse, suivie de \texttt{x2} et ainsi de suite. Le modèle final contient 13 variables.
+Il y a eu 17 étapes dans la recherche séquentielle débutant avec le modèle qui ne contient que l'ordonnée à l'origine. La variable \texttt{i\_x7\_x8} est la première à être incluse, suivie de \texttt{x2} et ainsi de suite. Le modèle final contient 13 variables.
 En faisant une recherche séquentielle avec 0,5 comme comme critère d'entrée et de sortie, nous obtenons un sous-ensemble de 47 variables. On peut ensuite faire une recherche exhaustive de tous les sous-modèles avec ces 47 variables en utilisant la macro; le fichier \texttt{logit5\_selection\_variables.sas} contient le code commenté.
 
 Le modèle qui a le plus petit \(\mathsf{AIC}\), soit 579,701, est un modèle avec 28 variables. Le \(\mathsf{BIC}\) mène à un modèle beaucoup plus parcimonieux qui inclut huit variables.
@@ -3167,15 +3453,53 @@ En utilisant ces expressions, on peut obtenir la probabilité de chaque catégor
 
 Nous considérons maintenant la variable \(Y_2\) du fichier \texttt{logit6.sas7bdat}, qui donne le nombre de visites au cinéma. Pour cet exemple, nous allons chercher à modéliser \(Y_2\) à l'aide de \(X\) (âge) en utilisant le modèle multinomial cumulé à cotes proportionnelles.
 
-\begin{tabular}{rrrrrr}
-\toprule
-y2 & n & mean & std.err & min & max\\
-\midrule
-1 & 44 & 33.50 & 7.23 & 18 & 44\\
-2 & 38 & 30.45 & 8.16 & 18 & 44\\
-3 & 18 & 25.11 & 6.58 & 18 & 39\\
-\bottomrule
-\end{tabular}
+y2
+
+n
+
+mean
+
+std.err
+
+min
+
+max
+
+1
+
+44
+
+33.50
+
+7.23
+
+18
+
+44
+
+2
+
+38
+
+30.45
+
+8.16
+
+18
+
+44
+
+3
+
+18
+
+25.11
+
+6.58
+
+18
+
+39
 
 Ainsi, les répondants qui sont allés moins de cinq fois au cinéma ont en moyenne 33,5 ans, ceux qui sont allés entre cinq et 10 fois ont 30,4 ans en moyenne, et ceux qui sont allés plus de 10 fois ont 25,1 ans en moyenne. Il y a une progression et on voit que les répondants plus jeunes vont plus souvent au cinéma.
 
@@ -4298,23 +4622,159 @@ On examine l'exemple de recommandations de l'association professionnelle des vac
 
 Le but est d'examiner les effets des variables \(X_1\) à \(X_6\) sur les intentions d'achat (\(Y\)); la base de données \texttt{missing1.sas7bdat} contient les observations et les commandes \textbf{SAS} se trouvent dans le fichier \texttt{missing1.sas}. Il s'agit des mêmes données que celles du fichier \texttt{logit1.sas7bdat} mais avec des valeurs manquantes.
 
-\begin{tabular}{lrrlrrr}
-\toprule
-x1 & x2 & x3 & x4 & x5 & x6 & y\\
-\midrule
-1 & 4 & 0 & 1 & 35 & 2 & 0\\
-. & 1 & 0 & . & 33 & 3 & 0\\
-2 & 3 & 1 & . & 46 & 3 & 0\\
-5 & 2 & 1 & . & 32 & 1 & 1\\
-3 & 2 & 1 & . & 38 & 3 & 1\\
-\addlinespace
-. & 4 & 0 & 0 & 36 & 3 & 0\\
-. & 3 & 0 & . & 35 & 3 & 0\\
-. & 5 & 1 & 0 & 26 & 2 & 0\\
-. & 3 & 1 & 1 & 39 & 2 & 1\\
-5 & 2 & 1 & . & 38 & 3 & 0\\
-\bottomrule
-\end{tabular}
+x1
+
+x2
+
+x3
+
+x4
+
+x5
+
+x6
+
+y
+
+1
+
+4
+
+0
+
+1
+
+35
+
+2
+
+0
+
+.
+
+1
+
+0
+
+.
+
+33
+
+3
+
+0
+
+2
+
+3
+
+1
+
+.
+
+46
+
+3
+
+0
+
+5
+
+2
+
+1
+
+.
+
+32
+
+1
+
+1
+
+3
+
+2
+
+1
+
+.
+
+38
+
+3
+
+1
+
+.
+
+4
+
+0
+
+0
+
+36
+
+3
+
+0
+
+.
+
+3
+
+0
+
+.
+
+35
+
+3
+
+0
+
+.
+
+5
+
+1
+
+0
+
+26
+
+2
+
+0
+
+.
+
+3
+
+1
+
+1
+
+39
+
+2
+
+1
+
+5
+
+2
+
+1
+
+.
+
+38
+
+3
+
+0
 
 Les points (\texttt{.}) indiquent des valeurs manquantes. Le premier sujet n'a pas de valeur manquante. Le deuxième a une valeur manquante pour \(X_1\) (emploi) et \(X_4\) (éducation), etc.
 
