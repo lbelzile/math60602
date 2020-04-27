@@ -94,8 +94,10 @@ Le but est d'examiner les effets des variables $X_1$ à $X_6$ sur les intentions
 url <- "https://lbelzile.bitbucket.io/MATH60602/missing1.sas7bdat"
 missing1 <- haven::read_sas(url)
 smallmiss <- missing1[1:10,]
-smallmiss[is.na(smallmiss)] <- "."
-knitr::kable(smallmiss, booktabs = TRUE)
+smallmisst <- apply(smallmiss,c(1,2), function(x){sprintf("%i", x)})
+smallmisst[is.na(smallmiss)] <- "."
+knitr::kable(smallmisst, booktabs = TRUE, escape = FALSE)%>%
+  kableExtra::kable_styling(position = "center")
 ```
 Les points (`.`) indiquent des valeurs manquantes. Le premier sujet n'a pas de valeur manquante. Le deuxième a une valeur manquante pour $X_1$ (emploi) et $X_4$ (éducation), etc.
 

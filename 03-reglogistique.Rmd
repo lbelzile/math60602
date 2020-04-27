@@ -541,7 +541,7 @@ On peut chercher dans le tableau les points de coupure qui donnent le meilleur t
 La **matrice de confusion**, qui compare les vraies valeurs avec les prédictions, peut être construite à partir des colonnes `Correct - Événement`, `Correct - Non-événement`, `Incorrect - Événement`, `Incorrect - Non-événement`. Il y a deux classifications possibles et le tableau contient, en partant du coin supérieur gauche et dans le sens des aiguilles d'une montre, le nombre de vrai positif ($Y=1$, $\widehat{Y}=1$), de faux positif ($Y=0$, $\widehat{Y}=1$), de vrai négatif ($Y=0$, $\widehat{Y}=0$) et finalement de faux négatif ($Y=1$, $\widehat{Y}=0$). Ces nombres proviennent de la validation croisée à $n$ groupes et ne sont pas ceux qu'on obtiendrait si on appliquait directement le modèle ajusté à notre échantillon. Le taux de classification est $(\mathsf{FP}+\mathsf{FN})/n$.
 
 
-```{r confumat, eval = TRUE, echo = FALSE, }
+```{r confumat, eval = TRUE, echo = FALSE}
 confumat <- perfo1$confusion
 rownames(confumat) <- c("$\\widehat{Y}=1$","$\\widehat{Y}=0$")
 colnames(confumat) <- c("$Y=1$","$Y=0$")
@@ -1059,12 +1059,12 @@ suppressMessages(library(dplyr, quietly = TRUE,
 
 tab <- logit6 %>%
   group_by(y2) %>%
-  summarize(n = n(), 
-            mean = round(mean(x),2), 
-            "std.err" =round(sd(x),2), 
-            "min" = min(x), 
-            "max" = max(x))
-kableExtra::kable(tab, booktabs = TRUE)
+  summarize(N = n(), 
+            Moyenne = round(mean(x),2), 
+            "Ec-type" =round(sd(x),2), 
+            "Minimum" = min(x), 
+            "Maximum" = max(x))
+kableExtra::kable(tab, booktabs = TRUE, escape = FALSE) %>%   kableExtra::kable_styling(position = "center")
 ```
 
 Ainsi, les répondants qui sont allés moins de cinq fois au cinéma ont en moyenne 33,5 ans, ceux qui sont allés entre cinq et 10 fois ont 30,4 ans en moyenne, et ceux qui sont allés plus de 10 fois ont 25,1 ans en moyenne. Il y a une progression et on voit que les répondants plus jeunes vont plus souvent au cinéma.
