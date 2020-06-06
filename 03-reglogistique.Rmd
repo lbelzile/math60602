@@ -629,11 +629,35 @@ Le graphe \@ref(fig:fig3-e17) présente le pourcentage d'observations bien class
 knitr::include_graphics("figures/03-logistic-e17.png")
 ```
 
+Il peut être intéressant de vérifier la **calibration** de notre modèle, et une statistique simple proposée par [Spiegelhalter (1986)]( https://doi.org/10.1002/sim.4780050506) peut être utile à cette fin. Pour une variable binaire $Y \in \{0,1\}$, l'erreur moyenne quadratique s'écrit
+\begin{align*}
+\overline{B} &= \frac{1}{n} \sum_{i=1}^n (Y_i-p_i)^2 
+=\frac{1}{n} \sum_{i=1}^n(Y_i-p_i)(1-2p_i) + \frac{1}{n} \sum_{i=1}^n p_i(1-p_i).
+\end{align*}
+Le premier terme représente le manque de calibration du modèle, tandis que le deuxième correspond à la séparation entre variables. Si notre modèle était parfaitement calibré, lalors $\mathsf{E}_0(Y_i)=p_i$ et $\mathsf{Var}_0(Y_i) = p_i(1-p_i)$. On peut utiliser ce fait pour construire une statistique de Wald, $Z = \{\overline{B} - \mathsf{E}_0(\overline{B})\}/\sqrt{\mathsf{Var}_0(\overline{B})}$, où
+\begin{align*}
+\mathsf{E}_0(\overline{B})&= \frac{1}{n} \sum_{i=1}^n p_i(1-p_i) \\
+\mathsf{Var}_0(\overline{B})&= \frac{1}{n^2} \sum_{i=1}^n p_i(1-p_i)(1-2p_i)^2
+\end{align*}
+
+```{r calibration, echo = FALSE}
+p <- loocv_prob
+Y <- train$yachat
+
+Bs <- mean((Y-p)^2)
+E_Bs <- mean(p*(1-p))
+Va_Bs <- mean(p*(1-p)*(1-2*p)^2)/length(Y)
+  
+```
+
+Sous l'hypothèse nulle de calibration parfaite, $Z \sim \mathsf{No}(0,1)$ en grand échantillon. Pour le modèle simple avec toutes les covariables, la valeur-$p$ approximative calculée avec les probabilités de succès obtenues par validation-croisée et les données de l'échantillon d'apprentissage est `r round(2*(1-pnorm(abs((Bs-E_Bs)/sqrt(Va_Bs)))), 2)` et il n'y a pas de preuve que le modèle est mal calibré. Cette technique est utile pour vérifier s'il n'y a pas de surajustement (auquel cas le modèle tend à retourner des probabilités très près de 0/1, mais qui ne correspondent pas à la réalité).
+
+
 ## Classification avec une matrice de gain
 
 Utiliser le taux de mauvaise classification $\P{Y \neq \widehat{Y}}$, comme critère de performance, revient au même que d'utiliser le taux de bonne classification $\P{Y=\widehat{Y}}$, car $\P{Y \neq \widehat{Y}} = 1-\P{Y=\widehat{Y}}$. On veut un modèle avec un haut taux de bonne classification (ou un faible taux de mauvaise classification).
 
-Lorsqu'on utilise $\P{Y \neq \widehat{Y}}$ comme critère pour juger de la qualité d'un modèle prévisionnel, on fait l'hypothèse que le gain associé à bien classifier une observation dans la catégorie 0 lorsqu'elle est réellement dans la catégorie 0 est le même que celui associé à classifier une observation dans la catégorie 1 lorsqu'elle est réellement dans la catégorie 1: cela correspond à la matrice de gain 
+Lorsqu'on utilise $\P{Y \neq \widehat{Y}}$ comme critère pour juger de la qualité d'un modèle prévisionnel, on fait l'hypothèse que le gain associé à bien classifier une observation dans la catégorie 0 lorsqu'elle est réellement dans la catégorie 0 est le même que celui associé à classifier une observation dans la catégorie 1 lorsqu'elle est réellement dans la catégorie 1: cela correspond à la matrice de gain.
 
  
 Table: (\#tab:03-gain1) Matrice de gain correspondant au taux de bonne classification 

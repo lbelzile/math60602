@@ -5,20 +5,20 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapitre 4 Régression logistique | Analyse multidimensionnelle appliquée</title>
-  <meta name="description" content="Ce recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <meta name="description" content="Recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
+  <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapitre 4 Régression logistique | Analyse multidimensionnelle appliquée" />
   <meta property="og:type" content="book" />
   
   
-  <meta property="og:description" content="Ce recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
+  <meta property="og:description" content="Recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
   
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Chapitre 4 Régression logistique | Analyse multidimensionnelle appliquée" />
   
-  <meta name="twitter:description" content="Ce recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
+  <meta name="twitter:description" content="Recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
   
 
 <meta name="author" content="(c) Denis Larocque, retranscription par Léo Belzile" />
@@ -1268,11 +1268,22 @@ run;
 Figure 4.1: Taux de classement en fonction du lift
 </p>
 </div>
+<p>Il peut être intéressant de vérifier la <strong>calibration</strong> de notre modèle, et une statistique simple proposée par <a href="https://doi.org/10.1002/sim.4780050506">Spiegelhalter (1986)</a> peut être utile à cette fin. Pour une variable binaire <span class="math inline">\(Y \in \{0,1\}\)</span>, l’erreur moyenne quadratique s’écrit
+<span class="math display">\[\begin{align*}
+\overline{B} &amp;= \frac{1}{n} \sum_{i=1}^n (Y_i-p_i)^2 
+=\frac{1}{n} \sum_{i=1}^n(Y_i-p_i)(1-2p_i) + \frac{1}{n} \sum_{i=1}^n p_i(1-p_i).
+\end{align*}\]</span>
+Le premier terme représente le manque de calibration du modèle, tandis que le deuxième correspond à la séparation entre variables. Si notre modèle était parfaitement calibré, lalors <span class="math inline">\(\mathsf{E}_0(Y_i)=p_i\)</span> et <span class="math inline">\(\mathsf{Var}_0(Y_i) = p_i(1-p_i)\)</span>. On peut utiliser ce fait pour construire une statistique de Wald, <span class="math inline">\(Z = \{\overline{B} - \mathsf{E}_0(\overline{B})\}/\sqrt{\mathsf{Var}_0(\overline{B})}\)</span>, où
+<span class="math display">\[\begin{align*}
+\mathsf{E}_0(\overline{B})&amp;= \frac{1}{n} \sum_{i=1}^n p_i(1-p_i) \\
+\mathsf{Var}_0(\overline{B})&amp;= \frac{1}{n^2} \sum_{i=1}^n p_i(1-p_i)(1-2p_i)^2
+\end{align*}\]</span></p>
+<p>Sous l’hypothèse nulle de calibration parfaite, <span class="math inline">\(Z \sim \mathsf{No}(0,1)\)</span> en grand échantillon. Pour le modèle simple avec toutes les covariables, la valeur-<span class="math inline">\(p\)</span> approximative calculée avec les probabilités de succès obtenues par validation-croisée et les données de l’échantillon d’apprentissage est 0.22 et il n’y a pas de preuve que le modèle est mal calibré. Cette technique est utile pour vérifier s’il n’y a pas de surajustement (auquel cas le modèle tend à retourner des probabilités très près de 0/1, mais qui ne correspondent pas à la réalité).</p>
 </div>
 <div id="classification-avec-une-matrice-de-gain" class="section level2">
 <h2><span class="header-section-number">4.6</span> Classification avec une matrice de gain</h2>
 <p>Utiliser le taux de mauvaise classification <span class="math inline">\({\mathsf P}\left(Y \neq \widehat{Y}\right)\)</span>, comme critère de performance, revient au même que d’utiliser le taux de bonne classification <span class="math inline">\({\mathsf P}\left(Y=\widehat{Y}\right)\)</span>, car <span class="math inline">\({\mathsf P}\left(Y \neq \widehat{Y}\right) = 1-{\mathsf P}\left(Y=\widehat{Y}\right)\)</span>. On veut un modèle avec un haut taux de bonne classification (ou un faible taux de mauvaise classification).</p>
-<p>Lorsqu’on utilise <span class="math inline">\({\mathsf P}\left(Y \neq \widehat{Y}\right)\)</span> comme critère pour juger de la qualité d’un modèle prévisionnel, on fait l’hypothèse que le gain associé à bien classifier une observation dans la catégorie 0 lorsqu’elle est réellement dans la catégorie 0 est le même que celui associé à classifier une observation dans la catégorie 1 lorsqu’elle est réellement dans la catégorie 1: cela correspond à la matrice de gain</p>
+<p>Lorsqu’on utilise <span class="math inline">\({\mathsf P}\left(Y \neq \widehat{Y}\right)\)</span> comme critère pour juger de la qualité d’un modèle prévisionnel, on fait l’hypothèse que le gain associé à bien classifier une observation dans la catégorie 0 lorsqu’elle est réellement dans la catégorie 0 est le même que celui associé à classifier une observation dans la catégorie 1 lorsqu’elle est réellement dans la catégorie 1: cela correspond à la matrice de gain.</p>
 <table>
 <caption><span id="tab:03-gain1">Tableau 4.3: </span> Matrice de gain correspondant au taux de bonne classification</caption>
 <thead>
