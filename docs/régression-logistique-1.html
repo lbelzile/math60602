@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapitre 4 Régression logistique | Analyse multidimensionnelle appliquée</title>
   <meta name="description" content="Recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
-  <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.21.4 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapitre 4 Régression logistique | Analyse multidimensionnelle appliquée" />
   <meta property="og:type" content="book" />
@@ -49,11 +49,14 @@
 
 
 
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 
 
-<link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
 
 <body>
@@ -66,9 +69,6 @@
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="./">MATH60602</a></li>
-
-<li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#survol-du-cours"><i class="fa fa-check"></i><b>1.1</b> Survol du cours</a><ul>
 <li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#analyse-factorielle-exploratoire"><i class="fa fa-check"></i><b>1.1.1</b> Analyse factorielle exploratoire</a></li>
@@ -202,9 +202,6 @@
 <li class="chapter" data-level="7.3" data-path="données-manquantes-1.html"><a href="données-manquantes-1.html#example-dapplication-de-limputation"><i class="fa fa-check"></i><b>7.3</b> Example d’application de l’imputation</a></li>
 <li class="chapter" data-level="7.4" data-path="données-manquantes-1.html"><a href="données-manquantes-1.html#valeurs-manquantes-dans-un-contexte-de-prédiction"><i class="fa fa-check"></i><b>7.4</b> Valeurs manquantes dans un contexte de prédiction</a></li>
 </ul></li>
-<li class="divider"></li>
-<li><a href="https://github.com/rstudio/bookdown" target="blank">Publié avec bookdown</a></li>
-
 </ul>
 
       </nav>
@@ -445,16 +442,16 @@ run;</code></pre>
 <p><img src="figures/03-logistic-e3.png" width="80%" style="display: block; margin: auto;" /></p>
 <p><img src="figures/03-logistic-e4.png" width="80%" style="display: block; margin: auto;" /></p>
 <ul>
-<li>On voit qu’il y a 272 personnes (<span class="math inline">\(\texttt{0}\)</span>) qui ne sont pas intéressées à acheter un produit recommandé par le PRCA et 228 personnes (<span class="math inline">\(\texttt{1}\)</span>) qui le sont.</li>
-<li>Les estimés des paramètres sont <span class="math inline">\(\widehat{\beta}_0 = -3,05\)</span> et <span class="math inline">\(\widehat{\beta}_{\texttt{age}}=0,0749\)</span>.</li>
-<li>Un intervalle de confiance de niveau 95% pour l’effet de l’âge est [<span class="math inline">\(0,0465; 0,1043\)</span>].</li>
+<li><p>On voit qu’il y a 272 personnes (<span class="math inline">\(\texttt{0}\)</span>) qui ne sont pas intéressées à acheter un produit recommandé par le PRCA et 228 personnes (<span class="math inline">\(\texttt{1}\)</span>) qui le sont.</p></li>
+<li><p>Les estimés des paramètres sont <span class="math inline">\(\widehat{\beta}_0 = -3,05\)</span> et <span class="math inline">\(\widehat{\beta}_{\texttt{age}}=0,0749\)</span>.</p></li>
+<li><p>Un intervalle de confiance de niveau 95% pour l’effet de l’âge est [<span class="math inline">\(0,0465; 0,1043\)</span>].</p></li>
 <li><p>Le modèle ajusté est <span class="math inline">\(\mathrm{logit}\{{\mathsf P}\left(Y=1 \mid X_5=x_5\right)\} = -3,05 + 0,0749 x_5\)</span>. On peut également exprimer ce modèle directement en terme de la probabilité de succès,
 <span class="math display">\[\begin{align*}
 {\mathsf P}\left(Y=1 \mid X_5=x_5\right) &amp;= \mathrm{expit}(-3,05 + 0,0749 x_5) \\&amp;= \frac{1}{1+\exp(3,05 - 0,0749 x_5)}
 \end{align*}\]</span>
 Le graphe de cette fonction pour <span class="math inline">\(X_5\)</span> allant de 18 à 59 ans, respectivement les valeurs minimales et maximales observées dans l’échantillon, montre que le lien entre l’âge et <span class="math inline">\(p\)</span> est presque linéaire entre 20 et 60 ans. On décèle tout de même la forme sigmoide de la fonction <span class="math inline">\(\mathrm{logit}\)</span> aux deux extrémités.
 <img src="MATH60602_files/figure-html/logitplot2-1.png" width="672" style="display: block; margin: auto;" /></p></li>
-<li>La valeur-<span class="math inline">\(p\)</span> pour <span class="math inline">\(\widehat{\beta}_{\texttt{age}}\)</span> (<code>Pr &gt; khi-2</code>), correspondant aux test des hypothèses <span class="math inline">\(\mathcal{H}_0: \beta_{\texttt{age}}=0\)</span> versus <span class="math inline">\(\mathcal{H}_1: \beta_{\texttt{age}} \neq 0\)</span>, est plus petite que <span class="math inline">\(10^{-4}\)</span> et donc l’effet de la variable âge est statistiquement différent de zéro. Plus l’âge augmente, plus la probabilité d’être intéressé à acheter un produit recommandé par le PRCA augmente.</li>
+<li><p>La valeur-<span class="math inline">\(p\)</span> pour <span class="math inline">\(\widehat{\beta}_{\texttt{age}}\)</span> (<code>Pr &gt; khi-2</code>), correspondant aux test des hypothèses <span class="math inline">\(\mathcal{H}_0: \beta_{\texttt{age}}=0\)</span> versus <span class="math inline">\(\mathcal{H}_1: \beta_{\texttt{age}} \neq 0\)</span>, est plus petite que <span class="math inline">\(10^{-4}\)</span> et donc l’effet de la variable âge est statistiquement différent de zéro. Plus l’âge augmente, plus la probabilité d’être intéressé à acheter un produit recommandé par le PRCA augmente.</p></li>
 <li><p>Le tableau <code>Test de l'hypothèse nulle globale : BETA=0</code> contient les résultats de trois tests pour l’hypothèse nulle que tous les paramètres sont nuls, contre l’alternative qu’au moins un des paramètres est différent de zéro. Comme il y a un seul paramètre ici, ces tests reviennent à tester l’effet de la variable âge. Le test de Wald est le même que celui que nous venons de voir dans le tableau des coefficients.</p></li>
 </ul>
 </div>
@@ -1202,19 +1199,19 @@ L’autre extrême, avec un point de coupure <span class="math inline">\(c=1\)</
 <caption><span id="tab:confumat">Tableau 4.2: </span>Matrice de confusion avec point de coupure 0.465</caption>
 <thead>
 <tr class="header">
-<th></th>
+<th align="left"></th>
 <th align="right"><span class="math inline">\(Y=1\)</span></th>
 <th align="right"><span class="math inline">\(Y=0\)</span></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><span class="math inline">\(\widehat{Y}=1\)</span></td>
+<td align="left"><span class="math inline">\(\widehat{Y}=1\)</span></td>
 <td align="right">109</td>
 <td align="right">52</td>
 </tr>
 <tr class="even">
-<td><span class="math inline">\(\widehat{Y}=0\)</span></td>
+<td align="left"><span class="math inline">\(\widehat{Y}=0\)</span></td>
 <td align="right">101</td>
 <td align="right">738</td>
 </tr>
@@ -1762,6 +1759,7 @@ En utilisant ces expressions, on peut obtenir la probabilité de chaque catégor
 {\mathsf P}\left(Y_i = k \mid X_{i1}, \ldots, X_{ip}\right) ={\mathsf P}\left(Y_i \geq k \mid X_{i1}, \ldots, X_{ip}\right) -{\mathsf P}\left(Y_i \geq k+1 \mid X_{i1}, \ldots, X_{ip}\right) = S_{k} - S_{k+1}.
 \end{align*}\]</span></p>
 <p>Nous considérons maintenant la variable <span class="math inline">\(Y_2\)</span> du fichier <code>logit6.sas7bdat</code>, qui donne le nombre de visites au cinéma. Pour cet exemple, nous allons chercher à modéliser <span class="math inline">\(Y_2\)</span> à l’aide de <span class="math inline">\(X\)</span> (âge) en utilisant le modèle multinomial cumulé à cotes proportionnelles.</p>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
