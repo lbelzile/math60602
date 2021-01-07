@@ -97,7 +97,7 @@ Des hypothèses supplémentaires sont nécessaires afin de pouvoir utiliser ce m
 
 De plus, si les variables ont été préalablement standardisées de telle sorte que $\E{X_i}=0$ et $\Va{X_i}=1$ (note: ceci revient à utiliser la matrice de corrélation des observations dans l'analyse ce qui est fait par défaut dans **SAS**), alors $\Cor{X_i, F_j}=l_{ij}$, c'est-à-dire, le chargement de la variable $X_i$ sur le chargement $F_j$ est le coefficient de corrélation entre cette variable et ce facteur.
 
-Sans aucune contrainte sur le modèle, la matrice de covariance de $X_1, \ldots, X_p$ possède $p(p+1)/2$ paramètres, soit $p$ variances et $p(p-1)/2$ termes de corrélation. Avec le modèle d’analyse factorielle, on suppose que l’on peut décrire cette structure en utilisant seulement $p(m+1)$ paramètres ($p$ variances spécifiques et $pm$ chargements). Par exemple, avec $p=50$ variables et $m=6$ facteurs, on essaie de décrire la structure de covariance à l’aide de 350 paramètres au lieu de 1275.
+Sans aucune contrainte sur le modèle, la matrice de covariance de $X_1, \ldots, X_p$ possède $p(p+1)/2$ paramètres, soit $p$ variances et $p(p-1)/2$ termes de corrélation. Avec le modèle d’analyse factorielle, on suppose que l’on peut décrire cette structure en utilisant seulement $p(m+1) - m(m-1)/2$ paramètres ($p$ variances spécifiques et $pm$ chargements, moins les contraintes de diagonalisation). Par exemple, avec $p=50$ variables et $m=6$ facteurs, on essaie de décrire la structure de covariance à l’aide de 350 paramètres au lieu de 1275.
 
 Il existe plusieurs méthodes pour extraire les facteurs, c'est-à-dire pour estimer les paramètres du modèle (les $\psi_i$ et les $l_{ij}$). Nous allons discuter de deux d'entre elles: la méthode du maximum de vraisemblance et la méthode des composantes principales. L'avantage de l'estimation par maximum de vraisemblance est qu'elle permet l'utilisation de critères d'information et de statistiques de tests pour guider le choix du nombre de facteurs. En revanche, l'estimation des paramètres requiert une optimisation numérique qui peut être délicate selon les cas de figure.
 
@@ -162,9 +162,11 @@ Les sorties suivantes proviennent du même programme SAS et correspondent au mod
 knitr::include_graphics("figures/01-facto-e4.png")
 ```
 
-Pour choisir le nombre de facteurs avec les critères d'information, il faut ajuster le modèle en faisant varier le nombre de facteurs (option `nfact`) et extraire la valeur numérique correspondante.
+Pour choisir le nombre de facteurs avec les critères d'information, il faut ajuster le modèle en faisant varier le nombre de facteurs (option `nfact`) et extraire la valeur numérique correspondante. 
 
-Le tableau \@ref(tab:ICtable) présente les valeurs estimées des critères d'information et des valeurs-$p$ pour le test du rapport de vraisemblance pour cinq modèles. Le critère AIC suggère quatre facteurs, tandis que les deux autres critères (BIC et test du rapport de vraisemblance suggèrent plutôt trois facteurs.
+Il faut garder en tête que l'estimation par maximum de vraisemblance du modèle d'analyse factorielle est très sensible et que selon l'algorithme d'optimisation numérique, on obtiendra des valeurs différentes selon les logiciels. Cette fragilité, couplée à la haute fréquence de cas de Heywood (la solution numérique donne des communalités qui excèdent un, or ces dernières représentent le carré d'un coefficient de corrélation linéaire, ce qui rend l'interprétation du modèle caduqe), font en sorte que je préfère utiliser la méthode des composantes principales pour l'estimation. Les valeurs du critère BIC retournées par **SAS** sont illogiques et semblent découler d'une mauvaise implémentation du critère.
+
+Le tableau \@ref(tab:ICtable) présente les valeurs estimées des critères d'information et des valeurs-$p$ pour le test du rapport de vraisemblance pour cinq modèles. Le critère AIC suggère quatre facteurs, tandis que les deux autres critères, BIC et test du rapport de vraisemblance, suggèrent plutôt trois facteurs.
 
 ```{r 01-IC_table, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
 tabl <- "
@@ -172,11 +174,11 @@ Table: (\\#tab:ICtable) Critères d'information et valeurs-*p* pour le modèle f
 
 | m | AIC | BIC | valeur-_p_|
 |:-:|--------:|-------:|--------:|
-| 1 | 228, 0 | 49, 9 | <0, 001 |
-| 2 | 99, 5 | -42, 3 | <0, 001 |
-| 3 | -20, 5 | -129, 3 | 0, 096 |
-| 4 | -34, 9 | -114, 1 | 0, 973 |
-| 5 | -24, 8 | -77, 6 | 0, 975 |
+| 1 | 228.0 | 49.9 | <0.001 |
+| 2 | 99.5 | -42.3 | <0.001 |
+| 3 | -20.5 | -129.3 | 0.096 |
+| 4 | -34.9 | -114.1 | 0.973 |
+| 5 | -24.8 | -77.6 | 0.975 |
 "
 cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
 ```
@@ -393,7 +395,7 @@ Pour obtenir les scores avec **SAS**, il suffit d’insérer l’option `score` 
 - pour le quatrième facteur, seule la variable $X_1$ a un poids important.
 On aurait pu s’attendre à ce que ce soit également le cas pour $X_5$, en lien avec le facteur _prix_  --- ce facteur était moins clair selon le alpha de Cronbach.
 
-Les corrélations entre les échelles (construites avec les moyennes) et les scores factoriels sont données dans la figure \@ref(fig:fig1p16). On remarque la forte corrélation entre le score factoriel et les échelles construites avec les moyennes pour les facteurs _service_, _produits_ et _paiement_. Cela veut dire qu’utiliser les échelles ou les scores factoriels ne devrait pas faire de différence dans des analyses subséquentes. Par contre, cette corrélation est plus faible (0,82) pour le facteur _prix_.
+Les corrélations entre les échelles (construites avec les moyennes) et les scores factoriels sont données dans la figure \@ref(fig:fig1p16). On remarque la forte corrélation entre le score factoriel et les échelles construites avec les moyennes pour les facteurs _service_, _produits_ et _paiement_. Cela veut dire qu’utiliser les échelles ou les scores factoriels ne devrait pas faire de différence dans des analyses subséquentes. Par contre, cette corrélation est plus faible (0.82) pour le facteur _prix_.
 
 
 ```{r fig1p16, fig.cap="Corrélation entre scores et échelles", echo = FALSE, out.width='65%', fig.align = "center"}

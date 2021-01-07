@@ -4,9 +4,8 @@
 # Le chiffrier `factor2.csv` contient les observations pour ces 12 questions. 
 # Tout d'abord, les statistiques descriptives ainsi que la matrice des 
 # corrélations qui suivent sont obtenues en exécutant les lignes suivantes:
-path <- "https://lbelzile.bitbucket.io/MATH60602/factor.csv"
-facto <- read.csv(file = path, header = TRUE)
-
+path <- "https://lbelzile.bitbucket.io/MATH60602/factor2.sas7bdat"
+facto <- haven::read_sas(path)
 # Statistiques descriptives de base
 summary(facto)
 
@@ -21,48 +20,53 @@ print(fa4$loadings, cutoff = 0.3)
 # (adéquation de la structure de corrélation paramétrique)
 fa4$PVAL
 # Méthodes S3 de base pour objects de classe "factanal"
-# ATTENTION: ce script ne retourne pas les mêmes valeurs
-# pour les critères d'information que SAS (et les différences ne sont pas égales)
-# Cela semble un problème avec les valeurs de BIC de SAS
 logLik.factanal <- function(object, ...) {
   # Log-vraisemblance de la loi de Wishart
   n <- object$n.obs
-  x <- object$correlation
-  p <- nrow(x)
   L <- object$loadings
   psi <- object$uniquenesses
+  V <- tcrossprod(L) + diag(psi)
+  #Johnson & Wichern, eq. 9.35
+  -n/2*(as.numeric(determinant(V, logarithm = TRUE)$modulus) + sum(diag(solve(V) %*% object$correlation))) 
+}
+nobs.factanal <- function(object, ...){
   k <- object$factors
   p <- nrow(object$correlation)
-  V <- tcrossprod(L) + diag(psi)
-  as.numeric(
-    -n/2*(determinant(V, logarithm = TRUE)$modulus - sum(diag(solve(V) %*% x)))
-    # -n*p/2*log(2)+ p*(p-1)/4 * log(pi) - sum(lgamma((n + 1 - 1:p)/2)) +
-    # (n-p-1)/2*determinant(x)$modulus 
-    
-  )
+  p*(k+1)-k*(k-1)/2
 }
-
 AIC.factanal <- function(object, ...){
   n <- object$n.obs
   k <- object$factors
   p <- nrow(object$correlation)
-  as.numeric(-2*logLik(object ) + 2*p*(k+1)-k*(k-1))
+  as.numeric(-2*logLik(object) + 2*nobs(object))
 }
 
 BIC.factanal <- function(object, ...){
   n <- object$n.obs
   k <- object$factors
   p <- nrow(object$correlation)
-  as.numeric(-2*logLik(object) + log(n)*(p*(k+1)-k*(k-1)/2))
+  as.numeric(-2*logLik(object) + log(n)*nobs(object))
 }
 
   # Boucle pour calculer les AIC, BIC et la valeur-p du test d'adéquation
   emv_crit <- matrix(0, ncol = 3, nrow = 5)
   for(i in 1:5){
+    # corrmat_facto <- cov2cor((nrow(facto)-1)/nrow(facto)*cov(facto))
     fai <- factanal(x = facto, factors = i)
+    # fai <- factanal(factors = i, covmat = cormat_facto, n.obs = nrow(facto))
+    # fai <- psych::fa(r = as.matrix(facto), nfactors = i, fm = "ml")
+    # fai$correlation <- cor(facto)
+    # class(fai) <- "factanal"
     emv_crit[i,] <- c(AIC(fai), BIC(fai), fai$PVAL)
   }
   colnames(emv_crit) <- c("AIC","BIC","valeur-p")
+  emv_crit
+  # NDLR: l'estimation par maximum de vraisemblance est visiblement
+  # très sensible au choix de l'algorithme et diffère selon les algorithmes et méthodes
+  # SAS ajuste le critère AIC en cas de solution impropre (Heywood),
+  # mais les valeurs de BIC de SAS sont illogiques
+  # (car l'écart entre AIC et BIC dans SAS diminue à mesure que le nombre de facteurs, 
+  # et donc de paramètres, augmente)
   
   # Critère de Kaiser: valeurs propres de la matrice de corrélation supérieures à 1
   valpropres <- eigen(cor(facto), only.values = TRUE)$values

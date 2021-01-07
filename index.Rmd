@@ -1,6 +1,6 @@
 --- 
 title: "Analyse multidimensionnelle appliquée"
-author: "(c) Denis Larocque, retranscription par Léo Belzile"
+author: "(c) Denis Larocque, Léo Belzile"
 date: "version du `r Sys.Date()`"
 site: bookdown::bookdown_site
 output:
@@ -84,6 +84,23 @@ Buts:
 - Réduire le nombre de variables en créant une nouvelle variable par facteur. Ces nouvelles variables pourront par la suite être utilisées dans d’autres analyses (régression linéaire multiple par exemple).
 
 
+### Analyse de regroupements
+
+On cherche à créer des groupes (« _clusters_ ») d’individus homogènes en utilisant $p$ variables $X_1, \ldots, X_p$.
+
+```{example}
+
+Cette méthode est utilisée en marketing pour la **segmentation de marché**, qui consiste en
+
+>  \ldots définir des sous-groupes réunissant des consommateurs qui partagent les mêmes préférences ou qui réagissent de façon semblable à des variables de marketing^[d’Astous, A. (2000). _Le projet de recherche en marketing_, 2e édition. Chenelière/McGraw-Hill. ]
+
+
+```
+
+But: 
+
+- Combiner des sujets en groupes (interprétables) de telle sorte que les individus d’un même groupe soient les plus semblables possible par rapport à certaines caractéristiques et que les groupes soient les plus différents possible. 
+
 ### Sélection de variables et de modèles
 
 Dans plusieurs situations, on doit développer un modèle de prévision. Par exemple, on pourrait devoir développer un modèle pour:
@@ -108,23 +125,7 @@ Buts:
 
 - Comprendre comment et dans quelle mesure les variables $\boldsymbol{X}$ influencent la catégorie d’appartenance de $Y$.
 - Développer un modèle pour faire de la classification, c’est-à-dire, prévoir la catégorie d’appartenance de $Y$ pour un nouveau sujet à partir des variables $\boldsymbol{X}$.
-
-### Analyse de regroupements
-
-On cherche à créer des groupes (« _clusters_ ») d’individus homogènes en utilisant $p$ variables $X_1, \ldots, X_p$.
-
-```{example}
-
-Cette méthode est utilisée en marketing pour la **segmentation de marché**, qui consiste en
-
->  \ldots définir des sous-groupes réunissant des consommateurs qui partagent les mêmes préférences ou qui réagissent de façon semblable à des variables de marketing^[d’Astous, A. (2000). _Le projet de recherche en marketing_, 2e édition. Chenelière/McGraw-Hill. ]
-
-
-```
-
-But: 
-
-- Combiner des sujets en groupes (interprétables) de telle sorte que les individus d’un même groupe soient les plus semblables possible par rapport à certaines caractéristiques et que les groupes soient les plus différents possible.  
+ 
 
 ### Analyse de survie
 
@@ -144,6 +145,7 @@ But:
 - Étudier les effets des variables explicatives sur le temps de survie et obtenir des prévisions du temps de survie.
 
 ### Données manquantes
+
 Il arrive fréquemment d’avoir des valeurs manquantes dans notre échantillon. 
 
 Simplement ignorer les sujets avec des valeurs manquantes et faire l’analyse avec les autres sujets conduit généralement à des estimations biaisées et à de l’inférence invalide. 
@@ -153,9 +155,42 @@ Dans ce chapitre, nous verrons une méthode très générale afin de traiter les
 
 
 
-```{r include=FALSE}
+```{r include=FALSE, message = FALSE, warning = FALSE}
 # automatically create a bib database for R packages
+library(knitr)
+library(kableExtra)
 knitr::write_bib(c(
   .packages(), 'bookdown', 'knitr', 'rmarkdown'
 ), 'packages.bib')
+set.seed(1014)
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  cache = TRUE,
+  out.width = "70%",
+  fig.align = 'center',
+  fig.width = 8.5,
+  fig.asp = 0.618,  # 1 / phi
+  fig.show = "hold"
+)
+options(knitr.table.format = function() {
+  if (knitr::is_latex_output()) 
+    "latex" else "html"
+})
+
+options(dplyr.print_min = 6, dplyr.print_max = 6)
+options(knitr.graphics.auto_pdf = TRUE)
+options(scipen = 1, digits = 3)
+library(viridis)
+library(ggplot2, warn.conflicts = FALSE, quietly = TRUE)
+library(poorman, quietly = TRUE, warn.conflicts = FALSE)
+
+safe_colorblind_palette <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
+                             "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
+
+options(ggplot2.continuous.colour="viridis")
+options(ggplot2.continuous.fill = "viridis")
+scale_colour_discrete <- ggthemes::scale_colour_colorblind
+scale_fill_discrete <- ggthemes::scale_fill_colorblind
+theme_set(theme_minimal())
 ```

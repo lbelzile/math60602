@@ -96,9 +96,16 @@ missing1 <- haven::read_sas(url)
 smallmiss <- missing1[1:10,]
 smallmisst <- apply(smallmiss,c(1,2), function(x){sprintf("%i", x)})
 smallmisst[is.na(smallmiss)] <- "."
-knitr::kable(smallmisst, booktabs = TRUE, escape = FALSE)%>%
-  kableExtra::kable_styling(position = "center")
+kableExtra::kbl(smallmisst, row.names = FALSE,
+             booktabs = TRUE,
+             longtable = FALSE,
+             col.names = c(paste0("$X_",1:6,"$"),"$y$"),
+             align =  paste0(c(rep("r", 7)),collapse = ""),
+             escape = FALSE,
+             caption = "Tableau des configurations des données manquantes.")
 ```
+
+
 Les points (`.`) indiquent des valeurs manquantes. Le premier sujet n'a pas de valeur manquante. Le deuxième a une valeur manquante pour $X_1$ (emploi) et $X_4$ (éducation), etc.
 
 Une première façon de voir combien il y a de valeurs manquantes consiste à faire sortir les statistiques descriptives avec la procédure `means`.
@@ -202,11 +209,11 @@ summar_comp <- summary(glm(formula = form,
 url <- "https://lbelzile.bitbucket.io/MATH60602/mi.sas7bdat"
 summar_mi <- haven::read_sas(url)
 combi <- cbind(summar_full, summar_comp, summar_mi, 
-               row.names = c("Intercept","x1=1","x1=2","x1=3",
-                             "x1=4","x2=1","x2=2","x2=3","x2=4",
-                             "x3","x4","x5","x6=1","x6=2"))
+               row.names = c("Intercept","$x_1=1$","$x_1=2$","$x_1=3$",
+                             "$x_1=4$","$x_2=1$","$x_2=2$","$x_2=3$","$x_2=4$",
+                             "$x_3$","$x_4$","$x_5$","$x_6=1$","$x_6=2$"))
 combif <- apply(combi, c(1,2), function(x){paste0("$",formatC(x, digits = 3, format = "f",), "$")})
-knitr::kable(combif, col.names = rep(c("estimé", "erreur-type","valeur-$p$"), 3),
+knitr::kable(combif, col.names = rep(c("$\\widehat{\\boldsymbol{\\beta}}$", "$\\mathrm{se}(\\widehat{\\boldsymbol{\\beta}})$","valeur-$p$"), 3),
                     booktabs = TRUE,
                     escape = FALSE,
             caption = "Estimés, erreurs-type et valeurs-$p$ des paramètres,  avec les 500 données complètes (gauche), avec les 180 cas complets (milieu) et imputation multiple (droite).", align = 'rrrrrrrrr')

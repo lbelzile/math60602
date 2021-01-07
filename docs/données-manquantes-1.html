@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapitre 7 Données manquantes | Analyse multidimensionnelle appliquée</title>
   <meta name="description" content="Recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
-  <meta name="generator" content="bookdown 0.21.4 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.21.6 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapitre 7 Données manquantes | Analyse multidimensionnelle appliquée" />
   <meta property="og:type" content="book" />
@@ -21,7 +21,7 @@
   <meta name="twitter:description" content="Recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
   
 
-<meta name="author" content="(c) Denis Larocque, retranscription par Léo Belzile" />
+<meta name="author" content="(c) Denis Larocque, Léo Belzile" />
 
 
 
@@ -32,6 +32,7 @@
   
 <link rel="prev" href="analyse-survie.html"/>
 
+<script src="libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -49,11 +50,11 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 <link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
 
 
 
@@ -73,10 +74,13 @@
 <li><a href="./">Analyse multidimensionnelle appliquée</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#survol-du-cours"><i class="fa fa-check"></i><b>1.1</b> Survol du cours</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#analyse-exploratoire"><i class="fa fa-check"></i><b>1.2</b> Analyse exploratoire de données</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="analyse-factorielle.html"><a href="analyse-factorielle.html"><i class="fa fa-check"></i><b>2</b> Analyse factorielle exploratoire</a><ul>
+<li class="chapter" data-level="2" data-path="analyse-factorielle.html"><a href="analyse-factorielle.html"><i class="fa fa-check"></i><b>2</b> Analyse factorielle exploratoire</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="analyse-factorielle.html"><a href="analyse-factorielle.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
 <li class="chapter" data-level="2.2" data-path="analyse-factorielle.html"><a href="analyse-factorielle.html#rappels-sur-le-coefficient-de-corrélation-linéaire"><i class="fa fa-check"></i><b>2.2</b> Rappels sur le coefficient de corrélation linéaire</a></li>
 <li class="chapter" data-level="2.3" data-path="analyse-factorielle.html"><a href="analyse-factorielle.html#exemple-de-questionnaire"><i class="fa fa-check"></i><b>2.3</b> Exemple de questionnaire</a></li>
@@ -86,44 +90,48 @@
 <li class="chapter" data-level="2.7" data-path="analyse-factorielle.html"><a href="analyse-factorielle.html#construction-déchelles-à-partir-des-facteurs"><i class="fa fa-check"></i><b>2.7</b> Construction d’échelles à partir des facteurs</a></li>
 <li class="chapter" data-level="2.8" data-path="analyse-factorielle.html"><a href="analyse-factorielle.html#compléments-dinformation"><i class="fa fa-check"></i><b>2.8</b> Compléments d’information</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="selection-modele.html"><a href="selection-modele.html"><i class="fa fa-check"></i><b>3</b> Sélection de variables et de modèles</a><ul>
-<li class="chapter" data-level="3.1" data-path="selection-modele.html"><a href="selection-modele.html#introduction-2"><i class="fa fa-check"></i><b>3.1</b> Introduction</a></li>
-<li class="chapter" data-level="3.2" data-path="selection-modele.html"><a href="selection-modele.html#sélection-de-variables-et-de-modèles-selon-les-buts-de-létude"><i class="fa fa-check"></i><b>3.2</b> Sélection de variables et de modèles selon les buts de l’étude</a></li>
-<li class="chapter" data-level="3.3" data-path="selection-modele.html"><a href="selection-modele.html#mieux-vaut-plus-que-moins"><i class="fa fa-check"></i><b>3.3</b> Mieux vaut plus que moins</a></li>
-<li class="chapter" data-level="3.4" data-path="selection-modele.html"><a href="selection-modele.html#trop-beau-pour-être-vrai"><i class="fa fa-check"></i><b>3.4</b> Trop beau pour être vrai</a></li>
-<li class="chapter" data-level="3.5" data-path="selection-modele.html"><a href="selection-modele.html#principes-généraux"><i class="fa fa-check"></i><b>3.5</b> Principes généraux</a></li>
-<li class="chapter" data-level="3.6" data-path="selection-modele.html"><a href="selection-modele.html#critères-dinformation"><i class="fa fa-check"></i><b>3.6</b> Critères d’information</a></li>
-<li class="chapter" data-level="3.7" data-path="selection-modele.html"><a href="selection-modele.html#division-de-léchantillon-et-validation-croisée"><i class="fa fa-check"></i><b>3.7</b> Division de l’échantillon et validation croisée</a></li>
-<li class="chapter" data-level="3.8" data-path="selection-modele.html"><a href="selection-modele.html#cibler-les-clients-pour-lenvoi-dun-catalogue"><i class="fa fa-check"></i><b>3.8</b> Cibler les clients pour l’envoi d’un catalogue</a></li>
-<li class="chapter" data-level="3.9" data-path="selection-modele.html"><a href="selection-modele.html#recherche-automatique-du-meilleur-modèle"><i class="fa fa-check"></i><b>3.9</b> Recherche automatique du meilleur modèle</a></li>
-<li class="chapter" data-level="3.10" data-path="selection-modele.html"><a href="selection-modele.html#recherche-automatique-de-tous-les-sous-ensembles"><i class="fa fa-check"></i><b>3.10</b> Recherche automatique de tous les sous-ensembles</a></li>
-<li class="chapter" data-level="3.11" data-path="selection-modele.html"><a href="selection-modele.html#méthodes-classiques-de-sélection-ascendante-descendante-et-séquentielle"><i class="fa fa-check"></i><b>3.11</b> Méthodes classiques de sélection ascendante, descendante et séquentielle</a></li>
-<li class="chapter" data-level="3.12" data-path="selection-modele.html"><a href="selection-modele.html#recherche-séquentielle-automatique-limitée"><i class="fa fa-check"></i><b>3.12</b> Recherche séquentielle automatique limitée</a></li>
-<li class="chapter" data-level="3.13" data-path="selection-modele.html"><a href="selection-modele.html#moyenne-de-modèles"><i class="fa fa-check"></i><b>3.13</b> Moyenne de modèles</a></li>
+<li class="chapter" data-level="3" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html"><i class="fa fa-check"></i><b>3</b> Analyse de regroupements</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html#introduction-2"><i class="fa fa-check"></i><b>3.1</b> Introduction</a></li>
+<li class="chapter" data-level="3.2" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html#segmentation-de-seniors-en-voyage-organisé"><i class="fa fa-check"></i><b>3.2</b> Segmentation de seniors en voyage organisé</a></li>
+<li class="chapter" data-level="3.3" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html#exploration-graphique-préalable-et-analyse-en-composantes-principales"><i class="fa fa-check"></i><b>3.3</b> Exploration graphique préalable et analyse en composantes principales</a></li>
+<li class="chapter" data-level="3.4" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html#méthodes-hiérarchiques"><i class="fa fa-check"></i><b>3.4</b> Méthodes hiérarchiques</a></li>
+<li class="chapter" data-level="3.5" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html#calcul-alternatif-des-distances-pour-le-regroupement-hiérarchique"><i class="fa fa-check"></i><b>3.5</b> Calcul alternatif des distances pour le regroupement hiérarchique</a></li>
+<li class="chapter" data-level="3.6" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html#autres-mesures-de-dissemblance"><i class="fa fa-check"></i><b>3.6</b> Autres mesures de dissemblance</a></li>
+<li class="chapter" data-level="3.7" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html#méthodes-non-hiérarchiques"><i class="fa fa-check"></i><b>3.7</b> Méthodes non hiérarchiques</a></li>
+<li class="chapter" data-level="3.8" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html#standardisation-des-variables"><i class="fa fa-check"></i><b>3.8</b> Standardisation des variables</a></li>
+<li class="chapter" data-level="3.9" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html#considérations-pratiques"><i class="fa fa-check"></i><b>3.9</b> Considérations pratiques</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="regression-logistique.html"><a href="regression-logistique.html"><i class="fa fa-check"></i><b>4</b> Régression logistique</a><ul>
-<li class="chapter" data-level="4.1" data-path="regression-logistique.html"><a href="regression-logistique.html#introduction-3"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
-<li class="chapter" data-level="4.2" data-path="regression-logistique.html"><a href="regression-logistique.html#modèle-de-régression-logistique"><i class="fa fa-check"></i><b>4.2</b> Modèle de régression logistique</a></li>
-<li class="chapter" data-level="4.3" data-path="regression-logistique.html"><a href="regression-logistique.html#estimation-des-paramètres"><i class="fa fa-check"></i><b>4.3</b> Estimation des paramètres</a></li>
-<li class="chapter" data-level="4.4" data-path="regression-logistique.html"><a href="regression-logistique.html#cowboy"><i class="fa fa-check"></i><b>4.4</b> Exemple du <em>Professional Rodeo Cowboys Association</em></a></li>
-<li class="chapter" data-level="4.5" data-path="regression-logistique.html"><a href="regression-logistique.html#classification-et-prédiction-à-laide-de-la-régression-logistique"><i class="fa fa-check"></i><b>4.5</b> Classification et prédiction à l’aide de la régression logistique</a></li>
-<li class="chapter" data-level="4.6" data-path="regression-logistique.html"><a href="regression-logistique.html#classification-avec-une-matrice-de-gain"><i class="fa fa-check"></i><b>4.6</b> Classification avec une matrice de gain</a></li>
-<li class="chapter" data-level="4.7" data-path="regression-logistique.html"><a href="regression-logistique.html#sélection-de-variables-en-régression-logistique"><i class="fa fa-check"></i><b>4.7</b> Sélection de variables en régression logistique</a></li>
-<li class="chapter" data-level="4.8" data-path="regression-logistique.html"><a href="regression-logistique.html#performance-des-différents-modèles-pour-lexemple-des-clients-cibles"><i class="fa fa-check"></i><b>4.8</b> Performance des différents modèles pour l’exemple des clients cibles</a></li>
-<li class="chapter" data-level="4.9" data-path="regression-logistique.html"><a href="regression-logistique.html#extensions-du-modèle-de-régression-logistique-à-plus-de-deux-catégories"><i class="fa fa-check"></i><b>4.9</b> Extensions du modèle de régression logistique à plus de deux catégories</a></li>
+<li class="chapter" data-level="4" data-path="selection-modele.html"><a href="selection-modele.html"><i class="fa fa-check"></i><b>4</b> Sélection de variables et de modèles</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="selection-modele.html"><a href="selection-modele.html#introduction-3"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="selection-modele.html"><a href="selection-modele.html#sélection-de-variables-et-de-modèles-selon-les-buts-de-létude"><i class="fa fa-check"></i><b>4.2</b> Sélection de variables et de modèles selon les buts de l’étude</a></li>
+<li class="chapter" data-level="4.3" data-path="selection-modele.html"><a href="selection-modele.html#mieux-vaut-plus-que-moins"><i class="fa fa-check"></i><b>4.3</b> Mieux vaut plus que moins</a></li>
+<li class="chapter" data-level="4.4" data-path="selection-modele.html"><a href="selection-modele.html#trop-beau-pour-être-vrai"><i class="fa fa-check"></i><b>4.4</b> Trop beau pour être vrai</a></li>
+<li class="chapter" data-level="4.5" data-path="selection-modele.html"><a href="selection-modele.html#principes-généraux"><i class="fa fa-check"></i><b>4.5</b> Principes généraux</a></li>
+<li class="chapter" data-level="4.6" data-path="selection-modele.html"><a href="selection-modele.html#critères-dinformation"><i class="fa fa-check"></i><b>4.6</b> Critères d’information</a></li>
+<li class="chapter" data-level="4.7" data-path="selection-modele.html"><a href="selection-modele.html#division-de-léchantillon-et-validation-croisée"><i class="fa fa-check"></i><b>4.7</b> Division de l’échantillon et validation croisée</a></li>
+<li class="chapter" data-level="4.8" data-path="selection-modele.html"><a href="selection-modele.html#cibler-les-clients-pour-lenvoi-dun-catalogue"><i class="fa fa-check"></i><b>4.8</b> Cibler les clients pour l’envoi d’un catalogue</a></li>
+<li class="chapter" data-level="4.9" data-path="selection-modele.html"><a href="selection-modele.html#recherche-automatique-du-meilleur-modèle"><i class="fa fa-check"></i><b>4.9</b> Recherche automatique du meilleur modèle</a></li>
+<li class="chapter" data-level="4.10" data-path="selection-modele.html"><a href="selection-modele.html#recherche-automatique-de-tous-les-sous-ensembles"><i class="fa fa-check"></i><b>4.10</b> Recherche automatique de tous les sous-ensembles</a></li>
+<li class="chapter" data-level="4.11" data-path="selection-modele.html"><a href="selection-modele.html#méthodes-classiques-de-sélection"><i class="fa fa-check"></i><b>4.11</b> Méthodes classiques de sélection</a></li>
+<li class="chapter" data-level="4.12" data-path="selection-modele.html"><a href="selection-modele.html#recherche-séquentielle-automatique-limitée"><i class="fa fa-check"></i><b>4.12</b> Recherche séquentielle automatique limitée</a></li>
+<li class="chapter" data-level="4.13" data-path="selection-modele.html"><a href="selection-modele.html#moyenne-de-modèles"><i class="fa fa-check"></i><b>4.13</b> Moyenne de modèles</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html"><i class="fa fa-check"></i><b>5</b> Analyse de regroupements</a><ul>
-<li class="chapter" data-level="5.1" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html#introduction-4"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
-<li class="chapter" data-level="5.2" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html#segmentation-de-seniors-en-voyage-organisé"><i class="fa fa-check"></i><b>5.2</b> Segmentation de seniors en voyage organisé</a></li>
-<li class="chapter" data-level="5.3" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html#méthodes-hiérarchiques"><i class="fa fa-check"></i><b>5.3</b> Méthodes hiérarchiques</a></li>
-<li class="chapter" data-level="5.4" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html#méthodes-non-hiérarchiques"><i class="fa fa-check"></i><b>5.4</b> Méthodes non hiérarchiques</a></li>
-<li class="chapter" data-level="5.5" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html#standardisation-des-variables"><i class="fa fa-check"></i><b>5.5</b> Standardisation des variables</a></li>
-<li class="chapter" data-level="5.6" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html#considérations-pratiques"><i class="fa fa-check"></i><b>5.6</b> Considérations pratiques</a></li>
-<li class="chapter" data-level="5.7" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html#exploration-graphique-préalable-et-analyse-en-composantes-principales"><i class="fa fa-check"></i><b>5.7</b> Exploration graphique préalable et analyse en composantes principales</a></li>
-<li class="chapter" data-level="5.8" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html#calcul-alternatif-des-distances-pour-le-regroupement-hiérarchique"><i class="fa fa-check"></i><b>5.8</b> Calcul alternatif des distances pour le regroupement hiérarchique</a></li>
-<li class="chapter" data-level="5.9" data-path="analyse-regroupements.html"><a href="analyse-regroupements.html#autres-mesures-de-dissemblance"><i class="fa fa-check"></i><b>5.9</b> Autres mesures de dissemblance</a></li>
+<li class="chapter" data-level="5" data-path="regression-logistique.html"><a href="regression-logistique.html"><i class="fa fa-check"></i><b>5</b> Régression logistique</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="regression-logistique.html"><a href="regression-logistique.html#introduction-4"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="regression-logistique.html"><a href="regression-logistique.html#modèle-de-régression-logistique"><i class="fa fa-check"></i><b>5.2</b> Modèle de régression logistique</a></li>
+<li class="chapter" data-level="5.3" data-path="regression-logistique.html"><a href="regression-logistique.html#estimation-des-paramètres"><i class="fa fa-check"></i><b>5.3</b> Estimation des paramètres</a></li>
+<li class="chapter" data-level="5.4" data-path="regression-logistique.html"><a href="regression-logistique.html#cowboy"><i class="fa fa-check"></i><b>5.4</b> Exemple du <em>Professional Rodeo Cowboys Association</em></a></li>
+<li class="chapter" data-level="5.5" data-path="regression-logistique.html"><a href="regression-logistique.html#classification-et-prédiction-à-laide-de-la-régression-logistique"><i class="fa fa-check"></i><b>5.5</b> Classification et prédiction à l’aide de la régression logistique</a></li>
+<li class="chapter" data-level="5.6" data-path="regression-logistique.html"><a href="regression-logistique.html#classification-avec-une-matrice-de-gain"><i class="fa fa-check"></i><b>5.6</b> Classification avec une matrice de gain</a></li>
+<li class="chapter" data-level="5.7" data-path="regression-logistique.html"><a href="regression-logistique.html#sélection-de-variables-en-régression-logistique"><i class="fa fa-check"></i><b>5.7</b> Sélection de variables en régression logistique</a></li>
+<li class="chapter" data-level="5.8" data-path="regression-logistique.html"><a href="regression-logistique.html#performance-des-différents-modèles-pour-lexemple-des-clients-cibles"><i class="fa fa-check"></i><b>5.8</b> Performance des différents modèles pour l’exemple des clients cibles</a></li>
+<li class="chapter" data-level="5.9" data-path="regression-logistique.html"><a href="regression-logistique.html#extensions-du-modèle-de-régression-logistique-à-plus-de-deux-catégories"><i class="fa fa-check"></i><b>5.9</b> Extensions du modèle de régression logistique à plus de deux catégories</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="analyse-survie.html"><a href="analyse-survie.html"><i class="fa fa-check"></i><b>6</b> Analyse de survie</a><ul>
+<li class="chapter" data-level="6" data-path="analyse-survie.html"><a href="analyse-survie.html"><i class="fa fa-check"></i><b>6</b> Analyse de survie</a>
+<ul>
 <li class="chapter" data-level="6.1" data-path="analyse-survie.html"><a href="analyse-survie.html#introduction-5"><i class="fa fa-check"></i><b>6.1</b> Introduction</a></li>
 <li class="chapter" data-level="6.2" data-path="analyse-survie.html"><a href="analyse-survie.html#fonctions-de-survie-et-de-risque"><i class="fa fa-check"></i><b>6.2</b> Fonctions de survie et de risque</a></li>
 <li class="chapter" data-level="6.3" data-path="analyse-survie.html"><a href="analyse-survie.html#estimation-dune-courbe-de-survie-et-de-risque"><i class="fa fa-check"></i><b>6.3</b> Estimation d’une courbe de survie et de risque</a></li>
@@ -132,7 +140,8 @@
 <li class="chapter" data-level="6.6" data-path="analyse-survie.html"><a href="analyse-survie.html#extensions-du-modèle-de-cox"><i class="fa fa-check"></i><b>6.6</b> Extensions du modèle de Cox</a></li>
 <li class="chapter" data-level="6.7" data-path="analyse-survie.html"><a href="analyse-survie.html#risques-non-proportionnels"><i class="fa fa-check"></i><b>6.7</b> Risques non proportionnels</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="données-manquantes-1.html"><a href="données-manquantes-1.html"><i class="fa fa-check"></i><b>7</b> Données manquantes</a><ul>
+<li class="chapter" data-level="7" data-path="données-manquantes-1.html"><a href="données-manquantes-1.html"><i class="fa fa-check"></i><b>7</b> Données manquantes</a>
+<ul>
 <li class="chapter" data-level="7.1" data-path="données-manquantes-1.html"><a href="données-manquantes-1.html#terminologie"><i class="fa fa-check"></i><b>7.1</b> Terminologie</a></li>
 <li class="chapter" data-level="7.2" data-path="données-manquantes-1.html"><a href="données-manquantes-1.html#quelques-méthodes"><i class="fa fa-check"></i><b>7.2</b> Quelques méthodes</a></li>
 <li class="chapter" data-level="7.3" data-path="données-manquantes-1.html"><a href="données-manquantes-1.html#example-dapplication-de-limputation"><i class="fa fa-check"></i><b>7.3</b> Example d’application de l’imputation</a></li>
@@ -158,10 +167,10 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="données-manquantes-1" class="section level1">
+<div id="données-manquantes-1" class="section level1" number="7">
 <h1><span class="header-section-number">Chapitre 7</span> Données manquantes</h1>
 <p>Il arrive fréquemment d’avoir des valeurs manquantes dans notre échantillon. Ces valeurs peuvent être manquantes pour diverses raisons. Si on prélève nous-mêmes nos données, un répondant peut refuser de répondre à certaines questions. Si on acquiert nos données d’une source externe, les valeurs de certaines variables peuvent être manquantes directement dans le fichier obtenu. Si on ne prend pas en compte le méchanisme générant les valeurs manquantes, ces dernières peuvent également biaiser nos analyses. Le but de ce chapitre est de faire un bref survol de ce sujet.</p>
-<div id="terminologie" class="section level2">
+<div id="terminologie" class="section level2" number="7.1">
 <h2><span class="header-section-number">7.1</span> Terminologie</h2>
 <p>Soit <span class="math inline">\(X\)</span> une variable pour laquelle des données sont manquantes. Voici la définition de trois processus de génération de données manquantes.</p>
 <ol style="list-style-type: decimal">
@@ -178,9 +187,9 @@
 </ol>
 <p>Par exemple, les gens qui ont un revenu élevé pourraient avoir plus de réticences à répondre à une question sur leur revenu. La méthode de traitement que nous allons voir dans ce chapitre, l’imputation multiple, est très générale et est valide dans le cas MAR (et donc aussi dans le cas MCAR). Le cas MNAR est beaucoup plus difficile à traiter et ne sera pas considéré ici.</p>
 </div>
-<div id="quelques-méthodes" class="section level2">
+<div id="quelques-méthodes" class="section level2" number="7.2">
 <h2><span class="header-section-number">7.2</span> Quelques méthodes</h2>
-<div id="cas-complets" class="section level3">
+<div id="cas-complets" class="section level3" number="7.2.1">
 <h3><span class="header-section-number">7.2.1</span> Cas complets</h3>
 <p>La première idée naïve pour une analyse est de retirer les observations avec données manquantes pour conserver les cas complets (<em>listwise deletion</em>, ou <em>complete case analysis</em>).</p>
 <p>Cette méthode consiste à garder seulement les observations qui n’ont aucune valeur manquante pour les variables utilisées dans l’analyse demandée. Dès qu’une variable est manquante, on enlève le sujet au complet. C’est la méthode utilisée par défaut dans la plupart des logiciels, dont <strong>SAS</strong>.</p>
@@ -190,14 +199,14 @@
 </ul>
 <p>En général, l’approche des cas complet est la première étape d’une analyse afin d’obtenir des estimés initiaux que nous corrigerons pas d’autre méthode. Elle n’est vraiment utile que si la proportion d’observations manquantes est très faible et le processus est MCAR. Évidemment, la présence de valeurs manquantes mène à une diminution de la précision des estimateurs (caractérisée par une augmentation des erreurs-types) et à une plus faible puissance pour les tests d’hypothèse et donc ignorer l’information partielle (si seulement certaines valeurs des variables explicatives sont manquantes) est sous-optimal.</p>
 </div>
-<div id="imputation-simple" class="section level3">
+<div id="imputation-simple" class="section level3" number="7.2.2">
 <h3><span class="header-section-number">7.2.2</span> Imputation simple</h3>
 <p>La deuxième approche est l’<strong>imputation simple</strong>. L’idée ici est de ne pas enlever les observations avec des valeurs manquantes mais de remplacer ces valeurs par des valeurs raisonnables. Par exemple, on peut remplacer les valeurs manquantes d’une variable par la moyenne de cette variable dans notre échantillon. On peut aussi ajuster un modèle de régression avec cette variable comme variable dépendante et d’autres variables explicatives comme variables indépendantes et utiliser les valeurs prédites comme remplacement. Une fois que les valeurs manquantes ont été remplacées, on fait l’analyse avec toutes les observations.</p>
 <p>Il existe d’autres façons d’imputer les valeurs manquantes mais le problème de toutes ces approches est que l’on ne tient pas compte du fait que des valeurs ont été remplacées et on fait comme si c’était de vraies observations. Cela va en général sous-évaluer la variabilité dans les données. Par conséquent, les écarts-type des paramètres estimés seront en général sous-estimés et l’inférence (tests et intervalles de confiance) ne sera pas valide.
 Cette approche n’est donc <strong>pas recommandée</strong>.</p>
 <p>Une manière de tenter de reproduire correctement la variabilité dans les données consiste à ajouter un terme aléatoire dans l’imputation. C’est ce que fait la méthode suivante, qui possédera l’avantage de corriger automatiquement les écarts-type des paramètres estimés.</p>
 </div>
-<div id="imputation-multiple" class="section level3">
+<div id="imputation-multiple" class="section level3" number="7.2.3">
 <h3><span class="header-section-number">7.2.3</span> Imputation multiple</h3>
 <p>Cette méthode peut être appliquée dans à peu près n’importe quelle situation et permet d’ajuster les écarts-type des paramètres estimés. Elle peut être appliquée lorsque le processus est MAR (et donc aussi MCAR).</p>
 <p>L’idée consiste à procéder à une imputation aléatoire, selon une certaine technique, pour obtenir un échantillon complet et à ajuster le modèle d’intérêt avec cet échantillon. On répète ce processus plusieurs fois et on combine les résultats obtenus.</p>
@@ -227,264 +236,267 @@ Ainsi, le terme <span class="math inline">\(W\)</span> est la moyenne des varian
 <p>Si, à l’inverse, une variable secondaire cause à elle seule une grande proportion de valeurs manquantes, on peut alors considérer l’éliminer afin de récupérer des observations. Par exemple, si vous avez une proportion de 30% de valeurs manquantes en utilisant toutes vos variables et que cette proportion baisse à 3% lorsque vous éliminez quelques variables peu importantes pour votre étude (ou qui peuvent être remplacées par d’autres jouant à peu près le même rôle qui elles sont disponibles), alors vous pourriez considérer la possibilité de les éliminer. Il est donc nécessaire d’examiner la configuration des valeurs manquantes avant de faire quoi que ce soit. La procédure <code>mi</code> permet de faire cela, comme nous le verrons dans l’exemple qui suit.</p>
 </div>
 </div>
-<div id="example-dapplication-de-limputation" class="section level2">
+<div id="example-dapplication-de-limputation" class="section level2" number="7.3">
 <h2><span class="header-section-number">7.3</span> Example d’application de l’imputation</h2>
-<p>On examine l’exemple de recommandations de l’association professionnelle des vachers de la section <a href="regression-logistique.html#cowboy">4.4</a>.</p>
+<p>On examine l’exemple de recommandations de l’association professionnelle des vachers de la section <a href="regression-logistique.html#cowboy">5.4</a>.</p>
 <p>Le but est d’examiner les effets des variables <span class="math inline">\(X_1\)</span> à <span class="math inline">\(X_6\)</span> sur les intentions d’achat (<span class="math inline">\(Y\)</span>); la base de données <code>missing1.sas7bdat</code> contient les observations et les commandes <strong>SAS</strong> se trouvent dans le fichier <code>missing1.sas</code>. Il s’agit des mêmes données que celles du fichier <code>logit1.sas7bdat</code> mais avec des valeurs manquantes.</p>
-<table class="table" style="margin-left: auto; margin-right: auto;">
+<table>
+<caption>
+<span id="tab:missing1r">Tableau 7.1: </span>Tableau des configurations des données manquantes.
+</caption>
 <thead>
 <tr>
-<th style="text-align:left;">
-x1
+<th style="text-align:right;">
+<span class="math inline">\(X_1\)</span>
 </th>
-<th style="text-align:left;">
-x2
+<th style="text-align:right;">
+<span class="math inline">\(X_2\)</span>
 </th>
-<th style="text-align:left;">
-x3
+<th style="text-align:right;">
+<span class="math inline">\(X_3\)</span>
 </th>
-<th style="text-align:left;">
-x4
+<th style="text-align:right;">
+<span class="math inline">\(X_4\)</span>
 </th>
-<th style="text-align:left;">
-x5
+<th style="text-align:right;">
+<span class="math inline">\(X_5\)</span>
 </th>
-<th style="text-align:left;">
-x6
+<th style="text-align:right;">
+<span class="math inline">\(X_6\)</span>
 </th>
-<th style="text-align:left;">
-y
+<th style="text-align:right;">
+<span class="math inline">\(y\)</span>
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
+<td style="text-align:right;">
 1
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 4
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 0
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 1
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 35
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 0
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td style="text-align:right;">
 .
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 1
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 0
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 .
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 33
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 3
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 0
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 3
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 1
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 .
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 46
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 3
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 0
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td style="text-align:right;">
 5
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 1
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 .
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 32
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 1
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 1
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td style="text-align:right;">
 3
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 1
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 .
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 38
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 3
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 1
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td style="text-align:right;">
 .
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 4
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 0
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 0
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 36
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 3
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 0
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td style="text-align:right;">
 .
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 3
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 0
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 .
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 35
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 3
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 0
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td style="text-align:right;">
 .
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 5
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 1
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 0
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 26
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 0
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td style="text-align:right;">
 .
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 3
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 1
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 1
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 39
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 1
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td style="text-align:right;">
 5
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 1
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 .
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 38
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 3
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 0
 </td>
 </tr>
@@ -502,11 +514,11 @@ run;</code></pre>
 <p>Dans la partie de gauche, les <code>X</code> indiquent que la variable est présente dans cette configuration et le point indique qu’elle est manquante. Ainsi, il y a 180 sujets (36% de l’échantillon) avec aucune observation manquante. Il y en a 99 avec seulement <span class="math inline">\(X_4\)</span> manquante et ainsi de suite. On voit donc, par exemple, que pour 14 sujets, à la fois <span class="math inline">\(X_1\)</span> et <span class="math inline">\(X_2\)</span> sont manquantes. La partie de droite donne la moyenne des variables dans chaque configuration.</p>
 <p>La recommandation d’usage est d’imputer au moins le pourcentage de cas incomplet, ici 72% donc 72 imputations. Si la procédure est trop gloutonne en calcul, on peut diminuer le nombre d’imputations, mais au moins cinq ou 10 réplications sont de mise.</p>
 <p>On peut comparer l’inférence avec toutes les variables explicatives pour les données sans valeurs manquantes (<span class="math inline">\(n=500\)</span> observations), avec les cas complets uniquement (<span class="math inline">\(n=180\)</span> observations).
-Le Tableau <a href="données-manquantes-1.html#tab:missing3r">7.1</a> présente les estimations des paramètres du modèle de régression logistique s’il n’y avait pas eu de valeurs manquantes, avec les cas complets et les résultats de l’imputation multiple.</p>
+Le Tableau <a href="données-manquantes-1.html#tab:missing3r">7.2</a> présente les estimations des paramètres du modèle de régression logistique s’il n’y avait pas eu de valeurs manquantes, avec les cas complets et les résultats de l’imputation multiple.</p>
 <p>Revenons à présent à notre fichier avec des valeurs manquantes. Si on demande à <strong>SAS</strong> d’ajuster le modèle de régression logistique, il va par défaut retirer les observations qui ont au moins une valeur manquante pour une des variables nécessaires à l’analyse. Ainsi, le modèle va être ajusté avec seulement 180 observations. Cette analyse est présentée seulement pour montrer l’effet des valeurs manquantes.</p>
 <p>Ceci est clairement indiqué dans la partie de la sortie qui est reproduite ci-après.</p>
 <p><img src="figures/06-manquantes-e3.png" width="80%" style="display: block; margin: auto;" /></p>
-<p>Il ne serait pas raisonnable de faire l’analyse avec seulement 180 observations et de laisser tomber les 320 autres. De plus, comme nous l’avons vu plus haut, ce n’est pas valide à moins que le processus ne soit MCAR. La partie du milieu du Tableau <a href="données-manquantes-1.html#tab:missing3r">7.1</a> présente les estimations obtenues. On voit par exemple que la variable <span class="math inline">\(X_3\)</span> (sexe), qui était clairement significative lorsqu’il n’y avait pas de valeurs manquantes, est maintenant non-significative (valeur-<span class="math inline">\(p\)</span> de 0,068). La même chose est vraie pour quelques autres variables incluant <span class="math inline">\({\mathbf 1}_{X_6=2}\)</span>. Il y a même pire, non seulement la variable <span class="math inline">\({\mathbf 1}_{X_2=1}\)</span> est passée de significative à non significative, mais en plus l’estimé de son paramètre a changé de signe.</p>
+<p>Il ne serait pas raisonnable de faire l’analyse avec seulement 180 observations et de laisser tomber les 320 autres. De plus, comme nous l’avons vu plus haut, ce n’est pas valide à moins que le processus ne soit MCAR. La partie du milieu du Tableau <a href="données-manquantes-1.html#tab:missing3r">7.2</a> présente les estimations obtenues. On voit par exemple que la variable <span class="math inline">\(X_3\)</span> (sexe), qui était clairement significative lorsqu’il n’y avait pas de valeurs manquantes, est maintenant non-significative (valeur-<span class="math inline">\(p\)</span> de 0,068). La même chose est vraie pour quelques autres variables incluant <span class="math inline">\({\mathbf 1}_{X_6=2}\)</span>. Il y a même pire, non seulement la variable <span class="math inline">\({\mathbf 1}_{X_2=1}\)</span> est passée de significative à non significative, mais en plus l’estimé de son paramètre a changé de signe.</p>
 <p>Nous allons donc faire l’analyse avec l’imputation multiple, en prenant la méthode d’imputation par défaut dans la procédure <code>mi</code>. Le code <strong>SAS</strong> est</p>
 <pre class="sas"><code>proc mi data=multi.missing1 out=outmi 
     nimpute=pctmissing seed=746382643;
@@ -529,35 +541,35 @@ run;</code></pre>
 <img src="figures/06-manquantes-e5.png" width="100%" style="display: block; margin: auto;" /></p>
 <table>
 <caption>
-<span id="tab:missing3r">Tableau 7.1: </span>Estimés, erreurs-type et valeurs-<span class="math inline">\(p\)</span> des paramètres, avec les 500 données complètes (gauche), avec les 180 cas complets (milieu) et imputation multiple (droite).
+<span id="tab:missing3r">Tableau 7.2: </span>Estimés, erreurs-type et valeurs-<span class="math inline">\(p\)</span> des paramètres, avec les 500 données complètes (gauche), avec les 180 cas complets (milieu) et imputation multiple (droite).
 </caption>
 <thead>
 <tr>
 <th style="text-align:left;">
 </th>
 <th style="text-align:right;">
-estimé
+<span class="math inline">\(\widehat{\boldsymbol{\beta}}\)</span>
 </th>
 <th style="text-align:right;">
-erreur-type
-</th>
-<th style="text-align:right;">
-valeur-<span class="math inline">\(p\)</span>
-</th>
-<th style="text-align:right;">
-estimé
-</th>
-<th style="text-align:right;">
-erreur-type
+<span class="math inline">\(\mathrm{se}(\widehat{\boldsymbol{\beta}})\)</span>
 </th>
 <th style="text-align:right;">
 valeur-<span class="math inline">\(p\)</span>
 </th>
 <th style="text-align:right;">
-estimé
+<span class="math inline">\(\widehat{\boldsymbol{\beta}}\)</span>
 </th>
 <th style="text-align:right;">
-erreur-type
+<span class="math inline">\(\mathrm{se}(\widehat{\boldsymbol{\beta}})\)</span>
+</th>
+<th style="text-align:right;">
+valeur-<span class="math inline">\(p\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\widehat{\boldsymbol{\beta}}\)</span>
+</th>
+<th style="text-align:right;">
+<span class="math inline">\(\mathrm{se}(\widehat{\boldsymbol{\beta}})\)</span>
 </th>
 <th style="text-align:right;">
 valeur-<span class="math inline">\(p\)</span>
@@ -599,7 +611,7 @@ Intercept
 </tr>
 <tr>
 <td style="text-align:left;">
-x1=1
+<span class="math inline">\(x_1=1\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(0.358\)</span>
@@ -631,7 +643,7 @@ x1=1
 </tr>
 <tr>
 <td style="text-align:left;">
-x1=2
+<span class="math inline">\(x_1=2\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(-0.468\)</span>
@@ -663,7 +675,7 @@ x1=2
 </tr>
 <tr>
 <td style="text-align:left;">
-x1=3
+<span class="math inline">\(x_1=3\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(-0.311\)</span>
@@ -695,7 +707,7 @@ x1=3
 </tr>
 <tr>
 <td style="text-align:left;">
-x1=4
+<span class="math inline">\(x_1=4\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(-0.317\)</span>
@@ -727,7 +739,7 @@ x1=4
 </tr>
 <tr>
 <td style="text-align:left;">
-x2=1
+<span class="math inline">\(x_2=1\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(1.331\)</span>
@@ -759,7 +771,7 @@ x2=1
 </tr>
 <tr>
 <td style="text-align:left;">
-x2=2
+<span class="math inline">\(x_2=2\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(1.148\)</span>
@@ -791,7 +803,7 @@ x2=2
 </tr>
 <tr>
 <td style="text-align:left;">
-x2=3
+<span class="math inline">\(x_2=3\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(0.773\)</span>
@@ -823,7 +835,7 @@ x2=3
 </tr>
 <tr>
 <td style="text-align:left;">
-x2=4
+<span class="math inline">\(x_2=4\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(-1.109\)</span>
@@ -855,7 +867,7 @@ x2=4
 </tr>
 <tr>
 <td style="text-align:left;">
-x3
+<span class="math inline">\(x_3\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(1.349\)</span>
@@ -887,7 +899,7 @@ x3
 </tr>
 <tr>
 <td style="text-align:left;">
-x4
+<span class="math inline">\(x_4\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(1.830\)</span>
@@ -919,7 +931,7 @@ x4
 </tr>
 <tr>
 <td style="text-align:left;">
-x5
+<span class="math inline">\(x_5\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(0.109\)</span>
@@ -951,7 +963,7 @@ x5
 </tr>
 <tr>
 <td style="text-align:left;">
-x6=1
+<span class="math inline">\(x_6=1\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(2.412\)</span>
@@ -983,7 +995,7 @@ x6=1
 </tr>
 <tr>
 <td style="text-align:left;">
-x6=2
+<span class="math inline">\(x_6=2\)</span>
 </td>
 <td style="text-align:right;">
 <span class="math inline">\(1.045\)</span>
@@ -1018,7 +1030,7 @@ x6=2
 <p>On peut remarquer que la précision est systématiquement meilleure avec l’imputation multiple; les erreurs-type pour l’imputation multiple sont plus petits que celle du modèleles erreurs-type sont plus petits qui retire les données incomplètes.</p>
 <p>On voit que la variable <span class="math inline">\(X_3\)</span> (sexe) est significative avec l’imputation multiple. Son paramètre estimé est 1,202, comparativement à 1,349 s’il n’y avait pas eu de valeurs manquantes. La précision dans l’estimation avec l’imputation multiple est seulement un peu moins bonne (erreur-type de 0,282) que celle s’il n’y avait pas eu de manquantes (erreur type de 0,26). Le paramètre de <span class="math inline">\({\mathbf 1}_{X_6=2}\)</span> redevient aussi significatif, alors qu’il ne l’était plus si on retirait les manquantes. Il est peu probable que les données soit <span class="math inline">\(\mathsf{MCAR}\)</span> et donc les résultats de l’analyse des cas complets seraient biaisés.</p>
 </div>
-<div id="valeurs-manquantes-dans-un-contexte-de-prédiction" class="section level2">
+<div id="valeurs-manquantes-dans-un-contexte-de-prédiction" class="section level2" number="7.4">
 <h2><span class="header-section-number">7.4</span> Valeurs manquantes dans un contexte de prédiction</h2>
 <p>Nous avons vu que l’imputation multiple permet de corriger les écarts-type des paramètres estimés afin d’obtenir une inférence valide. Mais cette fois-ci, le but n’est pas d’estimer un modèle afin de tester formellement certaines hypothèses, mais plutôt de développer un modèle pour obtenir des prédictions. Dans ce cas, l’imputation multiple peut aussi être utile.</p>
 <p>Nous allons revenir une dernière fois sur l’exemple de ciblage de clients pour l’envoi d’un catalogue. Rappelez-vous qu’on a un échantillon d’apprentissage de 1000 clients pour lesquels la variable <span class="math inline">\(\texttt{yachat}\)</span> est disponible (est-ce que le client a acheté quelque chose lorsqu’on lui a envoyé un catalogue). Nous avons développé des modèles avec ces 1000 clients afin de décider à qui, parmi les 100 000 clients restants, envoyer le catalogue. Nous avions alors utilisé des données sans valeurs manquantes. Cette fois-ci, nous allons faire comme s’il y avait des valeurs manquantes pour les variables explicatives à la fois dans l’échantillon d’apprentissage mais aussi dans l’échantillon à prédire. Nous allons chercher à développer un modèle de régression logistique pour <span class="math inline">\({\mathsf P}\left(\texttt{yachat}=1\right)\)</span>. Plusieurs approches sont possibles et il n’est pas clair à priori laquelle est la meilleure. Voici la description de deux approches.</p>
