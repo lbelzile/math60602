@@ -61,8 +61,8 @@ BIC.factanal <- function(object, ...){
   }
   colnames(emv_crit) <- c("AIC","BIC","valeur-p")
   emv_crit
-  # NDLR: l'estimation par maximum de vraisemblance est visiblement
-  # très sensible au choix de l'algorithme et diffère selon les algorithmes et méthodes
+  # NDLR: l'estimation par maximum de vraisemblance est 
+  # très sensible au choix de l'algorithme d'optimisation
   # SAS ajuste le critère AIC en cas de solution impropre (Heywood),
   # mais les valeurs de BIC de SAS sont illogiques
   # (car l'écart entre AIC et BIC dans SAS diminue à mesure que le nombre de facteurs, 
