@@ -309,13 +309,50 @@
    score data=testymontant out=predglmselectaicsbc p=predymontant;
    run;
 
-   data predglmselectaicsbc;set predglmselectaicsbc;
+   data predglmselectaicsbc;
+   set predglmselectaicsbc;
    erreur=(ymontant-predymontant)**2;
    run;
    proc means data=predglmselectaicsbc n mean ;
    var erreur;
    run; 
    
+   /* Sélection de modèles avec régularisation
+   La pénalité L1 (LASSO) force certains paramètres à zéro 
+   Standardiser les variables préalablement */
+   proc glmselect data=trainymontant plots=coefficients;
+   model ymontant=
+   x1  x2 x31 x32 x41 x42 x43 x44  x5  x6 x7 x8 x9 x10
+   cx2 cx6 cx7 cx8 cx9 cx10
+   i_x2_x1 i_x2_x5 i_x2_x31 i_x2_x32 i_x2_x41 i_x2_x42 i_x2_x43 i_x2_x44
+   i_x2_x7 i_x2_x6 i_x2_x8 i_x2_x9 i_x2_x10
+   i_x1_x5 i_x1_x31 i_x1_x32 i_x1_x41 i_x1_x42 i_x1_x43 i_x1_x44
+   i_x1_x7 i_x1_x6 i_x1_x8 i_x1_x9 i_x1_x10
+   i_x5_x31 i_x5_x32 i_x5_x41 i_x5_x42 i_x5_x43 i_x5_x44
+   i_x5_x7 i_x5_x6 i_x5_x8 i_x5_x9 i_x5_x10
+   i_x31_x41 i_x31_x42 i_x31_x43 i_x31_x44
+   i_x31_x7 i_x31_x6 i_x31_x8 i_x31_x9 i_x31_x10
+   i_x32_x41 i_x32_x42 i_x32_x43 i_x32_x44
+   i_x32_x7 i_x32_x6 i_x32_x8 i_x32_x9 i_x32_x10
+   i_x41_x7 i_x41_x6 i_x41_x8 i_x41_x9 i_x41_x10
+   i_x42_x7 i_x42_x6 i_x42_x8 i_x42_x9 i_x42_x10
+   i_x43_x7 i_x43_x6 i_x43_x8 i_x43_x9 i_x43_x10
+   i_x44_x7 i_x44_x6 i_x44_x8 i_x44_x9 i_x44_x10
+   i_x7_x6 i_x7_x8 i_x7_x9 i_x7_x10
+   i_x6_x8 i_x6_x9 i_x6_x10
+   i_x8_x9 i_x8_x10
+   i_x9_x10 /   
+   selection=lasso(choose=sbc steps=50); 
+   score data=testymontant out=predglmselectlasso p=predymontant;
+   run;
+
+   data predglmselectlasso;
+   set predglmselectlasso;
+   erreur=(ymontant-predymontant)**2;
+   run;
+   proc means data=predglmselectlasso n mean ;
+   var erreur;
+   run; 
    
    /* 
    Commandes pour faire une moyenne de modèles. Chaque modèle est construit avec

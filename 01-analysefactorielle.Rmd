@@ -13,10 +13,11 @@ Un tel groupement peut être détecté si plusieurs variables sont très corrél
 
 L'analyse factorielle est aussi une méthode de réduction du nombre de variables. En effet, une fois qu'on a identifié les facteurs, on peut remplacer les variables individuelles par un résumé pour chaque facteur (qui est souvent la moyenne des variables qui font partie du facteur). 
 
-Pour faire une analyse factorielle, la taille d'échantillon devrait être d'au moins 10 fois le nombre de variables.
+Pour faire une analyse factorielle, la taille d'échantillon devrait être conséquente: le nombre d'entrées dans la base de données est $np$, et le nombre de paramètres de la matrice de covariance à estimer est $\mathrm{O}(p^2)$. Plusieurs références, essentiellement arbitraires, suggèrent d'avoir une taille d'échantillon entre cinq et 20 fois le fois le nombre de variables, ou bien un nombre minimal de 100 à 1000 observations. Des études de simulations suggèrent que la taille critique dépend des paramètres, communalités, distribution des données, etc.
+
+
 
 ## Rappels sur le coefficient de corrélation linéaire
-
 
 On veut examiner la relation entre deux variables $X_j$ et $X_k$ et on dispose de $n$ couples d'observations, où $x_{i, j}$ (respectivement $x_{i, k}$) est la valeur de la variable $X_j$ ($X_k$) pour le $i$e individu.
 
@@ -91,7 +92,7 @@ X_p &= \mu_p + l_{p1}F_1 + l_{p2} F_2 + \cdots + l_{pm}F_m + \eps_p,
 \end{align*}
 où $\mu_i$ est l'espérance de la variable aléatoire $X_i$ ($i=1, \ldots, p$) et où $l_{ij}$ est le chargement de la variable $X_i$ sur le facteur $F_j$ ($i=1, \ldots, p$; $j=1, \ldots, m$).
 
-Les espérances ($\mu_i$), les chargements ($l_{ij}$) et les variances ($\psi_i$) sont des quantités fixes, mais inconnues, tandis que les facteurs communs ($F_i$) et spécifiques ($\eps_i$) sont des variables aléatoires non observables que l'on assume non corrélée aux facteurs $F$ et entre elles.
+Les espérances ($\mu_i$), les chargements ($l_{ij}$) et les variances ($\psi_i$) sont des quantités fixes, mais inconnues, tandis que les facteurs communs ($F_i$) et spécifiques ($\eps_i$) sont des variables aléatoires non observables que l'on assume non corrélées aux facteurs $F$ et entre elles.
 
 Des hypothèses supplémentaires sont nécessaires afin de pouvoir utiliser ce modèle (contraintes d'identifiabilité des paramètres). Sans entrer dans les détails, mentionnons que l'une de ces hypothèses est que les facteurs sont non corrélés. 
 
@@ -99,7 +100,7 @@ De plus, si les variables ont été préalablement standardisées de telle sorte
 
 Sans aucune contrainte sur le modèle, la matrice de covariance de $X_1, \ldots, X_p$ possède $p(p+1)/2$ paramètres, soit $p$ variances et $p(p-1)/2$ termes de corrélation. Avec le modèle d’analyse factorielle, on suppose que l’on peut décrire cette structure en utilisant seulement $p(m+1) - m(m-1)/2$ paramètres ($p$ variances spécifiques et $pm$ chargements, moins les contraintes de diagonalisation). Par exemple, avec $p=50$ variables et $m=6$ facteurs, on essaie de décrire la structure de covariance à l’aide de 350 paramètres au lieu de 1275.
 
-Il existe plusieurs méthodes pour extraire les facteurs, c'est-à-dire pour estimer les paramètres du modèle (les $\psi_i$ et les $l_{ij}$). Nous allons discuter de deux d'entre elles: la méthode du maximum de vraisemblance et la méthode des composantes principales. L'avantage de l'estimation par maximum de vraisemblance est qu'elle permet l'utilisation de critères d'information et de statistiques de tests pour guider le choix du nombre de facteurs. En revanche, l'estimation des paramètres requiert une optimisation numérique qui peut être délicate selon les cas de figure.
+Il existe plusieurs méthodes pour extraire les facteurs, c'est-à-dire pour estimer les paramètres du modèle (les $\psi_i$ et les $l_{ij}$). Nous allons discuter de deux d'entre elles: la méthode du maximum de vraisemblance et la méthode des composantes principales. L'avantage de l'estimation par maximum de vraisemblance est qu'elle permet l'utilisation de critères d'information et de statistiques de tests pour guider le choix du nombre de facteurs, en supposant toutefois la normalité des facteurs et des aléas. L'estimation des paramètres requiert une optimisation numérique qui peut être délicate selon les cas de figure.
 
 ### Rotation des facteurs
 

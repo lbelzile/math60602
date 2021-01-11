@@ -6,14 +6,13 @@
   11pt,
   letterpaper,
 ]{book}
+\usepackage{amsmath,amssymb}
 \usepackage{lmodern}
-\usepackage{amsmath}
 \usepackage{ifxetex,ifluatex}
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
-  \usepackage{amssymb}
 \else % if luatex or xetex
   \usepackage{unicode-math}
   \defaultfontfeatures{Scale=MatchLowercase}
@@ -44,7 +43,7 @@
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
-\usepackage{longtable,booktabs}
+\usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -115,7 +114,7 @@
 
 \title{Analyse multidimensionnelle appliquée}
 \author{(c) Denis Larocque, Léo Belzile}
-\date{version du 2021-01-06}
+\date{version du 2021-01-11}
 
 \usepackage{amsthm}
 \newtheorem{theorem}{Théorème}[chapter]
@@ -636,7 +635,7 @@ Un tel groupement peut être détecté si plusieurs variables sont très corrél
 
 L'analyse factorielle est aussi une méthode de réduction du nombre de variables. En effet, une fois qu'on a identifié les facteurs, on peut remplacer les variables individuelles par un résumé pour chaque facteur (qui est souvent la moyenne des variables qui font partie du facteur).
 
-Pour faire une analyse factorielle, la taille d'échantillon devrait être d'au moins 10 fois le nombre de variables.
+Pour faire une analyse factorielle, la taille d'échantillon devrait être conséquente: le nombre d'entrées dans la base de données est \(np\), et le nombre de paramètres de la matrice de covariance à estimer est \(\mathrm{O}(p^2)\). Plusieurs références, essentiellement arbitraires, suggèrent d'avoir une taille d'échantillon entre cinq et 20 fois le fois le nombre de variables, ou bien un nombre minimal de 100 à 1000 observations. Des études de simulations suggèrent que la taille critique dépend des paramètres, communalités, distribution des données, etc.
 
 \hypertarget{rappels-sur-le-coefficient-de-corruxe9lation-linuxe9aire}{%
 \section{Rappels sur le coefficient de corrélation linéaire}\label{rappels-sur-le-coefficient-de-corruxe9lation-linuxe9aire}}
@@ -748,7 +747,7 @@ X_p &= \mu_p + l_{p1}F_1 + l_{p2} F_2 + \cdots + l_{pm}F_m + \varepsilon_p,
 \end{align*}
 où \(\mu_i\) est l'espérance de la variable aléatoire \(X_i\) (\(i=1, \ldots, p\)) et où \(l_{ij}\) est le chargement de la variable \(X_i\) sur le facteur \(F_j\) (\(i=1, \ldots, p\); \(j=1, \ldots, m\)).
 
-Les espérances (\(\mu_i\)), les chargements (\(l_{ij}\)) et les variances (\(\psi_i\)) sont des quantités fixes, mais inconnues, tandis que les facteurs communs (\(F_i\)) et spécifiques (\(\varepsilon_i\)) sont des variables aléatoires non observables que l'on assume non corrélée aux facteurs \(F\) et entre elles.
+Les espérances (\(\mu_i\)), les chargements (\(l_{ij}\)) et les variances (\(\psi_i\)) sont des quantités fixes, mais inconnues, tandis que les facteurs communs (\(F_i\)) et spécifiques (\(\varepsilon_i\)) sont des variables aléatoires non observables que l'on assume non corrélées aux facteurs \(F\) et entre elles.
 
 Des hypothèses supplémentaires sont nécessaires afin de pouvoir utiliser ce modèle (contraintes d'identifiabilité des paramètres). Sans entrer dans les détails, mentionnons que l'une de ces hypothèses est que les facteurs sont non corrélés.
 
@@ -756,7 +755,7 @@ De plus, si les variables ont été préalablement standardisées de telle sorte
 
 Sans aucune contrainte sur le modèle, la matrice de covariance de \(X_1, \ldots, X_p\) possède \(p(p+1)/2\) paramètres, soit \(p\) variances et \(p(p-1)/2\) termes de corrélation. Avec le modèle d'analyse factorielle, on suppose que l'on peut décrire cette structure en utilisant seulement \(p(m+1) - m(m-1)/2\) paramètres (\(p\) variances spécifiques et \(pm\) chargements, moins les contraintes de diagonalisation). Par exemple, avec \(p=50\) variables et \(m=6\) facteurs, on essaie de décrire la structure de covariance à l'aide de 350 paramètres au lieu de 1275.
 
-Il existe plusieurs méthodes pour extraire les facteurs, c'est-à-dire pour estimer les paramètres du modèle (les \(\psi_i\) et les \(l_{ij}\)). Nous allons discuter de deux d'entre elles: la méthode du maximum de vraisemblance et la méthode des composantes principales. L'avantage de l'estimation par maximum de vraisemblance est qu'elle permet l'utilisation de critères d'information et de statistiques de tests pour guider le choix du nombre de facteurs. En revanche, l'estimation des paramètres requiert une optimisation numérique qui peut être délicate selon les cas de figure.
+Il existe plusieurs méthodes pour extraire les facteurs, c'est-à-dire pour estimer les paramètres du modèle (les \(\psi_i\) et les \(l_{ij}\)). Nous allons discuter de deux d'entre elles: la méthode du maximum de vraisemblance et la méthode des composantes principales. L'avantage de l'estimation par maximum de vraisemblance est qu'elle permet l'utilisation de critères d'information et de statistiques de tests pour guider le choix du nombre de facteurs, en supposant toutefois la normalité des facteurs et des aléas. L'estimation des paramètres requiert une optimisation numérique qui peut être délicate selon les cas de figure.
 
 \hypertarget{rotation-des-facteurs}{%
 \subsection{Rotation des facteurs}\label{rotation-des-facteurs}}
@@ -844,18 +843,18 @@ Le tableau \ref{tab:ICtable} présente les valeurs estimées des critères d'inf
 \begin{longtable}[]{@{}crrr@{}}
 \caption{\label{tab:ICtable} Critères d'information et valeurs-\emph{p} pour le modèle factoriel à \emph{m} facteurs}\tabularnewline
 \toprule
-m & AIC & BIC & valeur-\emph{p}\tabularnewline
+m & AIC & BIC & valeur-\emph{p} \\ \addlinespace
 \midrule
 \endfirsthead
 \toprule
-m & AIC & BIC & valeur-\emph{p}\tabularnewline
+m & AIC & BIC & valeur-\emph{p} \\ \addlinespace
 \midrule
 \endhead
-1 & 228.0 & 49.9 & \textless0.001\tabularnewline
-2 & 99.5 & -42.3 & \textless0.001\tabularnewline
-3 & -20.5 & -129.3 & 0.096\tabularnewline
-4 & -34.9 & -114.1 & 0.973\tabularnewline
-5 & -24.8 & -77.6 & 0.975\tabularnewline
+1 & 228.0 & 49.9 & \textless0.001 \\ \addlinespace
+2 & 99.5 & -42.3 & \textless0.001 \\ \addlinespace
+3 & -20.5 & -129.3 & 0.096 \\ \addlinespace
+4 & -34.9 & -114.1 & 0.973 \\ \addlinespace
+5 & -24.8 & -77.6 & 0.975 \\ \addlinespace
 \bottomrule
 \end{longtable}
 
@@ -1561,6 +1560,21 @@ Contrairement aux méthodes hiérarchiques, il faut spécifier le nombre de grou
   On peut répéter le processus jusqu'à ce que les changements des germes des groupes deviennent négligeables ou nuls. Les groupes finaux sont formés en assignant les sujets au groupe le plus proche.
 \end{enumerate}
 
+À chaque étape, l'algorithme des \(K\)-moyennes minimise le critère
+\begin{align*}
+\sum_{i=1}^n \sum_{k=1}^K \mathrm{I}(x_i \in g_k)\|\boldsymbol{x}_i - \boldsymbol{\mu}_k\|^2 = \sum_{i=1}^n \sum_{k=1}^K \mathrm{I}(x_i \in g_k) \sum_{j=1}^p (x_{ij}-\mu_{kj})^2
+\end{align*}
+où \(\mathrm{I}(\boldsymbol{x}_i \in g_k)\) est une variable binaire qui vaut un si l'observation \(i\) appartient au groupe \(g_k\) et \(\boldsymbol{\mu}_k\) est le centroïde du groupement \(k\). On minimise ainsi la variance intra-groupe. On voit ainsi dans la Figure \ref{fig:kmoyperfo} que l'algorithme détecte bien les vrais regroupements si les groupes sont sphériques et de même variance, et que les regroupements sont bien séparés (c'est-à-dire, quand la distance euclidienne entre les regroupements est élevée).
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{MATH60602_files/figure-latex/kmoyperfo-1} 
+
+}
+
+\caption{Performance de l'algorithme des $K$-moyennes en fonction de différents scénarios. En haut à gauche: nombre incorrect de classe et données normales de même variance, bien séparées. En haut à droite: spirales: les $K$-moyennes ignorent la topologie des regroupements, et ne segmente pas adéquatement les regroupements connectés. En bas à gauche: données elliptiques de même variance, mais fortement corrélées. Comme le critère minimise la distance intra-groupe sans pondération, les points regroupés appartiennent à différentes classes. En bas à droite: données sphériques de variances différentes. L'algorithme des $K$-moyennes réussit une bonne segmentation si les groupements sont compacts et bien séparés.}\label{fig:kmoyperfo}
+\end{figure}
+
 Nous allons utiliser cette procédure pour raffiner la solution obtenue précédemment avec la méthode de Ward en utilisant les moyennes des groupes comme centres préliminaires. Le fichier \texttt{cluster5\_non-hierarchique.sas} explique les différentes options. La syntaxe de la procédure \textbf{SAS} \texttt{fastclus} est la suivante:
 
 \begin{verbatim}
@@ -1585,10 +1599,21 @@ L'interprétation des groupes est la même que précédemment.
 
 Il y a maintenant 148 sujets sur 150 (98,7\%) qui sont bien regroupés et 2 qui font partie d'un mauvais groupe. C'est une légère amélioration par rapport à la solution avec la méthode de Ward pour laquelle il y avait 146 sujets sur 150 qui étaient bien regroupés. Mais encore une fois, en pratique on n'aura pas accès à cette information.
 
+Le champ des applications des \(K\)-moyennes est parfois surprenant. On peut considérer, par exemple, la compression d'images. La Figure \ref{fig:decelles} montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l'algorithme des \(K\)-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l'image.
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{figures/kmoyennes_decelles} 
+
+}
+
+\caption{Compression d'image avec l'algorithme des $K$-moyennes: image originale (en haut à gauche), compression avec trois (en haut à droite), quatre (en bas à gauche) et 10 (en bas à droite) couleurs.}\label{fig:decelles}
+\end{figure}
+
 \hypertarget{standardisation-des-variables}{%
 \section{Standardisation des variables}\label{standardisation-des-variables}}
 
-Dans les exemples précédents, nous avons utilisé les variables \(X_1\) à \(X_6\) telles quelles. En général, plus une variable a une grande variance, plus elle aura de l'influence sur le calcul de la distance euclidienne. Ainsi, en utilisant les variables telles quelles, nous accordons plus de poids aux variables avec de grandes variances. Ceci peut être bon ou mauvais. Cela dépend de la structure des groupes.
+Dans les exemples précédents, nous avons utilisé les variables \(X_1\) à \(X_6\) telles quelles. En général, plus une variable a une grande variance, plus elle aura de l'influence sur le calcul de la distance euclidienne. Ainsi, en utilisant les variables telles quelles, nous accordons plus de poids aux variables avec de grandes variances, ce qui peut être bon ou mauvais selon la structure des groupes. Règle générale, il est préférable d'éviter qu'une variable domine dans la segmentation.
 
 Avec la procédure \texttt{stdize}, on peut standardiser au préalable les variables avant de faire l'analyse. Par défaut, les variables seront standardisées afin d'avoir une moyenne de zéro et une variance de un. On peut ensuite faire les analyses comme précédemment. Le fichier \texttt{cluster4\_standardisation.sas} contient les commandes pour standardiser les variables et ensuite refaire l'analyse de regroupements avec la méthode de Ward. Notez que les six variables ont des variances semblables, donc les résultats ne devraient donc pas être trop affectés en standardisant les variables. Il s'avère effectivement que les résultats changent très peu si on standardise les variables. Les tailles des groupes de la solution à trois groupes sont (44, 75, 31) (comparativement à (43, 75, 32) sans la standardisation). Il s'avère que 147 des 150 sujets sont bien regroupés (comparativement à 146 sans la standardisation). Il s'agit d'une très légère amélioration.
 
@@ -1599,7 +1624,7 @@ Il peut être intéressant de comparer les résultats provenant d'une même mét
 
 Avec une méthode non hiérarchique, il est préférable de fournir des germes de départ « raisonnablement bon » (provenant d'une méthode hiérarchique par exemple) plutôt que de laisser l'algorithme les choisir au hasard.
 
-Le choix des variables est important. En général on veut créer des groupes d'individus qui sont homogènes par rapport à un certain aspect de leur comportement ou de leur situation. On ne doit alors inclure que les variables pertinentes à cet aspect. Par exemple, si le but de l'analyse est de segmenter nos clients selon leurs habitudes de consommation (genre de boutiques fréquenté, fréquence, etc.), on ne voudra peut-être pas inclure des variables démographiques. En fait, souvent l'analyse de regroupements servira justement à créer des groupes qui seront comparés par rapport à d'autres variables qui n'ont pas été utilisées pour créer les groupes. Dans notre exemple sur les voyages organisés, on a segmenté les voyageurs en trois groupes (indépendants, dépendants et sociables). Les auteurs de l'article (voir page 369 de l'article) ont comparé les trois groupes selon l'expérience de voyage, la taille de la communauté où ils habitent (avec des ANOVA), selon leur âge, leur revenu et leur éducation (avec des tests d'indépendance du khi-deux).
+Le choix des variables est important. En général on veut créer des groupes d'individus qui sont homogènes par rapport à un certain aspect de leur comportement ou de leur situation. On ne doit alors inclure que les variables pertinentes à cet aspect. Par exemple, si le but de l'analyse est de segmenter nos clients selon leurs habitudes de consommation (genre de boutiques fréquenté, fréquence, etc.), on ne voudra peut-être pas inclure des variables démographiques. En fait, souvent l'analyse de regroupements servira justement à créer des groupes qui seront comparés par rapport à d'autres variables qui n'ont pas été utilisées pour créer les groupes. Dans notre exemple sur les voyages organisés, on a segmenté les voyageurs en trois groupes (indépendants, dépendants et sociables). Les auteurs de l'article (voir page 369 de l'article) ont comparé les trois groupes selon l'expérience de voyage, la taille de la communauté où ils habitent (avec des ANOVA), selon leur âge, leur revenu et leur éducation (avec des tests d'indépendance du khi-deux). Notez que sans ajustement post-sélection, les conclusions de ces tests sont invalides.
 
 Le problème majeur avec l'analyse de regroupements est qu'il n'y a pas de façon claire de quantifier la performance de notre analyse. Lorsqu'on développe un modèle de prédiction (régression linéaire ou logistique par exemple), on peut estimer la performance de notre modèle d'une manière objective à l'aide de l'erreur quadratique de généralisation (régression linéaire) ou du taux de bonne classification (régression logistique). Ces quantités peuvent être estimées d'une manière objective en utilisant une méthode telle la validation croisée ou la division de l'échantillon. On ne peut faire de même avec l'analyse de regroupements car on n'a pas de variable réponse à prédire. Tout comme pour l'analyse factorielle, les connaissances à priori, le jugement, et les considérations pratiques font partie d'une analyse de regroupements.
 
@@ -2009,16 +2034,16 @@ Ainsi, la valeur 3 est celle de référence. Ces deux indicatrices sont suffisan
 \begin{longtable}[]{@{}ccc@{}}
 \caption{\label{tab:02-dummy} Valeur des indicateurs en fonction du niveau de la variable catégorielle}\tabularnewline
 \toprule
-\texttt{x3} & \texttt{x31} & \texttt{x32}\tabularnewline
+\texttt{x3} & \texttt{x31} & \texttt{x32} \\ \addlinespace
 \midrule
 \endfirsthead
 \toprule
-\texttt{x3} & \texttt{x31} & \texttt{x32}\tabularnewline
+\texttt{x3} & \texttt{x31} & \texttt{x32} \\ \addlinespace
 \midrule
 \endhead
-1 & 1 & 0\tabularnewline
-2 & 0 & 1\tabularnewline
-3 & 0 & 0\tabularnewline
+1 & 1 & 0 \\ \addlinespace
+2 & 0 & 1 \\ \addlinespace
+3 & 0 & 0 \\ \addlinespace
 \bottomrule
 \end{longtable}
 
@@ -2084,16 +2109,16 @@ Voici l'estimation de l'erreur moyenne quadratique (moyenne des carrés des erre
 \begin{longtable}[]{@{}ccl@{}}
 \caption{\label{tab:02-gmse-base} Estimation de l'erreur moyenne quadratique sur l'échantillon test avec les variables de base. Les meilleurs modèles selon les critères d'informations découlent d'une recherche exhaustive de tous les sous-ensembles.}\tabularnewline
 \toprule
-nombre de variables & \(\mathsf{EMQ}\) & méthode\tabularnewline
+nombre de variables & \(\mathsf{EMQ}\) & méthode \\ \addlinespace
 \midrule
 \endfirsthead
 \toprule
-nombre de variables & \(\mathsf{EMQ}\) & méthode\tabularnewline
+nombre de variables & \(\mathsf{EMQ}\) & méthode \\ \addlinespace
 \midrule
 \endhead
-14 & 25,69 & toutes les variables\tabularnewline
-10 & 24,72 & exhaustive - \(\mathsf{AIC}\)\tabularnewline
-7 & 23,83 & exhaustive - \(\mathsf{BIC}\)\tabularnewline
+14 & 25,69 & toutes les variables \\ \addlinespace
+10 & 24,72 & exhaustive - \(\mathsf{AIC}\) \\ \addlinespace
+7 & 23,83 & exhaustive - \(\mathsf{BIC}\) \\ \addlinespace
 \bottomrule
 \end{longtable}
 
@@ -2232,15 +2257,15 @@ La performance de ce modèle a, comme pour les modèles précédents, été éva
 \begin{longtable}[]{@{}ccl@{}}
 \caption{\label{tab:02-comparaisonseqclas} Comparaison des méthodes selon l'erreur moyenne quadratique pour la méthode de sélection séquentielle classique et pour le modèle incluant toutes les variables, les termes quadratiques et les interactions.}\tabularnewline
 \toprule
-nombre de variables & \(\mathsf{EMQ}\) & méthode\tabularnewline
+nombre de variables & \(\mathsf{EMQ}\) & méthode \\ \addlinespace
 \midrule
 \endfirsthead
 \toprule
-nombre de variables & \(\mathsf{EMQ}\) & méthode\tabularnewline
+nombre de variables & \(\mathsf{EMQ}\) & méthode \\ \addlinespace
 \midrule
 \endhead
-104 & 19.63 & toutes les variables\tabularnewline
-22 & 12.25 & séquentielle classique\tabularnewline
+104 & 19.63 & toutes les variables \\ \addlinespace
+22 & 12.25 & séquentielle classique \\ \addlinespace
 \bottomrule
 \end{longtable}
 
@@ -2264,15 +2289,15 @@ En fixant, les critères d'entrée et de sortie à \(0,6\) pour la recherche sé
 \begin{longtable}[]{@{}ccl@{}}
 \caption{\label{tab:02-comparaisonseqexha} Comparaison des méthodes selon l'erreur moyenne quadratique pour la méthode de sélection séquentielle classique suivie d'une recherche exhaustive sur les 56 variables retenues.}\tabularnewline
 \toprule
-nombre de variables & \(\mathsf{EMQ}\) & méthode\tabularnewline
+nombre de variables & \(\mathsf{EMQ}\) & méthode \\ \addlinespace
 \midrule
 \endfirsthead
 \toprule
-nombre de variables & \(\mathsf{EMQ}\) & méthode\tabularnewline
+nombre de variables & \(\mathsf{EMQ}\) & méthode \\ \addlinespace
 \midrule
 \endhead
-38 & 14.83 & \((\mathsf{AIC})\)\tabularnewline
-15 & 11.96 & \((\mathsf{BIC})\)\tabularnewline
+38 & 14.83 & \((\mathsf{AIC})\) \\ \addlinespace
+15 & 11.96 & \((\mathsf{BIC})\) \\ \addlinespace
 \bottomrule
 \end{longtable}
 
@@ -2352,113 +2377,29 @@ Ce tableau présente les variables qui ont été choisies dans an moins 20\% des
 
 Il s'avère que cette approche performe très bien sur l'échantillon test de 23 179 clients avec une erreur moyenne quadratique estimé de \(10,57\). Le tableau \ref{tab:02-modelcomparaisonfull} résume la performance des différentes méthodes que nous avons utilisé sur notre échantillon test.
 
-\begin{longtable}[]{@{}lccl@{}}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.21}}
+  >{\centering\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.25}}
+  >{\centering\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.29}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.25}}@{}}
 \caption{\label{tab:02-modelcomparaisonfull} Comparaison des méthodes selon l'erreur moyenne quadratique.}\tabularnewline
 \toprule
-\begin{minipage}[b]{(\columnwidth - 3\tabcolsep) * \real{0.21}}\raggedright
-variables\strut
-\end{minipage} & \begin{minipage}[b]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\centering
-nombre de variables\strut
-\end{minipage} & \begin{minipage}[b]{(\columnwidth - 3\tabcolsep) * \real{0.29}}\centering
-\(\mathsf{EMQ}\)\strut
-\end{minipage} & \begin{minipage}[b]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\raggedright
-méthode\strut
-\end{minipage}\tabularnewline
+variables & nombre de variables & \(\mathsf{EMQ}\) & méthode \\ \addlinespace
 \midrule
 \endfirsthead
 \toprule
-\begin{minipage}[b]{(\columnwidth - 3\tabcolsep) * \real{0.21}}\raggedright
-variables\strut
-\end{minipage} & \begin{minipage}[b]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\centering
-nombre de variables\strut
-\end{minipage} & \begin{minipage}[b]{(\columnwidth - 3\tabcolsep) * \real{0.29}}\centering
-\(\mathsf{EMQ}\)\strut
-\end{minipage} & \begin{minipage}[b]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\raggedright
-méthode\strut
-\end{minipage}\tabularnewline
+variables & nombre de variables & \(\mathsf{EMQ}\) & méthode \\ \addlinespace
 \midrule
 \endhead
-\begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.21}}\raggedright
-de base\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\centering
-14\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.29}}\centering
-25,69\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\raggedright
-toutes les variables\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.21}}\raggedright
-\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\centering
-10\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.29}}\centering
-24,72\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\raggedright
-exhaustive - \(\mathsf{AIC}\)\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.21}}\raggedright
-\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\centering
-7\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.29}}\centering
-23,83\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\raggedright
-exhaustive - \(\mathsf{BIC}\)\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.21}}\raggedright
-interactions et termes quadratiques\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\centering
-104\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.29}}\centering
-19,63\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\raggedright
-toutes les variables\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.21}}\raggedright
-\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\centering
-22\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.29}}\centering
-12,25\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\raggedright
-séquentielle classique\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.21}}\raggedright
-\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\centering
-38\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.29}}\centering
-14,83\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\raggedright
-séquentielle classique, recherche exhaustive avec 56 variables \((\mathsf{AIC})\)\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.21}}\raggedright
-\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\centering
-15\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.29}}\centering
-11,96\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\raggedright
-séquentielle classique, recherche exhaustive avec 56 variables \((\mathsf{BIC})\)\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.21}}\raggedright
-\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\centering
-10\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.29}}\centering
-10,08\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\raggedright
-séquentielle avec critère \(\mathsf{AIC}\) (choix selon le \(\mathsf{BIC}\))\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.21}}\raggedright
-\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\centering
-\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.29}}\centering
-10,57\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.25}}\raggedright
-moyenne de modèles\strut
-\end{minipage}\tabularnewline
+de base & 14 & 25,69 & toutes les variables \\ \addlinespace
+& 10 & 24,72 & exhaustive - \(\mathsf{AIC}\) \\ \addlinespace
+& 7 & 23,83 & exhaustive - \(\mathsf{BIC}\) \\ \addlinespace
+interactions et termes quadratiques & 104 & 19,63 & toutes les variables \\ \addlinespace
+& 22 & 12,25 & séquentielle classique \\ \addlinespace
+& 38 & 14,83 & séquentielle classique, recherche exhaustive avec 56 variables \((\mathsf{AIC})\) \\ \addlinespace
+& 15 & 11,96 & séquentielle classique, recherche exhaustive avec 56 variables \((\mathsf{BIC})\) \\ \addlinespace
+& 10 & 10,08 & séquentielle avec critère \(\mathsf{AIC}\) (choix selon le \(\mathsf{BIC}\)) \\ \addlinespace
+& & 10,57 & moyenne de modèles \\ \addlinespace
 \bottomrule
 \end{longtable}
 
@@ -3172,16 +3113,16 @@ Lorsqu'on utilise \({\mathsf P}\left(Y \neq \widehat{Y}\right)\) comme critère 
 \begin{longtable}[]{@{}llrr@{}}
 \caption{\label{tab:03-gain1} Matrice de gain correspondant au taux de bonne classification}\tabularnewline
 \toprule
-& & observation &\tabularnewline
+& & observation & \\ \addlinespace
 \midrule
 \endfirsthead
 \toprule
-& & observation &\tabularnewline
+& & observation & \\ \addlinespace
 \midrule
 \endhead
-& gain & \(Y=1\) & \(Y=0\)\tabularnewline
-prédiction & \(\widehat{Y}=1\) & 1 & 0\tabularnewline
-& \(\widehat{Y}=0\) & 0 & 1\tabularnewline
+& gain & \(Y=1\) & \(Y=0\) \\ \addlinespace
+prédiction & \(\widehat{Y}=1\) & 1 & 0 \\ \addlinespace
+& \(\widehat{Y}=0\) & 0 & 1 \\ \addlinespace
 \bottomrule
 \end{longtable}
 
@@ -3201,16 +3142,16 @@ Supposons que le gain de classer une observation à \(i\) (\(i \in \{0,1\}\)) lo
 \begin{longtable}[]{@{}llrr@{}}
 \caption{\label{tab:03-gain2} Matrice de gain pondérée en fonction d'un coût}\tabularnewline
 \toprule
-& & observation &\tabularnewline
+& & observation & \\ \addlinespace
 \midrule
 \endfirsthead
 \toprule
-& & observation &\tabularnewline
+& & observation & \\ \addlinespace
 \midrule
 \endhead
-& gain & \(Y=1\) & \(Y=0\)\tabularnewline
-prédiction & \(\widehat{Y}=1\) & \(c_{11}\) & \(c_{10}\)\tabularnewline
-& \(\widehat{Y}=0\) & \(c_{01}\) & \(c_{00}\)\tabularnewline
+& gain & \(Y=1\) & \(Y=0\) \\ \addlinespace
+prédiction & \(\widehat{Y}=1\) & \(c_{11}\) & \(c_{10}\) \\ \addlinespace
+& \(\widehat{Y}=0\) & \(c_{01}\) & \(c_{00}\) \\ \addlinespace
 \bottomrule
 \end{longtable}
 
@@ -3231,16 +3172,16 @@ Nous allons travailler en termes de revenu net. Nous pouvons donc spécifier la 
 \begin{longtable}[]{@{}llll@{}}
 \caption{\label{tab:03-gain3} Matrice de gain pour l'envoi de catalogue}\tabularnewline
 \toprule
-& & observation &\tabularnewline
+& & observation & \\ \addlinespace
 \midrule
 \endfirsthead
 \toprule
-& & observation &\tabularnewline
+& & observation & \\ \addlinespace
 \midrule
 \endhead
-& gain & \(Y=1\) & \(Y=0\)\tabularnewline
-prédiction & \(\widehat{Y}=1\) & 57 & \(-10\)\tabularnewline
-& \(\widehat{Y}=0\) & 0 & 0\tabularnewline
+& gain & \(Y=1\) & \(Y=0\) \\ \addlinespace
+prédiction & \(\widehat{Y}=1\) & 57 & \(-10\) \\ \addlinespace
+& \(\widehat{Y}=0\) & 0 & 0 \\ \addlinespace
 \bottomrule
 \end{longtable}
 
@@ -3764,46 +3705,18 @@ Il existe deux grandes approches pour analyser des données de survies :
 
 Nous discuterons seulement de la première approche dans ce chapitre. Le tableau suivant fait une analogie entre ce que nous ferons dans ce chapitre et des méthodes que vous connaissez.
 
-\begin{longtable}[]{@{}llll@{}}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.23}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.28}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.34}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.15}}@{}}
 \toprule
-\begin{minipage}[b]{(\columnwidth - 3\tabcolsep) * \real{0.23}}\raggedright
-réponse \(Y\)\strut
-\end{minipage} & \begin{minipage}[b]{(\columnwidth - 3\tabcolsep) * \real{0.28}}\raggedright
-résumé descriptif\strut
-\end{minipage} & \begin{minipage}[b]{(\columnwidth - 3\tabcolsep) * \real{0.34}}\raggedright
-comparaison de deux groupes\strut
-\end{minipage} & \begin{minipage}[b]{(\columnwidth - 3\tabcolsep) * \real{0.15}}\raggedright
-modèle général\strut
-\end{minipage}\tabularnewline
+réponse \(Y\) & résumé descriptif & comparaison de deux groupes & modèle général \\ \addlinespace
 \midrule
 \endhead
-\begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.23}}\raggedright
-continue\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.28}}\raggedright
-moyenne\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.34}}\raggedright
-test-\(t\) pour deux échantillons\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.15}}\raggedright
-régression linéaire\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.23}}\raggedright
-binaire\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.28}}\raggedright
-proportion\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.34}}\raggedright
-test d'indépendance du khi-deux\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.15}}\raggedright
-régression logistique\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.23}}\raggedright
-temps de survie (censure à droite)\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.28}}\raggedright
-fonction de survie temps de survie médian\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.34}}\raggedright
-test log-rang test de Wilcoxon généralisé (Gehan)\strut
-\end{minipage} & \begin{minipage}[t]{(\columnwidth - 3\tabcolsep) * \real{0.15}}\raggedright
-modèle de Cox\strut
-\end{minipage}\tabularnewline
+continue & moyenne & test-\(t\) pour deux échantillons & régression linéaire \\ \addlinespace
+binaire & proportion & test d'indépendance du khi-deux & régression logistique \\ \addlinespace
+temps de survie (censure à droite) & fonction de survie temps de survie médian & test log-rang test de Wilcoxon généralisé (Gehan) & modèle de Cox \\ \addlinespace
 \bottomrule
 \end{longtable}
 

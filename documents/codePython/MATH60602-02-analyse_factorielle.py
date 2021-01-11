@@ -9,7 +9,7 @@ from factor_analyzer import FactorAnalyzer
 df = pd.read_csv('https://github.com/lbelzile/math60602/raw/master/data/factor2.csv')
 
 # Créer un object Factor et faire l'analyse en commençant par le choix du nb de facteurs
-fa = FactorAnalyzer(n_factors=12, method='principal', use_corr_matrix = True)
+fa = FactorAnalyzer(n_factors=12, method='principal')
 fa.fit(df)
 # Critère de Kaiser: nb de facteurs = nb de valeurs propres > 1
 ev, v = fa.get_eigenvalues()
@@ -24,7 +24,7 @@ plt.grid()
 plt.show()
 
 # Analyse factorielle avec object "facteur"
-fa = FactorAnalyzer(n_factors=4, method='ml', rotation='varimax', use_corr_matrix = True)
+fa = FactorAnalyzer(n_factors=4, method='ml', rotation='varimax')
 fa.fit(df)
 # Chargements
 loads = fa.loadings_
@@ -46,4 +46,6 @@ echelle2_alpha = pg.cronbach_alpha(echelle2)
 echelle3_alpha = pg.cronbach_alpha(echelle3)
 echelle4_alpha = pg.cronbach_alpha(echelle4)
 print(echelle1_alpha, echelle2_alpha, echelle3_alpha, echelle4_alpha)
-
+# Scores
+scores = fa.transform(df)
+print(scores)
