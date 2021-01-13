@@ -336,6 +336,8 @@ où $\mathrm{I}(\boldsymbol{x}_i \in g_k)$ est une variable binaire qui vaut un 
 
 ```{r kmoyperfo, echo = FALSE, cache = TRUE, message = FALSE, fig.cap = "Performance de l'algorithme des $K$-moyennes en fonction de différents scénarios. En haut à gauche: nombre incorrect de classe et données normales de même variance, bien séparées. En haut à droite: spirales: les $K$-moyennes ignorent la topologie des regroupements, et ne segmente pas adéquatement les regroupements connectés. En bas à gauche: données elliptiques de même variance, mais fortement corrélées. Comme le critère minimise la distance intra-groupe sans pondération, les points regroupés appartiennent à différentes classes. En bas à droite: données sphériques de variances différentes. L'algorithme des $K$-moyennes réussit une bonne segmentation si les groupements sont compacts et bien séparés."}
 set.seed(1234)
+#https://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_assumptions.html
+# Figure 9.1 in Bishop
 library(dplyr)
 library(ggplot2)
 x1 <- rbind(mvtnorm::rmvnorm(n=200, mean = c(-10,-5), sigma = diag(2)),
