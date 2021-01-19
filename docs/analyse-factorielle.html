@@ -180,6 +180,12 @@
 <p><em>Exemple de facteurs</em>: Habileté quantitative, habileté sociale, importance accordée à la qualité du service, importance accordée à la loyauté, habileté de leader, etc</p>
 <p>L’analyse factorielle est aussi une méthode de réduction du nombre de variables. En effet, une fois qu’on a identifié les facteurs, on peut remplacer les variables individuelles par un résumé pour chaque facteur (qui est souvent la moyenne des variables qui font partie du facteur).</p>
 <p>Pour faire une analyse factorielle, la taille d’échantillon devrait être conséquente: le nombre d’entrées dans la base de données est <span class="math inline">\(np\)</span>, et le nombre de paramètres de la matrice de covariance à estimer est <span class="math inline">\(\mathrm{O}(p^2)\)</span>. Plusieurs références, essentiellement arbitraires, suggèrent d’avoir une taille d’échantillon entre cinq et 20 fois le fois le nombre de variables, ou bien un nombre minimal de 100 à 1000 observations. Des études de simulations suggèrent que la taille critique dépend des paramètres, communalités, distribution des données, etc.</p>
+<div class="figure" style="text-align: center"><span id="fig:fig1p17"></span>
+<img src="figures/01-facto-e17.png" alt="Schéma des différents étapes de l'analyse factorielle exploratoire." width="50%" />
+<p class="caption">
+Figure 2.1: Schéma des différents étapes de l’analyse factorielle exploratoire.
+</p>
+</div>
 </div>
 <div id="rappels-sur-le-coefficient-de-corrélation-linéaire" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> Rappels sur le coefficient de corrélation linéaire</h2>
@@ -339,11 +345,11 @@ La méthode du maximum de vraisemblance que nous avons utilisée dans l’exempl
 </tr>
 </tbody>
 </table>
-<p>On peut considérer le modèle avec trois facteurs: les chargements (après rotation varimax) sont données dans la figure <a href="analyse-factorielle.html#fig:fig1p5">2.1</a>.</p>
+<p>On peut considérer le modèle avec trois facteurs: les chargements (après rotation varimax) sont données dans la figure <a href="analyse-factorielle.html#fig:fig1p5">2.2</a>.</p>
 <div class="figure" style="text-align: center"><span id="fig:fig1p5"></span>
 <img src="figures/01-facto-e5.png" alt="Estimés des chargements pour trois facteurs avec rotation varimax" width="55%" />
 <p class="caption">
-Figure 2.1: Estimés des chargements pour trois facteurs avec rotation varimax
+Figure 2.2: Estimés des chargements pour trois facteurs avec rotation varimax
 </p>
 </div>
 <p>Cette solution récupère les trois facteurs <em>service</em>, <em>produits</em> et <em>paiement</em> de la solution précédente à quatre facteurs. Le facteur <em>prix</em> (qui était formé de <span class="math inline">\(X_1\)</span> et <span class="math inline">\(X_5\)</span>) n’est plus présent: que faire avec ce dernier? Cela dépend du but de l’analyse et nous y reviendrons plus tard.</p>
@@ -365,17 +371,17 @@ proc sgplot data=eigen;
  yaxis label=&quot;valeurs propres&quot;;
  xaxis label=&#39;nombre&#39;;
 run;</code></pre>
-<p>Cette fois-ci, c’est la méthode des composantes principales qui est utilisée; cette dernière consiste à estimer les chargements en utilisant les <span class="math inline">\(m\)</span> premières valeurs propres et vecteurs propres de la matrice de corrélation. En ne spécifiant pas l’option <code>nfact</code>, <strong>SAS</strong> choisit le nombre de facteurs en utilisant par défaut le critère de Kaiser (valeurs propres supérieures à 1). Quatre facteurs sont retenus, tel qu’indiqué par la sortie au bas du tableau <a href="analyse-factorielle.html#fig:fig1p7">2.2</a>. Pour le diagramme d’éboulis de la figure <a href="analyse-factorielle.html#fig:fig1p6">2.3</a>, le choix est assez subjectif: il semble raisonnable de choisir trois ou quatre facteurs.</p>
+<p>Cette fois-ci, c’est la méthode des composantes principales qui est utilisée; cette dernière consiste à estimer les chargements en utilisant les <span class="math inline">\(m\)</span> premières valeurs propres et vecteurs propres de la matrice de corrélation. En ne spécifiant pas l’option <code>nfact</code>, <strong>SAS</strong> choisit le nombre de facteurs en utilisant par défaut le critère de Kaiser (valeurs propres supérieures à 1). Quatre facteurs sont retenus, tel qu’indiqué par la sortie au bas du tableau <a href="analyse-factorielle.html#fig:fig1p7">2.3</a>. Pour le diagramme d’éboulis de la figure <a href="analyse-factorielle.html#fig:fig1p6">2.4</a>, le choix est assez subjectif: il semble raisonnable de choisir trois ou quatre facteurs.</p>
 <div class="figure" style="text-align: center"><span id="fig:fig1p7"></span>
 <img src="figures/01-facto-e7.png" alt="Valeurs propres et proportion de variance" width="65%" />
 <p class="caption">
-Figure 2.2: Valeurs propres et proportion de variance
+Figure 2.3: Valeurs propres et proportion de variance
 </p>
 </div>
 <div class="figure" style="text-align: center"><span id="fig:fig1p6"></span>
 <img src="figures/01-facto-e6.png" alt="Diagramme d'éboulis" width="65%" />
 <p class="caption">
-Figure 2.3: Diagramme d’éboulis
+Figure 2.4: Diagramme d’éboulis
 </p>
 </div>
 <p>On suggère d’utiliser <em>de facto</em> les trois critères découlant de l’utilisation de la vraisemblance et de déterminer le nombre de facteurs à extraire selon différents critères avant d’examiner les modèles avec ce nombre de facteurs et ceux
@@ -415,25 +421,25 @@ run;</code></pre>
 <div class="figure" style="text-align: center"><span id="fig:fig1p8"></span>
 <img src="figures/01-facto-e8.png" alt="Alpha de Cronbach pour le facteur service." width="85%" />
 <p class="caption">
-Figure 2.4: Alpha de Cronbach pour le facteur <em>service</em>.
+Figure 2.5: Alpha de Cronbach pour le facteur <em>service</em>.
 </p>
 </div>
 <div class="figure" style="text-align: center"><span id="fig:fig1p9"></span>
 <img src="figures/01-facto-e9.png" alt="Alpha de Cronbach pour le facteur produits." width="85%" />
 <p class="caption">
-Figure 2.5: Alpha de Cronbach pour le facteur <em>produits</em>.
+Figure 2.6: Alpha de Cronbach pour le facteur <em>produits</em>.
 </p>
 </div>
 <div class="figure" style="text-align: center"><span id="fig:fig1p10"></span>
 <img src="figures/01-facto-e10.png" alt="Alpha de Cronbach pour le facteur paiement." width="85%" />
 <p class="caption">
-Figure 2.6: Alpha de Cronbach pour le facteur <em>paiement</em>.
+Figure 2.7: Alpha de Cronbach pour le facteur <em>paiement</em>.
 </p>
 </div>
 <div class="figure" style="text-align: center"><span id="fig:fig1p11"></span>
 <img src="figures/01-facto-e11.png" alt="Alpha de Cronbach pour le facteur prix." width="85%" />
 <p class="caption">
-Figure 2.7: Alpha de Cronbach pour le facteur <em>prix</em>.
+Figure 2.8: Alpha de Cronbach pour le facteur <em>prix</em>.
 </p>
 </div>
 <p>Il faut utiliser le alpha brut. Ainsi, les alphas de Cronbach sont tous
@@ -457,11 +463,11 @@ proc factor data=poly_corr
  maxiter=500 flag=.3 hey;
  var x1-x12;
 run;</code></pre>
-<p>Les chargements sont donnés dans la figure <a href="analyse-factorielle.html#fig:fig1p12">2.8</a>. Les facteurs obtenus sont les mêmes qu’en utilisant les corrélations linéaires.</p>
+<p>Les chargements sont donnés dans la figure <a href="analyse-factorielle.html#fig:fig1p12">2.9</a>. Les facteurs obtenus sont les mêmes qu’en utilisant les corrélations linéaires.</p>
 <div class="figure" style="text-align: center"><span id="fig:fig1p12"></span>
 <img src="figures/01-facto-e12.png" alt="Chargements estimés pour la corrélation polychorique" width="65%" />
 <p class="caption">
-Figure 2.8: Chargements estimés pour la corrélation polychorique
+Figure 2.9: Chargements estimés pour la corrélation polychorique
 </p>
 </div>
 </div>
@@ -479,17 +485,17 @@ Figure 2.8: Chargements estimés pour la corrélation polychorique
 maxiter=500 flag=.3 hey;
 var x1-x12;
 run;</code></pre>
-<p>La matrice des corrélations entres facteurs est donnée dans la figure <a href="analyse-factorielle.html#fig:fig1p13">2.9</a> et les chargements sont présentés dans la figure <a href="analyse-factorielle.html#fig:fig1p14">2.10</a>. On voit ici qu’on obtient les mêmes quatre facteurs qu’avec une rotation varimax orthogonale.</p>
+<p>La matrice des corrélations entres facteurs est donnée dans la figure <a href="analyse-factorielle.html#fig:fig1p13">2.10</a> et les chargements sont présentés dans la figure <a href="analyse-factorielle.html#fig:fig1p14">2.11</a>. On voit ici qu’on obtient les mêmes quatre facteurs qu’avec une rotation varimax orthogonale.</p>
 <div class="figure" style="text-align: center"><span id="fig:fig1p13"></span>
 <img src="figures/01-facto-e13.png" alt="Corrélation interfacteurs pour rotation varimax oblique" width="70%" />
 <p class="caption">
-Figure 2.9: Corrélation interfacteurs pour rotation varimax oblique
+Figure 2.10: Corrélation interfacteurs pour rotation varimax oblique
 </p>
 </div>
 <div class="figure" style="text-align: center"><span id="fig:fig1p14"></span>
 <img src="figures/01-facto-e14.png" alt="Chargements avec rotation oblique varimax" width="70%" />
 <p class="caption">
-Figure 2.10: Chargements avec rotation oblique varimax
+Figure 2.11: Chargements avec rotation oblique varimax
 </p>
 </div>
 </div>
@@ -521,10 +527,10 @@ originales dans des analyses subséquentes. Il est suggéré d’utiliser les no
 <div class="figure" style="text-align: center"><span id="fig:fig1p15"></span>
 <img src="figures/01-facto-e15.png" alt="Coefficients du score normalisés" width="60%" />
 <p class="caption">
-Figure 2.11: Coefficients du score normalisés
+Figure 2.12: Coefficients du score normalisés
 </p>
 </div>
-<p>Pour obtenir les scores avec <strong>SAS</strong>, il suffit d’insérer l’option <code>score</code> à la procédure <code>factor</code>. L’option <code>out=...</code> permet de créer un fichier de données <strong>SAS</strong> qui contient la valeur des <span class="math inline">\(m\)</span> scores pour chaque individu. Les scores factoriels pour l’exemples sont rapportés dans la figure <a href="analyse-factorielle.html#fig:fig1p15">2.11</a>. On remarque que:</p>
+<p>Pour obtenir les scores avec <strong>SAS</strong>, il suffit d’insérer l’option <code>score</code> à la procédure <code>factor</code>. L’option <code>out=...</code> permet de créer un fichier de données <strong>SAS</strong> qui contient la valeur des <span class="math inline">\(m\)</span> scores pour chaque individu. Les scores factoriels pour l’exemples sont rapportés dans la figure <a href="analyse-factorielle.html#fig:fig1p15">2.12</a>. On remarque que:</p>
 <ul>
 <li>pour le premier facteur, trois variables ont des poids importants (<span class="math inline">\(X_4\)</span>, <span class="math inline">\(X_8\)</span> et <span class="math inline">\(X_{11}\)</span>). Il s’agit donc d’un facteur très proche du facteur <em>service</em>.</li>
 <li>pour le deuxième facteur, les variables <span class="math inline">\(X_3\)</span>, <span class="math inline">\(X_6\)</span>, <span class="math inline">\(X_9\)</span> et <span class="math inline">\(X_{12}\)</span> ont des poids importants. Il s’agit donc d’un facteur très proche du facteur <em>produits</em>.</li>
@@ -532,11 +538,11 @@ Figure 2.11: Coefficients du score normalisés
 <li>pour le quatrième facteur, seule la variable <span class="math inline">\(X_1\)</span> a un poids important.
 On aurait pu s’attendre à ce que ce soit également le cas pour <span class="math inline">\(X_5\)</span>, en lien avec le facteur <em>prix</em> — ce facteur était moins clair selon le alpha de Cronbach.</li>
 </ul>
-<p>Les corrélations entre les échelles (construites avec les moyennes) et les scores factoriels sont données dans la figure <a href="analyse-factorielle.html#fig:fig1p16">2.12</a>. On remarque la forte corrélation entre le score factoriel et les échelles construites avec les moyennes pour les facteurs <em>service</em>, <em>produits</em> et <em>paiement</em>. Cela veut dire qu’utiliser les échelles ou les scores factoriels ne devrait pas faire de différence dans des analyses subséquentes. Par contre, cette corrélation est plus faible (0.82) pour le facteur <em>prix</em>.</p>
+<p>Les corrélations entre les échelles (construites avec les moyennes) et les scores factoriels sont données dans la figure <a href="analyse-factorielle.html#fig:fig1p16">2.13</a>. On remarque la forte corrélation entre le score factoriel et les échelles construites avec les moyennes pour les facteurs <em>service</em>, <em>produits</em> et <em>paiement</em>. Cela veut dire qu’utiliser les échelles ou les scores factoriels ne devrait pas faire de différence dans des analyses subséquentes. Par contre, cette corrélation est plus faible (0.82) pour le facteur <em>prix</em>.</p>
 <div class="figure" style="text-align: center"><span id="fig:fig1p16"></span>
 <img src="figures/01-facto-e16.png" alt="Corrélation entre scores et échelles" width="65%" />
 <p class="caption">
-Figure 2.12: Corrélation entre scores et échelles
+Figure 2.13: Corrélation entre scores et échelles
 </p>
 </div>
 

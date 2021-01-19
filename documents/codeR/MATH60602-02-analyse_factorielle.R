@@ -49,18 +49,22 @@ BIC.factanal <- function(object, ...){
 }
 
   # Boucle pour calculer les AIC, BIC et la valeur-p du test d'adéquation
-  emv_crit <- matrix(0, ncol = 3, nrow = 5)
-  for(i in 1:5){
-    # corrmat_facto <- cov2cor((nrow(facto)-1)/nrow(facto)*cov(facto))
+  emv_crit <- matrix(0, ncol = 4, nrow = 5)
+  for(i in 1:nrow(emv_crit)){
+    # corrmat_facto <- cov2cor((nrow(facto)-1)/nrow(facto)*cov(facto, use = "pairwise.complete.obs"))
     fai <- factanal(x = facto, factors = i)
     # fai <- factanal(factors = i, covmat = cormat_facto, n.obs = nrow(facto))
     # fai <- psych::fa(r = as.matrix(facto), nfactors = i, fm = "ml")
     # fai$correlation <- cor(facto)
     # class(fai) <- "factanal"
-    emv_crit[i,] <- c(AIC(fai), BIC(fai), fai$PVAL)
+    emv_crit[i,] <- c(i, AIC(fai), BIC(fai), fai$PVAL)
   }
-  colnames(emv_crit) <- c("AIC","BIC","valeur-p")
+  colnames(emv_crit) <- c("k","AIC","BIC","valeur-p")
   emv_crit
+  
+  which.min(emv_crit[,'AIC']) # nombre de facteurs selon AIC
+  which.min(emv_crit[,'BIC']) # nombre de facteurs selon BIC
+  which(emv_crit[,"valeur-p"] > 0.05)[1] # # nombre minimal de facteurs selon test du khi-deux
   # NDLR: l'estimation par maximum de vraisemblance est 
   # très sensible au choix de l'algorithme d'optimisation
   # SAS ajuste le critère AIC en cas de solution impropre (Heywood),
