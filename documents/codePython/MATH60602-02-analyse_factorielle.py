@@ -6,7 +6,7 @@ import pingouin as pg
 import matplotlib.pyplot as plt
 
 from factor_analyzer import FactorAnalyzer
-df = pd.read_csv('https://github.com/lbelzile/math60602/raw/master/data/factor2.csv')
+df = pd.read_csv('https://lbelzile.bitbucket.io/MATH60602/factor2.csv')
 
 # Créer un object Factor et faire l'analyse en commençant par le choix du nb de facteurs
 fa = FactorAnalyzer(n_factors=12, method='principal')
