@@ -6,7 +6,7 @@
 *------------------------------------;
 
 *Données : fichier "factor2" dans la librairie "multi";
-*Consultez la P.25 de votre recueil pour la description des variables;
+*Consultez le recueil pour la description des variables;
 
 *Exercice : produisez des statistiques descriptives pour les variables x1 à x12;
 *1A - Combien y a-t-il de répondants?;
@@ -64,7 +64,7 @@ plot X1*X3 / reg=(degree=1);
 run;
 
 
-*Calul de la matrice de corrélation entre toutes les variables;
+*Calcul de la matrice de corrélation entre toutes les variables;
 proc corr data=multi.factor2;
 var x1-x12;
 run; 
@@ -82,11 +82,18 @@ nfact=4: pour fixer à 4 le nombre de facteurs.
 hey: permet d'éviter un arrêt prématuré du processus d'estimation (explications en classe).
 (p. 32);
 
-proc factor data=multi.factor2  method=ml rotate=varimax nfact=4 maxiter=500 flag=.3  hey;
+proc factor data=multi.factor2 method=ml rotate=varimax nfact=4 maxiter=500 flag=.3  hey;
 var x1-x12;
 run; 
 
-*3A - Consultez le tableau de résultats « Rotated Factor Pattern » et trouvez
+data pval;
+pval = 1-CDF("chisq", 12.5708, 24);
+run;
+proc print data=pval;
+var pval;
+run;
+
+*3A - Consultez le tableau de résultats « Rotated Factor Pattern » et trouvez
       quelle variable est associée à quelle facteur;
 *3B - Décrivez chaque facteur par une courte phrase;
 
@@ -94,33 +101,43 @@ run;
 *--------------------------------------;
 
 **Méthode du maximum de vraisemblance;
-*4A - Ajustementez les modèles avec 1, 2, 3, 4 et 5 facteurs afin de choisir le nombre
+*4A - Ajustez les modèles avec 1, 2, 3, 4 et 5 facteurs afin de choisir le nombre
 de facteurs à l'aides des critères AIC, SBC et du test d'hypothèse;
-
+title "Solution à un facteur";
 proc factor data=multi.factor2 method=ml rotate=varimax nfact=1 maxiter=500 flag=.3 hey;
 var x1-x12;
+* on ne sélectionne que le tableau avec les critères d'information;
+ods select Factor.InitialSolution.FitMeasures; 
 run; 
+title "Solution à deux facteurs";
 proc factor data=multi.factor2 method=ml rotate=varimax nfact=2 maxiter=500 flag=.3 hey;
 var x1-x12;
+ods select Factor.InitialSolution.FitMeasures;
 run; 
+title "Solution à trois facteurs";
 proc factor data=multi.factor2 method=ml rotate=varimax nfact=3 maxiter=500 flag=.3 hey;
 var x1-x12;
 run; 
+title "Solution à quatre facteurs";
 proc factor data=multi.factor2 method=ml rotate=varimax nfact=4 maxiter=500 flag=.3 hey;
 var x1-x12;
+ods select Factor.InitialSolution.FitMeasures;
 run; 
-*Note: l'optipon priors=one est nécessaire ici car sinon le modèle à 4 facteurs 
+*Note: l'option priors=one est nécessaire ici car sinon le modèle à 4 facteurs 
 sera retourné à cause du critère MINEIGEN;
+title "Solution à cinq facteur";
 proc factor data=multi.factor2 method=ml rotate=varimax nfact=5 maxiter=500 flag=.3 hey priors=one;
 var x1-x12;
+ods select Factor.InitialSolution.FitMeasures;
 run; 
+title; *réinitisaliser les titres;
 
 *Méthode des composantes principales;
 
-*4B - Ajustementez le modèle avec la méthode des composantes principales ("principal"). 
+*4B - Ajustez le modèle avec la méthode des composantes principales ("principal"). 
 En ne spécifiant pas "nfact", SAS choisit par défaut le nombre 
 de facteurs selon le critère des valeurs propres supérieures à 1.
-L'option "scree" demande le graphe scree.;
+L'option "scree" demande le diagramme d'éboulis.;
 
 proc factor data=multi.factor2 method=principal scree rotate=varimax flag=.3 ;
 var x1-x12;
@@ -129,7 +146,7 @@ run;
 *Partie 5 : Construction d'échelles à partir des facteurs;
 *--------------------------------------------------------;
 
-*Création de 4 échelles;
+*Création de quatre échelles;
 
 data echelle;
 set multi.factor2;
@@ -170,20 +187,15 @@ run;
 *Partie 6 : Variables ordinales;
 *------------------------------;
 
-*Calcul de la corrélation polythoriques;
+/* 
+Calcul des corrélations polychoriques. Le fichier "corr_poly" va 
+contenir la matrice des corrélations polychoriques.
+*/
 
-proc freq data=multi.factor2;
-  tables x1*x2 / plcorr;
+
+proc corr data=multi.factor2 polychoric out=corr_poly;
+var x1-x12;
 run;
-
-proc freq data=multi.factor2;
-  tables (x1-x12)*(x1-x12) / plcorr;
-run;
-
-*Calcul des corrélations polychorique;
-*La macro se trouve dans le fichier "FACTOR3_poly.sas" et doit être exécutée au préalable;
-
-%polychor(data=multi.factor2,var=x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12,out=corr_poly);
 
 *Analyse factorielle en donnant la matrice des corrélations polychoriques 
 comme mesure d'association;
