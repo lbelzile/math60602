@@ -12,7 +12,7 @@
 *1A - Combien y a-t-il de répondants?;
 *1B - Quel est le minimum et le maximum de chaque variable?;
 *1C - Quels sont les éléments les plus importants pour un client?;
-*1D - Pour quels éléments y a-t-il le plus de concensus entre les répondants?;
+*1D - Pour quels éléments y a-t-il le plus de consensus entre les répondants?;
 
 proc means data=multi.factor2;
   var X1-X12;
@@ -86,6 +86,10 @@ proc factor data=multi.factor2 method=ml rotate=varimax nfact=4 maxiter=500 flag
 var x1-x12;
 run; 
 
+/* Ici, le test khi-deux (statistique du rapport de vraisemblance?) suit une loi 
+nulle khi-deux avec 24 degrés de liberté. 
+On peut calculer manuellement la valeur-p (même résultat que SAS).
+*/
 data pval;
 pval = 1-CDF("chisq", 12.5708, 24);
 run;
@@ -139,7 +143,7 @@ En ne spécifiant pas "nfact", SAS choisit par défaut le nombre
 de facteurs selon le critère des valeurs propres supérieures à 1.
 L'option "scree" demande le diagramme d'éboulis.;
 
-proc factor data=multi.factor2 method=principal scree rotate=varimax flag=.3 ;
+proc factor data=multi.factor2 method=principal plot=scree rotate=varimax flag=.3 ;
 var x1-x12;
 run; 
 
@@ -156,7 +160,7 @@ produit=mean(x3,x6,x9,x12);
 service=mean(x4,x8,x11);
 run;
 
-*5A - Quel est le facteur qui semble le moins important pour les cliens?;
+*5A - Quel est le facteur qui semble le moins important pour les clients?;
 
 proc means data=echelle mean std sum maxdec=2;
   var service x4 x8 x11 produit x3 x6 x9 x12 paiement x2 x7 x10 prix x1 x5;
