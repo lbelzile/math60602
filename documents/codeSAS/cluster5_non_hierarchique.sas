@@ -1,8 +1,6 @@
-
-/* 
+/* cluster5_non_hierarchique
 Analyse non-hiérarchique en utilisant les centres de groupes
 obtenus avec la méthode de Ward.
-(p. 252-255)
 */
 
 /* Nous ré-effectuons certaines procédures du fichier "cluster2_complet.sas" pour utiliser les groupes obtenus 

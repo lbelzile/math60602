@@ -1,8 +1,7 @@
-
+/* cluster3_voisin_eloigne */
 /*
-Analyse de regroupement avec la méthode du voisin le plus éloigné, au lieu de la
-méthode de Ward que nous avons utilisé jusqu'à présent.
-(p. 268)
+Analyse de regroupement avec la méthode du voisin le plus éloigné,
+ au lieu de la méthode de Ward que nous avons utilisé jusqu'à présent.
 */
 
 data temp; set multi.cluster1;

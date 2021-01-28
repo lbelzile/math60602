@@ -2,7 +2,6 @@
 /* 
 Analyse de regroupement avec la méthode de Ward en standardisant
 les variables au préalable. 
-(p. 256)
 */
 
 data temp; set multi.cluster1;
@@ -12,7 +11,7 @@ run;
 /* "proc stdize" permet de standardiser les variables de différentes manières.
 L'utilisation par défaut, comme ici, standardise de la manière usuelle
 en soustrayant la moyenne et en divisant par l'écart-type. Ainsi, les
-variables standardisées ont une moyenne de 0 et un écart-type (et une variance) de 1. */
+variables standardisées ont une moyenne empirique de 0 et un écart-type (et une variance) de 1. */
 
 proc stdize data=temp out=stand;
 var x1-x6;

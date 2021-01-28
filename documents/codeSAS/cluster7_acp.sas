@@ -2,7 +2,6 @@
 /* 
 Analyse en composantes principales pour faire une analyse graphique 
 avant l'analyse de regroupements.
-(p. 263)
 */ 
 
 proc princomp data=multi.cluster1 out=temp cov;

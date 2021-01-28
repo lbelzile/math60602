@@ -1,6 +1,5 @@
 /*Analyse de regroupement avec toutes les variables et toutes
 les observations pour l'exemple du voyage organisé.
-(p. 241-250)
 */
 
 
@@ -56,7 +55,7 @@ proc sgplot data=criteres;
 series x=NumberOfClusters y=CubicClusCrit/markers markerattrs=(symbol=CircleFilled color=red);
 run;
 
-/* Mêmes graphes mais en zoomant sur la partie avec 30 clusters et moins */
+/* Mêmes graphes mais en zoomant sur la partie avec 30 groupements et moins */
 
 proc sgplot data=criteres(where=(NumberOfClusters LE 30));
 series x=NumberOfClusters y=RSquared/markers markerattrs=(symbol=CircleFilled color=red);
