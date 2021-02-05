@@ -33,7 +33,6 @@ run;
 /* 
 Ajustement des modèles avec 1, 2, 3 et 5 facteurs afin de choisir le nombre
 de facteurs à l'aides des critères AIC, BIC et du test d'hypothèse 
-(p. 36)
 */
 
 

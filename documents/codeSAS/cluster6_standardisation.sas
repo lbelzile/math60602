@@ -25,6 +25,14 @@ ods output stat.cluster.ClusterHistory=criteres;
 run;
 
 
+/* De manière identique, on peut directement demander de standardiser les données
+avec l'option "std" ou "standard" dans l'appel à "cluster" */
+proc cluster data=temp method=ward outtree=temp1 std nonorm rsquare;
+var x1-x6;
+copy id cluster_vrai x1-x6;
+ods output stat.cluster.ClusterHistory=criteres;
+run;
+
 proc sgplot data=criteres;
 series x=NumberOfClusters y=RSquared/markers markerattrs=(symbol=CircleFilled color=red);
 run;

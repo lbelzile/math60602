@@ -54,7 +54,7 @@ Les buts de l'étude étaient
 2) Examiner les caractéristiques de ces groupes.
 3) Examiner les caractéristiques démographiques de ces groupes.
 
-Nous allons nous intéresser principalement aux deux premiers points ici. Un questionnaire a été élaboré afin d'évaluer l'importance de 55 caractéristiques des opérateurs de voyages organisés en autobus et des voyages eux-mêmes à l'aide d'une échelle de Likert à cinq points, allant de extrêmement important ($\texttt{5}$) à pas important du tout ($\texttt{1}$)). Des données sont disponibles pour 150 sujets (il y en avait 817 dans l'article). Elles se trouvent dans le fichier `cluster1.sas7bdat`.
+Nous allons nous intéresser principalement aux deux premiers points ici. Un questionnaire a été élaboré afin d'évaluer l'importance de 55 caractéristiques des opérateurs de voyages organisés en autobus et des voyages eux-mêmes à l'aide d'une échelle de Likert à cinq points, allant de extrêmement important ($\texttt{5}$) à pas important du tout ($\texttt{1}$). Des données sont disponibles pour 150 sujets (il y en avait 817 dans l'article). Elles se trouvent dans le fichier `cluster1.sas7bdat`.
 
 Au lieu de faire une analyse de regroupements avec les 55 items du questionnaire, les auteurs ont choisi de faire une analyse factorielle avec rotation varimax au préalable afin de réduire le nombre de variables à six facteurs interprétables  :
 
@@ -73,12 +73,11 @@ knitr::include_graphics("figures/04-clustering-e1.png")
 
 ## Exploration graphique préalable et analyse en composantes principales
 
-Comme c'est le cas avec n'importe quelle analyse statistique, il est nécessaire de tenter d'explorer les données graphiquement. On peut parfois réussir à visualiser les groupes d'observations. 
+Comme c'est le cas avec n'importe quelle analyse statistique, il est nécessaire de tenter d'explorer les données graphiquement. On peut parfois réussir à visualiser les groupes d'observations, ce qui nous permettra une fois l'analyse de regroupement complétée de vérifier la qualité de cette dernière. 
 
 Une première idée consiste à faire le graphe de toutes les paires de variables mais ceci possède deux limites, 
 
-i) il y aura beaucoup de graphes si le nombre de variables est grand et 
-ii) on examine seulement les relations bivariées.
+i) il y aura beaucoup de graphes si le nombre de variables est grand et ii) on examine seulement les relations bivariées.
 
 
 ```{r 04-pairplot, echo = FALSE, eval = TRUE, fig.width = 7, fig.height=7, out.width='100%', fig.align = "center"} 
@@ -109,7 +108,9 @@ de telle sorte que
 
 et ainsi de suite. Les contraintes sont nécessaires afin de standardiser le problème car il serait possible d'avoir des variances infinies sinon. Ainsi, les composantes principales forment un ensemble de variables non corrélées entre elles, qui récupèrent en ordre décroisant le plus possible de la variance des variables originales. La somme des variances des $p$ composantes principales est égale à la somme des variances des $p$ variables originales. 
 
-On espère donc en général qu'un petit nombre de composantes principales réussira à expliquer la plus grande partie de la variance totale. On pourra alors se servir de ces dernières dans d'autres analyses mais ici, on va seulement s'en servir comme outil graphique préalable à une analyse de regroupements.
+Mathématiquement, les composantes principales correspondent aux vecteurs propres de la matrice de covariance. On peut également utiliser la matrice de corrélation, et cette dernière est sélectionnée par défaut dans la méthode `princomp` à moins de spécifier `cov` dans l'appel. L'avantage de la matrice de corrélation (ou de la standardisation des variables) est que l'unité de mesure n'impacte pas le résultat; autrement, un point plus important est attribué aux variables qui ont la plus forte hétérogénéité.
+
+On espère donc en général qu'un petit nombre de composantes principales réussira à expliquer la plus grande partie de la variance totale. Ces composantes pourraient servir de variables pour l'analyse de regroupement: une fois les étiquettes obtenues, on pourrait alors calculer les statistiques descriptives sur les variables originales. Dans notre exemple, on va seulement s'en servir comme outil graphique pour une analyse de regroupements en réduisant la dimension afin de permettre la visualisation des regroupements obtenus.
 
 
 ```{r fig4-e18, echo = FALSE, out.width='80%', fig.align = "center"}
@@ -284,6 +285,14 @@ On peut comparer les performances des regroupements hiérarchiques selon la mét
 ```{r fig4-e20, echo = FALSE, out.width='80%', fig.align = "center", fig.cap = "Comparaison des méthodes de groupement sur des données test."}
 knitr::include_graphics("figures/04-clustering-e20.png")
 ```
+
+
+## Standardisation des variables
+
+
+Dans les exemples précédents, nous avons utilisé les variables $X_1$ à $X_6$ telles quelles. En général, plus une variable a une grande variance, plus elle aura de l'influence sur le calcul de la distance euclidienne. Ainsi, en utilisant les variables telles quelles, nous accordons plus de poids aux variables avec de grandes variances, ce qui peut être bon ou mauvais selon la structure des groupes. Règle générale, il est préférable d'éviter qu'une variable domine dans la segmentation.
+
+Avec la procédure `stdize`, on peut standardiser au préalable les variables avant de faire l'analyse. Par défaut, les variables seront standardisées afin d'avoir une moyenne de zéro et une variance de un. On peut ensuite faire les analyses comme précédemment. Le fichier `cluster4_standardisation.sas` contient les commandes pour standardiser les variables et ensuite refaire l'analyse de regroupements avec la méthode de Ward. Notez que les six variables ont des variances semblables, donc les résultats ne devraient donc pas être trop affectés en standardisant les variables. Il s'avère effectivement que les résultats changent très peu si on standardise les variables. Les tailles des groupes de la solution à trois groupes sont (44, 75, 31) (comparativement à (43, 75, 32) sans la standardisation). Il s'avère que 147 des 150 sujets sont bien regroupés (comparativement à 146 sans la standardisation). Il s'agit d'une très légère amélioration.
 
 ##  Autres mesures de dissemblance
 
@@ -475,12 +484,6 @@ Le champ des applications des $K$-moyennes est parfois surprenant. On peut consi
 knitr::include_graphics("figures/kmoyennes_decelles.png")
 ```
 
-## Standardisation des variables
-
-
-Dans les exemples précédents, nous avons utilisé les variables $X_1$ à $X_6$ telles quelles. En général, plus une variable a une grande variance, plus elle aura de l'influence sur le calcul de la distance euclidienne. Ainsi, en utilisant les variables telles quelles, nous accordons plus de poids aux variables avec de grandes variances, ce qui peut être bon ou mauvais selon la structure des groupes. Règle générale, il est préférable d'éviter qu'une variable domine dans la segmentation.
-
-Avec la procédure `stdize`, on peut standardiser au préalable les variables avant de faire l'analyse. Par défaut, les variables seront standardisées afin d'avoir une moyenne de zéro et une variance de un. On peut ensuite faire les analyses comme précédemment. Le fichier `cluster4_standardisation.sas` contient les commandes pour standardiser les variables et ensuite refaire l'analyse de regroupements avec la méthode de Ward. Notez que les six variables ont des variances semblables, donc les résultats ne devraient donc pas être trop affectés en standardisant les variables. Il s'avère effectivement que les résultats changent très peu si on standardise les variables. Les tailles des groupes de la solution à trois groupes sont (44, 75, 31) (comparativement à (43, 75, 32) sans la standardisation). Il s'avère que 147 des 150 sujets sont bien regroupés (comparativement à 146 sans la standardisation). Il s'agit d'une très légère amélioration.
 
 ## Considérations pratiques
 
@@ -488,7 +491,7 @@ Il peut être intéressant de comparer les résultats provenant d'une même mét
 
 Avec une méthode non hiérarchique, il est préférable de fournir des germes de départ « raisonnablement bon » (provenant d'une méthode hiérarchique par exemple) plutôt que de laisser l'algorithme les choisir au hasard.
 
-Le choix des variables est important. En général on veut créer des groupes d'individus qui sont homogènes par rapport à un certain aspect de leur comportement ou de leur situation. On ne doit alors inclure que les variables pertinentes à cet aspect. Par exemple, si le but de l'analyse est de segmenter nos clients selon leurs habitudes de consommation (genre de boutiques fréquenté, fréquence, etc.), on ne voudra peut-être pas inclure des variables démographiques. En fait, souvent l'analyse de regroupements servira justement à créer des groupes qui seront comparés par rapport à d'autres variables qui n'ont pas été utilisées pour créer les groupes. Dans notre exemple sur les voyages organisés, on a segmenté les voyageurs en trois groupes (indépendants, dépendants et sociables). Les auteurs de l'article (voir page 369 de l'article) ont comparé les trois groupes selon l'expérience de voyage, la taille de la communauté où ils habitent (avec des ANOVA), selon leur âge, leur revenu et leur éducation (avec des tests d'indépendance du khi-deux). Notez que sans ajustement post-sélection, les conclusions de ces tests sont invalides.
+Le choix des variables est important. En général on veut créer des groupes d'individus qui sont homogènes par rapport à un certain aspect de leur comportement ou de leur situation. On ne doit alors inclure que les variables pertinentes à cet aspect. Par exemple, si le but de l'analyse est de segmenter nos clients selon leurs habitudes de consommation (genre de boutiques fréquenté, fréquence, etc.), on ne voudra peut-être pas inclure des variables démographiques. En fait, souvent l'analyse de regroupements servira justement à créer des groupes qui seront comparés par rapport à d'autres variables qui n'ont pas été utilisées pour créer les groupes. Dans notre exemple sur les voyages organisés, on a segmenté les voyageurs en trois groupes (indépendants, dépendants et sociables). Les auteurs de l'article (voir page 369 de l'article) ont comparé les trois groupes selon l'expérience de voyage, la taille de la communauté où ils habitent (avec des ANOVA), selon leur âge, leur revenu et leur éducation (avec des tests d'indépendance du khi-deux). Notez que ces tests sont réalisés sur des variables qui ne sont pas utilisées lors de la segmentation.
 
 Le problème majeur avec l'analyse de regroupements est qu'il n'y a pas de façon claire de quantifier la performance de notre analyse. Lorsqu'on développe un modèle de prédiction (régression linéaire ou logistique par exemple), on peut estimer la performance de notre modèle d'une manière objective à l'aide de l'erreur quadratique de généralisation (régression linéaire) ou du taux de bonne classification (régression logistique). Ces quantités peuvent être estimées d'une manière objective en utilisant une méthode telle la validation croisée ou la division de l'échantillon. On ne peut faire de même avec l'analyse de regroupements car on n'a pas de variable réponse à prédire. Tout comme pour l'analyse factorielle, les connaissances à priori, le jugement, et les considérations pratiques font partie d'une analyse de regroupements.
 

@@ -1,16 +1,20 @@
 /* cluster7_acp 
-Analyse en composantes principales pour faire une analyse graphique 
-avant l'analyse de regroupements.
-*/ 
-
+Analyse en composantes principales pour faire une 
+analyse graphique avant/après l'analyse de regroupements.
+l'option "cov" demande d'utilise la matrice de covariance plutôt que de corrélation */
+ 
 proc princomp data=multi.cluster1 out=temp cov;
 var x1-x6;
 run;
 
-/* Projection sur les deux premières composantes principales */
+/* Projection sur les deux premières composantes principales 
+Ici, on ajoute les étiquettes des vrais regroupements
+En pratique, si vous faites cette étape après, 
+utilisez les étiquettes de regroupement pour "group"*/
 proc sgplot data=temp;
 scatter x=prin1 y=prin2 / group=cluster_vrai;
 run;
+
 /* Matrice de nuages de points avec les vrais étiquettes des groupements */
 proc sgscatter data=multi.cluster1;
 matrix x1-x6 / group=cluster_vrai;
@@ -20,17 +24,20 @@ run;
 Analyse de regroupement avec seulement 20 observations et deux variables.
 */
 
-proc cluster data=multi.cluster1a method=ward nonorm  rsquare ;
+proc cluster data=multi.cluster1a method=ward nonorm rsquare;
 var x1 x2;
 ods output stat.cluster.ClusterHistory=criteres;
 run;
 
 proc sgplot data=criteres;
-series x=NumberOfClusters y=RSquared / markers markerattrs=(symbol=CircleFilled color=red);
+series x=NumberOfClusters y=RSquared / markers markerattrs=(symbol=CircleFilled);
 run;
+
 proc sgplot data=criteres;
-series x=NumberOfClusters y=SemipartialRSq / markers markerattrs=(symbol=CircleFilled color=red);
+series x=NumberOfClusters y=SemipartialRSq / markers markerattrs=(symbol=CircleFilled);
 run;
+
+
 
 /* cluster2_complet */
 /*Analyse de regroupement avec toutes les variables et toutes
@@ -48,14 +55,14 @@ Cette variable, nommée "id", prendra les valeurs de 1 à 150, car
 Ainsi, l'observation à la 1ère ligne aura id=1, celle à la 2ème ligne
 aura id=2 etc. */
 
-data temp; set multi.cluster1;
+data temp; 
+set multi.cluster1;
 id=_N_;
 run;
 
 /*
 Analyse de regroupement avec la méthode de Ward ("method=ward").
 Description des autres options:
-ccc = pour obtenir le Cubic Clustering Criterion
 rsquare = pour obtenir le RSQ et le SPRSQ
 nonorm = pour ne pas que les distances soient standardisées
 outtree = pour sauvegarder l'historique des regroupements (ici dans le fichier "temp1").
@@ -71,39 +78,23 @@ si l'analyse a permis de bien regrouper les observations.
 */
 
 
-proc cluster data=temp method=ward outtree=temp1 nonorm rsquare ccc ;
+proc cluster data=temp method=ward outtree=temp1 nonorm rsquare;
 var x1-x6;
 copy id cluster_vrai x1-x6;
 ods output stat.cluster.ClusterHistory=criteres;
 run;
 
-/* Graphiques des critères à partir du fichier crée avec le "ods output" précédent */
-
-proc sgplot data=criteres;
-series x=NumberOfClusters y=RSquared/markers markerattrs=(symbol=CircleFilled color=red);
-run;
-proc sgplot data=criteres;
-series x=NumberOfClusters y=SemipartialRSq/markers markerattrs=(symbol=CircleFilled color=red);
-run;
-proc sgplot data=criteres;
-series x=NumberOfClusters y=CubicClusCrit/markers markerattrs=(symbol=CircleFilled color=red);
-run;
-
-/* Mêmes graphes mais en zoomant sur la partie avec 30 groupements et moins */
+/* Graphiques des critères à partir du fichier crée avec le "ods output" 
+en zoomant sur la partie avec 30 groupements et moins */
 
 proc sgplot data=criteres(where=(NumberOfClusters LE 30));
-series x=NumberOfClusters y=RSquared/markers markerattrs=(symbol=CircleFilled color=red);
+series x=NumberOfClusters y=RSquared/markers markerattrs=(symbol=CircleFilled);
 run;
 proc sgplot data=criteres(where=(NumberOfClusters LE 30));
-series x=NumberOfClusters y=SemipartialRSq/markers markerattrs=(symbol=CircleFilled color=red);
-run;
-proc sgplot data=criteres(where=(NumberOfClusters LE 30));
-series x=NumberOfClusters y=CubicClusCrit/markers markerattrs=(symbol=CircleFilled color=red);
+series x=NumberOfClusters y=SemipartialRSq/markers markerattrs=(symbol=CircleFilled);
 run;
 
-
-/*La procédure Tree permet de tracer un dendrogramme 
-et d'extraire une solution.
+/*La procédure "tree" permet de tracer un dendrogramme et d'extraire une solution.
 Ici, on demande d'extraire la solution avec trois groupes ("nclusters=3")
 et on la sauvegarde dans le fichier "temp2". 
 Dans ce fichier, la variable nommée "cluster" identifie les groupes. */
@@ -117,7 +108,6 @@ run;
 /* Calcul des moyennes des variables groupe par groupe pour l'interprétation */
 
 /* La procédure "sort" permet de trier les données  (par rapport à la variable "cluster"). */
-
 proc sort data=temp2 out=temp2;
 by cluster;
 run;
@@ -127,7 +117,7 @@ variables x1 à x6 pour chaque modalité de la variable "cluster".
 Pour ce faire, il faut absolument trier le jeu de données 
 par rapport à cette variable*/
 
-proc means data=temp2;
+proc means data=temp2 maxdec=2;
 var x1-x6;
 by cluster;
 run;
@@ -139,29 +129,38 @@ Analyse de regroupement avec la méthode de Ward en standardisant
 les variables au préalable. 
 */
 
-data temp; set multi.cluster1;
+data temp; 
+set multi.cluster1;
 id=_N_;
 run;
 
 /* "proc stdize" permet de standardiser les variables de différentes manières.
 L'utilisation par défaut, comme ici, standardise de la manière usuelle
 en soustrayant la moyenne et en divisant par l'écart-type. Ainsi, les
-variables standardisées ont une moyenne empirique de 0 et un écart-type (et une variance) de 1. */
+variables standardisées ont une moyenne empirique de 0 et un écart-type
+ (et une variance) de 1. */
 
 proc stdize data=temp out=stand;
 var x1-x6;
 run;
 
-
-proc cluster data=stand method=ward outtree=temp1 nonorm rsquare ccc;
+proc cluster data=stand method=ward outtree=temp1 nonorm rsquare;
 var x1-x6;
 copy id cluster_vrai x1-x6;
 ods output stat.cluster.ClusterHistory=criteres;
 run;
 
+/* De manière identique, on peut directement demander de standardiser les données
+avec l'option "std" ou "standard" dans l'appel à "cluster" 
+Cette option n'est pas applicable avec les K-moyennes ("fastclust")*/
+proc cluster data=temp method=ward outtree=temp1 std nonorm rsquare;
+var x1-x6;
+copy id cluster_vrai x1-x6;
+ods output stat.cluster.ClusterHistory=criteres;
+run;
 
 proc sgplot data=criteres;
-series x=NumberOfClusters y=RSquared/markers markerattrs=(symbol=CircleFilled color=red);
+series x=NumberOfClusters y=RSquared/markers markerattrs=(symbol=CircleFilled);
 run;
 
 proc tree data=temp1 out=temp2 nclusters=3;
@@ -175,6 +174,14 @@ run;
 proc means data=temp2;
 var x1-x6;
 by cluster;
+run;
+
+proc sgscatter data=temp2;
+matrix x1-x6 / group=cluster;
+run;
+
+proc freq data=temp2;
+table cluster*cluster_vrai / nocum nopercent;
 run;
 
 /* cluster3_voisin_eloigne */
@@ -183,7 +190,8 @@ Analyse de regroupement avec la méthode du voisin le plus éloigné,
  au lieu de la méthode de Ward que nous avons utilisé jusqu'à présent.
 */
 
-data temp; set multi.cluster1;
+data temp; 
+set multi.cluster1;
 id=_N_;
 run;
 
@@ -191,22 +199,20 @@ run;
 
 /* l'option "method=complete" précise d'utiliser la méthode du voisin le plus éloigné. */
 
-proc cluster data=temp method=complete outtree=temp1 nonorm  rsquare ccc ;
+proc cluster data=temp method=complete outtree=temp1 nonorm  rsquare;
 var x1-x6;
 copy id cluster_vrai;
 ods output stat.cluster.ClusterHistory=criteres;
 run;
 
-ods graphics on;
 proc sgplot data=criteres;
-series x=NumberOfClusters y=distance/markers markerattrs=(symbol=CircleFilled color=red);
+series x=NumberOfClusters y=distance/markers markerattrs=(symbol=CircleFilled);
 run;
 
 proc tree data=temp1 out=temp2 nclusters=3;
 id id;
 copy x1-x6 cluster_vrai;
 run;
-ods graphics off;
 
 proc sort data=temp2 out=temp2;
 by cluster;
@@ -218,6 +224,99 @@ by cluster;
 run;
 
 
+
+/* cluster5_non_hierarchique
+Analyse non-hiérarchique en utilisant les centres de groupes
+obtenus avec la méthode de Ward.
+*/
+
+/* Nous ré-effectuons certaines procédures du fichier "cluster2_complet.sas" pour utiliser les groupes obtenus 
+comme point de départ pour la méthode non-hiérarchique. */
+
+data temp; 
+set multi.cluster1;
+id=_N_;
+run;
+
+
+proc cluster data=temp method=ward outtree=temp1 nonorm rsquare;
+var x1-x6;
+copy id cluster_vrai x1-x6;
+run;
+proc tree data=temp1 out=temp2 nclusters=3;
+id id;
+copy id cluster_vrai x1-x6;
+run;
+
+proc sort data=temp2 out=temp2;
+by cluster;
+run;
+
+/* Manipulations pour donner les centroides (les moyennes) de la solution de Ward comme 
+solution initiale à la procédure "fastclus". La procédure "means" retournera 
+le fichier SAS "initial" avec 6 variables (les 6 moyennes) et 3 observations (les 3 groupes).*/
+
+proc means data=temp2;
+by cluster;
+var x1-x6;
+output out=initial mean=x1 x2 x3 x4 x5 x6;
+run;
+
+proc print data=initial;
+run;
+
+/*
+La procédure "fastclus" procède à l'analyse de regroupement non-hiérarchique (K-means).
+
+Les options sont:
+maxclusters = nombre de groupes qu'on veut (ici 3)
+seed = précise (via un fichier SAS) les centres initiaux. Ici, on utilise
+les moyennes des groupes obtenus avec la méthode de Ward, que nous avons
+calculés à l'étape précédente avec "proc means".
+distance = retourne la distance entre les barycentres de chaque groupe à la dernière itération.
+out = le nom du fichier SAS où l'on retrouve les groupes obtenus.
+maxiter = nombre d'itérations maximal pour les K-moyennes.
+*/
+
+proc fastclus data=temp seed=initial distance maxclusters=3 out=temp3 maxiter=30;
+var x1-x6;
+run;
+
+/* Calcul des moyennes des variables groupe par groupe pour l'interprétation de la 
+ solution du K-means. */
+
+proc sort data=temp3 out=temp3;
+by cluster;
+run;
+proc means data=temp3;
+var x1-x6;
+by cluster;
+run;
+
+
+
+/* voici comment assigner de nouvelles observations aux regroupements construits par fastclus */
+
+/* création d'un fichier avec 10 observations (ce sont les 10 premières du fichier original mais ça pourrait être des nouvelles observations) */
+
+data new; set temp;
+if _N_>10 then delete;
+run;
+
+/* sauvegarde les informations du regroupement avec outstat=solution */
+proc fastclus data=temp seed=initial distance maxclusters=3 
+	out=temp3 maxiter=30 outstat=solution;
+var x1-x6;
+run;
+
+/* l'option instat permet d'utiliser le fichier créé avec outstat 
+	auparavant pour faire l'assignation des observations du fichier "new" 
+ 	les assignations se trouvent dans "assignation" */
+
+proc fastclus data=new instat=solution out=assignation;
+var x1-x6;
+run;
+
 /* cluster4_cityblock
 Analyse de regroupement avec la distance de Manhattan au lieu de la
 distance euclidienne que nous avons utilisé jusqu'à maintenant. 
@@ -225,14 +324,16 @@ distance euclidienne que nous avons utilisé jusqu'à maintenant.
 
 /* Création d'une variable particuliére pour identifier les sujets.
 Cette variable, nommée "id1", prendra les valeurs OB1, OB2, ... OB150.
-Elle servira à "matcher" le fichier original avec la solution
+Elle servira à "apparier" le fichier original avec la solution
 produite par PROC CLUSTER. */
 
-data temp; set multi.cluster1;
+data temp; 
+set multi.cluster1;
 id=_N_;
 ob="OB";
 run;
-data temp; set temp;
+data temp; 
+set temp;
 id1=compress(ob || id);
 run;
 
@@ -246,7 +347,7 @@ Le fichier "distance" contiendra la matrice des distances ("out=distance").
 Ensuite, la matrice de distance est fournie à proc cluster et on utilise la méthode "centroïde" */
 
 proc distance data=temp method=CITYBLOCK  out=distance;
-var interval(x1-x6) ;
+var interval(x1-x6);
 run;
 
 /* La matrice de distances calculée avec PROC DISTANCE est donnée directement
@@ -255,28 +356,21 @@ run;
 Ici, nous prenons la méthode de liaison moyenne ("method=average"). */
 
 
-proc cluster data=distance method=average outtree=temp1 nonorm rsquare  ;
+proc cluster data=distance method=average outtree=temp1 nonorm rsquare;
 ods output stat.cluster.ClusterHistory=criteres;
 run;
 
-ods graphics on;
-proc sgplot data=criteres;
-series x=NumberOfClusters y=RSquared/markers markerattrs=(symbol=CircleFilled color=red);
-run;
-proc sgplot data=criteres;
-series x=NumberOfClusters y=SemipartialRSq/markers markerattrs=(symbol=CircleFilled color=red);
-run;
-
 proc sgplot data=criteres(where=(NumberOfClusters LE 30));
-series x=NumberOfClusters y=RSquared/markers markerattrs=(symbol=CircleFilled color=red);
+series x=NumberOfClusters y=RSquared/markers markerattrs=(symbol=CircleFilled);
 run;
 proc sgplot data=criteres(where=(NumberOfClusters LE 30));
-series x=NumberOfClusters y=SemipartialRSq/markers markerattrs=(symbol=CircleFilled color=red);
+series x=NumberOfClusters y=SemipartialRSq/markers markerattrs=(symbol=CircleFilled);
 run;
 
 proc tree data=temp1 out=temp2 nclusters=3;
 run;
-ods graphics off;
+
+
 
 /* IMPORTANT: manipulations pour avec une solution concordant avec la solution avec les données originales.  
 Cette étape est nécessaire car l'analyse a été faite avec une matrice de distances
@@ -313,94 +407,6 @@ proc means data=temp3;
 var x1-x6;
 by cluster;
 run;
-
-/* cluster5_non_hierarchique
-Analyse non-hiérarchique en utilisant les centres de groupes
-obtenus avec la méthode de Ward.
-*/
-
-/* Nous ré-effectuons certaines procédures du fichier "cluster2_complet.sas" pour utiliser les groupes obtenus 
-comme point de départ pour la méthode non-hiérarchique. */
-
-data temp; set multi.cluster1;
-id=_N_;
-run;
-
-
-proc cluster data=temp method=ward outtree=temp1 nonorm  rsquare ccc ;
-var x1-x6;
-copy id cluster_vrai x1-x6;
-run;
-proc tree data=temp1 out=temp2 nclusters=3;
-id id;
-copy id cluster_vrai x1-x6;
-run;
-proc sort data=temp2 out=temp2;
-by cluster;
-run;
-
-/* Manipulations pour donner les centroides (les moyennes) de la solution de Ward comme 
-solution initiale à la procédure "fastclus". La procédure "means" retournera 
-le fichier SAS "initial" avec 6 variables (les 6 moyennes) et 3 observations (les 3 groupes).*/
-
-proc means data=temp2;
-by cluster;
-var x1-x6;
-output out=initial mean=x1 x2 x3 x4 x5 x6;
-run;
-proc print data=initial;run;
-
-/*
-La procédure "fastclus" procède à l'analyse de regroupement non-hiérarchique (K-means).
-
-Les options sont:
-maxclusters = nombre de groupes qu'on veut (ici 3)
-seed = précise (via un fichier SAS) les centres initiaux. Ici, on utilise
-les moyennes des groupes obtenus avec la méthode de Ward, que nous avons
-calculés à l'étape précédente avec "proc means".
-distance = retourne la distance entre les centroïdes finaux de chaque groupe.
-out = le nom du fichier SAS où l'on retrouve les groupes obtenus.
-maxiter = nombre d'itérations maximal pour le K-means.
-*/
-
-proc fastclus data=temp seed=initial distance maxclusters=3 out=temp3 maxiter=30;
-var x1-x6;
-run;
-
-
-/* Calcul des moyennes des variables groupe par groupe pour l'interprétation de la 
- solution du K-means. */
-
-proc sort data=temp3 out=temp3;
-by cluster;
-run;
-proc means data=temp3;
-var x1-x6;
-by cluster;
-run;
-
-
-
-/* voici comment assigner (scorer) de nouvelles observations aux clusters construits par fastclus */
-
-/* création d'un fichier avec 10 observations (ce sont les 10 premières du fichier original mais ça pourrait être des nouvelles observations) */
-
-data new; set temp;
-if _N_>10 then delete;
-run;
-
-/* sauvegarde les informations du clustering avec outstat=solution */
-proc fastclus data=temp seed=initial distance maxclusters=3 out=temp3 maxiter=30 outstat=solution;
-var x1-x6;
-run;
-
-/* l'option instat permet d'utiliser le fichier créé avec outstat auparavant pour faire l'assignation des observations du fichier "new" */
-/* les assignations se trouvent dans "assignation" */
-
-proc fastclus data=new instat=solution out=assignation;
-var x1-x6;
-run;
-
 
 
 

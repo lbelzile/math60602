@@ -12,6 +12,7 @@ run;
 proc means data=multi.sondage_entreprise;
   var Q8-Q17;
 run;
+*La variable avec la plus forte homogénéité est celle qui a la plus faible variance;
 
 *Calul de la matrice de corrélation entre toutes les variables;
 proc corr data=multi.sondage_entreprise;
@@ -28,6 +29,7 @@ run;
 
 /* 
 Selon la méthode des valeurs propres, 2 facteurs seraient à retenir;
+Le diagramme d'éboulis suggère un coude après 2 facteurs, donc même solution.
 Évaluons les solutions de 1 à 4 facteurs avec la méthode du maximum de vraisemblance;
 */
 

@@ -1,6 +1,8 @@
 **Exercice pratique : segmentation de types de bières;
 **Julie Meloche;
 **===================================================;
+proc contents data=multi.biere;
+run;
 
 *Le tableau biere contient de l'information sur 35 types de bières;
 *Chaque ligne est un type de bière, il y a donc 35 observations;
@@ -17,8 +19,8 @@ proc means data=multi.biere;
   var cout calories sodium alcool;
 run;
 
-*En observant le tableau des statistiques descriptives, il apparaît que léchelle 
-des variables et les écart-types varie beaucoup, doù la justification dutiliser 
+*En observant le tableau des statistiques descriptives, il apparaît que l'échelle 
+des variables et les écart-types varie beaucoup, d'où la justification d'utiliser 
 les variables standardisées. ; 
 
 proc stdize data=multi.biere out=biere;
@@ -34,23 +36,26 @@ run;
 
 **Permettra de déterminer le nombre de clusters;
 
-proc cluster data=biere method=ward outtree=tempo nonorm rsquare ccc;
+proc cluster data=biere method=ward outtree=tempo nonorm rsquare;
+  var cout calories sodium alcool;
+  copy biere classement cout calories sodium alcool;
+  ods output stat.cluster.ClusterHistory=criteres;
+run;
+
+proc cluster data=biere method=ward outtree=tempo nonorm rsquare standard;
   var cout calories sodium alcool;
   copy biere classement cout calories sodium alcool;
   ods output stat.cluster.ClusterHistory=criteres;
 run;
 
 *Graphiques;
-
 proc sgplot data=criteres;
 series x=NumberOfClusters y=RSquared/markers markerattrs=(symbol=CircleFilled);
 run;
 proc sgplot data=criteres;
 series x=NumberOfClusters y=SemipartialRSq/markers markerattrs=(symbol=CircleFilled);
 run;
-proc sgplot data=criteres;
-series x=NumberOfClusters y=CubicClusCrit/markers markerattrs=(symbol=CircleFilled);
-run;
+
 
 *Dendogrammes;
 proc tree data=tempo;
@@ -58,7 +63,7 @@ run;
 
 *On va extraire la solution à trois regroupements;
 *Cette première solution nous permettra de calculer 
-les centroïdes initiaux pour l'utilisation
+les barycentres initiaux pour l'utilisation
  de la méthode du k-moyennes;
 
 proc tree data=tempo out=tempo2 nclusters=3;
@@ -75,7 +80,7 @@ run;
 *==================================;
 
 *On prend les moyennes des variables pour 
-chaque regroupement comme centroïde de départ;
+chaque regroupement comme barycentre de départ;
 
 proc sort data=tempo2;
   by cluster;
@@ -97,7 +102,8 @@ run;
 *Profilage des classes;
 *=====================;
 
-*Réorganisons les données pour faire le profilage sur les variables initiales et non les variables standardisées;
+*Réorganisons les données pour faire le profilage sur les variables
+ initiales et non les variables standardisées;
 
 data groupe;
   set tempo3;
@@ -131,7 +137,8 @@ proc freq data=profil_biere;
   tables cluster*classement;
 run;
 
-*Comme la base de données est petite, on peut aussi faire sortir la liste des bières par regroupement;
+*Comme la base de données est petite, on peut aussi faire sortir
+ la liste des bières par regroupement;
 
 proc sort data=profil_biere;
   by cluster;
