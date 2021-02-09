@@ -1,11 +1,11 @@
-** Exercices pratiques : sélection de modèle;
+** Exercices pratiques : sÃ©lection de modÃ¨le;
 ** Julie Meloche;
 **=============================;
 
-**Sélection de variables et de modèles;
+**SÃ©lection de variables et de modÃ¨les;
 **====================================;
 
-**Partie#1 : préparation des données;
+**Partie#1 : prÃ©paration des donnÃ©es;
 **----------------------------------;
 
 
@@ -16,7 +16,7 @@ x6="anneeclient" x7="semainedernier" x8="montantdernier"
 x9="montantunan" x10="achatunan";
 run;
 
-/* Création de variables indicatrices pour les variables catégorielles. */
+/* CrÃ©ation de variables indicatrices pour les variables catÃ©gorielles. */
 
 data all; 
 set all;
@@ -38,68 +38,68 @@ data all;
   if x4=4 then x44=1;
 run;
 
-*Séparez le fichier de données pour avoir les données d'apprentissage dans un jeu de données ("entrainement")
- et un jeu de données pour la validation ("validation") dans un autre;
-*Sélection des clients qui ont fait un achat;
+*SÃ©parez le fichier de donnÃ©es pour avoir les donnÃ©es d'apprentissage dans un jeu de donnÃ©es ("entrainement")
+ et un jeu de donnÃ©es pour la validation ("validation") dans un autre;
+*SÃ©lection des clients qui ont fait un achat;
 
 
 **Partie 2 : Statistiques descriptives;
 **------------------------------------;
 
-*2.1 Déterminez la nature des variables ymontant et x1 à x10;
-*2.2 Produisez des tableaux de fréquence pour les variables catégorielles;
-*2.3 Calculez des statistiques descriptives (moyenne, écart-type,...) pour les variables continues;
+*2.1 DÃ©terminez la nature des variables ymontant et x1 Ã  x10;
+*2.2 Produisez des tableaux de frÃ©quence pour les variables catÃ©gorielles;
+*2.3 Calculez des statistiques descriptives (moyenne, Ã©cart-type,...) pour les variables continues;
 
 
 
-**Partie 3 : Analyses bivariées;
+**Partie 3 : Analyses bivariÃ©es;
 **=============================;
 
-*3.1 À l'aide de la procédure MEANS, comparez la moyenne et l'écart-type des achats entre :
+*3.1 Ã€ l'aide de la procÃ©dure MEANS, comparez la moyenne et l'Ã©cart-type des achats entre :
      a. les hommes et les femmes (x1)
-     b. les différents niveaux de revenu (x3)
-     c. les régions (x4)
+     b. les diffÃ©rents niveaux de revenu (x3)
+     c. les rÃ©gions (x4)
      d. le fait d'avoir un conjoint ou non (x5).;
 
 
 
-*3.2 Calculez les corrélations bivariées entre chaque variable.
+*3.2 Calculez les corrÃ©lations bivariÃ©es entre chaque variable.
      - Indiquez la variable "ymontant" en premier
-     - Utilisez x41 x42 x43 x44 plutôt que x4 car il s'agit d'une variable nominale
-     - Même si ce n'est pas tout à fait correct, entrez x3;
+     - Utilisez x41 x42 x43 x44 plutÃ´t que x4 car il s'agit d'une variable nominale
+     - MÃªme si ce n'est pas tout Ã  fait correct, entrez x3;
 
 
 
-**Partie 4 : Régression linéaire;
+**Partie 4 : RÃ©gression linÃ©aire;
 **==============================;
 
-*4.1 Utilisez la procédure REG pour ajuster un modèle avec une seule variable explicative à la fois. 
-     Autrement dit, faites 10 modèles, le 1er ne contiendra que x1, le 2ième uniquement x2, etc.
-         - la variable à prédire est ymontant
-         - N'oubliez pas d'utiliser x31 x32 plutôt que x3 et x41 x42 x43 x44 plutôt que x4
-         - x31 et x32 sont entrées dans le même modèle. Même chose pour x41 à x44.;
-*4.2 Quel modèle a obtenu le R-carré ajusté le plus élevé?;
+*4.1 Utilisez la procÃ©dure REG pour ajuster un modÃ¨le avec une seule variable explicative Ã  la fois. 
+     Autrement dit, faites 10 modÃ¨les, le 1er ne contiendra que x1, le 2iÃ¨me uniquement x2, etc.
+         - la variable Ã  prÃ©dire est ymontant
+         - N'oubliez pas d'utiliser x31 x32 plutÃ´t que x3 et x41 x42 x43 x44 plutÃ´t que x4
+         - x31 et x32 sont entrÃ©es dans le mÃªme modÃ¨le. MÃªme chose pour x41 Ã  x44.;
+*4.2 Quel modÃ¨le a obtenu le R-carrÃ© ajustÃ© le plus Ã©levÃ©?;
 
 
 
 
-**Partie 5 : Sélection d'un modèle à l'aide des indicateurs AIC et BIC/SCB.
+**Partie 5 : SÃ©lection d'un modÃ¨le Ã  l'aide des indicateurs AIC et BIC/SCB.
 **====================================================================;
 
-*5.1 Utilisez la procédure GLMSELECT pour tenter de trouver le meilleur modèle
-      - Essayez différentes combinaisons de variables en notant le AIC et le BIC pour chacun
+*5.1 Utilisez la procÃ©dure GLMSELECT pour tenter de trouver le meilleur modÃ¨le
+      - Essayez diffÃ©rentes combinaisons de variables en notant le AIC et le BIC pour chacun
       - TRUCS :
-            - Commencez par inclure la variable qui avait obtenu le R-carré ajusté le plus élevé à la partie 4
+            - Commencez par inclure la variable qui avait obtenu le R-carrÃ© ajustÃ© le plus Ã©levÃ© Ã  la partie 4
             - Les variables avec les plus petites valeurs pour la statistique "t value" (dans le tableau
-              `Parameter estimates`) sont celles qui amènent le moins d'information.
-            - Vous pouvez entrer toutes les variables dans un même modèle et tenter de voir celle qui a le plus
+              `Parameter estimates`) sont celles qui amÃ¨nent le moins d'information.
+            - Vous pouvez entrer toutes les variables dans un mÃªme modÃ¨le et tenter de voir celle qui a le plus
               petit "t-value"; si le AIC et BIC/SBC augmente en excluant cette variable, il faut l'exclure;
 
-*L'idéal serait d'ajuster le modèle avec tous les sous-ensembles de variables possibles. 
+*L'idÃ©al serait d'ajuster le modÃ¨le avec tous les sous-ensembles de variables possibles. 
 Le nombre de sous-ensembles possibles avec 10 variables est de 2^10 = 1024... Ce serait un peu long. 
-Il faut donc utiliser son jugement pour sélectionner des sous-ensembles qui semblent intéressants et faire un choix parmi ceux-ci;
+Il faut donc utiliser son jugement pour sÃ©lectionner des sous-ensembles qui semblent intÃ©ressants et faire un choix parmi ceux-ci;
 
-*5.2 Combien de variables contient votre meilleur modèle? Quel est la valeur du AIC et du BIC/SBC?;
+*5.2 Combien de variables contient votre meilleur modÃ¨le? Quel est la valeur du AIC et du BIC/SBC?;
 
 *Avec la variable x3;
 
@@ -113,22 +113,22 @@ proc glmselect data=entrainement;
   model ymontant=x1 x2 x3 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10  / selection=none;
 run;
 
-*À poursuivre...;
+*Ã€ poursuivre...;
 
 
 **Partie 6 : Estimation de l'erreur moyenne quadratique globale;
 **=============================;
 
-*6.1 Prédire les données de validation à l'aide de votre meilleur modèle. Estimez l'erreur moyenne quadratique sur les données de validation;
-     *utilisez le code suivant en remplaçant x par le sous-ensemble de variables que vous avez sélectionné;
+*6.1 PrÃ©dire les donnÃ©es de validation Ã  l'aide de votre meilleur modÃ¨le. Estimez l'erreur moyenne quadratique sur les donnÃ©es de validation;
+     *utilisez le code suivant en remplaÃ§ant x par le sous-ensemble de variables que vous avez sÃ©lectionnÃ©;
 
 proc reg data=entrainement outest=estim noprint;
-  /*Remplacez x par le sous-ensemble de variables que vous avez sélectionné*/
+  /*Remplacez x par le sous-ensemble de variables que vous avez sÃ©lectionnÃ©*/
   model ymontant=x; 
 run;
 
 proc score data=validation score=estim out=resvalidation type=parms residual;
-  /*Remplacez x par le sous-ensemble de variables que vous avez sélectionné*/
+  /*Remplacez x par le sous-ensemble de variables que vous avez sÃ©lectionnÃ©*/
   var ymontant x ; 
 run;
 
