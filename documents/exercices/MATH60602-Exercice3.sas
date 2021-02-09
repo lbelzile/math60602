@@ -99,6 +99,21 @@ proc fastclus data=biere seed=initial distance maxclusters=3 out=tempo3 maxiter=
 var cout calories sodium alcool;
 run;
 
+*Projection sur les composantes principales;
+*=====================;
+
+proc princomp data=tempo3 out=tempo4;
+var alcool cout calories sodium;
+run;
+
+proc sgplot data=tempo4;
+scatter x=prin1 y=prin2 / group = cluster;
+run;
+
+proc sgscatter data=tempo4;
+matrix alcool cout calories sodium / group = cluster;
+run;
+
 *Profilage des classes;
 *=====================;
 
