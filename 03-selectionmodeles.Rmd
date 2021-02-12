@@ -268,10 +268,10 @@ Ces deux méthodes s'attaquent directement au problème qu'on ne peut utiliser (
 
 ### Division de l'échantillon
 
-Cette idée est très simple. Nous avons un échantillon de taille n. Nous pouvons le diviser au hasard en deux parties de tailles respectives $n_1$ et $n_2$ ($n_1+n_2=n$),
+Cette idée est très simple. Nous avons un échantillon de taille $n$. Nous pouvons le diviser au hasard en deux parties de tailles respectives $n_1$ et $n_2$ ($n_1+n_2=n$),
 
 - un échantillon d'apprentissage (_training_) de taille $n_1$ et
-- un échantillon de validation de taille $n_2$.
+- un échantillon de validation (_test_) de taille $n_2$.
 
 L'échantillon d'apprentissage servira à estimer les paramètres du modèle. L'échantillon de validation servira à estimer la performance prédictive (par exemple estimer l'$\mathsf{EMQ}$) du modèle. Comme cet échantillon n'a pas servi à estimer le modèle lui-même, il est formé de « nouvelles » observations qui permettent d'évaluer d'une manière réaliste la performance du modèle. Comme il s'agit de nouvelles observations, on n'a pas à pénaliser la complexité du modèle et on peut directement utiliser le critère de performance choisi, par exemple, l'erreur quadratique moyenne, c'est-à-dire, la moyenne des erreurs au carré pour l'échantillon de validation. Cette quantité est une estimation valable de l'$\mathsf{EMQ}$ de ce modèle. On peut faire la même chose pour tous les modèles en compétition et choisir celui qui a la meilleure performance sur l'échantillon de validation. 
 
@@ -340,7 +340,9 @@ ggplot(data = emqdat, aes(x=ordre, y=emq)) +
      x = "ordre du polynôme", 
      y = "erreur moyenne quadratique") + 
   theme(legend.position="bottom",
-        legend.title=element_blank())
+        legend.title=element_blank()) + 
+  scale_x_continuous(breaks = 0:10, 
+                     labels = as.character(0:10))
   
 ```
 

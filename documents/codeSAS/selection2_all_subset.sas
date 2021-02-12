@@ -25,7 +25,6 @@
    /* 
    Commandes pour effectuer une recherche "all-subset" avec le critère du R carré
    et extraire le meilleur modèle avec une variable, le meilleur avec 2 variables etc. 
-   (p. 101).
    */
    
 
@@ -37,7 +36,6 @@
    /* 
    Commandes pour évaluer la performance du modèle retenu par lecritère AIC,
    avec l'échantillon test 
-   (p. 104).
    */
    
    /* La commande "score" demande à SAS de calculer les prévisions de ymontant
@@ -64,7 +62,6 @@
    /* 
    Commandes pour évaluer la performance du modèle retenu par le critére SBC,
    avec l'échantillon test 
-   (p. 104).
    */
    
    proc glmselect data=trainymontant;
@@ -83,7 +80,6 @@
    /* 
    Commandes pour ajuster le modèle avec les 104 variables sans faire de sélection
    et pour évaluer sa performance sur l'échantillon test 
-   (p. 115).
    */
    
    proc glmselect data=trainymontant;
@@ -121,9 +117,8 @@
    
    
    /* 
-   Commandes pour effectuer une sélection de variables avec la méthode séquentielle "stepwise" classique
-   avec un critère d'entrée (SLE) de 0,15 et uncritère de sortie (SLS) de 0,15 
-   (p. 110).
+   Commandes pour effectuer une sélection de variables avec la méthode séquentielle classique
+   avec un critère d'entrée (SLE) de 0,15 et un critère de sortie (SLS) de 0,15 
    */
 
    proc reg data=trainymontant;
@@ -174,7 +169,6 @@
    Commandes pour faire un séquentielle avec des critères plus généreux (entrée=sortie=0,6).
    à la fin, il y aura plus de variables, 56 ici.
    Ces 56 variables seront ensuite envoyés dans une recherche all-subset. 
-   (p. 116-117).
    */
    
 
@@ -279,7 +273,6 @@
    Commandes pour faire une recherche de type séquentielle en utilisant le AIC ("select=aic"), 
    au lieu des p-values, pour entrer ou retirer des variables et le BIC/SBC ("choose=sbc")
    pour sélectionner le meilleur modèle à la toute fin. 
-   (p. 118).
    */
    
 
@@ -361,7 +354,6 @@
    Chaque modèle est obtenu en faisant une recherche de type séquentielle en utilisant le BIC/SBC
    pour entrer ou retirer des variables et encore le SBC pour sélectionner le meilleur modèle
    à la toute fin. 
-   (p. 124).
    */
    
 
