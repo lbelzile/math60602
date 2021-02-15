@@ -664,7 +664,84 @@ knitr::include_graphics("figures/02-select-e14.png")
 knitr::include_graphics("figures/02-select-e15.png")
 ```
 
-Il s'avère que ce modèle performe très bien avec une erreur moyenne quadratique estimé à $10,08$ sur les 23 179 clients de l'échantillon test. Il s'agit du meilleur jusqu'à maintenant. 
+Il s'avère que ce modèle performe très bien avec une erreur moyenne quadratique estimé à $10.08$ sur les 23 179 clients de l'échantillon test. Il s'agit du meilleur jusqu'à maintenant. 
+
+## Méthodes de régression avec régularisation
+
+Une façon d'éviter le surajustement est d'ajouter une pénalité sur les coefficients: ce faisant, on introduit un biais dans nos estimés, mais dans l'espoir de réduire leur variabilité et ainsi d'obtenir une meilleur erreur moyenne quadratique. 
+
+Les estimateurs des moindres carrés ordinaires pour la régression linéaire représentent la combinaison qui minimise la somme du carré des erreurs,
+\begin{align*}
+\mathsf{SCE} = \sum_{i=1}^n \left(y_i - \alpha - \sum_{j=1}^p\mathrm{X}_{ij}\beta_{j}\right)^2.
+\end{align*}
+On peut ajouter à cette fonction objective $\mathsf{SCE}$ un terme additionnel de pénalité qui va contraindre les paramètres à ne pas être trop grand. On considère une pénalité additionnelle pour la valeur absolue des coefficients,  \[
+q_1(\lambda) = \lambda \sum_{j=1}^p |\beta_j|.
+\]
+Pour chaque valeur de $\lambda$ donnée, on obtiendra une solution différente pour les estimés car on minimisera désormais $\mathsf{SCE} + q_1(\lambda)$. On ne pénalise pas l'ordonnée à l'origine $\alpha$, parce que ce coefficient sert à recentrer les observations et a une signification particulière. Si on standardise les données, de manière à ce que leur moyenne empirique soit zéro et leur écart-type un, alors $\widehat{\alpha} = \overline{y}$. 
+
+L'avantage des moindres carrés est que les valeurs ajustées et les prédictions ne changent pas si on fait une transformation affine (de type $Z = aX+b$).
+Peu importe le choix d'unités (par exemple, exprimer une distance en centimètres plutôt qu'en mètres, ou la température en Farenheit plutôt qu'en Celcius), on obtient le même modèle. En revanche, une fois qu'on introduit un terme de pénalité, notre solution dépendra de l'unité de mesure, d'où l'importance d'utiliser les données centrées et réduites pour que la solution reste la même.
+
+La pénalité $q_1(\lambda)$ a un rôle particulier parce qu'elle a deux effets: elle réduit la taille des paramètres, mais elle force également certains paramètres très proches de zéro à être exactement égaux à zéro, ce qui fait que la régression pénalité agit également comme outil de sélection de variables. Des algorithmes efficaces permettent de trouver la solution du problème d'optimisation
+\begin{align*}
+\min_{\boldsymbol{\beta}} \{\mathsf{SCE} + q_1(\lambda)\} = \min_{\boldsymbol{\beta}}  \left\{\sum_{i=1}^n \left(y_i - \alpha - \sum_{j=1}^p\mathrm{X}_{ij}\beta_{j}\right)^2 +
+\lambda \sum_{j=1}^p |\beta_j|\right\}
+\end{align*}
+laquelle est appelée LASSO. La Figure \@ref(fig:lassopenalty) montre la fonction objective dans le cas où on a deux paramètres, $\beta_1$ et $\beta_2$. La solution des moindres carrés ordinaires, qui minimisent l'erreur moyenne quadratique, est au centre des ellipses de contour et correspond à la solution du modèle avec $\lambda=0$. À mesure que l'on augmente la pénalité $\lambda$, les coefficients rétrécissent vers $(0, 0$. On peut interpréter la pénalité $l_1$ comme une contraire budgétaire: les coefficients estimés pour une valeur de $\lambda$ donnée sont ceux qui minimisent la somme du carré des erreurs, mais doivent être à l'intérieur d'un budget alloué (losange). La forme de la région fait en sorte que la solution, qui se trouve sur la bordure du losange, intervient dans un coin avec certaines coordonnées nulles.
+
+
+```{r lassopenalty, cache = TRUE, fig.cap = "Courbes de contour du critère de l'erreur moyenne quadratique (ellipses) et fonction de pénalité (losanges) pour différentes valeurs de $\\lambda$. Les points dénotent des solutions différentes et intersectent les contours du losange.", eval = TRUE, echo = FALSE}
+set.seed(1234)
+n <- 100L
+X <- scale(cbind(rpois(n, 2), runif(n)))
+y <- scale(X[,1] + 0.5*X[,2] + rnorm(n, sd = 0.4))
+fit <- lm(y ~ X - 1)
+points <- data.frame(x = c(0, fit$coefficients[1]), y = c(0, fit$coefficients[2]), z = c("(0,0)", "SCE"))
+
+beta1 <- seq(-0.5, 1.5, length.out = 101)
+beta2 <- seq(-0.5, 1.5, length.out = 101)
+df <- expand.grid(beta1 = beta1, beta2 = beta2)
+
+b <- as.matrix(df)
+df$sse <- rep(t(y) %*% y, length(beta1)*length(beta2)) - 2 * b %*% t(X) %*% y + diag(b %*% t(X) %*% X %*% t(b))
+
+diamond <- function(side_length, center) {
+  base <- matrix(c(1, 0, 0, 1, -1, 0, 0, -1), nrow = 2) * sqrt(2) / 2
+  trans <- (base * side_length) + center
+  as.data.frame(t(trans))
+}
+
+a <- glmnet::glmnet(x = X, y = y, lambda = seq(0, 1, by = 0.05))
+
+ggplot(df) + theme_classic() + 
+  stat_contour(aes(beta1, beta2, z = sse),
+               breaks = round(quantile(df$sse, seq(0, 0.5, 0.05)), 0),
+               size = 0.5, color = "grey", alpha = 0.8
+  ) +
+  scale_x_continuous(limits = c(-0.5, 1.5)) +
+  scale_y_continuous(limits = c(-0.5, 1.5)) +
+  geom_polygon(data = diamond(0.1, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(0.2, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(0.3, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(0.4, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(0.5, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(0.6, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(0.7, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(0.8, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(0.9, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(1, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(1.1, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(1.2, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  labs(x = expression(beta[1]), y = expression(beta[2])) + 
+  geom_point(data = data.frame(t(as.matrix(a$beta))), aes(x = V1, y = V2))
+
+
+```
+
+Plusieurs variantes existent dans la littérature qui généralisent le modèle à des contextes plus compliqués. Le choix des variables à inclure dans la sélection dépend du choix de la pénalité $\lambda$, qui est règle générale estimée par validation croisée à 5 ou 10 groupes.
+
+
+
 
 ## Moyenne de modèles 
 
@@ -716,10 +793,11 @@ Table: (\#tab:02-modelcomparaisonfull) Comparaison des méthodes selon l'erreur 
 | | 38 | 14,83 |séquentielle classique, recherche exhaustive avec 56 variables $(\mathsf{AIC})$ |
 | | 15 | 11,96 |séquentielle classique, recherche exhaustive avec 56 variables $(\mathsf{BIC})$|
 | | 10 | 10,08 |séquentielle avec critère $\mathsf{AIC}$ (choix selon le $\mathsf{BIC}$)|
+| | 26 | 11,61 | LASSO, validation croisée avec 10 groupes |
 | |  | 10,57 |moyenne de modèles |
 
 Dans cet exemple, la méthode séquentielle de `glmselect` avec les options  `select=aic` et `choose=bic` aurait donné le meilleur résultat pour prévoir le montant acheté des clients restants (de ceux qui auraient acheté quelque chose). Le deuxième meilleur aurait été la moyenne des modèles. 
 
-Il y aurait plusieurs autres approches/combinaisons qui pourraient être testées. Le but de ce chapitre était simplement de présenter les principes de base en sélection de modèles et de variables ainsi que certaines approches pratiques. Il y a d'autres approches intéressantes, tels le LASSO et LARS (_least-angle regression_) qui sont disponibles dans `glmselect`. Ces méthodes sont dans la même mouvance moderne que celle qui consiste à faire la moyenne de plusieurs modèles, en performant à la fois une sélection de variables et en permettant d'avoir des parties d'effet par le rétrécissement (_shrinkage_). De récents développements théoriques permettent de corriger les valeurs-_p_ pour faire de l'inférence post-sélection.
+Il y aurait plusieurs autres approches/combinaisons qui pourraient être testées. Le but de ce chapitre était simplement de présenter les principes de base en sélection de modèles et de variables ainsi que certaines approches pratiques. Il y a d'autres approches intéressantes, tels le filet élastique LARS (_least-angle regression_) qui sont disponibles dans `glmselect`. Ces méthodes sont dans la même mouvance moderne que celle qui consiste à faire la moyenne de plusieurs modèles, en performant à la fois une sélection de variables et en permettant d'avoir des parties d'effet par le rétrécissement (_shrinkage_). De récents développements théoriques permettent aussi de corriger les valeurs-_p_ pour faire de l'inférence post-sélection avec le LASSO.
 
 Il faut bien comprendre qu'il ne s'agit que d'un seul exemple: il ne faut surtout pas conclure que la méthode séquentielle de `glmselect` avec les options `select=aic` et `choose=bic` sera toujours la meilleure. En fait, il est impossible de prévoir quelle méthode donnera les meilleurs résultats.

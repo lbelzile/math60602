@@ -116,7 +116,8 @@
 <li class="chapter" data-level="4.10" data-path="selection-modele.html"><a href="selection-modele.html#recherche-automatique-de-tous-les-sous-ensembles"><i class="fa fa-check"></i><b>4.10</b> Recherche automatique de tous les sous-ensembles</a></li>
 <li class="chapter" data-level="4.11" data-path="selection-modele.html"><a href="selection-modele.html#méthodes-classiques-de-sélection"><i class="fa fa-check"></i><b>4.11</b> Méthodes classiques de sélection</a></li>
 <li class="chapter" data-level="4.12" data-path="selection-modele.html"><a href="selection-modele.html#recherche-séquentielle-automatique-limitée"><i class="fa fa-check"></i><b>4.12</b> Recherche séquentielle automatique limitée</a></li>
-<li class="chapter" data-level="4.13" data-path="selection-modele.html"><a href="selection-modele.html#moyenne-de-modèles"><i class="fa fa-check"></i><b>4.13</b> Moyenne de modèles</a></li>
+<li class="chapter" data-level="4.13" data-path="selection-modele.html"><a href="selection-modele.html#méthodes-de-régression-avec-régularisation"><i class="fa fa-check"></i><b>4.13</b> Méthodes de régression avec régularisation</a></li>
+<li class="chapter" data-level="4.14" data-path="selection-modele.html"><a href="selection-modele.html#moyenne-de-modèles"><i class="fa fa-check"></i><b>4.14</b> Moyenne de modèles</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="regression-logistique.html"><a href="regression-logistique.html"><i class="fa fa-check"></i><b>5</b> Régression logistique</a>
 <ul>
@@ -1233,10 +1234,37 @@ run;</code></pre>
 <p>Voici différentes statistiques ainsi que les estimations des paramètres de ce modèle qui contient 10 variables.</p>
 <p><img src="figures/02-select-e14.png" width="65%" style="display: block; margin: auto;" />
 <img src="figures/02-select-e15.png" width="70%" style="display: block; margin: auto;" /></p>
-<p>Il s’avère que ce modèle performe très bien avec une erreur moyenne quadratique estimé à <span class="math inline">\(10,08\)</span> sur les 23 179 clients de l’échantillon test. Il s’agit du meilleur jusqu’à maintenant.</p>
+<p>Il s’avère que ce modèle performe très bien avec une erreur moyenne quadratique estimé à <span class="math inline">\(10.08\)</span> sur les 23 179 clients de l’échantillon test. Il s’agit du meilleur jusqu’à maintenant.</p>
 </div>
-<div id="moyenne-de-modèles" class="section level2" number="4.13">
-<h2><span class="header-section-number">4.13</span> Moyenne de modèles</h2>
+<div id="méthodes-de-régression-avec-régularisation" class="section level2" number="4.13">
+<h2><span class="header-section-number">4.13</span> Méthodes de régression avec régularisation</h2>
+<p>Une façon d’éviter le surajustement est d’ajouter une pénalité sur les coefficients: ce faisant, on introduit un biais dans nos estimés, mais dans l’espoir de réduire leur variabilité et ainsi d’obtenir une meilleur erreur moyenne quadratique.</p>
+<p>Les estimateurs des moindres carrés ordinaires pour la régression linéaire représentent la combinaison qui minimise la somme du carré des erreurs,
+<span class="math display">\[\begin{align*}
+\mathsf{SCE} = \sum_{i=1}^n \left(y_i - \alpha - \sum_{j=1}^p\mathrm{X}_{ij}\beta_{j}\right)^2.
+\end{align*}\]</span>
+On peut ajouter à cette fonction objective <span class="math inline">\(\mathsf{SCE}\)</span> un terme additionnel de pénalité qui va contraindre les paramètres à ne pas être trop grand. On considère une pénalité additionnelle pour la valeur absolue des coefficients, <span class="math display">\[
+q_1(\lambda) = \lambda \sum_{j=1}^p |\beta_j|.
+\]</span>
+Pour chaque valeur de <span class="math inline">\(\lambda\)</span> donnée, on obtiendra une solution différente pour les estimés car on minimisera désormais <span class="math inline">\(\mathsf{SCE} + q_1(\lambda)\)</span>. On ne pénalise pas l’ordonnée à l’origine <span class="math inline">\(\alpha\)</span>, parce que ce coefficient sert à recentrer les observations et a une signification particulière. Si on standardise les données, de manière à ce que leur moyenne empirique soit zéro et leur écart-type un, alors <span class="math inline">\(\widehat{\alpha} = \overline{y}\)</span>.</p>
+<p>L’avantage des moindres carrés est que les valeurs ajustées et les prédictions ne changent pas si on fait une transformation affine (de type <span class="math inline">\(Z = aX+b\)</span>).
+Peu importe le choix d’unités (par exemple, exprimer une distance en centimètres plutôt qu’en mètres, ou la température en Farenheit plutôt qu’en Celcius), on obtient le même modèle. En revanche, une fois qu’on introduit un terme de pénalité, notre solution dépendra de l’unité de mesure, d’où l’importance d’utiliser les données centrées et réduites pour que la solution reste la même.</p>
+<p>La pénalité <span class="math inline">\(q_1(\lambda)\)</span> a un rôle particulier parce qu’elle a deux effets: elle réduit la taille des paramètres, mais elle force également certains paramètres très proches de zéro à être exactement égaux à zéro, ce qui fait que la régression pénalité agit également comme outil de sélection de variables. Des algorithmes efficaces permettent de trouver la solution du problème d’optimisation
+<span class="math display">\[\begin{align*}
+\min_{\boldsymbol{\beta}} \{\mathsf{SCE} + q_1(\lambda)\} = \min_{\boldsymbol{\beta}}  \left\{\sum_{i=1}^n \left(y_i - \alpha - \sum_{j=1}^p\mathrm{X}_{ij}\beta_{j}\right)^2 +
+\lambda \sum_{j=1}^p |\beta_j|\right\}
+\end{align*}\]</span>
+laquelle est appelée LASSO. La Figure <a href="selection-modele.html#fig:lassopenalty">4.1</a> montre la fonction objective dans le cas où on a deux paramètres, <span class="math inline">\(\beta_1\)</span> et <span class="math inline">\(\beta_2\)</span>. La solution des moindres carrés ordinaires, qui minimisent l’erreur moyenne quadratique, est au centre des ellipses de contour et correspond à la solution du modèle avec <span class="math inline">\(\lambda=0\)</span>. À mesure que l’on augmente la pénalité <span class="math inline">\(\lambda\)</span>, les coefficients rétrécissent vers <span class="math inline">\((0, 0\)</span>. On peut interpréter la pénalité <span class="math inline">\(l_1\)</span> comme une contraire budgétaire: les coefficients estimés pour une valeur de <span class="math inline">\(\lambda\)</span> donnée sont ceux qui minimisent la somme du carré des erreurs, mais doivent être à l’intérieur d’un budget alloué (losange). La forme de la région fait en sorte que la solution, qui se trouve sur la bordure du losange, intervient dans un coin avec certaines coordonnées nulles.</p>
+<div class="figure" style="text-align: center"><span id="fig:lassopenalty"></span>
+<img src="MATH60602_files/figure-html/lassopenalty-1.png" alt="Courbes de contour du critère de l'erreur moyenne quadratique (ellipses) et fonction de pénalité (losanges) pour différentes valeurs de $\lambda$. Les points dénotent des solutions différentes et intersectent les contours du losange." width="70%" />
+<p class="caption">
+Figure 4.1: Courbes de contour du critère de l’erreur moyenne quadratique (ellipses) et fonction de pénalité (losanges) pour différentes valeurs de <span class="math inline">\(\lambda\)</span>. Les points dénotent des solutions différentes et intersectent les contours du losange.
+</p>
+</div>
+<p>Plusieurs variantes existent dans la littérature qui généralisent le modèle à des contextes plus compliqués. Le choix des variables à inclure dans la sélection dépend du choix de la pénalité <span class="math inline">\(\lambda\)</span>, qui est règle générale estimée par validation croisée à 5 ou 10 groupes.</p>
+</div>
+<div id="moyenne-de-modèles" class="section level2" number="4.14">
+<h2><span class="header-section-number">4.14</span> Moyenne de modèles</h2>
 <p>Une idée importante et moderne en statistique est qu’il est souvent préférable de combiner plusieurs modèles plutôt que d’en choisir un seul. La technique des forêts aléatoires (<em>random forests</em>) est une des meilleures techniques de prédiction disponibles de nos jours. Elle est basée sur cette idée, en combinant plusieurs arbres de classification (ou de régression) individuels. C’est une des techniques de base en exploitation de données.</p>
 <p>Ici, nous allons voir comment cette idée peut être appliquée à notre contexte. Toutes les méthodes que nous avons vues jusqu’à maintenant font une sélection « rigide » de variables, dans le sens que chaque variable est soit sélectionnée pour faire partie du modèle, soit elle ne l’est pas. C’est donc tout ou rien pour chaque variable. Il y a beaucoup de variabilité associée à une telle forme de sélection. Une variable peut avoir été très près d’être choisie, mais elle ne l’a pas été et est éliminée complètement. Construire plusieurs modèles et en faire la moyenne permet d’adoucir le processus de sélection car une variable peut alors être partiellement sélectionnée.</p>
 <p>Supposons qu’on dispose de deux échantillons et qu’on fasse une sélection de variables séparément pour les deux échantillons, avec l’une des approches que nous avons vues jusqu’à maintenant. Il est alors très probable qu’on ne va pas avoir exactement les mêmes variables sélectionnées pour les deux échantillons. Supposons ensuite qu’on fasse la moyenne des coefficients pour les deux modèles. Si une variable, disons <span class="math inline">\(X_1\)</span>, a été choisie les deux fois, alors la moyenne des deux coefficients devrait estimer en quelque sorte un effet global pour cette variable. Si une autre variable, disons <span class="math inline">\(X_2\)</span>, n’a pas été choisie du tout pour les deux échantillons, alors la moyenne de ses deux coefficients est nulle. Mais si une variable, disons, <span class="math inline">\(X_3\)</span>, a été choisie pour seulement l’un des deux échantillons, alors la moyenne de ses deux coefficients est la moitié du coefficient pour le modèle dans lequel elle a été choisie (car l’autre est zéro). Ainsi, cette variable est donc représentée par une « moitié » d’effet dans la moyenne des modèles. Donc au lieu d’être totalement là ou totalement absente, elle est présente en fonction de sa probabilité d’être sélectionnée. Ceci diminue de beaucoup la variabilité engendrée par une sélection « rigide » de variables et permet souvent de produire un modèle fort raisonnable.</p>
@@ -1326,6 +1354,12 @@ run;</code></pre>
 </tr>
 <tr class="odd">
 <td align="left"></td>
+<td align="center">26</td>
+<td align="center">11,61</td>
+<td align="left">LASSO, validation croisée avec 10 groupes</td>
+</tr>
+<tr class="even">
+<td align="left"></td>
 <td align="center"></td>
 <td align="center">10,57</td>
 <td align="left">moyenne de modèles</td>
@@ -1333,7 +1367,7 @@ run;</code></pre>
 </tbody>
 </table>
 <p>Dans cet exemple, la méthode séquentielle de <code>glmselect</code> avec les options <code>select=aic</code> et <code>choose=bic</code> aurait donné le meilleur résultat pour prévoir le montant acheté des clients restants (de ceux qui auraient acheté quelque chose). Le deuxième meilleur aurait été la moyenne des modèles.</p>
-<p>Il y aurait plusieurs autres approches/combinaisons qui pourraient être testées. Le but de ce chapitre était simplement de présenter les principes de base en sélection de modèles et de variables ainsi que certaines approches pratiques. Il y a d’autres approches intéressantes, tels le LASSO et LARS (<em>least-angle regression</em>) qui sont disponibles dans <code>glmselect</code>. Ces méthodes sont dans la même mouvance moderne que celle qui consiste à faire la moyenne de plusieurs modèles, en performant à la fois une sélection de variables et en permettant d’avoir des parties d’effet par le rétrécissement (<em>shrinkage</em>). De récents développements théoriques permettent de corriger les valeurs-<em>p</em> pour faire de l’inférence post-sélection.</p>
+<p>Il y aurait plusieurs autres approches/combinaisons qui pourraient être testées. Le but de ce chapitre était simplement de présenter les principes de base en sélection de modèles et de variables ainsi que certaines approches pratiques. Il y a d’autres approches intéressantes, tels le filet élastique LARS (<em>least-angle regression</em>) qui sont disponibles dans <code>glmselect</code>. Ces méthodes sont dans la même mouvance moderne que celle qui consiste à faire la moyenne de plusieurs modèles, en performant à la fois une sélection de variables et en permettant d’avoir des parties d’effet par le rétrécissement (<em>shrinkage</em>). De récents développements théoriques permettent aussi de corriger les valeurs-<em>p</em> pour faire de l’inférence post-sélection avec le LASSO.</p>
 <p>Il faut bien comprendre qu’il ne s’agit que d’un seul exemple: il ne faut surtout pas conclure que la méthode séquentielle de <code>glmselect</code> avec les options <code>select=aic</code> et <code>choose=bic</code> sera toujours la meilleure. En fait, il est impossible de prévoir quelle méthode donnera les meilleurs résultats.</p>
 
 </div>

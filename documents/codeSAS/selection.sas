@@ -935,14 +935,28 @@ run;
 
 
 /* Utilisation de la syntaxe spéciale pour spécifier les interactions d'ordre 2 */
-
-
 proc glmselect data=trainymontant;
 class x3 x4;
 model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10@2 cx2 cx6 cx7 cx8 cx9 cx10  /   
 selection=stepwise(select=aic choose=sbc)  ; 
 score data=testymontant out=predglmselectaicsbc p=predymontant;
 run;
+
+/* LASSO avec validation croisée à 10 groupes */
+proc glmselect data=trainymontant plots=coefficients;;
+class x3 x4;
+model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10@2 cx2 cx6 cx7 cx8 cx9 cx10  /   
+selection=lasso(steps=120 choose=cv)cvmethod=split(10);
+score data=testymontant out=predlasso p=predymontant;
+run;
+
+data predlasso;
+set predlasso;
+erreur=(ymontant-predymontant)**2;
+run;
+proc means data=predlasso n mean ;
+var erreur;
+run; 
 
 
 
