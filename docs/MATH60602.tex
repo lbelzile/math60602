@@ -114,7 +114,7 @@
 
 \title{Analyse multidimensionnelle appliquée}
 \author{(c) Denis Larocque, Léo Belzile}
-\date{version du 2021-02-14}
+\date{version du 2021-02-17}
 
 \usepackage{amsthm}
 \newtheorem{theorem}{Théorème}[chapter]
@@ -138,8 +138,9 @@
 \setcounter{tocdepth}{1}
 \tableofcontents
 }
-\hypertarget{introduction}{%
-\chapter{Introduction}\label{introduction}}
+\hypertarget{introduction-introduction}{%
+\chapter*{Introduction \{\#introduction\}}\label{introduction-introduction}}
+\addcontentsline{toc}{chapter}{Introduction \{\#introduction\}}
 
 \newcommand{\bs}[1]{\boldsymbol{#1}}
 \newcommand{\eps}{\varepsilon}
@@ -156,9 +157,6 @@
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\Hy}{\mathcal{H}}
 \renewcommand{\d}{\mathrm{d}}
-
-\hypertarget{survol-du-cours}{%
-\section{Survol du cours}\label{survol-du-cours}}
 
 \hypertarget{analyse-factorielle-exploratoire}{%
 \subsection{Analyse factorielle exploratoire}\label{analyse-factorielle-exploratoire}}
@@ -616,8 +614,8 @@ Si vous incluez un graphique (ou un tableau), il est important d'ajouter une lé
 \hypertarget{analyse-factorielle}{%
 \chapter{Analyse factorielle exploratoire}\label{analyse-factorielle}}
 
-\hypertarget{introduction-1}{%
-\section{Introduction}\label{introduction-1}}
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
 
 On dispose de \(p\) variables \(X_1, \ldots, X_p\).
 
@@ -844,9 +842,9 @@ Les sorties suivantes proviennent du même programme SAS et correspondent au mod
 
 \begin{center}\includegraphics[width=0.7\linewidth]{figures/01-facto-e4} \end{center}
 
-Pour choisir le nombre de facteurs avec les critères d'information, il faut ajuster le modèle en faisant varier le nombre de facteurs (option \texttt{nfact}) et extraire la valeur numérique correspondante.
+Pour choisir le nombre de facteurs avec les critères d'information, il faut ajuster le modèle en faisant varier le nombre de facteurs (option \texttt{nfact}) et extraire la valeur numérique correspondante. Si \texttt{nfact} dépasse le nombre de valeurs propres estimées supérieures à \(1\) (critère \texttt{mineigen}), la spécification \texttt{nfact} sera ignorée à moins que vous ne spécifiez un autre critère, par exemple \texttt{priors=one}. Cette option revient à démarrer l'algorithme d'optimisation avec la contrainte \(\sum_{l=1}^k \gamma_{jl}^2=1, \psi_j=0\). En revanche, méfiez-vous: cela mène à des maximums locaux, n'employez l'option que si nécessaire.
 
-Il faut garder en tête que l'estimation par maximum de vraisemblance du modèle d'analyse factorielle est très sensible et que selon l'algorithme d'optimisation numérique, on obtiendra des valeurs différentes selon les logiciels. Cette fragilité, couplée à la haute fréquence de cas de Heywood (la solution numérique donne des communalités qui excèdent un, or ces dernières représentent le carré d'un coefficient de corrélation linéaire, ce qui rend l'interprétation du modèle caduque), font en sorte que je préfère utiliser la méthode des composantes principales pour l'estimation.
+Il faut garder en tête que l'estimation par maximum de vraisemblance du modèle d'analyse factorielle est très sensible à l'initialisation: on peut aussi parfois obtenir des valeurs différentes selon les logiciels. Cette fragilité, couplée à la haute fréquence de cas de Heywood (la solution numérique donne des communalités qui excèdent un, or ces dernières représentent le carré d'un coefficient de corrélation linéaire, ce qui rend l'interprétation du modèle caduque), fait en sorte que je préfère utiliser la méthode des composantes principales pour l'estimation.
 
 Le tableau \ref{tab:ICtable} présente les valeurs estimées des critères d'information et des valeurs-\(p\) pour le test du rapport de vraisemblance pour cinq modèles. Le critère AIC suggère quatre facteurs, tandis que les deux autres critères, BIC et test du rapport de vraisemblance, suggèrent plutôt trois facteurs.
 
@@ -1172,8 +1170,8 @@ Les corrélations entre les échelles (construites avec les moyennes) et les sco
 \hypertarget{analyse-regroupements}{%
 \chapter{Analyse de regroupements}\label{analyse-regroupements}}
 
-\hypertarget{introduction-2}{%
-\section{Introduction}\label{introduction-2}}
+\hypertarget{introduction-1}{%
+\section{Introduction}\label{introduction-1}}
 
 On cherche à créer des groupes (\emph{clusters}) d'individus homogènes en utilisant \(p\) variables \(X_1, \ldots, X_p\). Plus précisément, on veut combiner des sujets en groupes (interprétables) de telle sorte que les individus d'un même groupe soient le plus semblables possible par rapport à certaines caractéristiques et que les groupes soient le plus différent possible.\\
 Nous disposons des observations pour \(n\) individus et \(X_{ij}\) dénote la valeur de la \(j\)e variable explicative pour le \(i\)e sujet: les variables correspondant au sujet \(S_i\) sont donc \(X_{i1}, \ldots, X_{ip}\).
@@ -1641,8 +1639,8 @@ Le problème majeur avec l'analyse de regroupements est qu'il n'y a pas de faço
 \hypertarget{selection-modele}{%
 \chapter{Sélection de variables et de modèles}\label{selection-modele}}
 
-\hypertarget{introduction-3}{%
-\section{Introduction}\label{introduction-3}}
+\hypertarget{introduction-2}{%
+\section{Introduction}\label{introduction-2}}
 
 Ce chapitre présente des principes, outils et méthodes très généraux pour choisir un « bon » modèle. Nous allons principalement utiliser la régression linéaire pour illustrer les méthodes en supposant que tout le monde connaît ce modèle de base. Les méthodes présentées sont en revanche très générales et peuvent être appliquées avec n'importe quel autre modèle (régression logistique, arbres de classification et régression, réseaux de neurones, analyse de survie, etc.)
 
@@ -1995,15 +1993,15 @@ Voici d'abord des statistiques descriptives pour l'échantillon d'apprentissage.
 
 \begin{center}\includegraphics[width=0.6\linewidth]{figures/02-select-e3} \end{center}
 
-Il y a donc \(46,6\)\% de femmes parmi les 1000 clients de l'échantillon. De plus, \(39,7\)\% ont un revenu de moins de 35 000\$, \(33,7\)\% sont entre 35 000\$ et 75 000\$ et \(26,6\)\% ont plus de 75 000\$. \(42,5\)\% de ces clients qui ont un conjoint.
+Il y a donc 46,6\% de femmes parmi les 1000 clients de l'échantillon. De plus, 39,7\% ont un revenu de moins de 35 000\$, 33,7\% sont entre 35 000\$ et 75 000\$ et 26,6\% ont plus de 75 000\$. 42,5\% de ces clients qui ont un conjoint.
 
 \begin{center}\includegraphics[width=0.9\linewidth]{figures/02-select-e4} \end{center}
 
-Le nombre d'achats différents depuis un an par ces clients varie entre 1 et 14. Un peu plus de la moitié (\(51,4\)\%) ont fait 5 achats ou moins. Parmi les 1000 clients de l'échantillon d'apprentissage, 210 ont acheté quelque chose dans le catalogue. La variable yachat sera l'une des variables que nous allons chercher à modéliser en vue d'obtenir des prédictions.
+Le nombre d'achats différents depuis un an par ces clients varie entre 1 et 14. Un peu plus de la moitié (51,4\%) ont fait cinq achats ou moins. Parmi les 1000 clients de l'échantillon d'apprentissage, 210 ont acheté quelque chose dans le catalogue. La variable yachat sera l'une des variables que nous allons chercher à modéliser en vue d'obtenir des prédictions.
 
 \begin{center}\includegraphics[width=0.9\linewidth]{figures/02-select-e5} \end{center}
 
-L'âge des 1000 clients de l'échantillon d'apprentissage varie entre 20 et 70 avec une moyenne de \(37,1\) ans. En moyenne, ces clients ont acheté pour \(229,3\)\$ depuis un an. Le dernier achat de ces clients remonte, en moyenne, à 10 semaines. Nous chercherons également à modéliser la variable \texttt{ymontant}. Seuls 210 clients ont acheté quelque chose dans le catalogue et les statistiques rapportées correspondent seulement à ces derniers, car la variable \texttt{ymontant} est manquante si le client n'a rien acheté dans le catalogue. On pourrait également remplacer ces valeurs par des zéros et les modéliser, mais nous aborderons cet aspect ultérieurement. Les clients qui ont acheté quelque chose ont dépensé en moyenne \(67,3\)\$, et au minimum \(25\)\$. Les histogrammes de quelques unes de ces variables permet de mieux visualiser la répartition des observations.
+L'âge des 1000 clients de l'échantillon d'apprentissage varie entre 20 et 70 avec une moyenne de 37,1 ans. En moyenne, ces clients ont acheté pour 229,30\$ depuis un an. Le dernier achat de ces clients remonte, en moyenne, à 10 semaines. Nous chercherons également à modéliser la variable \texttt{ymontant}. Seuls 210 clients ont acheté quelque chose dans le catalogue et les statistiques rapportées correspondent seulement à ces derniers, car la variable \texttt{ymontant} est manquante si le client n'a rien acheté dans le catalogue. On pourrait également remplacer ces valeurs par des zéros et les modéliser, mais nous aborderons cet aspect ultérieurement. Les clients qui ont acheté quelque chose ont dépensé en moyenne 67,3\$, et au minimum 25\$. Les histogrammes de quelques unes de ces variables permet de mieux visualiser la répartition des observations.
 
 \begin{center}\includegraphics[width=0.9\linewidth]{figures/02-select-e6} \end{center}
 
@@ -2029,7 +2027,7 @@ On peut donc estimer \({\mathsf E}\left(\texttt{ymontant} \mid \texttt{yachat}=1
 
 Comme nous n'avons pas encore vu la régression logistique, nous allons nous limiter à illustrer les méthodes qui restent à voir dans ce chapitre avec la régression linéaire en cherchant à développer un modèle pour \({\mathsf E}\left(\texttt{ymontant} \mid \texttt{yachat}=1\right)\), le montant d'argent dépensé par les clients qui ont acheté quelque chose.
 
-Le fichier \texttt{prepare\_DBM.sas} contient des commandes afin de préparer les données aux analyses qui seront présentées dans les sections qui suivent. En particulier, nous avons deux variables explicatives catégorielles. Il s'agit de revenu (\texttt{x3}) et région (\texttt{x4}). Il faut coder d'une manière appropriée afin de pouvoir les incorporer dans les modèles. La manière habituelle est de créer des variables indicatrices (binaires) qui indiquent si la variable prend ou non une valeur particulière. En général, si une variable catégorielle possède \(K\) valeurs possibles, il est suffisant de créer \(K-1\) indicatrices, en laissant une modalité comme référence. Par exemple, pour \texttt{x3}, nous allons créer deux variables,
+La base de donnée contient deux variables explicatives catégorielles. Il s'agit de revenu (\texttt{x3}) et région (\texttt{x4}). Il faut coder d'une manière appropriée afin de pouvoir les incorporer dans les modèles. La manière habituelle est de créer des variables indicatrices (binaires) qui indiquent si la variable prend ou non une valeur particulière, dans \textbf{SAS} avec l'option \texttt{class}. En général, si une variable catégorielle possède \(K\) valeurs possibles, il est suffisant de créer \(K-1\) indicatrices, en laissant une modalité comme référence. Par exemple, pour \texttt{x3}, nous allons créer deux variables,
 
 \begin{itemize}
 \tightlist
@@ -2056,8 +2054,6 @@ Ainsi, la valeur 3 est celle de référence. Ces deux indicatrices sont suffisan
 3 & 0 & 0 \\ \addlinespace
 \bottomrule
 \end{longtable}
-
-En pratique, il suffit d'incorporer les indicatrices (\texttt{x31} et \texttt{x32}) dans le modèle comme variables explicatives et de ne plus utiliser la variable originale \texttt{x3}. On peut aussi procéder ainsi pour la variable \texttt{x4}, en créant quatre indicatrices.
 
 \hypertarget{recherche-automatique-du-meilleur-moduxe8le}{%
 \section{Recherche automatique du meilleur modèle}\label{recherche-automatique-du-meilleur-moduxe8le}}
@@ -2093,14 +2089,7 @@ Faire une recherche exhaustive parmi tous les modèles possibles s'appelle séle
 \hypertarget{recherche-automatique-de-tous-les-sous-ensembles}{%
 \section{Recherche automatique de tous les sous-ensembles}\label{recherche-automatique-de-tous-les-sous-ensembles}}
 
-On veut trouver un bon modèle pour prévoir la valeur de \texttt{ymontant} des clients qui ont acheté quelque chose. On a vu qu'il y a 210 clients qui ont acheté dans l'échantillon d'apprentissage. Nous allons chercher à développer un « bon » modèle avec ces 210 clients. Dans ce premier exemple, nous allons seulement utiliser les 10 variables explicatives de base (14 variables avec les indicatrices). Le code suivant montre comment faire une sélection de variables selon le critère du \(R^2\) et demande à \textbf{SAS} de présenter le modèle à \(k\) variables (\(k=1, \ldots, 14\)) qui a le plus grand \(R^2\); voir \texttt{selection2\_all\_subset.sas} pour plus de détails.
-
-\begin{verbatim}
-proc reg data=trainymontant;
-model ymontant=x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 
-  x7 x8 x9 x10 / selection=rsquare best=1 aic bic;
-run;
-\end{verbatim}
+On veut trouver un bon modèle pour prévoir la valeur de \texttt{ymontant} des clients qui ont acheté quelque chose. On a vu qu'il y a 210 clients qui ont acheté dans l'échantillon d'apprentissage. Nous allons chercher à développer un « bon » modèle avec ces 210 clients. Dans ce premier exemple, nous allons seulement utiliser les 10 variables explicatives de base (14 variables avec les indicatrices). Le code suivant montre comment faire une sélection de variables selon le critère du \(R^2\) et demande à \textbf{SAS} de présenter le modèle à \(k\) variables (\(k=1, \ldots, 14\)) qui a le plus grand \(R^2\); voir \href{https://raw.githubusercontent.com/lbelzile/math60602/master/documents/codeSAS/selection2_methodes.sas}{\texttt{selection2\_modeles.sas}} pour plus de détails.
 
 Ainsi, le modèle linéaire simple qui a le plus grand \(R^2\) est celui qui inclut le conjoint (\texttt{x5}). Le meilleur modèle (selon le \(R^2\)) parmi tous les modèles avec deux variables est celui avec \texttt{x5} et \texttt{x6}.
 
@@ -2222,43 +2211,14 @@ Remarques sur ces méthodes: avec la méthode ascendante, une fois qu'une variab
 
 On peut soi-même spécifier les critères d'entrée et de sortie. Plus le critère d'entrée est élevé, plus il y aura de variables dans le modèle final. De même, plus le critère de sortie est élevé, plus il y aura de variables dans le modèle.
 
-Utilisons la méthode de sélection séquentielle classique avec des critères d'entrée et de sortie de 0.15 et les 104 variables. Le code suivant, extrait de \texttt{selection2\_all\_subset.sas}, donne la syntaxe \textbf{SAS}.
-
-\begin{verbatim}
-proc reg data=trainymontant;
-model ymontant=
-x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10
-cx2 cx6 cx7 cx8 cx9 cx10
-i_x2_x1 i_x2_x5 i_x2_x31 i_x2_x32 i_x2_x41 i_x2_x42 i_x2_x43 i_x2_x44
-i_x2_x7 i_x2_x6 i_x2_x8 i_x2_x9 i_x2_x10
-i_x1_x5 i_x1_x31 i_x1_x32 i_x1_x41 i_x1_x42 i_x1_x43 i_x1_x44
-i_x1_x7 i_x1_x6 i_x1_x8 i_x1_x9 i_x1_x10
-i_x5_x31 i_x5_x32 i_x5_x41 i_x5_x42 i_x5_x43 i_x5_x44
-i_x5_x7 i_x5_x6 i_x5_x8 i_x5_x9 i_x5_x10
-i_x31_x41 i_x31_x42 i_x31_x43 i_x31_x44
-i_x31_x7 i_x31_x6 i_x31_x8 i_x31_x9 i_x31_x10
-i_x32_x41 i_x32_x42 i_x32_x43 i_x32_x44
-i_x32_x7 i_x32_x6 i_x32_x8 i_x32_x9 i_x32_x10
-i_x41_x7 i_x41_x6 i_x41_x8 i_x41_x9 i_x41_x10
-i_x42_x7 i_x42_x6 i_x42_x8 i_x42_x9 i_x42_x10
-i_x43_x7 i_x43_x6 i_x43_x8 i_x43_x9 i_x43_x10
-i_x44_x7 i_x44_x6 i_x44_x8 i_x44_x9 i_x44_x10
-i_x7_x6 i_x7_x8 i_x7_x9 i_x7_x10
-i_x6_x8 i_x6_x9 i_x6_x10
-i_x8_x9 i_x8_x10
-i_x9_x10 / selection=stepwise sle=.15 sls=.15 ;
-run;
-\end{verbatim}
-
-Notez que les variables \texttt{cx2} à \texttt{cx10} sont les carrés des variables \texttt{x2} à \texttt{x10} que nous avons créées au préalable. De plus, les variables débutant par \emph{i} sont les interactions entre les variables binaires et les variables continues. Par exemple, \texttt{i\_x2\_x1} est l'interaction entre \texttt{x1} et \texttt{x2}, c'est-à-dire le produit des deux.
-
-La sortie \textbf{SAS} est assez volumineuse car elle retrace toutes étapes de la sélection séquentielle. L'historique montre qu'à l'étape 1, la variable \texttt{i\_x5\_x6} a été ajoutée, suivie de \texttt{i\_x31\_x10} à l'étape 2. Un peu plus loin, à l'étape 6, \texttt{i\_x5\_x6} est retirée et ainsi de suite. Il y a eu 40 étapes en tout et, à la fin, il reste 22 variables (parmi les 104) dans le modèle final. Le \(R^2\) du modèle final est \(0,966\).
+Utilisons la méthode de sélection séquentielle classique avec des critères d'entrée et de sortie de 0.15 et les 104 variables.
+La sortie \textbf{SAS} est assez volumineuse car elle retrace toutes étapes de la sélection séquentielle. L'historique montre qu'à l'étape 1, la variable d'interaction \texttt{i\_x5\_x6} a été ajoutée, suivie de \texttt{i\_x31\_x10} à l'étape 2. Un peu plus loin, à l'étape 6, \texttt{i\_x5\_x6} est retirée et ainsi de suite. Il y a eu 40 étapes en tout et, à la fin, il reste 22 variables (parmi les 104) dans le modèle final. Le \(R^2\) du modèle final est \(0,966\).
 
 \begin{center}\includegraphics[width=0.9\linewidth]{figures/02-select-e8} \end{center}
 
 \begin{center}\includegraphics[width=0.9\linewidth]{figures/02-select-e9} \end{center}
 
-Voici les estimés des paramètres du modèle final retenu. On voit bien que toutes les valeurs-\emph{p} (qui ne sont pas valides à cause de la sélection de modèles) sont toutes inférieures à \(0,15\).
+Voici les estimés des paramètres du modèle final retenu. On voit bien que toutes les valeurs-\emph{p} (qui ne sont pas valides à cause de la sélection de modèles) sont toutes inférieures à \(0.15\).
 
 \begin{center}\includegraphics[width=0.7\linewidth]{figures/02-select-e10} \includegraphics[width=0.7\linewidth]{figures/02-select-e11} \end{center}
 
@@ -2281,7 +2241,7 @@ nombre de variables & \(\mathsf{EMQ}\) & méthode \\ \addlinespace
 
 On voit donc qu'utiliser toutes les 104 variables sans faire de sélection fait mieux (\(\mathsf{EMQ}=19,63\)) que les modèles précédents basés sur les 10 variables originales. Mais faire une sélection séquentielle classique permet une amélioration très importante de la performance (\(\mathsf{EMQ}=12,25\)). On voit que dans cet exemple, utiliser les 104 variables fait du surajustement (\emph{over-fitting}).
 
-Le choix de \(0,15\) comme critère d'entrée et de sortie est assez arbitraire. Il est fort possible que d'autres valeurs donnent de meilleurs résultats. Mais il n'est pas évident de les choisir.
+Le choix de \(0.15\) comme critère d'entrée et de sortie est assez arbitraire. Il est fort possible que d'autres valeurs donnent de meilleurs résultats. Mais il n'est pas évident de les choisir.
 
 Une façon de contourner le problème de devoir spécifier les critères d'entrée et de sortie est de procéder en deux étapes. Supposons que notre ordinateur permet de faire une recherche exhaustive de tous les sous-modèles avec près de 60 variables. L'idée est alors de passer de 104 à un sous-ensemble d'environ 60 variables, avec une sélection séquentielle gloutonne, et d'ensuite utiliser une recherche exhaustive avec ce sous-ensemble de variables. Plus précisément:
 
@@ -2294,7 +2254,7 @@ Une façon de contourner le problème de devoir spécifier les critères d'entr�
   En utilisant seulement ce sous-ensemble de variables, on choisit le meilleur modèle selon le \(\mathsf{AIC}\) ou le \(\mathsf{BIC}\) en faisant une recherche exhaustive de tous les sous-modèles.
 \end{enumerate}
 
-En fixant, les critères d'entrée et de sortie à \(0,6\) pour la recherche séquentielle, le modèle retenu aura 56 variables. Il est possible de faire une recherche exhaustive avec 56 variables sur un ordinateur portable avec \textbf{SAS}. Le \(\mathsf{AIC}\) est mène à un modèle avec 38 de ces 56 variables. Le \(\mathsf{BIC}\) est quant à lui beaucoup plus parcimonieux et choisit 15 de ces variables pour le modèle final. Encore une fois, ces deux modèles sont testés sur les 23 179 clients restants. Les résultats sont présentés dans le tableau \ref{tab:02-comparaisonseqexha}.
+En fixant, les critères d'entrée et de sortie à \(0.6\) pour la recherche séquentielle, le modèle retenu aura 56 variables. Il est possible de faire une recherche exhaustive avec 56 variables sur un ordinateur portable avec \textbf{SAS}. Le \(\mathsf{AIC}\) est mène à un modèle avec 38 de ces 56 variables. Le \(\mathsf{BIC}\) est quant à lui beaucoup plus parcimonieux et choisit 15 de ces variables pour le modèle final. Encore une fois, ces deux modèles sont testés sur les 23 179 clients restants. Les résultats sont présentés dans le tableau \ref{tab:02-comparaisonseqexha}.
 
 \begin{longtable}[]{@{}ccl@{}}
 \caption{\label{tab:02-comparaisonseqexha} Comparaison des méthodes selon l'erreur moyenne quadratique pour la méthode de sélection séquentielle classique suivie d'une recherche exhaustive sur les 56 variables retenues.}\tabularnewline
@@ -2365,7 +2325,7 @@ La pénalité \(q_1(\lambda)\) a un rôle particulier parce qu'elle a deux effet
 \min_{\boldsymbol{\beta}} \{\mathsf{SCE} + q_1(\lambda)\} = \min_{\boldsymbol{\beta}}  \left\{\sum_{i=1}^n \left(y_i - \alpha - \sum_{j=1}^p\mathrm{X}_{ij}\beta_{j}\right)^2 +
 \lambda \sum_{j=1}^p |\beta_j|\right\}
 \end{align*}
-laquelle est appelée LASSO. La Figure \ref{fig:lassopenalty} montre la fonction objective dans le cas où on a deux paramètres, \(\beta_1\) et \(\beta_2\). La solution des moindres carrés ordinaires, qui minimisent l'erreur moyenne quadratique, est au centre des ellipses de contour et correspond à la solution du modèle avec \(\lambda=0\). À mesure que l'on augmente la pénalité \(\lambda\), les coefficients rétrécissent vers \((0, 0\). On peut interpréter la pénalité \(l_1\) comme une contraire budgétaire: les coefficients estimés pour une valeur de \(\lambda\) donnée sont ceux qui minimisent la somme du carré des erreurs, mais doivent être à l'intérieur d'un budget alloué (losange). La forme de la région fait en sorte que la solution, qui se trouve sur la bordure du losange, intervient dans un coin avec certaines coordonnées nulles.
+laquelle est appelée LASSO. La Figure \ref{fig:lassopenalty} montre la fonction objective dans le cas où on a deux paramètres, \(\beta_1\) et \(\beta_2\). La solution des moindres carrés ordinaires, qui minimisent l'erreur moyenne quadratique, est au centre des ellipses de contour et correspond à la solution du modèle avec \(\lambda=0\). À mesure que l'on augmente la pénalité \(\lambda\), les coefficients rétrécissent vers \((0, 0)\). On peut interpréter la pénalité \(l_1\) comme une contraire budgétaire: les coefficients estimés pour une valeur de \(\lambda\) donnée sont ceux qui minimisent la somme du carré des erreurs, mais doivent être à l'intérieur d'un budget alloué (losange). La forme de la région fait en sorte que la solution, qui se trouve sur la bordure du losange, intervient dans un coin avec certaines coordonnées nulles.
 
 \begin{figure}
 
@@ -2451,15 +2411,15 @@ interactions et termes quadratiques & 104 & 19,63 & toutes les variables \\ \add
 
 Dans cet exemple, la méthode séquentielle de \texttt{glmselect} avec les options \texttt{select=aic} et \texttt{choose=bic} aurait donné le meilleur résultat pour prévoir le montant acheté des clients restants (de ceux qui auraient acheté quelque chose). Le deuxième meilleur aurait été la moyenne des modèles.
 
-Il y aurait plusieurs autres approches/combinaisons qui pourraient être testées. Le but de ce chapitre était simplement de présenter les principes de base en sélection de modèles et de variables ainsi que certaines approches pratiques. Il y a d'autres approches intéressantes, tels le filet élastique LARS (\emph{least-angle regression}) qui sont disponibles dans \texttt{glmselect}. Ces méthodes sont dans la même mouvance moderne que celle qui consiste à faire la moyenne de plusieurs modèles, en performant à la fois une sélection de variables et en permettant d'avoir des parties d'effet par le rétrécissement (\emph{shrinkage}). De récents développements théoriques permettent aussi de corriger les valeurs-\emph{p} pour faire de l'inférence post-sélection avec le LASSO.
+Il y aurait plusieurs autres approches/combinaisons qui pourraient être testées. Le but de ce chapitre était simplement de présenter les principes de base en sélection de modèles et de variables ainsi que certaines approches pratiques. Il y a d'autres approches intéressantes, tels le filet élastique ou la régression LARS (\emph{least-angle regression}) qui sont disponibles dans \texttt{glmselect}. Ces méthodes sont dans la même mouvance moderne que celle qui consiste à faire la moyenne de plusieurs modèles, en performant à la fois une sélection de variables et en permettant d'avoir des parties d'effet par le rétrécissement (\emph{shrinkage}). De récents développements théoriques permettent aussi de corriger les valeurs-\emph{p} pour faire de l'inférence post-sélection avec le LASSO.
 
 Il faut bien comprendre qu'il ne s'agit que d'un seul exemple: il ne faut surtout pas conclure que la méthode séquentielle de \texttt{glmselect} avec les options \texttt{select=aic} et \texttt{choose=bic} sera toujours la meilleure. En fait, il est impossible de prévoir quelle méthode donnera les meilleurs résultats.
 
 \hypertarget{regression-logistique}{%
 \chapter{Régression logistique}\label{regression-logistique}}
 
-\hypertarget{introduction-4}{%
-\section{Introduction}\label{introduction-4}}
+\hypertarget{introduction-3}{%
+\section{Introduction}\label{introduction-3}}
 
 En régression linéaire, on cherche à expliquer le comportement d'une variable quantitative \(Y\) que l'on peut traiter comme étant continue (elle peut prendre suffisamment de valeurs différentes).
 
@@ -3684,8 +3644,8 @@ Ainsi, plus l'âge augmente, plus \(Y_2\) a tendance à prendre une petite valeu
 \hypertarget{analyse-survie}{%
 \chapter{Analyse de survie}\label{analyse-survie}}
 
-\hypertarget{introduction-5}{%
-\section{Introduction}\label{introduction-5}}
+\hypertarget{introduction-4}{%
+\section{Introduction}\label{introduction-4}}
 
 Le but de cette section est d'étudier l'effet de variables explicatives sur le temps de survie. Plusieurs méchanismes de survie peuvent impacter la survie, de façon aléatoire ou pas.
 Considérons l'exemple d'une étude sur le chômage dû à la crise du coronavirus. On s'intéresse à tous ceux qui étaient en recherche active d'emploi entre mars et juin; seuls ceux qui étaient au chômage durant cette période seront considérés. Certaines personnes seront déjà au chômage en avril et donc leur durée de chômage sera plus longue (troncature à gauche). Lors de notre suivi, d'autre mentionneront avoir trouvé un emploi lors de notre appel, mais ne pourront nous renseigner sur la date exacte de leur embauche (censure à gauche); cette dernière précèdera notre prise de contact, mais nous est inconnue. D'autres personnes seront toujours au chômage en juin à la fin de l'étude et on ignorera le nombre réel de mois passés au chômage (censure à droite). Enfin, certaines personnes cesseront de chercher activement un emploi et donc quitteront l'étude. Tous ces méchanismes (complexes) peuvent être dictés par certaines covariables (employabilité, découragement) et être aléatoires ou pas. Pour estimer le taux de chômage, il faudra prendre en compte les méchanismes de survie dans notre modèle. On se concentrera sur le cas simple des données censurées à droite de façon aléatoire.

@@ -380,16 +380,16 @@ Voici d'abord des statistiques descriptives pour l'échantillon d'apprentissage.
 ```{r fig2p1_fig3, echo = FALSE, out.width='60%', fig.align = "center"}
 knitr::include_graphics("figures/02-select-e3.png")
 ```
-Il y a donc $46,6$% de femmes parmi les 1000 clients de l'échantillon. De plus, $39,7$% ont un revenu de moins de 35 000\$, $33,7$% sont entre 35 000\$ et 75 000\$ et $26,6$% ont plus de 75 000\$. $42,5$% de ces clients qui ont un conjoint. 
+Il y a donc 46,6% de femmes parmi les 1000 clients de l'échantillon. De plus, 39,7% ont un revenu de moins de 35 000\$, 33,7% sont entre 35 000\$ et 75 000\$ et 26,6% ont plus de 75 000\$. 42,5% de ces clients qui ont un conjoint. 
 ```{r fig2p1_fig4, echo = FALSE, out.width='90%', fig.align = "center"}
 knitr::include_graphics("figures/02-select-e4.png")
 ```
-Le nombre d'achats différents depuis un an par ces clients varie entre 1 et 14. Un peu plus de la moitié ($51,4$%) ont fait 5 achats ou moins. Parmi les 1000 clients de l'échantillon d'apprentissage, 210 ont acheté quelque chose dans le catalogue. La variable yachat sera l'une des variables que nous allons chercher à modéliser en vue d'obtenir des prédictions.
+Le nombre d'achats différents depuis un an par ces clients varie entre 1 et 14. Un peu plus de la moitié (51,4%) ont fait cinq achats ou moins. Parmi les 1000 clients de l'échantillon d'apprentissage, 210 ont acheté quelque chose dans le catalogue. La variable yachat sera l'une des variables que nous allons chercher à modéliser en vue d'obtenir des prédictions.
 ```{r fig2p1_fig5, echo = FALSE, out.width='90%', fig.align = "center"}
 knitr::include_graphics("figures/02-select-e5.png")
 ```
 
-L'âge des 1000 clients de l'échantillon d'apprentissage varie entre 20 et 70 avec une moyenne de $37,1$ ans. En moyenne, ces clients ont acheté pour $229,3$\$ depuis un an. Le dernier achat de ces clients remonte, en moyenne, à 10 semaines. Nous chercherons également à modéliser la variable `ymontant`. Seuls 210 clients ont acheté quelque chose dans le catalogue et les statistiques rapportées correspondent seulement à ces derniers, car la variable `ymontant` est manquante si le client n'a rien acheté dans le catalogue. On pourrait également remplacer ces valeurs par des zéros et les modéliser, mais nous aborderons cet aspect ultérieurement. Les clients qui ont acheté quelque chose ont dépensé en moyenne $67,3$\$, et au minimum $25$\$. Les histogrammes de quelques unes de ces variables permet de mieux visualiser la répartition des observations.
+L'âge des 1000 clients de l'échantillon d'apprentissage varie entre 20 et 70 avec une moyenne de 37,1 ans. En moyenne, ces clients ont acheté pour 229,30\$ depuis un an. Le dernier achat de ces clients remonte, en moyenne, à 10 semaines. Nous chercherons également à modéliser la variable `ymontant`. Seuls 210 clients ont acheté quelque chose dans le catalogue et les statistiques rapportées correspondent seulement à ces derniers, car la variable `ymontant` est manquante si le client n'a rien acheté dans le catalogue. On pourrait également remplacer ces valeurs par des zéros et les modéliser, mais nous aborderons cet aspect ultérieurement. Les clients qui ont acheté quelque chose ont dépensé en moyenne 67,3\$, et au minimum 25\$. Les histogrammes de quelques unes de ces variables permet de mieux visualiser la répartition des observations.
 ```{r fig2p1_fig6, echo = FALSE, out.width='90%', fig.align = "center"}
 knitr::include_graphics("figures/02-select-e6.png")
 ```
@@ -410,7 +410,7 @@ On peut donc estimer $\E{\texttt{ymontant} \mid \texttt{yachat}=1}$ et $\P{\text
 
 Comme nous n'avons pas encore vu la régression logistique, nous allons nous limiter à illustrer les méthodes qui restent à voir dans ce chapitre avec la régression linéaire en cherchant à développer un modèle pour $\E{\texttt{ymontant} \mid \texttt{yachat}=1}$, le montant d'argent dépensé par les clients qui ont acheté quelque chose.
 
-Le fichier `prepare_DBM.sas` contient des commandes afin de préparer les données aux analyses qui seront présentées dans les sections qui suivent. En particulier, nous avons deux variables explicatives catégorielles. Il s'agit de revenu (`x3`) et région (`x4`). Il faut coder d'une manière appropriée afin de pouvoir les incorporer dans les modèles. La manière habituelle est de créer des variables indicatrices (binaires) qui indiquent si la variable prend ou non une valeur particulière. En général, si une variable catégorielle possède $K$ valeurs possibles, il est suffisant de créer $K-1$ indicatrices, en laissant une modalité comme référence. Par exemple, pour `x3`, nous allons créer deux variables,
+La base de donnée contient deux variables explicatives catégorielles. Il s'agit de revenu (`x3`) et région (`x4`). Il faut coder d'une manière appropriée afin de pouvoir les incorporer dans les modèles. La manière habituelle est de créer des variables indicatrices (binaires) qui indiquent si la variable prend ou non une valeur particulière, dans **SAS** avec l'option `class`. En général, si une variable catégorielle possède $K$ valeurs possibles, il est suffisant de créer $K-1$ indicatrices, en laissant une modalité comme référence. Par exemple, pour `x3`, nous allons créer deux variables,
 
 - `x31`: variable binaire égale à 1 si `x3` égale 1 et 0 sinon,
 - `x32`: variable binaire égale à 1 si `x3` égale 2 et 0 sinon.
@@ -424,8 +424,6 @@ Table: (\#tab:02-dummy) Valeur des indicateurs en fonction du niveau de la varia
 |   1  |   1   |   0   |
 |   2  |   0   |   1   |
 |   3  |   0   |   0   |
-
-En pratique, il suffit d'incorporer les indicatrices (`x31` et `x32`) dans le modèle comme variables explicatives et de ne plus utiliser la variable originale `x3`. On peut aussi procéder ainsi pour la variable `x4`, en créant quatre indicatrices.
 
 ## Recherche automatique du meilleur modèle
 
@@ -454,14 +452,7 @@ Faire une recherche exhaustive parmi tous les modèles possibles s'appelle séle
 
 ## Recherche automatique de tous les sous-ensembles
 
-On veut trouver un bon modèle pour prévoir la valeur de `ymontant` des clients qui ont acheté quelque chose. On a vu qu'il y a 210 clients qui ont acheté dans l'échantillon d'apprentissage. Nous allons chercher à développer un « bon » modèle avec ces 210 clients. Dans ce premier exemple, nous allons seulement utiliser les 10 variables explicatives de base (14 variables avec les indicatrices). Le code suivant montre comment faire une sélection de variables selon le critère du $R^2$ et demande à **SAS** de présenter le modèle à $k$ variables ($k=1, \ldots, 14$) qui a le plus grand $R^2$; voir `selection2_all_subset.sas` pour plus de détails. 
-
-```{sas, eval = FALSE}
-proc reg data=trainymontant;
-model ymontant=x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 
-  x7 x8 x9 x10 / selection=rsquare best=1 aic bic;
-run;
-```
+On veut trouver un bon modèle pour prévoir la valeur de `ymontant` des clients qui ont acheté quelque chose. On a vu qu'il y a 210 clients qui ont acheté dans l'échantillon d'apprentissage. Nous allons chercher à développer un « bon » modèle avec ces 210 clients. Dans ce premier exemple, nous allons seulement utiliser les 10 variables explicatives de base (14 variables avec les indicatrices). Le code suivant montre comment faire une sélection de variables selon le critère du $R^2$ et demande à **SAS** de présenter le modèle à $k$ variables ($k=1, \ldots, 14$) qui a le plus grand $R^2$; voir [`selection2_modeles.sas`](https://raw.githubusercontent.com/lbelzile/math60602/master/documents/codeSAS/selection2_methodes.sas) pour plus de détails. 
 
 Ainsi, le modèle linéaire simple qui a le plus grand $R^2$ est celui qui inclut le conjoint (`x5`). Le meilleur modèle (selon le $R^2$) parmi tous les modèles avec deux variables est celui avec `x5` et `x6`.
 
@@ -544,37 +535,8 @@ Remarques sur ces méthodes: avec la méthode ascendante, une fois qu'une variab
 
 On peut soi-même spécifier les critères d'entrée et de sortie. Plus le critère d'entrée est élevé, plus il y aura de variables dans le modèle final. De même, plus le critère de sortie est élevé, plus il y aura de variables dans le modèle.
 
-Utilisons la méthode de sélection séquentielle classique avec des critères d'entrée et de sortie de 0.15 et les 104 variables. Le code suivant, extrait de `selection2_all_subset.sas`, donne la syntaxe **SAS**.
-
-```{sas, 02-stepwise, eval = FALSE}
-proc reg data=trainymontant;
-model ymontant=
-x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10
-cx2 cx6 cx7 cx8 cx9 cx10
-i_x2_x1 i_x2_x5 i_x2_x31 i_x2_x32 i_x2_x41 i_x2_x42 i_x2_x43 i_x2_x44
-i_x2_x7 i_x2_x6 i_x2_x8 i_x2_x9 i_x2_x10
-i_x1_x5 i_x1_x31 i_x1_x32 i_x1_x41 i_x1_x42 i_x1_x43 i_x1_x44
-i_x1_x7 i_x1_x6 i_x1_x8 i_x1_x9 i_x1_x10
-i_x5_x31 i_x5_x32 i_x5_x41 i_x5_x42 i_x5_x43 i_x5_x44
-i_x5_x7 i_x5_x6 i_x5_x8 i_x5_x9 i_x5_x10
-i_x31_x41 i_x31_x42 i_x31_x43 i_x31_x44
-i_x31_x7 i_x31_x6 i_x31_x8 i_x31_x9 i_x31_x10
-i_x32_x41 i_x32_x42 i_x32_x43 i_x32_x44
-i_x32_x7 i_x32_x6 i_x32_x8 i_x32_x9 i_x32_x10
-i_x41_x7 i_x41_x6 i_x41_x8 i_x41_x9 i_x41_x10
-i_x42_x7 i_x42_x6 i_x42_x8 i_x42_x9 i_x42_x10
-i_x43_x7 i_x43_x6 i_x43_x8 i_x43_x9 i_x43_x10
-i_x44_x7 i_x44_x6 i_x44_x8 i_x44_x9 i_x44_x10
-i_x7_x6 i_x7_x8 i_x7_x9 i_x7_x10
-i_x6_x8 i_x6_x9 i_x6_x10
-i_x8_x9 i_x8_x10
-i_x9_x10 / selection=stepwise sle=.15 sls=.15 ;
-run;
-```
-
-Notez que les variables `cx2` à `cx10` sont les carrés des variables `x2` à `x10` que nous avons créées au préalable. De plus, les variables débutant par _i_ sont les interactions entre les variables binaires et les variables continues. Par exemple, `i_x2_x1` est l'interaction entre `x1` et `x2`, c'est-à-dire le produit des deux.
-
-La sortie **SAS** est assez volumineuse car elle retrace toutes étapes de la sélection séquentielle. L'historique montre qu'à l'étape 1, la variable `i_x5_x6` a été ajoutée, suivie de `i_x31_x10` à l'étape 2. Un peu plus loin, à l'étape 6, `i_x5_x6` est retirée et ainsi de suite. Il y a eu 40 étapes en tout et, à la fin, il reste 22 variables (parmi les 104) dans le modèle final. Le $R^2$ du modèle final est $0,966$. 
+Utilisons la méthode de sélection séquentielle classique avec des critères d'entrée et de sortie de 0.15 et les 104 variables.
+La sortie **SAS** est assez volumineuse car elle retrace toutes étapes de la sélection séquentielle. L'historique montre qu'à l'étape 1, la variable d'interaction `i_x5_x6` a été ajoutée, suivie de `i_x31_x10` à l'étape 2. Un peu plus loin, à l'étape 6, `i_x5_x6` est retirée et ainsi de suite. Il y a eu 40 étapes en tout et, à la fin, il reste 22 variables (parmi les 104) dans le modèle final. Le $R^2$ du modèle final est $0,966$. 
 
 
 ```{r fig2p2_fig8, echo = FALSE, out.width='90%', fig.align = "center"}
@@ -585,7 +547,7 @@ knitr::include_graphics("figures/02-select-e9.png")
 ```
 
 
-Voici les estimés des paramètres du modèle final retenu. On voit bien que toutes les valeurs-_p_ (qui ne sont pas valides à cause de la sélection de modèles) sont toutes inférieures à $0,15$. 
+Voici les estimés des paramètres du modèle final retenu. On voit bien que toutes les valeurs-_p_ (qui ne sont pas valides à cause de la sélection de modèles) sont toutes inférieures à $0.15$. 
 
 ```{r fig2p2_fig10-11, echo = FALSE, out.width='70%', fig.align = "center"}
 knitr::include_graphics("figures/02-select-e10.png")
@@ -608,14 +570,14 @@ cat(tabl)
 
 On voit donc qu'utiliser toutes les 104 variables sans faire de sélection fait mieux ($\mathsf{EMQ}=19,63$) que les modèles précédents basés sur les 10 variables originales. Mais faire une sélection séquentielle classique permet une amélioration très importante de la performance ($\mathsf{EMQ}=12,25$). On voit que dans cet exemple, utiliser les 104 variables fait du surajustement (_over-fitting_).  
 
-Le choix de $0,15$ comme critère d'entrée et de sortie est assez arbitraire. Il est fort possible que d'autres valeurs donnent de meilleurs résultats. Mais il n'est pas évident de les choisir.
+Le choix de $0.15$ comme critère d'entrée et de sortie est assez arbitraire. Il est fort possible que d'autres valeurs donnent de meilleurs résultats. Mais il n'est pas évident de les choisir.
 
 Une façon de contourner le problème de devoir spécifier les critères d'entrée et de sortie est de procéder en deux étapes. Supposons que notre ordinateur permet de faire une recherche exhaustive de tous les sous-modèles avec près de 60 variables. L'idée est alors de passer de 104 à un sous-ensemble d'environ 60 variables, avec une sélection séquentielle gloutonne, et d'ensuite utiliser une recherche exhaustive avec ce sous-ensemble de variables. Plus précisément:
 
 1) On fait une sélection séquentielle classique avec des valeurs élevées pour les critères d'entrée et de sortie afin que le modèle retenu contienne le nombre voulu de variables (par exemple, 60). 
 2) En utilisant seulement ce sous-ensemble de variables, on choisit le meilleur modèle selon le $\mathsf{AIC}$ ou le $\mathsf{BIC}$ en faisant une recherche exhaustive de tous les sous-modèles.
 
-En fixant, les critères d'entrée et de sortie à $0,6$ pour la recherche séquentielle, le modèle retenu aura 56 variables. Il est possible de faire une recherche exhaustive avec 56 variables sur un ordinateur portable avec **SAS**. Le $\mathsf{AIC}$ est mène à un modèle avec 38 de ces 56 variables. Le $\mathsf{BIC}$ est quant à lui beaucoup plus parcimonieux et choisit 15 de ces variables pour le modèle final. Encore une fois, ces deux modèles sont testés sur les 23 179 clients restants. Les résultats sont présentés dans le tableau \@ref(tab:02-comparaisonseqexha).
+En fixant, les critères d'entrée et de sortie à $0.6$ pour la recherche séquentielle, le modèle retenu aura 56 variables. Il est possible de faire une recherche exhaustive avec 56 variables sur un ordinateur portable avec **SAS**. Le $\mathsf{AIC}$ est mène à un modèle avec 38 de ces 56 variables. Le $\mathsf{BIC}$ est quant à lui beaucoup plus parcimonieux et choisit 15 de ces variables pour le modèle final. Encore une fois, ces deux modèles sont testés sur les 23 179 clients restants. Les résultats sont présentés dans le tableau \@ref(tab:02-comparaisonseqexha).
 
 ```{r 02-comparaisonseqexha, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
 tabl <- "
@@ -687,7 +649,7 @@ La pénalité $q_1(\lambda)$ a un rôle particulier parce qu'elle a deux effets:
 \min_{\boldsymbol{\beta}} \{\mathsf{SCE} + q_1(\lambda)\} = \min_{\boldsymbol{\beta}}  \left\{\sum_{i=1}^n \left(y_i - \alpha - \sum_{j=1}^p\mathrm{X}_{ij}\beta_{j}\right)^2 +
 \lambda \sum_{j=1}^p |\beta_j|\right\}
 \end{align*}
-laquelle est appelée LASSO. La Figure \@ref(fig:lassopenalty) montre la fonction objective dans le cas où on a deux paramètres, $\beta_1$ et $\beta_2$. La solution des moindres carrés ordinaires, qui minimisent l'erreur moyenne quadratique, est au centre des ellipses de contour et correspond à la solution du modèle avec $\lambda=0$. À mesure que l'on augmente la pénalité $\lambda$, les coefficients rétrécissent vers $(0, 0$. On peut interpréter la pénalité $l_1$ comme une contraire budgétaire: les coefficients estimés pour une valeur de $\lambda$ donnée sont ceux qui minimisent la somme du carré des erreurs, mais doivent être à l'intérieur d'un budget alloué (losange). La forme de la région fait en sorte que la solution, qui se trouve sur la bordure du losange, intervient dans un coin avec certaines coordonnées nulles.
+laquelle est appelée LASSO. La Figure \@ref(fig:lassopenalty) montre la fonction objective dans le cas où on a deux paramètres, $\beta_1$ et $\beta_2$. La solution des moindres carrés ordinaires, qui minimisent l'erreur moyenne quadratique, est au centre des ellipses de contour et correspond à la solution du modèle avec $\lambda=0$. À mesure que l'on augmente la pénalité $\lambda$, les coefficients rétrécissent vers $(0, 0)$. On peut interpréter la pénalité $l_1$ comme une contraire budgétaire: les coefficients estimés pour une valeur de $\lambda$ donnée sont ceux qui minimisent la somme du carré des erreurs, mais doivent être à l'intérieur d'un budget alloué (losange). La forme de la région fait en sorte que la solution, qui se trouve sur la bordure du losange, intervient dans un coin avec certaines coordonnées nulles.
 
 
 ```{r lassopenalty, cache = TRUE, fig.cap = "Courbes de contour du critère de l'erreur moyenne quadratique (ellipses) et fonction de pénalité (losanges) pour différentes valeurs de $\\lambda$. Les points dénotent des solutions différentes et intersectent les contours du losange.", eval = TRUE, echo = FALSE}
