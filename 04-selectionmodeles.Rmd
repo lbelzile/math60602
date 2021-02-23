@@ -634,19 +634,19 @@ Une façon d'éviter le surajustement est d'ajouter une pénalité sur les coeff
 
 Les estimateurs des moindres carrés ordinaires pour la régression linéaire représentent la combinaison qui minimise la somme du carré des erreurs,
 \begin{align*}
-\mathsf{SCE} = \sum_{i=1}^n \left(y_i - \alpha - \sum_{j=1}^p\mathrm{X}_{ij}\beta_{j}\right)^2.
+\mathsf{SCE} = \sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^p\mathrm{X}_{ij}\beta_{j}\right)^2.
 \end{align*}
 On peut ajouter à cette fonction objective $\mathsf{SCE}$ un terme additionnel de pénalité qui va contraindre les paramètres à ne pas être trop grand. On considère une pénalité additionnelle pour la valeur absolue des coefficients,  \[
 q_1(\lambda) = \lambda \sum_{j=1}^p |\beta_j|.
 \]
-Pour chaque valeur de $\lambda$ donnée, on obtiendra une solution différente pour les estimés car on minimisera désormais $\mathsf{SCE} + q_1(\lambda)$. On ne pénalise pas l'ordonnée à l'origine $\alpha$, parce que ce coefficient sert à recentrer les observations et a une signification particulière. Si on standardise les données, de manière à ce que leur moyenne empirique soit zéro et leur écart-type un, alors $\widehat{\alpha} = \overline{y}$. 
+Pour chaque valeur de $\lambda$ donnée, on obtiendra une solution différente pour les estimés car on minimisera désormais $\mathsf{SCE} + q_1(\lambda)$. On ne pénalise pas l'ordonnée à l'origine $\beta_0$, parce que ce coefficient sert à recentrer les observations et a une signification particulière. Si on standardise les données, de manière à ce que leur moyenne empirique soit zéro et leur écart-type un, alors $\widehat{\beta}_0 = \overline{y}$. 
 
 L'avantage des moindres carrés est que les valeurs ajustées et les prédictions ne changent pas si on fait une transformation affine (de type $Z = aX+b$).
 Peu importe le choix d'unités (par exemple, exprimer une distance en centimètres plutôt qu'en mètres, ou la température en Farenheit plutôt qu'en Celcius), on obtient le même modèle. En revanche, une fois qu'on introduit un terme de pénalité, notre solution dépendra de l'unité de mesure, d'où l'importance d'utiliser les données centrées et réduites pour que la solution reste la même.
 
 La pénalité $q_1(\lambda)$ a un rôle particulier parce qu'elle a deux effets: elle réduit la taille des paramètres, mais elle force également certains paramètres très proches de zéro à être exactement égaux à zéro, ce qui fait que la régression pénalité agit également comme outil de sélection de variables. Des algorithmes efficaces permettent de trouver la solution du problème d'optimisation
 \begin{align*}
-\min_{\boldsymbol{\beta}} \{\mathsf{SCE} + q_1(\lambda)\} = \min_{\boldsymbol{\beta}}  \left\{\sum_{i=1}^n \left(y_i - \alpha - \sum_{j=1}^p\mathrm{X}_{ij}\beta_{j}\right)^2 +
+\min_{\boldsymbol{\beta}} \{\mathsf{SCE} + q_1(\lambda)\} = \min_{\boldsymbol{\beta}}  \left\{\sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^p\mathrm{X}_{ij}\beta_{j}\right)^2 +
 \lambda \sum_{j=1}^p |\beta_j|\right\}
 \end{align*}
 laquelle est appelée LASSO. La Figure \@ref(fig:lassopenalty) montre la fonction objective dans le cas où on a deux paramètres, $\beta_1$ et $\beta_2$. La solution des moindres carrés ordinaires, qui minimisent l'erreur moyenne quadratique, est au centre des ellipses de contour et correspond à la solution du modèle avec $\lambda=0$. À mesure que l'on augmente la pénalité $\lambda$, les coefficients rétrécissent vers $(0, 0)$. On peut interpréter la pénalité $l_1$ comme une contraire budgétaire: les coefficients estimés pour une valeur de $\lambda$ donnée sont ceux qui minimisent la somme du carré des erreurs, mais doivent être à l'intérieur d'un budget alloué (losange). La forme de la région fait en sorte que la solution, qui se trouve sur la bordure du losange, intervient dans un coin avec certaines coordonnées nulles.
@@ -721,7 +721,7 @@ L'idée est alors la suivante :
 2) Faire une sélection de variables pour chaque échantillon.
 3) Faire la moyenne des paramètres de ces modèles.
 
-La procédure `glmselect` a une commande expérimentale, `modelaverage`, qui permet de faire une moyenne de modèles. Comme elle est expérimentale, les particularités (options et sorties) de cette commande risquent de changer au cours des versions à venir. Le code suivant permet de faire une moyenne de modèles. 
+La procédure `glmselect` a une commande, `modelaverage`, qui permet de faire une moyenne de modèles. Le code suivant permet de faire une moyenne de modèles. 
 
 ```{sas modelaverage, eval=FALSE}
 proc glmselect data=trainymontant seed=57484765;
@@ -733,7 +733,7 @@ modelaverage nsamples=500 sampling=urs subset(best=500);
 run;
 ```
 
-Chaque modèle est construit à l'aide d'un échantillon aléatoire avec remise (`sampling=urs`). Il y aura 500 échantillons, et donc modèles, en tout (`nsamples=500`). L'option `subset(best=500)` indique à **SAS** de faire la moyenne des paramètres des 500 modèles. Notez l'option `seed` qui permet de reproduire les résultats, car elle fixe une valeur pour le générateur de nombre aléatoire (qui sera utilisé pour générer les échantillons d'autoamorçage). Cette fois-ci la sélection se fait avec le critère $\mathsf{BIC}$ à tous les niveaux (`select=bic choose=bic`).
+Chaque modèle est construit à l'aide d'un échantillon aléatoire avec remise (`sampling=urs`). Il y aura 500 échantillons, et donc modèles, en tout (`nsamples=500`). L'option `subset(best=500)` indique à **SAS** de faire la moyenne des paramètres des 500 modèles. Notez l'option `seed` qui permet de reproduire les résultats, car elle fixe une valeur pour le générateur de nombre aléatoire (qui sera utilisé pour générer les échantillons d'autoamorçage). Cette fois-ci la sélection se fait avec le critère $\mathsf{BIC}$ à tous les niveaux (`select=aic choose=sbc`).
 
 ```{r fig2p2_fig16, echo = FALSE, out.width='90%', fig.align = "center"}
 knitr::include_graphics("figures/02-select-e16.png")

@@ -32,7 +32,7 @@
   
 <link rel="prev" href="analyse-regroupements.html"/>
 <link rel="next" href="regression-logistique.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.7/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -76,8 +76,7 @@
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
 <ul>
-<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#survol-du-cours"><i class="fa fa-check"></i><b>1.1</b> Survol du cours</a></li>
-<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#analyse-exploratoire"><i class="fa fa-check"></i><b>1.2</b> Analyse exploratoire de données</a></li>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#analyse-exploratoire"><i class="fa fa-check"></i><b>1.1</b> Analyse exploratoire de données</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="analyse-factorielle.html"><a href="analyse-factorielle.html"><i class="fa fa-check"></i><b>2</b> Analyse factorielle exploratoire</a>
 <ul>
@@ -1212,17 +1211,17 @@ run;</code></pre>
 <p>Une façon d’éviter le surajustement est d’ajouter une pénalité sur les coefficients: ce faisant, on introduit un biais dans nos estimés, mais dans l’espoir de réduire leur variabilité et ainsi d’obtenir une meilleur erreur moyenne quadratique.</p>
 <p>Les estimateurs des moindres carrés ordinaires pour la régression linéaire représentent la combinaison qui minimise la somme du carré des erreurs,
 <span class="math display">\[\begin{align*}
-\mathsf{SCE} = \sum_{i=1}^n \left(y_i - \alpha - \sum_{j=1}^p\mathrm{X}_{ij}\beta_{j}\right)^2.
+\mathsf{SCE} = \sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^p\mathrm{X}_{ij}\beta_{j}\right)^2.
 \end{align*}\]</span>
 On peut ajouter à cette fonction objective <span class="math inline">\(\mathsf{SCE}\)</span> un terme additionnel de pénalité qui va contraindre les paramètres à ne pas être trop grand. On considère une pénalité additionnelle pour la valeur absolue des coefficients, <span class="math display">\[
 q_1(\lambda) = \lambda \sum_{j=1}^p |\beta_j|.
 \]</span>
-Pour chaque valeur de <span class="math inline">\(\lambda\)</span> donnée, on obtiendra une solution différente pour les estimés car on minimisera désormais <span class="math inline">\(\mathsf{SCE} + q_1(\lambda)\)</span>. On ne pénalise pas l’ordonnée à l’origine <span class="math inline">\(\alpha\)</span>, parce que ce coefficient sert à recentrer les observations et a une signification particulière. Si on standardise les données, de manière à ce que leur moyenne empirique soit zéro et leur écart-type un, alors <span class="math inline">\(\widehat{\alpha} = \overline{y}\)</span>.</p>
+Pour chaque valeur de <span class="math inline">\(\lambda\)</span> donnée, on obtiendra une solution différente pour les estimés car on minimisera désormais <span class="math inline">\(\mathsf{SCE} + q_1(\lambda)\)</span>. On ne pénalise pas l’ordonnée à l’origine <span class="math inline">\(\beta_0\)</span>, parce que ce coefficient sert à recentrer les observations et a une signification particulière. Si on standardise les données, de manière à ce que leur moyenne empirique soit zéro et leur écart-type un, alors <span class="math inline">\(\widehat{\beta}_0 = \overline{y}\)</span>.</p>
 <p>L’avantage des moindres carrés est que les valeurs ajustées et les prédictions ne changent pas si on fait une transformation affine (de type <span class="math inline">\(Z = aX+b\)</span>).
 Peu importe le choix d’unités (par exemple, exprimer une distance en centimètres plutôt qu’en mètres, ou la température en Farenheit plutôt qu’en Celcius), on obtient le même modèle. En revanche, une fois qu’on introduit un terme de pénalité, notre solution dépendra de l’unité de mesure, d’où l’importance d’utiliser les données centrées et réduites pour que la solution reste la même.</p>
 <p>La pénalité <span class="math inline">\(q_1(\lambda)\)</span> a un rôle particulier parce qu’elle a deux effets: elle réduit la taille des paramètres, mais elle force également certains paramètres très proches de zéro à être exactement égaux à zéro, ce qui fait que la régression pénalité agit également comme outil de sélection de variables. Des algorithmes efficaces permettent de trouver la solution du problème d’optimisation
 <span class="math display">\[\begin{align*}
-\min_{\boldsymbol{\beta}} \{\mathsf{SCE} + q_1(\lambda)\} = \min_{\boldsymbol{\beta}}  \left\{\sum_{i=1}^n \left(y_i - \alpha - \sum_{j=1}^p\mathrm{X}_{ij}\beta_{j}\right)^2 +
+\min_{\boldsymbol{\beta}} \{\mathsf{SCE} + q_1(\lambda)\} = \min_{\boldsymbol{\beta}}  \left\{\sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^p\mathrm{X}_{ij}\beta_{j}\right)^2 +
 \lambda \sum_{j=1}^p |\beta_j|\right\}
 \end{align*}\]</span>
 laquelle est appelée LASSO. La Figure <a href="selection-modele.html#fig:lassopenalty">4.1</a> montre la fonction objective dans le cas où on a deux paramètres, <span class="math inline">\(\beta_1\)</span> et <span class="math inline">\(\beta_2\)</span>. La solution des moindres carrés ordinaires, qui minimisent l’erreur moyenne quadratique, est au centre des ellipses de contour et correspond à la solution du modèle avec <span class="math inline">\(\lambda=0\)</span>. À mesure que l’on augmente la pénalité <span class="math inline">\(\lambda\)</span>, les coefficients rétrécissent vers <span class="math inline">\((0, 0)\)</span>. On peut interpréter la pénalité <span class="math inline">\(l_1\)</span> comme une contraire budgétaire: les coefficients estimés pour une valeur de <span class="math inline">\(\lambda\)</span> donnée sont ceux qui minimisent la somme du carré des erreurs, mais doivent être à l’intérieur d’un budget alloué (losange). La forme de la région fait en sorte que la solution, qui se trouve sur la bordure du losange, intervient dans un coin avec certaines coordonnées nulles.</p>
@@ -1246,7 +1245,7 @@ Figure 4.1: Courbes de contour du critère de l’erreur moyenne quadratique (el
 <li>Faire une sélection de variables pour chaque échantillon.</li>
 <li>Faire la moyenne des paramètres de ces modèles.</li>
 </ol>
-<p>La procédure <code>glmselect</code> a une commande expérimentale, <code>modelaverage</code>, qui permet de faire une moyenne de modèles. Comme elle est expérimentale, les particularités (options et sorties) de cette commande risquent de changer au cours des versions à venir. Le code suivant permet de faire une moyenne de modèles.</p>
+<p>La procédure <code>glmselect</code> a une commande, <code>modelaverage</code>, qui permet de faire une moyenne de modèles. Le code suivant permet de faire une moyenne de modèles.</p>
 <pre class="sas"><code>proc glmselect data=trainymontant seed=57484765;
 class x3 x4;
 model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10@2 cx2 cx6 cx7 cx8 cx9 cx10  /   
@@ -1254,7 +1253,7 @@ selection=stepwise(select=aic choose=sbc);
 score data=testymontant out=predaverage p=predymontant;
 modelaverage nsamples=500 sampling=urs subset(best=500);
 run;</code></pre>
-<p>Chaque modèle est construit à l’aide d’un échantillon aléatoire avec remise (<code>sampling=urs</code>). Il y aura 500 échantillons, et donc modèles, en tout (<code>nsamples=500</code>). L’option <code>subset(best=500)</code> indique à <strong>SAS</strong> de faire la moyenne des paramètres des 500 modèles. Notez l’option <code>seed</code> qui permet de reproduire les résultats, car elle fixe une valeur pour le générateur de nombre aléatoire (qui sera utilisé pour générer les échantillons d’autoamorçage). Cette fois-ci la sélection se fait avec le critère <span class="math inline">\(\mathsf{BIC}\)</span> à tous les niveaux (<code>select=bic choose=bic</code>).</p>
+<p>Chaque modèle est construit à l’aide d’un échantillon aléatoire avec remise (<code>sampling=urs</code>). Il y aura 500 échantillons, et donc modèles, en tout (<code>nsamples=500</code>). L’option <code>subset(best=500)</code> indique à <strong>SAS</strong> de faire la moyenne des paramètres des 500 modèles. Notez l’option <code>seed</code> qui permet de reproduire les résultats, car elle fixe une valeur pour le générateur de nombre aléatoire (qui sera utilisé pour générer les échantillons d’autoamorçage). Cette fois-ci la sélection se fait avec le critère <span class="math inline">\(\mathsf{BIC}\)</span> à tous les niveaux (<code>select=aic choose=sbc</code>).</p>
 <p><img src="figures/02-select-e16.png" width="90%" style="display: block; margin: auto;" /></p>
 <p>Ce tableau présente les variables qui ont été choisies dans an moins 20% des modèles, c’est-à-dire, dans au moins 100 des 500 modèles ici. Il y a deux variables qui ont été retenues dans tous les modèles, <code>i_x1_x6</code> et <code>i_x31_x8</code>. Le tableau rapporte aussi la moyenne des estimations pour ces paramètres.</p>
 <p>Il s’avère que cette approche performe très bien sur l’échantillon test de 23 179 clients avec une erreur moyenne quadratique estimé de <span class="math inline">\(10,57\)</span>. Le tableau <a href="selection-modele.html#tab:02-modelcomparaisonfull">4.8</a> résume la performance des différentes méthodes que nous avons utilisé sur notre échantillon test.</p>
