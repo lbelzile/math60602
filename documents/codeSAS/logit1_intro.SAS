@@ -8,7 +8,6 @@ clodds=pl: pour avoir les intervalles de confiance pour les exp(beta).
 
 "y(ref='0')" spécifie qu'on utilise Y=0 comme valeur de référence.
 Ainsi, on modélise P(Y=1).
-(p. 144).
 */
 
 
@@ -21,8 +20,7 @@ run;
 /* Modèle avec toutes les variables exlicatives.
 
 La commande CLASS permet de déclarer des variables explicatives catégorielles.
-"x1(ref=last)" pr�cise que la plus grande valeur de X1 est la cat�gorie de r�f�rence.
-(p. 151).
+"x1(ref=last)" précise que la plus grande valeur de X1 est la catégorie de référence.
 */
 
 
@@ -62,7 +60,6 @@ run;
 /* 
 Modèle sans la variable X6  afin d'obtenir le -2*LL pour faire un test 
 du rapport de vraisemblance sur cette variable 
-(p.160)
 */
 
 
@@ -73,8 +70,7 @@ run;
 
 
 /* 
-Pour calculer la p-value du test de rapport de vraisemblance
-(p. 161).
+Pour calculer la valeur-p du test de rapport de vraisemblance
 */
 
 data pval;

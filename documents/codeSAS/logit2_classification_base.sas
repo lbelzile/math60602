@@ -5,26 +5,23 @@ l'échantillon d'apprentissage et un fichier nommé "test" qui contient les clie
 à cibler (ou à prédire). */
 
 /*
-Prévision des clients à scorer avec le modèle qui utilise les 10 variables
+Prévision des clients pour lesquels on veut prédire la réponse avec le modèle qui utilise les 10 variables
 de base seulement. La commande "score" permet de sauvegarder les estimations
-de P(Y=1), des clients à scorer ("test") dans le fichier "pred".
-(p. 166)
+de P(Y=1), des clients ("test") dans le fichier "pred".
 */
 
-ods graphics on;
+
 proc logistic data=train plots(only)=(roc);
 model yachat(ref='0') = x1  x2 x31 x32 x41 x42 x43 x44  x5  x6 x7 x8 x9 x10 /ctable;
 score data=test out=pred;
 run;
-ods graphics off;
+
 
 
 /* Afin d'obtenir la courve ROC et l'aire sous la courbe (AUC)( avec des estimations des probabilités obtenues par validatioin-croisée.
 On sauvegarde d'abord les probabilités estimées par validation-croisée dans le fichier "pred".
 Ensuite, on exécule de nouveau PROC LOGISTIC avec ce fichier et la commande "ROC".
 */
-
-ods graphics on;
 
 proc logistic data=train;
 model yachat(ref='0') = x1  x2 x31 x32 x41 x42 x43 x44  x5  x6 x7 x8 x9 x10;
@@ -39,7 +36,6 @@ model yachat(ref='0') = x1  x2 x31 x32 x41 x42 x43 x44  x5  x6 x7 x8 x9 x10;
 roc pred=xp_1;
 run;
 
-ods graphics off;
 
 
 /*  ______________________________________________________  */
@@ -49,7 +45,6 @@ ods graphics off;
 Commandes pour obtenir le lift chart. 
 IMPORTANT: il faut d'abord compiler la MACRO liftchart1
 en exécutant le code dans le fichier "logit3_lift_chart.sas"
-(p. 174-175) 
 */
 
 
@@ -68,11 +63,9 @@ avec le PROC LOGISTIC précédent, se nomme "xp_1" */
 /* 
 Commandes pour trouver le meilleur point de coupure afin de maximiser
 le gain moyen. 
-(p. 178-183)
 */
 
 /* Calcul du revenu moyen pour les clients qui ont acheté quelque chose 
-(p. 180)
 */
 
 proc means data=train;
@@ -82,7 +75,6 @@ run;
 
 /*
 IMPORTANT: il faut d'abord compiler les MACROS en exécutant le fichier "logit4_macro_gain.sas".
-(p. 181).
 */
 
 %manycut_cvlogistic(yvar=yachat,xvar=x1  x2 x31 x32 x41 x42 x43 x44  x5  x6 x7 x8 x9 x10,n=1000,k=10,ncv=1,
