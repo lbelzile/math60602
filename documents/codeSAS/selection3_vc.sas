@@ -14,7 +14,7 @@ La contrainte hierarchy=single implique qu'on ajoute seulement le
  avec uniquement l'ordonnée à l'origine jusqu'au modèle avec 11 covariables
  Ici, à cause de "hier", cela revient à ajouter x**10 dans le dernier modèle
  */
-proc glmselect data=multi.selection1_train;
+proc glmselect data=multi.selection1_train ;
 effect polyn = polynomial(x / degree=10);
 model y = polyn / 
  selection=forward(stop=11 choose=CV) cvmethod=block(10) hierarchy=single;
