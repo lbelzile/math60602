@@ -1,16 +1,39 @@
 
 /* 
-Estimation du GMSE pour un modèle de régression linéaire en 
+Estimation de l'EMQG pour un modèle de régression linéaire en 
 utilisant la validation croisée.
-(p. 83).
 */
 
+
+/* Utiliser directement glmselect avec polynome
+La contrainte hierarchy=single implique qu'on ajoute seulement le
+ terme d'ordre k si le terme d'ordre k-1 est déjà présent
+ effect permet de créer de nouvelles variables (ici un polynôme en x)
+ que l'on passe ensuite à modèle
+ option stop=11 pour faire tous les modèles en partant du modèle
+ avec uniquement l'ordonnée à l'origine jusqu'au modèle avec 11 covariables
+ Ici, à cause de "hier", cela revient à ajouter x**10 dans le dernier modèle
+ */
+proc glmselect data=multi.selection1_train;
+effect polyn = polynomial(x / degree=10);
+model y = polyn / 
+ selection=forward(stop=11 choose=CV) cvmethod=block(10) hierarchy=single;
+run;
+
+
+
+/* Le code suivant est d'intérêt historique 
+Il consiste en une macro (une fonction créée par un utilisateur)
+comprise entre les lignes %MACRO et %MEND, qui peut être ensuite appelée.
+Comme la macro utilise la procédure reg, les variables catégorielles et les polynômes doivent être créés préalablement.
+*/
 
 /*##############1#################### */
 /* création de nouvelles variables ou autres manipulations préalables */
 
 data train;                   
 set multi.selection1_train;
+x1=x;
 x2=x**2;
 x3=x**3;
 x4=x**4;
@@ -20,6 +43,7 @@ x7=x**7;
 x8=x**8;
 x9=x**9;
 x10=x**10;
+drop x;
 run;
                              
 
@@ -86,22 +110,19 @@ run;
 proc means data=validcv mean;
 var mse_cv;
 run;
-
+/* fin de la macro cv */
 %MEND cv;
 
-/* Appels de la MACRO pour estimer le GMSE dans notre exemple */
+/* Appels de la MACRO pour estimer l'EQMG dans notre exemple */
 
-%cv(yvar=y,xvar=x,n=100,k=10,dataset=train);
-%cv(yvar=y,xvar=x x2,n=100,k=10,dataset=train);
-%cv(yvar=y,xvar=x x2 x3,n=100,k=10,dataset=train);
-%cv(yvar=y,xvar=x x2 x3 x4,n=100,k=10,dataset=train);
-%cv(yvar=y,xvar=x x2 x3 x4 x5,n=100,k=10,dataset=train);
-%cv(yvar=y,xvar=x x2 x3 x4 x5 x6,n=100,k=10,dataset=train);
-%cv(yvar=y,xvar=x x2 x3 x4 x5 x6 x7,n=100,k=10,dataset=train);
-%cv(yvar=y,xvar=x x2 x3 x4 x5 x6 x7 x8,n=100,k=10,dataset=train);
-%cv(yvar=y,xvar=x x2 x3 x4 x5 x6 x7 x8 x9,n=100,k=10,dataset=train);
-%cv(yvar=y,xvar=x x2 x3 x4 x5 x6 x7 x8 x9 x10,n=100,k=10,dataset=train);
-
-
-
+%cv(yvar=y,xvar=x1,n=100,k=10,dataset=train);
+%cv(yvar=y,xvar=x1-x2,n=100,k=10,dataset=train);
+%cv(yvar=y,xvar=x1-x3,n=100,k=10,dataset=train);
+%cv(yvar=y,xvar=x1-x4,n=100,k=10,dataset=train);
+%cv(yvar=y,xvar=x1-x5,n=100,k=10,dataset=train);
+%cv(yvar=y,xvar=x1-x6,n=100,k=10,dataset=train);
+%cv(yvar=y,xvar=x1-x7,n=100,k=10,dataset=train);
+%cv(yvar=y,xvar=x1-x8,n=100,k=10,dataset=train);
+%cv(yvar=y,xvar=x1-x9,n=100,k=10,dataset=train);
+%cv(yvar=y,xvar=x1-x10,n=100,k=10,dataset=train);
 
