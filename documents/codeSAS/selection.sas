@@ -13,490 +13,31 @@ model y=x x*x x*x*x  /selection=none;
 run;
 
 *=========================;
-*  selection5_polynome	  ;
+*  selection3_vc	  ;
 *=========================;
 
 * Reproduit les manipulations dans la section;
 *4.5 Principes généraux;
-
-data train;                   
-set multi.selection1_train;
-x2=x**2;
-x3=x**3;
-x4=x**4;
-x5=x**5;
-x6=x**6;
-x7=x**7;
-x8=x**8;
-x9=x**9;
-x10=x**10;
-run;
-
-data test;                   
-set multi.selection1_test;
-x2=x**2;
-x3=x**3;
-x4=x**4;
-x5=x**5;
-x6=x**6;
-x7=x**7;
-x8=x**8;
-x9=x**9;
-x10=x**10;
-run;
-
-*Calcul des valeurs TMSE et EMQG;
-*===============================;
-
-*Modèle de degré 1;
-
-proc reg data=train outest=estim;
-  model y=x; 
-run;
-proc score data=train score=estim out=restrain type=parms residual;
-  var y x; 
-run;
-proc score data=test score=estim out=restest type=parms residual;
-  var y x; 
-run;
-
-data restrain;
-  set restrain;
-  calcul_tmse=MODEL1**2;
-run;
-proc means data=restrain mean;
-  var calcul_tmse;
-run;
-
-data restest;
-  set restest;
-  calcul_EMQG=MODEL1**2;
-run;
-proc means data=restest mean;
-  var calcul_EMQG;
-run;
-
-**Valeurs de l'erreur moyenne quadratique globale des différents modèles;
-
-
-*Modèle de degré 2;
-
-proc reg data=train outest=estim;
-  model y=x x2; 
-run;
-proc score data=train score=estim out=restrain type=parms residual;
-  var y x x2; 
-run;
-proc score data=test score=estim out=restest type=parms residual;
-  var y x x2; 
-run;
-
-data restrain;
-  set restrain;
-  calcul_tmse=MODEL1**2;
-run;
-proc means data=restrain mean;
-  var calcul_tmse;
-run;
-
-data restest;
-  set restest;
-  calcul_EMQG=MODEL1**2;
-run;
-proc means data=restest mean;
-  var calcul_EMQG;
-run;
-
-
-
-*Modèle de degré 3;
-
-proc reg data=train outest=estim;
-  model y=x x2 x3; 
-run;
-proc score data=train score=estim out=restrain type=parms residual;
-  var y x x2 x3; 
-run;
-proc score data=test score=estim out=restest type=parms residual;
-  var y x x2 x3; 
-run;
-
-data restrain;
-  set restrain;
-  calcul_tmse=MODEL1**2;
-run;
-proc means data=restrain mean;
-  var calcul_tmse;
-run;
-
-data restest;
-  set restest;
-  calcul_EMQG=MODEL1**2;
-run;
-proc means data=restest mean;
-  var calcul_EMQG;
-run;
-
-
-*Modèle de degré 4;
-
-proc reg data=train outest=estim;
-  model y=x x2 x3 x4; 
-run;
-proc score data=train score=estim out=restrain type=parms residual;
-  var y x x2 x3 x4; 
-run;
-proc score data=test score=estim out=restest type=parms residual;
-  var y x x2 x3 x4; 
-run;
-
-data restrain;
-  set restrain;
-  calcul_tmse=MODEL1**2;
-run;
-proc means data=restrain mean;
-  var calcul_tmse;
-run;
-
-data restest;
-  set restest;
-  calcul_EMQG=MODEL1**2;
-run;
-proc means data=restest mean;
-  var calcul_EMQG;
-run;
-
-
-*Modèle de degré 5;
-
-proc reg data=train outest=estim;
-  model y=x x2 x3 x4 x5; 
-run;
-proc score data=train score=estim out=restrain type=parms residual;
-  var y x x2 x3 x4 x5; 
-run;
-proc score data=test score=estim out=restest type=parms residual;
-  var y x x2 x3 x4 x5; 
-run;
-
-data restrain;
-  set restrain;
-  calcul_tmse=MODEL1**2;
-run;
-proc means data=restrain mean;
-  var calcul_tmse;
-run;
-
-data restest;
-  set restest;
-  calcul_EMQG=MODEL1**2;
-run;
-proc means data=restest mean;
-  var calcul_EMQG;
-run;
-
-
-*Modèle de degré 6;
-
-proc reg data=train outest=estim;
-  model y=x x2 x3 x4 x5 x6; 
-run;
-proc score data=train score=estim out=restrain type=parms residual;
-  var y x x2 x3 x4 x5 x6; 
-run;
-proc score data=test score=estim out=restest type=parms residual;
-  var y x x2 x3 x4 x5 x6; 
-run;
-
-data restrain;
-  set restrain;
-  calcul_tmse=MODEL1**2;
-run;
-proc means data=restrain mean;
-  var calcul_tmse;
-run;
-
-data restest;
-  set restest;
-  calcul_EMQG=MODEL1**2;
-run;
-proc means data=restest mean;
-  var calcul_EMQG;
-run;
-
-
-*Modèle de degré 7;
-
-proc reg data=train outest=estim;
-  model y=x x2 x3 x4 x5 x6 x7; 
-run;
-proc score data=train score=estim out=restrain type=parms residual;
-  var y x x2 x3 x4 x5 x6 x7; 
-run;
-proc score data=test score=estim out=restest type=parms residual;
-  var y x x2 x3 x4 x5 x6 x7; 
-run;
-
-data restrain;
-  set restrain;
-  calcul_tmse=MODEL1**2;
-run;
-proc means data=restrain mean;
-  var calcul_tmse;
-run;
-
-data restest;
-  set restest;
-  calcul_EMQG=MODEL1**2;
-run;
-proc means data=restest mean;
-  var calcul_EMQG;
-run;
-
-
-*Modèle de degré 8;
-
-proc reg data=train outest=estim;
-  model y=x x2 x3 x4 x5 x6 x7 x8; 
-run;
-proc score data=train score=estim out=restrain type=parms residual;
-  var y x x2 x3 x4 x5 x6 x7 x8; 
-run;
-proc score data=test score=estim out=restest type=parms residual;
-  var y x x2 x3 x4 x5 x6 x7 x8; 
-run;
-
-data restrain;
-  set restrain;
-  calcul_tmse=MODEL1**2;
-run;
-proc means data=restrain mean;
-  var calcul_tmse;
-run;
-
-data restest;
-  set restest;
-  calcul_EMQG=MODEL1**2;
-run;
-proc means data=restest mean;
-  var calcul_EMQG;
-run;
-
-*Modèle de degré 9;
-
-proc reg data=train outest=estim;
-  model y=x x2 x3 x4 x5 x6 x7 x8 x9; 
-run;
-proc score data=train score=estim out=restrain type=parms residual;
-  var y x x2 x3 x4 x5 x6 x7 x8 x9; 
-run;
-proc score data=test score=estim out=restest type=parms residual;
-  var y x x2 x3 x4 x5 x6 x7 x8 x9; 
-run;
-
-data restrain;
-  set restrain;
-  calcul_tmse=MODEL1**2;
-run;
-proc means data=restrain mean;
-  var calcul_tmse;
-run;
-
-data restest;
-  set restest;
-  calcul_EMQG=MODEL1**2;
-run;
-proc means data=restest mean;
-  var calcul_EMQG;
-run;
-
-
-*Modèle de degré 10;
-
-proc reg data=train outest=estim;
-  model y=x x2 x3 x4 x5 x6 x7 x8 x9 x10; 
-run;
-proc score data=train score=estim out=restrain type=parms residual;
-  var y x x2 x3 x4 x5 x6 x7 x8 x9 x10; 
-run;
-proc score data=test score=estim out=restest type=parms residual;
-  var y x x2 x3 x4 x5 x6 x7 x8 x9 x10; 
-run;
-
-data restrain;
-  set restrain;
-  calcul_tmse=MODEL1**2;
-run;
-proc means data=restrain mean;
-  var calcul_tmse;
-run;
-
-data restest;
-  set restest;
-  calcul_EMQG=MODEL1**2;
-run;
-proc means data=restest mean;
-  var calcul_EMQG;
-run;
-
-*Trouver les valeurs R-carré, AIC et BIC;
-*=======================================;
-
-*Modèle de degré 1;
-
-proc glmselect data=train;
-  model y=x; 
-run;
-
-
-*Modèle de degré 2;
-
-proc glmselect data=train;
-  model y=x x2; 
-run;
-
-*Modèle de degré 3;
-
-proc glmselect data=train;
-  model y=x x2 x3; 
-run;
-
-*Modèle de degré 4;
-
-proc glmselect data=train;
-  model y=x x2 x3 x4; 
-run;
-
-*Modèle de degré 5;
-
-proc glmselect data=train;
-  model y=x x2 x3 x4 x5; 
-run;
-
-*Modèle de degré 6;
-
-proc glmselect data=train;
-  model y=x x2 x3 x4 x5 x6; 
-run;
-
-*Modèle de degré 7;
-
-proc glmselect data=train;
-  model y=x x2 x3 x4 x5 x6 x7; 
-run;
-
-*Modèle de degré 8;
-
-proc glmselect data=train;
-  model y=x x2 x3 x4 x5 x6 x7 x8; 
-run;
-
-*Modèle de degré 9;
-
-proc glmselect data=train;
-  model y=x x2 x3 x4 x5 x6 x7 x8 x9; 
-run;
-
-*Modèle de degré 10;
-
-proc glmselect data=train;
-  model y=x x2 x3 x4 x5 x6 x7 x8 x9 x10; 
-run;
-
-*=========================;
-*     selection3_vc	  ;
-*=========================;
-
-
-
 /* 
-Estimation du EMQG pour un modèle de régression linéaire en 
+Estimation de l'EMQG pour un modèle de régression linéaire en 
 utilisant la validation croisée.
 */
 
-                             
 
-/*##############2####################
-
-/* MACRO qui estime l'EMQG par validation-croisée */
-
-/*
-La macro cv a 5 arguments:
-yvar = nom de la variable Y (variable dépendante)
-xvar = liste des variables indépendantes (les X). Par exemple xvar=x1 x2 x3 x3 x4
-n = nombre d'observations
-k = nombre de groupes pour la validation croisée (on utilise 10 habituellement)
-dataset = nom du fichier de données SAS à utiliser
-*/
-
-%MACRO cv(yvar=,xvar=,n=,k=,dataset=);
-
-%LET nout=int(&n/&k);             
-proc datasets;
-delete validcv;
+/* Utiliser directement glmselect avec polynome
+La contrainte hierarchy=single implique qu'on ajoute seulement le
+ terme d'ordre k si le terme d'ordre k-1 est déjà présent
+ effect permet de créer de nouvelles variables (ici un polynôme en x)
+ que l'on passe ensuite à modèle
+ option stop=11 pour faire tous les modèles en partant du modèle
+ avec uniquement l'ordonnée à l'origine jusqu'au modèle avec 11 covariables
+ Ici, à cause de "hier", cela revient à ajouter x**10 dans le dernier modèle
+ */
+proc glmselect data=multi.selection1_train valdata=multi.selection1_test;
+effect polyn = polynomial(x / degree=10);
+model y = polyn / 
+ selection=forward(stop=11 choose=CV) cvmethod=block(10) hierarchy=single stat=(rsquare aic bic);
 run;
-
-* générer liste de permutations;
-proc plan seed=10434052;
-factors permut=&n / noprint;
-output out=permu;
-run;
-
-data &dataset;
-merge &dataset permu;
-run;
-
-proc sort data=&dataset out=datapermut;
-by permut;
-run;
-
-%DO i= 1 %to &k;
-
-data testcv traincv;
-set datapermut;
-if _N_>&nout*(&i-1) and _N_<&nout*&i+1 then output testcv;
-else output traincv;
-run;
-
-proc reg data=traincv outest=estim noprint;
-model &yvar = &xvar;  
-run;
-
-proc score data=testcv score=estim out=restestcv type=parms residual;
-var &yvar &xvar; 
-run;
-proc means data=restestcv noprint;
-var model1;
-output out=valid uss= ;
-run;
-proc append base=validcv data=valid force;
-run;
-%END;
-data validcv;
-set validcv;
-mse_cv=model1/_freq_;
-run;
-proc means data=validcv mean;
-var mse_cv;
-run;
-
-%MEND cv;
-
-/* Appels de la MACRO pour estimer l'EMQG dans notre exemple */
-
-%cv(yvar=y,xvar=x,n=100,k=10,dataset=train);
-%cv(yvar=y,xvar=x x2,n=100,k=10,dataset=train);
-%cv(yvar=y,xvar=x x2 x3,n=100,k=10,dataset=train);
-%cv(yvar=y,xvar=x x2 x3 x4,n=100,k=10,dataset=train);
-%cv(yvar=y,xvar=x x2 x3 x4 x5,n=100,k=10,dataset=train);
-%cv(yvar=y,xvar=x x2 x3 x4 x5 x6,n=100,k=10,dataset=train);
-%cv(yvar=y,xvar=x x2 x3 x4 x5 x6 x7,n=100,k=10,dataset=train);
-%cv(yvar=y,xvar=x x2 x3 x4 x5 x6 x7 x8,n=100,k=10,dataset=train);
-%cv(yvar=y,xvar=x x2 x3 x4 x5 x6 x7 x8 x9,n=100,k=10,dataset=train);
-%cv(yvar=y,xvar=x x2 x3 x4 x5 x6 x7 x8 x9 x10,n=100,k=10,dataset=train);
-
-
-
 
 
 *=========================;
@@ -529,8 +70,8 @@ run;
  */
  proc glmselect data=ymontant;
  partition role=train(train="1" validate="0");
- class x3(param=ref split) x4(param=ref split); *permettre de fusionner des groupes;
- model ymontant=x1-x10 / selection=forward(stop=15 choose=AIC);
+ class x3(param=ref split) x4(param=ref split); *'split' permet de fusionner des groupes à la catégorie de référence;
+ model ymontant=x1-x10 / selection=forward(stop=15 choose=AIC) stat=(AIC SBC);
  *score data=testymontant out=predaic p=predymontant;
  run;
  /*En sélectionnant "split" ou en créant des indicateurs binaires, 
@@ -548,11 +89,18 @@ run;
  */
  proc glmselect data=ymontant;
  partition role=train(train="1" validate="0");
- class x3 x4;
- model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10@2 
+ class x3(param=ref split) x4(param=ref split);
+ model ymontant = x1|x2|x3|x4|x5|x6|x7|x8|x9|x10@2 
  x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 / selection=none;
  run;
-
+/* effect ... permet de créer tous les termes d'ordre deux et les interactions entre deux variables pour x1 à x10 si aucune n'est catégorielle;
+L'équivalent de
+ymontant = x1|x2|x3|x4|x5|x6|x7|x8|x9|x10@2 *toutes les interactions d'ordre 2;
+ x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 *tous les termes quadratiques;
+ avec effect est
+ effect xlist = polynomial(x1-x10 / degree=2);
+ model ymontant= xlist ...
+*/
  
  /* 
  Commandes pour effectuer une sélection de variables avec la méthode séquentielle "stepwise" classique
@@ -624,8 +172,10 @@ run;
  /* 
   La commande "score" demande à SAS de calculer les prévisions de ymontant
  pour les observations du fichier "testymontant". Elle seront sauvegardées
- dans le fichier "predaverage". La variable "predymontant" contiendra les prévisions. */
+ dans le fichier "predaverage". La variable "predymontant" contiendra les prévisions. 
  */
+ 
+
  data predaverage;
  set predaverage;
  erreur=(ymontant-predymontant)**2;
