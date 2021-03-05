@@ -117,18 +117,18 @@ On obtient ainsi les estimés des paramètres $\widehat{\boldsymbol{\beta}}$, de
  \widehat{p} = \expit(\widehat{\beta}_0 + \cdots + \widehat{\beta}_pX_p).
 \end{align*}
 
-Un modèle ajusté peut ensuite être utilisé pour faire de la classification (prédiction) pour de nouveaux individus pour lesquels la variable réponse $Y$ n'est pas observée. Pour ce faire, on choisit un point de coupure $c$ (souvent $c=0,5$ mais pas toujours) et on classifie les observations en deux groupes:
+Un modèle ajusté peut ensuite être utilisé pour faire de la classification (prédiction) pour de nouveaux individus pour lesquels la variable réponse $Y$ n'est pas observée. Pour ce faire, on choisit un point de coupure $c$ (souvent $c=$0,5 mais pas toujours) et on classifie les observations en deux groupes:
 
 - Si $\widehat{p}< c$, alors $\widehat{Y}=0$ (c'est-à-dire, on assigne cette observation à la catégorie 0).
 - Si $\widehat{p} \geq c$, alors $\widehat{Y}=1$ (c'est-à-dire, on assigne cette observation à la catégorie 1).
 
 On reviendra en détail sur cet aspect dans une section suivante.
 
-La méthode d'estimation des paramètres habituellement utilisée est la méthode du maximum de vraisemblance. Pour les applications, il est suffisant de savoir manipuler trois quantités importantes: la log-vraisemblance, le $\mathsf{AIC}$ et le $\mathsf{BIC}$. Les deux critères d'information, que nous avons couvert dans les chapitres précédent, servent à la sélection de modèles tandis que la log-vraisemblance $\ell$servira à construire un test d'hypothèse. 
+La méthode d'estimation des paramètres habituellement utilisée est la méthode du maximum de vraisemblance. Pour les applications, il est suffisant de savoir manipuler trois quantités importantes: la log-vraisemblance, le $\mathsf{AIC}$ et le $\mathsf{BIC}$. Les deux critères d'information, que nous avons couvert dans les chapitres précédents, servent à la sélection de modèles tandis que la log-vraisemblance $\ell$ servira à construire un test d'hypothèse. 
 
 ### Méthode du maximum de vraisemblance
 
-Cette sous-section est facultative. Elle donne plus de détails sur la méthode du maximum de vraisemblance et les quantités en découlant ($\mathsf{AIC}$, $\mathsf{BIC}$ et $\ell(\widehat{\boldsymbol{\beta}})$).
+Cette sous-section est facultative. Elle donne plus de détails sur la méthode du maximum de vraisemblance et les quantités en découlant (soit $\mathsf{AIC}$, $\mathsf{BIC}$ et $\ell(\widehat{\boldsymbol{\beta}})$).
 
 La méthode du maximum de vraisemblance (_maximum likelihood_) est possiblement la méthode d'estimation la plus utilisée en statistique. En général, pour un échantillon donné et un modèle avec des paramètres inconnus $\boldsymbol{\theta}$, on peut calculer la « probabilité » d'avoir obtenu les observations de notre échantillon selon les paramètre. Si on traite cette « probabilité » comme étant une fonction des paramètres du modèle, $\boldsymbol{\theta}$, on l'appelle alors la vraisemblance (_likelihood_). La méthode du maximum de vraisemblance consiste à trouver les valeurs des paramètres qui maximisent la vraisemblance. On cherche donc les estimations qui sont les plus vraisemblables étant donné nos observations. 
 
@@ -136,26 +136,26 @@ En pratique, il est habituellement plus simple de chercher à maximiser le log d
 
 Vous connaissez déjà des exemples d'estimateurs du maximum de vraisemblance. La moyenne d'un échantillon est l'estimateur du maximum de vraisemblance pour la moyenne de la population $\mu$ si les observations représentent un échantillon aléatoire simple tiré d'une loi normale.
 
-Dans le cas d'un modèle de régression linéaire multiple $Y = \beta_0 + \sum_{j=1}^p \beta_jX_j + \eps$ avec les erreurs $\eps \sim \mathcal{N}(0, \sigma^2)$ des termes indépendants et identiquement distributions, alors la log-vraisemblance du modèle pour un échantillon de taille $n$ est 
+Dans le cas d'un modèle de régression linéaire multiple $Y = \beta_0 + \sum_{j=1}^p \beta_jX_j + \eps$ avec les erreurs $\eps \sim \mathcal{N}(0, \sigma^2)$ des termes indépendants et identiquement distributions, la log-vraisemblance du modèle pour un échantillon de taille $n$ est 
 \begin{align*}
  \ell(\boldsymbol{\beta}, \sigma^2) =- \frac{n}{2} \ln(2\pi\sigma^2) - \frac{1}{2\sigma^2}\sum_{i=1}^n (Y_i- \beta_0 - \beta_1 X_{1i} - \cdots - \beta_pX_{ip})^2.
 \end{align*}
-Puisque le premier terme ne dépend pas des paramètres $\boldsymbol{\beta}$, il est clair que maximiser cette fonction de $\boldsymbol{\beta}$ revient à minimiser $\sum_{i=1}^n (Y_i- \beta_0 - \beta_1 X_{1i} - \cdots - \beta_pX_{ip})^2$,  et ce critère est exactement le même que celui des moindres carrés. Par conséquent, les estimations des paramètres $\boldsymbol{\beta}$ provenant de la méthode des moindres carrés peuvent être vues comme étant des estimateurs du maximum de vraisemblance sous l'hypothèse de normalité des observations. De plus, il est même possible d'écrire une formule explicite pour ces estimations.
+Puisque le premier terme ne dépend pas des paramètres $\boldsymbol{\beta}$, il est clair que maximiser cette fonction de $\boldsymbol{\beta}$ revient à minimiser $\sum_{i=1}^n (Y_i- \beta_0 - \beta_1 X_{1i} - \cdots - \beta_pX_{ip})^2$,  et ce critère est exactement le même que celui des moindres carrés. Par conséquent, les estimations des paramètres $\boldsymbol{\beta}$ provenant de la méthode des moindres carrés peuvent être vues comme étant des estimateurs du maximum de vraisemblance sous l'hypothèse de normalité des observations; il est même possible d'écrire une formule explicite pour ces estimations.
 
 Dans le cas de la régression logistique, la fonction de log-vraisemblance s'écrit
 \begin{align*}
- \ell(\boldsymbol{\beta}) = \sum_{i=1}^n Y_i ( \beta_0 + \beta_1 X_{i1} + \cdots + \beta_p X_{ip}) - \sum_{i=1}^n \ln\left\{1+\exp(\beta_0 + \cdots + \beta_pX_{ip})\right\}
+ \ell(\boldsymbol{\beta}) &= \sum_{i=1}^n Y_i ( \beta_0 + \beta_1 X_{i1} + \cdots + \beta_p X_{ip}) \\&- \sum_{i=1}^n \ln\left\{1+\exp(\beta_0 + \cdots + \beta_pX_{ip})\right\}
 \end{align*}
 
 Contrairement au cas de la régression linéaire, on ne peut trouver une fonction explicite pour les valeurs des paramètres qui maximisent cette fonction. Des méthodes numériques doivent alors être utilisées pour l'optimisation. Une fois la maximisation accomplie, on obtient les estimés du maximum de vraisemblance, $\widehat{\boldsymbol{\beta}}$. On peut alors calculer la valeur maximale (numérique) de la log-vraisemblance,  $\ell(\widehat{\boldsymbol{\beta}})$. La quantité $-2\ell(\widehat{\boldsymbol{\beta}})$ (`-2 Log L`) est rapportée dans les sorties **SAS**. Par analogie avec la régression linéaire la valeur de la log-vraisemblance évaluée à $\widehat{\boldsymbol{\beta}}$, $\ell(\widehat{\boldsymbol{\beta}})$, augmente toujours lorsqu'on ajoute des régresseurs et c'est pourquoi on ne pourra pas l'utiliser comme outil de sélection de variables. 
 
-Les critères d'information sont fonctions de a log-vraisemblance et sont 
+Les critères d'information sont des fonctions de la log-vraisemblance, mais incluent une pénalité
 \begin{align*}
  \mathsf{AIC} & = -2 \ell(\widehat{\boldsymbol{\beta}}) + 2(p+1)\\
  \mathsf{BIC} & = -2 \ell(\widehat{\boldsymbol{\beta}}) + \ln(n)(p+1)
 \end{align*}
 
-Ces définitions sont utilisables dans plusieurs situations lorsque le modèle est ajusté par la méthode du maximum de vraisemblance. En particulier, elles sont utilisées par **SAS** en régression logistique. Tout comme en régression linéaire et analyse factorielle, ces deux critères pourront être utilisés pour faire de la sélection de modèles si on calcule les estimateurs du maximum de vraisemblance.
+Ces définitions sont utilisables dans plusieurs situations lorsque le modèle est ajusté par la méthode du maximum de vraisemblance. En particulier, elles sont utilisées par **SAS** en régression logistique. Tout comme en régression linéaire et en analyse factorielle, ces deux critères pourront être utilisés pour faire de la sélection de modèles si on calcule les estimateurs du maximum de vraisemblance.
 
 ## Exemple du _Professional Rodeo Cowboys Association_ {#cowboy}
 
