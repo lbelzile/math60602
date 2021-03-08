@@ -2,22 +2,20 @@
 /* 
 Régression logistique avec x5 seulement.
 
-expb: pour avoir les exp(beta) sur la ligne des paramètres estimés (les "odds ratios").
-clparm=pl: pour avoir les intervalles de confiance pour les beta.
-clodds=pl: pour avoir les intervalles de confiance pour les exp(beta).
+expb: pour avoir les exp(beta) sur la ligne des paramètres estimés (les rapports de cote).
+clparm=pl: pour avoir les intervalles de confiance pour beta (vraisemblance profilée).
+clodds=pl: pour avoir les intervalles de confiance pour exp(beta) (vraisemblance profilée).
 
 "y(ref='0')" spécifie qu'on utilise Y=0 comme valeur de référence.
 Ainsi, on modélise P(Y=1).
 */
-
-
-proc logistic data=multi.logit1 ;
+proc logistic data=multi.logit1;
 model y(ref='0') = x5 / clparm=pl clodds=pl expb;
 run; 
 
 
 
-/* Modèle avec toutes les variables exlicatives.
+/* Modèle avec toutes les variables explicatives.
 
 La commande CLASS permet de déclarer des variables explicatives catégorielles.
 "x1(ref=last)" précise que la plus grande valeur de X1 est la catégorie de référence.
@@ -26,7 +24,7 @@ La commande CLASS permet de déclarer des variables explicatives catégorielles.
 
 proc logistic data=multi.logit1 ;
 class x1(ref=last) x2(ref=last) x6(ref=last) /  param=ref ;
-model y(ref='0') =x1 x2 x3 x4 x5 x6 / clparm=pl clodds=pl expb;
+model y(ref='0') =x1-x6 / clparm=pl clodds=pl expb;
 run; 
 
 
@@ -65,7 +63,7 @@ du rapport de vraisemblance sur cette variable
 
 proc logistic data=multi.logit1 ;
 class x1(ref=last) x2(ref=last)  / param=ref;
-model y(ref='0') =x1 x2 x3 x4 x5  ;
+model y(ref='0') =x1-x5;
 run; 
 
 
@@ -74,7 +72,7 @@ Pour calculer la valeur-p du test de rapport de vraisemblance
 */
 
 data pval;
-pval=1-CDF('CHISQ',49.487,2);
+pval=1-CDF('CHISQ', 49.487, 2);
 run;
 proc print data=pval;
 run;
@@ -83,17 +81,19 @@ run;
 /* Comparaisons entre les modalités de X1 d'un seul coup */
 
 proc logistic data=multi.logit1 ;
-class x1 x2 x6 /param=glm;
-model y(ref='0') =x1 x2 x3 x4 x5 x6 / clparm=pl clodds=pl expb;
+class x1 x2 x6 / param=glm;
+model y(ref='0') =x1-x6 / clparm=pl clodds=pl expb;
 lsmeans x1 /diff=all;
 run; 
 
-/* Pour obtenir les estimations de P(Y=1) et les intervalles de confiance pour ces probabilités */
+/* Pour obtenir les estimations de P(Y=1) et
+ les intervalles de confiance pour ces probabilités */
 
 proc logistic data=multi.logit1 ;
-class x1(ref=last) x2(ref=last) x6(ref=last) /  param=ref ;
-model y(ref='0') =x1 x2 x3 x4 x5 x6 / clparm=pl clodds=pl expb;
+class x1(ref=last) x2(ref=last) x6(ref=last) / param=ref;
+model y(ref='0') = x1-x6 / clparm=pl clodds=pl expb;
 score data=multi.logit1 out=pred clm;
 run; 
 
  
+

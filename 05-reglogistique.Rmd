@@ -149,7 +149,7 @@ Dans le cas de la régression logistique, la fonction de log-vraisemblance s'éc
 
 Contrairement au cas de la régression linéaire, on ne peut trouver une fonction explicite pour les valeurs des paramètres qui maximisent cette fonction. Des méthodes numériques doivent alors être utilisées pour l'optimisation. Une fois la maximisation accomplie, on obtient les estimés du maximum de vraisemblance, $\widehat{\boldsymbol{\beta}}$. On peut alors calculer la valeur maximale (numérique) de la log-vraisemblance,  $\ell(\widehat{\boldsymbol{\beta}})$. La quantité $-2\ell(\widehat{\boldsymbol{\beta}})$ (`-2 Log L`) est rapportée dans les sorties **SAS**. Par analogie avec la régression linéaire la valeur de la log-vraisemblance évaluée à $\widehat{\boldsymbol{\beta}}$, $\ell(\widehat{\boldsymbol{\beta}})$, augmente toujours lorsqu'on ajoute des régresseurs et c'est pourquoi on ne pourra pas l'utiliser comme outil de sélection de variables. 
 
-Les critères d'information sont des fonctions de la log-vraisemblance, mais incluent une pénalité
+Les critères d'information sont des fonctions de la log-vraisemblance, mais incluent une pénalité pour le nombre de coefficients $\boldsymbol{\beta}$,
 \begin{align*}
  \mathsf{AIC} & = -2 \ell(\widehat{\boldsymbol{\beta}}) + 2(p+1)\\
  \mathsf{BIC} & = -2 \ell(\widehat{\boldsymbol{\beta}}) + \ln(n)(p+1)
@@ -202,7 +202,7 @@ proc logistic data=multi.logit1 ;
 model y(ref='0') = x5 / clparm=pl clodds=pl expb;
 run;
 ```
-Le fichier `logit1_intro.sas` contient ce programme et décrit plus en détail les différentes options. La syntaxe `y(ref='0')` sert à spécifier la catégorie de référence, zéro, de la variable réponse $Y$: le modèle décrit donc $\P{y=1 \mid X_5}$.
+La syntaxe `y(ref='0')` sert à spécifier la catégorie de référence, zéro, de la variable réponse $Y$: le modèle décrit donc $\P{y=1 \mid X_5}$.
 
 
 Voici une partie de la sortie
@@ -307,24 +307,24 @@ knitr::include_graphics("figures/03-logistic-e8.png")
 ```
 Le modèle ajusté est
 \begin{align*}
- \logit\{\P{Y=1 \mid \boldsymbol{X}=\boldsymbol{x}}\} &= -6,89 + 0,36\I{X_1=1} - 0,47\I{X_1=2} - 0,31\I{X_1=3} - 0,32\I{X_1=4} \\& \qquad 
-+ 1,33\I{X_2=1} + 1,15\I{X_2=2} + 0,77\I{X_2=3} - 1,11\I{X_2=4} \\&\qquad 
-+ 1,35X_3+ 1,83X_4
-+ 0,11X_5
-+ 2,41\I{X_6=1} + 1,04\I{X_6=2}
+ \logit\{\P{Y=1 \mid \boldsymbol{X}=\boldsymbol{x}}\} &= -6.89 + 0.36\I{X_1=1} - 0.47\I{X_1=2} - 0.31\I{X_1=3} - 0.32\I{X_1=4} \\& \qquad 
++ 1.33\I{X_2=1} + 1.15\I{X_2=2} + 0.77\I{X_2=3} - 1.11\I{X_2=4} \\&\qquad 
++ 1.35X_3+ 1.83X_4
++ 0.11X_5
++ 2.41\I{X_6=1} + 1.04\I{X_6=2}
 \end{align*}
 
 Notez que les variables $\I{X_1=1}$ (`x11`), $\I{X_1=21}$ (`x12`), $\I{X_1=3}$ (`x13`) et $\I{X_1=4}$ (`x14`) représentent les quatre indicatrices pour la variable $X_1$ (et de même pour $X_2$ et $X_6$). L'interprétation se fait comme en régression linéaire multiple. Ici, il n'y a pas de terme quadratique, ni d'interaction. Les paramètres estimés représentent donc l'effet de la variable correspondante sur le logit une fois que les autres variables sont dans le modèle, et demeurent fixes. 
 
 
-Prenons le coefficient associé à l'âge ($X_5$) comme exmple. Le paramètre estimé est $\widehat{\beta}_{\texttt{age}}=0,1095$ et il est significativement différent de zéro. Ainsi, plus l'âge augmente, plus $\P{Y=1\mid \boldsymbol{X}}$ augmente, toutes autres choses étant égales par ailleurs. Pour chaque augmentation d'un an de $X_5$, la cote est multipliée par $\exp(0,1095)=1,116$, lorsque les autres variables demeurent fixes. 
+Prenons le coefficient associé à l'âge ($X_5$) comme exmple. Le paramètre estimé est $\widehat{\beta}_{\texttt{age}}=0.1095$ et il est significativement différent de zéro. Ainsi, plus l'âge augmente, plus $\P{Y=1\mid \boldsymbol{X}}$ augmente, toutes autres choses étant égales par ailleurs. Pour chaque augmentation d'un an de $X_5$, la cote est multipliée par $\exp(0.1095)=1.116$, lorsque les autres variables demeurent fixes. 
 
 N'oubliez pas la nuance suivante concernant l'interprétation d'un test lorsque plusieurs variables explicatives font partie du modèle. Si un paramètre n'est pas significativement différent de zéro, cela ne veut pas dire qu'il n'y a pas de lien entre la variable correspondante et $Y$. Cela veut seulement dire qu'il n'y a pas de lien significatif une fois que les autres variables sont dans le modèle. 
 
 
- Prenons l'exemple de la variable $X_6$, qui représente le nombre de fois où l'individu a assisté à un rodéo au cours de la dernière année. Cette variable est modélisée à l'aide de deux variables indicatrices, $\I{X_6=1}$ égale à un si $X_6=1$ et zéro autrement, et $\I{X_6=2}$  égale à un si $X_6=2$ et zéro sinon. La catégorie de référence est $X_6=3$, c'est-à-dire les personnes ayant assisté cinq fois ou moins à un rodéo au cours de la dernière année. Pour tester la significativité globale d'une variable catégorielle qui est modélisée avec plusieurs indicatrices, il faut aller dans le tableau `Analyse des effets Type 3`. On voit que la statistique de test est $42,9364$ et que la valeur-$p$ associée est négligeable: la variable $X_6$ est donc globalement significative. En fait, il s'agit du test conjoint sur toutes les indicatrices associées à cette variable. Plus précisément, il s'agit du test de l'hypothèse nulle $\Hy_0: \beta_{6_{\texttt{1}}}=\beta_{6_{\texttt{2}}}=0$ versus la contre-hypothèse qu'au moins un de ces deux paramètres est différent de zéro.
+ Prenons l'exemple de la variable $X_6$, qui représente le nombre de fois où l'individu a assisté à un rodéo au cours de la dernière année. Cette variable est modélisée à l'aide de deux variables indicatrices, $\I{X_6=1}$ égale à un si $X_6=1$ et zéro autrement, et $\I{X_6=2}$  égale à un si $X_6=2$ et zéro sinon. La catégorie de référence est $X_6=3$, c'est-à-dire les personnes ayant assisté cinq fois ou moins à un rodéo au cours de la dernière année. Pour tester la significativité globale d'une variable catégorielle qui est modélisée avec plusieurs indicatrices, il faut aller dans le tableau `Analyse des effets Type 3`. On voit que la statistique de test est $42.9364$ et que la valeur-$p$ associée est négligeable: la variable $X_6$ est donc globalement significative. En fait, il s'agit du test conjoint sur toutes les indicatrices associées à cette variable. Plus précisément, il s'agit du test de l'hypothèse nulle $\Hy_0: \beta_{6_{\texttt{1}}}=\beta_{6_{\texttt{2}}}=0$ versus la contre-hypothèse qu'au moins un de ces deux paramètres est différent de zéro.
 
-L'interprétation des variables catégorielles est analogue à celle faite en régression linéaire. On peut aussi interpréter individuellement les paramètres des indicatrices: pour $\I{X_6=1}$, lorsque les autres variables demeurent fixes, les personnes ayant assisté 10 fois ou plus à un rodéo au cours de la dernière année voient leur cote multipliée par $\exp(2,4122)=11,158$ par rapport aux personnes ayant assisté cinq fois ou moins. Ce paramètre est significativement différent de zéro car sa valeur-$p$ est négligeable (tableau `Analyse des valeurs estimées du maximum de vraisemblance`); l'intervalle de confiance à 95\% pour le  rapport de cotes, basé sur la vraisemblance profilée, est [$5,456; 23,882$] et un n'est pas dans l'intervalle.  Ainsi, il y a une différence significative entre les gens qui ont assisté à 10 rodéos ou plus et les gens qui ont assisté à 5 rodéos ou moins, pour ce qui est de l'intérêt à acheter un produit recommandé par le PRCA.
+L'interprétation des variables catégorielles est analogue à celle faite en régression linéaire. On peut aussi interpréter individuellement les paramètres des indicatrices: pour $\I{X_6=1}$, lorsque les autres variables demeurent fixes, les personnes ayant assisté 10 fois ou plus à un rodéo au cours de la dernière année voient leur cote multipliée par $\exp(2.4122)=11.158$ par rapport aux personnes ayant assisté cinq fois ou moins. Ce paramètre est significativement différent de zéro car sa valeur-$p$ est négligeable (tableau `Analyse des valeurs estimées du maximum de vraisemblance`); l'intervalle de confiance à 95\% pour le  rapport de cotes, basé sur la vraisemblance profilée, est [$5.456; 23.882$] et un n'est pas dans l'intervalle.  Ainsi, il y a une différence significative entre les gens qui ont assisté à 10 rodéos ou plus et les gens qui ont assisté à 5 rodéos ou moins, pour ce qui est de l'intérêt à acheter un produit recommandé par le PRCA.
 
 On procède de la même façon pour $\I{X_6=2}$: lorsque les autres variables demeurent fixes, les personnes ayant assisté entre six et neuf fois à un rodéo au cours de la dernière année voient leur cote multipliée par $2,842$ par rapport aux personnes ayant assisté cinq fois ou moins. Ce paramètre est aussi significativement différent de zéro. Il y a donc une progression. Plus une personne a assisté à un grand nombre de rodéo au cours de la dernière année, plus elle est intéressée à acheter un produit recommandé par la PRCA.
 
@@ -335,7 +335,7 @@ Si on désire comparer les deux modalités $X_6=1$ et $X_6=2$, il suffit de chan
 
 Les tests correspondants aux valeurs-$p$ dans le tableau des paramètres sont des tests de Wald. Ces tests feront l'affaire dans la plupart des applications. Par contre, il existe un autre test qui est généralement plus puissant, c'est-à-dire qu'il sera meilleur pour détecter que $\Hy_0$ n'est pas vraie lorsque c'est effectivement le cas. Ce test est le test du rapport de vraisemblance (_likelihood ratio test_). Il découle de la méthode d'estimation du maximum de vraisemblance et est donc généralement applicable lorsqu'on estime les paramètres avec cette méthode. Il est basé sur la quantité $\ell$ que nous avons vue plus tôt.
 
-La procédure consiste à ajuster deux modèles **imbriqués**:
+La procédure consiste à ajuster deux modèles **emboîtés**:
 
 - Le premier modèle, le modèle complet, contient tous les paramètres et l'estimateur du maximum de vraisemblance $\widehat{\boldsymbol{\beta}})$.
 - Le deuxième modèle correspondant à l'hypothèse nulle $\Hy_0$, le modèle réduit, contient tous les paramètres avec les restrictions imposées sous $\Hy_0$; on dénote l'estimateur du maximum de vraisemblance $\widehat{\boldsymbol{\beta}}_0$
@@ -346,10 +346,10 @@ Le test est basé sur la statistique
 \end{align*}
 ou la différence entre `-2 Log L` pour le modèle réduit et `-2 Log L` pour le modèle complet. Cette différence $D$, lorsque l'hypothèse $\Hy_0$ est vraie suit approximativement une loi khi-deux avec un nombre de degrés de liberté égal au nombre de paramètre testé (le nombre de restrictions sous $\Hy_0$). On peut donc calculer la valeur-$p$ en utilisant la distribution du khi-deux.
 
-Prenons comme exemple le test de la significativité de $X_6$, qui est modélisée à l'aide deux variables binaires $\I{X_6=1}$ et $\I{X_6=2}$ et dont les paramètres correspondants sont $\beta_{6_{\texttt{1}}}$ et $\beta_{6_{\texttt{2}}}$. Nous avons déjà étudié la sortie pour le test de Wald de significativité globale de $X_6$, soit le test de l'hypothèse $\Hy_0: \beta_{6_{\texttt{1}}}=\beta_{6_{\texttt{2}}}=0$ versus l'alternative qu'au moins un de ces deux paramètres est différent de zéro. La statistique de test (de Wald) est 42,93 et la valeur-$p$ est moins de $10^{-4}$. Pour effectuer le test du rapport de vraisemblance, il suffit de retirer la variable $X_6$ et de réajuster le modèle à nouveau avec toutes les autres variables; cette manipulation est effectuée dans `logit1_intro.sas`. On obtient donc 
-`-2 Log L` de 516,196 pour le modèle complet sans contrainte et $566,447$ pour le modèle excluant la variable $X_6$.
+Prenons comme exemple le test de la significativité de $X_6$, qui est modélisée à l'aide deux variables binaires $\I{X_6=1}$ et $\I{X_6=2}$ et dont les paramètres correspondants sont $\beta_{6_{\texttt{1}}}$ et $\beta_{6_{\texttt{2}}}$. Nous avons déjà étudié la sortie pour le test de Wald de significativité globale de $X_6$, soit le test de l'hypothèse $\Hy_0: \beta_{6_{\texttt{1}}}=\beta_{6_{\texttt{2}}}=0$ versus l'alternative qu'au moins un de ces deux paramètres est différent de zéro. La statistique de test (de Wald) est $42.93$ et la valeur-$p$ est moins de $10^{-4}$. Pour effectuer le test du rapport de vraisemblance, il suffit de retirer la variable $X_6$ et de réajuster le modèle à nouveau avec toutes les autres variables; cette manipulation est effectuée dans `logit1_intro.sas`. On obtient donc 
+`-2 Log L` de 516,196 pour le modèle complet sans contrainte et $566.447$ pour le modèle excluant la variable $X_6$.
 
-La différence $D = 566,447 - 516,196 = 50,25$.  Il s'agit de la statistique du test de rapport de vraisemblance. La valeur-$p$ peut-être obtenue de la loi du khi-deux avec 2 degrés de liberté via le code suivant permet d'imprimer la valeur-$p$, qui est $1,22 \times 10^{-11}$.
+La différence $D = 566.447 - 516.196 = 50.25$.  Il s'agit de la statistique du test de rapport de vraisemblance. La valeur-$p$ peut-être obtenue de la loi du khi-deux avec 2 degrés de liberté via le code suivant permet d'imprimer la valeur-$p$, qui est $1.22 \times 10^{-11}$.
 ```{sas 03-pvallrt, eval = FALSE, echo = TRUE}
 data pval;
 pval=1-CDF('CHISQ', 566.447 - 516.196, 2);
@@ -357,7 +357,7 @@ run;
 proc print data=pval;
 run;
 ```
-Comme la statistique du test de rapport de vraisemblance $D=50,25$ est encore plus grande est encore plus grande que la statistique de Wald ($42,9364$), qui suit la même loi de probabilité sous $\Hy_0$, cela indique que le test du rapport de vraisemblance est encore plus significatif que le test de Wald. Cela ne fait pas de différence ici mais, dans certains cas, il est possible que le test de Wald ne soit pas significatif (valeur-$p$ plus grande que $0,05$) tandis que le test du rapport de vraisemblance le soit (valeur-$p$ inférieure à $0,05$). 
+Comme la statistique du test de rapport de vraisemblance $D=50.25$ est encore plus grande est encore plus grande que la statistique de Wald ($42.9364$), qui suit la même loi de probabilité sous $\Hy_0$, cela indique que le test du rapport de vraisemblance est encore plus significatif que le test de Wald. Cela ne fait pas de différence ici mais, dans certains cas, il est possible que le test de Wald ne soit pas significatif (valeur-$p$ plus grande que $0.05$) tandis que le test du rapport de vraisemblance le soit (valeur-$p$ inférieure à $0.05$). 
 
 ### Multicolinéarité
 
@@ -431,7 +431,7 @@ Afin d'introduire différentes notions, nous allons, dans un premier temps, util
 
 ```{sas 03-score, eval = FALSE, echo = TRUE}
 proc logistic data=train;
-model yachat(ref='0') = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10;
+model yachat(ref='0') = x1x2 x3 x32 x41-x44 x5-x10;
 output out=pred predprobs=crossvalidate;
 run;
 ```
@@ -588,12 +588,12 @@ La courbe ROC et la valeur de l'aire sous la courbe (avec l'option `plots(only)=
 
 ```{sas 03-rocok, eval = FALSE, echo = TRUE}
 proc logistic data=train;
-model yachat(ref='0') = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10;
+model yachat(ref='0') = x1 x2 x31 x32 x41-x44 x5-x10;
 output out=pred predprobs=crossvalidate;
 run;
 
 proc logistic data=pred ;
-model yachat(ref='0') = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10;
+model yachat(ref='0') = x1 x2 x31 x32 x41-x44 x5-x10;
 roc pred=xp_1;
 run;
 ```
@@ -619,7 +619,7 @@ est la courbe lift (sic) (en anglais, _lift chart_). Cette courbe est obtenue en
 
 ```{sas liftchart, eval = FALSE, echo = TRUE}
 proc logistic data=train;
-model yachat(ref='0') = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10; 
+model yachat(ref='0') = x1 x2 x31 x32 x41-x44 x5-x10;
 output out=pred predprobs=crossvalidate;
 run;
 %liftchart1(pred,yachat,xp_1,10);
@@ -767,8 +767,8 @@ Ce paragraphe est plus technique et peut être omis. Parce qu'il n'y a pas de so
 
 ```{sas 03-scorebranchandbound, eval = FALSE, echo = TRUE}
 proc logistic data=train;
-model yachat(ref='0') = x1 x2 x31 x32 x41 x42 x43 x44 x5 
-    x6 x7 x8 x9 x10 / selection=score best=1;
+model yachat(ref='0') = x1 x2 x31 x32 x41-x44 x5-x10 / 
+  selection=score best=1;
 run;
 ```
 
@@ -780,7 +780,7 @@ Le meilleur modèle avec une seule variable, selon la statistique du score, est 
 
 ```{sas 03-scoreIC, eval = FALSE, echo = TRUE}
 %logistic_aic_BIC_score(yvariable=yachat,
-                        xvariables=x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10,
+                        xvariables=x1 x2 x31 x32 x41-x44 x5-x10,
                         dataset=train, minvar=1, maxvar=14);
 ```
 
@@ -798,7 +798,7 @@ Faire une recherche de tous les sous-modèles possibles devient impraticable lor
 
 Si on inclut tous les termes quadratiques et les termes d'interactions d'ordre deux, nous avons 104 variables potentielles: c'est trop pour une recherche exhaustive. 
 
-Faisons d'abord une recherche séquentielle classique avec les 104 variables, en prenant 0,05 comme critère d'entrée et de sortie. Le code est 
+Faisons d'abord une recherche séquentielle classique avec les 104 variables, en prenant 0.05 comme critère d'entrée et de sortie. Le code est 
 ```{sas 03-stepwise, eval = FALSE, echo = TRUE}
 proc logistic data=train;
 model yachat(ref='0') = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10
@@ -831,40 +831,23 @@ knitr::include_graphics("figures/03-logistic-e22.png")
 
 
 Il y a eu 17 étapes dans la recherche séquentielle débutant avec le modèle qui ne contient que l'ordonnée à l'origine. La variable `i_x7_x8` est la première à être incluse, suivie de `x2` et ainsi de suite. Le modèle final contient 13 variables.
-En faisant une recherche séquentielle avec 0,5 comme comme critère d'entrée et de sortie, nous obtenons un sous-ensemble de 47 variables. On peut ensuite faire une recherche exhaustive de tous les sous-modèles avec ces 47 variables en utilisant la macro; le fichier `logit5_selection_variables.sas` contient le code commenté.
+En faisant une recherche séquentielle avec 0.5 comme comme critère d'entrée et de sortie, nous obtenons un sous-ensemble de 47 variables. On peut ensuite faire une recherche exhaustive de tous les sous-modèles avec ces 47 variables en utilisant la macro; le fichier `logit5_selection_variables.sas` contient le code commenté.
 
 Le modèle qui a le plus petit $\mathsf{AIC}$, soit 579,701, est un modèle avec 28 variables. Le $\mathsf{BIC}$ mène à un modèle beaucoup plus parcimonieux qui inclut huit variables. 
 
 ### Algorithme glouton et critères alternatifs avec `hpgenselect`
 
-Nous avons vu au chapitre précédent que la procédure `glmselect` permet de faire une recherche de type séquentielle avec un critère autre que la valeur-$p$ du test de Wald pour rajouter ou retirer des variables explicatives du modèle final. Cette procédure est limitée à la régression linéaire, mais la procédure `hpgenselect` permet de faire une sélection de variables pour d'autres types de modèles, incluant la régression logistique. Cette fonction n'est pas disponible dans **SAS Studio**.
+Nous avons vu au chapitre précédent que la procédure `glmselect` permet de faire une recherche de type séquentielle avec un critère autre que la valeur-$p$ du test de Wald pour rajouter ou retirer des variables explicatives du modèle final. Cette procédure est limitée à la régression linéaire, mais la procédure `hpgenselect` permet de faire une sélection de variables pour d'autres types de modèles, incluant la régression logistique. 
 
 Le code suivant fait une recherche séquentielle en ajoutant ou retranchant les variables selon leur valeur-$p$ (`select=sl`), la seule méthode disponible pour l'instant. En revanche, le modèle final peut-être choisi selon d'autres critères.
 
 ```{sas 03-hpgenselect, eval = FALSE, echo = TRUE}
 proc hpgenselect data=train;
-model yachat(ref='0') = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10
-cx2 cx6 cx7 cx8 cx9 cx10
-i_x2_x1 i_x2_x5 i_x2_x31 i_x2_x32 i_x2_x41 i_x2_x42 i_x2_x43 i_x2_x44
-i_x2_x7 i_x2_x6 i_x2_x8 i_x2_x9 i_x2_x10
-i_x1_x5 i_x1_x31 i_x1_x32 i_x1_x41 i_x1_x42 i_x1_x43 i_x1_x44
-i_x1_x7 i_x1_x6 i_x1_x8 i_x1_x9 i_x1_x10
-i_x5_x31 i_x5_x32 i_x5_x41 i_x5_x42 i_x5_x43 i_x5_x44
-i_x5_x7 i_x5_x6 i_x5_x8 i_x5_x9 i_x5_x10
-i_x31_x41 i_x31_x42 i_x31_x43 i_x31_x44
-i_x31_x7 i_x31_x6 i_x31_x8 i_x31_x9 i_x31_x10
-i_x32_x41 i_x32_x42 i_x32_x43 i_x32_x44
-i_x32_x7 i_x32_x6 i_x32_x8 i_x32_x9 i_x32_x10
-i_x41_x7 i_x41_x6 i_x41_x8 i_x41_x9 i_x41_x10
-i_x42_x7 i_x42_x6 i_x42_x8 i_x42_x9 i_x42_x10
-i_x43_x7 i_x43_x6 i_x43_x8 i_x43_x9 i_x43_x10
-i_x44_x7 i_x44_x6 i_x44_x8 i_x44_x9 i_x44_x10
-i_x7_x6 i_x7_x8 i_x7_x9 i_x7_x10
-i_x6_x8 i_x6_x9 i_x6_x10
-i_x8_x9 i_x8_x10
-i_x9_x10 
-/ link=logit distribution=binary;
-selection method=stepwise(select=sl choose=BIC);
+class x3(ref='3' split) x4(ref='5' split);
+model yachat(ref='0')=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2 
+ x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 /  
+link=logit distribution=binary;
+selection method=stepwise(select=sl choose=sbc);
 run;
 ```
 
@@ -924,7 +907,7 @@ kableExtra::kbl(datf, col.names = colnames,
   column_spec(3:6, width = "2cm")
 
 ```
-Nous avons vu plus tôt, qu'avec les 10 variables de base, le meilleur point de coupure est de 0,12. En utilisant cette stratégie sur les 100 000 clients, le revenu net aurait été de 940 569\$. C'est une énorme amélioration, de plus de 56%, par rapport à la stratégie de référence qui consiste à envoyer le catalogue à tout le monde (revenu net de 601 212\$). Si on inclut tous les termes quadratiques et les termes les interactions d'ordre deux (104 variables en tout), le revenu net est inférieur avec une valeur de 937 150\$. Ici, le modèle est trop complexe et surajusté.  Si on fait une sélection de variables (4 méthodes sont présentées), suivie de la détermination du meilleur point de coupure, on fait alors toujours mieux qu'avec le modèle incluant les 10 variables de base seulement. L'approche qui aurait fait le mieux est la recherche séquentielle pour réduire le nombre de variables considérées à 47, suivi d'une recherche exhaustive pour trouver le modèle avec le plus petit $\mathsf{BIC}$ : cette approche aurait généré 985 069\$ de revenus nets. Il s'agit d'un gain de 4,7% par rapport au modèle avec les 10 variables de base.
+Nous avons vu plus tôt, qu'avec les 10 variables de base, le meilleur point de coupure est de 0.12. En utilisant cette stratégie sur les 100 000 clients, le revenu net aurait été de 940 569\$. C'est une énorme amélioration, de plus de 56%, par rapport à la stratégie de référence qui consiste à envoyer le catalogue à tout le monde (revenu net de 601 212\$). Si on inclut tous les termes quadratiques et les termes les interactions d'ordre deux (104 variables en tout), le revenu net est inférieur avec une valeur de 937 150\$. Ici, le modèle est trop complexe et surajusté.  Si on fait une sélection de variables (quasi méthodes sont présentées), suivie de la détermination du meilleur point de coupure, on fait alors toujours mieux qu'avec le modèle incluant les 10 variables de base seulement. L'approche qui aurait fait le mieux est la recherche séquentielle pour réduire le nombre de variables considérées à 47, suivi d'une recherche exhaustive pour trouver le modèle avec le plus petit $\mathsf{BIC}$ : cette approche aurait généré 985 069\$ de revenus nets. Il s'agit d'un gain de 4.7% par rapport au modèle avec les 10 variables de base.
 
 ### Stratégies alternatives
 
@@ -991,7 +974,7 @@ Ce qui lie les deux équations est le fait qu'on suppose que les variables sont 
 Y_{1}^{\star} &= \beta_{01} + \beta_{11} X_{11} + \cdots + \beta_{1p}X_{p1} + \eps_{1}\\
 Y_{2}^{\star} &= \beta_{02} + \beta_{12} X_{12} + \cdots + \beta_{1p}X_{q2} + \eps_{2}
 \end{align*}
-Notez que les variables explicatives ne sont pas nécessairement les mêmes dans les deux équations. En estimant conjointement les deux équations, on élimine le biais de sélection mentionné plus haut. La procédure `qlim` (de **SAS/ETS**, pas disponible dans *SAS University Edition*) permet d'estimer ce modèle. Cependant, `qlim` ne fait pas de sélection de variables. Le choix des variables doit être fait avant avec les méthodes qu'on a vues. De plus, pour être précis, le modèle Tobit ajuste un modèle probit et non logistique à la variable binaire. 
+Notez que les variables explicatives ne sont pas nécessairement les mêmes dans les deux équations. En estimant conjointement les deux équations, on élimine le biais de sélection mentionné plus haut. La procédure `qlim` permet d'estimer ce modèle. Cependant, `qlim` ne fait pas de sélection de variables. Le choix des variables doit être fait avant avec les méthodes qu'on a vues. De plus, pour être précis, le modèle Tobit ajuste un modèle probit et non logistique à la variable binaire. 
 
 
 ## Extensions du modèle de régression logistique à plus de deux catégories
@@ -1039,7 +1022,7 @@ Nous allons modéliser la destination vacance $Y_1$ à l'aide d'une régression 
 knitr::include_graphics("figures/03-logistic-e31.png")
 ```
 
-On voit que les gens qui ont passé leurs vacances au Québec ($Y_1=0$) ont 26,5 ans en moyenne. Ils sont plus jeunes que ceux qui ont passé leurs vacances aux États-Unis (âge moyen de 33 ans). Finalement, ceux dont la destination vacances était ailleurs sont les plus vieux avec une moyenne de 37,3 ans.
+On voit que les gens qui ont passé leurs vacances au Québec ($Y_1=0$) ont 26.5 ans en moyenne. Ils sont plus jeunes que ceux qui ont passé leurs vacances aux États-Unis (âge moyen de 33 ans). Finalement, ceux dont la destination vacances était ailleurs sont les plus vieux avec une moyenne de 37.3 ans.
 
 Pour le modèle logit multinomial, nous allons prendre $Y_1=0$ comme catégorie de référence. Les commandes sont
 
@@ -1065,12 +1048,12 @@ knitr::include_graphics("figures/03-logistic-e25.png")
 
 Comme il y a trois catégories pour la variable dépendante, il y a deux équations pour le modèle ajusté,
 \begin{align*}
-\ln \left\{\frac{\P{Y_{1i}=1 \mid X_i}}{\P{Y_{1i}=0 \mid X_i}} \right\} = -4,10 + 0,13X_i, \qquad \qquad \ln \left\{\frac{\P{Y_{1i}=2 \mid X_i}}{\P{Y_{1i}=0 \mid X_i}} \right\} = -7,98+0,22X_i. 
+\ln \left\{\frac{\P{Y_{1i}=1 \mid X_i}}{\P{Y_{1i}=0 \mid X_i}} \right\} = -4.10 + 0.13X_i, \qquad \qquad \ln \left\{\frac{\P{Y_{1i}=2 \mid X_i}}{\P{Y_{1i}=0 \mid X_i}} \right\} = -7.98+0.22X_i. 
 \end{align*}
 
-Plus l'âge du répondant augmente, plus la probabilité qu'il ait passé ses vacances aux États-Unis par rapport au Québec augmente. En fait, pour chaque augmentation de 1 de l'âge, le rapport des cote pour $Y_1=1$ par rapport à $Y_1=0$ est multipliée par ${1,133}=\exp({0,1253})$. Cette valeur est donnée dans la dernière colonne du tableau. De plus, cet effet est significatif car la valeur-$p$ est inférieure à $10^{-4}$.
+Plus l'âge du répondant augmente, plus la probabilité qu'il ait passé ses vacances aux États-Unis par rapport au Québec augmente. En fait, pour chaque augmentation de 1 de l'âge, le rapport des cote pour $Y_1=1$ par rapport à $Y_1=0$ est multipliée par ${1.133}=\exp({0.1253})$. Cette valeur est donnée dans la dernière colonne du tableau. De plus, cet effet est significatif car la valeur-$p$ est inférieure à $10^{-4}$.
 
-De même, plus l'âge du répondant augmente, plus la probabilité qu'il ait passé ses vacances ailleurs qu'aux États-Unis ou au Québec par rapport au Québec augmente. En fait, pour chaque augmentation de l'âge d'un an, le rapport des cote pour $Y_1=1$ par rapport à $Y_1=0$ est multiplié par ${1,25}$. Cet effet est également statistiquement significatif.
+De même, plus l'âge du répondant augmente, plus la probabilité qu'il ait passé ses vacances ailleurs qu'aux États-Unis ou au Québec par rapport au Québec augmente. En fait, pour chaque augmentation de l'âge d'un an, le rapport des cote pour $Y_1=1$ par rapport à $Y_1=0$ est multiplié par ${1.25}$. Cet effet est également statistiquement significatif.
 
 Nous venons donc de comparer chacune des catégories $Y_1=1$ et $Y_1=2$ à la catégorie de référence $Y_1=0$. Pour une comparaison directe entre $Y_1=1$ et $Y_1=2$, il suffit de changer la catégorie de référence et de resoumettre le programme **SAS**.
 
@@ -1125,7 +1108,7 @@ tab <- logit6 %>%
 knitr::kable(tab, booktabs = TRUE)
 ```
 
-Ainsi, les répondants qui sont allés moins de cinq fois au cinéma ont en moyenne 33,5 ans, ceux qui sont allés entre cinq et 10 fois ont 30,4 ans en moyenne, et ceux qui sont allés plus de 10 fois ont 25,1 ans en moyenne. Il y a une progression et on voit que les répondants plus jeunes vont plus souvent au cinéma.
+Ainsi, les répondants qui sont allés moins de cinq fois au cinéma ont en moyenne 33.5 ans, ceux qui sont allés entre cinq et 10 fois ont 30.4 ans en moyenne, et ceux qui sont allés plus de 10 fois ont 25.1 ans en moyenne. Il y a une progression et on voit que les répondants plus jeunes vont plus souvent au cinéma.
 
 Nous utilisons exactement le même programme que pour une régression logistique habituelle. Si la variable $Y$ prend plus de deux valeurs, **SAS** utilisera automatiquement le modèle de régression multinomiale cumulé.
 
@@ -1165,8 +1148,8 @@ Avant toute chose, il faut s'assurer que le modèle est approprié. Rappelez-vou
 
 - $\Hy_0$ : l'effet de chaque variable est le même pour les $K$ logit du modèle multinomial logistique, soit $\beta_{11} = \cdots =\beta_{1K}$, $\ldots$, $\beta_{p1} = \cdots =\beta_{pK}$.
 
-Une très petite valeur-$p$ (rejet de $\Hy_0$) pour ce test serait une indication que le modèle de régression multinomiale ordinale n'est pas approprié. Comme la valeur-$p$ est 0,2577 ici, on ne rejette pas $\Hy_0$ et il n'y a pas lieu de douter de cette hypothèse. On peut donc aller de l'avant et interpréter le modèle.
+Une très petite valeur-$p$ (rejet de $\Hy_0$) pour ce test serait une indication que le modèle de régression multinomiale ordinale n'est pas approprié. Comme la valeur-$p$ est 0.2577 ici, on ne rejette pas $\Hy_0$ et il n'y a pas lieu de douter de cette hypothèse. On peut donc aller de l'avant et interpréter le modèle.
 
-Ici, l'effet estimé de l'âge ($X$) est $-{0,0916}$ et ce paramètre est significativement différent de zéro (valeur-$p$ de 0,0004). Rappelez-vous que $Y_2$ représente le nombre d'entrées au cinéma dans la dernière année.
+Ici, l'effet estimé de l'âge ($X$) est $-{0.0916}$ et ce paramètre est significativement différent de zéro (valeur-$p$ de 0.0004). Rappelez-vous que $Y_2$ représente le nombre d'entrées au cinéma dans la dernière année.
 
-Ainsi, plus l'âge augmente, plus $Y_2$ a tendance à prendre une petite valeur, c'est-à-dire, plus la personne a tendance à aller moins souvent au cinéma. Plus précisément, lorsque l'âge augmente de 1, la cote d'être dans une catégorie plus élevée de $Y_2$, par rapport à une catégorie plus basse, est multipliée par 0,912 (la cote diminue donc et aussi la probabilité d'être dans une catégorie plus élevée).
+Ainsi, plus l'âge augmente, plus $Y_2$ a tendance à prendre une petite valeur, c'est-à-dire, plus la personne a tendance à aller moins souvent au cinéma. Plus précisément, lorsque l'âge augmente de 1, la cote d'être dans une catégorie plus élevée de $Y_2$, par rapport à une catégorie plus basse, est multipliée par 0.912 (la cote diminue donc et aussi la probabilité d'être dans une catégorie plus élevée).
