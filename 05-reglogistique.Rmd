@@ -227,11 +227,11 @@ knitr::include_graphics("figures/03-logistic-e4.png")
 ```
 
 - On voit qu'il y a 272 personnes ($\texttt{0}$) qui ne sont pas intéressées à acheter un produit recommandé par le PRCA et 228 personnes ($\texttt{1}$) qui le sont. 
-- Les estimés des paramètres sont $\widehat{\beta}_0 = -3,05$ et $\widehat{\beta}_{\texttt{age}}=0,0749$.
-- Un intervalle de confiance de niveau 95\% pour l'effet de l'âge est [$0,0465; 0,1043$]. 
-- Le modèle ajusté est $\logit\{\P{Y=1 \mid X_5=x_5}\} = -3,05 + 0,0749 x_5$. On peut également exprimer ce modèle directement en terme de la probabilité de succès,
+- Les estimés des paramètres sont $\widehat{\beta}_0 = -3.05$ et $\widehat{\beta}_{\texttt{age}}=0.0749$.
+- Un intervalle de confiance de niveau 95\% pour l'effet de l'âge est [$0.0465; 0.1043$]. 
+- Le modèle ajusté est $\logit\{\P{Y=1 \mid X_5=x_5}\} = -3.05 + 0.0749 x_5$. On peut également exprimer ce modèle directement en terme de la probabilité de succès,
 \begin{align*}
-\P{Y=1 \mid X_5=x_5} &= \expit(-3,05 + 0,0749 x_5) \\&= \frac{1}{1+\exp(3,05 - 0,0749 x_5)}
+\P{Y=1 \mid X_5=x_5} &= \expit(-3.05 + 0.0749 x_5) \\&= \frac{1}{1+\exp(-3.05 - 0.0749 x_5)}
 \end{align*}
 Le graphe de cette fonction pour $X_5$ allant de 18 à 59 ans, respectivement les valeurs minimales et maximales observées dans l'échantillon, montre que le lien entre l'âge et $p$ est presque linéaire entre 20 et 60 ans. On décèle tout de même la forme sigmoide de la fonction $\logit$ aux deux extrémités.
 ```{r logitplot2, echo=FALSE, eval = TRUE, fig.align="center"}
@@ -259,14 +259,14 @@ En régression linéaire, l'interprétation de coefficient $\beta_j$ est simple:
 
 Dans notre exemple, on peut exprimer le modèle ajusté en termes de cote,
 \begin{align*}
- \frac{\P{Y=1 \mid X_5=x_5}}{\P{Y=0 \mid X_5=x_5}} = \exp(-3,05)\exp(0,0749x_5).
+ \frac{\P{Y=1 \mid X_5=x_5}}{\P{Y=0 \mid X_5=x_5}} = \exp(-3.05)\exp(0.0749x_5).
 \end{align*}
-Ainsi, lorsque $X_5$ augmente d'une année, la cote est multipliée par $\exp(0,0749) = 1,078$ peut importe la valeur de $x_5$. Pour deux personnes dont la différence d'âge est un an, la cote de la personne plus âgée est 7,8\% plus élevée. On peut aussi quantifier l'effet d'une augmentation d'un nombre d'unités quelconque.  Par exemple, pour chaque augmentation de 10 ans de $X_5$, la cote est multiplié par $1,078^{10} = 2,12$, soit une augmentation de 112\%.
+Ainsi, lorsque $X_5$ augmente d'une année, la cote est multipliée par $\exp(0.0749) = 1.078$ peut importe la valeur de $x_5$. Pour deux personnes dont la différence d'âge est un an, la cote de la personne plus âgée est 7.8\% plus élevée. On peut aussi quantifier l'effet d'une augmentation d'un nombre d'unités quelconque.  Par exemple, pour chaque augmentation de 10 ans de $X_5$, la cote est multiplié par $1.078^{10} = 2.12$, soit une augmentation de 112\%.
 
 
 La cote est rapportée à la dernière colonne du tableau des coefficients. En  général, si on veut une interprétation globale de l'effet d'une variable, il faudra baser l'interprétation sur l'exponentielle du coefficient, $\exp(\widehat{\beta})$. **SAS** dénomme cette quantité rapport de cote (_odds ratio_).
 
-Un des avantages d'utiliser la vraisemblance comme fonction objective est que les intervalles de confiance et les estimateurs basés sur la vraisemblance (profilée) sont invariant aux reparametrisations. Ainsi, l'intervalle de confiance à niveau 95\% pour $\exp(\beta_{\texttt{age}})$ est obtenu en prenant l'exponentielle des bornes de l'intervalle pour $\beta_{\texttt{age}}$, [$\exp(0,0465); \exp(0,1043)$], soit [$1,048; 1,110$] tel que rapporté dans la sortie. Ce n'est **pas** le cas des intervalles de Wald qui ont la forme $\widehat{\beta} \pm 1.96 \mathrm{se}(\widehat{\beta})$.
+Un des avantages d'utiliser la vraisemblance comme fonction objective est que les intervalles de confiance et les estimateurs basés sur la vraisemblance (profilée) sont invariant aux reparametrisations. Ainsi, l'intervalle de confiance à niveau 95\% pour $\exp(\beta_{\texttt{age}})$ est obtenu en prenant l'exponentielle des bornes de l'intervalle pour $\beta_{\texttt{age}}$, [$\exp(0.0465); \exp(0.1043)$], soit [$1.048; 1.110$] tel que rapporté dans la sortie. Ce n'est **pas** le cas des intervalles de Wald qui ont la forme $\widehat{\beta} \pm 1.96 \mathrm{se}(\widehat{\beta})$.
 Comme l'exponentielle est une transformation monotone croissante, on a $\beta>0$ si et seulement si $\exp(\beta)>1$, etc. On peut ainsi utiliser les intervalles de confiance pour tester l'hypothèse $\mathcal{H}_0: \beta_j=0$ ou de façon équivalente $\mathcal{H}_0: \exp(\beta_j)=1$ à niveau 95\%.
 
 ### Modèle avec toutes les variables explicatives
