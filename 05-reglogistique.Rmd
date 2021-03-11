@@ -77,7 +77,7 @@ Pour une variable binaire $Y$, le quotient $p/(1-p)$ est appelé **cote** et rep
  \mathsf{cote}(p) = \frac{p}{1-p} = \frac{\P{Y=1 \mid \boldsymbol{X}}}{\P{Y=0 \mid \boldsymbol{X}}}.
 \end{align*}
 
-Par exemple, une cote de 4 veut dire qu'il y a 4 fois plus de chance que $Y$ soit égale à $1$ par rapport à $0$. Une cote de 0,25 veut dire le contraire, il y a 4 fois moins de chance que $Y=1$ par rapport à $0$ ou bien, de manière équivalente, il y a 4 fois plus de chance que $Y=0$ par rapport à $1$. Le Tableau \@ref(tab:03-cotes) donne un aperçu de cotes pour quelques probabilités $p$.
+Par exemple, une cote de 4 veut dire qu'il y a 4 fois plus de chance que $Y$ soit égale à $1$ par rapport à $0$. Une cote de 0.25 veut dire le contraire, il y a 4 fois moins de chance que $Y=1$ par rapport à $0$ ou bien, de manière équivalente, il y a 4 fois plus de chance que $Y=0$ par rapport à $1$. Le Tableau \@ref(tab:03-cotes) donne un aperçu de cotes pour quelques probabilités $p$.
 
 ```{r 03-cotes, eval = TRUE, echo = FALSE}
 datf <- matrix("", nrow = 3, ncol = 10)
@@ -117,7 +117,7 @@ On obtient ainsi les estimés des paramètres $\widehat{\boldsymbol{\beta}}$, de
  \widehat{p} = \expit(\widehat{\beta}_0 + \cdots + \widehat{\beta}_pX_p).
 \end{align*}
 
-Un modèle ajusté peut ensuite être utilisé pour faire de la classification (prédiction) pour de nouveaux individus pour lesquels la variable réponse $Y$ n'est pas observée. Pour ce faire, on choisit un point de coupure $c$ (souvent $c=$0,5 mais pas toujours) et on classifie les observations en deux groupes:
+Un modèle ajusté peut ensuite être utilisé pour faire de la classification (prédiction) pour de nouveaux individus pour lesquels la variable réponse $Y$ n'est pas observée. Pour ce faire, on choisit un point de coupure $c$ (souvent $c=$0.5 mais pas toujours) et on classifie les observations en deux groupes:
 
 - Si $\widehat{p}< c$, alors $\widehat{Y}=0$ (c'est-à-dire, on assigne cette observation à la catégorie 0).
 - Si $\widehat{p} \geq c$, alors $\widehat{Y}=1$ (c'est-à-dire, on assigne cette observation à la catégorie 1).
@@ -381,12 +381,12 @@ Le modèle ajusté nous fournit une estimation de $\P{Y=1 \mid \bs{X}=\bs{x}}$ p
 \end{align*}
 
 
-Classification de base: pour classifier des observations, il suffit de choisir un point de coupure $c$, souvent $c=0,5$, et de classifier une observation de la manière suivante:
+Classification de base: pour classifier des observations, il suffit de choisir un point de coupure $c$, souvent $c=0.5$, et de classifier une observation de la manière suivante:
 
 - Si $\widehat{p} < c$, on assigne cette observation à la catégorie zéro et $\widehat{Y}=0$.
 - Si $\widehat{p} \geq c$, on assigne cette observation à la catégorie un et $\widehat{Y}=1$.
 
-Si on prend $c=0,5$ comme point de coupure, cela revient à assigner l'observation à la classe (catégorie) la plus probable, un choix fort raisonnable. Nous verrons dans une section suivante que, lorsque les conséquences de faussement classifier une observation (succès, mais échec prédit et vice-versa) ne sont pas les mêmes, il peut être avantageux d'utiliser un autre point de coupure.
+Si on prend $c=0.5$ comme point de coupure, cela revient à assigner l'observation à la classe (catégorie) la plus probable, un choix fort raisonnable. Nous verrons dans une section suivante que, lorsque les conséquences de faussement classifier une observation (succès, mais échec prédit et vice-versa) ne sont pas les mêmes, il peut être avantageux d'utiliser un autre point de coupure.
 
 
 Dans un cadre de prédiction, il nous faudra un critère pour juger de la qualité de l'ajustement du modèle.
@@ -394,14 +394,10 @@ Rappelez-vous que pour une réponse continue, nous avons utilisé l'erreur moyen
 $\mathsf{EMQ} = \mathsf{E}\{(Y-\widehat{Y})^2\}$, où $\widehat{Y} = \mathsf{E}(Y \mid \mathbf{X})$, 
 pour juger de la performance d'un modèle. Comme la réponse $Y$ est binaire ici, nous allons utiliser des critères différents.
 
-Voyons d'abord un premier critère pour juger de la qualité d'un modèle de prédiction. Soit $Y$ la vraie valeur de la réponse binaire et $\widehat{Y}$ (soit 0 ou 1) la valeur de $Y$ prédite par un modèle pour une observation choisie au hasard dans la population. Un premier critère pour juger de la performance d'un modèle est $\P{Y \neq\widehat{Y}}$, soit la probabilité de mal classifier une observation choisie au hasard dans
-la population. Ce critère est le **taux de mauvaise classification**. Plus $\P{Y \neq\widehat{Y}}$ est petite, meilleure est la capacité prédictive du modèle.
+Voyons d'abord un premier critère pour juger de la qualité d'un modèle de prédiction. Soit $Y$ la vraie valeur de la réponse binaire et $\widehat{Y}$ (soit 0 ou 1) la valeur de $Y$ prédite par un modèle pour une observation choisie au hasard dans la population. Un premier critère pour juger de la performance d'un modèle est le **taux de mauvaise classification**, un estimé de la probabilité de mal classifier une observation choisie au hasard dans la population, $\P{Y \neq\widehat{Y}}$. Plus $\P{Y \neq\widehat{Y}}$ est petite, meilleure est la capacité prédictive du modèle.
 
 
-Tout comme l'erreur moyenne quadratique, on ne peut pas calculer exactement le taux de mauvaise classification; tout au plus peut-on l'estimer. Pour les raisons vues au chapitre précédent, l'estimer en
-calculant le taux de mauvaise classification des observations ayant servi à
-l'ajustement du modèle sans aucune correction n'est pas une bonne approche.
-Les approches couvertes dans le dernier chapitre pour l'estimation de l'erreur moyenne quadratique, telles la validation-croisée et la
+Tout comme l'erreur moyenne quadratique, on ne peut qu'estimer $\P{Y \neq\widehat{Y}}$. Pour les raisons vues au chapitre précédent, l'estimer en calculant le taux de mauvaise classification des observations ayant servi à l'ajustement du modèle sans aucune correction n'est pas une bonne approche. Les approches couvertes dans le dernier chapitre pour l'estimation de l'erreur moyenne quadratique, telles la validation-croisée et la
 division de l'échantillon, peuvent être utilisées pour estimer le taux de mauvaise classification $\P{Y \neq \widehat{Y}}$.
 
 
@@ -436,7 +432,7 @@ output out=pred predprobs=crossvalidate;
 run;
 ```
 
-Le modèle utilise seulement les 10 variables de base (en fait 14 avec les indicatrices pour les variables catégorielles). Des prévisions pour les clients restants seront exportées dans le fichier `pred`, grâce à la commande `score`. L'option `ctable` permet d'obtenir la `Table de classification` (sic). Tel que nous l'avons vu au chapitre précédent, il y a 210 clients qui ont acheté quelque chose parmi les 1000.  Le tableau de classification contient des estimations de plusieurs quantités intéressantes, en faisant varier le point de coupure (`Niveau de proba`). Pour chaque point de coupure, ces estimations ont été obtenues à l'aide d'une approximation de la méthode de validation croisée à $n$ groupes (en anglais, _leave-one-out cross-validation_, ou LOOCV). Ainsi, ces estimations sont valides car elles ne sont pas obtenues en utilisant les mêmes observations que celles qui ont servi à estimer le modèle.
+Le modèle utilise seulement les 10 variables de base (en fait 14 avec les indicatrices pour les variables catégorielles). Des prévisions pour les clients restants seront exportées dans le fichier `pred`, grâce à la commande `score`. L'option `ctable` permet d'obtenir la `Table de classification` (sic). Tel que nous l'avons vu au chapitre précédent, il y a 210 clients qui ont acheté quelque chose parmi les 1000.  
 
 ```{r classification0, echo = FALSE, eval = TRUE, cache = TRUE}
 url <- "https://lbelzile.bitbucket.io/MATH60602/dbm.sas7bdat"
@@ -539,15 +535,16 @@ knitr::kable(perfo1$table, digits = c(2, rep(0,4), rep(1,5)),
 #                                      cost = cost)$delta
 ```
 
-Ce tableau contient des estimations de plusieurs quantités intéressantes, en faisant varier le point de coupure (`Niveau de proba` dans le tableau **SAS**). Pour chaque point de coupure, ces estimations ont été obtenues à l'aide de la validation-croisée $n$ observations, soit autant de groupes que d'observations. Ainsi, ces estimations sont valides car elles ne sont pas obtenues en utilisant les mêmes observations que celles qui ont servi à estimer le modèle.
+Le tableau de classification contient des estimations de plusieurs quantités intéressantes, en faisant varier le point de coupure (`Niveau de proba` dans le tableau **SAS**). Pour chaque point de coupure, ces estimations ont été obtenues à l'aide d'une approximation de la méthode de validation croisée à $n$ groupes (en anglais, _leave-one-out cross-validation_, ou LOOCV). Ainsi, ces estimations sont meilleures que les estimés sans ajustement aucun car elles ne sont pas obtenues en utilisant les mêmes observations que celles qui ont servi à estimer le modèle.
+
 La colonne `correct` donne une estimation du taux de bonne classification, $\P{Y = \widehat{Y}} = 1-\P{Y \neq \widehat{Y}}$, ou de manière équivalente un moins le taux de mauvaise classification.
 
 Avec un point de coupure de $0$, on classifie toutes les observations à la classe achat ($1$), car $\widehat{p}$ est forcément plus grande que zéro. Le taux de bonne classification dans ce cas de figure sera de $21$\%, puisque 210 individus ont acheté un produit dans le catalogue dans l'échantillon d'apprentissage.
 L'autre extrême, avec un point de coupure $c=1$, donne un taux de bonne classification de $79$\%.
 
-On peut chercher dans le tableau les points de coupure qui donnent le meilleur taux de bonne classification. Ce dernier est de 84,6\% et est atteint par trois points de coupure, soit 0,52, soit 0,6, soit 0,62. Une recherche plus fine donne 0,465 comme point de coupure optimal, avec un taux de mauvaise classification de 15,3%\.
+On peut chercher dans le tableau les points de coupure qui donnent le meilleur taux de bonne classification. Ce dernier, à savoir 84.6\%, est atteint par trois points de coupure, soit 0.52, soit 0.6, soit 0.62. Une recherche plus fine donne 0.465 comme point de coupure optimal, avec un taux de mauvaise classification de 15.3%\.
 
-La **matrice de confusion**, qui compare les vraies valeurs avec les prédictions, peut être construite à partir des colonnes `Correct - Événement`, `Correct - Non-événement`, `Incorrect - Événement`, `Incorrect - Non-événement`. Il y a deux classifications possibles et le tableau contient, en partant du coin supérieur gauche et dans le sens des aiguilles d'une montre, le nombre de vrai positif ($Y=1$, $\widehat{Y}=1$), de faux positif ($Y=0$, $\widehat{Y}=1$), de vrai négatif ($Y=0$, $\widehat{Y}=0$) et finalement de faux négatif ($Y=1$, $\widehat{Y}=0$). Ces nombres proviennent de la validation croisée à $n$ groupes et ne sont pas ceux qu'on obtiendrait si on appliquait directement le modèle ajusté à notre échantillon. Le taux de classification est $(\mathsf{FP}+\mathsf{FN})/n$.
+La **matrice de confusion**, qui compare les vraies valeurs avec les prédictions, peut être construite à partir des colonnes `Correct - Événement`, `Correct - Non-événement`, `Incorrect - Événement`, `Incorrect - Non-événement`. Il y a deux classifications possibles et le tableau contient, en partant du coin supérieur gauche et dans le sens des aiguilles d'une montre, le nombre de vrai positif ($Y=1$, $\widehat{Y}=1$), de faux positif ($Y=0$, $\widehat{Y}=1$), de vrai négatif ($Y=0$, $\widehat{Y}=0$) et finalement de faux négatif ($Y=1$, $\widehat{Y}=0$). Ces nombres proviennent de la validation croisée à $n$ groupes et ne sont pas ceux qu'on obtiendrait si on appliquait directement le modèle ajusté à notre échantillon. Le taux de bonne classification est $(\mathsf{FP}+\mathsf{FN})/n$.
 
 
 ```{r confumat, eval = TRUE, echo = FALSE}
@@ -566,7 +563,7 @@ Quatre autres quantités, dérivées à partir de la matrice de confusion, sont 
 - le **taux de faux positifs**, $\P{Y=0 \mid \widehat{Y}=1}$, ou $\mathsf{FP}/(\mathsf{VP}+\mathsf{FP})$;
 - le **taux de faux négatifs**, $\P{Y=1 \mid \widehat{Y}=0}$, ou $\mathsf{FN}/(\mathsf{VN}+\mathsf{FN})$.
 
-Les estimés empiriques sont simplement obtenus en calculant les rapports du nombre d'observations dans chaque classe. **SAS** rapporte ces quantités, mais notez les vieilles versions retournent le taux de faux positifs et de faux négatifs dans les deux dernières colonnes, tandis que les sorties des nouvelles version du logiciel donnent les taux de vrais positifs et de vrais négatifs.
+Les estimés empiriques sont simplement obtenus en calculant les rapports du nombre d'observations dans chaque classe. **SAS** rapporte ces quantités, mais notez que les vieilles versions du logiciel retournent le taux de faux positifs et de faux négatifs dans les deux dernières colonnes, tandis que les sorties des nouvelles version du logiciel donnent les taux de vrais positifs et de vrais négatifs.
 
 La sensibilité mesure à quel point notre modèle est performant pour détecter un vrai positif (classe 1). La spécificité mesure à quel point notre modèle est performant pour détecter un résultat négatif (classe 0).
 
@@ -576,7 +573,7 @@ Plus le point de coupure augmente, plus la sensibilité et le taux de faux posit
 La **fonction d'efficacité du récepteur**, parfois appelée courbe ROC (_receiver operating characteristic_) est parfois utilisée pour représenter globalement la performance du modèle. Elle est obtenue avec l'option `plots(only)=(roc)` dans **SAS**. Il s'agit du graphe de la sensibilité en fonction de un moins la spécificité, en faisant varier le point de coupure. Un modèle parfait aurait une sensibilité et une spécificité égales à 1 (correspondant au coin supérieur gauche de la fonction d'efficacité du récepteur). Ainsi, plus le couple ($1-$spécificité, sensibilité) est près de ($0$, $1$), meilleur est le modèle. Par conséquent, plus la courbe ROC tend vers ($0$, $1$) meilleur est le pouvoir prévisionnel des variables.
 
 L'**aire sous la courbe** (_area under the curve_) est souvent utilisée en parallèle
-est simplement l'aire sous la courbe de la fonction d'efficacité du récepteur. Pour le modèle logistique ajusté, on a une aire sous la courbe de 0,8847. Plus cette valeur est élevée (au plus $1$), mieux c'est.
+est simplement l'aire sous la courbe de la fonction d'efficacité du récepteur. Pour le modèle logistique ajusté, on a une aire sous la courbe de 0.8847. Plus cette valeur est élevée (au plus $1$), mieux c'est.
 
 
 ```{r fig3_e11, echo = FALSE, out.width='80%', fig.align = "center"}
@@ -602,8 +599,8 @@ On sauvegarde d'abord les probabilités estimées par validation-croisée dans l
 fichier `pred` avec la commande `output out=pred predprobs=crossvalidate`
 La variable `xp_1` désigne cette probabilité dans le fichier `pred`. Ensuite, on
 exécute de nouveau la procédure `logistic` avec ce fichier et la commande `roc`.
-L'aire sous la courbe pour les prédictions avec la validation-croisée à $n$ groupes est 0,8723: cet estimé est légèrement inférieur à celui obtenu sans
-la correction (trop optimiste) qui est 0,8847.
+L'aire sous la courbe pour les prédictions avec la validation-croisée à $n$ groupes est 0.8723: cet estimé est légèrement inférieur à celui obtenu sans
+la correction (trop optimiste) qui est 0.8847.
 
 ```{r fig3_e15, echo = FALSE, out.width='80%', fig.align = "center"}
 knitr::include_graphics("figures/03-logistic-e15.png")
@@ -736,12 +733,12 @@ L'appel de la macro `manycut_cvlogistic`, dont les paramètres sont expliqués d
 
 Cette macro produit le tableau suivant. Il donne l'estimation du gain moyen (`gain`) pour différents points de coupures (`cutpoint`). Cette estimation provient d'une validation-croisée avec 10 groupes (`k=10` dans la macro). En fait, on a répété 10 fois (`ncv=10` dans la macro) la validation croisée avec 10 groupes et fait la moyenne des 10 répétitions afin d'avoir plus de précisions. Il faut essayer plusieurs points de coupure afin de trouver le meilleur.
 
-On voit que le meilleur point de coupure, celui qui maximise le gain est 0,12. Avec ce point de coupure, on estime que le taux de bonne classification est de 0,707 et que la sensitivité est de 0,899. Ainsi, on estime qu'on va détecter 90\% des clients qui achètent. 
+On voit que le meilleur point de coupure, celui qui maximise le gain est 0.12. Avec ce point de coupure, on estime que le taux de bonne classification est de 0.707 et que la sensitivité est de 0.899. Ainsi, on estime qu'on va détecter 90\% des clients qui achètent. 
 ```{r fig3_e19, echo = FALSE, out.width='60%', fig.align = "center"}
 knitr::include_graphics("figures/03-logistic-e19.png")
 ```
 
- On est loin du point de coupure usuel de 0,5 (présenté à la dernière ligne). La raison est simple. Comme il est très coûteux de rater un client qui aurait acheté quelque chose, il est préférable d'envoyer le catalogue à plus de clients, quitte à ce que plusieurs d'entre eux n'achètent rien. En fait, le point de coupure de 0,5 donne un meilleur taux de bonne classification mais un gain moyen plus faible car on rate trop de clients qui achètent (la sensitivité est seulement de 48,8\%). Travailler avec la matrice de gain permet de trouver le point de coupure optimal en incorporant des notions de coûts et profits.
+ On est loin du point de coupure usuel de 0.5 (présenté à la dernière ligne). La raison est simple. Comme il est très coûteux de rater un client qui aurait acheté quelque chose, il est préférable d'envoyer le catalogue à plus de clients, quitte à ce que plusieurs d'entre eux n'achètent rien. En fait, le point de coupure de 0.5 donne un meilleur taux de bonne classification mais un gain moyen plus faible car on rate trop de clients qui achètent (la sensitivité est seulement de 48,8\%). Travailler avec la matrice de gain permet de trouver le point de coupure optimal en incorporant des notions de coûts et profits.
 
 Ici, nous avons ajusté un seul modèle, celui contenant uniquement les 10 variables de base et nous nous sommes attardés au choix du point de coupure pour l'assignation aux classes. Il est possible qu'un autre modèle, contenant par exemple des termes d'interactions, des termes quadratiques ou d'autres transformations des variables, soit supérieur à celui-ci. Le choix du modèle de prévision se fait donc souvent en deux étapes
 
@@ -852,7 +849,7 @@ run;
 ```
 
 
-Avec le critère $\mathsf{BIC}$, on  obtient 12 variables tandis que `choose=aic` donne 13 variables (seule la variable `x41` est ajoutée). Il s'agit des mêmes variables que celles sélectionnées par une sélection séquentielle classique en prenant 0,05 comme critère d'entrée et de sortie.
+Avec le critère $\mathsf{BIC}$, on  obtient 12 variables tandis que `choose=aic` donne 13 variables (seule la variable `x41` est ajoutée). Il s'agit des mêmes variables que celles sélectionnées par une sélection séquentielle classique en prenant 0.05 comme critère d'entrée et de sortie.
 
 
 ## Performance des différents modèles pour l'exemple des clients cibles
@@ -903,7 +900,7 @@ kableExtra::kbl(datf, col.names = colnames,
              longtable = FALSE,
              align =  paste0(c("l",rep("r", 6)),collapse = ""),
              escape = FALSE,
-             caption = "Résumé des caractéristiques des modèles logistiques avec (a) référence, soit l'envoi sans sélection à tous les clients; (b) 10 variables de base sans sélection; (c) toutes les variables, incluant les termes quadratiques et les interactions d'ordre 2; (d) sélection séquentielle classique avec critère d'entrée et de sortie à 0,05; (e) idem que (d), mais avec meilleur modèle selon le $\\mathsf{AIC}$; (f) idem que (d), mais avec meilleur modèle selon le $\\mathsf{BIC}$; (g) recherche exhaustive avec 47 variables sélectionnées par recherche séquentielle et modèle final sélectionné selon le $\\mathsf{BIC}$; (h), idem mais sélection avec $\\mathsf{AIC}$. Les points de coupure optimaux ont été déterminés par validation-croisée sur l'échantillon d'apprentissage, tandis que la performance du modèle (sensibilité, taux de faux positifs et taux de bonne classification) ont été calculés à partir de l'échantillon test de 100 000 individus.") %>%
+             caption = "Résumé des caractéristiques des modèles logistiques avec (a) référence, soit l'envoi sans sélection à tous les clients; (b) 10 variables de base sans sélection; (c) toutes les variables, incluant les termes quadratiques et les interactions d'ordre 2; (d) sélection séquentielle classique avec critère d'entrée et de sortie à 0.05; (e) idem que (d), mais avec meilleur modèle selon le $\\mathsf{AIC}$; (f) idem que (d), mais avec meilleur modèle selon le $\\mathsf{BIC}$; (g) recherche exhaustive avec 47 variables sélectionnées par recherche séquentielle et modèle final sélectionné selon le $\\mathsf{BIC}$; (h), idem mais sélection avec $\\mathsf{AIC}$. Les points de coupure optimaux ont été déterminés par validation-croisée sur l'échantillon d'apprentissage, tandis que la performance du modèle (sensibilité, taux de faux positifs et taux de bonne classification) ont été calculés à partir de l'échantillon test de 100 000 individus.") %>%
   column_spec(3:6, width = "2cm")
 
 ```
@@ -924,7 +921,7 @@ Nous allons cibler les clients dont la prévision du montant dépensé est plus 
 Les possibilités de modèles sont nombreuses. Par exemple, si on a cinq modèles potentiels pour $\E{\texttt{ymontant} \mid \texttt{yachat}=1}$ et cinq pour $\P{\texttt{yachat}=1}$, il y a 25 combinaisons possibles. Ici, nous allons seulement présenter les résultats pour deux combinaisons : 
 
 1) pour $\texttt{ymontant}$, nous allons utiliser les variables choisies par `glmselect` avec les options `select=aic, choose=bic`, tandis que pour $\texttt{yachat}$, nous allons utiliser les variables choisies par la procédure séquentielle suivie d'une recherche exhaustive avec le critère BIC 
-2) à la fois pour $\texttt{ymontant}$ et $\texttt{yachat}$, nous allons utiliser les variables choisies en faisant une sélection séquentielle classique (tests-$t$) avec critères d'entrée et de sortie fixés à 0,05.
+2) à la fois pour $\texttt{ymontant}$ et $\texttt{yachat}$, nous allons utiliser les variables choisies en faisant une sélection séquentielle classique (tests-$t$) avec critères d'entrée et de sortie fixés à 0.05.
 
 Pour obtenir les prévisions, nous allons estimer conjointement les modèles pour $\E{\texttt{ymontant} \mid \texttt{yachat}=1}$ et pour $\P{\texttt{yachat}=1}$ avec un modèle Tobit de type 2 (aussi appelé modèle Heckit), dont une brève description est donnée dans la section \@ref(tobit2).
 L'avantage de l'estimation simultanée est que l'on a pas à sélectionner le point de coupure, puisque l'on enverra le catalogue uniquement si le montant prédit pour $\E{\texttt{ymontant}}$ (non-conditionnel) est supérieur à 10\$.
