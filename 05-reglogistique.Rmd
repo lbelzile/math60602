@@ -391,7 +391,7 @@ Si on prend $c=0,5$ comme point de coupure, cela revient à assigner l'observati
 
 Dans un cadre de prédiction, il nous faudra un critère pour juger de la qualité de l'ajustement du modèle.
 Rappelez-vous que pour une réponse continue, nous avons utilisé l'erreur moyenne quadratique,
-$\mathsf{EMQ} = \mathsf{E}\{(Y-\widehat{Y})^2\}$,
+$\mathsf{EMQ} = \mathsf{E}\{(Y-\widehat{Y})^2\}$, où $\widehat{Y} = \mathsf{E}(Y \mid \mathbf{X})$, 
 pour juger de la performance d'un modèle. Comme la réponse $Y$ est binaire ici, nous allons utiliser des critères différents.
 
 Voyons d'abord un premier critère pour juger de la qualité d'un modèle de prédiction. Soit $Y$ la vraie valeur de la réponse binaire et $\widehat{Y}$ (soit 0 ou 1) la valeur de $Y$ prédite par un modèle pour une observation choisie au hasard dans la population. Un premier critère pour juger de la performance d'un modèle est $\P{Y \neq\widehat{Y}}$, soit la probabilité de mal classifier une observation choisie au hasard dans
@@ -643,7 +643,7 @@ Il peut être intéressant de vérifier la **calibration** de notre modèle, et 
 \overline{B} &= \frac{1}{n} \sum_{i=1}^n (Y_i-p_i)^2 
 =\frac{1}{n} \sum_{i=1}^n(Y_i-p_i)(1-2p_i) + \frac{1}{n} \sum_{i=1}^n p_i(1-p_i).
 \end{align*}
-Le premier terme représente le manque de calibration du modèle, tandis que le deuxième correspond à la séparation entre variables. Si notre modèle était parfaitement calibré, lalors $\mathsf{E}_0(Y_i)=p_i$ et $\mathsf{Var}_0(Y_i) = p_i(1-p_i)$. On peut utiliser ce fait pour construire une statistique de Wald, $Z = \{\overline{B} - \mathsf{E}_0(\overline{B})\}/\sqrt{\mathsf{Var}_0(\overline{B})}$, où
+Le premier terme représente le manque de calibration du modèle, tandis que le deuxième correspond à la séparation entre variables. Si notre modèle était parfaitement calibré, alors $\mathsf{E}_0(Y_i)=p_i$ et $\mathsf{Var}_0(Y_i) = p_i(1-p_i)$. On peut utiliser ce fait pour construire une statistique de Wald, $Z = \{\overline{B} - \mathsf{E}_0(\overline{B})\}/\sqrt{\mathsf{Var}_0(\overline{B})}$, où
 \begin{align*}
 \mathsf{E}_0(\overline{B})&= \frac{1}{n} \sum_{i=1}^n p_i(1-p_i) \\
 \mathsf{Var}_0(\overline{B})&= \frac{1}{n^2} \sum_{i=1}^n p_i(1-p_i)(1-2p_i)^2
