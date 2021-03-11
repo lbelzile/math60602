@@ -13,9 +13,9 @@ Les données "logistclient" contiennent des données simulées pour un cas ficti
 
 Estimer le modèle logistique pour "promo" avec les variables explicatives "nachats", "sexe" et "tclient"
 1) Interpréter les coefficients
-2) Tester si l'effet de "x2" est statistiquement significatif
-3a) Choisir le point de coupure (en utilisant une matrice de gain) sur la base du taux de bonne classification. Pour ce faire, utilisez la macro SAS "manycut_cvlogistic"
+2) Tester si l'effet de "nachats" est statistiquement significatif
+3a) Choisir le point de coupure (en utilisant une matrice de gain) sur la base du taux de bonne classification. 
+Pour ce faire, utilisez la macro SAS "manycut_cvlogisticclass" avec incréments de 0.1
 3b) Pour le point de coupure choisi, construisez une matrice de confusion
 3c) Faites un graphique de la fonction d'efficacité du récepteur (courbe ROC). Quelle est l'aire sous la courbe (estimée à l'aide de la validation croisée?
-
 */
