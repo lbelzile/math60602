@@ -2,7 +2,6 @@
 /* 
 MACROS pour estimer le gain moyen par validation-croisée pour
 un modèle de classification en régression logistique.
-(p. 178)
 */ 
 
 
