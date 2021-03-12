@@ -1,4 +1,5 @@
-/* Commandes pour conserver seulement les clients, parmi les 101 000,
+
+ /* Commandes pour conserver seulement les clients, parmi les 101 000,
  qui ont acheté quelque chose. Ces observations serviront à évaluer 
  la performance réelle des modèles retenus par les différentes 
  méthodes de sélection de modèle. */
@@ -41,7 +42,7 @@ Sert à la déclaration des variables catégorielles, une liste avec toutes les 
 - "split" permet de n'inclure qu'une poignée des indicateurs de groupes (les catégories omises sont donc fusionnées avec la référence)
 
 ***************************
-******ligne MODEL ********
+****** ligne MODEL ********
 ***************************
 
 c) model y=x.... / selection ...
@@ -60,7 +61,7 @@ hier=none / hier=single (par défaut, les interactions ne sont ajoutées que si 
 
 
 ***************************
-******ligne EFFECT ********
+***** ligne EFFECT ********
 ***************************
 
 Cette ligne permet de créer des polynômes ou des regroupements.
@@ -77,13 +78,15 @@ Pour inclure des polynômes avec tous les produits entre deux variables et les p
 
 effect xlist = polynomial(x1-x10 / degree=2);
  model ymontant= xlist ...
-
+ 
+Cette option ne fonctionne pas avec le LASSO
 */
 
 
 
-/* Commandes pour effectuer une recherche exhaustive avec le critère du R carré et extraire le meilleur modèle avec une variable, le meilleur avec 2 variables etc. 
-
+/* 
+Commandes pour effectuer une recherche exhaustive avec le critère du R carré et extraire le meilleur modèle avec une variable, le meilleur avec 2 variables etc. 
+*/
  proc glmselect data=ymontant;
  partition role=train(train="1" validate="0");
   class x3(param=ref split) x4(param=ref split); *'split' permet de fusionner des groupes à la catégorie de référence;
@@ -215,4 +218,6 @@ effect xlist = polynomial(x1-x10 / degree=2);
 (b) en choisissant comme critère de sélection pour notre modèle la validation croisée (choose=CV) et en prenant
 le modèle avec la plus petite valeur de CV PRESS (c'est n*EMQ, donc la somme plutôt que la moyenne)
  */
+
+
 
