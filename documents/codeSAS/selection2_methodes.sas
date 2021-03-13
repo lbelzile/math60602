@@ -53,6 +53,11 @@ STOP/STEP: critère d'arrêt. Pour STEP, nombre d'étapes. Pour STOP, soit le no
 CHOOSE: si absent, le modèle final est retourné. Un critère, par exemple CV/PRESS/SBC/AIC permet de choisir le modèle final à prendre parmi le catalogue de propositions avec la "meilleure" valeur du critère
 
 Exemple model y=x .../ selection=stepwise(select=AIC, stop = AIC, choose=SBC);
+
+La syntaxe suivante comprend toutes les interactions/produit de variables entre elles, tandis que @2 restreint aux produits/interactions d'ordre 2
+"model ymontant = x1|x2|x3|x4|x5|x6|x7|x8|x9|x10@2 *toutes les interactions d'ordre 2 et les produits de variable continue;"
+
+
 Si on choisit CV pour une ou l'autre des options, alors on spécifie le type de validation croisée
 Les trois options principales (hors procédures classiques via tests d'hypothèse) sont les suivantes:
 - Pour la validation croisée, l'option par défaut est PRESS (validation à n groupes, donc on ajuste le modèle avec n-1 observations et on prédit l'observation restante (LOOCV). Normalement, on privilégiera les options "cvmethod=split(5)" ou "cvmethod=split(10)" pour créer aléatoirement 5 ou 10 groupes.
@@ -65,21 +70,14 @@ hier=none / hier=single (par défaut, les interactions ne sont ajoutées que si 
 ***************************
 
 Cette ligne permet de créer des polynômes ou des regroupements.
-C'est utile parce qu'on veut les interactions entre les variables catégorielles et continues, mais pas les produits de variables continues entre elles. Par exemple, la syntaxe suivante comprend toutes les interactions/produit de variables entre elles, tandis que @2 restreint aux produits/interactions d'ordre 2
-"model ymontant = x1|x2|x3|x4|x5|x6|x7|x8|x9|x10@2 *toutes les interactions d'ordre 2 et les produits de variable continue;"
-On utilisera plutôt le regroupement
+C'est utile si on veut conserver un bloc de variables explicatives telles quelles (c'est tout ou rien pour la sélection
 
-effect xc = collection(x1-x2 x5-x10); *liste de variables continues;
-model ymontant=x3|x4|xc @2
-
-qui nous donnera ici les interactions entre les ensembles de variables (comme dans prepare_DBM)
-On ajoute à ce modèle tous les termes quadratiques viz "x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10"
 Pour inclure des polynômes avec tous les produits entre deux variables et les polynômes, on spécifie "polynomial" avec la liste de variables et le degré du polynôme, par exemple 
 
 effect xlist = polynomial(x1-x10 / degree=2);
  model ymontant= xlist ...
  
-Cette option ne fonctionne pas avec le LASSO
+Cette option ("effect") ne fonctionne pas avec le LASSO
 */
 
 
