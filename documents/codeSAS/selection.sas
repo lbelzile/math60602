@@ -269,5 +269,29 @@ le modèle avec la plus petite valeur de CV PRESS (c'est n*EMQ, donc la somme pl
 
 
 
+/* 
+Exemple de procédure avec scission aléatoire en échantillons apprentissage/validation; 
+*/
+proc glmselect data=ymontant seed=12345;
+ partition fraction(validate=0.2);
+ class x3(param=ref split) x4(param=ref split); 
+ model ymontant=x1-x10 / selection=forward(stop=15 choose=SBC);
+ output out=outpred resid=erreur pred=predmoy;
+run;
+/* Sauvegarder les données avec colonne _ROLE_, les résidus resid=... et les prédictions pred = ...
+C'est utile pour "modelaverage" qui ne retourne pas l'EMQ (mais ça marche plus généralement avec toutes les méthodes de sélection, sauf que ces information est déjà disponible dans le tableau 
+*/
+
+ /* Calculer l'EMQ à la mitaine en faisant le carré des erreurs */
+ data outpred2;
+ set outpred(where=(_role_ NE "validate"));
+ erreurquad = erreur**2;
+ run;
+ /* Calculer la moyenne du carré des erreurs */
+ proc means data=outpred2 mean n;
+ var erreurquad;
+ run;
+
+
 
 
