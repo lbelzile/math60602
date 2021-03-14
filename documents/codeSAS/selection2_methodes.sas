@@ -230,9 +230,9 @@ run;
 C'est utile pour "modelaverage" qui ne retourne pas l'EMQ (mais ça marche plus généralement avec toutes les méthodes de sélection, sauf que ces information est déjà disponible dans le tableau 
 */
 
- /* Calculer l'EMQ à la mitaine en faisant le carré des erreurs */
+ /* Calculer l'EMQ de validation à la mitaine en faisant le carré des erreurs */
  data outpred2;
- set outpred(where=(_role_ NE "validate"));
+ set outpred(where=(_role_ EQ "validate"));
  erreurquad = erreur**2;
  run;
  /* Calculer la moyenne du carré des erreurs */
