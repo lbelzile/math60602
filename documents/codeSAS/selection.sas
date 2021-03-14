@@ -284,7 +284,7 @@ C'est utile pour "modelaverage" qui ne retourne pas l'EMQ (mais ça marche plus 
 
  /* Calculer l'EMQ à la mitaine en faisant le carré des erreurs */
  data outpred2;
- set outpred(where=(_role_ NE "validate"));
+ set outpred(where=(_role_ EQ "validate"));
  erreurquad = erreur**2;
  run;
  /* Calculer la moyenne du carré des erreurs */
@@ -292,6 +292,32 @@ C'est utile pour "modelaverage" qui ne retourne pas l'EMQ (mais ça marche plus 
  var erreurquad;
  run;
 
+/* Il est plus logique de ne considérer que des interactions entre
+variables catégorielles (incluant les variables binaires) et les
+autres. Cela réduit le champ des variables possibles, mais il y a
+peu de logique à avoir des produits de variables continues.
+Une solution pour créer une matrice sans avoir à spécifier à chaque fois une liste interminable de variables est la suivant
 
+1) utiliser "effect" avec "collection" pour créer les interactions (mais si on fait la sélection à cette étape, c'est tout ou rien pour l'inclusion/exclusion de l'ensemble dans "collection").
+2) dans la procédure "glmselect" avec "selection=none", utiliser "outdesign" pour créer une base de données avec toutes les colonnes désirées (comme si on faisait la spécification manuelle dans "prepare_DBM")
+3) passer les variables dans un nouvel appel à "glmselect", avec "&_GLSMOD" en lieu et place de la listes des variables. Cela casse les relations logiques et on peut enlever les interactions ainsi créées une à une. Vous pourriez aussi utiliser ce truc pour la procédure "reg".
+*/
 
-
+/* On utilise "effect" avec "collection" pour mettre ensemble toutes les variables continues
+Ensuite, on ajuste le modèle avec la syntaxe  | et @2 pour obtenir toutes les interactions entre les variables (d'ordre au plus deux).
+On ne fait pas de sélection de variable "selection=none", mais on enregistre la matrice avec "outdesign"
+*/
+proc glmselect data=ymontant outdesign=glmselectoutput;
+ partition role=train(train="1" validate="0");
+ effect xc = collection(x2 x6-x10);
+ class x3(param=ref split) x4(param=ref split);
+ model ymontant=x1|x3|x4|x5|xc @2
+ x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 /  
+ selection=none;
+ run;
+ 
+ /* On utilise ensuite la matrice du modèle avec toutes les colonnes créées dans l'appel précédent
+"&_GLSMOD" pour faire une sélection dans une deuxième étape */
+ proc glmselect data=glmselectoutput;
+ model ymontant= &_GLSMOD / selection=stepwise(select=sbc choose=cv) cvmethod=split(10) hier=none;
+ run;

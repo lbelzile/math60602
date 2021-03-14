@@ -1,7 +1,6 @@
 /* 
 MACRO pour obtenir le AIC et le BIC/SBC de tous les modèles provenant d'une
 recherche de type exhaustive de PROC LOGISTIC 
-(p. 186)
 */
 
 /*
@@ -12,10 +11,23 @@ dataset = nom du fichier de données SAS à utiliser
 minvar = nombre minimal de variables que l'on veut dans un  modèle
 maxvar = nombre maximal de variables que l'on veut dans un  modèle
 */
-
+%macro ODSOff(); /* Call prior to BY-group processing */
+   ods graphics off;  ods exclude all;  
+   ods results off;
+%mend;
+ 
+%macro ODSOn(); /* Call after BY-group processing */
+   ods graphics on;  
+   ods exclude none;  
+   ods results on;
+%mend;
+ 
 
 %MACRO logistic_aic_sbc_score(yvariable=,xvariables=,dataset=,minvar=,maxvar=); 
-
+options nonotes;   
+ods graphics off;  
+ods exclude all;  
+ods noresults;
 proc datasets;
 delete allaicsbc;
 run;
@@ -72,9 +84,9 @@ run;
 
 /* DM 'Clear Out'; */
 
-
+ods graphics on;
+ods exclude none;  
+ods results;
 proc print data=allaicsbc;
 run;
-
-
 %MEND logistic_aic_sbc_score;

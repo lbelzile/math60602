@@ -1,17 +1,39 @@
 
-/* NOTE IMPORTANTE: il faut d'abord préparer les données en exécutant la 1ère partie
-du programme "prepare_DBM.sas", afin d'avoir un fichier nommé "train" qui contient
-l'échantillon d'apprentissage et un fichier nommé "test" qui contient les clients
-à cibler (ou à prédire"). */
+/* 
+Utiliser la syntaxe de la procédure glmselect
+pour créer toutes les interactions et les termes d'ordre
+deux - on sauvegarde la nouvelle base de données "matmod"
+*/
+ods exclude all; 
+proc glmselect data=multi.dbm outdesign=matmod;
+partition role=train(train="1" validate="0");
+class x3(param=ref split) x4(param=ref split);
+model yachat=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2 
+ x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 /  
+selection=none;
+run;
+ods exclude none;
+
+/* Scinder en échantillon d'entraînement et de validation */
+data test;
+set matmod;
+if(_ROLE_ EQ 'VALIDATE') then output;
+else delete;
+run;
+
+data train;
+set matmod;
+if(_ROLE_ EQ 'TRAIN') then output;
+else delete;
+run;
 
 /*
 Recherche de type exhaustive avec les 10 variables de base 
 */
 proc logistic data=train;
-model yachat(ref='0') = x1-x2 x31-x32 x41-x44 x6-x10 / 
+model yachat(ref='0') = x1-x2 x3_1-x3_2 x4_1-x4_4 x6-x10 /
 selection=score best=1;
 run;
-
 
 /* 
 Commande pour obtenir le AIC et le BIC/SBC de tous les modèles provenant d'une
@@ -21,23 +43,35 @@ IMPORTANT: il faut d'abord compiler la MACRO en exécutant le fichier "logit6_ma
 */
 
 %logistic_aic_sbc_score(yvariable=yachat,
-xvariables=x1-x2 x31-x32 x41-x44 x5-x10,
-dataset=train,minvar=1,maxvar=14); 
+xvariables=x1 x2 x3_1 x3_2 x4_1-x4_4 x5-x10,
+dataset=train, minvar=1, maxvar=14); 
 
 /* Procédure haute performance hplogistic */
 /* Supporte la syntaxe avec "class", mais pas l'option "split"
 ce qui veut dire qu'une variable catégorielle conserve toutes
-ses modalités (pas de fusion de classe possible) */
+ses modalités (pas de fusion de classe possible) 
+Ici, ce n'est pas un problème parce qu'on passe la base de données
+utilisée précédemment avec toutes les interactions.
+
+Plutôt que d'ajuster les modèles pour chaque étape, 
+on approximate l'adéquation du modèle avec le test
+du score via l'option "fast"; cela fait en sorte 
+que les valeurs de AIC/SBC sont approximatives */
+
 proc hplogistic data=train;
-model yachat(ref='0')=x1-x2 x5-x10 x31-x32 x41-x44;
-selection method=backward(select=aic choose=sbc) hierarchy=none;
-run;
-/* Selection avec le test du score */
-proc hplogistic data=train;
-model yachat(ref='0')=x1-x2 x5-x10 x31-x32 x41-x44;
-selection method=backward(fast choose=aic) hierarchy=none;
+model yachat(ref='0')= &_GLSmod;
+selection method=backward(fast select=aic choose=sbc) hierarchy=none;
 run;
 
+/* On peut également faire la procédure descendante 
+et spécifier le nombre de variable minimal qu'on veut 
+si la procédure ne termine pas auparavant 
+Il n'est malheureusement pas possible de sauvegarder
+le nom des variables sélectionnées...*/
+proc hplogistic data=train;
+model yachat(ref='0')= &_GLSmod;
+selection method=backward(mineffects=47) hierarchy=none;
+run;
 
 /*  ______________________________________________________  */
 
@@ -48,10 +82,14 @@ Recherche séquentielle classique avec critère d'entrée = critère de sortie =
 Tous les termes quadratiques et les interactions /
  ou produits de deux variables ou modalités
 */
-proc logistic data=train outdesign=outdesign;
-effect lvar=polynomial(x1-x2 x5-x10 x31-x32 x41-x44 / degree=2);
-model yachat(ref='0') = lvar / 
-selection=stepwise slentry=.05 slstay=.05;
+proc hplogistic data=train;
+model yachat(ref='0')= &_GLSmod;
+selection method=stepwise(slentry=.05 slstay=.05 choose=sbc) hierarchy=none;
+run;
+
+proc logistic data=train;
+model yachat(ref='0') = &_GLSMOD /
+selection=stepwise slentry=.05 slstay=.05 hier=none;
 run;
 
 
@@ -63,22 +101,21 @@ La recherche séquentielle donne 47 variables qui sont ensuite
 passées à la macro "logistic_aic_sbc_score"
 */
 %logistic_aic_sbc_score(yvariable=yachat,
-xvariables=x2 x31 x32 x41 x42 x44 x8 x10 cx2 cx10 i_x2_x1
-i_x2_x41 i_x2_x42 i_x2_x44 i_x2_x10 i_x1_x5 i_x1_x44 i_x1_x7 i_x1_x10 i_x5_x32 i_x5_x42 i_x5_x44
-i_x5_x9 i_x5_x10 i_x31_x44 i_x31_x7 i_x31_x6 i_x31_x10 i_x32_x41 i_x32_x43 i_x32_x7 i_x32_x6
-i_x32_x8 i_x41_x7 i_x41_x10 i_x42_x6 i_x42_x9 i_x43_x8 i_x43_x9 i_x44_x6 i_x7_x6 i_x7_x8
-i_x7_x10 i_x6_x8 i_x6_x9 i_x8_x9,
+xvariables=x2 x3_1 x3_2 x4_1 x4_2 x4_4 x8 x10 x2*x2 x10*x10 x2*x1
+x2*x4_1 x2*x4_2 x2*x4_4 x2*x10 x1*x5 x1*x4_4 x1*x7 x1*x10 x5*x3_2 x5*x4_2 x5*x4_4
+x5*x9 x5*x10 x3_1*x4_4 x3_1*x7 x3_1*x6 x3_1*x10 x3_2*x4_1 x3_2*x4_3 x3_2*x7 x3_2*x6
+x3_2*x8 x4_1*x7 x4_1*x10 x4_2*x6 x4_2*x9 x4_3*x8 x4_3*x9 x4_4*x6 x7*x6 x7*x8
+x7*x10 x6*x8 x6*x9 x8*x9,
 dataset=train,minvar=1,maxvar=47); 
 
-
 /*  ______________________________________________________  */
-
 /* 
 Utilisation de HPGENSELECT avec un Y binaire 
 */
 
 
-proc hpgenselect data=train;
+proc hpgenselect data=multi.dbm;
+partition rolevar=train(validate=0);
 class x3(ref='3' split) x4(ref='5' split);
 model yachat(ref='0')=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2 
  x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 /  
@@ -89,8 +126,6 @@ run;
 
 
 /*  ______________________________________________________  */
-
-
 /*
 Modèle Tobit.
 */
@@ -110,24 +145,27 @@ pour les variables dépendantes des observations à scorer. */
 
 
 data alltobit; 
-set all;
-if _N_>1000 then do;
+set matmod;
+set multi.dbm(keep=ymontant);
+if _role_ = "VALIDATE" then do;
  yachat=.;
- ymontant=.;end;
+ ymontant=.;
+end;
 run;
 
-/* Modèle Tobit en prenant les variables sélectionnées par le stepwise classique
+/* Modèle Tobit en prenant les variables sélectionnées 
+par la procédure séquentielle avec tests d'hypothèse
 avec entrée=sortie=0,05, pour yachat et ymontant.  
 Les prévisions vont se trouver dans le fichier "tobit". */
 
 proc qlim data=alltobit method=NRRIDG;
-model yachat = x2 x41 i_x2_x1 i_x2_x10 i_x1_x5 i_x1_x10 i_x5_x32
-i_x31_x44 i_x41_x7 i_x43_x8 i_x7_x8 i_x6_x8 i_x6_x10 / discrete;
-model ymontant = x32 x44 x5 x7 x10 cx6 cx10 i_x2_x31
-i_x2_x43 i_x1_x43 i_x1_x6 i_x1_x10 i_x5_x8
-i_x5_x10 i_x31_x41 i_x31_x8 i_x32_x8
-i_x41_x8 i_x42_x8 i_x44_x6 i_x44_x9 i_x8_x10  / select(yachat=1);
-output out=tobit  predicted  proball;
+model yachat = x2 x4_1 x2*x1 x2*x10 x1*x5 x1*x10 x5*x3_2
+x3_1*x4_4 x4_1*x7 x4_3*x8 x7*x8 x6*x8 x6*x10 / discrete;
+model ymontant = x3_2 x4_4 x5 x7 x10 x6*x6 x10*x10 x2*x3_1
+x2*x4_3 x1*x4_3 x1*x6 x1*x10 x5*x8
+x5*x10 x3_1*x4_1 x3_1*x8 x3_2*x8
+x4_1*x8 x4_2*x8 x4_4*x6 x4_4*x9 x8*x10  / select(yachat=1);
+output out=tobit predicted proball;
 run;
 
 /* Calcul de la prévision de ymontant pour les observations à prédire. 
@@ -135,15 +173,15 @@ La variable "predymontant" dans le fichier "pred" contient cette prévision. */
 
 data tobit;
 set tobit;
-if _N_ LE 1000 then delete;
+if _ROLE_ = "TRAIN" then delete;
 predymontant=Prob2_yachat*P_ymontant;
 run;
 
-data tobit;set tobit;
+data tobit;
+set tobit;
 keep predymontant;
 run;
 data pred;
 merge test tobit;
 run;
-
 
