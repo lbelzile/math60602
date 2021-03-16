@@ -795,8 +795,9 @@ Faire une recherche de tous les sous-modèles possibles devient impraticable lor
 
 Si on inclut tous les termes quadratiques et les termes d'interactions d'ordre deux, nous avons 104 variables potentielles: c'est trop pour une recherche exhaustive. 
 
-Faisons d'abord une recherche séquentielle classique avec les 104 variables, en prenant 0.05 comme critère d'entrée et de sortie. Le code est 
-```{sas 03-stepwise, eval = FALSE, echo = TRUE}
+Faisons d'abord une recherche séquentielle classique avec les 104 variables, en prenant 0.05 comme critère d'entrée et de sortie. Les options **SAS** correspondantes sont
+`selection=stepwise`, avec comme départ le nombre de variables `start=104` et les niveaux `sle=.05` et `sls=.05`;
+```{sas 03-stepwise, eval = FALSE, echo = FALSE}
 proc logistic data=train;
 model yachat(ref='0') = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10
 cx2 cx6 cx7 cx8 cx9 cx10
