@@ -62,7 +62,8 @@ Si on choisit CV pour une ou l'autre des options, alors on spécifie le type de 
 Les trois options principales (hors procédures classiques via tests d'hypothèse) sont les suivantes:
 - Pour la validation croisée, l'option par défaut est PRESS (validation à n groupes, donc on ajuste le modèle avec n-1 observations et on prédit l'observation restante (LOOCV). Normalement, on privilégiera les options "cvmethod=split(5)" ou "cvmethod=split(10)" pour créer aléatoirement 5 ou 10 groupes.
 
-hier=none / hier=single (par défaut, les interactions ne sont ajoutées que si les effets principaux sont déjà présent (par exemple, on inclut x2*x3 seulement si x2 et x3 sont déjà dans le modèle). Pour les étapes descendantes, on n'enlève x2 ou x3 uniquement si tous les termes d'ordre supérieur (polynômes ou interactions) sont déjà éliminés. "hier=none" permet de contourner cette restriction, mais le modèle final est une boîte noire
+hier=none (défaut) / hier=single - ordinairement, soit si hier=single, les interactions ne sont ajoutées que si les effets principaux sont déjà présent (par exemple, on inclut x2*x3 seulement si x2 et x3 sont déjà dans le modèle). Pour les étapes descendantes, on n'enlève x2 ou x3 uniquement si tous les termes d'ordre supérieur (polynômes ou interactions) sont déjà éliminés. 
+"hier=none" permet de contourner cette restriction, mais le modèle final est une boîte noire
 
 
 ***************************
@@ -70,7 +71,7 @@ hier=none / hier=single (par défaut, les interactions ne sont ajoutées que si 
 ***************************
 
 Cette ligne permet de créer des polynômes ou des regroupements.
-C'est utile si on veut conserver un bloc de variables explicatives telles quelles (c'est tout ou rien pour la sélection
+C'est utile si on veut conserver un bloc de variables explicatives telles quelles (c'est tout ou rien pour la sélection)
 
 Pour inclure des polynômes avec tous les produits entre deux variables et les polynômes, on spécifie "polynomial" avec la liste de variables et le degré du polynôme, par exemple 
 
