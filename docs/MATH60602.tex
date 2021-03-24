@@ -114,7 +114,7 @@
 
 \title{Analyse multidimensionnelle appliquée}
 \author{(c) Denis Larocque, Léo Belzile}
-\date{version du 2021-03-16}
+\date{version du 2021-03-23}
 
 \usepackage{amsthm}
 \newtheorem{theorem}{Théorème}[chapter]
@@ -3263,33 +3263,8 @@ Faire une recherche de tous les sous-modèles possibles devient impraticable lor
 
 Si on inclut tous les termes quadratiques et les termes d'interactions d'ordre deux, nous avons 104 variables potentielles: c'est trop pour une recherche exhaustive.
 
-Faisons d'abord une recherche séquentielle classique avec les 104 variables, en prenant 0.05 comme critère d'entrée et de sortie. Le code est
-
-\begin{verbatim}
-proc logistic data=train;
-model yachat(ref='0') = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10
-cx2 cx6 cx7 cx8 cx9 cx10
-i_x2_x1 i_x2_x5 i_x2_x31 i_x2_x32 i_x2_x41 i_x2_x42 i_x2_x43 i_x2_x44
-i_x2_x7 i_x2_x6 i_x2_x8 i_x2_x9 i_x2_x10
-i_x1_x5 i_x1_x31 i_x1_x32 i_x1_x41 i_x1_x42 i_x1_x43 i_x1_x44
-i_x1_x7 i_x1_x6 i_x1_x8 i_x1_x9 i_x1_x10
-i_x5_x31 i_x5_x32 i_x5_x41 i_x5_x42 i_x5_x43 i_x5_x44
-i_x5_x7 i_x5_x6 i_x5_x8 i_x5_x9 i_x5_x10
-i_x31_x41 i_x31_x42 i_x31_x43 i_x31_x44
-i_x31_x7 i_x31_x6 i_x31_x8 i_x31_x9 i_x31_x10
-i_x32_x41 i_x32_x42 i_x32_x43 i_x32_x44
-i_x32_x7 i_x32_x6 i_x32_x8 i_x32_x9 i_x32_x10
-i_x41_x7 i_x41_x6 i_x41_x8 i_x41_x9 i_x41_x10
-i_x42_x7 i_x42_x6 i_x42_x8 i_x42_x9 i_x42_x10
-i_x43_x7 i_x43_x6 i_x43_x8 i_x43_x9 i_x43_x10
-i_x44_x7 i_x44_x6 i_x44_x8 i_x44_x9 i_x44_x10
-i_x7_x6 i_x7_x8 i_x7_x9 i_x7_x10
-i_x6_x8 i_x6_x9 i_x6_x10
-i_x8_x9 i_x8_x10
-i_x9_x10 
-  / selection=stepwise start=104, sle=.05 sls=.05;  
-run;
-\end{verbatim}
+Faisons d'abord une recherche séquentielle classique avec les 104 variables, en prenant 0.05 comme critère d'entrée et de sortie. Les options \textbf{SAS} correspondantes sont
+\texttt{selection=stepwise}, avec comme départ le nombre de variables \texttt{start=104} et les niveaux \texttt{sle=.05} et \texttt{sls=.05};
 
 \begin{center}\includegraphics[width=0.8\linewidth]{figures/03-logistic-e22} \end{center}
 
@@ -3553,7 +3528,7 @@ Le modèle logistique cumulé spécifie que
 \ln \left( \frac{S_{ij}}{1-S_{ij}}\right) = \beta_{0j} + \beta_1 X_{i1} + \cdots + \beta_p X_{ip}, \qquad \qquad  j=1, \ldots, K.
 \end{align*}
 
-Il y a donc \(K-1\) équations logistiques. Les paramètres quantifiant les effets des variables explicatives, \(\beta_1, \ldots, \beta_K\) sont les mêmes pour chacune des log-cotes, mais il y a une ordonnée à l'origine différente par log de rapport de cote. Par conséquent, pour modéliser une variable ordinale \(Y\) ayant \(K+1\) valeurs possibles avec p variables explicatives, le modèle cumulatif logistique utilise \(p + K\) paramètres. Le modèle logit multinomial, qui peut également être utilisé pour les données ordinales, utilise \(p\cdot (K+1)\) paramètres. Le modèle multinomial ordonné est donc plus parcimonieux et, pour autan qu'il soit approprié, mènera à des estimations des paramètres plus précises qu'avec le modèle de régression logistique multinomiale. Les deux modèles sont identiques au modèle de régression logistique si la variable ordinale a deux modalités.
+Il y a donc \(K-1\) équations logistiques. Les paramètres quantifiant les effets des variables explicatives, \(\beta_1, \ldots, \beta_K\) sont les mêmes pour chacune des log-cotes, mais il y a une ordonnée à l'origine différente par log de rapport de cote. Par conséquent, pour modéliser une variable ordinale \(Y\) ayant \(K+1\) valeurs possibles avec \(p\) variables explicatives, le modèle cumulatif logistique utilise \(p + K\) paramètres. Le modèle logit multinomial, qui peut également être utilisé pour les données ordinales, utilise \(pK + K\) paramètres. Le modèle multinomial ordonné est donc plus parcimonieux et, pour autant qu'il soit approprié, mènera à des estimations des paramètres plus précises qu'avec le modèle de régression logistique multinomiale. Les deux modèles sont identiques au modèle de régression logistique si la variable ordinale a deux modalités.
 
 La cote \(S_{ij}/(1-S_{ij})\) mesure à quel point il est plus probable que \(Y_i\) prenne une valeur plus grande ou égale à \(j\) par rapport à une valeur plus petite que \(j\), viz.
 \begin{align*}
