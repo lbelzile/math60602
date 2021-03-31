@@ -67,25 +67,25 @@ Dans le cas discret où le temps peut seulement prendre les valeurs $0, 1, 2, \l
 
 Cette fonction est importante car il s'agit de celle que nous allons modéliser avec le modèle de régression de Cox. Si, en régression logistique, on modélise le logarithme des cotes, on modélise plutôt la fonction de risque en analyse de survie.
 Les fonctions de survie et de risque sont intimement reliées et 
-\[ h(t) = - \frac{\d \log\{S(t)\}}{\d t}, \qquad \qquad S(t) = \exp \left\{ -\int_0^t h(u) \d u\right\}. \]
+\[ h(t) = - \frac{\d \ln\{S(t)\}}{\d t}, \qquad \qquad S(t) = \exp \left\{ -\int_0^t h(u) \d u\right\}. \]
 Ainsi, si on connaît la fonction de survie, on peut retrouver la fonction de risque et vice-versa. Par conséquent, un modèle pour la fonction de survie spécifie une fonction de risque (et vice-versa).
 
 ## Estimation d'une courbe de survie et de risque
 
 L'estimateur nonparamétrique le plus couramment utilisé est l'estimateur de Kaplan--Meier. Cette méthode permet d'estimer la fonction de survie pour un échantillon contenant des observations censurées. De plus, elle est nonparamétrique en ce sens qu'on ne suppose aucun modèle ou hypothèse particulière. Dans **SAS**, la procédure `lifetest` fournit l'estimation de Kaplan--Meier de la courbe de survie et permet aussi d'estimer la fonction de risque correspondante.
 
-Supposons par exemple que l'échantillon ne contient aucune observation censurée (on a des temps exacts pour tous les sujets), l'estimateur de Kaplan--Meier de la fonction de survie à un temps $t$ donné est alors simplement la proportion des observations dans l'échantillon qui possède un temps de survie supérieur à $t$ --- on ne tient pas compte des observations censurées pour estimer la courbe de survie.
+Supposons par exemple que l'échantillon ne contient aucune observation censurée (on a des temps exacts pour tous les sujets), l'estimateur de Kaplan--Meier de la fonction de survie à un temps $t$ donné est alors simplement la proportion des observations dans l'échantillon qui possède un temps de survie supérieur à $t$ --- on ne tient pas compte des observations censurées pour estimer la courbe de survie. Par convention, on considère qu'une observation censurée à droite faisait partie de l'ensemble d'observations à risque au temps de censure observé.
 
 On considère l'exemple des temps d'abonnement pour illustrer le concept; les commandes **SAS** sont dans `survival1_fonction_survie.sas`. L'estimation de la fonction de survie selon la méthode Kaplan--Meier est obtenue grâce aux commandes suivantes:
 
 ```{sas survie1, eval = FALSE, echo = TRUE}
 proc lifetest data=multi.survival1 method=km
-       plots=(s(cl)) censoredsymbol=none;
+       plots=survival(cl nocensor);
 time t*censure(1);
 run;
 ```
 
-Le premier tableau renvoyé par **SAS** contient une ligne par observation et permet de lire l'estimé de la fonction de survie. Par exemple, on voit que l'estimation de la probabilité que le temps d'abonnement soit supérieur à 30 semaines est $\widehat{S}(30) = 0,986$.
+Le premier tableau renvoyé par **SAS** contient une ligne par observation et permet de lire l'estimé de la fonction de survie. Par exemple, on voit que l'estimation de la probabilité que le temps d'abonnement soit supérieur à 30 semaines est $\widehat{S}(30) = $0,986.
 
 ```{r fig5_e1, echo = FALSE, out.width='70%', fig.align = "center"}
 knitr::include_graphics("figures/05-survie-e1.png")
@@ -95,7 +95,7 @@ knitr::include_graphics("figures/05-survie-e1.png")
 knitr::include_graphics("figures/05-survie-e2.png")
 ```
 
-La sortie contient également un tableau contenant les quartiles. On utilise généralement le temps de survie médian (au lieu de la moyenne) dans ce type d'étude. Ici, le temps de survie médian est estimé à 114 semaines: on estime que la moitié des clients vont avoir une durée d'abonnement supérieure à 114 semaines. De même, la moitié des clients vont avoir une durée d'abonnement inférieure à 114 semaines. Un intervalle de confiance de niveau 95% pour ce temps médian est [$110; 119$].
+La sortie contient également un tableau contenant les quartiles. On utilise généralement le temps de survie médian (au lieu de la moyenne) dans ce type d'étude. Ici, l'estimé du  temps de survie médian est de 114 semaines: on estime que la moitié des clients vont avoir une durée d'abonnement supérieure à 114 semaines. De même, la moitié des clients vont avoir une durée d'abonnement inférieure à 114 semaines. Un intervalle de confiance de niveau 95% pour ce temps médian est [$110; 119$].
 
 Un estimé de la moyenne et de l'écart-type est donné, mais ce dernier est biaisé (trop bas) puisque les données censurées ne donnent qu'une borne inférieure pour la vraie valeur. Avec un modèle paramétrique pour la survie (par ex., une loi exponentielle), les paramètres estimés du modèle dicteraient ces deux valeurs. Le modèle de Kaplan--Meier estime la survie, mais si la plus grande observation est censurée, la courbe n'atteindra pas zéro.
 
@@ -116,8 +116,8 @@ knitr::include_graphics("figures/05-survie-e5.png")
 
 ### Calcul de l'estimateur de Kaplan--Meier
 
-Cette partie peut être omise; elle est incluse seulement par souci de complétude. Soit $T_1, \ldots, T_n$ les $n$ réalisations aléatoires de la variable temps (certaines censurées, d'autres pas). Supposons qu'il y a $m$ temps distincts où au moins un individu expérimente l'événement. Soient $t_{(1)} < \cdots < t_{(m)}$, ces temps ordonnés en ordre croissant et $n_i$  le nombre d'individus à risque au temps $t_{(i)}$ (les individus qui n'ont pas encore expérimenté l‘événement, et qui ne sont pas encore censurés avant $t_{(i)}$). On note $d_i$ le nombre d'individus qui expérimentent l'événement au temps $t_{(i)}$. L'estimateur de Kaplan--Meier de la fonction de survie à un temps $t$ est
-\[ \widehat{S}(t) = \left( 1- \frac{d_1}{n_1}\right) \times \cdots \left( 1- \frac{d_{i(t)}}{n_{i(t)}}\right), \qquad t_{(1)} \leq t \leq t_{(m)},
+Cette partie peut être omise; elle est incluse seulement par souci de complétude. Soit $T_1, \ldots, T_n$ les $n$ réalisations aléatoires de la variable temps (certaines censurées, d'autres pas). Supposons qu'il y a $m$ temps distincts où au moins un individu expérimente l'événement. Soient $t_{(1)} < \cdots < t_{(m)}$, ces temps ordonnés en ordre croissant et $r_i$  le nombre d'individus à risque au temps $t_{(i)}$ (les individus qui n'ont pas encore expérimenté l‘événement, et qui ne sont pas encore censurés avant $t_{(i)}$). On note $d_i$ le nombre d'individus qui expérimentent l'événement au temps $t_{(i)}$. L'estimateur de Kaplan--Meier de la fonction de survie à un temps $t$ est
+\[ \widehat{S}(t) = \left( 1- \frac{d_1}{r_1}\right) \times \cdots \left( 1- \frac{d_{i(t)}}{r_{i(t)}}\right), \qquad t_{(1)} \leq t \leq t_{(m)},
 \]
 où $i(t) =\max(j \in \{1, \ldots, m\}:  t \geq t_{j})$, soit le plus grand indice parmi $1, \ldots, m$ tel que $t \geq t_{i(t)}$. Par convention, si $t < t_{(1)}$, on fixe $\widehat{S}(t)=1$.
 
@@ -237,7 +237,7 @@ knitr::include_graphics("figures/05-survie-e13.png")
 knitr::include_graphics("figures/05-survie-e14.png")
 ```
 
-Le rapport de risque pour âge est $0,959$ et donc le risque diminue de 4,1% chaque fois que l'âge augmente d'un an --- le risque d'interrompre l'abonnement diminue lorsque l'âge augmente et cet effet est significatif (valeur-$p$ des tests inférieures à $10^{-4}$). 
+Le rapport de risque pour âge est 0,959 et donc le risque diminue de 4,1% chaque fois que l'âge augmente d'un an --- le risque d'interrompre l'abonnement diminue lorsque l'âge augmente et cet effet est significatif (valeur-$p$ des tests inférieures à $10^{-4}$). 
 
 Généralement, on considérera le modèle de Cox avec toutes les variables explicatives simultanément. La variable $\texttt{region}$ est nominale tandis que la variable $\texttt{service}$ est ordinale (avec quatre modalités). Nous allons les incorporer, comme d'habitude, en utilisant des variables indicatrices avec  $\texttt{region=5}$ et $\texttt{service=0}$ (le client n'est abonné à aucun autre service) comme catégories de référence.
 
@@ -270,11 +270,11 @@ knitr::include_graphics("figures/05-survie-e18.png")
 
 Les effets des variables sont maintenant des effets marginaux. Ainsi, lorsque les autres variables demeurent fixes, le risque de quitter d'une femme est $0,514$ fois plus petit que celui d'un homme.  L'effet marginal (une fois que les autres variables sont incluses) de la variable sexe est significatif (valeur-$p$ inférieure à $10^{-4}$).
 
-Toutes autres choses étant égales, chaque augmentation de l'âge d'un an fait diminuer le risque d'interrompre l'abonnement. Plus précisément, le risque est multiplié par $0,95$ lorsque l'âge augmente d'un an et cet effet est significatif.
+Toutes autres choses étant égales, chaque augmentation de l'âge d'un an fait diminuer le risque d'interrompre l'abonnement. Plus précisément, le risque est multiplié par 0,95 lorsque l'âge augmente d'un an et cet effet est significatif.
 
-Pour la variable service, l'interprétation se fait par rapport à la catégorie de référence, qui est la catégorie $\texttt{0}$ (abonné à aucun autre service). Ainsi, si le client est abonné à un autre service, son risque de quitter est $0,358$ fois celui d'un client qui n'est pas abonné à un autre service (toutes autres choses étant égales). Si le client est abonné à deux autres services, son risque de quitter est encore plus petit comparativement à un client qui n'est pas abonné à un autre service (rapport de risque de $0,177$) Finalement, si le client est abonné à trois autres services, son risque de quiter est encore plus petit (rapport de risque de $0,118$). Les paramètres de ces trois variables sont tous significatifs. Ainsi, les clients qui sont abonnés à un, deux ou trois services ont un risque de quitter qui est significativement plus faible que celui d'un client qui n'est pas abonné à un autre service. Le tableau `Tests Type 3` permet de tester globalement la significativité d'une variable explicative modélisée avec plusieurs indicatrices. Pour la variable $\texttt{service}$, le test présenté teste l'hypothèse nulle $\Hy_0: \beta_{\texttt{service}_1}=\beta_{\texttt{service}_2}=\beta_{\texttt{service}_3}=0$ contre l'alternative qu'un moins un de ces trois paramètres est non-nul. Le test est largement significatif (statistique de Wald du $\chi^2_4$ valant $149,52$ avec une valeur-$p$ inférieure à $10^{-4}$). L'effet de la variable $\texttt{service}$ est donc globalement significatif. Afin de comparer les autres modalités entre elles, par exemple afin de voir si le risque de quitter est différent entre un client qui a deux services et un autre qui a trois services, il suffit de changer la catégorie de référence à la commande `class` et de réajuster le modèle.
+Pour la variable service, l'interprétation se fait par rapport à la catégorie de référence, qui est la catégorie $\texttt{0}$ (abonné à aucun autre service). Ainsi, si le client est abonné à un autre service, son risque de quitter est $0,358$ fois celui d'un client qui n'est pas abonné à un autre service (toutes autres choses étant égales). Si le client est abonné à deux autres services, son risque de quitter est encore plus petit comparativement à un client qui n'est pas abonné à un autre service (rapport de risque de $0,177$) Finalement, si le client est abonné à trois autres services, son risque de quiter est encore plus petit (rapport de risque de $0,118$). Les paramètres de ces trois variables sont tous significatifs. Ainsi, les clients qui sont abonnés à un, deux ou trois services ont un risque de quitter qui est significativement plus faible que celui d'un client qui n'est pas abonné à un autre service. Le tableau `Tests Type 3` permet de tester globalement la significativité d'une variable explicative modélisée avec plusieurs indicatrices. Pour la variable $\texttt{service}$, le test présenté teste l'hypothèse nulle $\Hy_0: \beta_{\texttt{service}_1}=\beta_{\texttt{service}_2}=\beta_{\texttt{service}_3}=0$ contre l'alternative qu'un moins un de ces trois paramètres est non-nul. Le test est largement significatif (statistique de Wald du $\chi^2_4$ valant 149,52 avec une valeur-$p$ inférieure à $10^{-4}$). L'effet de la variable $\texttt{service}$ est donc globalement significatif. Afin de comparer les autres modalités entre elles, par exemple afin de voir si le risque de quitter est différent entre un client qui a deux services et un autre qui a trois services, il suffit de changer la catégorie de référence à la commande `class` et de réajuster le modèle.
 
-Finalement, la variable $\texttt{region}$ n'est pas globalement significative (statistique de Wald de $7,56$ avec une valeur-$p$ de $0,11$).
+Finalement, la variable $\texttt{region}$ n'est pas globalement significative (statistique de Wald de 7,56 avec une valeur-$p$ de 0,11).
 
 ### Estimation de la fonction de survie pour des valeurs particulières des variables explicatives
 

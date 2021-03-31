@@ -1,6 +1,5 @@
-
 /*
-Estimation de la foncton de survie et de risque.
+Estimation de la fonction de survie et de risque.
 La variable dépendante est spécifiée avec "t*censure(1)",
 ce qui veut dire que "t" est la variable qui donne le temps
 de survie et "censure" est celle qui indique si le temps est
@@ -11,22 +10,21 @@ Description des options:
   method = méthode d'estimation utilisée. Ici "km" demande
 la méthode de Kaplan-Meier.
   plots = demande des graphiques. Ici, on demande le graphe
-de la fonction de survie ("s") et de risque ("h"). L'option
-"cl" demande des intervalles de confiances pour les courbes.
-  censoredsymbol = en spécifiant "none", cette option rend les graphiques 
-beaucoup plus faciles à lire en ne rajoutant pas de symboles sur les 
-courbes à chaque observation censurée.
-(p. 280)
+de la fonction de survie ("survival) avec intervalles de confiances ponctuels ("cl") et
+simultanés ("cb=ep"). L'option "nocensor" permet d'éviter l'ajout de signes
++ à chaque observation censuré, ce qui améliore règle générale la lisibilité du graphique.
 */
 
-
-ods graphics on;
-proc lifetest data=multi.survival1 method=km plots=(s(cl), h(cl)) censoredsymbol=none ;
+proc lifetest data=multi.survival1 method=km 
+ plots=survival(cl cb=ep nocensor);
 time t*censure(1);
 run;
-ods graphics off;
 
-
+*INCORRECT - pour illustrer que les estimations 
+utilisées ordinairement sont biaisées;
+proc means data=multi.survival1 q1 median q3 mean;
+var t;
+run;
 
 /* 
 Tests d'égalité de deux fonctions de survie.
@@ -35,15 +33,9 @@ les deux groupes que l'on veut comparer.
 
 Note: Si la variable dans "strata" possède plus de deux valeurs (K disons),
 alors des tests d'égalités des K fonctions de survie seront produits.
-(p. 288). 
 */
-
-
-ods graphics on;
-proc lifetest data=multi.survival1 method=km plots=(s(cl)) censoredsymbol=none;
+proc lifetest data=multi.survival1 method=km plots=survival(cl nocensor);
 time t*censure(1);
 strata sexe;
 run;
-ods graphics off;
-
 

@@ -60,7 +60,14 @@ La syntaxe suivante comprend toutes les interactions/produit de variables entre 
 
 Si on choisit CV pour une ou l'autre des options, alors on spécifie le type de validation croisée
 Les trois options principales (hors procédures classiques via tests d'hypothèse) sont les suivantes:
-- Pour la validation croisée, l'option par défaut est PRESS (validation à n groupes, donc on ajuste le modèle avec n-1 observations et on prédit l'observation restante (LOOCV). Normalement, on privilégiera les options "cvmethod=split(5)" ou "cvmethod=split(10)" pour créer aléatoirement 5 ou 10 groupes.
+- Pour la validation croisée, l'option par défaut est PRESS (validation à n groupes, donc on ajuste le modèle avec n-1 observations et on prédit l'observation restante (LOOCV). Pas recommandé parce qu'on risque le surajustement; 
+- RECOMMANDÉ: normalement, on privilégiera les options "cvmethod=random(5)" ou "cvmethod=random(10)" pour créer aléatoirement 5 ou 10 groupes 
+-pour des observations consécutives, utilisez plutôt block(10). 
+- L'option cvmethod=split(10) crée des groupes d'observations consécutives en gardant par exemple 5 observations en retrait. (DÉCONSEILLÉ pour les même raisons que PRESS)
+
+Le tableau résumé inclura la statistique PRESS, soit n*EMQ. Utilisez ce critère pour calculer l'EMQ.
+
+ATTENTION: si vous utilisez CV comme critère de sélection, vous ne pouvez pas calculer manuellement l'erreur moyenne quadratique! Vos prédictions utiliseraient alors toutes les données et vous risquez le surajustement. C'est aussi un problème quand vous calculez les erreurs de sortie ou les prédictions.
 
 hier=none (défaut) / hier=single - ordinairement, soit si hier=single, les interactions ne sont ajoutées que si les effets principaux sont déjà présent (par exemple, on inclut x2*x3 seulement si x2 et x3 sont déjà dans le modèle). Pour les étapes descendantes, on n'enlève x2 ou x3 uniquement si tous les termes d'ordre supérieur (polynômes ou interactions) sont déjà éliminés. 
 "hier=none" permet de contourner cette restriction, mais le modèle final est une boîte noire
@@ -205,7 +212,7 @@ Commandes pour effectuer une recherche exhaustive avec le critère du R carré e
  class x3(param=ref split) x4(param=ref split);
  model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2
  x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 / 
- selection=lasso(steps=120 choose=cv) cvmethod=split(10) hier=none;
+ selection=lasso(steps=120 choose=cv) cvmethod=random(10) hier=none;
  run;
 
 

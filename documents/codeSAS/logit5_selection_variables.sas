@@ -121,6 +121,7 @@ model yachat(ref='0')=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2
  x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 /  
 link=logit distribution=binary;
 selection method=stepwise(select=sl choose=sbc);
+* output out=predhpgenselect pred=pred role; /* Prédictions */
 run;
 
 

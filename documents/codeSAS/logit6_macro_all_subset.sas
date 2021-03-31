@@ -12,7 +12,8 @@ minvar = nombre minimal de variables que l'on veut dans un  modèle
 maxvar = nombre maximal de variables que l'on veut dans un  modèle
 */
 %macro ODSOff(); /* Call prior to BY-group processing */
-   ods graphics off;  ods exclude all;  
+   ods graphics off;  
+   ods exclude all;  
    ods results off;
 %mend;
  
@@ -39,7 +40,7 @@ proc datasets;
 delete aicsbc model_reg_logistic temp ;
 run;
 
-proc logistic data=&dataset  ;
+proc logistic data=&dataset;
 model &yvariable(ref='0') = &xvariables / selection=score best=1 start=&minvar stop=&maxvar;
 ods output stat.Logistic.BestSubsets=model_reg_logistic;
 run;
@@ -48,7 +49,8 @@ data model_reg_logistic; set model_reg_logistic;
 keep VariablesInModel;
 run;
 
-data temp; set model_reg_logistic;
+data temp; 
+set model_reg_logistic;
 if _N_ NE &i then delete;
 run;
 
