@@ -44,6 +44,7 @@ plot(survfit(Surv(time, 1-censure) ~ sexe, data = survival1),
 cox1 <- coxph(Surv(time, 1-censure) ~ sexe, data = survival1)
 summary(cox1)
 
+
 cox2 <- coxph(Surv(time, 1-censure) ~ age, data = survival1)
 summary(cox2)
 
@@ -52,6 +53,8 @@ summary(cox2)
 cox3 <- coxph(Surv(time, 1-censure) ~ age + sexe + region + service, 
               data = survival1, ties = "exact")
 summary(cox3)
+# Effets de type 3 (modèle avec toutes les variables sauf une)
+car::Anova(cox3)
 
 # Courbes de survie différentes pour différentes valeurs des variables explicatives
 cox4 <- coxph(Surv(time, 1-censure) ~ age + sexe, 
@@ -63,6 +66,8 @@ plot(surv4, col = 1:4, lty = 1:4)
   
 # Il est important de tester l'hypothèse de risques proportionnels
 cox.zph(cox3)
+# Si l'hypothèse tient la route, alors il ne devrait pas y avoir de tendance
+# temporelle dans les résidus.
 # Ici, le modèle n'est pas adéquat globalement 
 # principalement en raison de service 
 par(mfrow = c(2,2), mar = c(4,4,1,1))
