@@ -56,69 +56,6 @@
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 
-<style type="text/css">
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {  background-color: #f8f8f8; }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ef2929; } /* Alert */
-code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #c4a000; } /* Attribute */
-code span.bn { color: #0000cf; } /* BaseN */
-code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4e9a06; } /* Char */
-code span.cn { color: #000000; } /* Constant */
-code span.co { color: #8f5902; font-style: italic; } /* Comment */
-code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
-code span.dt { color: #204a87; } /* DataType */
-code span.dv { color: #0000cf; } /* DecVal */
-code span.er { color: #a40000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #0000cf; } /* Float */
-code span.fu { color: #000000; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
-code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
-code span.ot { color: #8f5902; } /* Other */
-code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
-code span.sc { color: #000000; } /* SpecialChar */
-code span.ss { color: #4e9a06; } /* SpecialString */
-code span.st { color: #4e9a06; } /* String */
-code span.va { color: #000000; } /* Variable */
-code span.vs { color: #4e9a06; } /* VerbatimString */
-code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
-</style>
 
 
 <link rel="stylesheet" href="css/style.css" type="text/css" />
@@ -642,23 +579,6 @@ On voit que le augmente toujours au fur et à mesure qu’on ajoute une variable
 </ol></li>
 <li>Faire la somme des <span class="math inline">\(K\)</span> estimations de performance pour obtenir une mesure de performance finale et repondérer au besoin.</li>
 </ol>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="selection-modele.html#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-2"><a href="selection-modele.html#cb10-2" aria-hidden="true" tabindex="-1"></a>col <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">25</span>)</span>
-<span id="cb10-3"><a href="selection-modele.html#cb10-3" aria-hidden="true" tabindex="-1"></a>col[(<span class="dv">0</span><span class="sc">:</span><span class="dv">4</span>)<span class="sc">*</span><span class="dv">5</span><span class="sc">+</span><span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>] <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb10-4"><a href="selection-modele.html#cb10-4" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb10-5"><a href="selection-modele.html#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">5</span>),</span>
-<span id="cb10-6"><a href="selection-modele.html#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">each =</span> <span class="dv">5</span>),</span>
-<span id="cb10-7"><a href="selection-modele.html#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">identification =</span> <span class="fu">factor</span>(col, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;apprentissage&quot;</span>,<span class="st">&quot;validation&quot;</span>))</span>
-<span id="cb10-8"><a href="selection-modele.html#cb10-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-9"><a href="selection-modele.html#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(x, y)) <span class="sc">+</span></span>
-<span id="cb10-10"><a href="selection-modele.html#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="fu">aes</span>(<span class="at">fill =</span> identification), <span class="at">colour =</span> <span class="st">&quot;white&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
-<span id="cb10-11"><a href="selection-modele.html#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;étape&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb10-12"><a href="selection-modele.html#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;division&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb10-13"><a href="selection-modele.html#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
-<span id="cb10-14"><a href="selection-modele.html#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>,</span>
-<span id="cb10-15"><a href="selection-modele.html#cb10-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb10-16"><a href="selection-modele.html#cb10-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb10-17"><a href="selection-modele.html#cb10-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major =</span> <span class="fu">element_blank</span>())</span></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:validationcroiseeillust"></span>
 <img src="MATH60602_files/figure-html/validationcroiseeillust-1.png" alt="Illustration de la validation croisée: on scinde l'échantillon d'apprentissage en cinq groupes (abcisse) et à chaque étape, une portion différente des données est mise de côté et ne sert que pour la validation." width="70%" />
 <p class="caption">
@@ -1289,9 +1209,6 @@ Les 100 000 autres clients serviront d’échantillon de validation pour évalue
 </tr>
 </tbody>
 </table>
-<p>Le tableau @ref(#tab:02-modelcomparaisonfull)) présente la performance de toutes les méthodes avec les autres variables. On voit d’abord qu’utiliser toutes les 104 variables sans faire de sélection fait mieux (<span class="math inline">\(\mathsf{EQM}=19.63\)</span>) que les modèles précédents basés sur les 10 variables originales. Mais faire une sélection séquentielle classique permet une amélioration très importante de la performance (<span class="math inline">\(\mathsf{EQM}=12.25\)</span>). Utiliser les 104 variables mène à du surajustement (<em>over-fitting</em>).</p>
-<p>La stratégie consistant à sélectionner un sous-ensemble de 56 variables avec la méthode séquentielle classique pour ensuite faire une recherche exhaustive de tous les sous-modèles possibles avec ces 56 variables, selon le <span class="math inline">\(\mathsf{BIC}\)</span>, donne le meilleur résultat jusqu’à présent (<span class="math inline">\(\mathsf{EQM}=11.96\)</span>). Le <span class="math inline">\(\mathsf{AIC}\)</span> fait moins bien dans ce cas, avec une erreur quadratique moyenne estimée de <span class="math inline">\(14.83\)</span>.
-Les méthodes séquentielles avec un critère d’information (qui pénalisent davantage que les tests d’hypothèse classique) mènent à des modèles plus parcimonieux et qui réduisent encore l’erreur moyenne quadratique. La moyenne de modèles est compétitive, tandis que le LASSO performe moins bien (probablement parce que les coefficients sont tous rétrécis vers zéro, ce qui engendre du biais).</p>
 <table style="width:100%;">
 <caption><span id="tab:02-modelcomparaisonfull">Tableau 4.6: </span> Comparaison des méthodes selon l’erreur quadratique moyenne avec les variables de base, les interactions et les termes quadratiques.</caption>
 <colgroup>
@@ -1344,6 +1261,9 @@ Les méthodes séquentielles avec un critère d’information (qui pénalisent d
 </tr>
 </tbody>
 </table>
+<p>Le tableau <a href="selection-modele.html#tab:02-modelcomparaisonfull">4.6</a> présente la performance de toutes les méthodes avec les autres variables. On voit d’abord qu’utiliser toutes les 104 variables sans faire de sélection fait mieux (<span class="math inline">\(\mathsf{EQM}=19.63\)</span>) que les modèles précédents basés sur les 10 variables originales. Mais faire une sélection séquentielle classique permet une amélioration très importante de la performance (<span class="math inline">\(\mathsf{EQM}=12.25\)</span>). Utiliser les 104 variables mène à du surajustement (<em>over-fitting</em>).</p>
+<p>La stratégie consistant à sélectionner un sous-ensemble de 56 variables avec la méthode séquentielle classique pour ensuite faire une recherche exhaustive de tous les sous-modèles possibles avec ces 56 variables, selon le <span class="math inline">\(\mathsf{BIC}\)</span>, donne le meilleur résultat jusqu’à présent (<span class="math inline">\(\mathsf{EQM}=11.96\)</span>). Le <span class="math inline">\(\mathsf{AIC}\)</span> fait moins bien dans ce cas, avec une erreur quadratique moyenne estimée de <span class="math inline">\(14.83\)</span>.
+Les méthodes séquentielles avec un critère d’information (qui pénalisent davantage que les tests d’hypothèse classique) mènent à des modèles plus parcimonieux et qui réduisent encore l’erreur moyenne quadratique. La moyenne de modèles est compétitive, tandis que le LASSO performe moins bien (probablement parce que les coefficients sont tous rétrécis vers zéro, ce qui engendre du biais).</p>
 <p>Dans cet exemple, la méthode séquentielle de <code>glmselect</code> avec les options <code>select=aic</code> et <code>choose=bic</code> aurait donné le meilleur résultat pour prévoir le montant acheté des clients restants (de ceux qui auraient acheté quelque chose). Le deuxième meilleur aurait été la moyenne des modèles. Il faut bien comprendre qu’il ne s’agit que d’un seul exemple: il ne faut surtout pas conclure que la méthode séquentielle de <code>glmselect</code> avec les options <code>select=aic</code> et <code>choose=bic</code> sera toujours la meilleure. En fait, il est impossible de prévoir quelle méthode donnera les meilleurs résultats.</p>
 <p>Il y aurait plusieurs autres approches/combinaisons qui pourraient être testées. Le but de ce chapitre était simplement de présenter les principes de base en sélection de modèles et de variables ainsi que certaines approches pratiques. Il y a d’autres approches intéressantes, tels le filet élastique ou la régression LARS (<em>least-angle regression</em>) qui sont disponibles dans <code>glmselect</code>. Ces méthodes sont dans la même mouvance moderne que celle qui consiste à faire la moyenne de plusieurs modèles, en performant à la fois une sélection de variables et en permettant d’avoir des parties d’effet par le rétrécissement (<em>shrinkage</em>). De récents développements théoriques permettent aussi de corriger les valeurs-<em>p</em> pour faire de l’inférence post-sélection avec le LASSO.</p>
 

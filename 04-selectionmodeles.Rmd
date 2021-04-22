@@ -294,7 +294,7 @@ Voici les étapes à suivre pour faire une validation croisée à $K$ groupes (_
     iii. Calculer la mesure de performance (par exemple la somme du carré des erreurs) de ce modèle pour le groupe $P_j$. 
 3. Faire la somme des $K$ estimations de performance pour obtenir une mesure de performance finale et repondérer au besoin.
 
-```{r validationcroiseeillust, fig.cap = "Illustration de la validation croisée: on scinde l'échantillon d'apprentissage en cinq groupes (abcisse) et à chaque étape, une portion différente des données est mise de côté et ne sert que pour la validation."}
+```{r validationcroiseeillust, eval = TRUE, echo = FALSE, fig.cap = "Illustration de la validation croisée: on scinde l'échantillon d'apprentissage en cinq groupes (abcisse) et à chaque étape, une portion différente des données est mise de côté et ne sert que pour la validation."}
 
 col <- rep(1, 25)
 col[(0:4)*5+1:5] <- 2
@@ -311,7 +311,14 @@ ggplot(df, aes(x, y)) +
   theme(legend.position = "bottom",
         panel.background = element_blank(),
         panel.grid.minor = element_blank(),
-        panel.grid.major = element_blank())
+        panel.grid.major = element_blank()) +
+  scale_color_manual(values=c( "#E69F00", "#56B4E9")) +
+  scale_fill_manual(values=c("#E69F00", "#56B4E9")) +
+  scale_y_continuous(
+    breaks = 1:5,
+    minor_breaks = NULL,
+    expand = c(0,0),
+    labels = 5:1) 
 
 ```
 
@@ -731,12 +738,6 @@ Table: (\#tab:02-gmse-base) Estimation de l'erreur quadratique moyenne sur l'éc
 
 
 
-Le tableau \@ref(\#tab:02-modelcomparaisonfull)) présente la performance de toutes les méthodes avec les autres variables. On voit d'abord qu'utiliser toutes les 104 variables sans faire de sélection fait mieux ($\mathsf{EQM}=19.63$) que les modèles précédents basés sur les 10 variables originales. Mais faire une sélection séquentielle classique permet une amélioration très importante de la performance ($\mathsf{EQM}=12.25$). Utiliser les 104 variables mène à du surajustement (_over-fitting_).  
-
-La stratégie consistant à sélectionner un sous-ensemble de 56 variables avec la méthode séquentielle classique pour ensuite faire une recherche exhaustive de tous les sous-modèles possibles avec ces 56 variables, selon le $\mathsf{BIC}$, donne le meilleur résultat jusqu'à présent ($\mathsf{EQM}=11.96$). Le $\mathsf{AIC}$ fait moins bien dans ce cas, avec une erreur quadratique moyenne estimée de $14.83$. 
-Les méthodes séquentielles avec un critère d'information (qui pénalisent davantage que les tests d'hypothèse classique) mènent à des modèles plus parcimonieux et qui réduisent encore l'erreur moyenne quadratique. La moyenne de modèles est compétitive, tandis que le LASSO performe moins bien (probablement parce que les coefficients sont tous rétrécis vers zéro, ce qui engendre du biais).
-
-
 Table: (\#tab:02-modelcomparaisonfull) Comparaison des méthodes selon l'erreur quadratique moyenne avec les variables de base, les interactions et les termes quadratiques.
 
 | nombre de variables | $\mathsf{EQM}$ |méthode |
@@ -748,6 +749,12 @@ Table: (\#tab:02-modelcomparaisonfull) Comparaison des méthodes selon l'erreur 
 | 10 | 10,08 |séquentielle avec critère $\mathsf{AIC}$ (choix selon le $\mathsf{BIC}$)|
 | 26 | 11,61 | LASSO, validation croisée avec 10 groupes |
 |  | 10,57 |moyenne de modèles |
+
+
+Le tableau \@ref(tab:02-modelcomparaisonfull) présente la performance de toutes les méthodes avec les autres variables. On voit d'abord qu'utiliser toutes les 104 variables sans faire de sélection fait mieux ($\mathsf{EQM}=19.63$) que les modèles précédents basés sur les 10 variables originales. Mais faire une sélection séquentielle classique permet une amélioration très importante de la performance ($\mathsf{EQM}=12.25$). Utiliser les 104 variables mène à du surajustement (_over-fitting_).  
+
+La stratégie consistant à sélectionner un sous-ensemble de 56 variables avec la méthode séquentielle classique pour ensuite faire une recherche exhaustive de tous les sous-modèles possibles avec ces 56 variables, selon le $\mathsf{BIC}$, donne le meilleur résultat jusqu'à présent ($\mathsf{EQM}=11.96$). Le $\mathsf{AIC}$ fait moins bien dans ce cas, avec une erreur quadratique moyenne estimée de $14.83$. 
+Les méthodes séquentielles avec un critère d'information (qui pénalisent davantage que les tests d'hypothèse classique) mènent à des modèles plus parcimonieux et qui réduisent encore l'erreur moyenne quadratique. La moyenne de modèles est compétitive, tandis que le LASSO performe moins bien (probablement parce que les coefficients sont tous rétrécis vers zéro, ce qui engendre du biais).
 
 
 Dans cet exemple, la méthode séquentielle de `glmselect` avec les options  `select=aic` et `choose=bic` aurait donné le meilleur résultat pour prévoir le montant acheté des clients restants (de ceux qui auraient acheté quelque chose). Le deuxième meilleur aurait été la moyenne des modèles. Il faut bien comprendre qu'il ne s'agit que d'un seul exemple: il ne faut surtout pas conclure que la méthode séquentielle de `glmselect` avec les options `select=aic` et `choose=bic` sera toujours la meilleure. En fait, il est impossible de prévoir quelle méthode donnera les meilleurs résultats.

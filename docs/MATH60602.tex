@@ -43,46 +43,6 @@
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
-\usepackage{color}
-\usepackage{fancyvrb}
-\newcommand{\VerbBar}{|}
-\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
-% Add ',fontsize=\small' for more characters per line
-\usepackage{framed}
-\definecolor{shadecolor}{RGB}{248,248,248}
-\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
-\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\BuiltInTok}[1]{#1}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
-\newcommand{\ExtensionTok}[1]{#1}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ImportTok}[1]{#1}
-\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\NormalTok}[1]{#1}
-\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\RegionMarkerTok}[1]{#1}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
@@ -1935,28 +1895,6 @@ Voici les étapes à suivre pour faire une validation croisée à \(K\) groupes 
   Faire la somme des \(K\) estimations de performance pour obtenir une mesure de performance finale et repondérer au besoin.
 \end{enumerate}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-
-\NormalTok{col }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{25}\NormalTok{)}
-\NormalTok{col[(}\DecValTok{0}\SpecialCharTok{:}\DecValTok{4}\NormalTok{)}\SpecialCharTok{*}\DecValTok{5}\SpecialCharTok{+}\DecValTok{1}\SpecialCharTok{:}\DecValTok{5}\NormalTok{] }\OtherTok{\textless{}{-}} \DecValTok{2}
-\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
-  \AttributeTok{x =} \FunctionTok{rep}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{5}\NormalTok{, }\DecValTok{5}\NormalTok{),}
-  \AttributeTok{y =} \FunctionTok{rep}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{5}\NormalTok{, }\AttributeTok{each =} \DecValTok{5}\NormalTok{),}
-  \AttributeTok{identification =} \FunctionTok{factor}\NormalTok{(col, }\AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}\StringTok{"apprentissage"}\NormalTok{,}\StringTok{"validation"}\NormalTok{))}
-\NormalTok{)}
-\FunctionTok{ggplot}\NormalTok{(df, }\FunctionTok{aes}\NormalTok{(x, y)) }\SpecialCharTok{+}
-  \FunctionTok{geom\_tile}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ identification), }\AttributeTok{colour =} \StringTok{"white"}\NormalTok{, }\AttributeTok{lwd =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{+} 
-  \FunctionTok{ylab}\NormalTok{(}\StringTok{"étape"}\NormalTok{) }\SpecialCharTok{+} 
-  \FunctionTok{xlab}\NormalTok{(}\StringTok{"division"}\NormalTok{) }\SpecialCharTok{+} 
-  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+} 
-  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{,}
-        \AttributeTok{panel.background =} \FunctionTok{element\_blank}\NormalTok{(),}
-        \AttributeTok{panel.grid.minor =} \FunctionTok{element\_blank}\NormalTok{(),}
-        \AttributeTok{panel.grid.major =} \FunctionTok{element\_blank}\NormalTok{())}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{figure}
 
 {\centering \includegraphics[width=0.7\linewidth]{MATH60602_files/figure-latex/validationcroiseeillust-1} 
@@ -2404,11 +2342,6 @@ nombre de variables & \(\mathsf{EQM}\) & méthode \\
 \bottomrule
 \end{longtable}
 
-Le tableau @ref\label{tab:02-modelcomparaisonfull}) présente la performance de toutes les méthodes avec les autres variables. On voit d'abord qu'utiliser toutes les 104 variables sans faire de sélection fait mieux (\(\mathsf{EQM}=19.63\)) que les modèles précédents basés sur les 10 variables originales. Mais faire une sélection séquentielle classique permet une amélioration très importante de la performance (\(\mathsf{EQM}=12.25\)). Utiliser les 104 variables mène à du surajustement (\emph{over-fitting}).
-
-La stratégie consistant à sélectionner un sous-ensemble de 56 variables avec la méthode séquentielle classique pour ensuite faire une recherche exhaustive de tous les sous-modèles possibles avec ces 56 variables, selon le \(\mathsf{BIC}\), donne le meilleur résultat jusqu'à présent (\(\mathsf{EQM}=11.96\)). Le \(\mathsf{AIC}\) fait moins bien dans ce cas, avec une erreur quadratique moyenne estimée de \(14.83\).
-Les méthodes séquentielles avec un critère d'information (qui pénalisent davantage que les tests d'hypothèse classique) mènent à des modèles plus parcimonieux et qui réduisent encore l'erreur moyenne quadratique. La moyenne de modèles est compétitive, tandis que le LASSO performe moins bien (probablement parce que les coefficients sont tous rétrécis vers zéro, ce qui engendre du biais).
-
 \begin{longtable}[]{@{}
   >{\centering\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.32}}
   >{\centering\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.37}}
@@ -2431,6 +2364,11 @@ nombre de variables & \(\mathsf{EQM}\) & méthode \\
 & 10,57 & moyenne de modèles \\
 \bottomrule
 \end{longtable}
+
+Le tableau \ref{tab:02-modelcomparaisonfull} présente la performance de toutes les méthodes avec les autres variables. On voit d'abord qu'utiliser toutes les 104 variables sans faire de sélection fait mieux (\(\mathsf{EQM}=19.63\)) que les modèles précédents basés sur les 10 variables originales. Mais faire une sélection séquentielle classique permet une amélioration très importante de la performance (\(\mathsf{EQM}=12.25\)). Utiliser les 104 variables mène à du surajustement (\emph{over-fitting}).
+
+La stratégie consistant à sélectionner un sous-ensemble de 56 variables avec la méthode séquentielle classique pour ensuite faire une recherche exhaustive de tous les sous-modèles possibles avec ces 56 variables, selon le \(\mathsf{BIC}\), donne le meilleur résultat jusqu'à présent (\(\mathsf{EQM}=11.96\)). Le \(\mathsf{AIC}\) fait moins bien dans ce cas, avec une erreur quadratique moyenne estimée de \(14.83\).
+Les méthodes séquentielles avec un critère d'information (qui pénalisent davantage que les tests d'hypothèse classique) mènent à des modèles plus parcimonieux et qui réduisent encore l'erreur moyenne quadratique. La moyenne de modèles est compétitive, tandis que le LASSO performe moins bien (probablement parce que les coefficients sont tous rétrécis vers zéro, ce qui engendre du biais).
 
 Dans cet exemple, la méthode séquentielle de \texttt{glmselect} avec les options \texttt{select=aic} et \texttt{choose=bic} aurait donné le meilleur résultat pour prévoir le montant acheté des clients restants (de ceux qui auraient acheté quelque chose). Le deuxième meilleur aurait été la moyenne des modèles. Il faut bien comprendre qu'il ne s'agit que d'un seul exemple: il ne faut surtout pas conclure que la méthode séquentielle de \texttt{glmselect} avec les options \texttt{select=aic} et \texttt{choose=bic} sera toujours la meilleure. En fait, il est impossible de prévoir quelle méthode donnera les meilleurs résultats.
 
