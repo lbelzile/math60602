@@ -72,9 +72,9 @@ Ainsi, si on connaît la fonction de survie, on peut retrouver la fonction de ri
 
 ## Estimation d'une courbe de survie et de risque
 
-L'estimateur nonparamétrique le plus couramment utilisé est l'estimateur de Kaplan--Meier. Cette méthode permet d'estimer la fonction de survie pour un échantillon contenant des observations censurées. De plus, elle est nonparamétrique en ce sens qu'on ne suppose aucun modèle ou hypothèse particulière. Dans **SAS**, la procédure `lifetest` fournit l'estimation de Kaplan--Meier de la courbe de survie et permet aussi d'estimer la fonction de risque correspondante.
+L'estimateur nonparamétrique le plus couramment utilisé pour l'estimation de la fonction de survie en présense de censure à droite est l'estimateur de Kaplan--Meier. De plus, cette méthode est nonparamétrique en ce sens qu'on ne suppose aucun modèle et qu'on suppose uniquement que la censure est non-informative. Dans **SAS**, la procédure `lifetest` fournit l'estimation de Kaplan--Meier de la courbe de survie et permet aussi d'estimer la fonction de risque correspondante.
 
-Supposons par exemple que l'échantillon ne contient aucune observation censurée (on a des temps exacts pour tous les sujets), l'estimateur de Kaplan--Meier de la fonction de survie à un temps $t$ donné est alors simplement la proportion des observations dans l'échantillon qui possède un temps de survie supérieur à $t$ --- on ne tient pas compte des observations censurées pour estimer la courbe de survie. Par convention, on considère qu'une observation censurée à droite faisait partie de l'ensemble d'observations à risque au temps de censure observé.
+Si l'échantillon ne contient aucune observation censurée (on a des temps exacts pour tous les sujets), l'estimateur de Kaplan--Meier de la fonction de survie à un temps $t$ donné est alors simplement la proportion des observations dans l'échantillon qui possède un temps de survie supérieur à $t$. Par convention, on considère qu'une observation censurée à droite faisait partie de l'ensemble d'observations à risque au temps de censure observé.
 
 On considère l'exemple des temps d'abonnement pour illustrer le concept; les commandes **SAS** sont dans `survival1_fonction_survie.sas`. L'estimation de la fonction de survie selon la méthode Kaplan--Meier est obtenue grâce aux commandes suivantes:
 
@@ -175,10 +175,12 @@ knitr::include_graphics("figures/05-survie-e10.png")
 
 Il est également possible de tester l'égalité des courbes de survie avec plus de deux groupes. Par exemple, s'il y a trois groupes, l'hypothèse nulle est alors $\Hy_0: S_1(t)=S_2(t)=S_3(t)$ pour tout $t$, versus l'alternative qu'au moins deux des fonctions ont une valeur différente pour au moins une valeur de $t$. Les commandes **SAS** pour exécuter le test sont les mêmes: il suffit de mettre la variable identifiant les groupes à la ligne `strata`. 
 
+L'estimateur de Kaplan--Meier ne permet pas l'inclusion de variables explicatives à proprement parler: si on peut veut les différences au niveau de la survie selon les modalités d'une variable explicative catégorielle, on divise pour ce faire l'échantillon en sous-groupes et on utilise l'estimateur de Kaplan--Meier pour chacune des modalités en gardant en tête que cela réduit la taille de l'échantillon disponible et que l'estimation résultante est possiblement trop variable pour être utile. 
+
+
 ## Modèle à risques proportionnels de Cox 
 
-
-Le modèle à risques proportionnels de Cox (_proportional hazard model_) est l'un des modèles les plus utilisés pour analyser des données de survie. C'est un modèle semi-paramétrique, car seulement une partie du modèle doit être spécifié. Il postule que les valeurs des variables explicatives ne changent pas dans le temps. Nous verrons subséquemment une extension qui permet d'incorporer des variables explicatives dont la valeur change dans le temps.
+Le modèle à risques proportionnels de Cox (_proportional hazard model_) est l'un des modèles les plus utilisés pour analyser des données de survie. 
 
 ### Description du modèle de Cox
 
@@ -186,7 +188,7 @@ Soit $h(t; \bs{x})$ la valeur de la fonction de risque au temps  pour un individ
 \begin{align*}
 h(t; \bs{x}) = h_0(t)\exp(\beta_1x_1 + \cdots + \beta_p x_p)
 \end{align*}
-où $h_0(t)$ est la fonction de risque de base; il n'est pas nécessaire de spécifier cette dernière, d'où la nature semiparamétrique du modèle de Cox.
+où $h_0(t)$ est la fonction de risque de base; il n'est pas nécessaire de spécifier cette dernière, d'où la nature semiparamétrique du modèle de Cox. Le postulat de risques proportionnels implique que le terme de droite $\exp(\mathbf{X}\boldsymbol{\beta})$ ne dépend pas du temps, et plus particulièrement $\beta_1, \ldots, \beta_p$ ne dépend pas du temps. Nous verrons subséquemment une extension qui permet de prendre en compte les variables explicatives dont la valeur change dans le temps en scindant ces observations.
 
 Lorsque toutes les variables explicatives prennent la valeur zéro, $\bs{X}=\bs{0}$, on recouvre $h(t; \bs{0})= h_0(t)$. Par conséquent, la fonction $h_0(t)$ peut être interprétée comme  la fonction de risque lorsque toutes les variables explicatives valent zéro. Toutefois, tout comme la valeur de l'ordonnée à l'origine dans un modèle de régression linéaire, cette interprétation n'est pas nécessairement valide si la situation où toutes les variables explicatives valent zéro n'est pas possible ou si elle ne survient pas dans notre échantillon.
 
