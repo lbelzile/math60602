@@ -85,27 +85,30 @@ knitr::include_graphics("figures/01-facto-e2.png")
 
 ## Description du modèle d'analyse factorielle
 
-On dispose d'observations sur $p$ variables $X_1, \ldots, X_p$. Le modèle d'analyse factorielle fait l'hypothèse que ces variables dépendent linéairement d'un plus petit nombre $m$ de variables aléatoires, $F_1, \ldots, F_m$, appelées facteurs communs et de $p$ termes d'erreurs (ou facteurs spécifiques) $\varepsilon_1, \ldots, \varepsilon_p$, de moyenne $\E{\eps_i}=0$ et de variance $\Va{\eps_i}=\psi_i$ pour $i=1, \ldots, p$. Spécifiquement, le modèle est
+On dispose d'observations sur $p$ variables $X_1, \ldots, X_p$. Le modèle d'analyse factorielle fait l'hypothèse que ces variables dépendent linéairement d'un plus petit nombre $m$ de variables aléatoires, $F_1, \ldots, F_m$, appelées facteurs communs et de $p$ termes d'erreurs (ou facteurs spécifiques) $\varepsilon_1, \ldots, \varepsilon_p$, de moyenne $\E{\eps_i}=0$ et de variance $\Va{\eps_i}=\psi_i$ pour $i=1, \ldots, p$. Les facteurs $F_1, \ldots, F_m$ sont indépendants des erreurs, ont une moyenne nulle $\E{F_i}=0$, et une variance unitaire, $\Va{F_i}=1$ ($i=1, \ldots, p$) .
+
+
+
+Spécifiquement, le modèle est
 \begin{align*}
-X_1 &= \mu_1 + l_{11}F_1 + l_{12} F_2 + \cdots + l_{1m}F_m + \eps_1\\
-X_2 &= \mu_2 + l_{21}F_1 + l_{22} F_2 + \cdots + l_{2m}F_m + \eps_2\\
+X_1 &= \mu_1 + \gamma_{11}F_1 + \gamma_{12} F_2 + \cdots + \gamma_{1m}F_m + \eps_1\\
+X_2 &= \mu_2 + \gamma_{21}F_1 + \gamma_{22} F_2 + \cdots + \gamma_{2m}F_m + \eps_2\\
 &\vdots \\
-X_p &= \mu_p + l_{p1}F_1 + l_{p2} F_2 + \cdots + l_{pm}F_m + \eps_p, 
+X_p &= \mu_p + \gamma_{p1}F_1 + \gamma_{p2} F_2 + \cdots + \gamma_{pm}F_m + \eps_p, 
 \end{align*}
-où $\mu_i$ est l'espérance de la variable aléatoire $X_i$ ($i=1, \ldots, p$) et où $l_{ij}$ est le chargement de la variable $X_i$ sur le facteur $F_j$ ($i=1, \ldots, p$; $j=1, \ldots, m$).
+où $\mu_i$ est l'espérance de la variable aléatoire $X_i$ ($i=1, \ldots, p$) et où $\gamma_{ij}$ est le chargement de la variable $X_i$ sur le facteur $F_j$ ($i=1, \ldots, p$; $j=1, \ldots, m$).
 
-Les espérances ($\mu_i$), les chargements ($l_{ij}$) et les variances ($\psi_i$) sont des quantités fixes, mais inconnues, tandis que les facteurs communs ($F_i$) et les aléas ($\eps_i$) sont des variables aléatoires non observables; on suppose que les aléas ne sont pas corrélées aux facteurs $F$ et entre elles.
-
-
-Le modèle d'analyse factorielle est un modèle pour la matrice de covariance/corrélation des variables explicatives $$X_1, \ldots, X_p$$, avec
-$\mathsf{Va}(X_j) = \sum_{l=1}^k \gamma_{jl}^2 + \psi_j$. On appelle **communalité** le terme $h_j = \sum_{l=1}^k \gamma_{jl}^2$, qui représente la proportion de variance totale de $X_j$ due à la corrélation entre les facteurs. Le terme $\psi_j$ est connu sous le vocable **unicité**.
+Les espérances ($\mu_i$), les chargements ($\gamma_{ij}$) et les variances ($\psi_i$) sont des quantités fixes, mais inconnues, tandis que les facteurs communs ($F_i$) et les aléas ($\eps_i$) sont des variables aléatoires non observables; on suppose que les aléas ne sont pas corrélées aux facteurs $F$ et entre elles.
 
 
-De plus, si les variables ont été préalablement standardisées de telle sorte que $\E{X_i}=0$ et $\Va{X_i}=1$ (note: ceci revient à utiliser la matrice de corrélation des observations dans l'analyse ce qui est fait par défaut dans **SAS**), alors $\Cor{X_i, F_j}=l_{ij}$, c'est-à-dire, le chargement de la variable $X_i$ sur le chargement $F_j$ est le coefficient de corrélation entre cette variable et ce facteur.
+Le modèle d'analyse factorielle est un modèle pour la matrice de covariance/corrélation des variables explicatives $X_1, \ldots, X_p$, avec $\mathsf{Va}(X_j) = \sum_{l=1}^k \gamma_{jl}^2 + \psi_j$. On appelle **communalité** le terme $h_j = \sum_{l=1}^k \gamma_{jl}^2$, qui représente la proportion de variance totale de $X_j$ due à la corrélation entre les facteurs. Le terme $\psi_j$ est connu sous le vocable **unicité**.
+
+
+De plus, si les variables ont été préalablement standardisées de telle sorte que $\E{X_i}=0$ et $\Va{X_i}=1$ (note: ceci revient à utiliser la matrice de corrélation des observations dans l'analyse ce qui est fait par défaut dans **SAS**), alors $\Cor{X_i, F_j}=\gamma_{ij}$, c'est-à-dire, le chargement de la variable $X_i$ sur le chargement $F_j$ est le coefficient de corrélation entre cette variable et ce facteur.
 
 Sans aucune contrainte sur le modèle, la matrice de covariance de $X_1, \ldots, X_p$ possède $p(p+1)/2$ paramètres, soit $p$ variances et $p(p-1)/2$ termes de corrélation. Avec le modèle d’analyse factorielle, on suppose que l’on peut décrire cette structure en utilisant seulement $p(m+1) - m(m-1)/2$ paramètres ($p$ variances spécifiques et $pm$ chargements, moins les contraintes de diagonalisation). Par exemple, avec $p=50$ variables et $m=6$ facteurs, on essaie de décrire la structure de covariance à l’aide de 350 paramètres au lieu de 1275.
 
-Il existe plusieurs méthodes pour extraire les facteurs, c'est-à-dire pour estimer les paramètres du modèle (les $\psi_i$ et les $l_{ij}$). Nous allons discuter de deux d'entre elles: la méthode du maximum de vraisemblance et la méthode des composantes principales. L'avantage de l'estimation par maximum de vraisemblance est qu'elle permet l'utilisation de critères d'information et de statistiques de tests pour guider le choix du nombre de facteurs, en supposant toutefois la normalité des facteurs et des aléas. L'estimation des paramètres requiert une optimisation numérique qui peut être délicate selon les cas de figure et qui mène parfois à des solutions paradoxales: un cas dit de quasi-Heywood survient quand $h_j=1$ pour une variable $j$, (on parle de cas de Heywood si $h_j > 1$). Si on modélise des variables explicatives centrées réduites, $\mathsf{Va}(X_j)=1$, d'où un problème d'interprétation car le terme $\psi_j$ serait nul (cas de quasi-Heywood) ou négatif (cas de Heywood) alors même que ce terme représente la variable du $j$e aléa. Les cas de quasi-Heywood ont plusieurs causes, lesquelles sont listées dans la [documentation **SAS**](https://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm#statug_factor_sect022.htm). Souvent, c'est dû à l'utilisation d'un trop petit ou trop grand nombre de facteurs ou une taille d'échantillon trop petite, etc. Cela complique l'interprétation et nous amène à questionner la validité du modèle d'analyse factorielle comme simplification de la structure de covariance non-contrainte.
+Il existe plusieurs méthodes pour extraire les facteurs, c'est-à-dire pour estimer les paramètres du modèle (les $\psi_i$ et les $\gamma_{ij}$). Nous allons discuter de deux d'entre elles: la méthode du maximum de vraisemblance et la méthode des composantes principales. L'avantage de l'estimation par maximum de vraisemblance est qu'elle permet l'utilisation de critères d'information et de statistiques de tests pour guider le choix du nombre de facteurs, en supposant toutefois la normalité des facteurs et des aléas. L'estimation des paramètres requiert une optimisation numérique qui peut être délicate selon les cas de figure et qui mène parfois à des solutions paradoxales: un cas dit de quasi-Heywood survient quand $h_j=1$ pour une variable $j$, (on parle de cas de Heywood si $h_j > 1$). Si on modélise des variables explicatives centrées réduites, $\mathsf{Va}(X_j)=1$, d'où un problème d'interprétation car le terme $\psi_j$ serait nul (cas de quasi-Heywood) ou négatif (cas de Heywood) alors même que ce terme représente la variable du $j$e aléa. Les cas de quasi-Heywood ont plusieurs causes, lesquelles sont listées dans la [documentation **SAS**](https://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm#statug_factor_sect022.htm). Souvent, c'est dû à l'utilisation d'un trop petit ou trop grand nombre de facteurs ou une taille d'échantillon trop petite, etc. Cela complique l'interprétation et nous amène à questionner la validité du modèle d'analyse factorielle comme simplification de la structure de covariance non-contrainte.
 
 
 ### Rotation des facteurs
@@ -200,9 +203,9 @@ knitr::include_graphics("figures/01-facto-e5.png")
 Cette solution récupère les trois facteurs _service_, _produits_ et _paiement_ de la solution précédente à quatre facteurs. Le facteur _prix_ (qui était formé de $X_1$ et $X_5$) n’est plus présent: que faire avec ce dernier? Cela dépend du but de l’analyse et nous y reviendrons plus tard.
 
 Pour terminer cette section, voici la description de deux autres
-critères _classiques_ pour choisir le nombre de facteurs. Ces deux critères sont: 
+critères _classiques_ pour choisir le nombre de facteurs si l'on ajuste le modèle avec la méthodes des composantes principales (plutôt qu'avec le maximum de vraisemblance). Ces deux critères sont: 
  
- - Critère de Kaiser, un critère basé sur les valeurs propres. Avec une analyse en composantes principales basée sur la matrice des corrélations, la valeur propre associée à un facteur représente la partie de la variance totale qui est expliquée par ce facteur. Chaque variable compte pour un dans la variance totale. Le nombre de facteurs choisis est le nombre de valeurs propres supérieures à 1. L’idée est de garder seulement les facteurs qui expliquent plus de variance qu’une variable individuelle.
+- Critère de Kaiser, un critère basé sur les valeurs propres. Avec une analyse en composantes principales basée sur la matrice des corrélations, la valeur propre associée à un facteur représente la partie de la variance totale qui est expliquée par ce facteur. Chaque variable compte pour un dans la variance totale. Le nombre de facteurs choisis est le nombre de valeurs propres supérieures à 1. L’idée est de garder seulement les facteurs qui expliquent plus de variance qu’une variable individuelle.
 - le diagramme d'éboulis:  un graphique des valeurs propres ordonnées de la plus grande à la plus petite en fonction de $1, \ldots, p$. Habituellement, ce graphe prendra la forme d’une chute assez importante suivie d’une stabilisation des valeurs propres. Avec ce critère, le nombre de facteurs est déterminé par le nombre de valeurs propres avant le début du coude où il a stabilisation apparente. L’idée est de choisir l’endroit où l’ajout d’un facteur supplémentaire n’apporte qu’un gain marginal faible. Ce critère est par contre subjectif et dépend de l’analyste. En ajoutant `scree` comme option à `proc factor`, on obtient le diagramme d'éboulis mais il est facile de le créer manuellement et le résultat est esthétiquement plus réussi.
 
 
@@ -373,10 +376,10 @@ Avec les données de l’exemple, en nous basant sur les résultats de l’analy
 Par exemple, la variable _prix_ peut donc être vu comme une combinaison linéaire des 12
 variables où seulement $X_1$ et $X_5$ reçoivent un poids (égal) différent de zéro. Une autre façon de créer de nouvelles variables consiste à calculer des scores factoriels (un pour chaque facteur) pour chaque individu. Par exemple, pour un individu $i$ donné, le score factoriel pour le facteur $k$ peut être prédit à l'aide de la formule
 \begin{align*}
-\hat{F}_{ik} &= \widehat{\mathbf{L}}^{\top}\mathbf{R}^{-1}\boldsymbol{z}\\&=
-\widehat{\gamma}_{1, k} z_{i, 1} + \cdots + \widehat{\gamma}_{12, k}z_{i, 12}, 
+\hat{F}_{ik} &= \widehat{\boldsymbol{\Gamma}}^{\top}\mathbf{R}^{-1}\boldsymbol{z}\\&=
+\widehat{\beta}_{1, k} z_{i, 1} + \cdots + \widehat{\beta}_{12, k}z_{i, 12}, 
 \end{align*}
-où $z_{i, 1}, \ldots, z_{i, 12}$ sont les valeurs centrées et réduites des observations correspondant à l'individu et où $\widehat{\gamma}_{1, k}, \ldots, \widehat{\gamma}_{12, k}$ sont des coefficients estimés à partir des chargements $l_{ij}$ (après rotation) et de la matrice de corrélation des variables $\mathbf{R}$, avec $\widehat{\gamma}_{i, k}=\sum_{j=1}^p \hat{l}_{kj}r_{jk}$.
+où $z_{i, 1}, \ldots, z_{i, 12}$ sont les valeurs centrées et réduites des observations correspondant à l'individu et où $\widehat{\beta}_{1, k}, \ldots, \widehat{\beta}_{12, k}$ sont des coefficients estimés à partir des chargements $\gamma_{ij}$ (après rotation) et de la matrice de corrélation des variables $\mathbf{R}$, avec $\widehat{\beta}_{i, k}=\sum_{j=1}^p \widehat{\gamma}_{kj}r_{jk}$.
 
 
 Ainsi, chacune des 12 variables originales contribue au calcul du score
