@@ -1,16 +1,16 @@
 data aerien_facto;
 set multi.aerien_facto;
-run
+run;
 
 /* Méthode des composantes principales avec rotation varimax */
-proc factor data=aerien_facto method=principal rotate=varimax plots=scree flag=.4;
+proc factor data=aerien_facto method=principal rotate=varimax plots=scree flag=.5;
 var service_internet_en_vol--proprete;
 run;
 
 /* Le diagramme d'éboulis suggère clairement 4 composantes principales, 
 de même que le critère de Kaiser (valeurs propres supérieures à 1) 
-L'interprétation (grosso modo) va comme suit:
-F1: expérience en vol (nourriture, confort_siege, divertissement_en_vol, )
+L'interprétation (grosso modo) va comme suit en retenant uniquement les chargements de plus de 0.5:
+F1: expérience en vol (nourriture, confort_siege, divertissement_en_vol, proprete)
 F2: facilité d'accès (service_internet_en_vol, temps_arrivee_depart_convenable, facilite_reservation_en_ligne, localisation_porte)
 F3: service (service_embarquement, service_espace_jambes, service_vol)
 F4: enregistrement (preenregistrement_en_ligne, enregistrement)
@@ -22,7 +22,7 @@ petite valeur du AIC ou nombre pour lequel la valeur-p est supérieure à 0.05.
 
 ATTENTION: si la taille de l'échantillon est grande, les modèles plus compliqués
 sont toujours préférés et aucun modèle `simple à outrance` n'est adéquat.
-Dans ces cas, les critères d'information sont rarement utiles parce que les solutions retournées auront (souvent) trop de facteurs.
+Dans ce cas, les critères d'information sont rarement utiles parce que les solutions retournées auront (souvent) trop de facteurs.
 */
 
 title "Critères d'information pour l'analyse factorielle avec 3 facteurs";
