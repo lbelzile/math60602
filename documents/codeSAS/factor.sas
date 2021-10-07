@@ -50,18 +50,22 @@ run;
 proc corr data=multi.factor2;
 var X3 X7;
 run;
-proc sgscatter data=multi.factor2;         
-plot X3*X7 / reg=(degree=1);
+
+proc sgplot data=multi.factor2;         
+heatmap x=x8 y=x11;
+reg x=x8 y=x11 / jitter;
 run;
 
-*2C - Calculez la corrélation entre X1 et X3 et décrivez cette corrélation;
+*2B - Calculez la corrélation entre X3 et X7 et décrivez cette corrélation;
 
 proc corr data=multi.factor2;
-var X1 X3;
+var X3 X7;
 run;
-proc sgscatter data=multi.factor2;         
-plot X1*X3 / reg=(degree=1);
+proc sgplot data=multi.factor2;         
+heatmap x=x3 y=x7;
+reg x=x3 y=x7 / jitter;
 run;
+
 
 
 *Calcul de la matrice de corrélation entre toutes les variables;

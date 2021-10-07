@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapitre 6 Analyse de survie | Analyse multidimensionnelle appliquée</title>
   <meta name="description" content="Recueil de notes pour MATH 60602 Analyse multidimensionnelle appliquée, avec des exemples d’applications en SAS et en R." />
-  <meta name="generator" content="bookdown 0.21.6 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapitre 6 Analyse de survie | Analyse multidimensionnelle appliquée" />
   <meta property="og:type" content="book" />
@@ -32,8 +32,9 @@
   
 <link rel="prev" href="regression-logistique.html"/>
 <link rel="next" href="donnees-manquantes.html"/>
-<script src="libs/header-attrs-2.7/header-attrs.js"></script>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -41,7 +42,6 @@
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
-
 
 
 
@@ -267,8 +267,8 @@ Ainsi, si on connaît la fonction de survie, on peut retrouver la fonction de ri
 </div>
 <div id="estimation-dune-courbe-de-survie-et-de-risque" class="section level2" number="6.3">
 <h2><span class="header-section-number">6.3</span> Estimation d’une courbe de survie et de risque</h2>
-<p>L’estimateur nonparamétrique le plus couramment utilisé est l’estimateur de Kaplan–Meier. Cette méthode permet d’estimer la fonction de survie pour un échantillon contenant des observations censurées. De plus, elle est nonparamétrique en ce sens qu’on ne suppose aucun modèle ou hypothèse particulière. Dans <strong>SAS</strong>, la procédure <code>lifetest</code> fournit l’estimation de Kaplan–Meier de la courbe de survie et permet aussi d’estimer la fonction de risque correspondante.</p>
-<p>Supposons par exemple que l’échantillon ne contient aucune observation censurée (on a des temps exacts pour tous les sujets), l’estimateur de Kaplan–Meier de la fonction de survie à un temps <span class="math inline">\(t\)</span> donné est alors simplement la proportion des observations dans l’échantillon qui possède un temps de survie supérieur à <span class="math inline">\(t\)</span> — on ne tient pas compte des observations censurées pour estimer la courbe de survie. Par convention, on considère qu’une observation censurée à droite faisait partie de l’ensemble d’observations à risque au temps de censure observé.</p>
+<p>L’estimateur nonparamétrique le plus couramment utilisé pour l’estimation de la fonction de survie en présense de censure à droite est l’estimateur de Kaplan–Meier. De plus, cette méthode est nonparamétrique en ce sens qu’on ne suppose aucun modèle et qu’on suppose uniquement que la censure est non-informative. Dans <strong>SAS</strong>, la procédure <code>lifetest</code> fournit l’estimation de Kaplan–Meier de la courbe de survie et permet aussi d’estimer la fonction de risque correspondante.</p>
+<p>Si l’échantillon ne contient aucune observation censurée (on a des temps exacts pour tous les sujets), l’estimateur de Kaplan–Meier de la fonction de survie à un temps <span class="math inline">\(t\)</span> donné est alors simplement la proportion des observations dans l’échantillon qui possède un temps de survie supérieur à <span class="math inline">\(t\)</span>. Par convention, on considère qu’une observation censurée à droite faisait partie de l’ensemble d’observations à risque au temps de censure observé.</p>
 <p>On considère l’exemple des temps d’abonnement pour illustrer le concept; les commandes <strong>SAS</strong> sont dans <code>survival1_fonction_survie.sas</code>. L’estimation de la fonction de survie selon la méthode Kaplan–Meier est obtenue grâce aux commandes suivantes:</p>
 <pre class="sas"><code>proc lifetest data=multi.survival1 method=km
        plots=survival(cl nocensor);
@@ -283,7 +283,7 @@ run;</code></pre>
 <p>Le graphique de la fonction de survie permet de lire le temps de survie pour une probabilité donnée. Les bandes donnent un intervalle de confiance ponctuel de niveau 95% pour chaque temps donné.</p>
 <p><img src="figures/05-survie-e4.png" width="90%" style="display: block; margin: auto;" /></p>
 <p>Le tableau <a href="analyse-survie.html#fig:fig5-e5">6.1</a> donne le nombre de données censurées: parmi les 500 observations, il y a 334 clients qui ont terminé leur abonnement et 166 qui sont censurées (le client est toujours abonné et le temps est donc une borne inférieure de la durée d’abonnement).</p>
-<div class="figure" style="text-align: center"><span id="fig:fig5-e5"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:fig5-e5"></span>
 <img src="figures/05-survie-e5.png" alt="Fraction de valeurs censurées" width="60%" />
 <p class="caption">
 Figure 6.1: Fraction de valeurs censurées
@@ -316,24 +316,25 @@ run;</code></pre>
 <p>Un des tableaux contient les statistiques et valeurs-<span class="math inline">\(p\)</span> pour trois tests de l’hypothèse d’égalité des fonctions de survie, le test du log-rang et le test de Gehan. Le troisième test dans le tableau (<code>-2Log(LR)</code>) est un test du rapport de vraisemblance sous l’hypothèse que les temps de survie des deux groupes suivent une loi exponentielle. Il est préférable d’utiliser les deux premiers qui ne font pas d’hypothèses quant à la distribution du temps de survie. Les valeurs-<span class="math inline">\(p\)</span> des tests log-rang et de Wilcoxon généralisé sont toutes les deux inférieures à <span class="math inline">\(10^{-4}\)</span>. On rejette donc <span class="math inline">\(\mathcal{H}_0\)</span> pour conclure qu’il y a donc une différence significative entre les deux courbes de survie.</p>
 <p>Le test de Wilcoxon généralisé accorde plus de poids au temps près du début de la distribution qu’au temps plus loin. Il est donc, en général, plus puissant lorsque la différence entre les deux fonctions de survie survient tôt dans la distribution. Le test log-rang quant à lui suppose que le ratio des fonctions de risques des deux groupes est constant pour toute la période d’intérêt.</p>
 <p>Ces courbes sont représentées dans la Figure <a href="analyse-survie.html#fig:fig5-e10">6.2</a>. On voit que la courbe des femmes est systématiquement au-dessus de celle des hommes. Les femmes ont donc tendance à rester abonnées plus longtemps que les hommes, et cette différence est significative.</p>
-<div class="figure" style="text-align: center"><span id="fig:fig5-e10"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:fig5-e10"></span>
 <img src="figures/05-survie-e10.png" alt="Courbes de survie estimées par sexe (Kaplan--Meier)" width="83%" />
 <p class="caption">
 Figure 6.2: Courbes de survie estimées par sexe (Kaplan–Meier)
 </p>
 </div>
 <p>Il est également possible de tester l’égalité des courbes de survie avec plus de deux groupes. Par exemple, s’il y a trois groupes, l’hypothèse nulle est alors <span class="math inline">\(\mathcal{H}_0: S_1(t)=S_2(t)=S_3(t)\)</span> pour tout <span class="math inline">\(t\)</span>, versus l’alternative qu’au moins deux des fonctions ont une valeur différente pour au moins une valeur de <span class="math inline">\(t\)</span>. Les commandes <strong>SAS</strong> pour exécuter le test sont les mêmes: il suffit de mettre la variable identifiant les groupes à la ligne <code>strata</code>.</p>
+<p>L’estimateur de Kaplan–Meier ne permet pas l’inclusion de variables explicatives à proprement parler: si on peut veut les différences au niveau de la survie selon les modalités d’une variable explicative catégorielle, on divise pour ce faire l’échantillon en sous-groupes et on utilise l’estimateur de Kaplan–Meier pour chacune des modalités en gardant en tête que cela réduit la taille de l’échantillon disponible et que l’estimation résultante est possiblement trop variable pour être utile.</p>
 </div>
 <div id="modèle-à-risques-proportionnels-de-cox" class="section level2" number="6.5">
 <h2><span class="header-section-number">6.5</span> Modèle à risques proportionnels de Cox</h2>
-<p>Le modèle à risques proportionnels de Cox (<em>proportional hazard model</em>) est l’un des modèles les plus utilisés pour analyser des données de survie. C’est un modèle semi-paramétrique, car seulement une partie du modèle doit être spécifié. Il postule que les valeurs des variables explicatives ne changent pas dans le temps. Nous verrons subséquemment une extension qui permet d’incorporer des variables explicatives dont la valeur change dans le temps.</p>
+<p>Le modèle à risques proportionnels de Cox (<em>proportional hazard model</em>) est l’un des modèles les plus utilisés pour analyser des données de survie.</p>
 <div id="description-du-modèle-de-cox" class="section level3" number="6.5.1">
 <h3><span class="header-section-number">6.5.1</span> Description du modèle de Cox</h3>
 <p>Soit <span class="math inline">\(h(t; \boldsymbol{x})\)</span> la valeur de la fonction de risque au temps pour un individu dont les valeurs des variables explicatives sont <span class="math inline">\(X_1=x_1, \ldots, X_p=x_p\)</span>. Le modèle à risques proportionnels est
 <span class="math display">\[\begin{align*}
 h(t; \boldsymbol{x}) = h_0(t)\exp(\beta_1x_1 + \cdots + \beta_p x_p)
 \end{align*}\]</span>
-où <span class="math inline">\(h_0(t)\)</span> est la fonction de risque de base; il n’est pas nécessaire de spécifier cette dernière, d’où la nature semiparamétrique du modèle de Cox.</p>
+où <span class="math inline">\(h_0(t)\)</span> est la fonction de risque de base; il n’est pas nécessaire de spécifier cette dernière, d’où la nature semiparamétrique du modèle de Cox. Le postulat de risques proportionnels implique que le terme de droite <span class="math inline">\(\exp(\mathbf{X}\boldsymbol{\beta})\)</span> ne dépend pas du temps, et plus particulièrement <span class="math inline">\(\beta_1, \ldots, \beta_p\)</span> ne dépend pas du temps. Nous verrons subséquemment une extension qui permet de prendre en compte les variables explicatives dont la valeur change dans le temps en scindant ces observations.</p>
 <p>Lorsque toutes les variables explicatives prennent la valeur zéro, <span class="math inline">\(\boldsymbol{X}=\boldsymbol{0}\)</span>, on recouvre <span class="math inline">\(h(t; \boldsymbol{0})= h_0(t)\)</span>. Par conséquent, la fonction <span class="math inline">\(h_0(t)\)</span> peut être interprétée comme la fonction de risque lorsque toutes les variables explicatives valent zéro. Toutefois, tout comme la valeur de l’ordonnée à l’origine dans un modèle de régression linéaire, cette interprétation n’est pas nécessairement valide si la situation où toutes les variables explicatives valent zéro n’est pas possible ou si elle ne survient pas dans notre échantillon.</p>
 <p>La deuxième partie du modèle, <span class="math inline">\(\exp(\beta_1x_1 + \cdots + \beta_p x_p)\)</span>, vient modéliser l’effet d’un changement des valeurs des variables explicatives sur la fonction de risque de base. Tout comme dans le cas de la régression logistique (l’effet des variables sur la cote), c’est un effet multiplicatif, d’où le terme <strong>risques proportionnels</strong>.</p>
 <p>Pour l’interprétation des paramètres, il sera plus simple de penser en termes de rapport de risque (<em>hazard ratio</em>), qui est défini comme étant le rapport des fonctions de risque pour deux ensembles de valeurs des variables explicatives. Pour simplifier l’illustration, supposons que nous avons seulement une variable explicative <span class="math inline">\(X\)</span> et que <span class="math inline">\(h(t; x) = h_0(t)\exp(\beta x)\)</span>. Le rapport de risque lorsque <span class="math inline">\(X=x_1\)</span> par rapport à <span class="math inline">\(X=x_0\)</span> est
@@ -380,7 +381,7 @@ run;</code></pre>
 <p>Supposons qu’on ajuste le modèle avec les variables sexe et âge seulement dans l’exemple du temps d’abonnement, et que l’on désire la fonction de survie pour les hommes de 25 et 60 ans et pour les femmes de 25 et 60 ans. Le fichier <code>survival2.sas7bdat</code> contient les données qui seront utilisées à cette fin. Il contient seulement les quatre lignes suivantes.</p>
 <p><img src="figures/05-survie-e19.png" width="15%" style="display: block; margin: auto;" /></p>
 <p>Les quatre fonctions de la Figure <a href="analyse-survie.html#fig:fig5-e20">6.3</a> correspondent aux profils pour lesquels nous désirons une estimation de la courbe de survie. La courbe 1 est pour les hommes de 25 ans, la courbe 2 pour les femmes de 25 ans, la courbe 3 pour les hommes de 60 ans et la courbe 4 pour les femmes de 60 ans. On voit donc que, parmi ces quatre profils, les hommes de 25 ans sont le plus à risque de quitter tandis que les femmes de 60 ans sont le moins à risque de quitter.</p>
-<div class="figure" style="text-align: center"><span id="fig:fig5-e20"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:fig5-e20"></span>
 <img src="figures/05-survie-e20.png" alt="Courbes de survie pour hommes et femmes de 25 et 60 ans." width="80%" />
 <p class="caption">
 Figure 6.3: Courbes de survie pour hommes et femmes de 25 et 60 ans.
@@ -508,7 +509,6 @@ run;</code></pre>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -538,6 +538,10 @@ gitbook.start({
 "text": null
 },
 "download": ["MATH60602.pdf"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "section",
 "split_by": "section",
