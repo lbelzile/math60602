@@ -3,7 +3,7 @@ Analyse en composantes principales pour faire une
 analyse graphique avant/après l'analyse de regroupements.
 l'option "cov" demande d'utilise la matrice de covariance plutôt que de corrélation */
  
-proc princomp data=multi.cluster1 out=temp cov;
+proc princomp data=multi.cluster out=temp cov;
 var x1-x6;
 run;
 
@@ -12,24 +12,30 @@ Ici, on ajoute les étiquettes des vrais regroupements
 En pratique, si vous faites cette étape après, 
 utilisez les étiquettes de regroupement pour "group"*/
 proc sgplot data=temp;
-scatter x=prin1 y=prin2 / group=cluster_vrai;
+scatter x=prin1 y=prin2 / group=;
 run;
 
 /* Matrice de nuages de points avec les vrais étiquettes des groupements */
-proc sgscatter data=multi.cluster1;
-matrix x1-x6 / group=cluster_vrai;
+proc sgscatter data=multi.cluster;
+matrix x1-x6 / group=;
 run;
 
 /* cluster1_simplifie
 Analyse de regroupement avec seulement 20 observations et deux variables.
 */
-
-proc cluster data=multi.cluster1a method=ward nonorm rsquare;
-var x1 x2;
-ods output stat.cluster.ClusterHistory=criteres;
+data cluster_small;
+set multi.cluster(obs=20);
+keep x1 x2;
 run;
 
-proc sgplot data=criteres;
+proc cluster 
+  data=cluster_small 
+  method=ward nonorm rsquare;
+var x1 x2;
+ods output stat.cluster.ClusterHistory=tableau;
+run;
+
+proc sgplot data=tableau;
 series x=NumberOfClusters y=RSquared / markers markerattrs=(symbol=CircleFilled);
 run;
 
@@ -45,7 +51,7 @@ les observations pour l'exemple du voyage organisé.
 */
 
 /* Statistiques descriptives */
-proc means data=multi.cluster1;
+proc means data=multi.cluster;
 var x1-x6;
 run;
 
@@ -56,7 +62,7 @@ Ainsi, l'observation à la 1ère ligne aura id=1, celle à la 2ème ligne
 aura id=2 etc. */
 
 data temp; 
-set multi.cluster1;
+set multi.cluster;
 id=_N_;
 run;
 
@@ -71,7 +77,7 @@ crée par "outtree".
 La commande "ods output" permet de sauvegarder les critères dans un fichier
 (ici "criteres") afin de faire les graphes par la suite.
 
-IMPORTANT: la variable "cluster_vrai" donne le vrai groupe d'appartenance
+IMPORTANT: la variable "" donne le vrai groupe d'appartenance
 des observations. En pratique, on ne connaît pas le vrai regroupement
 et donc on n'aurait pas une telle variable. Ici, elle nous permet de voir
 si l'analyse a permis de bien regrouper les observations.
@@ -80,7 +86,7 @@ si l'analyse a permis de bien regrouper les observations.
 
 proc cluster data=temp method=ward outtree=temp1 nonorm rsquare;
 var x1-x6;
-copy id cluster_vrai x1-x6;
+copy id  x1-x6;
 ods output stat.cluster.ClusterHistory=criteres;
 run;
 
@@ -101,7 +107,7 @@ Dans ce fichier, la variable nommée "cluster" identifie les groupes. */
 
 proc tree data=temp1 out=temp2 nclusters=3;
 id id;
-copy id cluster_vrai x1-x6;
+copy id  x1-x6;
 run;
 
 
@@ -130,7 +136,7 @@ les variables au préalable.
 */
 
 data temp; 
-set multi.cluster1;
+set multi.cluster;
 id=_N_;
 run;
 
@@ -144,28 +150,37 @@ proc stdize data=temp out=stand;
 var x1-x6;
 run;
 
+proc means data=stand;
+var x1-x6;
+run;
+
 proc cluster data=stand method=ward outtree=temp1 nonorm rsquare;
 var x1-x6;
-copy id cluster_vrai x1-x6;
+copy id  x1-x6;
 ods output stat.cluster.ClusterHistory=criteres;
 run;
 
 /* De manière identique, on peut directement demander de standardiser les données
 avec l'option "std" ou "standard" dans l'appel à "cluster" 
-Cette option n'est pas applicable avec les K-moyennes ("fastclust")*/
+Cette option n'est pas applica
+ble avec les K-moyennes ("fastclust")*/
 proc cluster data=temp method=ward outtree=temp1 std nonorm rsquare;
 var x1-x6;
-copy id cluster_vrai x1-x6;
+copy id;
 ods output stat.cluster.ClusterHistory=criteres;
 run;
 
 proc sgplot data=criteres;
-series x=NumberOfClusters y=RSquared/markers markerattrs=(symbol=CircleFilled);
+series x=NumberOfClusters y=SemiPartialRSq/markers markerattrs=(symbol=CircleFilled);
 run;
 
 proc tree data=temp1 out=temp2 nclusters=3;
 id id;
-copy id cluster_vrai x1-x6;
+copy id x1-x6;
+run;
+
+data temp2;
+
 run;
 
 proc sort data=temp2 out=temp2;
@@ -180,9 +195,6 @@ proc sgscatter data=temp2;
 matrix x1-x6 / group=cluster;
 run;
 
-proc freq data=temp2;
-table cluster*cluster_vrai / nocum nopercent;
-run;
 
 /* cluster3_voisin_eloigne */
 /*
@@ -191,7 +203,7 @@ Analyse de regroupement avec la méthode du voisin le plus éloigné,
 */
 
 data temp; 
-set multi.cluster1;
+set multi.cluster;
 id=_N_;
 run;
 
@@ -201,7 +213,7 @@ run;
 
 proc cluster data=temp method=complete outtree=temp1 nonorm  rsquare;
 var x1-x6;
-copy id cluster_vrai;
+copy id ;
 ods output stat.cluster.ClusterHistory=criteres;
 run;
 
@@ -211,7 +223,7 @@ run;
 
 proc tree data=temp1 out=temp2 nclusters=3;
 id id;
-copy x1-x6 cluster_vrai;
+copy x1-x6 ;
 run;
 
 proc sort data=temp2 out=temp2;
@@ -234,18 +246,18 @@ obtenus avec la méthode de Ward.
 comme point de départ pour la méthode non-hiérarchique. */
 
 data temp; 
-set multi.cluster1;
+set multi.cluster;
 id=_N_;
 run;
 
 
 proc cluster data=temp method=ward outtree=temp1 nonorm rsquare;
 var x1-x6;
-copy id cluster_vrai x1-x6;
+copy id  x1-x6;
 run;
 proc tree data=temp1 out=temp2 nclusters=3;
 id id;
-copy id cluster_vrai x1-x6;
+copy id  x1-x6;
 run;
 
 proc sort data=temp2 out=temp2;
@@ -259,7 +271,7 @@ le fichier SAS "initial" avec 6 variables (les 6 moyennes) et 3 observations (le
 proc means data=temp2;
 by cluster;
 var x1-x6;
-output out=initial mean=x1 x2 x3 x4 x5 x6;
+output out=initial mean=x1-x6;
 run;
 
 proc print data=initial;
@@ -322,13 +334,13 @@ Analyse de regroupement avec la distance de Manhattan au lieu de la
 distance euclidienne que nous avons utilisé jusqu'à maintenant. 
 */
 
-/* Création d'une variable particuliére pour identifier les sujets.
+/* Création d'une variable particulière pour identifier les sujets.
 Cette variable, nommée "id1", prendra les valeurs OB1, OB2, ... OB150.
 Elle servira à "apparier" le fichier original avec la solution
 produite par PROC CLUSTER. */
 
 data temp; 
-set multi.cluster1;
+set multi.cluster;
 id=_N_;
 ob="OB";
 run;
@@ -407,7 +419,6 @@ proc means data=temp3;
 var x1-x6;
 by cluster;
 run;
-
 
 
 

@@ -8,8 +8,8 @@
 ]{book}
 \usepackage{amsmath,amssymb}
 \usepackage{lmodern}
-\usepackage{iftex}
-\ifPDFTeX
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
@@ -92,7 +92,21 @@
 
 \usepackage{icomma}
 % }
-\ifLuaTeX
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\ifluatex
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
 \usepackage[]{natbib}
@@ -100,7 +114,7 @@
 
 \title{Analyse multidimensionnelle appliquée}
 \author{(c) Denis Larocque, Léo Belzile}
-\date{version du 2021-04-22}
+\date{version du 2021-10-15}
 
 \usepackage{amsthm}
 \newtheorem{theorem}{Théorème}[chapter]
@@ -114,6 +128,8 @@
 \newtheorem{example}{Exemple}[chapter]
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercice}[chapter]
+\theoremstyle{definition}
+\newtheorem{hypothesis}{Hypothesis}[chapter]
 \theoremstyle{remark}
 \newtheorem*{remark}{Remarque}
 \newtheorem*{solution}{Solution}
@@ -718,7 +734,7 @@ Une analyse factorielle cherchera à identifier automatiquement des groupes de v
 Les statistiques descriptives ainsi que la matrice des corrélations sont obtenues en exécutant les lignes suivantes:
 
 \begin{verbatim}
-proc corr data=multi.factor2;
+proc corr data=multi.factor;
 var x1-x12;
 run;
 \end{verbatim}
@@ -730,25 +746,26 @@ run;
 \hypertarget{description-du-moduxe8le-danalyse-factorielle}{%
 \section{Description du modèle d'analyse factorielle}\label{description-du-moduxe8le-danalyse-factorielle}}
 
-On dispose d'observations sur \(p\) variables \(X_1, \ldots, X_p\). Le modèle d'analyse factorielle fait l'hypothèse que ces variables dépendent linéairement d'un plus petit nombre \(m\) de variables aléatoires, \(F_1, \ldots, F_m\), appelées facteurs communs et de \(p\) termes d'erreurs (ou facteurs spécifiques) \(\varepsilon_1, \ldots, \varepsilon_p\), de moyenne \({\mathsf E}\left(\varepsilon_i\right)=0\) et de variance \({\mathsf{Var}}\left(\varepsilon_i\right)=\psi_i\) pour \(i=1, \ldots, p\). Spécifiquement, le modèle est
+On dispose d'observations sur \(p\) variables \(X_1, \ldots, X_p\). Le modèle d'analyse factorielle fait l'hypothèse que ces variables dépendent linéairement d'un plus petit nombre \(m\) de variables aléatoires, \(F_1, \ldots, F_m\), appelées facteurs communs et de \(p\) termes d'erreurs (ou facteurs spécifiques) \(\varepsilon_1, \ldots, \varepsilon_p\), de moyenne \({\mathsf E}\left(\varepsilon_i\right)=0\) et de variance \({\mathsf{Var}}\left(\varepsilon_i\right)=\psi_i\) pour \(i=1, \ldots, p\). Les facteurs \(F_1, \ldots, F_m\) ont une moyenne nulle \({\mathsf E}\left(F_i\right)=0\), et une variance unitaire, \({\mathsf{Var}}\left(F_i\right)=1\) (\(i=1, \ldots, p\)) .
+
+Spécifiquement, le modèle est
 \begin{align*}
-X_1 &= \mu_1 + l_{11}F_1 + l_{12} F_2 + \cdots + l_{1m}F_m + \varepsilon_1\\
-X_2 &= \mu_2 + l_{21}F_1 + l_{22} F_2 + \cdots + l_{2m}F_m + \varepsilon_2\\
+X_1 &= \mu_1 + \gamma_{11}F_1 + \gamma_{12} F_2 + \cdots + \gamma_{1m}F_m + \varepsilon_1\\
+X_2 &= \mu_2 + \gamma_{21}F_1 + \gamma_{22} F_2 + \cdots + \gamma_{2m}F_m + \varepsilon_2\\
 &\vdots \\
-X_p &= \mu_p + l_{p1}F_1 + l_{p2} F_2 + \cdots + l_{pm}F_m + \varepsilon_p, 
+X_p &= \mu_p + \gamma_{p1}F_1 + \gamma_{p2} F_2 + \cdots + \gamma_{pm}F_m + \varepsilon_p, 
 \end{align*}
-où \(\mu_i\) est l'espérance de la variable aléatoire \(X_i\) (\(i=1, \ldots, p\)) et où \(l_{ij}\) est le chargement de la variable \(X_i\) sur le facteur \(F_j\) (\(i=1, \ldots, p\); \(j=1, \ldots, m\)).
+où \(\mu_i\) est l'espérance de la variable aléatoire \(X_i\) (\(i=1, \ldots, p\)) et où \(\gamma_{ij}\) est le chargement de la variable \(X_i\) sur le facteur \(F_j\) (\(i=1, \ldots, p\); \(j=1, \ldots, m\)).
 
-Les espérances (\(\mu_i\)), les chargements (\(l_{ij}\)) et les variances (\(\psi_i\)) sont des quantités fixes, mais inconnues, tandis que les facteurs communs (\(F_i\)) et les aléas (\(\varepsilon_i\)) sont des variables aléatoires non observables; on suppose que les aléas ne sont pas corrélées aux facteurs \(F\) et entre elles.
+Les espérances (\(\mu_i\)), les chargements (\(\gamma_{ij}\)) et les variances (\(\psi_i\)) sont des quantités fixes, mais inconnues, tandis que les facteurs communs (\(F_i\)) et les aléas (\(\varepsilon_i\)) sont des variables aléatoires non observables; on suppose que les aléas ne sont pas corrélées aux facteurs \(F\) et entre elles.
 
-Le modèle d'analyse factorielle est un modèle pour la matrice de covariance/corrélation des variables explicatives \[X_1, \ldots, X_p\], avec
-\(\mathsf{Va}(X_j) = \sum_{l=1}^k \gamma_{jl}^2 + \psi_j\). On appelle \textbf{communalité} le terme \(h_j = \sum_{l=1}^k \gamma_{jl}^2\), qui représente la proportion de variance totale de \(X_j\) due à la corrélation entre les facteurs. Le terme \(\psi_j\) est connu sous le vocable \textbf{unicité}.
+Le modèle d'analyse factorielle est un modèle pour la matrice de covariance/corrélation des variables explicatives \(X_1, \ldots, X_p\), avec \(\mathsf{Va}(X_j) = \sum_{l=1}^k \gamma_{jl}^2 + \psi_j\). On appelle \textbf{communalité} le terme \(h_j = \sum_{l=1}^k \gamma_{jl}^2\), qui représente la proportion de variance totale de \(X_j\) due à la corrélation entre les facteurs. Le terme \(\psi_j\) est connu sous le vocable \textbf{unicité}.
 
-De plus, si les variables ont été préalablement standardisées de telle sorte que \({\mathsf E}\left(X_i\right)=0\) et \({\mathsf{Var}}\left(X_i\right)=1\) (note: ceci revient à utiliser la matrice de corrélation des observations dans l'analyse ce qui est fait par défaut dans \textbf{SAS}), alors \({\mathsf{Cor}}\left(X_i, F_j\right)=l_{ij}\), c'est-à-dire, le chargement de la variable \(X_i\) sur le chargement \(F_j\) est le coefficient de corrélation entre cette variable et ce facteur.
+De plus, si les variables ont été préalablement standardisées de telle sorte que \({\mathsf E}\left(X_i\right)=0\) et \({\mathsf{Var}}\left(X_i\right)=1\) (note: ceci revient à utiliser la matrice de corrélation des observations dans l'analyse ce qui est fait par défaut dans \textbf{SAS}), alors \({\mathsf{Cor}}\left(X_i, F_j\right)=\gamma_{ij}\), c'est-à-dire, le chargement de la variable \(X_i\) sur le chargement \(F_j\) est le coefficient de corrélation entre cette variable et ce facteur.
 
 Sans aucune contrainte sur le modèle, la matrice de covariance de \(X_1, \ldots, X_p\) possède \(p(p+1)/2\) paramètres, soit \(p\) variances et \(p(p-1)/2\) termes de corrélation. Avec le modèle d'analyse factorielle, on suppose que l'on peut décrire cette structure en utilisant seulement \(p(m+1) - m(m-1)/2\) paramètres (\(p\) variances spécifiques et \(pm\) chargements, moins les contraintes de diagonalisation). Par exemple, avec \(p=50\) variables et \(m=6\) facteurs, on essaie de décrire la structure de covariance à l'aide de 350 paramètres au lieu de 1275.
 
-Il existe plusieurs méthodes pour extraire les facteurs, c'est-à-dire pour estimer les paramètres du modèle (les \(\psi_i\) et les \(l_{ij}\)). Nous allons discuter de deux d'entre elles: la méthode du maximum de vraisemblance et la méthode des composantes principales. L'avantage de l'estimation par maximum de vraisemblance est qu'elle permet l'utilisation de critères d'information et de statistiques de tests pour guider le choix du nombre de facteurs, en supposant toutefois la normalité des facteurs et des aléas. L'estimation des paramètres requiert une optimisation numérique qui peut être délicate selon les cas de figure et qui mène parfois à des solutions paradoxales: un cas dit de quasi-Heywood survient quand \(h_j=1\) pour une variable \(j\), (on parle de cas de Heywood si \(h_j > 1\)). Si on modélise des variables explicatives centrées réduites, \(\mathsf{Va}(X_j)=1\), d'où un problème d'interprétation car le terme \(\psi_j\) serait nul (cas de quasi-Heywood) ou négatif (cas de Heywood) alors même que ce terme représente la variable du \(j\)e aléa. Les cas de quasi-Heywood ont plusieurs causes, lesquelles sont listées dans la \href{https://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm\#statug_factor_sect022.htm}{documentation \textbf{SAS}}. Souvent, c'est dû à l'utilisation d'un trop petit ou trop grand nombre de facteurs ou une taille d'échantillon trop petite, etc. Cela complique l'interprétation et nous amène à questionner la validité du modèle d'analyse factorielle comme simplification de la structure de covariance non-contrainte.
+Il existe plusieurs méthodes pour extraire les facteurs, c'est-à-dire pour estimer les paramètres du modèle (les \(\psi_i\) et les \(\gamma_{ij}\)). Nous allons discuter de deux d'entre elles: la méthode du maximum de vraisemblance et la méthode des composantes principales. L'avantage de l'estimation par maximum de vraisemblance est qu'elle permet l'utilisation de critères d'information et de statistiques de tests pour guider le choix du nombre de facteurs, en supposant toutefois la normalité des facteurs et des aléas. L'estimation des paramètres requiert une optimisation numérique qui peut être délicate selon les cas de figure et qui mène parfois à des solutions paradoxales: un cas dit de quasi-Heywood survient quand \(h_j=1\) pour une variable \(j\), (on parle de cas de Heywood si \(h_j > 1\)). Si on modélise des variables explicatives centrées réduites, \(\mathsf{Va}(X_j)=1\), d'où un problème d'interprétation car le terme \(\psi_j\) serait nul (cas de quasi-Heywood) ou négatif (cas de Heywood) alors même que ce terme représente la variable du \(j\)e aléa. Les cas de quasi-Heywood ont plusieurs causes, lesquelles sont listées dans la \href{https://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm\#statug_factor_sect022.htm}{documentation \textbf{SAS}}. Souvent, c'est dû à l'utilisation d'un trop petit ou trop grand nombre de facteurs ou une taille d'échantillon trop petite, etc. Cela complique l'interprétation et nous amène à questionner la validité du modèle d'analyse factorielle comme simplification de la structure de covariance non-contrainte.
 
 \hypertarget{rotation-des-facteurs}{%
 \subsection{Rotation des facteurs}\label{rotation-des-facteurs}}
@@ -765,7 +782,7 @@ Je vous suggère de toujours tenter d'interpréter la solution avec une rotation
 Les chargements estimés pour la solution à quatre facteurs, suite à la rotation varimax, sont obtenus avec le code SAS suivant:
 
 \begin{verbatim}
-proc factor data=multi.factor2 
+proc factor data=multi.factor 
  method=ml rotate=varimax nfact=4
  maxiter=500 flag=.3 hey;
  var x1-x12;
@@ -865,7 +882,7 @@ On peut considérer le modèle avec trois facteurs: les chargements (après rota
 Cette solution récupère les trois facteurs \emph{service}, \emph{produits} et \emph{paiement} de la solution précédente à quatre facteurs. Le facteur \emph{prix} (qui était formé de \(X_1\) et \(X_5\)) n'est plus présent: que faire avec ce dernier? Cela dépend du but de l'analyse et nous y reviendrons plus tard.
 
 Pour terminer cette section, voici la description de deux autres
-critères \emph{classiques} pour choisir le nombre de facteurs. Ces deux critères sont:
+critères \emph{classiques} pour choisir le nombre de facteurs si l'on ajuste le modèle avec la méthodes des composantes principales (plutôt qu'avec le maximum de vraisemblance). Ces deux critères sont:
 
 \begin{itemize}
 \tightlist
@@ -878,7 +895,7 @@ critères \emph{classiques} pour choisir le nombre de facteurs. Ces deux critèr
 Les sorties qui suivent proviennent du programme:
 
 \begin{verbatim}
-proc factor data=multi.factor2 method=principal
+proc factor data=multi.factor method=principal
  scree rotate=varimax flag=.3;
  ods output Eigenvalues=eigen;
  var x1-x12;
@@ -932,19 +949,19 @@ Avec \textbf{SAS}, la procédure \texttt{corr} permet de calculer \(\alpha\).
 
 \begin{verbatim}
 /* pour le facteur service */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x4 x8 x11;
 run;
 /* pour le facteur produits */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x3 x6 x9 x12;
 run;
 /* pour le facteur paiement */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x2 x7 x10;
 run;
 /* pour le facteur prix */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x1 x5;
 run;
 \end{verbatim}
@@ -1012,7 +1029,7 @@ Ma suggestion est d'utiliser la corrélation linéaire ordinaire avec des variab
 On peut refaire l'analyse des données portant sur le magasin dans \textbf{SAS} en utilisant la corrélation polychorique calculées par la procédure \texttt{corr} et en passant la sortie à la procédure \texttt{factor}.
 
 \begin{verbatim}
-proc corr data=multi.factor2 polychoric out=poly_corr;
+proc corr data=multi.factor polychoric out=poly_corr;
 var x1-x12;
 run;
 
@@ -1051,7 +1068,7 @@ Jusqu'à présent, nous avons utilisé la méthode de rotation orthogonale varim
 Le programme suivant fait une analyse factorielle avec quatre facteurs, mais en utilisant une rotation varimax oblique (option \texttt{rotate=obvarimax}).
 
 \begin{verbatim}
-proc factor data=multi.factor2
+proc factor data=multi.factor
 maxiter=500 flag=.3 hey;
 var x1-x12;
 run;
@@ -1097,10 +1114,10 @@ Avec les données de l'exemple, en nous basant sur les résultats de l'analyse f
 Par exemple, la variable \emph{prix} peut donc être vu comme une combinaison linéaire des 12
 variables où seulement \(X_1\) et \(X_5\) reçoivent un poids (égal) différent de zéro. Une autre façon de créer de nouvelles variables consiste à calculer des scores factoriels (un pour chaque facteur) pour chaque individu. Par exemple, pour un individu \(i\) donné, le score factoriel pour le facteur \(k\) peut être prédit à l'aide de la formule
 \begin{align*}
-\hat{F}_{ik} &= \widehat{\mathbf{L}}^{\top}\mathbf{R}^{-1}\boldsymbol{z}\\&=
-\widehat{\gamma}_{1, k} z_{i, 1} + \cdots + \widehat{\gamma}_{12, k}z_{i, 12}, 
+\hat{F}_{ik} &= \widehat{\boldsymbol{\Gamma}}^{\top}\mathbf{R}^{-1}\boldsymbol{z}\\&=
+\widehat{\beta}_{1, k} z_{i, 1} + \cdots + \widehat{\beta}_{12, k}z_{i, 12}, 
 \end{align*}
-où \(z_{i, 1}, \ldots, z_{i, 12}\) sont les valeurs centrées et réduites des observations correspondant à l'individu et où \(\widehat{\gamma}_{1, k}, \ldots, \widehat{\gamma}_{12, k}\) sont des coefficients estimés à partir des chargements \(l_{ij}\) (après rotation) et de la matrice de corrélation des variables \(\mathbf{R}\), avec \(\widehat{\gamma}_{i, k}=\sum_{j=1}^p \hat{l}_{kj}r_{jk}\).
+où \(z_{i, 1}, \ldots, z_{i, 12}\) sont les valeurs centrées et réduites des observations correspondant à l'individu et où \(\widehat{\beta}_{1, k}, \ldots, \widehat{\beta}_{12, k}\) sont des coefficients estimés à partir des chargements \(\gamma_{ij}\) (après rotation) et de la matrice de corrélation des variables \(\mathbf{R}\), avec \(\widehat{\beta}_{i, k}=\sum_{j=1}^p \widehat{\gamma}_{kj}r_{jk}\).
 
 Ainsi, chacune des 12 variables originales contribue au calcul du score
 factoriel. Les variables ayant des chargements plus élevés sur ce facteur auront tendance à avoir des poids (\(\widehat{\gamma}\)) plus élevés. Par contre, les scores factoriels ne sont pas uniques car ils dépendent des chargements utilisés (et donc à la fois de la méthode d'estimation et de la méthode de rotation).
@@ -1240,7 +1257,7 @@ Les buts de l'étude étaient
   Examiner les caractéristiques démographiques de ces groupes.
 \end{enumerate}
 
-Nous allons nous intéresser principalement aux deux premiers points ici. Un questionnaire a été élaboré afin d'évaluer l'importance de 55 caractéristiques des opérateurs de voyages organisés en autobus et des voyages eux-mêmes à l'aide d'une échelle de Likert à cinq points, allant de extrêmement important (\(\texttt{5}\)) à pas important du tout (\(\texttt{1}\)). Des données sont disponibles pour 150 sujets (il y en avait 817 dans l'article). Elles se trouvent dans le fichier \texttt{cluster1.sas7bdat}.
+Nous allons nous intéresser principalement aux deux premiers points ici. Un questionnaire a été élaboré afin d'évaluer l'importance de 55 caractéristiques des opérateurs de voyages organisés en autobus et des voyages eux-mêmes à l'aide d'une échelle de Likert à cinq points, allant de extrêmement important (\(\texttt{5}\)) à pas important du tout (\(\texttt{1}\)). Des données sont disponibles pour 150 sujets (il y en avait 817 dans l'article). Elles se trouvent dans le fichier \texttt{cluster.sas7bdat}.
 
 Au lieu de faire une analyse de regroupements avec les 55 items du questionnaire, les auteurs ont choisi de faire une analyse factorielle avec rotation varimax au préalable afin de réduire le nombre de variables à six facteurs interprétables :
 
@@ -1260,7 +1277,7 @@ Au lieu de faire une analyse de regroupements avec les 55 items du questionnaire
   Réputation (\(X_6\)): formé de deux items.
 \end{itemize}
 
-On voit donc que 22 items, parmi les 55, sont utilisés dans la définition de ces six facteurs. Dans l'article, les auteurs ont décidé d'inclure ces 22 items dans l'analyse de regroupements. Pour notre part et afin de simplifier l'exemple, nous allons plutôt créer six nouvelles échelles en faisant la moyenne des items de chaque facteur ci-haut et utiliser seulement ces six échelles dans l'analyse de regroupements. Les valeurs de ces six variables pour les 150 sujets se trouvent dans le fichier \texttt{cluster1a.sas7bdat} et sont toutes dans l'intervalle \([1,5]\), puisqu'elles représentent la moyenne d'échelles de Likert.
+On voit donc que 22 items, parmi les 55, sont utilisés dans la définition de ces six facteurs. Dans l'article, les auteurs ont décidé d'inclure ces 22 items dans l'analyse de regroupements. Pour notre part et afin de simplifier l'exemple, nous allons plutôt créer six nouvelles échelles en faisant la moyenne des items de chaque facteur ci-haut et utiliser seulement ces six échelles dans l'analyse de regroupements. Les valeurs de ces six variables pour les 150 sujets se trouvent dans le fichier \texttt{cluster.sas7bdat} et sont toutes dans l'intervalle \([1,5]\), puisqu'elles représentent la moyenne d'échelles de Likert.
 
 \begin{center}\includegraphics[width=0.8\linewidth]{figures/04-clustering-e1} \end{center}
 
@@ -1278,9 +1295,9 @@ Une première idée consiste à faire le graphe de toutes les paires de variable
   il y aura beaucoup de graphes si le nombre de variables est grand et ii) on examine seulement les relations bivariées.
 \end{enumerate}
 
-\begin{center}\includegraphics[width=1\linewidth]{MATH60602_files/figure-latex/04-pairplot-1} \end{center}
+\begin{center}\includegraphics[width=0.9\linewidth]{MATH60602_files/figure-latex/04-pairplot-1} \end{center}
 
-Il n'est pas nécessairement évident de détecter des groupes d'observations ainsi, alors qu'on n'a déjà que six variables. On connaît les vrais groupes ici mais ce n'est pas le cas en pratique.
+Il n'est pas nécessairement évident de détecter des groupes d'observations ainsi, alors qu'on n'a déjà que six variables.
 
 \hypertarget{analyse-en-composantes-principales}{%
 \subsection{Analyse en composantes principales}\label{analyse-en-composantes-principales}}
@@ -1312,7 +1329,7 @@ On espère donc en général qu'un petit nombre de composantes principales réus
 Cette étape est généralement effectuée avant l'analyse de regroupement.
 Le fichier \texttt{cluster7\_acp.sas} contient les commandes pour faire une analyse en composantes principales et sauvegarder les composantes principales afin d'en faire des graphiques. La sortie inclut une mesure de la variance cumulée des \(K\) premières valeurs propres. La colonne \texttt{Proportion} donne la proportion de la variance totale qui est expliquée par la composante correspondante. La colonne \texttt{Cumulé} donne le cumul de variance totale expliquée par les composantes jusque là. Ainsi, les deux premières composantes principales reproduisent 76,7\% de la variance totale originale.
 
-Même en ne connaissant pas l'appartenance des observations au regroupement, on distingue assez clairement trois groupes. Le panneau droit du graphique \ref{fig:04-acp} montre les deux composantes principales, mais avec l'identification des vrais groupes (qu'on ne connaîtra pas en pratique).
+Même en ne connaissant pas l'appartenance des observations au regroupement, on distingue assez clairement trois groupes. Le panneau droit du graphique \ref{fig:04-acp} montre les deux composantes principales, mais avec l'identification des groupes obtenus suite à l'analyse de regroupement avec la méthode des \(K\)-moyennes couverte plus tard.
 
 \begin{figure}
 
@@ -1320,7 +1337,7 @@ Même en ne connaissant pas l'appartenance des observations au regroupement, on 
 
 }
 
-\caption{Projection des observations sur les composantes principales avec la vraie identité des groupes}\label{fig:04-acp}
+\caption{Projection des observations sur les composantes principales avec les regroupements finaux créés à la fin du chapitre.}\label{fig:04-acp}
 \end{figure}
 
 \hypertarget{muxe9thodes-hiuxe9rarchiques}{%
@@ -1343,11 +1360,9 @@ On peut calculer cette distance pour tous les \(M\) groupes et définir l'\textb
 \end{align*}
 Plus l'homogénéité globale \(\mathsf{SCD}_G\) est petite, mieux c'est. Pour passer de \(M\) à \(M-1\) groupes, la méthode de Ward va regrouper les deux groupes qui feront que \(\mathsf{SCD}_G\) sera la plus petite possible.
 
-On procède à une analyse simplifiée des données pour le voyage organisé avec deux variables et vingt observations afin d'être en mesure de visualiser l'algorithme de groupement. Les données se trouvent dans le fichier \texttt{cluster1a}.
+On procède à une analyse simplifiée des données pour le voyage organisé avec deux variables et vingt observations afin d'être en mesure de visualiser l'algorithme de groupement.
 
 \begin{center}\includegraphics[width=0.9\linewidth]{MATH60602_files/figure-latex/04-plottrueclust-1} \end{center}
-
-Comme souvent, les données ont été simulées et le nombre de regroupements est donc connu (de même que l'appartenance des différentes observations aux regroupements). La variable qui donne l'identité du vrai groupe est \texttt{cluster\_vrai}. Il est important de bien comprendre qu'en pratique, on ne connaît ni le nombre de groupes, ni quelle observation appartient à quel groupe. Ici, on se servira du fait qu'on connaît les vrais groupes pour examiner la performance de l'analyse de regroupements.
 
 La première analyse utilise la méthode de Ward. Les commandes \textbf{SAS} se trouvent dans \texttt{cluster1\_simplifie.sas}; la présentation de la procédure et de la syntaxe est différée. L'historique de regroupement est décrit dans la sortie \textbf{SAS}. La première colonne donne le nombre de groupes. Au départ, les observations 16 et 19 sont regroupées, il y a maintenant 19 groupes. Ensuite, les observations 11 et 13 sont regroupées, il y a maintenant 18 groupes. Au moment de passer de 14 à 13 groupes, c'est le groupe formé à l'étape 16 qui est fusionné avec l'observation 2 et ainsi de suite. La colonne \texttt{Fréq} donne le nombre d'observations dans le groupe qui vient d'être formé.
 
@@ -1391,14 +1406,14 @@ On peut ainsi tracer une courbe pour le \(\mathsf{SPRSQ}\) en fonction du nombre
 La procédure \textbf{SAS} qui permet d'effectuer une analyse de regroupements hiérarchique est \texttt{cluster}. Le fichier \texttt{cluster2\_complet.sas} explique les différentes options disponibles.
 
 \begin{verbatim}
-proc cluster data=temp method=ward outtree=temp1 nonorm rsquare ccc;
+proc cluster data=temp method=ward outtree=temp1 nonorm rsquare;
 var x1-x6;
 copy id cluster_vrai x1-x6;
 ods output stat.cluster.ClusterHistory=criteres;
 run;
 \end{verbatim}
 
-On peut représenter graphique le R carré (Figure \ref{fig:fig4-e7}), le Rcarré semi partiel (Figure \ref{fig:fig4-e8}) et le critère de classification cubique (Figure \ref{fig:fig4-e9}) en fonction du nombre de groupes. Ce derniers est plus technique mais son interprétation est simple, plus sa valeur est élevée, mieux c'est. Par contre, il peut avoir plusieurs maximums locaux et, de ce fait, ce n'est donc pas toujours évident de choisir le nombre de groupes avec ce critère. Il semble encore une fois que choisir trois groupes semble raisonnable.
+On peut représenter graphique le R carré (Figure \ref{fig:fig4-e7}), le R carré semi partiel (Figure \ref{fig:fig4-e8}) en fonction du nombre de groupes.
 
 \begin{figure}
 
@@ -1418,18 +1433,9 @@ On peut représenter graphique le R carré (Figure \ref{fig:fig4-e7}), le Rcarr�
 \caption{R carré semi-partiel en fonction des regroupements hiérarchiques}\label{fig:fig4-e8}
 \end{figure}
 
-\begin{figure}
-
-{\centering \includegraphics[width=0.8\linewidth]{figures/04-clustering-e10} 
-
-}
-
-\caption{Critère de classification cubique en fonction des regroupements hiérarchiques}\label{fig:fig4-e9}
-\end{figure}
-
 Parfois, l'information est présentée sous forme de dendogramme, qui trace l'arbre et la fusion des groupes. On peut ainsi retracer l'historique de la procédure hiérarchique. Celui produit par \textbf{SAS} donne, à un facteur multiplicatif près, le \(\mathsf{SPRSQ}\). Il n'y a donc pas de nouvelles informations ici. On voit que c'est lorsqu'on passe de trois à deux groupes, qu'il y a une bonne perte d'homogénéité.
 
-En pratique, on ne peut jamais savoir si on a bel et bien regroupé ensemble les bons sujets. Mais ici, comme il s'agit de données artificielles qui ont été générées, nous connaissons la composition des vrais groupes. Il s'avère qu'il y en a effectivement trois. De plus, la solution à trois groupes obtenue avec la méthode de Ward a bien réussi à retrouver les groupes car il y a 146 sujets sur 150 (97,3\%) qui sont bien regroupés, et quatre qui font partie d'un mauvais groupe. Ceci est un exemple facile où les observations sont bien séparées. Ce n'est pas toujours aussi simple en pratique.
+En pratique, on ne peut jamais savoir si on a bel et bien regroupé ensemble les bons sujets. Mais ici, comme il s'agit de données artificielles qui ont été générées, nous connaissons la composition des vrais groupes. Il s'avère qu'il y en a effectivement trois. De plus, la solution à trois groupes obtenue avec la méthode de Ward a bien réussi à retrouver les groupes. Ceci est un exemple facile où les observations sont bien séparées: ce ne sera pas toujours aussi simple en pratique.
 
 \textbf{Interprétation des groupes}: la méthode la plus simple consiste à inspecter les moyennes des variables de chaque groupe et de voir s'il en découle une interprétation raisonnable. La procédure \texttt{tree} permet d'extraire la solution avec un nombre spécifié de groupes et il est ensuite facile (avec la procédure \texttt{means}) d'obtenir ces moyennes (voir le fichier \texttt{cluster2\_complet.sas}).
 
@@ -1447,8 +1453,7 @@ Notez qu'on \textbf{ne peut pas} tester l'égalité des moyennes des variables p
 \hypertarget{calcul-alternatif-des-distances-pour-le-regroupement-hiuxe9rarchique}{%
 \section{Calcul alternatif des distances pour le regroupement hiérarchique}\label{calcul-alternatif-des-distances-pour-le-regroupement-hiuxe9rarchique}}
 
-Nous avons utilisé la méthode de Ward afin de calculer la distance entre les groupes et procéder au passage de \(n\) groupes à un groupe, avec l'approche hiérarchique. Supposons que nous avons choisi une mesure de dissemblance \(d(S_i, S_j)\) quelconque (distance euclidienne par exemple) pour mesurer la distance entre deux sujets. D'autres méthodes sont disponibles dans la procédure \texttt{cluster}, et les regroupements utilisent
-Voici comment sont choisis les regroupements avec ces méthodes.
+Nous avons utilisé la méthode de Ward afin de calculer la distance entre les groupes et procéder au passage de \(n\) groupes à un groupe, avec l'approche hiérarchique. Supposons que nous avons choisi une mesure de dissemblance \(d(S_i, S_j)\) quelconque (distance euclidienne par exemple) pour mesurer la distance entre deux sujets. Voici comment sont choisis les regroupements avec ces méthodes.
 
 \begin{itemize}
 \tightlist
@@ -1473,7 +1478,7 @@ Le fichier \texttt{cluster3\_voisin\_eloigne.sas} contient les commandes pour ut
 \caption{Distance maximale entre groupes en fonction des regroupements hiérarchiques pour la méthode du voisin le plus éloigné.}\label{fig:fig4-e21}
 \end{figure}
 
-Comme on veut que cette distance soit petite pour les groupes fusionnés, on pourrait être tenté d'arrêter à trois groupes ici sur la base de la Figure \ref{fig:fig4-e20}. L'interprétation des groupes ne change pas comparativement aux analyses précédentes. La taille des groupes, (44, 71, 35) change un peu par rapport à la solution avec la méthode de Ward qui donnait des tailles de (43, 75, 32). En fait, avec la méthode du voisin le plus éloigné, 141 des 150 sujets sont dans le bon groupe (comparativement à 146 avec la méthode de Ward). Elle fait donc un peu moins bien pour cet exemple.
+Comme on veut que cette distance soit petite pour les groupes fusionnés, on pourrait être tenté d'arrêter à trois groupes ici sur la base de la Figure \ref{fig:fig4-e20}. L'interprétation des groupes ne change pas comparativement aux analyses précédentes. La taille des groupes, (44, 71, 35), change un peu par rapport à la solution avec la méthode de Ward qui donnait des tailles de (43, 75, 32).
 
 On peut comparer les performances des regroupements hiérarchiques selon la méthode de groupement. La \href{https://scikit-learn.org/stable/auto_examples/cluster/plot_linkage_comparison.html}{page web de scikit-learn developers} montre la performance sur des exemples jouets, qui montre que selon les hypothèses et la structure, aucune ne performe mieux que les autres dans tous les exemples.
 
@@ -1491,7 +1496,7 @@ On peut comparer les performances des regroupements hiérarchiques selon la mét
 
 Dans les exemples précédents, nous avons utilisé les variables \(X_1\) à \(X_6\) telles quelles. En général, plus une variable a une grande variance, plus elle aura de l'influence sur le calcul de la distance euclidienne. Ainsi, en utilisant les variables telles quelles, nous accordons plus de poids aux variables avec de grandes variances, ce qui peut être bon ou mauvais selon la structure des groupes. Règle générale, il est préférable d'éviter qu'une variable domine dans la segmentation.
 
-Avec la procédure \texttt{stdize}, on peut standardiser au préalable les variables avant de faire l'analyse. Par défaut, les variables seront standardisées afin d'avoir une moyenne de zéro et une variance de un. On peut ensuite faire les analyses comme précédemment. Le fichier \texttt{cluster4\_standardisation.sas} contient les commandes pour standardiser les variables et ensuite refaire l'analyse de regroupements avec la méthode de Ward. Notez que les six variables ont des variances semblables, donc les résultats ne devraient donc pas être trop affectés en standardisant les variables. Il s'avère effectivement que les résultats changent très peu si on standardise les variables. Les tailles des groupes de la solution à trois groupes sont (44, 75, 31) (comparativement à (43, 75, 32) sans la standardisation). Il s'avère que 147 des 150 sujets sont bien regroupés (comparativement à 146 sans la standardisation). Il s'agit d'une très légère amélioration.
+Avec la procédure \texttt{stdize}, on peut standardiser au préalable les variables avant de faire l'analyse. Par défaut, les variables seront standardisées afin d'avoir une moyenne de zéro et une variance de un. On peut ensuite faire les analyses comme précédemment. Le fichier \texttt{cluster4\_standardisation.sas} contient les commandes pour standardiser les variables et ensuite refaire l'analyse de regroupements avec la méthode de Ward. Notez que les six variables ont des variances semblables, donc les résultats ne devraient donc pas être trop affectés en standardisant les variables. Il s'avère effectivement que les résultats changent très peu si on standardise les variables. Les tailles des trois groupes de la solution sont (44, 75, 31), comparativement à (43, 75, 32) sans la standardisation.
 
 \hypertarget{autres-mesures-de-dissemblance}{%
 \section{Autres mesures de dissemblance}\label{autres-mesures-de-dissemblance}}
@@ -1531,7 +1536,7 @@ Mesures de dissemblances pour variables ordinales:
 
 Le fichier \texttt{cluster4\_cityblock.sas} contient les commandes pour refaire l'analyse des regroupements du voyage organisé avec la taxi-distance et la méthode de liaison moyenne (\texttt{method=average}) dans \texttt{proc\ cluster}.
 
-Encore une fois, l'interprétation des groupes ne change pas comparativement aux analyses précédentes. La taille des groupes, (45, 75, 30) change un peu par rapport à la solution avec la méthode de Ward qui donnait des tailles de (43, 75, 32). Avec la distance de Manhattan et la méthode de liaison moyenne, 148 des 150 sujets sont dans le bon groupe (comparativement à 146 avec la méthode de Ward). Cette combinaison fait donc mieux pour cet exemple.
+Encore une fois, l'interprétation des groupes ne change pas comparativement aux analyses précédentes. La taille des groupes, (45, 75, 30) change un peu par rapport à la solution avec la méthode de Ward qui donnait des tailles de (43, 75, 32).
 
 Règle générale, les différentes étapes des méthodes agglomératives hiérarchiques nécessitent \(\mathrm{O}(n^3)\) opérations, bien qu'une version plus parsimonieuse existe avec complexité \(\mathrm{O}(n^2\ln n)\) ou \(\mathrm{O}(n^2)\) pour les méthodes de liaison simple et complexe. La formule de Lance--Williams permet de mettre à jour récursivement les distances entre regroupements pour la plupart des méthodes considérées. Le coût élevé de la méthode de regroupement hiérarchique, qui dépend de la taille de l'échantillon, devient prohibitif avec des mégadonnées. Il nécessite aussi le calcul d'une mesure de dissemblance et l'évaluation de la qualité de l'agglomération, autre que graphique, n'est pas évidente. Ces méthodes sont largement discontinuées de nos jours par des alternatives modernes (regroupement spectraux, mélanges de modèles, \(K\)-médoïdes par itérations de Voronoï) qui ne sont pas implémentées en \textbf{SAS}.
 
@@ -1591,15 +1596,13 @@ Voici une partie de la sortie \textbf{SAS}:
 
 \begin{center}\includegraphics[width=0.5\linewidth]{figures/04-clustering-e16} \end{center}
 
-Évidemment, comme la solution obtenue avec la méthode de Ward est déjà excellente (146 observations de bien regroupées sur 150), on ne pourra pas avoir une amélioration notable. Il y a peu de changements par rapport à la solution de la méthode de Ward. Les tailles des groupes étaient de (43, 75, 32) avant. Elles sont maintenant (45, 77, 28). Le R carré passe de 65,7\% (avec Ward) à 66.2\%.
+Évidemment, comme la solution obtenue avec la méthode de Ward est déjà excellente, on ne pourra pas avoir une amélioration notable. Il y a peu de changements par rapport à la solution de la méthode de Ward. Les tailles des groupes étaient de (43, 75, 32) avant. Elles sont maintenant (45, 77, 28). Le \(R^2\) passe de 65,7\% (avec Ward) à 66.2\%.
 
 L'interprétation des groupes est la même que précédemment.
 
 \begin{center}\includegraphics[width=0.7\linewidth]{figures/04-clustering-e17} \end{center}
 
-Il y a maintenant 148 sujets sur 150 (98,7\%) qui sont bien regroupés et 2 qui font partie d'un mauvais groupe. C'est une légère amélioration par rapport à la solution avec la méthode de Ward pour laquelle il y avait 146 sujets sur 150 qui étaient bien regroupés. Mais encore une fois, en pratique on n'aura pas accès à cette information.
-
-Le champ des applications des \(K\)-moyennes est parfois surprenant. On peut considérer, par exemple, la compression d'images. La Figure \ref{fig:decelles} montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l'algorithme des \(K\)-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l'image.
+Le champ des applications des \(K\)-moyennes est parfois surprenant. Par exemple, \href{https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/}{cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais}. Un autre exemple incongru est la compression d'images: la Figure \ref{fig:decelles} montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l'algorithme des \(K\)-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l'image.
 
 \begin{figure}
 
@@ -1617,7 +1620,7 @@ Il peut être intéressant de comparer les résultats provenant d'une même mét
 
 Avec une méthode non hiérarchique, il est préférable de fournir des germes de départ « raisonnablement bon » (provenant d'une méthode hiérarchique par exemple) plutôt que de laisser l'algorithme les choisir au hasard.
 
-Le choix des variables est important. En général on veut créer des groupes d'individus qui sont homogènes par rapport à un certain aspect de leur comportement ou de leur situation. On ne doit alors inclure que les variables pertinentes à cet aspect. Par exemple, si le but de l'analyse est de segmenter nos clients selon leurs habitudes de consommation (genre de boutiques fréquenté, fréquence, etc.), on ne voudra peut-être pas inclure des variables démographiques. En fait, souvent l'analyse de regroupements servira justement à créer des groupes qui seront comparés par rapport à d'autres variables qui n'ont pas été utilisées pour créer les groupes. Dans notre exemple sur les voyages organisés, on a segmenté les voyageurs en trois groupes (indépendants, dépendants et sociables). Les auteurs de l'article (voir page 369 de l'article) ont comparé les trois groupes selon l'expérience de voyage, la taille de la communauté où ils habitent (avec des ANOVA), selon leur âge, leur revenu et leur éducation (avec des tests d'indépendance du khi-deux). Notez que ces tests sont réalisés sur des variables qui ne sont pas utilisées lors de la segmentation.
+Le choix des variables est important. En général on veut créer des groupes d'individus qui sont homogènes par rapport à un certain aspect de leur comportement ou de leur situation. On ne doit alors inclure que les variables pertinentes à cet aspect. Par exemple, si le but de l'analyse est de segmenter nos clients selon leurs habitudes de consommation (genre de boutiques fréquenté, fréquence, etc.), on ne voudra peut-être pas inclure des variables démographiques. En fait, souvent l'analyse de regroupements servira justement à créer des groupes qui seront comparés par rapport à d'autres variables qui n'ont pas été utilisées pour créer les groupes. Dans notre exemple sur les voyages organisés, on a segmenté les voyageurs en trois groupes (indépendants, dépendants et sociables). Les auteurs de l'article (voir page 369 de l'article) ont comparé les trois groupes selon l'expérience de voyage, la taille de la communauté où ils habitent (avec des ANOVA), selon leur âge, leur revenu et leur éducation (avec des tests d'indépendance du khi-deux). Notez que ces tests sont réalisés sur des variables qui ne sont pas utilisées lors de la segmentation, mais demeurent invalides si les données sont corrélées avec celle utilisées pour la segmentation.
 
 Le problème majeur avec l'analyse de regroupements est qu'il n'y a pas de façon claire de quantifier la performance de notre analyse. Lorsqu'on développe un modèle de prédiction (régression linéaire ou logistique par exemple), on peut estimer la performance de notre modèle d'une manière objective à l'aide de l'erreur quadratique de généralisation (régression linéaire) ou du taux de bonne classification (régression logistique). Ces quantités peuvent être estimées d'une manière objective en utilisant une méthode telle la validation croisée ou la division de l'échantillon. On ne peut faire de même avec l'analyse de regroupements car on n'a pas de variable réponse à prédire. Tout comme pour l'analyse factorielle, les connaissances à priori, le jugement, et les considérations pratiques font partie d'une analyse de regroupements.
 
@@ -1709,6 +1712,10 @@ J'ai ajusté tour à tour à tour les modèles polynomiaux jusqu'à l'ordre 10, 
 
 Voici le graphe de l'\(\widehat{\mathsf{EQM}}_a\) et de l'\(\mathsf{EQMG}\) en fonction de l'ordre (\(k\)) du modèle utilisé.
 
+\begin{verbatim}
+## Le chargement a nécessité le package : lattice
+\end{verbatim}
+
 \begin{center}\includegraphics[width=0.7\linewidth]{MATH60602_files/figure-latex/02-plotEQMa-1} \end{center}
 
 On voit clairement que l'\(\widehat{\mathsf{EQM}}_a\) diminue en fonction de l'ordre sur l'échantillon d'apprentissage: plus le modèle est complexe, plus l'erreur observée sur l'échantillon d'apprentissage est petite. La courbe \(\mathsf{EQM}\) donne l'heure juste, car il s'agit d'une estimation de la performance réelle des modèles sur de nouvelles données. On voit que le meilleur modèle est donc le modèle cubique (\(k=3\)), ce qui n'est pas surprenant puisqu'il s'agit du modèle que utilisé pour générer les données. On peut aussi remarquer d'autres éléments intéressants. Premièrement, on obtient un bon gain en performance (\(\mathsf{EQM}\)) en passant de l'ordre \(2\) à l'ordre \(3\). Ensuite, la perte de performance en passant de l'ordre \(3\) à \(4\), et ensuite à des ordres supérieurs n'est pas si sévère, même si elle est présente. Cela illustre empiriquement qu'il est préférable d'avoir un modèle un peu trop complexe que d'avoir un modèle trop simple. Il serait beaucoup plus grave pour la performance de choisir le modèle avec \(k=2\) que celui avec \(k=4\).
@@ -1799,9 +1806,9 @@ Le tableau qui suit résume ces quantités pour tous les modèles de l'ordre 1 �
 \caption{\label{tab:02-table1}Mesures d'adéquation du modèle linéaire et estimés de l'erreur}
 \centering
 \begin{tabular}[t]{lrrrrrr}
-\toprule{}
+\toprule
   & \(\mathsf{EQM}\) & \(\widehat{\mathsf{EQM}}_a\) & \(R^2\) & \(R^2_a\) & \(\mathsf{AIC}\) & \(\mathsf{BIC}\)\\
-\midrule{}
+\midrule
 1 & 3191 & 3674 & 0.65 & 0.65 & 1111 & 1119\\
 2 & 3133 & 2879 & 0.73 & 0.72 & 1088 & 1099\\
 3 & 2697 & 2620 & 0.75 & 0.74 & 1081 & 1094\\
@@ -1813,7 +1820,7 @@ Le tableau qui suit résume ces quantités pour tous les modèles de l'ordre 1 �
 8 & 2797 & 2531 & 0.76 & 0.74 & 1087 & 1113\\
 9 & 2811 & 2528 & 0.76 & 0.73 & 1089 & 1118\\
 10 & 2849 & 2519 & 0.76 & 0.73 & 1091 & 1122\\
-\bottomrule{}
+\bottomrule
 \end{tabular}
 \end{table}
 
@@ -1890,9 +1897,9 @@ Voici les étapes à suivre pour faire une validation croisée à \(K\) groupes 
 \caption{Illustration de la validation croisée: on scinde l'échantillon d'apprentissage en cinq groupes (abcisse) et à chaque étape, une portion différente des données est mise de côté et ne sert que pour la validation.}\label{fig:validationcroiseeillust}
 \end{figure}
 
-On recommande habituellement de prendre entre \(K=5\) et \(10\) groupes (le choix de 10 groupes est celui qui revient le plus souvent en pratique). Si on prend \(K=10\) groupes, alors chaque modèle est estimé avec 90\% des données et on prédit ensuite le 10\% restant. Comme on passe en boucle les 10 parties, chaque observation est prédite une et une seule fois à la fin. Il est important de souligner que les groupes sont formés de façon aléatoire et donc que l'estimé que l'on obtient peut être très variable, surtout si la taille de l'échantillon d'apprentissage est petite. Il arrive également que le modèle ajusté sur un groupe ne puisse pas être utilisé pour prédire les observations mises de côté, notamment si des varibles catégorielles sont présentes mais qu'une modalité n'est présente que dans un des groupes; ce problème e présente en pratiquesi certaines classes ont peu d'observations. Un échantillonage stratifié permet de pallier à cette lacune et de s'assurer d'une répartition plus homogène des variables catégorielles.
+On recommande habituellement de prendre entre \(K=5\) et \(10\) groupes (le choix de 10 groupes est celui qui revient le plus souvent en pratique). Si on prend \(K=10\) groupes, alors chaque modèle est estimé avec 90\% des données et on prédit ensuite le 10\% restant. Comme on passe en boucle les 10 parties, chaque observation est prédite une et une seule fois à la fin. Il est important de souligner que les groupes sont formés de façon aléatoire et donc que l'estimé que l'on obtient peut être très variable, surtout si la taille de l'échantillon d'apprentissage est petite. Il arrive également que le modèle ajusté sur un groupe ne puisse pas être utilisé pour prédire les observations mises de côté, notamment si des variables catégorielles sont présentes mais qu'une modalité n'est présente que dans un des groupes; ce problème se présente en pratique si certaines classes ont peu d'observations. Un échantillonnage stratifié permet de pallier à cette lacune et de s'assurer d'une répartition plus homogène des variables catégorielles.
 
-Le cas particulier \(K=n\) (en anglais \emph{leave-one-out cross validation}, ou \(\mathsf{LOOCV}\)) consiste à enlever une seule observation, à estimer le modèle avec les \(n-1\) autres et à valider à l'aide de l'observation laissée de côté et on recommence pour chaque observation. Pour les modèles linéaires, il existe des formules explicites qui nous permettent d'éviter d'ajuster \(n\) régressions par moindre carrés. Cette forme de validation croisée tend à être trop optimiste.
+Le cas particulier \(K=n\) (en anglais \emph{leave-one-out cross validation}, ou \(\mathsf{LOOCV}\)) consiste à enlever une seule observation, à estimer le modèle avec les \(n-1\) autres et à valider à l'aide de l'observation laissée de côté: on répète cette procédure pour chaque observation. Pour les modèles linéaires, il existe des formules explicites qui nous permettent d'éviter d'ajuster \(n\) régressions par moindre carrés. Cette forme de validation croisée tend à être trop optimiste.
 
 Le fichier \texttt{selection3\_cv.sas} contient une macro SAS permettant de faire une validation croisée pour un modèle de régression linéaire.
 Revenons à notre exemple où une seule variable explicative est disponible et où l'on cherche à déterminer un bon modèle polynomial. Le Tableau \ref{tab:02-table2} est le même que le Tableau \ref{tab:02-table1} mais avec une colonne en plus, la dernière, \(\mathsf{VC} (K=10)\). Il s'agit des estimations de l'\(\mathsf{EQM}\) obtenues avec la validation croisée à 10 groupes. Notez que si vous exécutez le programme, vous n'obtiendrez pas les mêmes valeurs car il y a un élément aléatoire dans ce processus. La colonne représente la moyenne de 100 réplications.
@@ -1902,9 +1909,9 @@ Revenons à notre exemple où une seule variable explicative est disponible et o
 \caption{\label{tab:02-table2}Mesures d'adéquation du modèle linéaire et estimés de l'erreur, incluant la validation croisée.}
 \centering
 \begin{tabular}[t]{lrrrrrrr}
-\toprule{}
+\toprule
   & \(\mathsf{EQM}\) & \(\widehat{\mathsf{EQM}}_a\) & \(R^2\) & \(R^2_a\) & \(\mathsf{AIC}\) & \(\mathsf{BIC}\) & \(\mathsf{VC} (K=10)\)\\
-\midrule{}
+\midrule
 1 & 3191 & 3674 & 0.65 & 0.65 & 1111 & 1119 & 3675\\
 2 & 3133 & 2879 & 0.73 & 0.72 & 1088 & 1099 & 2898\\
 3 & 2697 & 2620 & 0.75 & 0.74 & 1081 & 1094 & 2676\\
@@ -1916,7 +1923,7 @@ Revenons à notre exemple où une seule variable explicative est disponible et o
 8 & 2797 & 2531 & 0.76 & 0.74 & 1087 & 1113 & 2846\\
 9 & 2811 & 2528 & 0.76 & 0.73 & 1089 & 1118 & 2896\\
 10 & 2849 & 2519 & 0.76 & 0.73 & 1091 & 1122 & 2976\\
-\bottomrule{}
+\bottomrule
 \end{tabular}
 \end{table}
 
@@ -3491,10 +3498,6 @@ En utilisant ces expressions, on peut obtenir la probabilité de chaque catégor
 
 Nous considérons maintenant la variable \(Y_2\) du fichier \texttt{logit6.sas7bdat}, qui donne le nombre de visites au cinéma. Pour cet exemple, nous allons chercher à modéliser \(Y_2\) à l'aide de \(X\) (âge) en utilisant le modèle multinomial cumulé à cotes proportionnelles.
 
-\begin{verbatim}
-## `summarise()` ungrouping output (override with `.groups` argument)
-\end{verbatim}
-
 \begin{tabular}{rrrrrr}
 \toprule
 y2 & n & moyenne & écart-type & minimum & maximum\\
@@ -3661,9 +3664,9 @@ Ainsi, si on connaît la fonction de survie, on peut retrouver la fonction de ri
 \hypertarget{estimation-dune-courbe-de-survie-et-de-risque}{%
 \section{Estimation d'une courbe de survie et de risque}\label{estimation-dune-courbe-de-survie-et-de-risque}}
 
-L'estimateur nonparamétrique le plus couramment utilisé est l'estimateur de Kaplan--Meier. Cette méthode permet d'estimer la fonction de survie pour un échantillon contenant des observations censurées. De plus, elle est nonparamétrique en ce sens qu'on ne suppose aucun modèle ou hypothèse particulière. Dans \textbf{SAS}, la procédure \texttt{lifetest} fournit l'estimation de Kaplan--Meier de la courbe de survie et permet aussi d'estimer la fonction de risque correspondante.
+L'estimateur nonparamétrique le plus couramment utilisé pour l'estimation de la fonction de survie en présense de censure à droite est l'estimateur de Kaplan--Meier. De plus, cette méthode est nonparamétrique en ce sens qu'on ne suppose aucun modèle et qu'on suppose uniquement que la censure est non-informative. Dans \textbf{SAS}, la procédure \texttt{lifetest} fournit l'estimation de Kaplan--Meier de la courbe de survie et permet aussi d'estimer la fonction de risque correspondante.
 
-Supposons par exemple que l'échantillon ne contient aucune observation censurée (on a des temps exacts pour tous les sujets), l'estimateur de Kaplan--Meier de la fonction de survie à un temps \(t\) donné est alors simplement la proportion des observations dans l'échantillon qui possède un temps de survie supérieur à \(t\) --- on ne tient pas compte des observations censurées pour estimer la courbe de survie. Par convention, on considère qu'une observation censurée à droite faisait partie de l'ensemble d'observations à risque au temps de censure observé.
+Si l'échantillon ne contient aucune observation censurée (on a des temps exacts pour tous les sujets), l'estimateur de Kaplan--Meier de la fonction de survie à un temps \(t\) donné est alors simplement la proportion des observations dans l'échantillon qui possède un temps de survie supérieur à \(t\). Par convention, on considère qu'une observation censurée à droite faisait partie de l'ensemble d'observations à risque au temps de censure observé.
 
 On considère l'exemple des temps d'abonnement pour illustrer le concept; les commandes \textbf{SAS} sont dans \texttt{survival1\_fonction\_survie.sas}. L'estimation de la fonction de survie selon la méthode Kaplan--Meier est obtenue grâce aux commandes suivantes:
 
@@ -3756,10 +3759,12 @@ Ces courbes sont représentées dans la Figure \ref{fig:fig5-e10}. On voit que l
 
 Il est également possible de tester l'égalité des courbes de survie avec plus de deux groupes. Par exemple, s'il y a trois groupes, l'hypothèse nulle est alors \(\mathcal{H}_0: S_1(t)=S_2(t)=S_3(t)\) pour tout \(t\), versus l'alternative qu'au moins deux des fonctions ont une valeur différente pour au moins une valeur de \(t\). Les commandes \textbf{SAS} pour exécuter le test sont les mêmes: il suffit de mettre la variable identifiant les groupes à la ligne \texttt{strata}.
 
+L'estimateur de Kaplan--Meier ne permet pas l'inclusion de variables explicatives à proprement parler: si on peut veut les différences au niveau de la survie selon les modalités d'une variable explicative catégorielle, on divise pour ce faire l'échantillon en sous-groupes et on utilise l'estimateur de Kaplan--Meier pour chacune des modalités en gardant en tête que cela réduit la taille de l'échantillon disponible et que l'estimation résultante est possiblement trop variable pour être utile.
+
 \hypertarget{moduxe8le-uxe0-risques-proportionnels-de-cox}{%
 \section{Modèle à risques proportionnels de Cox}\label{moduxe8le-uxe0-risques-proportionnels-de-cox}}
 
-Le modèle à risques proportionnels de Cox (\emph{proportional hazard model}) est l'un des modèles les plus utilisés pour analyser des données de survie. C'est un modèle semi-paramétrique, car seulement une partie du modèle doit être spécifié. Il postule que les valeurs des variables explicatives ne changent pas dans le temps. Nous verrons subséquemment une extension qui permet d'incorporer des variables explicatives dont la valeur change dans le temps.
+Le modèle à risques proportionnels de Cox (\emph{proportional hazard model}) est l'un des modèles les plus utilisés pour analyser des données de survie.
 
 \hypertarget{description-du-moduxe8le-de-cox}{%
 \subsection{Description du modèle de Cox}\label{description-du-moduxe8le-de-cox}}
@@ -3768,7 +3773,7 @@ Soit \(h(t; \boldsymbol{x})\) la valeur de la fonction de risque au temps pour u
 \begin{align*}
 h(t; \boldsymbol{x}) = h_0(t)\exp(\beta_1x_1 + \cdots + \beta_p x_p)
 \end{align*}
-où \(h_0(t)\) est la fonction de risque de base; il n'est pas nécessaire de spécifier cette dernière, d'où la nature semiparamétrique du modèle de Cox.
+où \(h_0(t)\) est la fonction de risque de base; il n'est pas nécessaire de spécifier cette dernière, d'où la nature semiparamétrique du modèle de Cox. Le postulat de risques proportionnels implique que le terme de droite \(\exp(\mathbf{X}\boldsymbol{\beta})\) ne dépend pas du temps, et plus particulièrement \(\beta_1, \ldots, \beta_p\) ne dépend pas du temps. Nous verrons subséquemment une extension qui permet de prendre en compte les variables explicatives dont la valeur change dans le temps en scindant ces observations.
 
 Lorsque toutes les variables explicatives prennent la valeur zéro, \(\boldsymbol{X}=\boldsymbol{0}\), on recouvre \(h(t; \boldsymbol{0})= h_0(t)\). Par conséquent, la fonction \(h_0(t)\) peut être interprétée comme la fonction de risque lorsque toutes les variables explicatives valent zéro. Toutefois, tout comme la valeur de l'ordonnée à l'origine dans un modèle de régression linéaire, cette interprétation n'est pas nécessairement valide si la situation où toutes les variables explicatives valent zéro n'est pas possible ou si elle ne survient pas dans notre échantillon.
 

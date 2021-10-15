@@ -71,7 +71,7 @@ Une analyse factorielle cherchera à identifier automatiquement des groupes de v
 Les statistiques descriptives ainsi que la matrice des corrélations sont obtenues en exécutant les lignes suivantes:
 
 ```{sas 01-corr-SAS, eval=FALSE}
-proc corr data=multi.factor2;
+proc corr data=multi.factor;
 var x1-x12;
 run;
 ```
@@ -125,7 +125,7 @@ Je vous suggère de toujours tenter d’interpréter la solution avec une rotati
 Les chargements estimés pour la solution à quatre facteurs, suite à la rotation varimax, sont obtenus avec le code SAS suivant:
 
 ```{sas, eval=FALSE}
-proc factor data=multi.factor2 
+proc factor data=multi.factor 
  method=ml rotate=varimax nfact=4
  maxiter=500 flag=.3 hey;
  var x1-x12;
@@ -211,7 +211,7 @@ critères _classiques_ pour choisir le nombre de facteurs si l'on ajuste le mod�
 
 Les sorties qui suivent proviennent du programme: 
 ```{sas 01-facto-scree, eval=FALSE}
-proc factor data=multi.factor2 method=principal
+proc factor data=multi.factor method=principal
  scree rotate=varimax flag=.3;
  ods output Eigenvalues=eigen;
  var x1-x12;
@@ -254,19 +254,19 @@ Avec **SAS**, la procédure `corr` permet de calculer $\alpha$.
 
 ```{sas 01-alphacronbach, eval=FALSE}
 /* pour le facteur service */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x4 x8 x11;
 run;
 /* pour le facteur produits */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x3 x6 x9 x12;
 run;
 /* pour le facteur paiement */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x2 x7 x10;
 run;
 /* pour le facteur prix */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x1 x5;
 run;
 ```
@@ -315,7 +315,7 @@ Ma suggestion est d’utiliser la corrélation linéaire ordinaire avec des vari
 On peut refaire l’analyse des données portant sur le magasin dans **SAS** en utilisant la corrélation polychorique calculées par la procédure `corr` et en passant la sortie à la procédure `factor`.
 
 ```{sas 01-corrpolychorique, eval = FALSE}
-proc corr data=multi.factor2 polychoric out=poly_corr;
+proc corr data=multi.factor polychoric out=poly_corr;
 var x1-x12;
 run;
 
@@ -348,7 +348,7 @@ Jusqu’à présent, nous avons utilisé la méthode de rotation orthogonale var
 Le programme suivant fait une analyse factorielle avec quatre facteurs, mais en utilisant une rotation varimax oblique (option `rotate=obvarimax`).
 
 ```{sas obliqueproj, eval=FALSE}
-proc factor data=multi.factor2
+proc factor data=multi.factor
 maxiter=500 flag=.3 hey;
 var x1-x12;
 run;

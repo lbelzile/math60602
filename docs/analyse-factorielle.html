@@ -32,7 +32,7 @@
   
 <link rel="prev" href="index.html"/>
 <link rel="next" href="analyse-regroupements.html"/>
-<script src="libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -233,7 +233,7 @@ r_{j, k} = \frac{\sum_{i=1}^n (x_{i, j}-\overline{x}_j)(x_{i, k} -\overline{x}_{
 </ol>
 <p>Une analyse factorielle cherchera à identifier automatiquement des groupes de variables qui sont fortement corrélées entre elles.</p>
 <p>Les statistiques descriptives ainsi que la matrice des corrélations sont obtenues en exécutant les lignes suivantes:</p>
-<pre class="sas"><code>proc corr data=multi.factor2;
+<pre class="sas"><code>proc corr data=multi.factor;
 var x1-x12;
 run;</code></pre>
 <p><img src="figures/01-facto-e1.png" width="90%" style="display: block; margin: auto;" />
@@ -241,7 +241,7 @@ run;</code></pre>
 </div>
 <div id="description-du-modèle-danalyse-factorielle" class="section level2" number="2.4">
 <h2><span class="header-section-number">2.4</span> Description du modèle d’analyse factorielle</h2>
-<p>On dispose d’observations sur <span class="math inline">\(p\)</span> variables <span class="math inline">\(X_1, \ldots, X_p\)</span>. Le modèle d’analyse factorielle fait l’hypothèse que ces variables dépendent linéairement d’un plus petit nombre <span class="math inline">\(m\)</span> de variables aléatoires, <span class="math inline">\(F_1, \ldots, F_m\)</span>, appelées facteurs communs et de <span class="math inline">\(p\)</span> termes d’erreurs (ou facteurs spécifiques) <span class="math inline">\(\varepsilon_1, \ldots, \varepsilon_p\)</span>, de moyenne <span class="math inline">\({\mathsf E}\left(\varepsilon_i\right)=0\)</span> et de variance <span class="math inline">\({\mathsf{Var}}\left(\varepsilon_i\right)=\psi_i\)</span> pour <span class="math inline">\(i=1, \ldots, p\)</span>. Les facteurs <span class="math inline">\(F_1, \ldots, F_m\)</span> sont indépendants des erreurs, ont une moyenne nulle <span class="math inline">\({\mathsf E}\left(F_i\right)=0\)</span>, et une variance unitaire, <span class="math inline">\({\mathsf{Var}}\left(F_i\right)=1\)</span> (<span class="math inline">\(i=1, \ldots, p\)</span>) .</p>
+<p>On dispose d’observations sur <span class="math inline">\(p\)</span> variables <span class="math inline">\(X_1, \ldots, X_p\)</span>. Le modèle d’analyse factorielle fait l’hypothèse que ces variables dépendent linéairement d’un plus petit nombre <span class="math inline">\(m\)</span> de variables aléatoires, <span class="math inline">\(F_1, \ldots, F_m\)</span>, appelées facteurs communs et de <span class="math inline">\(p\)</span> termes d’erreurs (ou facteurs spécifiques) <span class="math inline">\(\varepsilon_1, \ldots, \varepsilon_p\)</span>, de moyenne <span class="math inline">\({\mathsf E}\left(\varepsilon_i\right)=0\)</span> et de variance <span class="math inline">\({\mathsf{Var}}\left(\varepsilon_i\right)=\psi_i\)</span> pour <span class="math inline">\(i=1, \ldots, p\)</span>. Les facteurs <span class="math inline">\(F_1, \ldots, F_m\)</span> ont une moyenne nulle <span class="math inline">\({\mathsf E}\left(F_i\right)=0\)</span>, et une variance unitaire, <span class="math inline">\({\mathsf{Var}}\left(F_i\right)=1\)</span> (<span class="math inline">\(i=1, \ldots, p\)</span>) .</p>
 <p>Spécifiquement, le modèle est
 <span class="math display">\[\begin{align*}
 X_1 &amp;= \mu_1 + \gamma_{11}F_1 + \gamma_{12} F_2 + \cdots + \gamma_{1m}F_m + \varepsilon_1\\
@@ -265,7 +265,7 @@ où <span class="math inline">\(\mu_i\)</span> est l’espérance de la variable
 <div id="estimation-des-facteurs" class="section level2" number="2.5">
 <h2><span class="header-section-number">2.5</span> Estimation des facteurs</h2>
 <p>Les chargements estimés pour la solution à quatre facteurs, suite à la rotation varimax, sont obtenus avec le code SAS suivant:</p>
-<pre class="sas"><code>proc factor data=multi.factor2 
+<pre class="sas"><code>proc factor data=multi.factor 
  method=ml rotate=varimax nfact=4
  maxiter=500 flag=.3 hey;
  var x1-x12;
@@ -361,7 +361,7 @@ critères <em>classiques</em> pour choisir le nombre de facteurs si l’on ajust
 <li>le diagramme d’éboulis: un graphique des valeurs propres ordonnées de la plus grande à la plus petite en fonction de <span class="math inline">\(1, \ldots, p\)</span>. Habituellement, ce graphe prendra la forme d’une chute assez importante suivie d’une stabilisation des valeurs propres. Avec ce critère, le nombre de facteurs est déterminé par le nombre de valeurs propres avant le début du coude où il a stabilisation apparente. L’idée est de choisir l’endroit où l’ajout d’un facteur supplémentaire n’apporte qu’un gain marginal faible. Ce critère est par contre subjectif et dépend de l’analyste. En ajoutant <code>scree</code> comme option à <code>proc factor</code>, on obtient le diagramme d’éboulis mais il est facile de le créer manuellement et le résultat est esthétiquement plus réussi.</li>
 </ul>
 <p>Les sorties qui suivent proviennent du programme:</p>
-<pre class="sas"><code>proc factor data=multi.factor2 method=principal
+<pre class="sas"><code>proc factor data=multi.factor method=principal
  scree rotate=varimax flag=.3;
  ods output Eigenvalues=eigen;
  var x1-x12;
@@ -400,19 +400,19 @@ Plus le coefficient est élevé, plus les variables ont tendance à être corré
 où <span class="math inline">\(k\)</span> est le nombre de variables dans l’échelle, <span class="math inline">\(S^2\)</span> est la variance empirique de la somme des variables et <span class="math inline">\(S_i^2\)</span> est la variance empirique de la <span class="math inline">\(i\)</span>e variable. En pratique, on voudra que ce coefficient soit au moins égal à 0, 6 pour être satisfait de la cohérence interne de l’échelle.</p>
 <p>Avec <strong>SAS</strong>, la procédure <code>corr</code> permet de calculer <span class="math inline">\(\alpha\)</span>.</p>
 <pre class="sas"><code>/* pour le facteur service */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x4 x8 x11;
 run;
 /* pour le facteur produits */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x3 x6 x9 x12;
 run;
 /* pour le facteur paiement */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x2 x7 x10;
 run;
 /* pour le facteur prix */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x1 x5;
 run;</code></pre>
 
@@ -455,7 +455,7 @@ variables continues. Par contre, en pratique, on l’utilise souvent aussi avec 
 <p>Dans ce genre de situation, on peut aussi utiliser d’autres mesures d’associations au lieu du coefficient de corrélation linéaire. Par exemple, on peut utiliser la corrélation polychorique, qui est une mesure de corrélation entre deux variables ordinales. La corrélation tétrachorique correspond au cas spécial de deux variables binaires.</p>
 <p>Ma suggestion est d’utiliser la corrélation linéaire ordinaire avec des variables ordinales (même binaires). Si les résultats ne sont pas satisfaisants, on peut alors essayer avec d’autres mesures d’associations.</p>
 <p>On peut refaire l’analyse des données portant sur le magasin dans <strong>SAS</strong> en utilisant la corrélation polychorique calculées par la procédure <code>corr</code> et en passant la sortie à la procédure <code>factor</code>.</p>
-<pre class="sas"><code>proc corr data=multi.factor2 polychoric out=poly_corr;
+<pre class="sas"><code>proc corr data=multi.factor polychoric out=poly_corr;
 var x1-x12;
 run;
 
@@ -482,7 +482,7 @@ Figure 2.9: Chargements estimés pour la corrélation polychorique
 <h3><span class="header-section-number">2.8.3</span> Autres méthodes de rotation des facteurs</h3>
 <p>Jusqu’à présent, nous avons utilisé la méthode de rotation orthogonale varimax. Il existe de nombreuses autres méthodes de rotations orthogonales telles, orthomax, quartimax, parsimax et equimax (voir la rubrique d’aide de <strong>SAS</strong>). Rappelez-vous que le modèle d’analyse factorielle de base suppose que les facteurs sont non corrélés. Les rotations de type obliques quant à elles permettent d’introduire de la corrélation entre les facteurs. Quelquefois, une telle rotation facilitera davantage l’interprétation des facteurs qu’une rotation orthogonale. <strong>SAS</strong> permet l’utilisation de plusieurs méthodes de rotation obliques qui sont documentées dans la rubrique d’aide. Notez qu’il faut être prudent lorsqu’on utilise une méthode de rotation oblique car il y aura trois matrices de chargements après rotation (coefficients de régression normalisés, corrélations semi-partielles ou corrélations). On suggère l’utilisation de la première, soit la représentation avec <strong>coefficients de régression normalisés</strong>. Il s’agit des coefficients de régression si on voulait prédire les variables à l’aide des facteurs. Ils indiquent donc à quel point chaque facteur est associé à chaque variable. Dans le cas d’une rotation orthogonale, ces trois matrices sont les mêmes et il s’agit de trois interprétations valides des chargements.</p>
 <p>Le programme suivant fait une analyse factorielle avec quatre facteurs, mais en utilisant une rotation varimax oblique (option <code>rotate=obvarimax</code>).</p>
-<pre class="sas"><code>proc factor data=multi.factor2
+<pre class="sas"><code>proc factor data=multi.factor
 maxiter=500 flag=.3 hey;
 var x1-x12;
 run;</code></pre>

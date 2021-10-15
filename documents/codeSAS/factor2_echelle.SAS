@@ -8,10 +8,9 @@ prix pour chaque individu de l'échantillon.
 
 Note: le jeu de données créé, "echelle", ne sera pas conservé lorsque vous quitterez SAS. Pour
 le conserver, il faut inscrire "data=multi.echelle" au lieu de "data=echelle".
-(p. 33 et 43-48)
 */
 data echelle;
-set multi.factor2;
+set multi.factor;
 prix=mean(x1,x5);
 paiement=mean(x2,x7,x10);
 produit=mean(x3,x6,x9,x12);
@@ -31,19 +30,19 @@ et non pas les variables que nous venons de créer (prix, paiement, etc.).
 
 
 /* pour le facteur service */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x4 x8 x11;
 run;
 /* pour le facteur produits */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x3 x6 x9 x12;
 run;
 /* pour le facteur paiement */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x2 x7 x10;
 run;
 /* pour le facteur prix */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x1 x5;
 run;
 

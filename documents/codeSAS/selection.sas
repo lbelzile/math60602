@@ -190,10 +190,11 @@ Commandes pour effectuer une recherche exhaustive avec le critère du R carré e
  selection=stepwise(slentry=0.6 slstay=0.6 select=SL) hier=none;
  run;
  /* On reprend la sortie, mais cette fois
- on fait une recherche exhaustive des modèles restants et on choisit
+ on fait une recherche exhaustive des modèles restants; la liste des variables choisies est &_GLSIND, tandis que &_GLSMOD contient toutes les variables de départ. 
+ On choisit
  le modèle par la suite qui a le plus petit SBC ou AIC */
  proc glmselect data=glmselectoutput;
- model ymontant= &_GLSMOD / selection=backward(stop=1 choose=sbc) hier=none;
+ model ymontant= &_GLSIND / selection=backward(stop=1 choose=sbc) hier=none;
  run;
   
  proc glmselect data=glmselectoutput;
@@ -295,8 +296,8 @@ C'est utile pour "modelaverage" qui ne retourne pas l'EMQ (mais ça marche plus 
 /* Il est plus logique de ne considérer que des interactions entre
 variables catégorielles (incluant les variables binaires) et les
 autres. Cela réduit le champ des variables possibles, mais il y a
-peu de logique à avoir des produits de variables continues.
-Une solution pour créer une matrice sans avoir à spécifier à chaque fois une liste interminable de variables est la suivant
+moins de logique à avoir des produits de variables continues.
+Une solution pour créer une matrice sans avoir à spécifier à chaque fois une liste interminable de variables est la suivante
 
 1) utiliser "effect" avec "collection" pour créer les interactions (mais si on fait la sélection à cette étape, c'est tout ou rien pour l'inclusion/exclusion de l'ensemble dans "collection").
 2) dans la procédure "glmselect" avec "selection=none", utiliser "outdesign" pour créer une base de données avec toutes les colonnes désirées (comme si on faisait la spécification manuelle dans "prepare_DBM")

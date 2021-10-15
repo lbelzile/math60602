@@ -56,7 +56,9 @@ utilisée précédemment avec toutes les interactions.
 Plutôt que d'ajuster les modèles pour chaque étape, 
 on approximate l'adéquation du modèle avec le test
 du score via l'option "fast"; cela fait en sorte 
-que les valeurs de AIC/SBC sont approximatives */
+que les valeurs de AIC/SBC sont approximatives 
+Ici, on passe toutes les variables créées par "glmselect"
+*/
 
 proc hplogistic data=train;
 model yachat(ref='0')= &_GLSmod;

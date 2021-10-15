@@ -148,10 +148,11 @@ Commandes pour effectuer une recherche exhaustive avec le critère du R carré e
  selection=stepwise(slentry=0.6 slstay=0.6 select=SL) hier=none;
  run;
  /* On reprend la sortie, mais cette fois
- on fait une recherche exhaustive des modèles restants et on choisit
- le modèle par la suite qui a le plus petit SBC ou AIC */
+ on fait une recherche exhaustive des modèles restants (variables choisies sont dans &_GLSIND, tandis que &_GLSMOD recense toutes les variables de départ.
+ On choisit le modèle par la suite qui a le 
+ plus petit BIC/SBC ou AIC */
  proc glmselect data=glmselectoutput;
- model ymontant= &_GLSMOD / selection=backward(stop=1 choose=sbc) hier=none;
+ model ymontant= &_GLSIND / selection=backward(stop=1 choose=sbc) hier=none;
  run;
   
  proc glmselect data=glmselectoutput;

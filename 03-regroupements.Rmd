@@ -54,7 +54,7 @@ Les buts de l'étude étaient
 2) Examiner les caractéristiques de ces groupes.
 3) Examiner les caractéristiques démographiques de ces groupes.
 
-Nous allons nous intéresser principalement aux deux premiers points ici. Un questionnaire a été élaboré afin d'évaluer l'importance de 55 caractéristiques des opérateurs de voyages organisés en autobus et des voyages eux-mêmes à l'aide d'une échelle de Likert à cinq points, allant de extrêmement important ($\texttt{5}$) à pas important du tout ($\texttt{1}$). Des données sont disponibles pour 150 sujets (il y en avait 817 dans l'article). Elles se trouvent dans le fichier `cluster1.sas7bdat`.
+Nous allons nous intéresser principalement aux deux premiers points ici. Un questionnaire a été élaboré afin d'évaluer l'importance de 55 caractéristiques des opérateurs de voyages organisés en autobus et des voyages eux-mêmes à l'aide d'une échelle de Likert à cinq points, allant de extrêmement important ($\texttt{5}$) à pas important du tout ($\texttt{1}$). Des données sont disponibles pour 150 sujets (il y en avait 817 dans l'article). Elles se trouvent dans le fichier `cluster.sas7bdat`.
 
 Au lieu de faire une analyse de regroupements avec les 55 items du questionnaire, les auteurs ont choisi de faire une analyse factorielle avec rotation varimax au préalable afin de réduire le nombre de variables à six facteurs interprétables  :
 
@@ -65,7 +65,7 @@ Au lieu de faire une analyse de regroupements avec les 55 items du questionnaire
 - Matériel publicitaire ($X_5$): formé de deux items.
 - Réputation ($X_6$): formé de deux items.
 
-On voit donc que 22 items, parmi les 55, sont utilisés dans la définition de ces six facteurs. Dans l'article, les auteurs ont décidé d'inclure ces 22 items dans l'analyse de regroupements. Pour notre part et afin de simplifier l'exemple, nous allons plutôt créer six nouvelles échelles en faisant la moyenne des items de chaque facteur ci-haut et utiliser seulement ces six échelles dans l'analyse de regroupements. Les valeurs de ces six variables pour les 150 sujets se trouvent dans le fichier `cluster1a.sas7bdat` et sont toutes dans l'intervalle $[1,5]$, puisqu'elles représentent la moyenne d'échelles de Likert.
+On voit donc que 22 items, parmi les 55, sont utilisés dans la définition de ces six facteurs. Dans l'article, les auteurs ont décidé d'inclure ces 22 items dans l'analyse de regroupements. Pour notre part et afin de simplifier l'exemple, nous allons plutôt créer six nouvelles échelles en faisant la moyenne des items de chaque facteur ci-haut et utiliser seulement ces six échelles dans l'analyse de regroupements. Les valeurs de ces six variables pour les 150 sujets se trouvent dans le fichier `cluster.sas7bdat` et sont toutes dans l'intervalle $[1,5]$, puisqu'elles représentent la moyenne d'échelles de Likert.
 
 ```{r fig4-e1, echo = FALSE, out.width='80%', fig.align = "center"}
 knitr::include_graphics("figures/04-clustering-e1.png")
@@ -80,18 +80,32 @@ Une première idée consiste à faire le graphe de toutes les paires de variable
 i) il y aura beaucoup de graphes si le nombre de variables est grand et ii) on examine seulement les relations bivariées.
 
 
-```{r 04-pairplot, echo = FALSE, eval = TRUE, fig.width = 7, fig.height=7, out.width='100%', fig.align = "center"} 
+```{r 04-pairplot, echo = FALSE, eval = TRUE, fig.width = 9, fig.height=16, out.width='90%', fig.align = "center"} 
 url <- "https://lbelzile.bitbucket.io/MATH60602/cluster1.sas7bdat"
 cluster1 <- haven::read_sas(url)
-par(mar = c(4,4,1,1))
-pairs(cluster1[,1:6], 
-     col = cluster1$cluster_vrai, 
-     pch = 14 + cluster1$cluster_vrai, 
-     bty = "l")
+library(ggplot2)
+library(patchwork)
+scatter_fun = function(x, y) {
+     ggplot(cluster1, aes(x = .data[[x]], y = .data[[y]]) ) +
+          geom_point() +
+          theme_classic()
+}
+plot_list <- list()
+ind <- 0L
+for(i in 1:5){
+  for(j in ((i+1):6)){
+    ind <- ind + 1L
+    plot_list[[ind]] <- scatter_fun(paste0("x",i), paste0("x",j))
+  }
+}
+cowplot::plot_grid(plotlist = plot_list,nrow = 5, ncol = 3)
+# pairs(cluster1[,1:6], 
+#      col = cluster1$cluster_vrai, 
+#      pch = 14 + cluster1$cluster_vrai, 
+#      bty = "l")
 ```
 
-Il n'est pas nécessairement évident de détecter des groupes d'observations ainsi, alors qu'on n'a déjà que six variables. On connaît les vrais groupes ici mais ce n'est pas le cas en pratique.
-
+Il n'est pas nécessairement évident de détecter des groupes d'observations ainsi, alors qu'on n'a déjà que six variables.
 
 
 ### Analyse en composantes principales
@@ -121,21 +135,42 @@ knitr::include_graphics("figures/04-clustering-e18.png")
 Cette étape est généralement effectuée avant l'analyse de regroupement.
 Le fichier `cluster7_acp.sas` contient les commandes pour faire une analyse en composantes principales et sauvegarder les composantes principales afin d'en faire des graphiques. La sortie inclut une mesure de la variance cumulée des $K$ premières valeurs propres. La colonne `Proportion` donne la proportion de la variance totale qui est expliquée par la composante correspondante. La colonne `Cumulé` donne le cumul de variance totale expliquée par les composantes jusque là. Ainsi, les deux premières composantes principales reproduisent 76,7\% de la variance totale originale.
 
-Même en ne connaissant pas l'appartenance des observations au regroupement, on distingue assez clairement trois groupes. Le panneau droit du graphique \@ref(fig:04-acp) montre les deux composantes principales, mais avec l'identification des vrais groupes (qu'on ne connaîtra pas en pratique).
+Même en ne connaissant pas l'appartenance des observations au regroupement, on distingue assez clairement trois groupes. Le panneau droit du graphique \@ref(fig:04-acp) montre les deux composantes principales, mais avec l'identification des groupes obtenus suite à l'analyse de regroupement avec la méthode des $K$-moyennes couverte plus tard.
 
-```{r 04-acp, eval = TRUE, echo = FALSE, out.width='90%', fig.align = "center", fig.cap = "Projection des observations sur les composantes principales avec la vraie identité des groupes"}
+```{r 04-acp, eval = TRUE, echo = FALSE, out.width='90%', fig.align = "center", fig.cap = "Projection des observations sur les composantes principales avec les regroupements finaux créés à la fin du chapitre."}
+library(ggplot2)
 url <- "https://lbelzile.bitbucket.io/MATH60602/cluster1.sas7bdat"
 cluster1 <- haven::read_sas(url)
 par(mar = c(4,4,1,1), mfrow = c(1,2))
-plot(princomp(cluster1[,1:6])$scores[,1:2], 
-     xlab = "composante principale 1", 
-     ylab= "composante principale 2", bty = "l", pch = 20)
-
-plot(princomp(cluster1[,1:6])$scores[,1:2], 
-     xlab = "composante principale 1", 
-     ylab= "composante principale 2", bty = "l",  
-     col = cluster1$cluster_vrai, 
-     pch = 14 + cluster1$cluster_vrai)
+clusters <- kmeans(x = cluster1[,1:6], centers = 3)$cluster
+cp <- princomp(cluster1[,1:6])$scores[,1:2]
+data <- data.frame(prin1 = cp[,1], 
+                   prin2 = cp[,2], 
+                  regroupements = factor(clusters))
+g1 <- ggplot(data = data, aes(x = prin1, y = prin2)) + 
+  geom_point() + 
+  labs(x = "composante principale 1", 
+       y = "composante principale 2") +
+   theme_classic()
+g2 <- ggplot(data = data, aes(x = prin1, 
+                              y = prin2, 
+                              col = regroupements)) + 
+  geom_point() + 
+  theme_classic() + 
+  theme(legend.position ="none") + 
+  labs(x = "composante principale 1", 
+       y = "composante principale 2") 
+library(patchwork)
+g1 + g2
+# plot(princomp(cluster1[,1:6])$scores[,1:2], 
+#      xlab = "composante principale 1", 
+#      ylab= "composante principale 2", bty = "l", pch = 20)
+# 
+# plot(princomp(cluster1[,1:6])$scores[,1:2], 
+#      xlab = "composante principale 1", 
+#      ylab= "composante principale 2", bty = "l",  
+#      col = cluster1$cluster_vrai, 
+#      pch = 14 + cluster1$cluster_vrai)
 ```
 
 
@@ -157,22 +192,20 @@ On peut calculer cette distance pour tous les $M$ groupes et définir l'**homog�
 \end{align*}
 Plus l'homogénéité globale $\mathsf{SCD}_G$  est petite, mieux c'est. Pour passer de $M$ à $M-1$ groupes, la méthode de Ward va regrouper les deux groupes qui feront que $\mathsf{SCD}_G$ sera la plus petite possible.
 
-On procède à une analyse simplifiée des données pour le voyage organisé avec deux variables et vingt observations afin d'être en mesure de visualiser l'algorithme de groupement. Les données se trouvent dans le fichier `cluster1a`. 
+On procède à une analyse simplifiée des données pour le voyage organisé avec deux variables et vingt observations afin d'être en mesure de visualiser l'algorithme de groupement. 
 
 ```{r 04-plottrueclust, eval = TRUE, echo = FALSE, out.width='90%', fig.align = "center"}
 url <- "https://lbelzile.bitbucket.io/MATH60602/cluster1a.sas7bdat"
 cluster1a <- haven::read_sas(url)
-attach(cluster1a)
 par(mar = c(4,4,1,2))
-plot(y = x1, x = x2, col = cluster_vrai, pch = 14 + cluster_vrai, 
+with(cluster1a, plot(y = x1, x = x2, pch = 19, 
      bty = "l", xlab = expression(x[2]), 
      ylab = expression(x[1]), 
-     xlim = c(1,5.4))
-text(x2, x1, 1:nrow(cluster1a), pos = 4)
-detach(cluster1a)
+     xlim = c(1,5.4)))
+with(cluster1a, text(x2, x1, 1:nrow(cluster1a), pos = 4))
+
 ```
 
-Comme souvent, les données ont été simulées et le nombre de regroupements est donc connu (de même que l'appartenance des différentes observations aux regroupements). La variable qui donne l'identité du vrai groupe est `cluster_vrai`. Il est important de bien comprendre qu'en pratique, on ne connaît ni le nombre de groupes, ni quelle observation appartient à quel groupe. Ici, on se servira du fait qu'on connaît les vrais groupes pour examiner la performance de l'analyse de regroupements. 
 
 La première analyse utilise la méthode de Ward. Les commandes **SAS** se trouvent dans `cluster1_simplifie.sas`; la présentation de la procédure et de la syntaxe est différée. L'historique de regroupement est décrit dans la sortie **SAS**. La première colonne donne le nombre de groupes. Au départ, les observations 16 et 19 sont regroupées, il y a maintenant 19 groupes. Ensuite, les observations 11 et 13 sont regroupées, il y a maintenant 18 groupes. Au moment de passer de 14 à 13 groupes, c'est le groupe formé à l'étape 16 qui est fusionné avec l'observation 2 et ainsi de suite. La colonne `Fréq` donne le nombre d'observations dans le groupe qui vient d'être formé.
 
@@ -208,7 +241,7 @@ knitr::include_graphics("figures/04-clustering-e5.png")
 La procédure **SAS** qui permet d'effectuer une analyse de regroupements hiérarchique est `cluster`. Le fichier `cluster2_complet.sas` explique les différentes options disponibles.
 
 ```{sas 04-clust, eval= FALSE, echo= TRUE}
-proc cluster data=temp method=ward outtree=temp1 nonorm rsquare ccc;
+proc cluster data=temp method=ward outtree=temp1 nonorm rsquare;
 var x1-x6;
 copy id cluster_vrai x1-x6;
 ods output stat.cluster.ClusterHistory=criteres;
@@ -216,7 +249,7 @@ run;
 ```
 
 
-On peut représenter graphique le R carré (Figure \@ref(fig:fig4-e7)), le Rcarré semi partiel (Figure \@ref(fig:fig4-e8)) et le critère de classification cubique (Figure \@ref(fig:fig4-e9)) en fonction du nombre de groupes. Ce derniers est plus technique mais son interprétation est simple, plus sa valeur est élevée, mieux c'est. Par contre, il peut avoir plusieurs maximums locaux et, de ce fait, ce n'est donc pas toujours évident de choisir le nombre de groupes avec ce critère. Il semble encore une fois que choisir trois groupes semble raisonnable.
+On peut représenter graphique le R carré (Figure \@ref(fig:fig4-e7)), le R carré semi partiel (Figure \@ref(fig:fig4-e8)) en fonction du nombre de groupes. 
 
 ```{r fig4-e7, echo = FALSE, out.width='80%', fig.align = "center", fig.cap = "R carré en fonction des regroupements hiérarchiques"}
 knitr::include_graphics("figures/04-clustering-e8.png")
@@ -226,9 +259,6 @@ knitr::include_graphics("figures/04-clustering-e8.png")
 knitr::include_graphics("figures/04-clustering-e9.png")
 ```
 
-```{r fig4-e9, echo = FALSE, out.width='80%', fig.align = "center",fig.cap = "Critère de classification cubique en fonction des regroupements hiérarchiques"}
-knitr::include_graphics("figures/04-clustering-e10.png")
-```
 
 Parfois, l'information est présentée sous forme de dendogramme, qui trace l'arbre et la fusion des groupes. On peut ainsi retracer l'historique de la procédure hiérarchique. Celui produit par **SAS** donne, à un facteur multiplicatif près, le $\mathsf{SPRSQ}$. Il n'y a donc pas de nouvelles informations ici. On voit que c'est lorsqu'on passe de trois à deux groupes, qu'il y a une bonne perte d'homogénéité. 
 
@@ -472,7 +502,7 @@ L'interprétation des groupes est la même que précédemment.
 knitr::include_graphics("figures/04-clustering-e17.png")
 ```
 
-Le champ des applications des $K$-moyennes est parfois surprenant. Par exemple, [https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/](cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais). Un autre exemple incongru est la compression d'images: la Figure \@ref(fig:decelles) montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l'algorithme des $K$-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l'image.
+Le champ des applications des $K$-moyennes est parfois surprenant. Par exemple, [cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais](https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/). Un autre exemple incongru est la compression d'images: la Figure \@ref(fig:decelles) montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l'algorithme des $K$-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l'image.
 
 
 ```{r decelles, echo = FALSE, eval = TRUE,  out.width='80%', fig.align = "center", fig.cap= "Compression d'image avec l'algorithme des $K$-moyennes: image originale (en haut à gauche), compression avec trois (en haut à droite), quatre (en bas à gauche) et 10 (en bas à droite) couleurs."}

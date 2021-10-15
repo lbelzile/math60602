@@ -14,19 +14,19 @@
 *1C - Quels sont les éléments les plus importants pour un client?;
 *1D - Pour quels éléments y a-t-il le plus de consensus entre les répondants?;
 
-proc means data=multi.factor2;
+proc means data=multi.factor;
   var X1-X12;
 run;
 
-proc sgplot data=multi.factor2;             
+proc sgplot data=multi.factor;             
 vbar X7;
 run;
 
-proc sgplot data=multi.factor2;             
+proc sgplot data=multi.factor;             
 vbar X4;
 run;
 
-proc sgplot data=multi.factor2;             
+proc sgplot data=multi.factor;             
 vbar X5;
 run;
 
@@ -36,40 +36,38 @@ run;
 
 *2A - Calculez la corrélation entre X8 et X11 et décrivez cette corrélation;
 
-proc corr data=multi.factor2;
+proc corr data=multi.factor;
 var X8 X11;
 run;
 *Ce graphique permet de visualiser la relation entre les 2 variables;
 *Regardez l'estimation de la droite plutôt que le nuage de points;
-proc sgscatter data=multi.factor2;         
-plot X8*X11 / reg=(degree=1);
-run;
-
-*2B - Calculez la corrélation entre X3 et X7 et décrivez cette corrélation;
-
-proc corr data=multi.factor2;
-var X3 X7;
-run;
-
-proc sgplot data=multi.factor2;         
+proc sgplot data=multi.factor;         
 heatmap x=x8 y=x11;
 reg x=x8 y=x11 / jitter;
 run;
 
 *2B - Calculez la corrélation entre X3 et X7 et décrivez cette corrélation;
 
-proc corr data=multi.factor2;
+proc corr data=multi.factor;
 var X3 X7;
 run;
-proc sgplot data=multi.factor2;         
+proc sgplot data=multi.factor;         
 heatmap x=x3 y=x7;
 reg x=x3 y=x7 / jitter;
 run;
 
+*2C - Calculez la corrélation entre X1 et X3 et décrivez cette corrélation;
+
+proc corr data=multi.factor;
+var X1 X3;
+run;
+proc sgscatter data=multi.factor;         
+plot X1*X3 / reg=(degree=1);
+run;
 
 
 *Calcul de la matrice de corrélation entre toutes les variables;
-proc corr data=multi.factor2;
+proc corr data=multi.factor;
 var x1-x12;
 run; 
 
@@ -85,10 +83,17 @@ maxiter=500: l'algorithme ne fera pas plus de 500 itérations pour tenter de con
 nfact=4: pour fixer à 4 le nombre de facteurs. 
 hey: permet d'éviter un arrêt prématuré du processus d'estimation (explications en classe).
 (p. 32);
-
-proc factor data=multi.factor2 method=ml rotate=varimax nfact=4 maxiter=500 flag=.3  hey;
+ods trace on;
+proc factor 
+data=multi.factor 
+method=ml 
+rotate=varimax 
+nfact=4 
+maxiter=500 
+flag=.3 heywood;
 var x1-x12;
-run; 
+run;
+ods trace off;
 
 /* Ici, le test khi-deux (statistique du rapport de vraisemblance?) suit une loi 
 nulle khi-deux avec 24 degrés de liberté. 
@@ -112,29 +117,30 @@ run;
 *4A - Ajustez les modèles avec 1, 2, 3, 4 et 5 facteurs afin de choisir le nombre
 de facteurs à l'aides des critères AIC, SBC et du test d'hypothèse;
 title "Solution à un facteur";
-proc factor data=multi.factor2 method=ml rotate=varimax nfact=1 maxiter=500 flag=.3 hey;
+proc factor data=multi.factor method=ml rotate=varimax nfact=1 maxiter=500 flag=.3 hey;
 var x1-x12;
 * on ne sélectionne que le tableau avec les critères d'information;
 ods select Factor.InitialSolution.FitMeasures; 
 run; 
 title "Solution à deux facteurs";
-proc factor data=multi.factor2 method=ml rotate=varimax nfact=2 maxiter=500 flag=.3 hey;
+proc factor data=multi.factor method=ml rotate=varimax nfact=2 maxiter=500 flag=.3 hey;
 var x1-x12;
 ods select Factor.InitialSolution.FitMeasures;
 run; 
 title "Solution à trois facteurs";
-proc factor data=multi.factor2 method=ml rotate=varimax nfact=3 maxiter=500 flag=.3 hey;
+proc factor data=multi.factor method=ml rotate=varimax nfact=3 maxiter=500 flag=.3 hey;
 var x1-x12;
+ods select Factor.InitialSolution.FitMeasures;
 run; 
 title "Solution à quatre facteurs";
-proc factor data=multi.factor2 method=ml rotate=varimax nfact=4 maxiter=500 flag=.3 hey;
+proc factor data=multi.factor method=ml rotate=varimax nfact=4 maxiter=500 flag=.3 hey;
 var x1-x12;
 ods select Factor.InitialSolution.FitMeasures;
 run; 
 *Note: l'option priors=one est nécessaire ici car sinon le modèle à 4 facteurs 
 sera retourné à cause du critère MINEIGEN;
 title "Solution à cinq facteur";
-proc factor data=multi.factor2 method=ml rotate=varimax nfact=5 maxiter=500 flag=.3 hey priors=one;
+proc factor data=multi.factor method=ml rotate=varimax nfact=5 maxiter=500 flag=.3 hey priors=one;
 var x1-x12;
 ods select Factor.InitialSolution.FitMeasures;
 run; 
@@ -147,7 +153,7 @@ En ne spécifiant pas "nfact", SAS choisit par défaut le nombre
 de facteurs selon le critère des valeurs propres supérieures à 1.
 L'option "scree" demande le diagramme d'éboulis.;
 
-proc factor data=multi.factor2 method=principal plot=scree rotate=varimax flag=.3 ;
+proc factor data=multi.factor method=principal plot=scree rotate=varimax flag=.3 ;
 var x1-x12;
 run; 
 
@@ -157,7 +163,7 @@ run;
 *Création de quatre échelles;
 
 data echelle;
-set multi.factor2;
+set multi.factor;
 prix=mean(x1,x5);
 paiement=mean(x2,x7,x10);
 produit=mean(x3,x6,x9,x12);
@@ -176,19 +182,19 @@ run;
 ligne de la procédure CORR.;
 
 /* pour le facteur service */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x4 x8 x11;
 run;
 /* pour le facteur produits */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x3 x6 x9 x12;
 run;
 /* pour le facteur paiement */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x2 x7 x10;
 run;
 /* pour le facteur prix */
-proc corr data=multi.factor2 alpha;
+proc corr data=multi.factor alpha;
 var x1 x5;
 run;
 
@@ -201,7 +207,7 @@ contenir la matrice des corrélations polychoriques.
 */
 
 
-proc corr data=multi.factor2 polychoric out=corr_poly;
+proc corr data=multi.factor polychoric out=corr_poly;
 var x1-x12;
 run;
 
@@ -218,7 +224,7 @@ run;
 *Complément : Pour comprendre davantage...;
 
 *Obtenons la matrice de corrélation ordinaire;
-proc corr data=multi.factor2 out=matcorr;
+proc corr data=multi.factor out=matcorr;
 var x1-x12;
 run; 
 
@@ -228,14 +234,14 @@ var x1-x12;
 run; 
 
 *Avec le jeu de données;
-proc factor data=multi.factor2  method=ml rotate=varimax nfact=4 maxiter=500 flag=.3  hey;
+proc factor data=multi.factor  method=ml rotate=varimax nfact=4 maxiter=500 flag=.3  hey;
 var x1-x12;
 run; 
 
 *Partie 7 : Analyse factorielle avec la rotation varimax oblique ("obvarimax");
 *-----------------------------------------------------------------------------; 
 
-proc factor data=multi.factor2 method=ml rotate=obvarimax nfact=4 maxiter=500 flag=.3 hey;
+proc factor data=multi.factor method=ml rotate=obvarimax nfact=4 maxiter=500 flag=.3 hey;
 var x1-x12;
 run; 
 
@@ -244,7 +250,7 @@ run;
 *L'option "score out=scorefact" va créer un fichier de données qui 
 s'appelera "scorefact" et qui contiendra les 4 scores factoriels;
 
-proc factor data=multi.factor2 method=ml rotate=varimax nfact=4 maxiter=500 hey score out=scorefact;
+proc factor data=multi.factor method=ml rotate=varimax nfact=4 maxiter=500 hey score out=scorefact;
 var x1-x12;
 run; 
 
@@ -265,6 +271,5 @@ proc corr data=temp;
 var factor1-factor4;
 with service produit paiement prix;
 run;
-
 
 

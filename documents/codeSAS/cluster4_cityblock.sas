@@ -2,7 +2,6 @@
 /*
 Analyse de regroupement avec la distance city-block, au lieu de la
 distance euclidienne que nous avons utilisé jusqu'à maintenant. 
-(p. 271)
 */
 
 /* Création d'une variable particuliére pour identifier les sujets.
@@ -10,7 +9,7 @@ Cette variable, nommée "id1", prendra les valeurs OB1, OB2, ... OB150.
 Elle servira à "matcher" le fichier original avec la solution
 produite par PROC CLUSTER. */
 
-data temp; set multi.cluster1;
+data temp; set multi.cluster;
 id=_N_;
 ob="OB";
 run;
@@ -41,7 +40,6 @@ proc cluster data=distance method=average outtree=temp1 nonorm rsquare  ;
 ods output stat.cluster.ClusterHistory=criteres;
 run;
 
-ods graphics on;
 proc sgplot data=criteres;
 series x=NumberOfClusters y=RSquared/markers markerattrs=(symbol=CircleFilled color=red);
 run;
@@ -58,7 +56,7 @@ run;
 
 proc tree data=temp1 out=temp2 nclusters=3;
 run;
-ods graphics off;
+
 
 /* IMPORTANT: manipulations pour "matcher" la solution avec les données originales.  
 Cette étape est nécessaire car l'analyse a été faite avec une matrice de distances
@@ -95,9 +93,3 @@ proc means data=temp3;
 var x1-x6;
 by cluster;
 run;
-
-
-
-
-
-

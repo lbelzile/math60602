@@ -1,10 +1,11 @@
 /*Analyse de regroupement avec toutes les variables et toutes
 les observations pour l'exemple du voyage organisé.
+(p. 241-250)
 */
 
 
 /* Statistiques descriptives */
-proc means data=multi.cluster1;
+proc means data=multi.cluster;
 var x1-x6;
 run;
 
@@ -14,14 +15,13 @@ Cette variable, nommée "id", prendra les valeurs de 1 à 150, car
 Ainsi, l'observation à la 1ère ligne aura id=1, celle à la 2ème ligne
 aura id=2 etc. */
 
-data temp; set multi.cluster1;
+data temp; set multi.cluster;
 id=_N_;
 run;
 
 /*
 Analyse de regroupement avec la méthode de Ward ("method=ward").
 Description des autres options:
-ccc = pour obtenir le Cubic Clustering Criterion
 rsquare = pour obtenir le RSQ et le SPRSQ
 nonorm = pour ne pas que les distances soient standardisées
 outtree = pour sauvegarder l'historique des regroupements (ici dans le fichier "temp1").
@@ -37,7 +37,8 @@ si l'analyse a permis de bien regrouper les observations.
 */
 
 
-proc cluster data=temp method=ward outtree=temp1 nonorm rsquare ccc ;
+proc cluster data=temp method=ward 
+outtree=temp1 nonorm rsquare;
 var x1-x6;
 copy id cluster_vrai x1-x6;
 ods output stat.cluster.ClusterHistory=criteres;
@@ -55,7 +56,7 @@ proc sgplot data=criteres;
 series x=NumberOfClusters y=CubicClusCrit/markers markerattrs=(symbol=CircleFilled color=red);
 run;
 
-/* Mêmes graphes mais en zoomant sur la partie avec 30 groupements et moins */
+/* Mêmes graphes mais en zoomant sur la partie avec 30 clusters et moins */
 
 proc sgplot data=criteres(where=(NumberOfClusters LE 30));
 series x=NumberOfClusters y=RSquared/markers markerattrs=(symbol=CircleFilled color=red);

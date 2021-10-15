@@ -7,7 +7,7 @@ s'appelera "scorefact" et qui contiendra les 4 scores factoriels.
 */
 
 
-proc factor data=multi.factor2 method=ml rotate=varimax nfact=4 maxiter=500 hey score out=scorefact;
+proc factor data=multi.factor method=ml rotate=varimax nfact=4 maxiter=500 hey score out=scorefact;
 var x1-x12;
 run; 
 

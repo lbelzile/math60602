@@ -5,7 +5,7 @@ contenir la matrice des corrélations polychoriques.
 */
 
 
-proc corr data=multi.factor2 polychoric out=corr_poly;
+proc corr data=multi.factor polychoric out=corr_poly;
 var x1-x12;
 run;
 
