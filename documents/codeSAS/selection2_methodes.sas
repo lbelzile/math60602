@@ -152,11 +152,11 @@ Commandes pour effectuer une recherche exhaustive avec le critère du R carré e
  On choisit le modèle par la suite qui a le 
  plus petit BIC/SBC ou AIC */
  proc glmselect data=glmselectoutput;
- model ymontant= &_GLSIND / selection=backward(stop=1 choose=sbc) hier=none;
+ model ymontant= &_GLSMOD / selection=backward(stop=1 choose=sbc) hier=none;
  run;
   
  proc glmselect data=glmselectoutput;
- model ymontant= &_GLSIND / selection=backward(stop=1 choose=aic) hier=none;
+ model ymontant= &_GLSMOD / selection=backward(stop=1 choose=aic) hier=none;
  run;
  
  
@@ -169,7 +169,20 @@ Commandes pour effectuer une recherche exhaustive avec le critère du R carré e
  run;
  
  
- /* 
+  
+ 
+/* LASSO avec validation croisée à 10 groupes 
+ effect ne fonctionne pas avec cette procédure...*/
+ proc glmselect data=ymontant plots=coefficients;
+ partition role=train(train="1" validate="0");
+ class x3(param=ref split) x4(param=ref split);
+ model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2
+ x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 / 
+ selection=lasso(steps=120 choose=cv) cvmethod=random(10) hier=none;
+ run;
+
+
+/* 
  Commandes pour faire une moyenne de modèles. Chaque modèle est construit avec
  un échantillon d'autoamorçage ("sampling=urs"). 500 échantillons sont utilisés ("nsamples=500").
  Les meilleurs 500 modèles sont conservés pour en faire la moyenne ("subset(best=500)").
@@ -182,7 +195,6 @@ Commandes pour effectuer une recherche exhaustive avec le critère du R carré e
  proc glmselect data=ymontant seed=57484765;
  partition role=train(train="1" validate="0");
  class x3(param=ref split) x4(param=ref split);
- effect xc = collection(x1-x2 x5-x10); 
  model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2
  x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 / 
  selection=stepwise(select=sbc choose=sbc) hier=none; 
@@ -204,18 +216,6 @@ Commandes pour effectuer une recherche exhaustive avec le critère du R carré e
  proc means data=predaverage n mean;
  var erreur;
  run; 
- 
- 
-/* LASSO avec validation croisée à 10 groupes 
- effect ne fonctionne pas avec cette procédure...*/
- proc glmselect data=ymontant plots=coefficients;
- partition role=train(train="1" validate="0");
- class x3(param=ref split) x4(param=ref split);
- model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2
- x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 / 
- selection=lasso(steps=120 choose=cv) cvmethod=random(10) hier=none;
- run;
-
 
  /* Note: en général, on n'aura pas une base de donnée de validation.
  On choisira le modèle optimal en 

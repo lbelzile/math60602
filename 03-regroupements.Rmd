@@ -124,7 +124,55 @@ et ainsi de suite. Les contraintes sont nécessaires afin de standardiser le pro
 
 Mathématiquement, les composantes principales correspondent aux vecteurs propres de la matrice de covariance. On peut également utiliser la matrice de corrélation, et cette dernière est sélectionnée par défaut dans la méthode `princomp` à moins de spécifier `cov` dans l'appel. L'avantage de la matrice de corrélation (ou de la standardisation des variables) est que l'unité de mesure n'impacte pas le résultat; autrement, un point plus important est attribué aux variables qui ont la plus forte hétérogénéité.
 
-On espère donc en général qu'un petit nombre de composantes principales réussira à expliquer la plus grande partie de la variance totale. Ces composantes pourraient servir de variables pour l'analyse de regroupement: une fois les étiquettes obtenues, on pourrait alors calculer les statistiques descriptives sur les variables originales. Dans notre exemple, on va seulement s'en servir comme outil graphique pour une analyse de regroupements en réduisant la dimension afin de permettre la visualisation des regroupements obtenus.
+Si on conserve toutes les composantes principales, cela revient à changer le système de coordonnées dans lequel sont exprimées nos observations en effectuant une rotation: on trouve la direction dans le système 2D dans lequel l'étendue est la plus grande. 
+
+```{r acprotation, echo = FALSE, out.width = '90%', fig.align = 'center', fig.cap = "Nuage de points avant (gauche) et après (droite) analyse en composantes principales. Les directions des composantes principales (lignes pleines et traitillés), qui forment un angle droit, sont ajoutées au nuage de points à gauche. On peut constater que la corrélation entre les deux composantes principales est nulle."}
+Sigma <- diag(c(4,1)) %*% cbind(c(1,0.9),c(0.9,1))
+set.seed(123456)
+data <- rbind(MASS::mvrnorm(n = 200, 
+                      mu = c(4,4), 
+                      Sigma = Sigma),
+                MASS::mvrnorm(n = 50, 
+                              mu = c(-4,-2), 
+                              Sigma = Sigma))
+pc <- princomp(data, cor = FALSE)
+data <- data.frame(x1 = data[,1],
+                   x2 = data[,2])
+pcdata <- data.frame(x1 = pc$scores[,1],
+                     x2 = pc$scores[,2])
+library(ggplot2)
+library(patchwork)
+g1 <- ggplot(data = data, aes(x = x1, y = x2)) +
+  geom_point(alpha = 0.8) + 
+  geom_abline(slope = pc$loadings[1,2], 
+              intercept = pc$loadings[1,1]) + 
+  geom_abline(slope = pc$loadings[2,2], 
+              intercept = pc$loadings[2,1],
+              linetype = 2) + 
+  ggpubr::stat_cor(aes(label = ..rr.label..),
+                   r.accuracy = 0.01,
+                   label.x = 3, 
+                   label.y = 0) +
+  ylim(-10,10) + 
+  xlim(-10,10) +
+  labs(x = "variable 1",
+       y = "variable 2") + 
+  coord_fixed()
+g2 <- ggplot(data = pcdata, aes(x = x1, y = x2)) +
+  geom_point(alpha = 0.8) +
+  ggpubr::stat_cor(aes(label = ..rr.label..),
+                   r.accuracy = 0.01,
+                   label.x = -10, 
+                   label.y = -2) +
+  labs(x = "composante principale 1",
+       y = "composante principale 2")
+
+g1 + g2
+```
+
+La figure \@ref(fig:acprotation) démontre cette décomposition sur des données simulées. La variance des données dans le premier panneau est `r round(var(data)[1,1], 2)` pour l'axe des abscisse et `r round(var(data)[2,2], 2)` pour l'axe des ordonnées avec une corrélation de `r round(cor(data)[1,2],2)`, à comparer avec des variances de `r round(pc$sdev[1]^2,2)` et `r round(pc$sdev[2]^2, 2)` et une corrélation nulle entre les deux composantes principales.
+
+Si une simple rotation peut sembler inutile, la méthode ne dévoile son utilité qu'en haute dimension. On espère en général qu'un petit nombre de composantes principales réussira à expliquer la plus grande partie de la variance totale. Ces composantes pourraient servir de variables pour l'analyse de regroupement: une fois les étiquettes obtenues, on pourrait alors calculer les statistiques descriptives sur les variables originales. Dans notre exemple, on va seulement s'en servir comme outil graphique pour une analyse de regroupements en réduisant la dimension afin de permettre la visualisation des regroupements obtenus.
 
 
 ```{r fig4-e18, echo = FALSE, out.width='80%', fig.align = "center"}

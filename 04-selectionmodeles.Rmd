@@ -93,9 +93,9 @@ Ces données ont été obtenues par simulation et le vrai modèle sous-jacent (c
 
 J'ai ajusté tour à tour à tour les modèles polynomiaux jusqu'à l'ordre 10, avec l'échantillon d'apprentissage de taille 100. C'est-à-dire, le modèle linéaire avec un polynôme d'ordre $k=1$ (linéaire), $k=2$ (quadratique), etc., jusqu'à $k=10$. J'ai ensuite obtenu la valeur de l'erreur quadratique moyenne d'apprentissage pour chacun de ces modèles. En pratique, on ne pourrait pas calculer l'erreur quadratique moyenne de généralization, mais j'ai approximé cette dernière en simulant 100 000 observations du vrai modèle (`selection1_test`), en obtenant la prédiction pour chacune de ces 100 000 observations en utilisant le modèle d'ordre $k$ ajusté sur les données d'apprentissage et en calculant l'erreur moyenne quadratique par la suite. En pratique, on ne peut réaliser cette opération car on ne connaît pas le vrai modèle.
 
-Voici le graphe de l'$\widehat{\mathsf{EQM}}_a$ et de l'$\mathsf{EQMG}$ en fonction de l'ordre ($k$) du modèle utilisé.
+Voici le graphe de l'erreur moyenne quadratique d'apprentissage ($\widehat{\mathsf{EQM}}_a$) et de l'erreur moyenne quadratique théorique ($\mathsf{EQMG}$) en fonction de l'ordre ($k$) du modèle utilisé.
 
-```{r 02-plotEQMa_comput, eval=TRUE, echo=FALSE, cache=TRUE} 
+```{r 02-plotEQMa_comput, eval=TRUE, echo=FALSE, cache=TRUE, message = FALSE} 
 
 lmkfold <- function(formula, data, k, ...){
   accu <- 0
@@ -113,7 +113,7 @@ return(accu/n)
 
 EQM <- matrix(0, nrow = 10, ncol = 7)
 EQMcv <- matrix(0, nrow = 10, ncol = 100)
-library(caret)
+suppressPackageStartupMessages(library(caret))
 library(ggplot2)
 for(i in 1 :10){
   set.seed(i*1000)
@@ -511,7 +511,7 @@ Les méthodes de sélection ascendante, descendante et séquentielle sont des al
 L'idée de la sélection ascendante est de tester l'ajout de chaque variable individuellement et d'ajouter celle qui est la plus significative selon le test-_t_ si elle a une valeur-_p_ assez petite. 
 
 - *Initialisation*: le modèle linéaire de départ est celui qui n'inclut que l'ordonnée à l'origine, $Y=\beta_0+\eps$, où $\eps$ est une erreur centrée.
-- *Critère d'entrée*: $c$, valeur-_p_ minimale à partir de laquelle une variable peut être incluse dans le modèle (`proc reg` utilise par défaut 0.5).
+- *Critère d'entrée*: $c$, valeur-_p_ minimale à partir de laquelle une variable peut être incluse dans le modèle
 - *Boucle*  soit $X_{(1)}, \ldots, X_{(k)}$, les variables explicatives à l'étape $k<p$.
     - pour chaque $j$ ($j=\{1,\ldots, p\}\setminus \{(1), \ldots (k)\}$), on ajuste tour à tour le modèle $Y=\beta_0+\sum_{i=1}^k \beta_i X_{(i)} + \beta_{k+1}X_{j}$ et on calcule la valeur-_p_ du test-_t_ pour les hypothèses $\mathcal{H}_0: \beta_{k+1}=0$ contre l'alternative bilatérale $\mathcal{H}_1: \beta_{k+1} \neq 0$.
     - Soit $p_{\min}$ la plus petite des $p-k$ valeurs-_p_ qui correspond à $X_{(k+1)}$, disons.
@@ -525,7 +525,7 @@ On continue ainsi à ajouter des variables jusqu'à ce que le critère d'entrée
 
 
 - *Initialisation*: le modèle linéaire de départ est celui qui inclut toutes les variables explicatives, $Y=\beta_0+\sum_{j=1}^p \beta_j X_{(j)}+\eps$, où $\eps$ est une erreur centrée.
-- *Critère de sortie*: $c$, valeur-_p_ maximale à partir de laquelle une variable peut être excluse du modèle (`proc reg` utilise par défaut 0.1).
+- *Critère de sortie*: $c$, valeur-_p_ maximale à partir de laquelle une variable peut être excluse du modèle
 - *Boucle*  soit $X_{(1)}, \ldots, X_{(p-k)}$, les variables explicatives présentes dans le modèle à l'étape $k<p$.
     - pour chaque $j$ ($j =1, \ldots, p-k$), on calcule la valeur-_p_ du test-_t_ $\mathcal{H}_0: \beta_{j}=0$ contre l'alternative bilatérale $\mathcal{H}_1: \beta_{j} \neq 0$.
     - si toutes ces valeurs sont inférieures à $c$, on retourne le modèle $Y=\beta_0 + \sum_{j=1}^{p-k} \beta_j X_{(j)}$.
@@ -536,7 +536,7 @@ L'idée est l'inverse de la méthode ascendante. On va tester le retrait de chaq
 
 ### Méthode séquentielle
 
-Il s'agit d'une méthode hybride entre ascendante et descendante. On sélectionne un critère d'entrée et de sortie pour chacune des deux (0.15 dans `proc reg`) et on début la recherche à partir du modèle ne contenant que l'ordonnée à l'origine. À chaque étape, on fait une étape ascendante suivie de une (ou plusieurs) étapes descendantes. On continue ainsi tant que le modèle retourné par l'algorithme n'est pas identique à celui de l'étape précédente. Le dernier modèle est celui retenu. 
+Il s'agit d'une méthode hybride entre ascendante et descendante. On sélectionne un critère d'entrée et de sortie pour chacune des deux et on début la recherche à partir du modèle ne contenant que l'ordonnée à l'origine. À chaque étape, on fait une étape ascendante suivie de une (ou plusieurs) étapes descendantes. On continue ainsi tant que le modèle retourné par l'algorithme n'est pas identique à celui de l'étape précédente. Le dernier modèle est celui retenu. 
 
 Avec la méthode séquentielle, une fois qu'on entre une variable (étape ascendante), on fait autant d'étapes descendante afin de retirer toutes les variables qui satisfont le critère de sortie (il peut ne pas y en avoir). Une fois cela effectué, on refait une étape ascendante pour voir si on peut ajouter une nouvelle variable. 
 
@@ -545,7 +545,7 @@ Remarques sur ces méthodes: avec la méthode ascendante, une fois qu'une variab
 On peut soi-même spécifier les critères d'entrée et de sortie. Plus le critère d'entrée est élevé, plus il y aura de variables dans le modèle final. De même, plus le critère de sortie est élevé, plus il y aura de variables dans le modèle. Il y également moyen avec `glmselect` de spécifier le nombre d'étapes de chaque procédure.
 
 Utilisons la méthode de sélection séquentielle classique avec des critères d'entrée et de sortie de 0.15 et les 104 variables.
-La sortie **SAS** est assez volumineuse car elle retrace toutes étapes de la sélection séquentielle. L'historique montre qu'à l'étape 1, la variable d'interaction `i_x5_x6` a été ajoutée, suivie de `i_x31_x10` à l'étape 2. Un peu plus loin, à l'étape 6, `i_x5_x6` est retirée et ainsi de suite. Il y a eu 40 étapes en tout et, à la fin, il reste 22 variables (parmi les 104) dans le modèle final. Le $R^2$ du modèle final est 0,966. 
+La sortie **SAS** est assez volumineuse car elle retrace toutes étapes de la sélection séquentielle. L'historique montre qu'à l'étape 1, la variable d'interaction `x5_x6` a été ajoutée, suivie de `x31_x10` à l'étape 2. Un peu plus loin, à l'étape 6, `x5_x6` est retirée et ainsi de suite. Il y a eu 40 étapes en tout et, à la fin, il reste 22 variables (parmi les 104) dans le modèle final. Le $R^2$ du modèle final est 0,966. 
 
 
 ```{r fig2p2_fig8, echo = FALSE, out.width='90%', fig.align = "center"}
@@ -554,15 +554,7 @@ knitr::include_graphics("figures/02-select-e8.png")
 ```{r fig2p2_fig9, echo = FALSE, out.width='90%', fig.align = "center"}
 knitr::include_graphics("figures/02-select-e9.png")
 ```
-
-
-Voici les estimés des paramètres du modèle final retenu. On voit bien que toutes les valeurs-_p_ (qui ne sont pas valides à cause de la sélection de modèles) sont toutes inférieures à 0,15. 
-
-```{r fig2p2_fig10-11, echo = FALSE, out.width='70%', fig.align = "center"}
-knitr::include_graphics("figures/02-select-e10.png")
-knitr::include_graphics("figures/02-select-e11.png")
-```
-Le choix de 0,15 comme critère d'entrée et de sortie est assez arbitraire. Il est fort possible que d'autres valeurs donnent de meilleurs résultats. Mais il n'est pas évident de les choisir.
+On voit bien que toutes les valeurs-_p_ (qui ne sont pas valides à cause de la sélection de modèles) sont toutes inférieures à 0.15. Le choix de 0.15 comme critère d'entrée et de sortie est complètement arbitraire. Il est fort possible que d'autres valeurs donnent de meilleurs résultats, mais il n'est pas évident de les choisir.
 
 Une façon de contourner le problème de devoir spécifier les critères d'entrée et de sortie est de procéder en deux étapes. Supposons que notre ordinateur permet de faire une recherche exhaustive de tous les sous-modèles avec près de 60 variables. L'idée est alors de passer de 104 à un sous-ensemble d'environ 60 variables, avec une sélection séquentielle gloutonne, et d'ensuite utiliser une recherche exhaustive avec ce sous-ensemble de variables. Plus précisément:
 
@@ -575,36 +567,45 @@ En fixant, les critères d'entrée et de sortie à 0,6 pour la recherche séquen
 
 L'idée de la procédure séquentielle classique est d'inclure ou d'exclure une variable à la fois sur la base des valeurs-_p_. La procédure `glmselect` permet de faire une sélection séquentielle en utilisant d'autres critères, comme le $\mathsf{AIC}$ ou le $\mathsf{BIC}$. Cette procédure permet de contrôler très finement le processus de sélection de variables. Le code qui suit fait une recherche séquentielle avec les particularités suivantes. À chaque étape ascendante de la procédure séquentielle, c'est la variable qui améliore le plus le $\mathsf{AIC}$ (`select=aic`) qui est entrée. De plus, à chaque étape descendante de la procédure séquenctielle, c'est la (ou les) variable(s) qui détériore(nt) le plus le $\mathsf{AIC}$ qui est (sont) retirée(s). À la toute fin du processus, c'est le modèle qui a le meilleur $\mathsf{BIC}$ (`choose=BIC`) qui est retenu.
 
-Si la procédure `reg` ne supporte pas la déclaration de variables catégorielles (`class`), `glmselect` et les autres fonctions que nous utiliserons permettent de simplifier la syntaxe et d'éviter de créer les variables binaires une par une. 
+La procédure `glmselect` permet la déclarations de variables catégorielles (`class`); on évite ainsi de créer les variables binaires une par une. Voici les commandes pour faire une procédure séquentielle avec des critères plus généreux (entrée=sortie=0.6). Si le nombre de variables change en sortie, nous aurons ici 56 variables qui seront ensuite utilisées avec une recherche exhaustive: pour ce faire, on reprend la sortie, mais cette fois on choisit le modèle par la suite qui a le plus petit BIC (`SBC`) ou AIC. 
 
 
 ```{sas 02-glmselectseq, eval=FALSE}
-proc glmselect data=trainymontant;
-class x3(break) x4(break);
-model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10@2 cx2 cx6 cx7 cx8 cx9 cx10  /   
-selection=stepwise(select=aic choose=sbc) hier=none; 
-run;
+ proc glmselect data=ymontant outdesign=glmselectoutput;
+ partition role=train(train="1" validate="0");
+ class x3(param=ref split) x4(param=ref split);
+ model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2
+ x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 /  
+ selection=stepwise(slentry=0.6 slstay=0.6 select=60) hier=none;
+ run;
+
+ proc glmselect data=glmselectoutput;
+ model ymontant= &_GLSMOD / 
+ selection=backward(stop=1 choose=sbc) hier=none;
+ ods output GLMSelect.Summary.SelectionSummary=historiqueSelection;
+ run;
 ```
 
-Voici l'historique de la procédure séquentielle avec les 104 variables. 
-
-```{r fig2p2_fig12-13, echo = FALSE, out.width='70%', fig.align = "center"}
-knitr::include_graphics("figures/02-select-e12.png")
-knitr::include_graphics("figures/02-select-e13.png")
-```
-
-
-À l'étape 1, la variable `i_x5_x6` est ajoutée au modèle de base car c'est celle qui fait diminuer le plus le $\mathsf{AIC}$. À l'étape 2, la variable `i_x31_x10` est ajoutée,  À l'étape 6, la variable `i_x5_x6` est retirée car cela fait baisser le $\mathsf{AIC}$. Notez que le $\mathsf{AIC}$ décroit toujours d'une étape à l'autre. **SAS** garde aussi la trace du $\mathsf{BIC}$ car le modèle final sera choisi selon ce critère. Finalement le processus séquentiel se termine à l'étape 40, car il n'y a plus moyen de faire diminuer le $\mathsf{AIC}$. Le modèle final retenu est celui de l'étape 18, car c'est celui qui a le $\mathsf{BIC}$ le plus petit parmi tous ces modèles ($\mathsf{BIC}=484.22$). 
+À l'étape 1, la variable `x5_x6` est ajoutée au modèle de base car c'est celle qui fait diminuer le plus le $\mathsf{AIC}$. À l'étape 2, la variable `x31_x10` est ajoutée,  À l'étape 6, la variable `x5_x6` est retirée car cela fait baisser le $\mathsf{AIC}$. Notez que le $\mathsf{AIC}$ décroit toujours d'une étape à l'autre. **SAS** garde aussi la trace du $\mathsf{BIC}$ car le modèle final sera choisi selon ce critère. Finalement le processus séquentiel se termine à l'étape 40, car il n'y a plus moyen de faire diminuer le $\mathsf{AIC}$. Le modèle final retenu est celui de l'étape 18, car c'est celui qui a le $\mathsf{BIC}$ le plus petit parmi tous ces modèles ($\mathsf{BIC}=484.22$). 
 
 Voici différentes statistiques ainsi que les estimations des paramètres de ce modèle qui contient 10 variables.
 
-```{r fig2p2_fig14, echo = FALSE, out.width='65%', fig.align = "center"}
-knitr::include_graphics("figures/02-select-e14.png")
+```{r fig2p2_fig10, echo = FALSE, out.width='65%', fig.align = "center"}
+knitr::include_graphics("figures/02-select-e10.png")
 ```
-```{r fig2p2_fig15, echo = FALSE, out.width='70%', fig.align = "center"}
-knitr::include_graphics("figures/02-select-e15.png")
+```{r fig2p2_fig11, echo = FALSE, out.width='70%', fig.align = "center"}
+knitr::include_graphics("figures/02-select-e11.png")
 ```
 
+
+
+On peut voir sur le graphique \@ref(fig:fig2p2_fig17) l'historique des valeurs de AIC et BIC à mesure qu'on diminue le nombre de variables dans le modèle: les mêmes variables sont enlevées à chaque étape, mais la valeur optimale du critère est différente pour la sélection finale.
+Sur l'axe des abscisses, j'ai ajouté l'erreur quadratique moyenne pour l'échantillon de validation contenant les 23 389 clients (sur 100 000)  qui achèteraient si leur envoyait une copie du catalogue. Cet exemple n'est pas réaliste puisqu'on regarde la solution, mais il permet de nous comparer et de voir à quel point ici le critère d'information bayésien suit la même tendance que l'erreur moyenne quadratique de validation.
+
+
+```{r fig2p2_fig12, echo = FALSE, out.width='85%', fig.align = "center"}
+knitr::include_graphics("figures/02-select-e12.png")
+```
 ## Méthodes de régression avec régularisation
 
 Une façon d'éviter le surajustement est d'ajouter une pénalité sur les coefficients: ce faisant, on introduit un biais dans nos estimés, mais dans l'espoir de réduire leur variabilité et ainsi d'obtenir une meilleur erreur quadratique moyenne. 
@@ -698,21 +699,24 @@ L'idée est alors la suivante :
 La procédure `glmselect` a une commande, `modelaverage`, qui permet de faire une moyenne de modèles. Le code suivant permet de faire une moyenne de modèles. 
 
 ```{sas modelaverage, eval=FALSE}
-proc glmselect data=trainymontant seed=57484765;
+proc glmselect data=ymontant seed=57484765;
+partition role=train(train="1" validate="0");
 class x3(param=ref split) x4(param=ref split);
-model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10@2 cx2 cx6 cx7 cx8 cx9 cx10  /   
-selection=stepwise(select=aic choose=sbc); 
+model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2
+x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 / 
+selection=stepwise(select=sbc choose=sbc) hier=none; 
+score data=testymontant out=predaverage p=predymontant;
 modelaverage nsamples=500 sampling=urs subset(best=500);
 run;
 ```
 
 Chaque modèle est construit à l'aide d'un échantillon aléatoire avec remise (`sampling=urs`). Il y aura 500 échantillons, et donc modèles, en tout (`nsamples=500`). L'option `subset(best=500)` indique à **SAS** de faire la moyenne des paramètres des 500 modèles. Notez l'option `seed` qui permet de reproduire les résultats, car elle fixe une valeur pour le générateur de nombre aléatoire (qui sera utilisé pour générer les échantillons d'autoamorçage). Cette fois-ci la sélection se fait avec le critère $\mathsf{BIC}$ à tous les niveaux (`select=aic choose=sbc`).
 
-```{r fig2p2_fig16, echo = FALSE, out.width='90%', fig.align = "center"}
-knitr::include_graphics("figures/02-select-e16.png")
+```{r fig2p2_fig13, echo = FALSE, out.width='90%', fig.align = "center"}
+knitr::include_graphics("figures/02-select-e13.png")
 ```
 
-Ce tableau présente les variables qui ont été choisies dans au moins 20% des modèles, c'est-à-dire, dans au moins 100 des 500 modèles ici. Il y a deux variables qui ont été retenues dans tous les modèles, `i_x1_x6` et `i_x31_x8`. Le tableau rapporte aussi la moyenne des estimations pour ces paramètres.
+Ce tableau présente les variables qui ont été choisies dans au moins 20% des modèles, c'est-à-dire, dans au moins 100 des 500 modèles ici. Il y a deux variables qui ont été retenues dans tous les modèles, `x1_x6` et `x31_x8`. Le tableau rapporte aussi la moyenne des estimations pour ces paramètres.
 
 
 Toutes les méthodes employées jusqu'à maintenant utilise une méthode de pénalisation pour déterminer le meilleur modèle. Une alternative avec `glmselect` serait de répéter la sélection en utilisant directement l'erreur moyenne quadratique estimée à l'aide de la validation croisée  comme critère de sélection (en remplaçant l'option `choose=cv` avec par exemple `cvmethod=random(10)` pour de la sélection avec $K=10$ groupes formées aléatoirement).

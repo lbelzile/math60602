@@ -8,8 +8,8 @@
 ]{book}
 \usepackage{amsmath,amssymb}
 \usepackage{lmodern}
-\usepackage{ifxetex,ifluatex}
-\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+\usepackage{iftex}
+\ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
@@ -43,6 +43,46 @@
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
@@ -106,7 +146,7 @@
 \usepackage[normalem]{ulem}
 \usepackage{makecell}
 \usepackage{xcolor}
-\ifluatex
+\ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
 \usepackage[]{natbib}
@@ -114,7 +154,7 @@
 
 \title{Analyse multidimensionnelle appliquée}
 \author{(c) Denis Larocque, Léo Belzile}
-\date{version du 2021-10-15}
+\date{version du 2021-10-16}
 
 \usepackage{amsthm}
 \newtheorem{theorem}{Théorème}[chapter]
@@ -480,9 +520,9 @@ Si on veut représenter la covariabilité de deux variables continues, on utilis
 
 Plutôt que de décrire plus en détail le processus de l'analyse exploratoire, on présente un exemple qui illustre le cheminement habitue sur les données de trains de la Renfe introduites précédemment.
 
-\begin{example}[Analyse exploratoire des trains Renfe]
-\protect\hypertarget{exm:renfe-aed}{}{\label{exm:renfe-aed} \iffalse (Analyse exploratoire des trains Renfe) \fi{} }La première étape consisterait à lire la description de la base de données. Le jeu de données \texttt{renfe} contient les variables suivantes
-\end{example}
+::: \{.example \#renfeaed name = ``Analyse exploratoire des trains Renfe''\}
+
+La première étape consisterait à lire la description de la base de données. Le jeu de données \texttt{renfe} contient les variables suivantes:
 
 \begin{itemize}
 \tightlist
@@ -733,11 +773,13 @@ Une analyse factorielle cherchera à identifier automatiquement des groupes de v
 
 Les statistiques descriptives ainsi que la matrice des corrélations sont obtenues en exécutant les lignes suivantes:
 
-\begin{verbatim}
-proc corr data=multi.factor;
-var x1-x12;
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc corr data=multi.factor;}
+\NormalTok{var x1{-}x12;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{center}\includegraphics[width=0.9\linewidth]{figures/01-facto-e1} \end{center}
 
@@ -765,7 +807,7 @@ De plus, si les variables ont été préalablement standardisées de telle sorte
 
 Sans aucune contrainte sur le modèle, la matrice de covariance de \(X_1, \ldots, X_p\) possède \(p(p+1)/2\) paramètres, soit \(p\) variances et \(p(p-1)/2\) termes de corrélation. Avec le modèle d'analyse factorielle, on suppose que l'on peut décrire cette structure en utilisant seulement \(p(m+1) - m(m-1)/2\) paramètres (\(p\) variances spécifiques et \(pm\) chargements, moins les contraintes de diagonalisation). Par exemple, avec \(p=50\) variables et \(m=6\) facteurs, on essaie de décrire la structure de covariance à l'aide de 350 paramètres au lieu de 1275.
 
-Il existe plusieurs méthodes pour extraire les facteurs, c'est-à-dire pour estimer les paramètres du modèle (les \(\psi_i\) et les \(\gamma_{ij}\)). Nous allons discuter de deux d'entre elles: la méthode du maximum de vraisemblance et la méthode des composantes principales. L'avantage de l'estimation par maximum de vraisemblance est qu'elle permet l'utilisation de critères d'information et de statistiques de tests pour guider le choix du nombre de facteurs, en supposant toutefois la normalité des facteurs et des aléas. L'estimation des paramètres requiert une optimisation numérique qui peut être délicate selon les cas de figure et qui mène parfois à des solutions paradoxales: un cas dit de quasi-Heywood survient quand \(h_j=1\) pour une variable \(j\), (on parle de cas de Heywood si \(h_j > 1\)). Si on modélise des variables explicatives centrées réduites, \(\mathsf{Va}(X_j)=1\), d'où un problème d'interprétation car le terme \(\psi_j\) serait nul (cas de quasi-Heywood) ou négatif (cas de Heywood) alors même que ce terme représente la variable du \(j\)e aléa. Les cas de quasi-Heywood ont plusieurs causes, lesquelles sont listées dans la \href{https://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm\#statug_factor_sect022.htm}{documentation \textbf{SAS}}. Souvent, c'est dû à l'utilisation d'un trop petit ou trop grand nombre de facteurs ou une taille d'échantillon trop petite, etc. Cela complique l'interprétation et nous amène à questionner la validité du modèle d'analyse factorielle comme simplification de la structure de covariance non-contrainte.
+Il existe plusieurs méthodes pour extraire les facteurs, c'est-à-dire pour estimer les paramètres du modèle (les \(\psi_i\) et les \(\gamma_{ij}\)). Nous allons discuter de deux d'entre elles: la méthode du maximum de vraisemblance et la méthode des composantes principales. L'avantage de l'estimation par maximum de vraisemblance est qu'elle permet l'utilisation de critères d'information et de statistiques de tests pour guider le choix du nombre de facteurs, en supposant toutefois la normalité des facteurs et des aléas. L'estimation des paramètres requiert une optimisation numérique qui peut être délicate selon les cas de figure et qui mène parfois à des solutions paradoxales: un cas dit de quasi-Heywood survient quand \(h_j=1\) pour une variable \(j\), (on parle de cas de Heywood si \(h_j > 1\)). Si on modélise des variables explicatives centrées réduites, \(\mathsf{Va}(X_j)=1\), d'où un problème d'interprétation car le terme \(\psi_j\) serait nul (cas de quasi-Heywood) ou négatif (cas de Heywood) alors même que ce terme représente la variance du \(j\)e aléa. Les cas de quasi-Heywood ont plusieurs causes, lesquelles sont listées dans la \href{https://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm\#statug_factor_sect022.htm}{documentation \textbf{SAS}}. Souvent, c'est dû à l'utilisation d'un trop petit ou trop grand nombre de facteurs ou une taille d'échantillon trop petite, etc. Cela complique l'interprétation et nous amène à questionner la validité du modèle d'analyse factorielle comme simplification de la structure de covariance.
 
 \hypertarget{rotation-des-facteurs}{%
 \subsection{Rotation des facteurs}\label{rotation-des-facteurs}}
@@ -781,13 +823,15 @@ Je vous suggère de toujours tenter d'interpréter la solution avec une rotation
 
 Les chargements estimés pour la solution à quatre facteurs, suite à la rotation varimax, sont obtenus avec le code SAS suivant:
 
-\begin{verbatim}
-proc factor data=multi.factor 
- method=ml rotate=varimax nfact=4
- maxiter=500 flag=.3 hey;
- var x1-x12;
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc factor data=multi.factor }
+\NormalTok{ method=ml rotate=varimax nfact=4}
+\NormalTok{ maxiter=500 flag=.3 hey;}
+\NormalTok{ var x1{-}x12;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{center}\includegraphics[width=0.7\linewidth]{figures/01-facto-e3} \end{center}
 
@@ -894,19 +938,21 @@ critères \emph{classiques} pour choisir le nombre de facteurs si l'on ajuste le
 
 Les sorties qui suivent proviennent du programme:
 
-\begin{verbatim}
-proc factor data=multi.factor method=principal
- scree rotate=varimax flag=.3;
- ods output Eigenvalues=eigen;
- var x1-x12;
-run; 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc factor data=multi.factor method=principal}
+\NormalTok{ scree rotate=varimax flag=.3;}
+\NormalTok{ ods output Eigenvalues=eigen;}
+\NormalTok{ var x1{-}x12;}
+\NormalTok{run; }
 
-proc sgplot data=eigen;
- scatter x=number y=eigenvalue;
- yaxis label="valeurs propres";
- xaxis label='nombre';
-run;
-\end{verbatim}
+\NormalTok{proc sgplot data=eigen;}
+\NormalTok{ scatter x=number y=eigenvalue;}
+\NormalTok{ yaxis label="valeurs propres";}
+\NormalTok{ xaxis label=\textquotesingle{}nombre\textquotesingle{};}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 Cette fois-ci, c'est la méthode des composantes principales qui est utilisée; cette dernière consiste à estimer les chargements en utilisant les \(m\) premières valeurs propres et vecteurs propres de la matrice de corrélation. En ne spécifiant pas l'option \texttt{nfact}, \textbf{SAS} choisit le nombre de facteurs en utilisant par défaut le critère de Kaiser (valeurs propres supérieures à 1). Quatre facteurs sont retenus, tel qu'indiqué par la sortie au bas du tableau \ref{fig:fig1p7}. Pour le diagramme d'éboulis de la figure \ref{fig:fig1p6}, le choix est assez subjectif: il semble raisonnable de choisir trois ou quatre facteurs.
 
@@ -947,24 +993,26 @@ où \(k\) est le nombre de variables dans l'échelle, \(S^2\) est la variance em
 
 Avec \textbf{SAS}, la procédure \texttt{corr} permet de calculer \(\alpha\).
 
-\begin{verbatim}
-/* pour le facteur service */
-proc corr data=multi.factor alpha;
-var x4 x8 x11;
-run;
-/* pour le facteur produits */
-proc corr data=multi.factor alpha;
-var x3 x6 x9 x12;
-run;
-/* pour le facteur paiement */
-proc corr data=multi.factor alpha;
-var x2 x7 x10;
-run;
-/* pour le facteur prix */
-proc corr data=multi.factor alpha;
-var x1 x5;
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{/* pour le facteur service */}
+\NormalTok{proc corr data=multi.factor alpha;}
+\NormalTok{var x4 x8 x11;}
+\NormalTok{run;}
+\NormalTok{/* pour le facteur produits */}
+\NormalTok{proc corr data=multi.factor alpha;}
+\NormalTok{var x3 x6 x9 x12;}
+\NormalTok{run;}
+\NormalTok{/* pour le facteur paiement */}
+\NormalTok{proc corr data=multi.factor alpha;}
+\NormalTok{var x2 x7 x10;}
+\NormalTok{run;}
+\NormalTok{/* pour le facteur prix */}
+\NormalTok{proc corr data=multi.factor alpha;}
+\NormalTok{var x1 x5;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 
 
@@ -1028,17 +1076,19 @@ Ma suggestion est d'utiliser la corrélation linéaire ordinaire avec des variab
 
 On peut refaire l'analyse des données portant sur le magasin dans \textbf{SAS} en utilisant la corrélation polychorique calculées par la procédure \texttt{corr} et en passant la sortie à la procédure \texttt{factor}.
 
-\begin{verbatim}
-proc corr data=multi.factor polychoric out=poly_corr;
-var x1-x12;
-run;
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc corr data=multi.factor polychoric out=poly\_corr;}
+\NormalTok{var x1{-}x12;}
+\NormalTok{run;}
 
-proc factor data=poly_corr
- method=ml rotate=varimax nfact=4
- maxiter=500 flag=.3 hey;
- var x1-x12;
-run;
-\end{verbatim}
+\NormalTok{proc factor data=poly\_corr}
+\NormalTok{ method=ml rotate=varimax nfact=4}
+\NormalTok{ maxiter=500 flag=.3 hey;}
+\NormalTok{ var x1{-}x12;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 Les chargements sont donnés dans la figure \ref{fig:fig1p12}. Les facteurs obtenus sont les mêmes qu'en utilisant les corrélations linéaires.
 
@@ -1067,12 +1117,14 @@ Jusqu'à présent, nous avons utilisé la méthode de rotation orthogonale varim
 
 Le programme suivant fait une analyse factorielle avec quatre facteurs, mais en utilisant une rotation varimax oblique (option \texttt{rotate=obvarimax}).
 
-\begin{verbatim}
-proc factor data=multi.factor
-maxiter=500 flag=.3 hey;
-var x1-x12;
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc factor data=multi.factor}
+\NormalTok{maxiter=500 flag=.3 hey;}
+\NormalTok{var x1{-}x12;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 La matrice des corrélations entres facteurs est donnée dans la figure \ref{fig:fig1p13} et les chargements sont présentés dans la figure \ref{fig:fig1p14}. On voit ici qu'on obtient les mêmes quatre facteurs qu'avec une rotation varimax orthogonale.
 
@@ -1322,7 +1374,20 @@ et ainsi de suite. Les contraintes sont nécessaires afin de standardiser le pro
 
 Mathématiquement, les composantes principales correspondent aux vecteurs propres de la matrice de covariance. On peut également utiliser la matrice de corrélation, et cette dernière est sélectionnée par défaut dans la méthode \texttt{princomp} à moins de spécifier \texttt{cov} dans l'appel. L'avantage de la matrice de corrélation (ou de la standardisation des variables) est que l'unité de mesure n'impacte pas le résultat; autrement, un point plus important est attribué aux variables qui ont la plus forte hétérogénéité.
 
-On espère donc en général qu'un petit nombre de composantes principales réussira à expliquer la plus grande partie de la variance totale. Ces composantes pourraient servir de variables pour l'analyse de regroupement: une fois les étiquettes obtenues, on pourrait alors calculer les statistiques descriptives sur les variables originales. Dans notre exemple, on va seulement s'en servir comme outil graphique pour une analyse de regroupements en réduisant la dimension afin de permettre la visualisation des regroupements obtenus.
+Si on conserve toutes les composantes principales, cela revient à changer le système de coordonnées dans lequel sont exprimées nos observations en effectuant une rotation: on trouve la direction dans le système 2D dans lequel l'étendue est la plus grande.
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.9\linewidth]{MATH60602_files/figure-latex/acprotation-1} 
+
+}
+
+\caption{Nuage de points avant (gauche) et après (droite) analyse en composantes principales. Les directions des composantes principales (lignes pleines et traitillés), qui forment un angle droit, sont ajoutées au nuage de points à gauche. On peut constater que la corrélation entre les deux composantes principales est nulle.}\label{fig:acprotation}
+\end{figure}
+
+La figure \ref{fig:acprotation} démontre cette décomposition sur des données simulées. La variance des données dans le premier panneau est 13.51 pour l'axe des abscisse et 6.43 pour l'axe des ordonnées avec une corrélation de 0.86, à comparer avec des variances de 18.65 et 1.21 et une corrélation nulle entre les deux composantes principales.
+
+Si une simple rotation peut sembler inutile, la méthode ne dévoile son utilité qu'en haute dimension. On espère en général qu'un petit nombre de composantes principales réussira à expliquer la plus grande partie de la variance totale. Ces composantes pourraient servir de variables pour l'analyse de regroupement: une fois les étiquettes obtenues, on pourrait alors calculer les statistiques descriptives sur les variables originales. Dans notre exemple, on va seulement s'en servir comme outil graphique pour une analyse de regroupements en réduisant la dimension afin de permettre la visualisation des regroupements obtenus.
 
 \begin{center}\includegraphics[width=0.8\linewidth]{figures/04-clustering-e18} \end{center}
 
@@ -1405,13 +1470,15 @@ On peut ainsi tracer une courbe pour le \(\mathsf{SPRSQ}\) en fonction du nombre
 
 La procédure \textbf{SAS} qui permet d'effectuer une analyse de regroupements hiérarchique est \texttt{cluster}. Le fichier \texttt{cluster2\_complet.sas} explique les différentes options disponibles.
 
-\begin{verbatim}
-proc cluster data=temp method=ward outtree=temp1 nonorm rsquare;
-var x1-x6;
-copy id cluster_vrai x1-x6;
-ods output stat.cluster.ClusterHistory=criteres;
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc cluster data=temp method=ward outtree=temp1 nonorm rsquare;}
+\NormalTok{var x1{-}x6;}
+\NormalTok{copy id cluster\_vrai x1{-}x6;}
+\NormalTok{ods output stat.cluster.ClusterHistory=criteres;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 On peut représenter graphique le R carré (Figure \ref{fig:fig4-e7}), le R carré semi partiel (Figure \ref{fig:fig4-e8}) en fonction du nombre de groupes.
 
@@ -1582,11 +1649,13 @@ où \(\mathrm{I}(\boldsymbol{x}_i \in g_k)\) est une variable binaire qui vaut u
 
 Nous allons utiliser cette procédure pour raffiner la solution obtenue précédemment avec la méthode de Ward en utilisant les moyennes des groupes comme centres préliminaires. Le fichier \texttt{cluster5\_non-hierarchique.sas} explique les différentes options. La syntaxe de la procédure \textbf{SAS} \texttt{fastclus} est la suivante:
 
-\begin{verbatim}
-proc fastclus data=temp seed=initial distance maxclusters=3 out=temp3 maxiter=30;
-var x1 x2 x3 x4 x5 x6;
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc fastclus data=temp seed=initial distance maxclusters=3 out=temp3 maxiter=30;}
+\NormalTok{var x1 x2 x3 x4 x5 x6;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 Voici une partie de la sortie \textbf{SAS}:
 
@@ -1710,11 +1779,7 @@ Ces données ont été obtenues par simulation et le vrai modèle sous-jacent (c
 
 J'ai ajusté tour à tour à tour les modèles polynomiaux jusqu'à l'ordre 10, avec l'échantillon d'apprentissage de taille 100. C'est-à-dire, le modèle linéaire avec un polynôme d'ordre \(k=1\) (linéaire), \(k=2\) (quadratique), etc., jusqu'à \(k=10\). J'ai ensuite obtenu la valeur de l'erreur quadratique moyenne d'apprentissage pour chacun de ces modèles. En pratique, on ne pourrait pas calculer l'erreur quadratique moyenne de généralization, mais j'ai approximé cette dernière en simulant 100 000 observations du vrai modèle (\texttt{selection1\_test}), en obtenant la prédiction pour chacune de ces 100 000 observations en utilisant le modèle d'ordre \(k\) ajusté sur les données d'apprentissage et en calculant l'erreur moyenne quadratique par la suite. En pratique, on ne peut réaliser cette opération car on ne connaît pas le vrai modèle.
 
-Voici le graphe de l'\(\widehat{\mathsf{EQM}}_a\) et de l'\(\mathsf{EQMG}\) en fonction de l'ordre (\(k\)) du modèle utilisé.
-
-\begin{verbatim}
-## Le chargement a nécessité le package : lattice
-\end{verbatim}
+Voici le graphe de l'erreur moyenne quadratique d'apprentissage (\(\widehat{\mathsf{EQM}}_a\)) et de l'erreur moyenne quadratique théorique (\(\mathsf{EQMG}\)) en fonction de l'ordre (\(k\)) du modèle utilisé.
 
 \begin{center}\includegraphics[width=0.7\linewidth]{MATH60602_files/figure-latex/02-plotEQMa-1} \end{center}
 
@@ -1787,11 +1852,13 @@ où \(\#\) représente le nombre de paramètres du modèle linéaire.
 
 Il est facile d'obtenir les quantités \(R^2_a\), \(\mathsf{AIC}\) et \(\mathsf{BIC}\) avec la procédure \texttt{glmselect} dans \textbf{SAS}. Le fichier \texttt{selection1\_intro.sas} contient les programmes. La sortie qui suit provient des commandes :
 
-\begin{verbatim}
-proc glmselect data=multi.selection1_train;
-model y=x x*x x*x*x /selection=none;
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc glmselect data=multi.selection1\_train;}
+\NormalTok{model y=x x*x x*x*x /selection=none;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 Il s'agit du modèle cubique (d'ordre 3) en \(x\).
 
@@ -2121,7 +2188,7 @@ L'idée de la sélection ascendante est de tester l'ajout de chaque variable ind
 \item
   \emph{Initialisation}: le modèle linéaire de départ est celui qui n'inclut que l'ordonnée à l'origine, \(Y=\beta_0+\varepsilon\), où \(\varepsilon\) est une erreur centrée.
 \item
-  \emph{Critère d'entrée}: \(c\), valeur-\emph{p} minimale à partir de laquelle une variable peut être incluse dans le modèle (\texttt{proc\ reg} utilise par défaut 0.5).
+  \emph{Critère d'entrée}: \(c\), valeur-\emph{p} minimale à partir de laquelle une variable peut être incluse dans le modèle
 \item
   \emph{Boucle} soit \(X_{(1)}, \ldots, X_{(k)}\), les variables explicatives à l'étape \(k<p\).
 
@@ -2152,7 +2219,7 @@ On continue ainsi à ajouter des variables jusqu'à ce que le critère d'entrée
 \item
   \emph{Initialisation}: le modèle linéaire de départ est celui qui inclut toutes les variables explicatives, \(Y=\beta_0+\sum_{j=1}^p \beta_j X_{(j)}+\varepsilon\), où \(\varepsilon\) est une erreur centrée.
 \item
-  \emph{Critère de sortie}: \(c\), valeur-\emph{p} maximale à partir de laquelle une variable peut être excluse du modèle (\texttt{proc\ reg} utilise par défaut 0.1).
+  \emph{Critère de sortie}: \(c\), valeur-\emph{p} maximale à partir de laquelle une variable peut être excluse du modèle
 \item
   \emph{Boucle} soit \(X_{(1)}, \ldots, X_{(p-k)}\), les variables explicatives présentes dans le modèle à l'étape \(k<p\).
 
@@ -2172,7 +2239,7 @@ L'idée est l'inverse de la méthode ascendante. On va tester le retrait de chaq
 \hypertarget{muxe9thode-suxe9quentielle}{%
 \subsection{Méthode séquentielle}\label{muxe9thode-suxe9quentielle}}
 
-Il s'agit d'une méthode hybride entre ascendante et descendante. On sélectionne un critère d'entrée et de sortie pour chacune des deux (0.15 dans \texttt{proc\ reg}) et on début la recherche à partir du modèle ne contenant que l'ordonnée à l'origine. À chaque étape, on fait une étape ascendante suivie de une (ou plusieurs) étapes descendantes. On continue ainsi tant que le modèle retourné par l'algorithme n'est pas identique à celui de l'étape précédente. Le dernier modèle est celui retenu.
+Il s'agit d'une méthode hybride entre ascendante et descendante. On sélectionne un critère d'entrée et de sortie pour chacune des deux et on début la recherche à partir du modèle ne contenant que l'ordonnée à l'origine. À chaque étape, on fait une étape ascendante suivie de une (ou plusieurs) étapes descendantes. On continue ainsi tant que le modèle retourné par l'algorithme n'est pas identique à celui de l'étape précédente. Le dernier modèle est celui retenu.
 
 Avec la méthode séquentielle, une fois qu'on entre une variable (étape ascendante), on fait autant d'étapes descendante afin de retirer toutes les variables qui satisfont le critère de sortie (il peut ne pas y en avoir). Une fois cela effectué, on refait une étape ascendante pour voir si on peut ajouter une nouvelle variable.
 
@@ -2181,17 +2248,13 @@ Remarques sur ces méthodes: avec la méthode ascendante, une fois qu'une variab
 On peut soi-même spécifier les critères d'entrée et de sortie. Plus le critère d'entrée est élevé, plus il y aura de variables dans le modèle final. De même, plus le critère de sortie est élevé, plus il y aura de variables dans le modèle. Il y également moyen avec \texttt{glmselect} de spécifier le nombre d'étapes de chaque procédure.
 
 Utilisons la méthode de sélection séquentielle classique avec des critères d'entrée et de sortie de 0.15 et les 104 variables.
-La sortie \textbf{SAS} est assez volumineuse car elle retrace toutes étapes de la sélection séquentielle. L'historique montre qu'à l'étape 1, la variable d'interaction \texttt{i\_x5\_x6} a été ajoutée, suivie de \texttt{i\_x31\_x10} à l'étape 2. Un peu plus loin, à l'étape 6, \texttt{i\_x5\_x6} est retirée et ainsi de suite. Il y a eu 40 étapes en tout et, à la fin, il reste 22 variables (parmi les 104) dans le modèle final. Le \(R^2\) du modèle final est 0,966.
+La sortie \textbf{SAS} est assez volumineuse car elle retrace toutes étapes de la sélection séquentielle. L'historique montre qu'à l'étape 1, la variable d'interaction \texttt{x5\_x6} a été ajoutée, suivie de \texttt{x31\_x10} à l'étape 2. Un peu plus loin, à l'étape 6, \texttt{x5\_x6} est retirée et ainsi de suite. Il y a eu 40 étapes en tout et, à la fin, il reste 22 variables (parmi les 104) dans le modèle final. Le \(R^2\) du modèle final est 0,966.
 
 \begin{center}\includegraphics[width=0.9\linewidth]{figures/02-select-e8} \end{center}
 
 \begin{center}\includegraphics[width=0.9\linewidth]{figures/02-select-e9} \end{center}
 
-Voici les estimés des paramètres du modèle final retenu. On voit bien que toutes les valeurs-\emph{p} (qui ne sont pas valides à cause de la sélection de modèles) sont toutes inférieures à 0,15.
-
-\begin{center}\includegraphics[width=0.7\linewidth]{figures/02-select-e10} \includegraphics[width=0.7\linewidth]{figures/02-select-e11} \end{center}
-
-Le choix de 0,15 comme critère d'entrée et de sortie est assez arbitraire. Il est fort possible que d'autres valeurs donnent de meilleurs résultats. Mais il n'est pas évident de les choisir.
+On voit bien que toutes les valeurs-\emph{p} (qui ne sont pas valides à cause de la sélection de modèles) sont toutes inférieures à 0.15. Le choix de 0.15 comme critère d'entrée et de sortie est complètement arbitraire. Il est fort possible que d'autres valeurs donnent de meilleurs résultats, mais il n'est pas évident de les choisir.
 
 Une façon de contourner le problème de devoir spécifier les critères d'entrée et de sortie est de procéder en deux étapes. Supposons que notre ordinateur permet de faire une recherche exhaustive de tous les sous-modèles avec près de 60 variables. L'idée est alors de passer de 104 à un sous-ensemble d'environ 60 variables, avec une sélection séquentielle gloutonne, et d'ensuite utiliser une recherche exhaustive avec ce sous-ensemble de variables. Plus précisément:
 
@@ -2211,27 +2274,38 @@ En fixant, les critères d'entrée et de sortie à 0,6 pour la recherche séquen
 
 L'idée de la procédure séquentielle classique est d'inclure ou d'exclure une variable à la fois sur la base des valeurs-\emph{p}. La procédure \texttt{glmselect} permet de faire une sélection séquentielle en utilisant d'autres critères, comme le \(\mathsf{AIC}\) ou le \(\mathsf{BIC}\). Cette procédure permet de contrôler très finement le processus de sélection de variables. Le code qui suit fait une recherche séquentielle avec les particularités suivantes. À chaque étape ascendante de la procédure séquentielle, c'est la variable qui améliore le plus le \(\mathsf{AIC}\) (\texttt{select=aic}) qui est entrée. De plus, à chaque étape descendante de la procédure séquenctielle, c'est la (ou les) variable(s) qui détériore(nt) le plus le \(\mathsf{AIC}\) qui est (sont) retirée(s). À la toute fin du processus, c'est le modèle qui a le meilleur \(\mathsf{BIC}\) (\texttt{choose=BIC}) qui est retenu.
 
-Si la procédure \texttt{reg} ne supporte pas la déclaration de variables catégorielles (\texttt{class}), \texttt{glmselect} et les autres fonctions que nous utiliserons permettent de simplifier la syntaxe et d'éviter de créer les variables binaires une par une.
+La procédure \texttt{glmselect} permet la déclarations de variables catégorielles (\texttt{class}); on évite ainsi de créer les variables binaires une par une. Voici les commandes pour faire une procédure séquentielle avec des critères plus généreux (entrée=sortie=0.6). Si le nombre de variables change en sortie, nous aurons ici 56 variables qui seront ensuite utilisées avec une recherche exhaustive: pour ce faire, on reprend la sortie, mais cette fois on choisit le modèle par la suite qui a le plus petit BIC (\texttt{SBC}) ou AIC.
 
-\begin{verbatim}
-proc glmselect data=trainymontant;
-class x3(break) x4(break);
-model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10@2 cx2 cx6 cx7 cx8 cx9 cx10  /   
-selection=stepwise(select=aic choose=sbc) hier=none; 
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ proc glmselect data=ymontant outdesign=glmselectoutput;}
+\NormalTok{ partition role=train(train="1" validate="0");}
+\NormalTok{ class x3(param=ref split) x4(param=ref split);}
+\NormalTok{ model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2}
+\NormalTok{ x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 /  }
+\NormalTok{ selection=stepwise(slentry=0.6 slstay=0.6 select=60) hier=none;}
+\NormalTok{ run;}
 
-Voici l'historique de la procédure séquentielle avec les 104 variables.
+\NormalTok{ proc glmselect data=glmselectoutput;}
+\NormalTok{ model ymontant= \&\_GLSMOD / }
+\NormalTok{ selection=backward(stop=1 choose=sbc) hier=none;}
+\NormalTok{ ods output GLMSelect.Summary.SelectionSummary=historiqueSelection;}
+\NormalTok{ run;}
+\end{Highlighting}
+\end{Shaded}
 
-\begin{center}\includegraphics[width=0.7\linewidth]{figures/02-select-e12} \includegraphics[width=0.7\linewidth]{figures/02-select-e13} \end{center}
-
-À l'étape 1, la variable \texttt{i\_x5\_x6} est ajoutée au modèle de base car c'est celle qui fait diminuer le plus le \(\mathsf{AIC}\). À l'étape 2, la variable \texttt{i\_x31\_x10} est ajoutée, À l'étape 6, la variable \texttt{i\_x5\_x6} est retirée car cela fait baisser le \(\mathsf{AIC}\). Notez que le \(\mathsf{AIC}\) décroit toujours d'une étape à l'autre. \textbf{SAS} garde aussi la trace du \(\mathsf{BIC}\) car le modèle final sera choisi selon ce critère. Finalement le processus séquentiel se termine à l'étape 40, car il n'y a plus moyen de faire diminuer le \(\mathsf{AIC}\). Le modèle final retenu est celui de l'étape 18, car c'est celui qui a le \(\mathsf{BIC}\) le plus petit parmi tous ces modèles (\(\mathsf{BIC}=484.22\)).
+À l'étape 1, la variable \texttt{x5\_x6} est ajoutée au modèle de base car c'est celle qui fait diminuer le plus le \(\mathsf{AIC}\). À l'étape 2, la variable \texttt{x31\_x10} est ajoutée, À l'étape 6, la variable \texttt{x5\_x6} est retirée car cela fait baisser le \(\mathsf{AIC}\). Notez que le \(\mathsf{AIC}\) décroit toujours d'une étape à l'autre. \textbf{SAS} garde aussi la trace du \(\mathsf{BIC}\) car le modèle final sera choisi selon ce critère. Finalement le processus séquentiel se termine à l'étape 40, car il n'y a plus moyen de faire diminuer le \(\mathsf{AIC}\). Le modèle final retenu est celui de l'étape 18, car c'est celui qui a le \(\mathsf{BIC}\) le plus petit parmi tous ces modèles (\(\mathsf{BIC}=484.22\)).
 
 Voici différentes statistiques ainsi que les estimations des paramètres de ce modèle qui contient 10 variables.
 
-\begin{center}\includegraphics[width=0.65\linewidth]{figures/02-select-e14} \end{center}
+\begin{center}\includegraphics[width=0.65\linewidth]{figures/02-select-e10} \end{center}
 
-\begin{center}\includegraphics[width=0.7\linewidth]{figures/02-select-e15} \end{center}
+\begin{center}\includegraphics[width=0.7\linewidth]{figures/02-select-e11} \end{center}
+
+On peut voir sur le graphique @ref(fig:fig2p2\_fig17) l'historique des valeurs de AIC et BIC à mesure qu'on diminue le nombre de variables dans le modèle: les mêmes variables sont enlevées à chaque étape, mais la valeur optimale du critère est différente pour la sélection finale.
+Sur l'axe des abscisses, j'ai ajouté l'erreur quadratique moyenne pour l'échantillon de validation contenant les 23 389 clients (sur 100 000) qui achèteraient si leur envoyait une copie du catalogue. Cet exemple n'est pas réaliste puisqu'on regarde la solution, mais il permet de nous comparer et de voir à quel point ici le critère d'information bayésien suit la même tendance que l'erreur moyenne quadratique de validation.
+
+\begin{center}\includegraphics[width=0.85\linewidth]{figures/02-select-e12} \end{center}
 
 \hypertarget{muxe9thodes-de-ruxe9gression-avec-ruxe9gularisation}{%
 \section{Méthodes de régression avec régularisation}\label{muxe9thodes-de-ruxe9gression-avec-ruxe9gularisation}}
@@ -2294,20 +2368,25 @@ L'idée est alors la suivante :
 
 La procédure \texttt{glmselect} a une commande, \texttt{modelaverage}, qui permet de faire une moyenne de modèles. Le code suivant permet de faire une moyenne de modèles.
 
-\begin{verbatim}
-proc glmselect data=trainymontant seed=57484765;
-class x3(param=ref split) x4(param=ref split);
-model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10@2 cx2 cx6 cx7 cx8 cx9 cx10  /   
-selection=stepwise(select=aic choose=sbc); 
-modelaverage nsamples=500 sampling=urs subset(best=500);
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc glmselect data=ymontant seed=57484765;}
+\NormalTok{partition role=train(train="1" validate="0");}
+\NormalTok{class x3(param=ref split) x4(param=ref split);}
+\NormalTok{model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2}
+\NormalTok{x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 / }
+\NormalTok{selection=stepwise(select=sbc choose=sbc) hier=none; }
+\NormalTok{score data=testymontant out=predaverage p=predymontant;}
+\NormalTok{modelaverage nsamples=500 sampling=urs subset(best=500);}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 Chaque modèle est construit à l'aide d'un échantillon aléatoire avec remise (\texttt{sampling=urs}). Il y aura 500 échantillons, et donc modèles, en tout (\texttt{nsamples=500}). L'option \texttt{subset(best=500)} indique à \textbf{SAS} de faire la moyenne des paramètres des 500 modèles. Notez l'option \texttt{seed} qui permet de reproduire les résultats, car elle fixe une valeur pour le générateur de nombre aléatoire (qui sera utilisé pour générer les échantillons d'autoamorçage). Cette fois-ci la sélection se fait avec le critère \(\mathsf{BIC}\) à tous les niveaux (\texttt{select=aic\ choose=sbc}).
 
-\begin{center}\includegraphics[width=0.9\linewidth]{figures/02-select-e16} \end{center}
+\begin{center}\includegraphics[width=0.9\linewidth]{figures/02-select-e13} \end{center}
 
-Ce tableau présente les variables qui ont été choisies dans au moins 20\% des modèles, c'est-à-dire, dans au moins 100 des 500 modèles ici. Il y a deux variables qui ont été retenues dans tous les modèles, \texttt{i\_x1\_x6} et \texttt{i\_x31\_x8}. Le tableau rapporte aussi la moyenne des estimations pour ces paramètres.
+Ce tableau présente les variables qui ont été choisies dans au moins 20\% des modèles, c'est-à-dire, dans au moins 100 des 500 modèles ici. Il y a deux variables qui ont été retenues dans tous les modèles, \texttt{x1\_x6} et \texttt{x31\_x8}. Le tableau rapporte aussi la moyenne des estimations pour ces paramètres.
 
 Toutes les méthodes employées jusqu'à maintenant utilise une méthode de pénalisation pour déterminer le meilleur modèle. Une alternative avec \texttt{glmselect} serait de répéter la sélection en utilisant directement l'erreur moyenne quadratique estimée à l'aide de la validation croisée comme critère de sélection (en remplaçant l'option \texttt{choose=cv} avec par exemple \texttt{cvmethod=random(10)} pour de la sélection avec \(K=10\) groupes formées aléatoirement).
 
@@ -2336,16 +2415,28 @@ nombre de variables & \(\mathsf{EQM}\) & méthode \\
 \end{longtable}
 
 \begin{longtable}[]{@{}
-  >{\centering\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.32}}
-  >{\centering\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.37}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.32}}@{}}
+  >{\centering\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3158}}
+  >{\centering\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3684}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3158}}@{}}
 \caption{\label{tab:02-modelcomparaisonfull} Comparaison des méthodes selon l'erreur quadratique moyenne avec les variables de base, les interactions et les termes quadratiques.}\tabularnewline
 \toprule
-nombre de variables & \(\mathsf{EQM}\) & méthode \\
+\begin{minipage}[b]{\linewidth}\centering
+nombre de variables
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\(\mathsf{EQM}\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+méthode
+\end{minipage} \\
 \midrule
 \endfirsthead
 \toprule
-nombre de variables & \(\mathsf{EQM}\) & méthode \\
+\begin{minipage}[b]{\linewidth}\centering
+nombre de variables
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\(\mathsf{EQM}\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+méthode
+\end{minipage} \\
 \midrule
 \endhead
 104 & 19,63 & toutes les variables \\
@@ -2628,11 +2719,13 @@ Le but est d'examiner les effets de ces variables sur l'intentions d'achat (\(Y\
 
 Faisons tout d'abord une analyse en utilisant seulement \(X_5\) (âge) comme variable explicative. L'ajustement du modèle de régression incluant uniquement \(X_5\) sera effectuée en exécutant le programme
 
-\begin{verbatim}
-proc logistic data=multi.logit1 ;
-model y(ref='0') = x5 / clparm=pl clodds=pl expb;
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc logistic data=multi.logit1 ;}
+\NormalTok{model y(ref=\textquotesingle{}0\textquotesingle{}) = x5 / clparm=pl clodds=pl expb;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 La syntaxe \texttt{y(ref=\textquotesingle{}0\textquotesingle{})} sert à spécifier la catégorie de référence, zéro, de la variable réponse \(Y\): le modèle décrit donc \({\mathsf P}\left(y=1 \mid X_5\right)\).
 
@@ -2697,12 +2790,14 @@ Comme l'exponentielle est une transformation monotone croissante, on a \(\beta>0
 
 Ajustons à présent le modèle avec toutes les variables explicatives. Rappelez-vous que la variable \(X_1\) (quel genre d'emploi occupez-vous) a cinq catégories, \(X_2\) (revenu familial annuel) a cinq catégories, et \(X_6\) (combien de fois avez-vous assisté à un rodéo au cours de la dernière année) a trois catégories. Il faut donc spécifier à \textbf{SAS} de les traiter comme des variables catégorielles dans le modèle. Notez qu'on pourrait aussi traiter \(X_2\) comme continue car elle est ordinale et possède tout de même cinq modalités, mais on la traitera comme variable nominale.
 
-\begin{verbatim}
-proc logistic data=multi.logit1 ;
-class x1(ref=last) x2(ref=last) x6 / param=ref;
-model y(ref='0') =x1-x6 / clparm=pl clodds=pl expb;
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc logistic data=multi.logit1 ;}
+\NormalTok{class x1(ref=last) x2(ref=last) x6 / param=ref;}
+\NormalTok{model y(ref=\textquotesingle{}0\textquotesingle{}) =x1{-}x6 / clparm=pl clodds=pl expb;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 Dans \textbf{SAS}, les variables incluses dans la commande \texttt{class} sont modélisées à l'aide d'un ensemble de variables indicatrices. Cette commande nous évite de créer nous-même les indicatrices; cette option est disponible dans la plupart des procédures \textbf{SAS}, bien que la procédure \texttt{reg} est une exception notable.
 
@@ -2770,13 +2865,15 @@ Prenons comme exemple le test de la significativité de \(X_6\), qui est modéli
 
 La différence \(D = 566.447 - 516.196 = 50.25\). Il s'agit de la statistique du test de rapport de vraisemblance. La valeur-\(p\) peut-être obtenue de la loi du khi-deux avec 2 degrés de liberté via le code suivant permet d'imprimer la valeur-\(p\), qui est \(1.22 \times 10^{-11}\).
 
-\begin{verbatim}
-data pval;
-pval=1-CDF('CHISQ', 566.447 - 516.196, 2);
-run;
-proc print data=pval;
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data pval;}
+\NormalTok{pval=1{-}CDF(\textquotesingle{}CHISQ\textquotesingle{}, 566.447 {-} 516.196, 2);}
+\NormalTok{run;}
+\NormalTok{proc print data=pval;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 Comme la statistique du test de rapport de vraisemblance \(D=50.25\) est encore plus grande est encore plus grande que la statistique de Wald (\(42.9364\)), qui suit la même loi de probabilité sous \(\mathcal{H}_0\), cela indique que le test du rapport de vraisemblance est encore plus significatif que le test de Wald. Cela ne fait pas de différence ici mais, dans certains cas, il est possible que le test de Wald ne soit pas significatif (valeur-\(p\) plus grande que \(0.05\)) tandis que le test du rapport de vraisemblance le soit (valeur-\(p\) inférieure à \(0.05\)).
 
@@ -2865,12 +2962,14 @@ Dans le chapitre précédent, nous avons cherché à développer un modèle pour
 
 Afin d'introduire différentes notions, nous allons, dans un premier temps, utiliser les 10 variables de base. À partir de la section suivante, nous chercherons à optimiser le modèle en considérant les interactions d'ordre deux. Pour ce faire, nous utiliserons des méthodes de sélections de variables. Les commandes se trouvent dans le fichier \texttt{logit2\_classification\_base.sas}. Dans le code qui suit, le fichier \texttt{train} contient les 1000 clients de l'échantillon d'apprentissage et le fichier \texttt{test} contient les 100 000 clients pour lesquels on veut prédire l'intention d'achat.
 
-\begin{verbatim}
-proc logistic data=train;
-model yachat(ref='0') = x1x2 x3 x32 x41-x44 x5-x10;
-output out=pred predprobs=crossvalidate;
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc logistic data=train;}
+\NormalTok{model yachat(ref=\textquotesingle{}0\textquotesingle{}) = x1x2 x3 x32 x41{-}x44 x5{-}x10;}
+\NormalTok{output out=pred predprobs=crossvalidate;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 Le modèle utilise seulement les 10 variables de base (en fait 14 avec les indicatrices pour les variables catégorielles). Des prévisions pour les clients restants seront exportées dans le fichier \texttt{pred}, grâce à la commande \texttt{score}. L'option \texttt{ctable} permet d'obtenir la \texttt{Table\ de\ classification} (sic). Tel que nous l'avons vu au chapitre précédent, il y a 210 clients qui ont acheté quelque chose parmi les 1000.
 
@@ -2996,17 +3095,19 @@ est simplement l'aire sous la courbe de la fonction d'efficacité du récepteur.
 
 La courbe ROC et la valeur de l'aire sous la courbe (avec l'option \texttt{plots(only)=(roc)}), sont calculées avec les données d'apprentissage et ne sont pas corrigées. Si on veut les utiliser pour comparer des modèles, il faut plutôt utiliser l'option \texttt{crossvalidate} qui permet d'obtenir des estimations des probabilités par validation-croisée avec \(n\) groupes tout comme celle utilisée dans le tableau de classification.
 
-\begin{verbatim}
-proc logistic data=train;
-model yachat(ref='0') = x1 x2 x31 x32 x41-x44 x5-x10;
-output out=pred predprobs=crossvalidate;
-run;
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc logistic data=train;}
+\NormalTok{model yachat(ref=\textquotesingle{}0\textquotesingle{}) = x1 x2 x31 x32 x41{-}x44 x5{-}x10;}
+\NormalTok{output out=pred predprobs=crossvalidate;}
+\NormalTok{run;}
 
-proc logistic data=pred ;
-model yachat(ref='0') = x1 x2 x31 x32 x41-x44 x5-x10;
-roc pred=xp_1;
-run;
-\end{verbatim}
+\NormalTok{proc logistic data=pred ;}
+\NormalTok{model yachat(ref=\textquotesingle{}0\textquotesingle{}) = x1 x2 x31 x32 x41{-}x44 x5{-}x10;}
+\NormalTok{roc pred=xp\_1;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 On sauvegarde d'abord les probabilités estimées par validation-croisée dans le
 fichier \texttt{pred} avec la commande \texttt{output\ out=pred\ predprobs=crossvalidate}
@@ -3022,13 +3123,15 @@ est la courbe lift (sic) (en anglais, \emph{lift chart}). Cette courbe est obten
 
 \textbf{SAS} ne permet pas de la tracer directement, mais le fichier \texttt{logit3\_lift\_chart.sas} contient une macro \textbf{SAS} qui permet de le faire.
 
-\begin{verbatim}
-proc logistic data=train;
-model yachat(ref='0') = x1 x2 x31 x32 x41-x44 x5-x10;
-output out=pred predprobs=crossvalidate;
-run;
-%liftchart1(pred,yachat,xp_1,10);
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc logistic data=train;}
+\NormalTok{model yachat(ref=\textquotesingle{}0\textquotesingle{}) = x1 x2 x31 x32 x41{-}x44 x5{-}x10;}
+\NormalTok{output out=pred predprobs=crossvalidate;}
+\NormalTok{run;}
+\NormalTok{\%liftchart1(pred,yachat,xp\_1,10);}
+\end{Highlighting}
+\end{Shaded}
 
 Ici, le tableau présente les 10 déciles. Si on classifiait comme acheteurs les 10\% qui ont la plus forte probabilité estimée d'achat, on détecterait 79 des 210 clients (37,6\%). En comparaison, on s'attend que 21 clients soient sélectionnés en moyenne si on prend un échantillon aléatoire de 100 personnes. Le ratio 79/21 (dernière colonne) est le \emph{lift} du modèle: il permet de détecter 3,76 fois plus de succès que le hasard.
 
@@ -3142,14 +3245,16 @@ prédiction & \(\widehat{Y}=1\) & 57 & \(-10\) \\
 
 L'appel de la macro \texttt{manycut\_cvlogistic}, dont les paramètres sont expliqués dans le script, se fait de la manière suivante:
 
-\begin{verbatim}
-%manycut_cvlogistic(
-  yvar=yachat, xvar=x1 x2 x31 x32 
-  x41 x42 x43 x44 x5 x6 x7 x8 x9 x10,
-  n=1000, k=10, ncv=10, dataset=train,
-  c00=0, c01=0, c10=-10, c11=57,
-  manycut=.05 .06 .07 .08 .09 .1 .11 .12 .13 .14 .15 .16 .17 .18 .5);
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{\%manycut\_cvlogistic(}
+\NormalTok{  yvar=yachat, xvar=x1 x2 x31 x32 }
+\NormalTok{  x41 x42 x43 x44 x5 x6 x7 x8 x9 x10,}
+\NormalTok{  n=1000, k=10, ncv=10, dataset=train,}
+\NormalTok{  c00=0, c01=0, c10={-}10, c11=57,}
+\NormalTok{  manycut=.05 .06 .07 .08 .09 .1 .11 .12 .13 .14 .15 .16 .17 .18 .5);}
+\end{Highlighting}
+\end{Shaded}
 
 Cette macro produit le tableau suivant. Il donne l'estimation du gain moyen (\texttt{gain}) pour différents points de coupures (\texttt{cutpoint}). Cette estimation provient d'une validation-croisée avec 10 groupes (\texttt{k=10} dans la macro). En fait, on a répété 10 fois (\texttt{ncv=10} dans la macro) la validation croisée avec 10 groupes et fait la moyenne des 10 répétitions afin d'avoir plus de précisions. Il faut essayer plusieurs points de coupure afin de trouver le meilleur.
 
@@ -3188,22 +3293,26 @@ Ce paragraphe est plus technique et peut être omis. Parce qu'il n'y a pas de so
 
 À la section précédente, nous avons inclus les 10 variables de base (14 avec les indicatrices pour les variables catégorielles) dans notre exemple d'envoi ciblé. Nous allons ici faire une recherche de type \texttt{all-subset} parmi ces 14 variables. Le code est dans le fichier \texttt{logit5\_selection\_variables.sas}.
 
-\begin{verbatim}
-proc logistic data=train;
-model yachat(ref='0') = x1 x2 x31 x32 x41-x44 x5-x10 / 
-  selection=score best=1;
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc logistic data=train;}
+\NormalTok{model yachat(ref=\textquotesingle{}0\textquotesingle{}) = x1 x2 x31 x32 x41{-}x44 x5{-}x10 / }
+\NormalTok{  selection=score best=1;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{center}\includegraphics[width=0.8\linewidth]{figures/03-logistic-e20} \end{center}
 
 Le meilleur modèle avec une seule variable, selon la statistique du score, est celui avec \texttt{x8}, le meilleur avec deux variables est celui avec \texttt{x2} et \texttt{x8}, et ainsi de suite. Nous voulons ensuite choisir parmi ces 14 modèles, celui qui minimise le \(\mathsf{AIC}\) ou le \(\mathsf{BIC}\). Le problème est que ces critères ne sont pas fournis (contrairement aux sorties de la procédure \texttt{reg}). La solution longue consiste à ajuster chacun de ces modèles, à extraire le \(\mathsf{AIC}\) et le \(\mathsf{BIC}\) et à ainsi trouver le meilleur modèle. Mais le faire manuellement en spécifiant plusieurs modèles est trop long. La macro \texttt{logistic\_aic\_BIC\_score}, qui se trouve dans le fichier \texttt{logit6\_macro\_all\_subset.sas} ajuste tous ces modèles automatiquement.
 
-\begin{verbatim}
-%logistic_aic_BIC_score(yvariable=yachat,
-                        xvariables=x1 x2 x31 x32 x41-x44 x5-x10,
-                        dataset=train, minvar=1, maxvar=14);
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{\%logistic\_aic\_BIC\_score(yvariable=yachat,}
+\NormalTok{                        xvariables=x1 x2 x31 x32 x41{-}x44 x5{-}x10,}
+\NormalTok{                        dataset=train, minvar=1, maxvar=14);}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{center}\includegraphics[width=0.8\linewidth]{figures/03-logistic-e21} \end{center}
 
@@ -3233,15 +3342,17 @@ Nous avons vu au chapitre précédent que la procédure \texttt{glmselect} perme
 
 Le code suivant fait une recherche séquentielle en ajoutant ou retranchant les variables selon leur valeur-\(p\) (\texttt{select=sl}), la seule méthode disponible pour l'instant. En revanche, le modèle final peut-être choisi selon d'autres critères.
 
-\begin{verbatim}
-proc hpgenselect data=train;
-class x3(ref='3' split) x4(ref='5' split);
-model yachat(ref='0')=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2 
- x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 /  
-link=logit distribution=binary;
-selection method=stepwise(select=sl choose=sbc);
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc hpgenselect data=train;}
+\NormalTok{class x3(ref=\textquotesingle{}3\textquotesingle{} split) x4(ref=\textquotesingle{}5\textquotesingle{} split);}
+\NormalTok{model yachat(ref=\textquotesingle{}0\textquotesingle{})=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2 }
+\NormalTok{ x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 /  }
+\NormalTok{link=logit distribution=binary;}
+\NormalTok{selection method=stepwise(select=sl choose=sbc);}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 Avec le critère \(\mathsf{BIC}\), on obtient 12 variables tandis que \texttt{choose=aic} donne 13 variables (seule la variable \texttt{x41} est ajoutée). Il s'agit des mêmes variables que celles sélectionnées par une sélection séquentielle classique en prenant 0.05 comme critère d'entrée et de sortie.
 
@@ -3439,11 +3550,13 @@ On voit que les gens qui ont passé leurs vacances au Québec (\(Y_1=0\)) ont 26
 
 Pour le modèle logit multinomial, nous allons prendre \(Y_1=0\) comme catégorie de référence. Les commandes sont
 
-\begin{verbatim}
-proc logistic data=multi.logit6 ;
-model y1(ref='0') = x / clparm=pl clodds=pl expb link=glogit;
-run; 
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc logistic data=multi.logit6 ;}
+\NormalTok{model y1(ref=\textquotesingle{}0\textquotesingle{}) = x / clparm=pl clodds=pl expb link=glogit;}
+\NormalTok{run; }
+\end{Highlighting}
+\end{Shaded}
 
 L'option \texttt{link=glogit} spécifie le type de fonction de lien, ici celle du modèle logistique multinomial.
 
@@ -3512,11 +3625,13 @@ Ainsi, les répondants qui sont allés moins de cinq fois au cinéma ont en moye
 
 Nous utilisons exactement le même programme que pour une régression logistique habituelle. Si la variable \(Y\) prend plus de deux valeurs, \textbf{SAS} utilisera automatiquement le modèle de régression multinomiale cumulé.
 
-\begin{verbatim}
-proc logistic data=multi.logit6 descending;
-model y2 = x / clparm=pl clodds=pl expb;
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc logistic data=multi.logit6 descending;}
+\NormalTok{model y2 = x / clparm=pl clodds=pl expb;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 L'option \texttt{descending} impose la paramétrisation discutée précédemment. Sans cette option, ce serait plutôt les probabilités de prendre une valeur plus petite, par rapport à une plus grande qui serait modélisée. Le modèle est le même, mais les signes des paramètres des variables explicatives seraient inversés.
 
@@ -3615,12 +3730,20 @@ Il existe deux grandes approches pour analyser des données de survies :
 Nous discuterons seulement de la première approche dans ce chapitre. Le tableau suivant fait une analogie entre ce que nous ferons dans ce chapitre et des méthodes que vous connaissez.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.23}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.28}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.34}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.15}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2323}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2839}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3355}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1484}}@{}}
 \toprule
-réponse \(Y\) & résumé descriptif & comparaison de deux groupes & modèle général \\
+\begin{minipage}[b]{\linewidth}\raggedright
+réponse \(Y\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+résumé descriptif
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+comparaison de deux groupes
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+modèle général
+\end{minipage} \\
 \midrule
 \endhead
 continue & moyenne & test-\(t\) pour deux échantillons & régression linéaire \\
@@ -3670,12 +3793,14 @@ Si l'échantillon ne contient aucune observation censurée (on a des temps exact
 
 On considère l'exemple des temps d'abonnement pour illustrer le concept; les commandes \textbf{SAS} sont dans \texttt{survival1\_fonction\_survie.sas}. L'estimation de la fonction de survie selon la méthode Kaplan--Meier est obtenue grâce aux commandes suivantes:
 
-\begin{verbatim}
-proc lifetest data=multi.survival1 method=km
-       plots=survival(cl nocensor);
-time t*censure(1);
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc lifetest data=multi.survival1 method=km}
+\NormalTok{       plots=survival(cl nocensor);}
+\NormalTok{time t*censure(1);}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 Le premier tableau renvoyé par \textbf{SAS} contient une ligne par observation et permet de lire l'estimé de la fonction de survie. Par exemple, on voit que l'estimation de la probabilité que le temps d'abonnement soit supérieur à 30 semaines est \(\widehat{S}(30)=0,986\).
 
@@ -3723,12 +3848,14 @@ Les deux tests utilisés habituellement sont le test du log-rang (\emph{log-rank
 
 Testons l'hypothèse que la courbe de survie des clients masculins est la même que celle des clients féminins dans l'exemple des données d'abonnement. Ce test est effectué grâce à l'option \texttt{strata} de la procédure \texttt{lifetest} à l'aide des commandes suivantes (voir le fichier \texttt{survival1\_fonction\_survie.sas}):
 
-\begin{verbatim}
-proc lifetest data=multi.survival1 method=km plots=(s) censoredsymbol=none;
-time t*censure(1);
-strata sexe;
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc lifetest data=multi.survival1 method=km plots=(s) censoredsymbol=none;}
+\NormalTok{time t*censure(1);}
+\NormalTok{strata sexe;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 On retrouve dans la sortie les estimés de la fonction de survie, de même que les quartiles par strate: la première strate correspond aux hommes (\texttt{sexe=0}) et la deuxième aux femmes (\texttt{sexe=1}).
 
@@ -3789,11 +3916,13 @@ Le terme \textbf{risques proportionnels} fait référence à la situation où le
 
 Débutons avec un exemple simple en utilisant les données d'abonnement: on ajuste un modèle de Cox en utilisant seulement la variable binaire sexe (\texttt{survival2\_cox.sas}). Ceci peut être fait avec la procédure \texttt{phreg}, comme suit:
 
-\begin{verbatim}
-proc phreg data=multi.survival1;
-model t*censure(1)=sexe / ties=exact; 
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc phreg data=multi.survival1;}
+\NormalTok{model t*censure(1)=sexe / ties=exact; }
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 La sortie inclut notamment des tests de significativité globale basés sur la vraisemblance pour les variables explicatives (rapport de vraisemblance, score et Wald) ainsi qu'un tableau des coefficients et des statistiques sur la qualité de l'ajustement pour le modèle sans variable explicative et celui qui inclut sexe.
 
@@ -3819,12 +3948,14 @@ Le rapport de risque pour âge est 0,959 et donc le risque diminue de 4,1\% chaq
 
 Généralement, on considérera le modèle de Cox avec toutes les variables explicatives simultanément. La variable \(\texttt{region}\) est nominale tandis que la variable \(\texttt{service}\) est ordinale (avec quatre modalités). Nous allons les incorporer, comme d'habitude, en utilisant des variables indicatrices avec \(\texttt{region=5}\) et \(\texttt{service=0}\) (le client n'est abonné à aucun autre service) comme catégories de référence.
 
-\begin{verbatim}
-proc phreg data=multi.survival1;
-class region(ref='5') service(ref='0') / param=ref;
-model t*censure(1)=age sexe region service / ties=exact; 
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc phreg data=multi.survival1;}
+\NormalTok{class region(ref=\textquotesingle{}5\textquotesingle{}) service(ref=\textquotesingle{}0\textquotesingle{}) / param=ref;}
+\NormalTok{model t*censure(1)=age sexe region service / ties=exact; }
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{center}\includegraphics[width=0.45\linewidth]{figures/05-survie-e15} \end{center}
 
@@ -3954,12 +4085,14 @@ Ainsi, il y a donc 166 clients toujours abonnés, 170 qui nous ont quitté pour 
 
 Pour ajuster le modèle lorsque la cause du départ est le compétiteur A, le code est
 
-\begin{verbatim}
-proc phreg data=multi.survival4;
-class region(ref='5') service(ref='0') / param=ref;
-model t*censure(1,3,4)=age sexe region service / ties=exact; 
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc phreg data=multi.survival4;}
+\NormalTok{class region(ref=\textquotesingle{}5\textquotesingle{}) service(ref=\textquotesingle{}0\textquotesingle{}) / param=ref;}
+\NormalTok{model t*censure(1,3,4)=age sexe region service / ties=exact; }
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 Notez qu'on précise que les valeurs 1, 3 et 4 sont des observations censurées. Ici, l'événement d'intérêt est que le client est parti chez le compétiteur A. S'il est toujours abonné (\(\texttt{censure=1}\)), s'il est parti chez le compétiteur B (\(\texttt{censure=3}\)) ou s'il nous a quitté car il n'a plus de cellulaire (\(\texttt{censure=4}\)), alors l'événement « quitter pour aller chez A » n'est pas survenu. C'est pourquoi on doit traiter ces situations comme des censures.
 
@@ -3996,13 +4129,15 @@ Pour ce modèle, le rapport de risque, pour une augmentation d'une unité de \(X
 
 Ajustons le modèle pour l'abonnement cellulaire en ajoutant une interaction entre l'âge et le temps. Les commandes se trouvent dans \texttt{survival5\_non\_proportionnel.sas}, dont l'extrait montre comment créer la variable produit.
 
-\begin{verbatim}
-proc phreg data=temp;
-class region(ref='5') service(ref='0') / param=ref;
-model t*censure(1)=age iaget sexe region service / ties=exact;
-iaget=age*t; 
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc phreg data=temp;}
+\NormalTok{class region(ref=\textquotesingle{}5\textquotesingle{}) service(ref=\textquotesingle{}0\textquotesingle{}) / param=ref;}
+\NormalTok{model t*censure(1)=age iaget sexe region service / ties=exact;}
+\NormalTok{iaget=age*t; }
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 L'interaction entre l'âge et le temps est spécifiée en incluant une nouvelle variable, \(\texttt{iaget}\), créée à l'intérieur de l'appel à la procédure \texttt{phreg}, et qui est égale au produit entre l'\(\texttt{age}\) et \(\texttt{t}\). On remarque que le terme d'interaction est tout juste non significatif (valeur-\(p\) de 0,061).
 
@@ -4025,13 +4160,15 @@ On considère la stratification par rapport à la région pour notre modèle pou
 
 Les commandes pour ajuster le modèle sont
 
-\begin{verbatim}
-proc phreg data=multi.survival1;
-class service(ref='0') / param=ref;
-model t*censure(1)=age sexe service / ties=exact;
-strata region;
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc phreg data=multi.survival1;}
+\NormalTok{class service(ref=\textquotesingle{}0\textquotesingle{}) / param=ref;}
+\NormalTok{model t*censure(1)=age sexe service / ties=exact;}
+\NormalTok{strata region;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{center}\includegraphics[width=0.75\linewidth]{figures/05-survie-e31} \end{center}
 
@@ -4195,11 +4332,13 @@ Ainsi, il y 192 valeurs manquantes pour \(X_1\), 48 pour \(X_2\) et 184 pour \(X
 
 Afin d'avoir plus d'information au sujet de la configuration des valeurs manquantes, on peut utiliser la procédure \texttt{mi}. Comme on veut seulement voir comment sont distribuées les valeurs manquantes et non pas imputer les valeurs manquantes, on fixe \texttt{nimpute=0}.
 
-\begin{verbatim}
-proc mi data=multi.missing1 nimpute=0;
-var y x1-x6;
-run;
-\end{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc mi data=multi.missing1 nimpute=0;}
+\NormalTok{var y x1{-}x6;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{center}\includegraphics[width=1\linewidth]{figures/06-manquantes-e2} \end{center}
 
@@ -4220,22 +4359,24 @@ Il ne serait pas raisonnable de faire l'analyse avec seulement 180 observations 
 
 Nous allons donc faire l'analyse avec l'imputation multiple, en prenant la méthode d'imputation par défaut dans la procédure \texttt{mi}. Le code \textbf{SAS} est
 
-\begin{verbatim}
-proc mi data=multi.missing1 out=outmi 
-    nimpute=pctmissing seed=746382643;
-var x11 x12 x13 x14 x21 x22 x23 x24 x3 x4 x5 x61 x62;
-run;
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{proc mi data=multi.missing1 out=outmi }
+\NormalTok{    nimpute=pctmissing seed=746382643;}
+\NormalTok{var x11 x12 x13 x14 x21 x22 x23 x24 x3 x4 x5 x61 x62;}
+\NormalTok{run;}
 
-proc logistic data=outmi outest=outlogistic 
-    covout descending noprint;
-model y(ref='0') = x11 x12 x13 x14 x21 x22 x23 x24 x3 x4 x5 x61 x62;
-by _imputation_;
-run;
+\NormalTok{proc logistic data=outmi outest=outlogistic }
+\NormalTok{    covout descending noprint;}
+\NormalTok{model y(ref=\textquotesingle{}0\textquotesingle{}) = x11 x12 x13 x14 x21 x22 x23 x24 x3 x4 x5 x61 x62;}
+\NormalTok{by \_imputation\_;}
+\NormalTok{run;}
 
-proc mianalyze data=outlogistic;
-var intercept x11 x12 x13 x14 x21 x22 x23 x24 x3 x4 x5 x61 x62;
-run;
-\end{verbatim}
+\NormalTok{proc mianalyze data=outlogistic;}
+\NormalTok{var intercept x11 x12 x13 x14 x21 x22 x23 x24 x3 x4 x5 x61 x62;}
+\NormalTok{run;}
+\end{Highlighting}
+\end{Shaded}
 
 Avec la procédure \texttt{mi} on demande un nombre d'imputations égal au nombre de données manquantes, mais au moins cinq et au plus 50 (\texttt{nimpute=pctmissing}). Le fichier de sortie (\texttt{outmi}) va contenir ces \(m\) ensembles de données pour un total de \(m \times 500\). Dans ce fichier, l'ensemble est identifié par la variable \texttt{\_imputation\_}, qui prend des valeurs de 1 à \(m\).
 
