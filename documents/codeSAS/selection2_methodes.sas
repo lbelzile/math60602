@@ -4,6 +4,9 @@
  la performance réelle des modèles retenus par les différentes 
  méthodes de sélection de modèle. */
 
+proc contents data=multi.dbm;
+run;
+
  data ymontant;
  set multi.dbm;
  drop test; *la colonne "train" dans la base de données contient déjà l'information sur les regroupements entraînement/validation;
@@ -95,8 +98,9 @@ Commandes pour effectuer une recherche exhaustive avec le critère du R carré e
 */
  proc glmselect data=ymontant;
  partition role=train(train="1" validate="0");
-  class x3(param=ref split) x4(param=ref split); *'split' permet de fusionner des groupes à la catégorie de référence;
- model ymontant=x1-x10 / selection=forward(step=15 choose=AIC) stat=(AIC SBC);
+ class x3(param=ref split) x4(param=ref split); *'split' permet de fusionner des groupes à la catégorie de référence;
+ model ymontant=x1-x10 / 
+ selection=forward(step=15 choose=AIC) stat=(AIC SBC);
  *score data=testymontant out=predaic p=predymontant;
  run;
 
@@ -134,29 +138,28 @@ Commandes pour effectuer une recherche exhaustive avec le critère du R carré e
  selection=stepwise(slentry=0.15 slstay=0.15 select=SL) hier=none;
  run;
  
- 
- /* 
- Commandes pour faire un séquentielle avec des critères plus généreux (entrée=sortie=0,6).
- à la fin, il y aura plus de variables, 56 ici.
- Ces 56 variables seront ensuite utilisées avec une recherche exhaustive
- On enregistre les noms de variable dans glmselectOutput */
- proc glmselect data=ymontant outdesign=glmselectoutput;
+ proc glmselect data=ymontant;
  partition role=train(train="1" validate="0");
  class x3(param=ref split) x4(param=ref split);
  model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2
  x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 /  
  selection=stepwise(slentry=0.6 slstay=0.6 select=SL) hier=none;
+ ods output GLMSelect.Summary.SelectionSummary=historiqueSelection;
  run;
- /* On reprend la sortie, mais cette fois
- on fait une recherche exhaustive des modèles restants (variables choisies sont dans &_GLSIND, tandis que &_GLSMOD recense toutes les variables de départ.
- On choisit le modèle par la suite qui a le 
- plus petit BIC/SBC ou AIC */
- proc glmselect data=glmselectoutput;
- model ymontant= &_GLSMOD / selection=backward(stop=1 choose=sbc) hier=none;
+
+ proc sgplot data=historiqueSelection;
+ series x=nParmsIn y=AIC / markers markerattrs=(symbol=CircleFilled color="CXFDE725") lineattrs=(color="CXFDE725");
+ series x=nParmsIn y=SBC /  markers markerattrs=(symbol=CircleFilled color="CX21918C") lineattrs=(color="CX21918C");
+ series x=nParmsIn y=ValidationASE / y2axis  markers markerattrs=(symbol=CircleFilled color="CX440154") lineattrs=(color="CX440154");
+ yaxis label="Critère d'information";
+ y2axis label="EMQ (validation)";
+ xaxis label="Nombre de termes";
  run;
-  
+ 
+   
  proc glmselect data=glmselectoutput;
- model ymontant= &_GLSMOD / selection=backward(stop=1 choose=aic) hier=none;
+ model ymontant= &_GLSMOD / 
+ selection=backward(stop=1 choose=aic) hier=none;
  run;
  
  
@@ -165,11 +168,10 @@ Commandes pour effectuer une recherche exhaustive avec le critère du R carré e
  class x3(param=ref split) x4(param=ref split);
  model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2
  x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 / 
- selection=stepwise(select=aic choose=sbc) hier=none; 
+ selection=stepwise(select=aic choose=sbc) hier=none;
  run;
  
  
-  
  
 /* LASSO avec validation croisée à 10 groupes 
  effect ne fonctionne pas avec cette procédure...*/
@@ -178,11 +180,13 @@ Commandes pour effectuer une recherche exhaustive avec le critère du R carré e
  class x3(param=ref split) x4(param=ref split);
  model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2
  x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 / 
- selection=lasso(steps=120 choose=cv) cvmethod=random(10) hier=none;
+ selection=lasso(steps=120 choose=cv) 
+ cvmethod=random(10) hier=none;
  run;
 
 
-/* 
+ 
+ /* 
  Commandes pour faire une moyenne de modèles. Chaque modèle est construit avec
  un échantillon d'autoamorçage ("sampling=urs"). 500 échantillons sont utilisés ("nsamples=500").
  Les meilleurs 500 modèles sont conservés pour en faire la moyenne ("subset(best=500)").
@@ -216,6 +220,7 @@ Commandes pour effectuer une recherche exhaustive avec le critère du R carré e
  proc means data=predaverage n mean;
  var erreur;
  run; 
+ 
 
  /* Note: en général, on n'aura pas une base de donnée de validation.
  On choisira le modèle optimal en 
@@ -232,7 +237,7 @@ Exemple de procédure avec scission aléatoire en échantillons apprentissage/va
 proc glmselect data=ymontant seed=12345;
  partition fraction(validate=0.2);
  class x3(param=ref split) x4(param=ref split); 
- model ymontant=x1-x10 / selection=forward(stop=15 choose=SBC);
+ model ymontant=x1-x10 / selection=forward(stop=15 choose=VALIDATE);
  output out=outpred resid=erreur pred=predmoy;
 run;
 /* Sauvegarder les données avec colonne _ROLE_, les résidus resid=... et les prédictions pred = ...
@@ -248,5 +253,4 @@ C'est utile pour "modelaverage" qui ne retourne pas l'EMQ (mais ça marche plus 
  proc means data=outpred2 mean n;
  var erreurquad;
  run;
-
 
