@@ -154,7 +154,7 @@
 
 \title{Analyse multidimensionnelle appliquée}
 \author{(c) Denis Larocque, Léo Belzile}
-\date{version du 2021-10-16}
+\date{version du 2021-10-28}
 
 \usepackage{amsthm}
 \newtheorem{theorem}{Théorème}[chapter]
@@ -198,6 +198,9 @@
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\Hy}{\mathcal{H}}
 \renewcommand{\d}{\mathrm{d}}
+
+\hypertarget{survol-du-cours}{%
+\section{Survol du cours}\label{survol-du-cours}}
 
 \hypertarget{analyse-factorielle-exploratoire}{%
 \subsection{Analyse factorielle exploratoire}\label{analyse-factorielle-exploratoire}}
@@ -520,7 +523,8 @@ Si on veut représenter la covariabilité de deux variables continues, on utilis
 
 Plutôt que de décrire plus en détail le processus de l'analyse exploratoire, on présente un exemple qui illustre le cheminement habitue sur les données de trains de la Renfe introduites précédemment.
 
-::: \{.example \#renfeaed name = ``Analyse exploratoire des trains Renfe''\}
+\hypertarget{analyse-exploratoire-des-billets-de-trains-renfe}{%
+\subsection{Analyse exploratoire des billets de trains Renfe}\label{analyse-exploratoire-des-billets-de-trains-renfe}}
 
 La première étape consisterait à lire la description de la base de données. Le jeu de données \texttt{renfe} contient les variables suivantes:
 
@@ -2513,7 +2517,21 @@ soit la probabilité que \(Y\) égale 1 étant donné les valeurs des variables 
 \eta=\beta_0 + \beta_1X_1 + \cdots + \beta_p X_p.
 \end{align*}
 
-Le problème est que \(p\) est une probabilité. Par conséquent \(p\) prend seulement des valeurs entre 0 et 1 alors que rien n'empêche \(\eta\) de prendre des valeurs dans \(\mathbb{R}=(-\infty, \infty)\). Une façon de résoudre ce problème consiste à appliquer une transformation à \(p\) de telle sorte que la quantité transformée puisse prendre toutes les valeurs entre \(-\infty\) et \(\infty\).
+\begin{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{MATH60602_files/figure-latex/demandecredit-1} 
+
+}
+
+\caption{Données de la réserve de Boston sur l'approbation de prêts hypothécaires (1990); données tirées de Stock et Watson (2007).}\label{fig:demandecredit}
+\end{figure}
+
+La Figure \ref{fig:demandecredit} montre le modèle de régression linéaire (bleu) et le modèle logistique. La pente pour la ligne bleu correspond à l'augmentation (réputée constante) de la probabilité d'approbation de crédit, de l'ordre de 11\% par augmentation de 0.1 du rapport paiements hypothécaires sur revenu.
+
+Il y a quelques problèmes avec le modèle linéaire. D'abord, les données binaires ne respectent pas le postulat d'égalité des variances, ce qui rend les tests d'hypothèses caducs.
+Le problème principal est que \(p\) est une probabilité. Par conséquent \(p\) prend seulement des valeurs entre 0 et 1 alors que rien n'empêche \(\eta\) de prendre des valeurs dans \(\mathbb{R}=(-\infty, \infty)\): par exemple, on voit que la droite de la figure \ref{fig:demandecredit} retourne des prédictions négatives dès que le ratio paiements/revenus est en dessous de 0.094: on peut évidemment tronquer ces prédictions à zéro, mais cela sous-tend que la probabilité d'acceptation est nulle, alors même que certaines personnes ont reçu un prêt.
+
+Une façon de résoudre ce problème consiste à appliquer une transformation à \(p\) de telle sorte que la quantité transformée puisse prendre toutes les valeurs entre \(-\infty\) et \(\infty\).
 Le modèle de régression logistique est défini à l'aide de la transformation \(\mathrm{logit}\),
 \[\mathrm{logit}(p) = \ln\left( \frac{p}{1-p}\right)=\eta=\beta_0 + \beta_1X_1 + \cdots + \beta_p X_p,\]
 où \(\ln\) est le logarithme naturel.
@@ -2575,7 +2593,7 @@ On obtient ainsi les estimés des paramètres \(\widehat{\boldsymbol{\beta}}\), 
  \widehat{p} = \mathrm{expit}(\widehat{\beta}_0 + \cdots + \widehat{\beta}_pX_p).
 \end{align*}
 
-Un modèle ajusté peut ensuite être utilisé pour faire de la classification (prédiction) pour de nouveaux individus pour lesquels la variable réponse \(Y\) n'est pas observée. Pour ce faire, on choisit un point de coupure \(c\) (souvent \$c=\$0.5 mais pas toujours) et on classifie les observations en deux groupes:
+Un modèle ajusté peut ensuite être utilisé pour faire de la classification (prédiction) pour de nouveaux individus pour lesquels la variable réponse \(Y\) n'est pas observée. Pour ce faire, on choisit un point de coupure \(c\) (souvent \(c=0.5\) mais pas toujours) et on classifie les observations en deux groupes:
 
 \begin{itemize}
 \tightlist
