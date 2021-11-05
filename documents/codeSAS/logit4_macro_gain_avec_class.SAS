@@ -83,7 +83,7 @@ proc append base=n1append data=n1 force;
 run;
 proc logistic data=traincv outest=estim descending noprint;
 class &xvarclass;
-model &yvar = &xvar ; 
+model &yvar = &xvar; 
 score data=testcv out=restestcv;
 run;							     
 data restestcv;

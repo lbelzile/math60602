@@ -170,7 +170,11 @@ ggplot(data = renfe, aes(x = prix, y=..density.., fill = tarif)) +
 
 # Vérifier la répartition des billets Flexible
 a <- renfe %>% subset(tarif  == "Flexible") %>% dplyr::count(prix, classe)
-knitr::kable(a, caption = "Nombre de billets au tarif Flexible selon le prix de vente.", longtable = FALSE, booktabs = TRUE)
+knitr::kable(a,
+             caption = "Nombre de billets au tarif Flexible selon le prix de vente.", 
+             longtable = FALSE, 
+             booktabs = TRUE) %>%
+  kable_styling(full_width = FALSE)
 ```
 
 On note que la répartition des prix pour les billets de classe Flexible est inhabituelle. Notre boîte à moustaches est écrasée et l'écart interquartile semble nul, même si quelques valeurs inexpliquées sont aussi présentes. L'écrasante majorité des billets Flexibles sont en classe Turista, donc ça pourrait être dû à un (trop) faible nombre de billets dans chaque catégorie. On peut rejeter cette hypothèse en calculant le nombre de trains au tarif Flexible pour les différents types de billets, comme dans le Tableau \@ref(tab:renfeaedrep).  Ni la durée, ni le type de train, ni la destination n'expliquent pas pourquoi le prix de certains billets Flexibles est plus faible ou élevés. Le prix des billets Promo est plus faible, et les billets au tarif Preferente (la première classe) sont plus élevés. 
