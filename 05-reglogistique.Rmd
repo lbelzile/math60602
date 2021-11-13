@@ -797,16 +797,16 @@ Les principes généraux, concernant la sélection de variables et de modèles, 
 
 Rappelez-vous qu'avec une variable cible continue, nous avons utilisé avec la procédure `reg` pour faire une recherche du meilleur sous-ensemble de variables parmi tous les ensembles. Pour ce faire, on sélectionnait le meilleur modèle selon le $R^2$ pour un nombre de variables fixe et il suffisait ensuite de trouver parmi ces variables le meilleur selon le critère d'information choisi.
 
-Une stratégie similaire est possible avec la procédure `logistic` sauf qu'au lieu de trouver une suite de meilleurs modèles selon le $R^2$, un autre critère est retenu. Il s'agit de la statistique du score (ou test des multiplicateurs de Lagrange) pour tester si l'ajout d'une variable est utile ou pas.
+Parce qu'il n'y a pas de solution explicite pour les estimateurs du maximum de vraisemblance du modèle logistique, ajuster chacun de ces modèles est coûteux. Les options pour la sélection de modèle avec le modèle de régression logistique est très limité dans **SAS**: toutes les procédures supportent la sélection à des degrés variés (pas de validation externe basée sur la log-vraisemblance, pas de validation croisée). Comble de malheur, le support des options n'est pas cohérent d'une procédure à l'autre. On peut se rabattre sur une recherche séquentielle ou le LASSO: pour cette première, il est possible d'utiliser une stratégie d'élimination rapide avec la statistique du score (ou test des multiplicateurs de Lagrange) pour tester si l'ajout d'une variable est utile ou pas: c'est une approximation de la recherche exhaustive des meilleurs sous-ensembles.
 
-Ce paragraphe est plus technique et peut être omis. Parce qu'il n'y a pas de solution explicite pour les estimateurs du maximum de vraisemblance du modèle logistique, ajuster chacun de ces modèles est coûteux. La statistique de score, qui est basée sur la vraisemblance, ne nécessite que d'obtenir le maximum de vraisemblance sous l'hypothèse nulle; cela permet d'éviter des ajustements coûteux lors de comparaisons. L'algorithme employé par **SAS** utilise une méthode de recherche arborescente dite méthode de séparation et d'évaluation, qui ne nécessite pas de tester tous les modèles; à noter que la solution à $k$ variables n'est pas nécessairement imbriquée dans celle à $k+1$ variables.   Lorsque la taille d'échantillon tend vers l'infini, la statistique du rapport de vraisemblance et la statistique de score sont équivalentes. Choisir le modèle selon la statistique du score équivaut alors à choisir le modèle qui maximise la vraisemblance (ou qui minimise la quantité $-2 \ell$). Ainsi, pour ce nombre fixé de variables, cela va donner le modèle avec le meilleur $\mathsf{AIC}$ (et $\mathsf{BIC}$). Par conséquent, on peut trouver le meilleur modèle, globalement, en minimisant le $\mathsf{AIC}$ (ou le $\mathsf{BIC}$) en faisant varier le nombre de variables. Par contre, cela n'est pas nécessairement vrai pour une taille d'échantillon finie. Le meilleur modèle selon le critère score n'est pas nécessairement celui qui maximise la vraisemblance. Mais en pratique, cette approximation est plus que suffisante et on va procéder comme on a fait avec la procédure `glmselect` avec une procédure descendante.
+Ce paragraphe est plus technique et peut être omis.  La statistique de score, qui est basée sur la vraisemblance, ne nécessite que d'obtenir le maximum de vraisemblance sous l'hypothèse nulle; cela permet d'éviter des ajustements coûteux lors de comparaisons. L'algorithme employé par **SAS** utilise une méthode de recherche arborescente dite méthode de séparation et d'évaluation, qui ne nécessite pas de tester tous les modèles; à noter que la solution à $k$ variables n'est pas nécessairement imbriquée dans celle à $k+1$ variables.   Lorsque la taille d'échantillon tend vers l'infini, la statistique du rapport de vraisemblance et la statistique de score sont équivalentes. Choisir le modèle selon la statistique du score équivaut alors à choisir le modèle qui maximise la vraisemblance (ou qui minimise la quantité $-2 \ell$). Ainsi, pour ce nombre fixé de variables, cela va donner le modèle avec le meilleur $\mathsf{AIC}$ (et $\mathsf{BIC}$). Par conséquent, on peut trouver le meilleur modèle, globalement, en minimisant le $\mathsf{AIC}$ (ou le $\mathsf{BIC}$) en faisant varier le nombre de variables. Par contre, cela n'est pas nécessairement vrai pour une taille d'échantillon finie. Le meilleur modèle selon le critère score n'est pas nécessairement celui qui maximise la vraisemblance. Mais en pratique, cette approximation est plus que suffisante et on va procéder comme on a fait avec la procédure `reg`.
 
 
 À la section précédente, nous avons inclus les 10 variables de base (14 avec les indicatrices pour les variables catégorielles) dans notre exemple d'envoi ciblé. Nous allons ici faire une recherche de type `all-subset` parmi ces 14 variables. Le code est dans le fichier `logit5_selection_variables.sas`.
 
 ```{sas 03-scorebranchandbound, eval = FALSE, echo = TRUE}
 proc logistic data=train;
-model yachat(ref='0') = x1 x2 x31 x32 x41-x44 x5-x10 / 
+model yachat(ref='0') = x1 x2 x3_1 x3_2 x4_1-x4_4 x5-x10 / 
   selection=score best=1;
 run;
 ```
@@ -819,7 +819,7 @@ Le meilleur modèle avec une seule variable, selon la statistique du score, est 
 
 ```{sas 03-scoreIC, eval = FALSE, echo = TRUE}
 %logistic_aic_BIC_score(yvariable=yachat,
-                        xvariables=x1 x2 x31 x32 x41-x44 x5-x10,
+                        xvariables=x1 x2 x3_1 x3_2 x4_1-x4_4 x5-x10,
                         dataset=train, minvar=1, maxvar=14);
 ```
 
@@ -832,48 +832,10 @@ On voit que le meilleur modèle selon le $\mathsf{AIC}$ a neuf variables, contre
 
 ### Recherche séquentielle
 
-Faire une recherche de tous les sous-modèles possibles devient impraticable lorsqu'il y a trop de variables en jeu. La procédure `logistic` permet aussi une recherche de type séquentielle classique. Ceci permet aussi d'utiliser la même approche en deux temps présentée au chapitre précédent. Dans un premier temps, on fait une recherche séquentielle pour sélectionner un nombre de variables qui sera assez petit afin qu'une recherche exhaustive de tous les sous-modèles soit possible. Dans un second temps, on fait cette recherche avec ces variables uniquement. Idéalement, on débute la sélection avec le modèle qui contient toutes les variables, soit `start=n` où $n=104$ dans notre cas.
-
-
+Faire une recherche de tous les sous-modèles possibles devient impraticable lorsqu'il y a trop de variables en jeu. La procédure `logistic` permet aussi une recherche de type séquentielle classique. Ceci permet aussi d'utiliser la même approche en deux temps présentée au chapitre précédent. Dans un premier temps, on fait une recherche séquentielle pour sélectionner un nombre de variables qui sera assez petit afin qu'une recherche exhaustive de tous les sous-modèles soit possible. Dans un second temps, on fait cette recherche avec ces variables uniquement. Idéalement, on débute la sélection avec le modèle qui contient toutes les variables, soit `start=n` où $n=104$ dans notre cas. 
 Si on inclut tous les termes quadratiques et les termes d'interactions d'ordre deux, nous avons 104 variables potentielles: c'est trop pour une recherche exhaustive. 
 
-Faisons d'abord une recherche séquentielle classique avec les 104 variables, en prenant 0.05 comme critère d'entrée et de sortie. Les options **SAS** correspondantes sont
-`selection=stepwise`, avec comme départ le nombre de variables `start=104` et les niveaux `sle=.05` et `sls=.05`;
-```{sas 03-stepwise, eval = FALSE, echo = FALSE}
-proc logistic data=train;
-model yachat(ref='0') = x1 x2 x31 x32 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10
-cx2 cx6 cx7 cx8 cx9 cx10
-i_x2_x1 i_x2_x5 i_x2_x31 i_x2_x32 i_x2_x41 i_x2_x42 i_x2_x43 i_x2_x44
-i_x2_x7 i_x2_x6 i_x2_x8 i_x2_x9 i_x2_x10
-i_x1_x5 i_x1_x31 i_x1_x32 i_x1_x41 i_x1_x42 i_x1_x43 i_x1_x44
-i_x1_x7 i_x1_x6 i_x1_x8 i_x1_x9 i_x1_x10
-i_x5_x31 i_x5_x32 i_x5_x41 i_x5_x42 i_x5_x43 i_x5_x44
-i_x5_x7 i_x5_x6 i_x5_x8 i_x5_x9 i_x5_x10
-i_x31_x41 i_x31_x42 i_x31_x43 i_x31_x44
-i_x31_x7 i_x31_x6 i_x31_x8 i_x31_x9 i_x31_x10
-i_x32_x41 i_x32_x42 i_x32_x43 i_x32_x44
-i_x32_x7 i_x32_x6 i_x32_x8 i_x32_x9 i_x32_x10
-i_x41_x7 i_x41_x6 i_x41_x8 i_x41_x9 i_x41_x10
-i_x42_x7 i_x42_x6 i_x42_x8 i_x42_x9 i_x42_x10
-i_x43_x7 i_x43_x6 i_x43_x8 i_x43_x9 i_x43_x10
-i_x44_x7 i_x44_x6 i_x44_x8 i_x44_x9 i_x44_x10
-i_x7_x6 i_x7_x8 i_x7_x9 i_x7_x10
-i_x6_x8 i_x6_x9 i_x6_x10
-i_x8_x9 i_x8_x10
-i_x9_x10 
-  / selection=stepwise start=104, sle=.05 sls=.05;  
-run;
-```
-
-```{r fig3_e22, echo = FALSE, out.width='80%', fig.align = "center"}
-knitr::include_graphics("figures/03-logistic-e22.png")
-```
-
-
-Il y a eu 17 étapes dans la recherche séquentielle débutant avec le modèle qui ne contient que l'ordonnée à l'origine. La variable `i_x7_x8` est la première à être incluse, suivie de `x2` et ainsi de suite. Le modèle final contient 13 variables.
-En faisant une recherche séquentielle avec 0.5 comme comme critère d'entrée et de sortie, nous obtenons un sous-ensemble de 47 variables. On peut ensuite faire une recherche exhaustive de tous les sous-modèles avec ces 47 variables en utilisant la macro; le fichier `logit5_selection_variables.sas` contient le code commenté.
-
-Le modèle qui a le plus petit $\mathsf{AIC}$, soit 579,701, est un modèle avec 28 variables. Le $\mathsf{BIC}$ mène à un modèle beaucoup plus parcimonieux qui inclut huit variables. 
+On peut faire une recherche descendante avec le test du score pour réduire le nombre de variables à 50, puis passer les variables sélectionnées à la procédure `logistic` et faire une recherche exhaustive approximative. Le modèle qui a le plus petit $\mathsf{AIC}$, soit 585.194, est un modèle avec 27 variables. Le $\mathsf{BIC}$ mène à un modèle beaucoup plus parsimonieux qui inclut sept variables, pour une valeur de critère de 667.704. 
 
 ### Algorithme glouton et critères alternatifs avec `hpgenselect`
 
@@ -890,7 +852,6 @@ link=logit distribution=binary;
 selection method=stepwise(select=sl choose=sbc);
 run;
 ```
-
 
 Avec le critère $\mathsf{BIC}$, on  obtient 12 variables tandis que `choose=aic` donne 13 variables (seule la variable `x41` est ajoutée). Il s'agit des mêmes variables que celles sélectionnées par une sélection séquentielle classique en prenant 0.05 comme critère d'entrée et de sortie.
 
@@ -947,7 +908,7 @@ kableExtra::kbl(datf, col.names = colnames,
   column_spec(3:6, width = "2cm")
 
 ```
-Nous avons vu plus tôt, qu'avec les 10 variables de base, le meilleur point de coupure est de 0.12. En utilisant cette stratégie sur les 100 000 clients, le revenu net aurait été de 940 569\$. C'est une énorme amélioration, de plus de 56%, par rapport à la stratégie de référence qui consiste à envoyer le catalogue à tout le monde (revenu net de 601 212\$). Si on inclut tous les termes quadratiques et les termes les interactions d'ordre deux (104 variables en tout), le revenu net est inférieur avec une valeur de 937 150\$. Ici, le modèle est trop complexe et surajusté.  Si on fait une sélection de variables (quasi méthodes sont présentées), suivie de la détermination du meilleur point de coupure, on fait alors toujours mieux qu'avec le modèle incluant les 10 variables de base seulement. L'approche qui aurait fait le mieux est la recherche séquentielle pour réduire le nombre de variables considérées à 47, suivi d'une recherche exhaustive pour trouver le modèle avec le plus petit $\mathsf{BIC}$ : cette approche aurait généré 985 069\$ de revenus nets. Il s'agit d'un gain de 4.7% par rapport au modèle avec les 10 variables de base.
+Nous avons vu plus tôt, qu'avec les 10 variables de base, le meilleur point de coupure est de 0.12. En utilisant cette stratégie sur les 100 000 clients, le revenu net aurait été de 940 569\$. C'est une énorme amélioration, de plus de 56%, par rapport à la stratégie de référence qui consiste à envoyer le catalogue à tout le monde (revenu net de 601 212\$). Si on inclut tous les termes quadratiques et les termes les interactions d'ordre deux (104 variables en tout), le revenu net est inférieur avec une valeur de 937 150\$. Ici, le modèle est trop complexe et surajusté.  Si on fait une sélection de variables (quasi méthodes sont présentées), suivie de la détermination du meilleur point de coupure, on fait alors toujours mieux qu'avec le modèle incluant les 10 variables de base seulement. L'approche qui aurait fait le mieux est la recherche séquentielle pour réduire le nombre de variables considérées à 50, suivi d'une recherche exhaustive pour trouver le modèle avec le plus petit $\mathsf{BIC}$ : cette approche aurait généré 985 069\$ de revenus nets. Il s'agit d'un gain de 4.7% par rapport au modèle avec les 10 variables de base.
 
 ### Stratégies alternatives
 
