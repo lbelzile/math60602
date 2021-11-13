@@ -1,9 +1,9 @@
 ** Sélection de modèles et calcul de la performance;
 ** Régression logistique;
 **============================================================;
-**
-** Exercice 5.1
 /*
+EXERCICE 5.1
+
 Les données "logistclient" contiennent des données simulées pour un cas fictif de promotion pour des clients. La base de données contient les variables suivantes:
 
 - "promo": variable binaire, 1 si le client s'est prévalue d'une offre promotionnelle, 0 sinon
@@ -11,16 +11,16 @@ Les données "logistclient" contiennent des données simulées pour un cas ficti
 - "tclient": variable catégorielle, soit "frequent" pour les clients réguliers ou "occasionnel" autrement
 - "nachats": nombre d'achats au magasin dans le dernier mois
 
-Estimer le modèle logistique pour "promo" avec les variables explicatives "nachats", "sexe" et "tclient"
-1) Interpréter les coefficients
-2) Tester si l'effet de "nachats" est statistiquement significatif
-3a) Choisir le point de coupure sur la base du taux de bonne classification. 
+Estimez le modèle logistique pour "promo" avec les variables explicatives "nachats", "sexe" et "tclient"
+1) Interprétez les coefficients
+2) Testez si l'effet de "nachats" est statistiquement significatif
+3a) Choisissez le point de coupure sur la base du taux de bonne classification. 
 3b) Pour le point de coupure choisi, construisez une matrice de confusion
 3c) Faites un graphique de la fonction d'efficacité du récepteur (courbe ROC). 
 Quelle est l'aire sous la courbe (estimée à l'aide de la validation croisée)
 */
 
-proc logistic data=multi.logistclient;
+proc logistic data=multi.logistclient plots(only)=roc;
 class tclient / param=glm;
 model promo(ref='0') = sexe tclient nachats / clodds=pl expb ctable;
 output out=pred predprobs=crossvalidate;
@@ -30,13 +30,33 @@ proc logistic data=pred;
 class tclient / param=glm;
 model promo(ref='0') = sexe tclient nachats;
 roc pred=xp_1;
-ods select Logistic.ROCComparisons.ROCOverlay;
+*ods select Logistic.ROCComparisons.ROCOverlay;
 run;
 
+/*
+EXERCICE 5.2
+*/
 
+proc hpgenselect data=sashelp.junkmail;
+partition role=test(train="0" validate="1");
+model class(ref='0') = make--captotal / dist=binary link=logit; 
+selection method=stepwise(choose=bic)  details=all;
+output out=predspam pred=pred role=role;
+run;
 
-/* Exercice 5.3 */
+data predspam2;
+set sashelp.junkmail(keep=class);
+set predspam;
+where role=1;
+drop role;
+run;
 
+# Compiler la macro logit10_macro_gainpred.sas
+%mlogisticclass(yvar=class,ypred=pred,dataset=predspam2,c00=1,c01=-2,c10=-1,c11=1);
+
+/*
+EXERCICE 5.3
+*/
 
 proc logistic data=multi.multinom descending;
 class educ revenu sexe;
@@ -69,3 +89,4 @@ run;
 /* Imprimer les probabilités de chaque classe */
 proc print data=pred;
 run;
+
