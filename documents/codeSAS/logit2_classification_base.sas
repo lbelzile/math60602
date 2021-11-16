@@ -1,38 +1,27 @@
-/*
-Prévision des clients à scorer avec le modèle qui utilise les 10 variables
-de base seulement. La commande "score" permet de sauvegarder les estimations
-de P(Y=1), des clients à scorer ("test") dans le fichier "pred".
-*/
 proc logistic data=multi.dbm(where=(train EQ 1));
-class x3 x4;
+class x3 x4 / param=glm;
 model yachat(ref='0') = x1-x10 / ctable;
 score data=multi.dbm(where=(train EQ 0)) out=pred1;
 output out=pred2 predprobs=crossvalidate;
 run;
-/* Afin d'obtenir la courve ROC et l'aire sous la courbe (AUC) avec des estimations des probabilités obtenues par validatioin-croisée.
-On sauvegarde d'abord les probabilités estimées par validation-croisée dans le fichier "pred".
+/* Afin d'obtenir la courve ROC et l'aire sous la courbe (AUC) avec des estimations des probabilités obtenues par validation-croisée.
+On sauvegarde d'abord les probabilités estimées par validation-croisée dans le fichier "pred2".
 Ensuite, on exécute de nouveau PROC LOGISTIC avec ce fichier et la commande "ROC".
 */
-proc logistic data=pred1;
-class x3 x4;
-model yachat(ref='0') = x1-x10;
-roc pred=p_1;
-run;
 
+/* Performance sur l'échantillon d'apprentissage
+avec validation-croisée à n groupes (LOO-CV) */
 proc logistic data=pred2;
 class x3 x4;
 model yachat(ref='0') = x1-x10;
 roc pred=xp_1;
 run;
 
-/* Note: la variable qui contient l'estimation de P(Y=1) dans le fichier "pred", créé
+/* Note: la variable qui contient l'estimation de P(Y=1) dans le fichier "pred1", créé
 avec le PROC LOGISTIC précédent, se nomme "xp_1" 
 Avec l'option "roc", on obtiendra trois graphiques de la courbe d'efficacité du récepteur
 soit prédictions brutes, validation croisée à n groupes et les deux courbes ROC sur un même graphique
 */
-
-/*  ______________________________________________________  */
-
 
 /* 
 Commandes pour obtenir le lift chart. 
@@ -44,8 +33,6 @@ en exécutant le code dans le fichier "logit3_lift_chart.sas"
 avec le PROC LOGISTIC précédent, se nomme "xp_1" */
 %liftchart1(pred2, yachat, xp_1, 10);
 
-
-/*  ______________________________________________________  */
 
 /* 
 Commandes pour trouver le meilleur point de coupure afin de maximiser
@@ -64,7 +51,17 @@ run;
 IMPORTANT: il faut d'abord compiler les MACROS en exécutant le fichier "logit4_macro_gain.sas".
 */
 
-%manycut_cvlogistic(yvar=yachat,xvar=x1-x10,xvarclass=x3-x4,n=1000,k=10,ncv=1,
-dataset=multi.dbm(where=(train EQ 1)),c00=0,c01=0,c10=-10,c11=57,
-manycut=.05 .06 .07 .08 .09 .1 .11 .12 .13 .14 .15 .16 .17 .18 .465);
+%manycut_cvlogisticclass(
+yvar=yachat,
+xvar=x1-x10,
+xvarclass=x3-x4, 
+n=1000,
+k=10,
+ncv=1,
+dataset=multi.dbm(where=(train EQ 1)),
+c00=0,
+c01=0,
+c10=-10,
+c11=57,
+manycut=.05 .06 .07 .08 .09 .1 .11 .12 .13 .14 .15 .16 .17 .18 .5);
 

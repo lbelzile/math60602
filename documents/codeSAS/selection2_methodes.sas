@@ -7,11 +7,11 @@
 proc contents data=multi.dbm;
 run;
 
- data ymontant;
- set multi.dbm;
- drop test; *la colonne "train" dans la base de données contient déjà l'information sur les regroupements entraînement/validation;
- if ymontant=. then delete;
- run;
+data ymontant;
+set multi.dbm;
+drop test; *la colonne "train" dans la base de données contient déjà l'information sur les regroupements entraînement/validation;
+if ymontant=. then delete;
+run;
  
  /* Commandes pour conserver seulement les  clients, parmi les 100 000,
  qui ont acheté quelque chose. Ces observations serviront à évaluer 
@@ -94,16 +94,30 @@ Cette option ("effect") ne fonctionne pas avec le LASSO
 
 
 /* 
-Commandes pour effectuer une recherche exhaustive avec le critère du R carré et extraire le meilleur modèle avec une variable, le meilleur avec 2 variables etc. 
+Commandes pour effectuer une recherche exhaustive avec le critère du R
+ carré et extraire le meilleur modèle avec une variable, 
+ le meilleur avec 2 variables etc. avec proc reg
 */
- proc glmselect data=ymontant;
+
+ proc glmselect data=ymontant outdesign=donneessimples;
+ partition role=train(train="1" validate="0");
+ class x3(param=ref split) x4(param=ref split); *'split' permet de fusionner des groupes à la catégorie de référence;
+ model ymontant=x1-x10 / selection=none;
+ run;
+ /* Recherche des meilleurs sous-ensembles 
+ &_GLSind contient les variables choisies 
+ dans le modèle précédent par glmselect */
+ proc reg data=donneessimples(where=(_ROLE_="TRAIN"))  plots=none;
+ model ymontant= &_GLSmod / selection=rsquare best=1 aic sbc;
+ run;
+
+ proc glmselect data=ymontant plots(StartStep=1)=(ASEPlot);
  partition role=train(train="1" validate="0");
  class x3(param=ref split) x4(param=ref split); *'split' permet de fusionner des groupes à la catégorie de référence;
  model ymontant=x1-x10 / 
  selection=forward(step=15 choose=AIC) stat=(AIC SBC);
  *score data=testymontant out=predaic p=predymontant;
  run;
-
  
  /*Note: En sélectionnant "split" ou en créant des indicateurs binaires, 
  le modèle final dépend de la catégorie de référence; */
@@ -138,12 +152,12 @@ Commandes pour effectuer une recherche exhaustive avec le critère du R carré e
  selection=stepwise(slentry=0.15 slstay=0.15 select=SL) hier=none;
  run;
  
- proc glmselect data=ymontant;
+ proc glmselect data=ymontant outdesign=glmselectoutput;
  partition role=train(train="1" validate="0");
  class x3(param=ref split) x4(param=ref split);
  model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2
  x2*x2 x6*x6 x7*x7 x8*x8 x9*x9 x10*x10 /  
- selection=stepwise(slentry=0.6 slstay=0.6 select=SL) hier=none;
+ selection=stepwise(slentry=0.6 slstay=0.6 select=SL stop=40) hier=none;
  ods output GLMSelect.Summary.SelectionSummary=historiqueSelection;
  run;
 
@@ -156,13 +170,12 @@ Commandes pour effectuer une recherche exhaustive avec le critère du R carré e
  xaxis label="Nombre de termes";
  run;
  
-   
- proc glmselect data=glmselectoutput;
- model ymontant= &_GLSMOD / 
- selection=backward(stop=1 choose=aic) hier=none;
+ /* Recherche exhaustive */
+ proc reg data=glmselectoutput(where=(_ROLE_="TRAIN")) plots=none;
+ model ymontant= &_GLSmod / selection=rsquare best=1 aic sbc;
  run;
  
- 
+ /* Recherche séquentielle avec critères d'information */
  proc glmselect data=ymontant outdesign=glmselectoutput;
  partition role=train(train="1" validate="0");
  class x3(param=ref split) x4(param=ref split);
@@ -175,7 +188,7 @@ Commandes pour effectuer une recherche exhaustive avec le critère du R carré e
  
 /* LASSO avec validation croisée à 10 groupes 
  effect ne fonctionne pas avec cette procédure...*/
- proc glmselect data=ymontant plots=coefficients;
+ proc glmselect data=ymontant plots=coefficient seed=60602;
  partition role=train(train="1" validate="0");
  class x3(param=ref split) x4(param=ref split);
  model ymontant=x1|x2|x3|x4|x5|x6|x7|x8|x9|x10 @2
@@ -183,8 +196,6 @@ Commandes pour effectuer une recherche exhaustive avec le critère du R carré e
  selection=lasso(steps=120 choose=cv) 
  cvmethod=random(10) hier=none;
  run;
-
-
  
  /* 
  Commandes pour faire une moyenne de modèles. Chaque modèle est construit avec
@@ -194,7 +205,6 @@ Commandes pour effectuer une recherche exhaustive avec le critère du R carré e
  pour entrer ou retirer des variables et encore le SBC pour sélectionner le meilleur modèle
  à la toute fin. 
  */
- 
 
  proc glmselect data=ymontant seed=57484765;
  partition role=train(train="1" validate="0");
@@ -212,11 +222,11 @@ Commandes pour effectuer une recherche exhaustive avec le critère du R carré e
  dans le fichier "predaverage". La variable "predymontant" contiendra les prévisions. 
  */
  
-
  data predaverage;
  set predaverage;
  erreur=(ymontant-predymontant)**2;
  run;
+ 
  proc means data=predaverage n mean;
  var erreur;
  run; 
@@ -253,4 +263,5 @@ C'est utile pour "modelaverage" qui ne retourne pas l'EMQ (mais ça marche plus 
  proc means data=outpred2 mean n;
  var erreurquad;
  run;
+
 

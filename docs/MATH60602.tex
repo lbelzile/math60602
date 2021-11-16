@@ -154,7 +154,7 @@
 
 \title{Analyse multidimensionnelle appliquée}
 \author{(c) Denis Larocque, Léo Belzile}
-\date{version du 2021-10-28}
+\date{version du 2021-11-14}
 
 \usepackage{amsthm}
 \newtheorem{theorem}{Théorème}[chapter]
@@ -1972,7 +1972,6 @@ On recommande habituellement de prendre entre \(K=5\) et \(10\) groupes (le choi
 
 Le cas particulier \(K=n\) (en anglais \emph{leave-one-out cross validation}, ou \(\mathsf{LOOCV}\)) consiste à enlever une seule observation, à estimer le modèle avec les \(n-1\) autres et à valider à l'aide de l'observation laissée de côté: on répète cette procédure pour chaque observation. Pour les modèles linéaires, il existe des formules explicites qui nous permettent d'éviter d'ajuster \(n\) régressions par moindre carrés. Cette forme de validation croisée tend à être trop optimiste.
 
-Le fichier \texttt{selection3\_cv.sas} contient une macro SAS permettant de faire une validation croisée pour un modèle de régression linéaire.
 Revenons à notre exemple où une seule variable explicative est disponible et où l'on cherche à déterminer un bon modèle polynomial. Le Tableau \ref{tab:02-table2} est le même que le Tableau \ref{tab:02-table1} mais avec une colonne en plus, la dernière, \(\mathsf{VC} (K=10)\). Il s'agit des estimations de l'\(\mathsf{EQM}\) obtenues avec la validation croisée à 10 groupes. Notez que si vous exécutez le programme, vous n'obtiendrez pas les mêmes valeurs car il y a un élément aléatoire dans ce processus. La colonne représente la moyenne de 100 réplications.
 
 \begin{table}
@@ -2159,7 +2158,7 @@ Ainsi, pour trouver le meilleur modèle globalement (sans fixer le nombre de var
 
 \begin{center}\includegraphics[width=0.9\linewidth]{figures/02-select-e7} \end{center}
 
-Dans l'exemple, on voit que le modèle avec les variables \texttt{x1} \texttt{x2} \texttt{x31} \texttt{x44} \texttt{x5} \texttt{x6} \texttt{x7} \texttt{x8} \texttt{x9} et \texttt{x10} est celui qui minimise le \(\mathsf{AIC}\) globalement (\(\mathsf{AIC}=660.15\)). Le modèle choisi par le \(\mathsf{BIC}\) contient seulement sept variables explicatives (plutôt que 10), soit \texttt{x1} \texttt{x31} \texttt{x5} \texttt{x6} \texttt{x7} \texttt{x8} \texttt{x10}.
+Dans \textbf{SAS}, seule la procédure \texttt{reg} permet de faire cette recherche exhaustive et nous guaranti de recouvrer le modèle avec le plus grand \(R^2\). Un algorithme par séparation et évaluation permet d'effectuer cette recherche de manière efficace sans essayer tous les candidats pour ces sous-ensembles. Dans l'exemple, on voit que le modèle avec les variables \texttt{x1} \texttt{x2} \texttt{x31} \texttt{x44} \texttt{x5} \texttt{x6} \texttt{x7} \texttt{x8} \texttt{x9} et \texttt{x10} est celui qui minimise le \(\mathsf{AIC}\) globalement (\(\mathsf{AIC}=660.15\)). Le modèle choisi par le \(\mathsf{BIC}\) contient seulement sept variables explicatives (plutôt que 10), soit \texttt{x1} \texttt{x31} \texttt{x5} \texttt{x6} \texttt{x7} \texttt{x8} \texttt{x10}.
 
 Nous avons seulement inclus les variables de base pour ce premier essai. Il est possible qu'ajouter des variables supplémentaires améliore la performance du modèle. Pour cet exemple, nous allons considérer les variables suivantes:
 
@@ -2171,9 +2170,9 @@ Nous avons seulement inclus les variables de base pour ce premier essai. Il est 
   toutes les interactions d'ordre deux entre les variables de base, comme \(\texttt{sexe}\cdot\texttt{age}\).
 \end{itemize}
 
-Toutes ces variables sont créées dans \texttt{prepare\_DBM.sas}. Aux variables de base (10 variables explicatives, mais 14 avec les indicatrices pour les variables catégorielles), s'ajoutent ainsi 90 autres variables. Il y a donc 104 variables explicatives potentielles si on inclut les interactions et les termes quadratiques. Notez qu'il y a des interactions entre chacune des variables indicatrices et chacune des autres variables, mais il ne sert à rien de calculer une interaction entre deux indicatrices d'une même variable (car une telle variable est zéro pour tous les individus). De même, il ne sert à rien de calculer le carré d'une variable binaire.
+Si on suppose que la vrai moyenne de la variable réponse \texttt{ymontant} est lisse, le modèle ajusté précédemment capture l'approximation de degré 1 (série de Taylor) du vrai modèle et le modèle avec termes quadratiques (incluant les interactions) l'approximation de degré 2. Aux variables de base (10 variables explicatives, mais 14 avec les indicatrices pour les variables catégorielles), s'ajoutent ainsi 90 autres variables. Il y a donc 104 variables explicatives potentielles si on inclut les interactions et les termes quadratiques. Notez qu'il y a des interactions entre chacune des variables indicatrices et chacune des autres variables, mais il ne sert à rien de calculer une interaction entre deux indicatrices d'une même variable (car une telle variable est zéro pour tous les individus). De même, il ne sert à rien de calculer le carré d'une variable binaire.
 
-Dans la mesure ou on aura presque un ratio d'un paramètre pour deux observations, ajuster un modèle avec toutes les variables explicatives est profondément stupide ici. Pensez à la taille de votre échantillon comme à un budget et aux paramètres comme à un nombre d'items: plus vous achetez d'items, moins votre budget est élevé pour chacun et la qualité en pâtira. Le modèle à 104 variables servira uniquement à illustrer le surajustement. Réalistement, un modèle avec plus d'une vingtaine de variables ici serait difficilement estimable de manière fiable et l'inclusion d'interactions et de termes quadratiques sert surtout à augmenter la flexibilité et les possibilités lors de la sélection de variables.
+Dans la mesure ou on aura presque un ratio d'un paramètre pour deux observations, ajuster un modèle avec toutes les variables explicatives est profondément stupide ici. Pensez à la taille de votre échantillon comme à un budget et aux paramètres comme à un nombre d'items: plus vous achetez d'items, moins votre budget est élevé pour chacun et leur qualité en pâtira. Le modèle à 104 variables servira uniquement à illustrer le surajustement. Réalistement, un modèle avec plus d'une vingtaine de variables ici serait difficilement estimable de manière fiable et l'inclusion d'interactions et de termes quadratiques sert surtout à augmenter la flexibilité et les possibilités lors de la sélection de variables.
 
 Lancer une sélection exhaustive de tous les sous-modèles avec 104 variables risque de prendre un temps énorme. Que faire alors? Il y a plusieurs possibilités. Nous pourrions faire une recherche limitée avec les méthodes que nous allons voir à partir de la section suivante. Nous pourrions aussi combiner les deux approches. Supposons que notre ordinateur permet de faire une recherche exhaustive de tous les sous-modèles avec 40 variables. Nous pourrions alors commencer avec une recherche limitée pour trouver un sous-ensemble de 40 « bonnes » variables et faire une recherche exhaustive, mais en se restraignant à ces 40 variables.
 
@@ -2578,10 +2577,10 @@ cote & 0.11 & 0.25 & 0.43 & 0.67 & 1 & 1.5 & 2.3 & 4 & 9\\
 On dispose d'un échantillon de taille \(n\) sur les variables \((Y, X_1, \ldots, X_p)\), dans le tableau
 \begin{align*}
  \begin{pmatrix}
- x_{11} & x_{12} & \cdots & x_{1p} & y_1 \\
- x_{21} & \ddots & \cdots & x_{2p} & y_2 \\
+y_1 & x_{11} & x_{12} & \cdots & x_{1p}  \\
+y_2 & x_{21} & \ddots & \cdots & x_{2p}  \\
  \vdots & \ddots & \ddots & \ddots & \vdots \\
- x_{n1} & x_{n2} & \cdots & x_{np} & y_n \\
+y_n & x_{n1} & x_{n2} & \cdots & x_{np}  \\
  \end{pmatrix}
 \end{align*}
 À l'aide de ces observations, on peut estimer les paramètres \(\boldsymbol{\beta} = (\beta_0, \beta_1 ,\ldots, \beta_p)\) du modèle de régression logistique
@@ -3300,21 +3299,21 @@ Nous avons déjà vu des méthodes de sélections de variables au chapitre préc
 
 Les principes généraux, concernant la sélection de variables et de modèles, que nous avons vus au chapitre précédent sont toujours valides. Les critères \(\mathsf{AIC}\) et \(\mathsf{BIC}\) sont toujours disponibles puisqu'on estime le modèle par maximum de vraisemblance et les techniques générales de division de l'échantillon et de validation-croisée sont toujours valides. Nous allons voir comment appliquer spécifiquement ces techniques au cas de la régression logistique.
 
-\hypertarget{recherche-exhaustive-de-tous-les-sous-moduxe8les}{%
-\subsection{Recherche exhaustive de tous les sous-modèles}\label{recherche-exhaustive-de-tous-les-sous-moduxe8les}}
+\hypertarget{recherche-suxe9quentielle}{%
+\subsection{Recherche séquentielle}\label{recherche-suxe9quentielle}}
 
 Rappelez-vous qu'avec une variable cible continue, nous avons utilisé avec la procédure \texttt{reg} pour faire une recherche du meilleur sous-ensemble de variables parmi tous les ensembles. Pour ce faire, on sélectionnait le meilleur modèle selon le \(R^2\) pour un nombre de variables fixe et il suffisait ensuite de trouver parmi ces variables le meilleur selon le critère d'information choisi.
 
-Une stratégie similaire est possible avec la procédure \texttt{logistic} sauf qu'au lieu de trouver une suite de meilleurs modèles selon le \(R^2\), un autre critère est retenu. Il s'agit de la statistique du score (ou test des multiplicateurs de Lagrange) pour tester si l'ajout d'une variable est utile ou pas.
+Parce qu'il n'y a pas de solution explicite pour les estimateurs du maximum de vraisemblance du modèle logistique, ajuster chacun de ces modèles est coûteux. Les options pour la sélection de modèle avec le modèle de régression logistique est très limité dans \textbf{SAS}: toutes les procédures supportent la sélection à des degrés variés (pas de validation externe basée sur la log-vraisemblance, pas de validation croisée). Comble de malheur, le support des options n'est pas cohérent d'une procédure à l'autre. On peut se rabattre sur une recherche séquentielle ou le LASSO: pour cette première, il est possible d'utiliser une stratégie d'élimination rapide avec la statistique du score (ou test des multiplicateurs de Lagrange) pour tester si l'ajout d'une variable est utile ou pas: c'est une approximation de la recherche exhaustive des meilleurs sous-ensembles.
 
-Ce paragraphe est plus technique et peut être omis. Parce qu'il n'y a pas de solution explicite pour les estimateurs du maximum de vraisemblance du modèle logistique, ajuster chacun de ces modèles est coûteux. La statistique de score, qui est basée sur la vraisemblance, ne nécessite que d'obtenir le maximum de vraisemblance sous l'hypothèse nulle; cela permet d'éviter des ajustements coûteux lors de comparaisons. L'algorithme employé par \textbf{SAS} utilise une méthode de recherche arborescente dite méthode de séparation et d'évaluation, qui ne nécessite pas de tester tous les modèles; à noter que la solution à \(k\) variables n'est pas nécessairement imbriquée dans celle à \(k+1\) variables. Lorsque la taille d'échantillon tend vers l'infini, la statistique du rapport de vraisemblance et la statistique de score sont équivalentes. Choisir le modèle selon la statistique du score équivaut alors à choisir le modèle qui maximise la vraisemblance (ou qui minimise la quantité \(-2 \ell\)). Ainsi, pour ce nombre fixé de variables, cela va donner le modèle avec le meilleur \(\mathsf{AIC}\) (et \(\mathsf{BIC}\)). Par conséquent, on peut trouver le meilleur modèle, globalement, en minimisant le \(\mathsf{AIC}\) (ou le \(\mathsf{BIC}\)) en faisant varier le nombre de variables. Par contre, cela n'est pas nécessairement vrai pour une taille d'échantillon finie. Le meilleur modèle selon le critère score n'est pas nécessairement celui qui maximise la vraisemblance. Mais en pratique, cette approximation est plus que suffisante et on va procéder comme on a fait avec la procédure \texttt{reg}.
+Ce paragraphe est plus technique et peut être omis. La statistique de score, qui est basée sur la vraisemblance, ne nécessite que d'obtenir le maximum de vraisemblance sous l'hypothèse nulle; cela permet d'éviter des ajustements coûteux lors de comparaisons. L'algorithme employé par \textbf{SAS} utilise une méthode de recherche arborescente dite méthode de séparation et d'évaluation, qui ne nécessite pas de tester tous les modèles; à noter que la solution à \(k\) variables n'est pas nécessairement imbriquée dans celle à \(k+1\) variables. Lorsque la taille d'échantillon tend vers l'infini, la statistique du rapport de vraisemblance et la statistique de score sont équivalentes. Choisir le modèle selon la statistique du score équivaut alors à choisir le modèle qui maximise la vraisemblance (ou qui minimise la quantité \(-2 \ell\)). Ainsi, pour ce nombre fixé de variables, cela va donner le modèle avec le meilleur \(\mathsf{AIC}\) (et \(\mathsf{BIC}\)). Par conséquent, on peut trouver le meilleur modèle, globalement, en minimisant le \(\mathsf{AIC}\) (ou le \(\mathsf{BIC}\)) en faisant varier le nombre de variables. Par contre, cela n'est pas nécessairement vrai pour une taille d'échantillon finie. Le meilleur modèle selon le critère score n'est pas nécessairement celui qui maximise la vraisemblance. Mais en pratique, cette approximation est plus que suffisante et on va procéder comme on a fait avec la procédure \texttt{reg}.
 
 À la section précédente, nous avons inclus les 10 variables de base (14 avec les indicatrices pour les variables catégorielles) dans notre exemple d'envoi ciblé. Nous allons ici faire une recherche de type \texttt{all-subset} parmi ces 14 variables. Le code est dans le fichier \texttt{logit5\_selection\_variables.sas}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{proc logistic data=train;}
-\NormalTok{model yachat(ref=\textquotesingle{}0\textquotesingle{}) = x1 x2 x31 x32 x41{-}x44 x5{-}x10 / }
+\NormalTok{model yachat(ref=\textquotesingle{}0\textquotesingle{}) = x1 x2 x3\_1 x3\_2 x4\_1{-}x4\_4 x5{-}x10 / }
 \NormalTok{  selection=score best=1;}
 \NormalTok{run;}
 \end{Highlighting}
@@ -3327,7 +3326,7 @@ Le meilleur modèle avec une seule variable, selon la statistique du score, est 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{\%logistic\_aic\_BIC\_score(yvariable=yachat,}
-\NormalTok{                        xvariables=x1 x2 x31 x32 x41{-}x44 x5{-}x10,}
+\NormalTok{                        xvariables=x1 x2 x3\_1 x3\_2 x4\_1{-}x4\_4 x5{-}x10,}
 \NormalTok{                        dataset=train, minvar=1, maxvar=14);}
 \end{Highlighting}
 \end{Shaded}
@@ -3336,22 +3335,13 @@ Le meilleur modèle avec une seule variable, selon la statistique du score, est 
 
 On voit que le meilleur modèle selon le \(\mathsf{AIC}\) a neuf variables, contre sept pour le \(\mathsf{BIC}\). Nous verrons plus loin, dans un tableau synthèse, comment auraient performé ces modèles s'ils avaient été utilisés pour cibler les clients restants.
 
-\hypertarget{recherche-suxe9quentielle}{%
-\subsection{Recherche séquentielle}\label{recherche-suxe9quentielle}}
+\hypertarget{recherche-suxe9quentielle-1}{%
+\subsection{Recherche séquentielle}\label{recherche-suxe9quentielle-1}}
 
 Faire une recherche de tous les sous-modèles possibles devient impraticable lorsqu'il y a trop de variables en jeu. La procédure \texttt{logistic} permet aussi une recherche de type séquentielle classique. Ceci permet aussi d'utiliser la même approche en deux temps présentée au chapitre précédent. Dans un premier temps, on fait une recherche séquentielle pour sélectionner un nombre de variables qui sera assez petit afin qu'une recherche exhaustive de tous les sous-modèles soit possible. Dans un second temps, on fait cette recherche avec ces variables uniquement. Idéalement, on débute la sélection avec le modèle qui contient toutes les variables, soit \texttt{start=n} où \(n=104\) dans notre cas.
-
 Si on inclut tous les termes quadratiques et les termes d'interactions d'ordre deux, nous avons 104 variables potentielles: c'est trop pour une recherche exhaustive.
 
-Faisons d'abord une recherche séquentielle classique avec les 104 variables, en prenant 0.05 comme critère d'entrée et de sortie. Les options \textbf{SAS} correspondantes sont
-\texttt{selection=stepwise}, avec comme départ le nombre de variables \texttt{start=104} et les niveaux \texttt{sle=.05} et \texttt{sls=.05};
-
-\begin{center}\includegraphics[width=0.8\linewidth]{figures/03-logistic-e22} \end{center}
-
-Il y a eu 17 étapes dans la recherche séquentielle débutant avec le modèle qui ne contient que l'ordonnée à l'origine. La variable \texttt{i\_x7\_x8} est la première à être incluse, suivie de \texttt{x2} et ainsi de suite. Le modèle final contient 13 variables.
-En faisant une recherche séquentielle avec 0.5 comme comme critère d'entrée et de sortie, nous obtenons un sous-ensemble de 47 variables. On peut ensuite faire une recherche exhaustive de tous les sous-modèles avec ces 47 variables en utilisant la macro; le fichier \texttt{logit5\_selection\_variables.sas} contient le code commenté.
-
-Le modèle qui a le plus petit \(\mathsf{AIC}\), soit 579,701, est un modèle avec 28 variables. Le \(\mathsf{BIC}\) mène à un modèle beaucoup plus parcimonieux qui inclut huit variables.
+On peut faire une recherche descendante avec le test du score pour réduire le nombre de variables à 50, puis passer les variables sélectionnées à la procédure \texttt{logistic} et faire une recherche exhaustive approximative. Le modèle qui a le plus petit \(\mathsf{AIC}\), soit 585.194, est un modèle avec 27 variables. Le \(\mathsf{BIC}\) mène à un modèle beaucoup plus parsimonieux qui inclut sept variables, pour une valeur de critère de 667.704.
 
 \hypertarget{algorithme-glouton-et-crituxe8res-alternatifs-avec-hpgenselect}{%
 \subsection{\texorpdfstring{Algorithme glouton et critères alternatifs avec \texttt{hpgenselect}}{Algorithme glouton et critères alternatifs avec hpgenselect}}\label{algorithme-glouton-et-crituxe8res-alternatifs-avec-hpgenselect}}
@@ -3433,7 +3423,7 @@ modèle & \# variables & point de coupure &  sensibilité & taux de faux positif
 \end{tabular}
 \end{table}
 
-Nous avons vu plus tôt, qu'avec les 10 variables de base, le meilleur point de coupure est de 0.12. En utilisant cette stratégie sur les 100 000 clients, le revenu net aurait été de 940 569\$. C'est une énorme amélioration, de plus de 56\%, par rapport à la stratégie de référence qui consiste à envoyer le catalogue à tout le monde (revenu net de 601 212\$). Si on inclut tous les termes quadratiques et les termes les interactions d'ordre deux (104 variables en tout), le revenu net est inférieur avec une valeur de 937 150\$. Ici, le modèle est trop complexe et surajusté. Si on fait une sélection de variables (quasi méthodes sont présentées), suivie de la détermination du meilleur point de coupure, on fait alors toujours mieux qu'avec le modèle incluant les 10 variables de base seulement. L'approche qui aurait fait le mieux est la recherche séquentielle pour réduire le nombre de variables considérées à 47, suivi d'une recherche exhaustive pour trouver le modèle avec le plus petit \(\mathsf{BIC}\) : cette approche aurait généré 985 069\$ de revenus nets. Il s'agit d'un gain de 4.7\% par rapport au modèle avec les 10 variables de base.
+Nous avons vu plus tôt, qu'avec les 10 variables de base, le meilleur point de coupure est de 0.12. En utilisant cette stratégie sur les 100 000 clients, le revenu net aurait été de 940 569\$. C'est une énorme amélioration, de plus de 56\%, par rapport à la stratégie de référence qui consiste à envoyer le catalogue à tout le monde (revenu net de 601 212\$). Si on inclut tous les termes quadratiques et les termes les interactions d'ordre deux (104 variables en tout), le revenu net est inférieur avec une valeur de 937 150\$. Ici, le modèle est trop complexe et surajusté. Si on fait une sélection de variables (quasi méthodes sont présentées), suivie de la détermination du meilleur point de coupure, on fait alors toujours mieux qu'avec le modèle incluant les 10 variables de base seulement. L'approche qui aurait fait le mieux est la recherche séquentielle pour réduire le nombre de variables considérées à 50, suivi d'une recherche exhaustive pour trouver le modèle avec le plus petit \(\mathsf{BIC}\) : cette approche aurait généré 985 069\$ de revenus nets. Il s'agit d'un gain de 4.7\% par rapport au modèle avec les 10 variables de base.
 
 \hypertarget{stratuxe9gies-alternatives}{%
 \subsection{Stratégies alternatives}\label{stratuxe9gies-alternatives}}
