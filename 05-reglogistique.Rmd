@@ -594,23 +594,20 @@ confumat <- perfo1$confusion
 rownames(confumat) <- c("$\\widehat{Y}=1$","$\\widehat{Y}=0$")
 colnames(confumat) <- c("$Y=1$","$Y=0$")
 knitr::kable(x = confumat, align = "r", 
-             caption = paste0("Matrice de confusion avec point de coupure ", perfo1$cut))  
-
+             caption = paste0("Matrice de confusion avec point de coupure ", perfo1$cut))  magrittr::%>%
+  kableExtra::kable_styling(font_size = 7)
 ```
 
 Quatre autres quantités, dérivées à partir de la matrice de confusion, sont parfois utilisées: 
 
 - la **sensibilité** (_sensitivity_), $\P{\widehat{Y}=1 \mid Y=1}$, ou $\mathsf{VP}/(\mathsf{VP}+\mathsf{FN})$;
 - la **spécificité** (_specificity_), $\P{\widehat{Y}=0 \mid Y=0}$, ou $\mathsf{VN}/(\mathsf{VN}+\mathsf{FP})$;
-- le **taux de faux positifs**, $\P{Y=0 \mid \widehat{Y}=1}$, ou $\mathsf{FP}/(\mathsf{VP}+\mathsf{FP})$;
-- le **taux de faux négatifs**, $\P{Y=1 \mid \widehat{Y}=0}$, ou $\mathsf{FN}/(\mathsf{VN}+\mathsf{FN})$.
+- le **taux de vrais positifs**, $\P{Y=1 \mid \widehat{Y}=1}$, ou $\mathsf{VP}/(\mathsf{VP}+\mathsf{FP})$;
+- le **taux de vrais négatifs**, $\P{Y=0 \mid \widehat{Y}=0}$, ou $\mathsf{VN}/(\mathsf{VN}+\mathsf{FN})$.
 
 Les estimés empiriques sont simplement obtenus en calculant les rapports du nombre d'observations dans chaque classe. **SAS** rapporte ces quantités, mais notez que les vieilles versions du logiciel retournent le taux de faux positifs et de faux négatifs dans les deux dernières colonnes, tandis que les sorties des nouvelles version du logiciel donnent les taux de vrais positifs et de vrais négatifs.
 
-La sensibilité mesure à quel point notre modèle est performant pour détecter un vrai positif (classe 1). La spécificité mesure à quel point notre modèle est performant pour détecter un résultat négatif (classe 0).
-
-
-Plus le point de coupure augmente, plus la sensibilité et le taux de faux positifs diminuent mais plus la spécificité et le taux de faux négatifs augmentent.
+La sensibilité mesure à quel point notre modèle est performant pour détecter un vrai positif (classe 1). La spécificité mesure à quel point notre modèle est performant pour détecter un résultat négatif (classe 0). Plus le point de coupure augmente, plus la sensibilité et le taux de faux positifs diminuent mais plus la spécificité et le taux de faux négatifs augmentent.
 
 La **fonction d'efficacité du récepteur**, parfois appelée courbe ROC (_receiver operating characteristic_) est parfois utilisée pour représenter globalement la performance du modèle. Elle est obtenue avec l'option `plots(only)=(roc)` dans **SAS**. Il s'agit du graphe de la sensibilité en fonction de un moins la spécificité, en faisant varier le point de coupure. Un modèle parfait aurait une sensibilité et une spécificité égales à 1 (correspondant au coin supérieur gauche de la fonction d'efficacité du récepteur). Ainsi, plus le couple ($1-$spécificité, sensibilité) est près de ($0$, $1$), meilleur est le modèle. Par conséquent, plus la courbe ROC tend vers ($0$, $1$) meilleur est le pouvoir prévisionnel des variables.
 
@@ -627,12 +624,14 @@ La courbe ROC et la valeur de l'aire sous la courbe (avec l'option `plots(only)=
 
 ```{sas 03-rocok, eval = FALSE, echo = TRUE}
 proc logistic data=train;
-model yachat(ref='0') = x1 x2 x31 x32 x41-x44 x5-x10;
+class x3 x4 / ref=glm;
+model yachat(ref='0') = x1-x10;
 output out=pred predprobs=crossvalidate;
 run;
 
-proc logistic data=pred ;
-model yachat(ref='0') = x1 x2 x31 x32 x41-x44 x5-x10;
+proc logistic data=pred;
+class x3 x4 / ref=glm;
+model yachat(ref='0') = x1-x10;
 roc pred=xp_1;
 run;
 ```
@@ -765,9 +764,8 @@ Table: (\#tab:03-gain3) Matrice de gain pour l'envoi de catalogue
 
 L'appel de la macro `manycut_cvlogistic`, dont les paramètres sont expliqués dans le script, se fait de la manière suivante:
 ```{sas manycutmacro, eval = FALSE, echo = TRUE}
-%manycut_cvlogistic(
-  yvar=yachat, xvar=x1 x2 x31 x32 
-  x41 x42 x43 x44 x5 x6 x7 x8 x9 x10,
+%manycut_cvlogisticclass(
+  yvar=yachat, xvar=x1-x10, xvarclass=x3-x4,
   n=1000, k=10, ncv=10, dataset=train,
   c00=0, c01=0, c10=-10, c11=57,
   manycut=.05 .06 .07 .08 .09 .1 .11 .12 .13 .14 .15 .16 .17 .18 .5);
@@ -943,11 +941,11 @@ kableExtra::kbl(datf, col.names = colnames,
              longtable = FALSE,
              align =  paste0(c("l",rep("r", 6)),collapse = ""),
              escape = FALSE,
-             caption = "Résumé des caractéristiques des modèles logistiques avec (a) référence, soit l'envoi sans sélection à tous les clients; (b) 10 variables de base sans sélection; (c) toutes les variables, incluant les termes quadratiques et les interactions d'ordre 2; (d) sélection séquentielle classique avec critère d'entrée et de sortie à 0.05; (e) idem que (d), mais avec meilleur modèle selon le $\\mathsf{AIC}$; (f) idem que (d), mais avec meilleur modèle selon le $\\mathsf{BIC}$; (g) recherche exhaustive avec 47 variables sélectionnées par recherche séquentielle et modèle final sélectionné selon le $\\mathsf{BIC}$; (h), idem mais sélection avec $\\mathsf{AIC}$. Les points de coupure optimaux ont été déterminés par validation-croisée sur l'échantillon d'apprentissage, tandis que la performance du modèle (sensibilité, taux de faux positifs et taux de bonne classification) ont été calculés à partir de l'échantillon test de 100 000 individus.") %>%
+             caption = "Résumé des caractéristiques des modèles logistiques avec (a) référence, soit l'envoi sans sélection à tous les clients; (b) 10 variables de base sans sélection; (c) toutes les variables, incluant les termes quadratiques et les interactions d'ordre 2; (d) sélection séquentielle classique avec critère d'entrée et de sortie à 0.05; (e) idem que (d), mais avec meilleur modèle selon le $\\mathsf{AIC}$; (f) idem que (d), mais avec meilleur modèle selon le $\\mathsf{BIC}$; (g) recherche exhaustive avec 50 variables sélectionnées par recherche séquentielle et modèle final sélectionné selon le $\\mathsf{BIC}$; (h), idem mais sélection avec $\\mathsf{AIC}$. Les points de coupure optimaux ont été déterminés par validation-croisée sur l'échantillon d'apprentissage, tandis que la performance du modèle (sensibilité, taux de faux positifs et taux de bonne classification) ont été calculés à partir de l'échantillon test de 100 000 individus.") %>%
   column_spec(3:6, width = "2cm")
 
 ```
-Nous avons vu plus tôt, qu'avec les 10 variables de base, le meilleur point de coupure est de 0.12. En utilisant cette stratégie sur les 100 000 clients, le revenu net aurait été de 940 569\$. C'est une énorme amélioration, de plus de 56%, par rapport à la stratégie de référence qui consiste à envoyer le catalogue à tout le monde (revenu net de 601 212\$). Si on inclut tous les termes quadratiques et les termes les interactions d'ordre deux (104 variables en tout), le revenu net est inférieur avec une valeur de 937 150\$. Ici, le modèle est trop complexe et surajusté.  Si on fait une sélection de variables (quasi méthodes sont présentées), suivie de la détermination du meilleur point de coupure, on fait alors toujours mieux qu'avec le modèle incluant les 10 variables de base seulement. L'approche qui aurait fait le mieux est la recherche séquentielle pour réduire le nombre de variables considérées à 47, suivi d'une recherche exhaustive pour trouver le modèle avec le plus petit $\mathsf{BIC}$ : cette approche aurait généré 985 069\$ de revenus nets. Il s'agit d'un gain de 4.7% par rapport au modèle avec les 10 variables de base.
+Nous avons vu plus tôt, qu'avec les 10 variables de base, le meilleur point de coupure est de 0.12. En utilisant cette stratégie sur les 100 000 clients, le revenu net aurait été de 940 569\$. C'est une énorme amélioration, de plus de 56%, par rapport à la stratégie de référence qui consiste à envoyer le catalogue à tout le monde (revenu net de 601 212\$). Si on inclut tous les termes quadratiques et les termes les interactions d'ordre deux (104 variables en tout), le revenu net est inférieur avec une valeur de 937 150\$. Ici, le modèle est trop complexe et surajusté.  Si on fait une sélection de variables (quasi méthodes sont présentées), suivie de la détermination du meilleur point de coupure, on fait alors toujours mieux qu'avec le modèle incluant les 10 variables de base seulement. L'approche qui aurait fait le mieux est la recherche séquentielle pour réduire le nombre de variables considérées à 50, suivi d'une recherche exhaustive pour trouver le modèle avec le plus petit $\mathsf{BIC}$ : cette approche aurait généré 985 069\$ de revenus nets. Il s'agit d'un gain de 4.7% par rapport au modèle avec les 10 variables de base.
 
 ### Stratégies alternatives
 
