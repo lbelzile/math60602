@@ -154,7 +154,7 @@
 
 \title{Analyse multidimensionnelle appliquée}
 \author{(c) Denis Larocque, Léo Belzile}
-\date{version du 2021-11-14}
+\date{version du 2021-11-20}
 
 \usepackage{amsthm}
 \newtheorem{theorem}{Théorème}[chapter]
@@ -1896,7 +1896,7 @@ Le tableau qui suit résume ces quantités pour tous les modèles de l'ordre 1 �
 \end{table}
 
 Les colonnes \(\mathsf{EQM}\) et \(\widehat{\mathsf{EQM}}_a\) ont déjà été expliquées à la section précédente et ont été représentées graphiquement.
-On voit que le augmente toujours au fur et à mesure qu'on ajoute une variable (augmente l'ordre du polynôme). Les critères \(\mathsf{AIC}\) et \(\mathsf{BIC}\) choisissent le modèle cubique (\(k=3\)), c'est-à-dire le bon modèle. Le \(R^2\) ajusté quant à lui choisit le modèle d'ordre \(4\) (qui est le deuxième meilleur selon le \(\mathsf{EQM}\)). N'oubliez pas que ces trois critères sont calculés avec l'échantillon d'apprentissage (\(n=100\)), mais en pénalisant l'ajout de variables. On est ainsi en mesure de contrecarrer le problème provenant du fait qu'on ne peut pas utiliser directement le \(\widehat{\mathsf{EQM}}_a\).
+On voit que l'erreur moyenne quadratique des données d'apprentissage, \(\widehat{\mathsf{EQM}}_a\), diminue toujours à mesure qu'on ajoute des variables (c'est-à-dire, qu'on augmente l'ordre du polynôme). Les critères \(\mathsf{AIC}\) et \(\mathsf{BIC}\) suggèrent le modèle cubique (\(k=3\)), c'est-à-dire le vrai modèle. Le \(R^2\) ajusté quant à lui choisit le modèle d'ordre \(4\) (qui est le deuxième meilleur selon le \(\mathsf{EQM}\)). N'oubliez pas que ces trois critères sont calculés avec l'échantillon d'apprentissage (\(n=100\)), mais en pénalisant l'ajout de variables. On est ainsi en mesure de contrecarrer le problème provenant du fait qu'on ne peut pas utiliser directement le \(\widehat{\mathsf{EQM}}_a\).
 
 Le \(\mathsf{AIC}\) et le \(\mathsf{BIC}\) sont des critères très utilisés et très généraux. Ils sont disponibles dès qu'on utilise la méthode du maximum de vraisemblance est utilisée comme méthode d'estimation. Le \(R^2\) ajusté a une portée plus limitée car il est spécialisé à la régression linéaire.
 
@@ -3072,6 +3072,7 @@ La \textbf{matrice de confusion}, qui compare les vraies valeurs avec les prédi
 
 \caption{\label{tab:confumat}Matrice de confusion avec point de coupure 0.465}
 \centering
+\fontsize{7}{9}\selectfont
 \begin{tabular}[t]{l|r|r}
 \hline
   & \$Y=1\$ & \$Y=0\$\\
@@ -3092,16 +3093,14 @@ Quatre autres quantités, dérivées à partir de la matrice de confusion, sont 
 \item
   la \textbf{spécificité} (\emph{specificity}), \({\mathsf P}\left(\widehat{Y}=0 \mid Y=0\right)\), ou \(\mathsf{VN}/(\mathsf{VN}+\mathsf{FP})\);
 \item
-  le \textbf{taux de faux positifs}, \({\mathsf P}\left(Y=0 \mid \widehat{Y}=1\right)\), ou \(\mathsf{FP}/(\mathsf{VP}+\mathsf{FP})\);
+  le \textbf{taux de vrais positifs}, \({\mathsf P}\left(Y=1 \mid \widehat{Y}=1\right)\), ou \(\mathsf{VP}/(\mathsf{VP}+\mathsf{FP})\);
 \item
-  le \textbf{taux de faux négatifs}, \({\mathsf P}\left(Y=1 \mid \widehat{Y}=0\right)\), ou \(\mathsf{FN}/(\mathsf{VN}+\mathsf{FN})\).
+  le \textbf{taux de vrais négatifs}, \({\mathsf P}\left(Y=0 \mid \widehat{Y}=0\right)\), ou \(\mathsf{VN}/(\mathsf{VN}+\mathsf{FN})\).
 \end{itemize}
 
 Les estimés empiriques sont simplement obtenus en calculant les rapports du nombre d'observations dans chaque classe. \textbf{SAS} rapporte ces quantités, mais notez que les vieilles versions du logiciel retournent le taux de faux positifs et de faux négatifs dans les deux dernières colonnes, tandis que les sorties des nouvelles version du logiciel donnent les taux de vrais positifs et de vrais négatifs.
 
-La sensibilité mesure à quel point notre modèle est performant pour détecter un vrai positif (classe 1). La spécificité mesure à quel point notre modèle est performant pour détecter un résultat négatif (classe 0).
-
-Plus le point de coupure augmente, plus la sensibilité et le taux de faux positifs diminuent mais plus la spécificité et le taux de faux négatifs augmentent.
+La sensibilité mesure à quel point notre modèle est performant pour détecter un vrai positif (classe 1). La spécificité mesure à quel point notre modèle est performant pour détecter un résultat négatif (classe 0). Plus le point de coupure augmente, plus la sensibilité et le taux de faux positifs diminuent mais plus la spécificité et le taux de faux négatifs augmentent.
 
 La \textbf{fonction d'efficacité du récepteur}, parfois appelée courbe ROC (\emph{receiver operating characteristic}) est parfois utilisée pour représenter globalement la performance du modèle. Elle est obtenue avec l'option \texttt{plots(only)=(roc)} dans \textbf{SAS}. Il s'agit du graphe de la sensibilité en fonction de un moins la spécificité, en faisant varier le point de coupure. Un modèle parfait aurait une sensibilité et une spécificité égales à 1 (correspondant au coin supérieur gauche de la fonction d'efficacité du récepteur). Ainsi, plus le couple (\(1-\)spécificité, sensibilité) est près de (\(0\), \(1\)), meilleur est le modèle. Par conséquent, plus la courbe ROC tend vers (\(0\), \(1\)) meilleur est le pouvoir prévisionnel des variables.
 
@@ -3115,12 +3114,14 @@ La courbe ROC et la valeur de l'aire sous la courbe (avec l'option \texttt{plots
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{proc logistic data=train;}
-\NormalTok{model yachat(ref=\textquotesingle{}0\textquotesingle{}) = x1 x2 x31 x32 x41{-}x44 x5{-}x10;}
+\NormalTok{class x3 x4 / ref=glm;}
+\NormalTok{model yachat(ref=\textquotesingle{}0\textquotesingle{}) = x1{-}x10;}
 \NormalTok{output out=pred predprobs=crossvalidate;}
 \NormalTok{run;}
 
-\NormalTok{proc logistic data=pred ;}
-\NormalTok{model yachat(ref=\textquotesingle{}0\textquotesingle{}) = x1 x2 x31 x32 x41{-}x44 x5{-}x10;}
+\NormalTok{proc logistic data=pred;}
+\NormalTok{class x3 x4 / ref=glm;}
+\NormalTok{model yachat(ref=\textquotesingle{}0\textquotesingle{}) = x1{-}x10;}
 \NormalTok{roc pred=xp\_1;}
 \NormalTok{run;}
 \end{Highlighting}
@@ -3264,9 +3265,8 @@ L'appel de la macro \texttt{manycut\_cvlogistic}, dont les paramètres sont expl
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{\%manycut\_cvlogistic(}
-\NormalTok{  yvar=yachat, xvar=x1 x2 x31 x32 }
-\NormalTok{  x41 x42 x43 x44 x5 x6 x7 x8 x9 x10,}
+\NormalTok{\%manycut\_cvlogisticclass(}
+\NormalTok{  yvar=yachat, xvar=x1{-}x10, xvarclass=x3{-}x4,}
 \NormalTok{  n=1000, k=10, ncv=10, dataset=train,}
 \NormalTok{  c00=0, c01=0, c10={-}10, c11=57,}
 \NormalTok{  manycut=.05 .06 .07 .08 .09 .1 .11 .12 .13 .14 .15 .16 .17 .18 .5);}
@@ -3405,7 +3405,7 @@ Table:
 
 \begin{table}
 
-\caption{\label{tab:03-summarylog}Résumé des caractéristiques des modèles logistiques avec (a) référence, soit l'envoi sans sélection à tous les clients; (b) 10 variables de base sans sélection; (c) toutes les variables, incluant les termes quadratiques et les interactions d'ordre 2; (d) sélection séquentielle classique avec critère d'entrée et de sortie à 0.05; (e) idem que (d), mais avec meilleur modèle selon le $\mathsf{AIC}$; (f) idem que (d), mais avec meilleur modèle selon le $\mathsf{BIC}$; (g) recherche exhaustive avec 47 variables sélectionnées par recherche séquentielle et modèle final sélectionné selon le $\mathsf{BIC}$; (h), idem mais sélection avec $\mathsf{AIC}$. Les points de coupure optimaux ont été déterminés par validation-croisée sur l'échantillon d'apprentissage, tandis que la performance du modèle (sensibilité, taux de faux positifs et taux de bonne classification) ont été calculés à partir de l'échantillon test de 100 000 individus.}
+\caption{\label{tab:03-summarylog}Résumé des caractéristiques des modèles logistiques avec (a) référence, soit l'envoi sans sélection à tous les clients; (b) 10 variables de base sans sélection; (c) toutes les variables, incluant les termes quadratiques et les interactions d'ordre 2; (d) sélection séquentielle classique avec critère d'entrée et de sortie à 0.05; (e) idem que (d), mais avec meilleur modèle selon le $\mathsf{AIC}$; (f) idem que (d), mais avec meilleur modèle selon le $\mathsf{BIC}$; (g) recherche exhaustive avec 50 variables sélectionnées par recherche séquentielle et modèle final sélectionné selon le $\mathsf{BIC}$; (h), idem mais sélection avec $\mathsf{AIC}$. Les points de coupure optimaux ont été déterminés par validation-croisée sur l'échantillon d'apprentissage, tandis que la performance du modèle (sensibilité, taux de faux positifs et taux de bonne classification) ont été calculés à partir de l'échantillon test de 100 000 individus.}
 \centering
 \begin{tabular}[t]{lr>{\raggedleft\arraybackslash}p{2cm}>{\raggedleft\arraybackslash}p{2cm}>{\raggedleft\arraybackslash}p{2cm}>{\raggedleft\arraybackslash}p{2cm}r}
 \toprule

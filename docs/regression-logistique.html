@@ -2198,8 +2198,8 @@ FN (%)
 L’autre extrême, avec un point de coupure <span class="math inline">\(c=1\)</span>, donne un taux de bonne classification de <span class="math inline">\(79\)</span>%.</p>
 <p>On peut chercher dans le tableau les points de coupure qui donnent le meilleur taux de bonne classification. Ce dernier, à savoir 84.6%, est atteint par trois points de coupure, soit 0.52, soit 0.6, soit 0.62. Une recherche plus fine donne 0.465 comme point de coupure optimal, avec un taux de mauvaise classification de 15.3%.</p>
 <p>La <strong>matrice de confusion</strong>, qui compare les vraies valeurs avec les prédictions, peut être construite à partir des colonnes <code>Correct - Événement</code>, <code>Correct - Non-événement</code>, <code>Incorrect - Événement</code>, <code>Incorrect - Non-événement</code>. Il y a deux classifications possibles et le tableau contient, en partant du coin supérieur gauche et dans le sens des aiguilles d’une montre, le nombre de vrai positif (<span class="math inline">\(Y=1\)</span>, <span class="math inline">\(\widehat{Y}=1\)</span>), de faux positif (<span class="math inline">\(Y=0\)</span>, <span class="math inline">\(\widehat{Y}=1\)</span>), de vrai négatif (<span class="math inline">\(Y=0\)</span>, <span class="math inline">\(\widehat{Y}=0\)</span>) et finalement de faux négatif (<span class="math inline">\(Y=1\)</span>, <span class="math inline">\(\widehat{Y}=0\)</span>). Ces nombres proviennent de la validation croisée à <span class="math inline">\(n\)</span> groupes et ne sont pas ceux qu’on obtiendrait si on appliquait directement le modèle ajusté à notre échantillon. Le taux de mauvaise classification est <span class="math inline">\((\mathsf{FP}+\mathsf{FN})/n\)</span>.</p>
-<table>
-<caption>
+<table class="table" style="font-size: 7px; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">
 <span id="tab:confumat">Tableau 5.2: </span>Matrice de confusion avec point de coupure 0.465
 </caption>
 <thead>
@@ -2243,24 +2243,25 @@ L’autre extrême, avec un point de coupure <span class="math inline">\(c=1\)</
 <ul>
 <li>la <strong>sensibilité</strong> (<em>sensitivity</em>), <span class="math inline">\({\mathsf P}\left(\widehat{Y}=1 \mid Y=1\right)\)</span>, ou <span class="math inline">\(\mathsf{VP}/(\mathsf{VP}+\mathsf{FN})\)</span>;</li>
 <li>la <strong>spécificité</strong> (<em>specificity</em>), <span class="math inline">\({\mathsf P}\left(\widehat{Y}=0 \mid Y=0\right)\)</span>, ou <span class="math inline">\(\mathsf{VN}/(\mathsf{VN}+\mathsf{FP})\)</span>;</li>
-<li>le <strong>taux de faux positifs</strong>, <span class="math inline">\({\mathsf P}\left(Y=0 \mid \widehat{Y}=1\right)\)</span>, ou <span class="math inline">\(\mathsf{FP}/(\mathsf{VP}+\mathsf{FP})\)</span>;</li>
-<li>le <strong>taux de faux négatifs</strong>, <span class="math inline">\({\mathsf P}\left(Y=1 \mid \widehat{Y}=0\right)\)</span>, ou <span class="math inline">\(\mathsf{FN}/(\mathsf{VN}+\mathsf{FN})\)</span>.</li>
+<li>le <strong>taux de vrais positifs</strong>, <span class="math inline">\({\mathsf P}\left(Y=1 \mid \widehat{Y}=1\right)\)</span>, ou <span class="math inline">\(\mathsf{VP}/(\mathsf{VP}+\mathsf{FP})\)</span>;</li>
+<li>le <strong>taux de vrais négatifs</strong>, <span class="math inline">\({\mathsf P}\left(Y=0 \mid \widehat{Y}=0\right)\)</span>, ou <span class="math inline">\(\mathsf{VN}/(\mathsf{VN}+\mathsf{FN})\)</span>.</li>
 </ul>
 <p>Les estimés empiriques sont simplement obtenus en calculant les rapports du nombre d’observations dans chaque classe. <strong>SAS</strong> rapporte ces quantités, mais notez que les vieilles versions du logiciel retournent le taux de faux positifs et de faux négatifs dans les deux dernières colonnes, tandis que les sorties des nouvelles version du logiciel donnent les taux de vrais positifs et de vrais négatifs.</p>
-<p>La sensibilité mesure à quel point notre modèle est performant pour détecter un vrai positif (classe 1). La spécificité mesure à quel point notre modèle est performant pour détecter un résultat négatif (classe 0).</p>
-<p>Plus le point de coupure augmente, plus la sensibilité et le taux de faux positifs diminuent mais plus la spécificité et le taux de faux négatifs augmentent.</p>
+<p>La sensibilité mesure à quel point notre modèle est performant pour détecter un vrai positif (classe 1). La spécificité mesure à quel point notre modèle est performant pour détecter un résultat négatif (classe 0). Plus le point de coupure augmente, plus la sensibilité et le taux de faux positifs diminuent mais plus la spécificité et le taux de faux négatifs augmentent.</p>
 <p>La <strong>fonction d’efficacité du récepteur</strong>, parfois appelée courbe ROC (<em>receiver operating characteristic</em>) est parfois utilisée pour représenter globalement la performance du modèle. Elle est obtenue avec l’option <code>plots(only)=(roc)</code> dans <strong>SAS</strong>. Il s’agit du graphe de la sensibilité en fonction de un moins la spécificité, en faisant varier le point de coupure. Un modèle parfait aurait une sensibilité et une spécificité égales à 1 (correspondant au coin supérieur gauche de la fonction d’efficacité du récepteur). Ainsi, plus le couple (<span class="math inline">\(1-\)</span>spécificité, sensibilité) est près de (<span class="math inline">\(0\)</span>, <span class="math inline">\(1\)</span>), meilleur est le modèle. Par conséquent, plus la courbe ROC tend vers (<span class="math inline">\(0\)</span>, <span class="math inline">\(1\)</span>) meilleur est le pouvoir prévisionnel des variables.</p>
 <p>L’<strong>aire sous la courbe</strong> (<em>area under the curve</em>) est souvent utilisée en parallèle
 est simplement l’aire sous la courbe de la fonction d’efficacité du récepteur. Pour le modèle logistique ajusté, on a une aire sous la courbe de 0.8847. Plus cette valeur est élevée (au plus <span class="math inline">\(1\)</span>), mieux c’est.</p>
 <p><img src="figures/03-logistic-e11.png" width="80%" style="display: block; margin: auto;" /></p>
 <p>La courbe ROC et la valeur de l’aire sous la courbe (avec l’option <code>plots(only)=(roc)</code>), sont calculées avec les données d’apprentissage et ne sont pas corrigées. Si on veut les utiliser pour comparer des modèles, il faut plutôt utiliser l’option <code>crossvalidate</code> qui permet d’obtenir des estimations des probabilités par validation-croisée avec <span class="math inline">\(n\)</span> groupes tout comme celle utilisée dans le tableau de classification.</p>
 <pre class="sas"><code>proc logistic data=train;
-model yachat(ref=&#39;0&#39;) = x1 x2 x31 x32 x41-x44 x5-x10;
+class x3 x4 / ref=glm;
+model yachat(ref=&#39;0&#39;) = x1-x10;
 output out=pred predprobs=crossvalidate;
 run;
 
-proc logistic data=pred ;
-model yachat(ref=&#39;0&#39;) = x1 x2 x31 x32 x41-x44 x5-x10;
+proc logistic data=pred;
+class x3 x4 / ref=glm;
+model yachat(ref=&#39;0&#39;) = x1-x10;
 roc pred=xp_1;
 run;</code></pre>
 <p>On sauvegarde d’abord les probabilités estimées par validation-croisée dans le
@@ -2415,9 +2416,8 @@ Maximiser le gain total revient donc à maximiser le taux de bonne classificatio
 </tbody>
 </table>
 <p>L’appel de la macro <code>manycut_cvlogistic</code>, dont les paramètres sont expliqués dans le script, se fait de la manière suivante:</p>
-<pre class="sas"><code>%manycut_cvlogistic(
-  yvar=yachat, xvar=x1 x2 x31 x32 
-  x41 x42 x43 x44 x5 x6 x7 x8 x9 x10,
+<pre class="sas"><code>%manycut_cvlogisticclass(
+  yvar=yachat, xvar=x1-x10, xvarclass=x3-x4,
   n=1000, k=10, ncv=10, dataset=train,
   c00=0, c01=0, c10=-10, c11=57,
   manycut=.05 .06 .07 .08 .09 .1 .11 .12 .13 .14 .15 .16 .17 .18 .5);</code></pre>
@@ -2495,7 +2495,7 @@ run;</code></pre>
 <p>Table:</p>
 <table>
 <caption>
-<span id="tab:03-summarylog">Tableau 5.6: </span>Résumé des caractéristiques des modèles logistiques avec (a) référence, soit l’envoi sans sélection à tous les clients; (b) 10 variables de base sans sélection; (c) toutes les variables, incluant les termes quadratiques et les interactions d’ordre 2; (d) sélection séquentielle classique avec critère d’entrée et de sortie à 0.05; (e) idem que (d), mais avec meilleur modèle selon le <span class="math inline">\(\mathsf{AIC}\)</span>; (f) idem que (d), mais avec meilleur modèle selon le <span class="math inline">\(\mathsf{BIC}\)</span>; (g) recherche exhaustive avec 47 variables sélectionnées par recherche séquentielle et modèle final sélectionné selon le <span class="math inline">\(\mathsf{BIC}\)</span>; (h), idem mais sélection avec <span class="math inline">\(\mathsf{AIC}\)</span>. Les points de coupure optimaux ont été déterminés par validation-croisée sur l’échantillon d’apprentissage, tandis que la performance du modèle (sensibilité, taux de faux positifs et taux de bonne classification) ont été calculés à partir de l’échantillon test de 100 000 individus.
+<span id="tab:03-summarylog">Tableau 5.6: </span>Résumé des caractéristiques des modèles logistiques avec (a) référence, soit l’envoi sans sélection à tous les clients; (b) 10 variables de base sans sélection; (c) toutes les variables, incluant les termes quadratiques et les interactions d’ordre 2; (d) sélection séquentielle classique avec critère d’entrée et de sortie à 0.05; (e) idem que (d), mais avec meilleur modèle selon le <span class="math inline">\(\mathsf{AIC}\)</span>; (f) idem que (d), mais avec meilleur modèle selon le <span class="math inline">\(\mathsf{BIC}\)</span>; (g) recherche exhaustive avec 50 variables sélectionnées par recherche séquentielle et modèle final sélectionné selon le <span class="math inline">\(\mathsf{BIC}\)</span>; (h), idem mais sélection avec <span class="math inline">\(\mathsf{AIC}\)</span>. Les points de coupure optimaux ont été déterminés par validation-croisée sur l’échantillon d’apprentissage, tandis que la performance du modèle (sensibilité, taux de faux positifs et taux de bonne classification) ont été calculés à partir de l’échantillon test de 100 000 individus.
 </caption>
 <thead>
 <tr>
