@@ -57,14 +57,14 @@ run;
 /*
 EXERCICE 5.3
 */
-
+/* NE PAS OUBLIER class=ref ou class=glm, sinon c'est une paramétrisation somme des coefficients = 0*/
 proc logistic data=multi.multinom descending;
-class educ revenu sexe;
+class educ revenu sexe / class=ref; 
 model y = age educ revenu sexe / clparm=pl clodds=pl expb;
 run;
 
 proc logistic data=multi.multinom outmodel=mod;
-class educ(ref="sec") revenu(ref="1");
+class educ(ref="sec") revenu(ref="1") / class=ref;
 model y(ref="1") = age educ revenu sexe / clparm=pl clodds=pl expb link=glogit;
 run;
  /* Test du rapport de vraisemblance pour H0: régression ordinale 
