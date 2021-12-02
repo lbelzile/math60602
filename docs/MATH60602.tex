@@ -154,7 +154,7 @@
 
 \title{Analyse multidimensionnelle appliquée}
 \author{(c) Denis Larocque, Léo Belzile}
-\date{version du 2021-11-20}
+\date{version du 2021-11-23}
 
 \usepackage{amsthm}
 \newtheorem{theorem}{Théorème}[chapter]
@@ -3592,17 +3592,17 @@ Si les modalités de la réponse sont ordinales, la régression logistique multi
 
 Supposons que la variable \(Y\) est ordinale et peut prendre les \(K+1\) valeurs ordonnées de la plus petite à la plus grande selon les catégories de \(Y\) (\(0, 1, 2, \ldots, K\)). Supposons que l'on dispose de \(p\) variables explicatives \(X_1, \ldots, X_p\).
 
-Soit \(p_{ik}={\mathsf P}\left(Y_i \mid X_{i1}, \ldots, X_{ip}\right)\) (\(k=0, 1, \ldots, K\)) la probabilité que \(Y_{ik}\) prenne la valeur \(k\). On dénote la fonction de survie
-\[S_{ij}=\sum_{k=j}^K p_{ik}= {\mathsf P}\left(Y_{i} \geq j\mid X_{i1}, \ldots, X_{ip}\right), \qquad j=1, \ldots, K.
+Soit \(p_{ik}={\mathsf P}\left(Y_i=k \mid X_{i1}, \ldots, X_{ip}\right)\) (\(k=0, 1, \ldots, K\)) la probabilité que \(Y_{ik}\) prenne la valeur \(k\). On dénote
+\[S_{ij}=\sum_{k=j}^K p_{ik}= {\mathsf P}\left(Y_{i} > j - 1 \mid X_{i1}, \ldots, X_{ip}\right), \qquad j=1, \ldots, K.
 \]
-La quantité \(S_{ij}\) est la probabilité que \(Y_i\) soit plus grand ou égal à \(j\); \(S_{i0}\) est égal à 1 et \(S_{ik} = {\mathsf P}\left(Y_i=K \mid X_{i1}, \ldots, X_{ip}\right)=p_{iK}\).
+La quantité \(S_{ij}\) est la probabilité que \(Y_i\) soit plus grand ou égal à \(j\); \(S_{i0}\) est égal à 1 et \(S_{iK} = {\mathsf P}\left(Y_i=K \mid X_{i1}, \ldots, X_{ip}\right)=p_{iK}\).
 
 Le modèle logistique cumulé spécifie que
 \begin{align*}
 \ln \left( \frac{S_{ij}}{1-S_{ij}}\right) = \beta_{0j} + \beta_1 X_{i1} + \cdots + \beta_p X_{ip}, \qquad \qquad  j=1, \ldots, K.
 \end{align*}
 
-Il y a donc \(K-1\) équations logistiques. Les paramètres quantifiant les effets des variables explicatives, \(\beta_1, \ldots, \beta_K\) sont les mêmes pour chacune des log-cotes, mais il y a une ordonnée à l'origine différente par log de rapport de cote. Par conséquent, pour modéliser une variable ordinale \(Y\) ayant \(K+1\) valeurs possibles avec \(p\) variables explicatives, le modèle cumulatif logistique utilise \(p + K\) paramètres. Le modèle logit multinomial, qui peut également être utilisé pour les données ordinales, utilise \(pK + K\) paramètres. Le modèle multinomial ordonné est donc plus parcimonieux et, pour autant qu'il soit approprié, mènera à des estimations des paramètres plus précises qu'avec le modèle de régression logistique multinomiale. Les deux modèles sont identiques au modèle de régression logistique si la variable ordinale a deux modalités.
+Il y a donc \(K\) équations logistiques. Les paramètres quantifiant les effets des variables explicatives, \(\beta_1, \ldots, \beta_p\) sont les mêmes pour chacune des log-cotes, mais il y a une ordonnée à l'origine différente par log de rapport de cote. Par conséquent, pour modéliser une variable ordinale \(Y\) ayant \(K+1\) valeurs possibles avec \(p\) variables explicatives, le modèle cumulatif logistique utilise \(p + K\) paramètres. Le modèle logit multinomial, qui peut également être utilisé pour les données ordinales, utilise \(pK + K\) paramètres. Le modèle multinomial ordonné est donc plus parcimonieux et, pour autant qu'il soit approprié, mènera à des estimations des paramètres plus précises qu'avec le modèle de régression logistique multinomiale. Les deux modèles sont identiques au modèle de régression logistique si la variable ordinale a deux modalités.
 
 La cote \(S_{ij}/(1-S_{ij})\) mesure à quel point il est plus probable que \(Y_i\) prenne une valeur plus grande ou égale à \(j\) par rapport à une valeur plus petite que \(j\), viz.
 \begin{align*}
@@ -3848,7 +3848,7 @@ où \(i(t) =\max(j \in \{1, \ldots, m\}: t \geq t_{j})\), soit le plus grand ind
 \hypertarget{comparaison-de-deux-courbes-de-survie}{%
 \section{Comparaison de deux courbes de survie}\label{comparaison-de-deux-courbes-de-survie}}
 
-Supposons que les individus ont été divisés en deux groupes et que \(S_1(t)\) et \(S_2(t)\) dénotent respectivement la fonction de survie du premier groupe et dudeuxième groupe. On est souvent intéressé à tester l'égalité des fonctions de survie, c'est-à-dire, les hypothèses \(\mathcal{H}_0: S_1(t) = S_2(t)\) pour tout \(t\) et \(\mathcal{H}_1: S_1(t) \neq S_2(t)\) pour au moins une valeur de \(t\).
+Supposons que les individus ont été divisés en deux groupes et que \(S_1(t)\) et \(S_2(t)\) dénotent respectivement la fonction de survie du premier groupe et du deuxième groupe. On est souvent intéressé à tester l'égalité des fonctions de survie, c'est-à-dire, les hypothèses \(\mathcal{H}_0: S_1(t) = S_2(t)\) pour tout \(t\) et \(\mathcal{H}_1: S_1(t) \neq S_2(t)\) pour au moins une valeur de \(t\).
 
 Par exemple, dans une étude sur le temps de survie après avoir été diagnostiqué avec un certain type de cancer, on pourrait vouloir comparer le temps de survie des individus ayant reçu le traitement standard (groupe 1) au temps de survie des individus ayant reçu un nouveau traitement (groupe 2).
 
@@ -4183,6 +4183,8 @@ Les commandes pour ajuster le modèle sont
 \begin{center}\includegraphics[width=0.85\linewidth]{figures/05-survie-e32} \end{center}
 
 On voit à la lecture de la sortie \textbf{SAS} qu'il n'y a pas de paramètres pour la variable région. Les paramètres des autres variables s'interprètent comme d'habitude.
+
+Le commentaire suivant est technique et peut être omis. Le postulat de risques proportionnels est rarement validé en pratique (et difficile à tester). Cela aura pour conséquences que les erreurs-types des variables explicatives autres que binaires sont faussées, problème qu'on peut régler en utilisant des procédures d'autoamorçage. La valeur du rapport de risque dépend de la distribution des pertes de suivi, même quand ces dernières surviennent de manière aléatoire; une recommendation récente est d'utiliser des rapports de risques pondérées par la probabilité inverse d'appartenance, le tout complémenté par des mesures d'effets comme la différence de survie, la moyenne de survie (estimation restreinte) à des temps préspécifiés.
 
 \hypertarget{donnees-manquantes}{%
 \chapter{Données manquantes}\label{donnees-manquantes}}
