@@ -31,13 +31,14 @@ emq <- matrix(0, nrow = 10, ncol = 7)
 emqcv <- matrix(0, nrow = 10, ncol = 100)
 library(caret)
 library(ggplot2)
-for(i in 1 :10){
+for(i in 1:10){
    set.seed(i*1000)
    # Créer le modèle avec une chaîne de caractère pour le polynôme
-   meanmod <- as.formula(paste0("y~", paste0("I(x^",1 :i,")", collapse= "+")))
+   meanmod <- reformulate(response = "y", 
+                          termlabels = paste0("I(x^", 1:i,")"))
    mod <-  lm(meanmod, data = train)
    # Calculer l'erreur moyenne dans les deux échantillons
-   emq[i,1 :2] <- c(mean(resid(mod)^2), #apprentissage
+   emq[i,1:2] <- c(mean(resid(mod)^2), #apprentissage
                     mean((test$y - predict(mod, newdata = test))^2)) #échantillon test
    emq[i,3] <- summary(mod)$r.squared
    emq[i,4] <- summary(mod)$adj.r.squared
@@ -53,8 +54,8 @@ for(i in 1 :10){
 emq[,7] <- rowMeans(emqcv)
 
 
-emqdat <- data.frame(ordre = rep(1 :10, length.out = 20), 
-                     emq = c(emq[,1 :2]),
+emqdat <- data.frame(ordre = rep(1:10, length.out = 20), 
+                     emq = c(emq[,1:2]),
                      echantillon = factor(c(rep("apprentissage",10), rep("théorique", 10)))
 )
 ggplot(data = emqdat, aes(x=ordre, y=emq, color=echantillon)) +
@@ -166,7 +167,8 @@ whichminbic <- which.min(unlist(seqAIC$keep[1,]))
 coefs <- seqAIC$keep[2, whichminbic]$coef
 
 # Formule du modèle BIC 
-formule_seq_bic <- formula(paste("ymontant ~", paste0(names(seqAIC$keep[2, whichminbic]$coef)[-1], collapse = "+")))
+formule_seq_bic <- reformulate(response = "ymontant",
+                               termlabels = paste0(names(seqAIC$keep[2, whichminbic]$coef)[-1]))
 seqBIC <- lm(formule_seq_bic, data = dbm_entrainement)
 # coefs[1] est l'ordonnée à l'origine
 # Prédiction avec le modèle AIC (direct car c'est un modèle de classe "lm"
