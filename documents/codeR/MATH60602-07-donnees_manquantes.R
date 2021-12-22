@@ -28,7 +28,7 @@ complete(impdata, action = 1)
 # ajuste les modèles avec les données imputées
 
 manyfit <- with(data = impdata,
-               expr = glm(y ~ factor(x1) + factor(x2) + x3 + x4 + x5 + factor(x6),
+               expr = glm(y ~ x1 + x2 + x3 + x4 + x5 + x6,
                           family = binomial(link = 'logit')))
 
 # combinaison des résultats 

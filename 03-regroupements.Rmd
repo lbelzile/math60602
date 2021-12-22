@@ -80,7 +80,13 @@ Une première idée consiste à faire le graphe de toutes les paires de variable
 i) il y aura beaucoup de graphes si le nombre de variables est grand et ii) on examine seulement les relations bivariées.
 
 
-```{r 04-pairplot, echo = FALSE, eval = TRUE, fig.width = 9, fig.height=16, out.width='90%', fig.align = "center"} 
+```{r 04-pairplot}
+#| echo = FALSE, 
+#| eval = TRUE, 
+#| fig.width = 9, 
+#| fig.height = 20, 
+#| out.width = '90%', 
+#| fig.align = "center"
 url <- "https://lbelzile.bitbucket.io/MATH60602/cluster1.sas7bdat"
 cluster1 <- haven::read_sas(url)
 library(ggplot2)
@@ -242,7 +248,11 @@ Plus l'homogénéité globale $\mathsf{SCD}_G$  est petite, mieux c'est. Pour pa
 
 On procède à une analyse simplifiée des données pour le voyage organisé avec deux variables et vingt observations afin d'être en mesure de visualiser l'algorithme de groupement. 
 
-```{r 04-plottrueclust, eval = TRUE, echo = FALSE, out.width='90%', fig.align = "center"}
+```{r 04-plottrueclust}
+#| eval = TRUE, 
+#| echo = FALSE, 
+#| out.width='90%', 
+#| fig.align = "center"
 url <- "https://lbelzile.bitbucket.io/MATH60602/cluster1a.sas7bdat"
 cluster1a <- haven::read_sas(url)
 par(mar = c(4,4,1,2))
@@ -255,9 +265,59 @@ with(cluster1a, text(x2, x1, 1:nrow(cluster1a), pos = 4))
 ```
 
 
+```{r wardAnimation}
+#| eval = TRUE,
+#| echo = FALSE,
+#| cache = TRUE,
+#| animation.hook = "gifski",
+#| fig.show = 'animate',
+#| fig.width = 8,
+#| fig.height= 8,
+#| out.width='80%', 
+#| fig.cap = ifelse(knitr::opts_knit$get("rmarkdown.pandoc.to")== "html","Regroupements hiérarchiques sur le sous-ensemble des données, étape par étape","Regroupements hiérarchiques avec la méthode de Ward (solution à trois groupes)")
+out_type <- knitr::opts_knit$get("rmarkdown.pandoc.to")
+suppressPackageStartupMessages(library(factoextra))
+# Téléchargement des données
+url <- "https://lbelzile.bitbucket.io/MATH60602/cluster1a.sas7bdat"
+cluster1a <- data.frame(haven::read_sas(url))
+clust <- hclust(dist(cluster1a), method = "ward.D2")
+if(out_type == 'html'){
+  for (i in 20:2){
+    print(
+      factoextra::fviz_cluster(
+        list(data = cluster1a, 
+             cluster = cutree(clust, k = i)),
+        choose.vars = c("x1", "x2"),
+        stand = FALSE,
+        main = "Regroupements selon méthode de Ward"
+      ) + labs(col = "regroupements",
+               x = expression(x[1]),
+               y = expression(x[2])) + 
+        theme_classic() +
+        theme(legend.position = 'none')
+    )
+  }
+} else{
+  factoextra::fviz_cluster(
+      list(data = cluster1a, 
+           cluster = cutree(clust, k = 3)),
+      choose.vars = c("x1", "x2"),
+      stand = FALSE,
+      main = "Regroupements selon méthode de Ward"
+    ) + labs(col = "regroupements",
+             x = expression(x[1]),
+             y = expression(x[2])) + 
+    theme_classic() +
+    theme(legend.position = 'none')
+}
+```
+
 La première analyse utilise la méthode de Ward. Les commandes **SAS** se trouvent dans `cluster1_simplifie.sas`; la présentation de la procédure et de la syntaxe est différée. L'historique de regroupement est décrit dans la sortie **SAS**. La première colonne donne le nombre de groupes. Au départ, les observations 16 et 19 sont regroupées, il y a maintenant 19 groupes. Ensuite, les observations 11 et 13 sont regroupées, il y a maintenant 18 groupes. Au moment de passer de 14 à 13 groupes, c'est le groupe formé à l'étape 16 qui est fusionné avec l'observation 2 et ainsi de suite. La colonne `Fréq` donne le nombre d'observations dans le groupe qui vient d'être formé.
 
-```{r fig4-e3, echo = FALSE, out.width='80%', fig.align = "center"}
+```{r fig4-e3}
+#| echo = FALSE, 
+#| out.width='80%', 
+#| fig.align = "center"
 knitr::include_graphics("figures/04-clustering-e3.png")
 ```
 
@@ -282,7 +342,11 @@ On définit la perte d'homogénéité (relative) en combinant ces deux groupes
 \end{align*}
 On peut ainsi tracer une courbe pour le $\mathsf{SPRSQ}$ en fonction du nombre de groupes, comme dans le graphique \@ref(fig:fig4-e5). 
 
-```{r fig4-e5, echo = FALSE, out.width='80%', fig.align = "center", fig.cap = "Courbe du $R^2$ semi-partiel en fonction des groupements hiérarchiques"}
+```{r fig4-e5}
+#| echo = FALSE, 
+#| out.width='80%', 
+#| fig.align = "center", 
+#| fig.cap = "Courbe du $R^2$ semi-partiel en fonction des groupements hiérarchiques"
 knitr::include_graphics("figures/04-clustering-e5.png")
 ```
 
@@ -299,11 +363,19 @@ run;
 
 On peut représenter graphique le R carré (Figure \@ref(fig:fig4-e7)), le R carré semi partiel (Figure \@ref(fig:fig4-e8)) en fonction du nombre de groupes. 
 
-```{r fig4-e7, echo = FALSE, out.width='80%', fig.align = "center", fig.cap = "R carré en fonction des regroupements hiérarchiques"}
+```{r fig4-e7}
+#| echo = FALSE, 
+#| out.width='80%', 
+#| fig.align = "center", 
+#| fig.cap = "R carré en fonction des regroupements hiérarchiques"
 knitr::include_graphics("figures/04-clustering-e8.png")
 ```
 
-```{r fig4-e8, echo = FALSE, out.width='80%', fig.align = "center", fig.cap = "R carré semi-partiel en fonction des regroupements hiérarchiques"}
+```{r fig4-e8} 
+#| echo = FALSE, 
+#| out.width='80%', 
+#| fig.align = "center", 
+#| fig.cap = "R carré semi-partiel en fonction des regroupements hiérarchiques"
 knitr::include_graphics("figures/04-clustering-e9.png")
 ```
 
@@ -315,15 +387,24 @@ En pratique, on ne peut jamais savoir si on a bel et bien regroupé ensemble les
 **Interprétation des groupes**: la méthode la plus simple consiste à inspecter les moyennes des variables de chaque groupe et de voir s'il en découle une interprétation raisonnable. La procédure `tree` permet d'extraire la solution avec un nombre spécifié de groupes et il est ensuite facile (avec la procédure `means`) d'obtenir ces moyennes (voir le fichier `cluster2_complet.sas`).
 
 
-```{r fig4-e11, echo = FALSE, out.width='55%', fig.align = "center"}
+```{r fig4-e11}
+#| echo = FALSE, 
+#| out.width='55%', 
+#| fig.align = "center"
 knitr::include_graphics("figures/04-clustering-e11.png")
 ```
 
-```{r fig4-e12, echo = FALSE, out.width='55%', fig.align = "center"}
+```{r fig4-e12}
+#| echo = FALSE, 
+#| out.width='55%', 
+#| fig.align = "center"
 knitr::include_graphics("figures/04-clustering-e12.png")
 ```
 
-```{r fig4-e13, echo = FALSE, out.width='55%', fig.align = "center"}
+```{r fig4-e13}
+#| echo = FALSE, 
+#| out.width='55%', 
+#| fig.align = "center"
 knitr::include_graphics("figures/04-clustering-e13.png")
 ```
 
@@ -348,7 +429,11 @@ Nous avons utilisé la méthode de Ward afin de calculer la distance entre les g
 Le fichier `cluster3_voisin_eloigne.sas` contient les commandes pour utiliser la méthode du voisin le plus éloigné (avec l'option `method=complete`). Le graphe plus bas donne cette distance pour les deux groupes qui viennent d'être fusionnés. Il s'agit donc du maximum des distances entre chaque paire de sujets (un pour chaque groupe) provenant des deux groupes fusionnés.
 
 
-```{r fig4-e21, echo = FALSE, out.width='80%', fig.align = "center", fig.cap = "Distance maximale entre groupes en fonction des regroupements hiérarchiques pour la méthode du voisin le plus éloigné."}
+```{r fig4-e21}
+#| echo = FALSE, 
+#| out.width='80%', 
+#| fig.align = "center", 
+#| fig.cap = "Distance maximale entre groupes en fonction des regroupements hiérarchiques pour la méthode du voisin le plus éloigné."
 knitr::include_graphics("figures/04-clustering-e21.png")
 ```
 
@@ -357,7 +442,12 @@ Comme on veut que cette distance soit petite pour les groupes fusionnés, on pou
 
 On peut comparer les performances des regroupements hiérarchiques selon la méthode de groupement. La [page web de scikit-learn developers](https://scikit-learn.org/stable/auto_examples/cluster/plot_linkage_comparison.html) montre la performance sur des exemples jouets, qui montre que selon les hypothèses et la structure, aucune ne performe mieux que les autres dans tous les exemples.
 
-```{r fig4-e20, echo = FALSE, out.width='80%', fig.align = "center", fig.cap = "Comparaison des méthodes de groupement sur des données test."}
+```{r fig4-e20}
+#| echo = FALSE, 
+#| out.width='80%', 
+#| fig.align = "center", 
+#| fig.cap = "Comparaison des méthodes de groupement sur des données test"
+
 knitr::include_graphics("figures/04-clustering-e20.png")
 ```
 
@@ -418,7 +508,11 @@ Contrairement aux méthodes hiérarchiques, il faut spécifier le nombre de grou
 \end{align*}
 où $\mathrm{I}(\boldsymbol{x}_i \in g_k)$ est une variable binaire qui vaut un si l'observation $i$ appartient au groupe $g_k$ et $\boldsymbol{\mu}_k$ est le centroïde du groupement $k$. On minimise ainsi la variance intra-groupe. On voit ainsi dans la Figure \@ref(fig:kmoyperfo) que l'algorithme détecte bien les vrais regroupements si les groupes sont sphériques et de même variance, et que les regroupements sont bien séparés (c'est-à-dire, quand la distance euclidienne entre les regroupements est élevée). 
 
-```{r kmoyperfo, echo = FALSE, cache = TRUE, message = FALSE, fig.cap = "Performance de l'algorithme des $K$-moyennes en fonction de différents scénarios. En haut à gauche: nombre incorrect de classe et données normales de même variance, bien séparées. En haut à droite: spirales: les $K$-moyennes ignorent la topologie des regroupements, et ne segmente pas adéquatement les regroupements connectés. En bas à gauche: données elliptiques de même variance, mais fortement corrélées. Comme le critère minimise la distance intra-groupe sans pondération, les points regroupés appartiennent à différentes classes. En bas à droite: données sphériques de variances différentes. L'algorithme des $K$-moyennes réussit une bonne segmentation si les groupements sont compacts et bien séparés."}
+```{r kmoyperfo}
+#| echo = FALSE, 
+#| cache = TRUE, 
+#| message = FALSE, 
+#| fig.cap = "Performance de l'algorithme des $K$-moyennes en fonction de différents scénarios. En haut à gauche: nombre incorrect de classe et données normales de même variance, bien séparées. En haut à droite: spirales: les $K$-moyennes ignorent la topologie des regroupements, et ne segmente pas adéquatement les regroupements connectés. En bas à gauche: données elliptiques de même variance, mais fortement corrélées. Comme le critère minimise la distance intra-groupe sans pondération, les points regroupés appartiennent à différentes classes. En bas à droite: données sphériques de variances différentes. L'algorithme des $K$-moyennes réussit une bonne segmentation si les groupements sont compacts et bien séparés."
 set.seed(1234)
 #https://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_assumptions.html
 # Figure 9.1 in Bishop
@@ -553,7 +647,12 @@ knitr::include_graphics("figures/04-clustering-e17.png")
 Le champ des applications des $K$-moyennes est parfois surprenant. Par exemple, [cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais](https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/). Un autre exemple incongru est la compression d'images: la Figure \@ref(fig:decelles) montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l'algorithme des $K$-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l'image.
 
 
-```{r decelles, echo = FALSE, eval = TRUE,  out.width='80%', fig.align = "center", fig.cap= "Compression d'image avec l'algorithme des $K$-moyennes: image originale (en haut à gauche), compression avec trois (en haut à droite), quatre (en bas à gauche) et 10 (en bas à droite) couleurs."}
+```{r decelles}
+#| echo = FALSE, 
+#| eval = TRUE, 
+#| out.width='80%', 
+#| fig.align = "center", 
+#| fig.cap= "Compression d'image avec l'algorithme des $K$-moyennes: image originale (en haut à gauche), compression avec trois (en haut à droite), quatre (en bas à gauche) et 10 (en bas à droite) couleurs."
 knitr::include_graphics("figures/kmoyennes_decelles.png")
 ```
 

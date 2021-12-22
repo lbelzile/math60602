@@ -131,6 +131,7 @@
 \usepackage[french]{babel}
 
 \usepackage{icomma}
+\usepackage{animate}
 % }
 \usepackage{booktabs}
 \usepackage{longtable}
@@ -154,7 +155,7 @@
 
 \title{Analyse multidimensionnelle appliquée}
 \author{(c) Denis Larocque, Léo Belzile}
-\date{version du 2021-12-05}
+\date{version du 2021-12-21}
 
 \usepackage{amsthm}
 \newtheorem{theorem}{Théorème}[chapter]
@@ -1433,6 +1434,15 @@ On procède à une analyse simplifiée des données pour le voyage organisé ave
 
 \begin{center}\includegraphics[width=0.9\linewidth]{MATH60602_files/figure-latex/04-plottrueclust-1} \end{center}
 
+\begin{figure}
+
+{\centering \animategraphics[width=0.8\linewidth,controls,loop]{1}{MATH60602_files/figure-latex/wardAnimation-}{1}{1}
+
+}
+
+\caption[Regroupements hiérarchiques avec la méthode de Ward (solution à trois groupes)]{Regroupements hiérarchiques avec la méthode de Ward (solution à trois groupes)}\label{fig:wardAnimation}
+\end{figure}
+
 La première analyse utilise la méthode de Ward. Les commandes \textbf{SAS} se trouvent dans \texttt{cluster1\_simplifie.sas}; la présentation de la procédure et de la syntaxe est différée. L'historique de regroupement est décrit dans la sortie \textbf{SAS}. La première colonne donne le nombre de groupes. Au départ, les observations 16 et 19 sont regroupées, il y a maintenant 19 groupes. Ensuite, les observations 11 et 13 sont regroupées, il y a maintenant 18 groupes. Au moment de passer de 14 à 13 groupes, c'est le groupe formé à l'étape 16 qui est fusionné avec l'observation 2 et ainsi de suite. La colonne \texttt{Fréq} donne le nombre d'observations dans le groupe qui vient d'être formé.
 
 \begin{center}\includegraphics[width=0.8\linewidth]{figures/04-clustering-e3} \end{center}
@@ -1559,7 +1569,7 @@ On peut comparer les performances des regroupements hiérarchiques selon la mét
 
 }
 
-\caption{Comparaison des méthodes de groupement sur des données test.}\label{fig:fig4-e20}
+\caption{Comparaison des méthodes de groupement sur des données test}\label{fig:fig4-e20}
 \end{figure}
 
 \hypertarget{standardisation-des-variables}{%
@@ -1826,19 +1836,19 @@ Il existe deux grandes approches pour contourner ce problème lorsque le but est
 \section{Pénalisation et critères d'information}\label{puxe9nalisation-et-crituxe8res-dinformation}}
 
 Plaçons-nous dans le contexte de la régression linéaire pour l'instant.
-Nous avons déjà utilisé les critères \(\mathsf{AIC}\) et \(\mathsf{BIC}\) en analyse factorielle. Il s'agit de mesures qui découlent d'une méthode d'estimation des paramètres, la méthode du maximum de vraisemblance (\emph{maximum likelihood}).
+Nous avons déjà utilisé les critères \(\mathsf{AIC}\) et \(\mathsf{BIC}\) en analyse factorielle. Il s'agit de mesures qui découlent d'une méthode d'estimation des paramètres, la méthode du maximum de vraisemblance.
 
 Il s'avère que les estimateurs des paramètres obtenus par la méthode des moindres carrés en régression linéaire sont équivalents à ceux provenant de la méthode du maximum de vraisemblance si on suppose la normalité des termes d'erreurs du modèle. Ainsi, dans ce cas, nous avons accès aux \(\mathsf{AIC}\) et \(\mathsf{BIC}\), deux critères d'information définis pour les modèles dont la fonction objective est la vraisemblance (qui mesure la probabilité des observations sous le modèle postulé suivant une loi choisie par l'utilisateur). La fonction de vraisemblance \(\mathcal{L}\) et la log-vraisemblance \(\ell\) mesurent l'adéquation du modèle.
 
 Supposons que nous avons ajusté un modèle avec \(p\) paramètres en tout (\textbf{incluant} l'ordonnée à l'origine). En régression linéaire, le critère d'information d'Akaike, \(\mathsf{AIC}\), est
 \begin{align*}
-\mathsf{AIC} &=-2 \ell(\widehat{\boldsymbol{\beta}}, \widehat{\sigma}^2) +2p=n \ln (\mathsf{SCE}) - n\ln(n) + 2p,
+\mathsf{AIC} &=-2 \ell(\widehat{\boldsymbol{\beta}}, \widehat{\sigma}^2) +2p = n \ln (\mathsf{EMQ}) + 2p + \text{constante},
 \end{align*}
 tandis que le critère d'information bayésien de Schwartz, \(\mathsf{BIC}\), est défini par
 \begin{align*}
-\mathsf{BIC} &=-2 \ell(\widehat{\boldsymbol{\beta}}, \widehat{\sigma}^2) + p\ln(n)=n \ln (\mathsf{SCE}) - n\ln(n) + p\ln(n)
+\mathsf{BIC} &=-2 \ell(\widehat{\boldsymbol{\beta}}, \widehat{\sigma}^2) + p\ln(n)=n \ln (\mathsf{EMQ}) + p\ln(n) + \text{constante}.
 \end{align*}
-Plus la valeur du \(\mathsf{AIC}\) (ou du \(\mathsf{BIC}\)) est petite, meilleur est l'adéquation. Que se passe-t-il lorsqu'on ajoute un paramètre à un modèle? D'une part, la somme du carré des erreurs va méchaniquement diminuer, et donc la quantité \(n \ln (\mathsf{SCE}/n)\) va diminuer. D'autre part, la valeur de \(p\) augmente de \(1\). Ainsi, le \(\mathsf{AIC}\) peut soit augmenter, soit diminuer, lorsqu'on ajoute un paramètre; idem pour le \(\mathsf{BIC}\). Par exemple, le \(\mathsf{AIC}\) va diminuer seulement si la baisse de la somme du carré des erreurs est suffisante pour compenser le fait que le terme \(2p\) augmente à \(2 (p+1)\).
+Plus la valeur du \(\mathsf{AIC}\) (ou du \(\mathsf{BIC}\)) est petite, meilleur est l'adéquation. Que se passe-t-il lorsqu'on ajoute un paramètre à un modèle? D'une part, la somme du carré des erreurs va méchaniquement diminuer tout comme l'erreur moyenne quadratique \(\textsf{EMQ} = \textsf{SCE}/n\), donc la quantité \(n \ln (\mathsf{EMQ})\) va diminuer. D'autre part, la valeur de \(p\) augmente de \(1\). Ainsi, le \(\mathsf{AIC}\) peut soit augmenter, soit diminuer, lorsqu'on ajoute un paramètre; idem pour le \(\mathsf{BIC}\). Par exemple, le \(\mathsf{AIC}\) va diminuer seulement si la baisse de la somme du carré des erreurs est suffisante pour compenser le fait que le terme \(2p\) augmente à \(2 (p+1)\).
 
 Ces critères pénalisent l'ajout de variables afin de se prémunir contre le surajustement. De plus, le \(\mathsf{BIC}\) pénalise plus que le \(\mathsf{AIC}\). Par conséquent, le critère \(\mathsf{BIC}\) va choisir des modèles contenant soit le même nombre, soit moins de paramètres que le \(\mathsf{AIC}\).
 
@@ -2152,7 +2162,7 @@ Ainsi, si le nombre de variables est restreint, il est possible de comparer tous
 
 On veut trouver un bon modèle pour prévoir la valeur de \texttt{ymontant} des clients qui ont acheté quelque chose. On a vu qu'il y a 210 clients qui ont acheté dans l'échantillon d'apprentissage. Nous allons chercher à développer un « bon » modèle avec ces 210 clients. Dans ce premier exemple, nous allons seulement utiliser les 10 variables explicatives de base (14 variables avec les indicatrices). Le code suivant montre comment faire une sélection de variables selon le critère du \(R^2\) et demande à \textbf{SAS} de présenter le modèle à \(k\) variables (\(k=1, \ldots, 14\)) qui a le plus grand \(R^2\); voir \href{https://raw.githubusercontent.com/lbelzile/math60602/master/documents/codeSAS/selection2_methodes.sas}{\texttt{selection2\_methodes.sas}} pour plus de détails.
 
-Pour un nombre de variables fixé, le meilleur modèle selon le \(R^2\) est aussi le meilleur selon les critères d'information \(\mathsf{AIC}\) et \(\mathsf{BIC}\), pour ce nombre fixé de variables. Pour vous convaincre de cette affirmation, fixons le nombre de variables et restreignons-nous seulement aux modèles avec ce nombre de variables. Comme = \(1 - \mathsf{SCE}/\mathsf{SCT}\) et que \(\mathsf{SCT}\) est une constante indépendante du modèle, le modèle avec le plus grand coefficient de détermination, \(R^2\), est aussi celui avec la plus petite somme du carré des erreurs (\(\mathsf{SCE}\)). Comme \(\mathsf{AIC}=n (\ln (\mathsf{SCE}/n)) + 2p\), ce sera aussi celui avec le plus petit \(\mathsf{AIC}\) car la pénalité \(2p\) est la même si on fixe le nombre de variables; la même remarque est valide pour le \(\mathsf{BIC}\).
+Pour un nombre de variables fixé, le meilleur modèle selon le \(R^2\) est aussi le meilleur selon les critères d'information \(\mathsf{AIC}\) et \(\mathsf{BIC}\), pour ce nombre fixé de variables. Pour vous convaincre de cette affirmation, fixons le nombre de variables et restreignons-nous seulement aux modèles avec ce nombre de variables. Comme = \(1 - \mathsf{SCE}/\mathsf{SCT}\) et que \(\mathsf{SCT}\) est une constante indépendante du modèle, le modèle avec le plus grand coefficient de détermination, \(R^2\), est aussi celui avec la plus petite somme du carré des erreurs (\(\mathsf{SCE}\)). Comme \(\mathsf{AIC}=n \ln (\mathsf{EMQ}) + 2p\), ce sera aussi celui avec le plus petit \(\mathsf{AIC}\) car la pénalité \(2p\) est la même si on fixe le nombre de variables; la même remarque est valide pour le \(\mathsf{BIC}\).
 
 Ainsi, pour trouver le meilleur modèle globalement (sans fixer le nombre de variables), il suffit de trouver le modèle à \(k\) variables explicatives ayant le coefficient de détermination le plus élevé pour tous les nombres de variables fixés et d'ensuite de trouver celui qui minimise le \(\mathsf{AIC}\) (ou le \(\mathsf{BIC}\)) parmi ces modèles. Cette astuce est utile dans la mesure où \textbf{SAS} ne permet pas de faire cette même recherche avec les critères d'information. Ainsi, le modèle linéaire simple qui a le plus grand \(R^2\) est celui qui inclut le conjoint (\texttt{x5}). Le meilleur modèle (selon le \(R^2\)) parmi tous les modèles avec deux variables est celui avec \texttt{x5} et \texttt{x6}.
 

@@ -291,6 +291,12 @@ Figure 3.2: Projection des observations sur les composantes principales avec les
 Plus l’homogénéité globale <span class="math inline">\(\mathsf{SCD}_G\)</span> est petite, mieux c’est. Pour passer de <span class="math inline">\(M\)</span> à <span class="math inline">\(M-1\)</span> groupes, la méthode de Ward va regrouper les deux groupes qui feront que <span class="math inline">\(\mathsf{SCD}_G\)</span> sera la plus petite possible.</p>
 <p>On procède à une analyse simplifiée des données pour le voyage organisé avec deux variables et vingt observations afin d’être en mesure de visualiser l’algorithme de groupement.</p>
 <p><img src="MATH60602_files/figure-html/04-plottrueclust-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:wardAnimation"></span>
+<img src="MATH60602_files/figure-html/wardAnimation-.gif" alt="Regroupements hiérarchiques sur le sous-ensemble des données, étape par étape" width="80%" />
+<p class="caption">
+Figure 3.3: Regroupements hiérarchiques sur le sous-ensemble des données, étape par étape
+</p>
+</div>
 <p>La première analyse utilise la méthode de Ward. Les commandes <strong>SAS</strong> se trouvent dans <code>cluster1_simplifie.sas</code>; la présentation de la procédure et de la syntaxe est différée. L’historique de regroupement est décrit dans la sortie <strong>SAS</strong>. La première colonne donne le nombre de groupes. Au départ, les observations 16 et 19 sont regroupées, il y a maintenant 19 groupes. Ensuite, les observations 11 et 13 sont regroupées, il y a maintenant 18 groupes. Au moment de passer de 14 à 13 groupes, c’est le groupe formé à l’étape 16 qui est fusionné avec l’observation 2 et ainsi de suite. La colonne <code>Fréq</code> donne le nombre d’observations dans le groupe qui vient d’être formé.</p>
 <p><img src="figures/04-clustering-e3.png" width="80%" style="display: block; margin: auto;" /></p>
 <p>Les quantités <code>sprsq</code> et <code>rsq</code> sont des statistiques qui peuvent servir de guide pour choisir le nombre de groupes. Le <span class="math inline">\(\mathsf{RSQ}\)</span> est une mesure similaire au <span class="math inline">\(R^2\)</span> régression linéaire qui mesure globalement à quel point les groupes sont homogènes. Elle prend une valeur entre 0 et 1 où 0 et plus le <span class="math inline">\(\mathsf{RSQ}\)</span> est élevé, meilleur le regroupement.
@@ -298,11 +304,11 @@ On définit le <span class="math inline">\(\mathsf{RSQ}\)</span> comme la propor
 <span class="math display">\[\begin{align*}
 \mathsf{RSQ} = 1-\frac{\mathsf{SCD}_G}{\mathsf{SCD}_T},
 \end{align*}\]</span>
-où <span class="math inline">\(\mathsf{SCD}_T\)</span> est la somme des carrés des distances par rapport à la moyenne lorsque toutes les observations sont dans un même groupe. Le graphique <a href="analyse-regroupements.html#fig:fig4-e4">3.3</a> montre l’évolution du <span class="math inline">\(\mathsf{RSQ}\)</span> en fonction du nombre de groupes.</p>
+où <span class="math inline">\(\mathsf{SCD}_T\)</span> est la somme des carrés des distances par rapport à la moyenne lorsque toutes les observations sont dans un même groupe. Le graphique <a href="analyse-regroupements.html#fig:fig4-e4">3.4</a> montre l’évolution du <span class="math inline">\(\mathsf{RSQ}\)</span> en fonction du nombre de groupes.</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:fig4-e4"></span>
 <img src="figures/04-clustering-e4.png" alt="R carré en fonction du nombre de groupes" width="80%" />
 <p class="caption">
-Figure 3.3: R carré en fonction du nombre de groupes
+Figure 3.4: R carré en fonction du nombre de groupes
 </p>
 </div>
 <p>L’idée est généralement de choisir un petit nombre de groupe avec un <span class="math inline">\(\mathsf{RSQ}\)</span> assez élevé.
@@ -312,11 +318,11 @@ On définit la perte d’homogénéité (relative) en combinant ces deux groupes
 <span class="math display">\[\begin{align*}
 \mathsf{SPRSQ} = \frac{\mathsf{SCD}_k - \mathsf{SCD}_{k_1} - \mathsf{SCD}_{k_2}}{\mathsf{SCD}_T}
 \end{align*}\]</span>
-On peut ainsi tracer une courbe pour le <span class="math inline">\(\mathsf{SPRSQ}\)</span> en fonction du nombre de groupes, comme dans le graphique <a href="analyse-regroupements.html#fig:fig4-e5">3.4</a>.</p>
+On peut ainsi tracer une courbe pour le <span class="math inline">\(\mathsf{SPRSQ}\)</span> en fonction du nombre de groupes, comme dans le graphique <a href="analyse-regroupements.html#fig:fig4-e5">3.5</a>.</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:fig4-e5"></span>
 <img src="figures/04-clustering-e5.png" alt="Courbe du $R^2$ semi-partiel en fonction des groupements hiérarchiques" width="80%" />
 <p class="caption">
-Figure 3.4: Courbe du <span class="math inline">\(R^2\)</span> semi-partiel en fonction des groupements hiérarchiques
+Figure 3.5: Courbe du <span class="math inline">\(R^2\)</span> semi-partiel en fonction des groupements hiérarchiques
 </p>
 </div>
 <p>La procédure <strong>SAS</strong> qui permet d’effectuer une analyse de regroupements hiérarchique est <code>cluster</code>. Le fichier <code>cluster2_complet.sas</code> explique les différentes options disponibles.</p>
@@ -325,17 +331,17 @@ var x1-x6;
 copy id cluster_vrai x1-x6;
 ods output stat.cluster.ClusterHistory=criteres;
 run;</code></pre>
-<p>On peut représenter graphique le R carré (Figure <a href="analyse-regroupements.html#fig:fig4-e7">3.5</a>), le R carré semi partiel (Figure <a href="analyse-regroupements.html#fig:fig4-e8">3.6</a>) en fonction du nombre de groupes.</p>
+<p>On peut représenter graphique le R carré (Figure <a href="analyse-regroupements.html#fig:fig4-e7">3.6</a>), le R carré semi partiel (Figure <a href="analyse-regroupements.html#fig:fig4-e8">3.7</a>) en fonction du nombre de groupes.</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:fig4-e7"></span>
 <img src="figures/04-clustering-e8.png" alt="R carré en fonction des regroupements hiérarchiques" width="80%" />
 <p class="caption">
-Figure 3.5: R carré en fonction des regroupements hiérarchiques
+Figure 3.6: R carré en fonction des regroupements hiérarchiques
 </p>
 </div>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:fig4-e8"></span>
 <img src="figures/04-clustering-e9.png" alt="R carré semi-partiel en fonction des regroupements hiérarchiques" width="80%" />
 <p class="caption">
-Figure 3.6: R carré semi-partiel en fonction des regroupements hiérarchiques
+Figure 3.7: R carré semi-partiel en fonction des regroupements hiérarchiques
 </p>
 </div>
 <p>Parfois, l’information est présentée sous forme de dendogramme, qui trace l’arbre et la fusion des groupes. On peut ainsi retracer l’historique de la procédure hiérarchique. Celui produit par <strong>SAS</strong> donne, à un facteur multiplicatif près, le <span class="math inline">\(\mathsf{SPRSQ}\)</span>. Il n’y a donc pas de nouvelles informations ici. On voit que c’est lorsqu’on passe de trois à deux groupes, qu’il y a une bonne perte d’homogénéité.</p>
@@ -362,15 +368,15 @@ Notez qu’on <strong>ne peut pas</strong> tester l’égalité des moyennes des
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:fig4-e21"></span>
 <img src="figures/04-clustering-e21.png" alt="Distance maximale entre groupes en fonction des regroupements hiérarchiques pour la méthode du voisin le plus éloigné." width="80%" />
 <p class="caption">
-Figure 3.7: Distance maximale entre groupes en fonction des regroupements hiérarchiques pour la méthode du voisin le plus éloigné.
+Figure 3.8: Distance maximale entre groupes en fonction des regroupements hiérarchiques pour la méthode du voisin le plus éloigné.
 </p>
 </div>
-<p>Comme on veut que cette distance soit petite pour les groupes fusionnés, on pourrait être tenté d’arrêter à trois groupes ici sur la base de la Figure <a href="analyse-regroupements.html#fig:fig4-e20">3.8</a>. L’interprétation des groupes ne change pas comparativement aux analyses précédentes. La taille des groupes, (44, 71, 35), change un peu par rapport à la solution avec la méthode de Ward qui donnait des tailles de (43, 75, 32).</p>
+<p>Comme on veut que cette distance soit petite pour les groupes fusionnés, on pourrait être tenté d’arrêter à trois groupes ici sur la base de la Figure <a href="analyse-regroupements.html#fig:fig4-e20">3.9</a>. L’interprétation des groupes ne change pas comparativement aux analyses précédentes. La taille des groupes, (44, 71, 35), change un peu par rapport à la solution avec la méthode de Ward qui donnait des tailles de (43, 75, 32).</p>
 <p>On peut comparer les performances des regroupements hiérarchiques selon la méthode de groupement. La <a href="https://scikit-learn.org/stable/auto_examples/cluster/plot_linkage_comparison.html">page web de scikit-learn developers</a> montre la performance sur des exemples jouets, qui montre que selon les hypothèses et la structure, aucune ne performe mieux que les autres dans tous les exemples.</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:fig4-e20"></span>
-<img src="figures/04-clustering-e20.png" alt="Comparaison des méthodes de groupement sur des données test." width="80%" />
+<img src="figures/04-clustering-e20.png" alt="Comparaison des méthodes de groupement sur des données test" width="80%" />
 <p class="caption">
-Figure 3.8: Comparaison des méthodes de groupement sur des données test.
+Figure 3.9: Comparaison des méthodes de groupement sur des données test
 </p>
 </div>
 </div>
@@ -418,11 +424,11 @@ d(S_i, S_j) = |X_{i1}-X_{j1}| + \cdots + |X_{ip}- X_{jp}|
 <span class="math display">\[\begin{align*}
 \sum_{i=1}^n \sum_{k=1}^K \mathrm{I}(x_i \in g_k)\|\boldsymbol{x}_i - \boldsymbol{\mu}_k\|^2 = \sum_{i=1}^n \sum_{k=1}^K \mathrm{I}(x_i \in g_k) \sum_{j=1}^p (x_{ij}-\mu_{kj})^2
 \end{align*}\]</span>
-où <span class="math inline">\(\mathrm{I}(\boldsymbol{x}_i \in g_k)\)</span> est une variable binaire qui vaut un si l’observation <span class="math inline">\(i\)</span> appartient au groupe <span class="math inline">\(g_k\)</span> et <span class="math inline">\(\boldsymbol{\mu}_k\)</span> est le centroïde du groupement <span class="math inline">\(k\)</span>. On minimise ainsi la variance intra-groupe. On voit ainsi dans la Figure <a href="analyse-regroupements.html#fig:kmoyperfo">3.9</a> que l’algorithme détecte bien les vrais regroupements si les groupes sont sphériques et de même variance, et que les regroupements sont bien séparés (c’est-à-dire, quand la distance euclidienne entre les regroupements est élevée).</p>
+où <span class="math inline">\(\mathrm{I}(\boldsymbol{x}_i \in g_k)\)</span> est une variable binaire qui vaut un si l’observation <span class="math inline">\(i\)</span> appartient au groupe <span class="math inline">\(g_k\)</span> et <span class="math inline">\(\boldsymbol{\mu}_k\)</span> est le centroïde du groupement <span class="math inline">\(k\)</span>. On minimise ainsi la variance intra-groupe. On voit ainsi dans la Figure <a href="analyse-regroupements.html#fig:kmoyperfo">3.10</a> que l’algorithme détecte bien les vrais regroupements si les groupes sont sphériques et de même variance, et que les regroupements sont bien séparés (c’est-à-dire, quand la distance euclidienne entre les regroupements est élevée).</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:kmoyperfo"></span>
 <img src="MATH60602_files/figure-html/kmoyperfo-1.png" alt="Performance de l'algorithme des $K$-moyennes en fonction de différents scénarios. En haut à gauche: nombre incorrect de classe et données normales de même variance, bien séparées. En haut à droite: spirales: les $K$-moyennes ignorent la topologie des regroupements, et ne segmente pas adéquatement les regroupements connectés. En bas à gauche: données elliptiques de même variance, mais fortement corrélées. Comme le critère minimise la distance intra-groupe sans pondération, les points regroupés appartiennent à différentes classes. En bas à droite: données sphériques de variances différentes. L'algorithme des $K$-moyennes réussit une bonne segmentation si les groupements sont compacts et bien séparés." width="70%" />
 <p class="caption">
-Figure 3.9: Performance de l’algorithme des <span class="math inline">\(K\)</span>-moyennes en fonction de différents scénarios. En haut à gauche: nombre incorrect de classe et données normales de même variance, bien séparées. En haut à droite: spirales: les <span class="math inline">\(K\)</span>-moyennes ignorent la topologie des regroupements, et ne segmente pas adéquatement les regroupements connectés. En bas à gauche: données elliptiques de même variance, mais fortement corrélées. Comme le critère minimise la distance intra-groupe sans pondération, les points regroupés appartiennent à différentes classes. En bas à droite: données sphériques de variances différentes. L’algorithme des <span class="math inline">\(K\)</span>-moyennes réussit une bonne segmentation si les groupements sont compacts et bien séparés.
+Figure 3.10: Performance de l’algorithme des <span class="math inline">\(K\)</span>-moyennes en fonction de différents scénarios. En haut à gauche: nombre incorrect de classe et données normales de même variance, bien séparées. En haut à droite: spirales: les <span class="math inline">\(K\)</span>-moyennes ignorent la topologie des regroupements, et ne segmente pas adéquatement les regroupements connectés. En bas à gauche: données elliptiques de même variance, mais fortement corrélées. Comme le critère minimise la distance intra-groupe sans pondération, les points regroupés appartiennent à différentes classes. En bas à droite: données sphériques de variances différentes. L’algorithme des <span class="math inline">\(K\)</span>-moyennes réussit une bonne segmentation si les groupements sont compacts et bien séparés.
 </p>
 </div>
 <p>Nous allons utiliser cette procédure pour raffiner la solution obtenue précédemment avec la méthode de Ward en utilisant les moyennes des groupes comme centres préliminaires. Le fichier <code>cluster5_non-hierarchique.sas</code> explique les différentes options. La syntaxe de la procédure <strong>SAS</strong> <code>fastclus</code> est la suivante:</p>
@@ -436,11 +442,11 @@ run;</code></pre>
 <p>Évidemment, comme la solution obtenue avec la méthode de Ward est déjà excellente, on ne pourra pas avoir une amélioration notable. Il y a peu de changements par rapport à la solution de la méthode de Ward. Les tailles des groupes étaient de (43, 75, 32) avant. Elles sont maintenant (45, 77, 28). Le <span class="math inline">\(R^2\)</span> passe de 65,7% (avec Ward) à 66.2%.</p>
 <p>L’interprétation des groupes est la même que précédemment.</p>
 <p><img src="figures/04-clustering-e17.png" width="70%" style="display: block; margin: auto;" /></p>
-<p>Le champ des applications des <span class="math inline">\(K\)</span>-moyennes est parfois surprenant. Par exemple, <a href="https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/">cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais</a>. Un autre exemple incongru est la compression d’images: la Figure <a href="analyse-regroupements.html#fig:decelles">3.10</a> montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l’algorithme des <span class="math inline">\(K\)</span>-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l’image.</p>
+<p>Le champ des applications des <span class="math inline">\(K\)</span>-moyennes est parfois surprenant. Par exemple, <a href="https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/">cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais</a>. Un autre exemple incongru est la compression d’images: la Figure <a href="analyse-regroupements.html#fig:decelles">3.11</a> montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l’algorithme des <span class="math inline">\(K\)</span>-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l’image.</p>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:decelles"></span>
 <img src="figures/kmoyennes_decelles.png" alt="Compression d'image avec l'algorithme des $K$-moyennes: image originale (en haut à gauche), compression avec trois (en haut à droite), quatre (en bas à gauche) et 10 (en bas à droite) couleurs." width="80%" />
 <p class="caption">
-Figure 3.10: Compression d’image avec l’algorithme des <span class="math inline">\(K\)</span>-moyennes: image originale (en haut à gauche), compression avec trois (en haut à droite), quatre (en bas à gauche) et 10 (en bas à droite) couleurs.
+Figure 3.11: Compression d’image avec l’algorithme des <span class="math inline">\(K\)</span>-moyennes: image originale (en haut à gauche), compression avec trois (en haut à droite), quatre (en bas à gauche) et 10 (en bas à droite) couleurs.
 </p>
 </div>
 </div>
