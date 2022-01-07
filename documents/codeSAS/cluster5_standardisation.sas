@@ -21,7 +21,7 @@ run;
 
 proc cluster data=stand method=ward outtree=temp1 nonorm rsquare ccc;
 var x1-x6;
-copy id cluster_vrai x1-x6;
+copy id x1-x6;
 ods output stat.cluster.ClusterHistory=criteres;
 run;
 
@@ -32,7 +32,7 @@ run;
 
 proc tree data=temp1 out=temp2 nclusters=3;
 id id;
-copy id cluster_vrai x1-x6;
+copy id x1-x6;
 run;
 
 proc sort data=temp2 out=temp2;

@@ -1,6 +1,5 @@
 /*Analyse de regroupement avec toutes les variables et toutes
 les observations pour l'exemple du voyage organisé.
-(p. 241-250)
 */
 
 
@@ -15,7 +14,8 @@ Cette variable, nommée "id", prendra les valeurs de 1 à 150, car
 Ainsi, l'observation à la 1ère ligne aura id=1, celle à la 2ème ligne
 aura id=2 etc. */
 
-data temp; set multi.cluster;
+data temp; 
+set multi.cluster;
 id=_N_;
 run;
 
@@ -40,7 +40,7 @@ si l'analyse a permis de bien regrouper les observations.
 proc cluster data=temp method=ward 
 outtree=temp1 nonorm rsquare;
 var x1-x6;
-copy id cluster_vrai x1-x6;
+copy id x1-x6;
 ods output stat.cluster.ClusterHistory=criteres;
 run;
 
@@ -76,7 +76,7 @@ nommée "cluster" identifie les groupes. */
 
 proc tree data=temp1 out=temp2 nclusters=3;
 id id;
-copy id cluster_vrai x1-x6;
+copy id x1-x6;
 run;
 
 

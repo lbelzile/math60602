@@ -13,14 +13,16 @@ id=_N_;
 run;
 
 
-proc cluster data=temp method=ward outtree=temp1 nonorm  rsquare ccc ;
+proc cluster data=temp method=ward outtree=temp1 nonorm rsquare;
 var x1-x6;
-copy id cluster_vrai x1-x6;
+copy id x1-x6;
 run;
+
 proc tree data=temp1 out=temp2 nclusters=3;
 id id;
-copy id cluster_vrai x1-x6;
+copy id x1-x6;
 run;
+
 proc sort data=temp2 out=temp2;
 by cluster;
 run;
@@ -32,9 +34,11 @@ le fichier SAS "initial" avec 6 variables (les 6 moyennes) et 3 observations (le
 proc means data=temp2;
 by cluster;
 var x1-x6;
-output out=initial mean=x1 x2 x3 x4 x5 x6;
+output out=initial mean=x1-x6;
 run;
-proc print data=initial;run;
+
+proc print data=initial;
+run;
 
 /*
 La procédure "fastclus" procède à l'analyse de regroupement non-hiérarchique (K-means).
@@ -60,6 +64,7 @@ run;
 proc sort data=temp3 out=temp3;
 by cluster;
 run;
+
 proc means data=temp3;
 var x1-x6;
 by cluster;
@@ -71,7 +76,8 @@ run;
 
 /* création d'un fichier avec 10 observations (ce sont les 10 premières du fichier original mais ça pourrait être des nouvelles observations) */
 
-data new; set temp;
+data new; 
+set temp;
 if _N_>10 then delete;
 run;
 

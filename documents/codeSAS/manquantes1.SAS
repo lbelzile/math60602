@@ -1,7 +1,6 @@
 
 /*
 Imputation multiple pour traiter les données manquantes 
-(p. 331-340)
 */
 
 /* l'option "nmiss" va fournir le nombre de valeurs manquantes par variable. */
