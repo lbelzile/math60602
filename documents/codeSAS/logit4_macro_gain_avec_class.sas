@@ -211,4 +211,3 @@ run;
 
 %mend manycut_cvlogisticclass;
 
-
