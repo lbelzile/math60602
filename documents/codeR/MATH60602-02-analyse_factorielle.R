@@ -20,7 +20,7 @@ print(fa4$loadings, cutoff = 0.3)
 # (adéquation de la structure de corrélation paramétrique)
 fa4$PVAL
 
-# Le paquetage hecmulti contient des méthodes pour 
+# Le paquet hecmulti contient des méthodes pour 
 # extraire la log-vraisemblance, les critères d'information 
 # pour un modèle d'analyse factorielle 
 # (objet de classe "factanal")
@@ -54,7 +54,7 @@ acp5 <- decomposition$vectors[,seq_len(critkaiser)]
 varimax(acp5)
 
 # Estimation à l'aide de la méthode des composantes principales
-# avec un paquetage (psych)
+# avec un paquet (psych)
 fa_compprin <- psych::principal(r = factor, 
                                 nfactors = 3L, 
                                 rotate = "varimax")
@@ -80,7 +80,7 @@ alpha_Cronbach(factor[,c("x3","x6","x9","x12")])
 alpha_Cronbach(factor[,c("x2","x7","x10")])
 alpha_Cronbach(factor[,c("x1","x5")])
   
-# Autre alternative: la fonction du paquetage psych
+# Autre alternative: la fonction du paquet psych
 # psych::alpha(factor[,c("x4","x8","x11")])$total$raw_alpha
 
 # Estimation avec corrélation polychronique 

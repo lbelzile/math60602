@@ -2,7 +2,7 @@
 # Analyse de regroupements
 # Autre outils disponibles sur  https://lbelzile.bitbucket.io/math444/tp8.html
 
-# Autres paquetages utiles pour la visualisation
+# Autres paquets utiles pour la visualisation
 library(cluster)
 suppressPackageStartupMessages(library(factoextra))
 library(dendextend) # outils graphiques pour dendogrammes
