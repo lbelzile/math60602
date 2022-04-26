@@ -10,6 +10,13 @@ summary(factor)
 cormat <- cor(factor, method = "pearson")
 round(cormat, digits = 2)
 
+# Analyse en composantes principales
+acp <- princomp(factor, corr = TRUE)
+biplot(acp)
+# Conserver
+cp <- with(acp, scores[ , sdev>1])
+
+
 # Ajuster le modèle factoriel par maximum de vraisemblance
 fa4 <- factanal(x = factor, 
                 factors = 4L,
@@ -24,7 +31,7 @@ fa4$PVAL
 # extraire la log-vraisemblance, les critères d'information 
 # pour un modèle d'analyse factorielle 
 # (objet de classe "factanal")
-emv_crit <- crit_emv_factanal(covmat = cov(factor),
+emv_crit <- adjustement_factanal(covmat = cov(factor),
                               factors = 1:5,
                               n.obs = nrow(factor))
 emv_crit
@@ -38,26 +45,29 @@ which(emv_crit$pval > 0.05)[1]
   
 # Critère de Kaiser: valeurs propres de la matrice de corrélation supérieures à 1
 # Décomposition matricielle valeurs propres/vecteurs propres
-decomposition <- eigen(cov(factor))
+decompo <- eigen(cor(factor))
 # Extraire le nombre de valeurs propres supérieures à 1
-valpropres <- decomposition$values
-critkaiser <- sum(valpropres > 1)
+valpropres <- decompo$values
+ckaiser <- sum(valpropres > 1)
+Gamma_est <- decompo$vectors[,seq_len(ckaiser)] %*%
+  diag(sqrt(valpropres[seq_len(ckaiser)]))
 # Diagramme d'éboulis: nombre de facteur égal 
 # à la dernière valeur propre avant le plateau (coude)
-library(ggplot2)
-ggplot(decomposition, which = 1)
+ggplot(data = data.frame(var = valpropres,
+		         k = 1:length(valpropres)),
+       mapping = aes(x = k, y = var)) + 
+  geom_line() + 
+  geom_point() + 
+  scale_x_continuous(breaks = 1:length(valpropres),
+                     minor_breaks = NULL) +
+  labs(x = "nombre de facteurs",
+       y = "variance")
 
-# Supposons qu'on conserve 5 facteurs
-# Extraire les cinq premiers vecteurs propres
-acp5 <- decomposition$vectors[,seq_len(critkaiser)]
+# Supposons qu'on conserve quatre facteurs
+facto_cp <- Gamma_est <- decompo$vectors[,seq_len(ckaiser)] %*%
+  diag(sqrt(valpropres[seq_len(ckaiser)]))
 # Solution avec rotation varimax
-varimax(acp5)
-
-# Estimation à l'aide de la méthode des composantes principales
-# avec un paquet (psych)
-fa_compprin <- psych::principal(r = factor, 
-                                nfactors = 3L, 
-                                rotate = "varimax")
+varimax(facto_cp)
 
 # L'objet de classe `factanal` contient d'autres informations
 # La matrice de rotation varimax (matrice de rotation orthogonale)
@@ -75,10 +85,10 @@ ech_paiement <- rowMeans(factor[,c("x2","x7","x10")])
 ech_prix <- rowMeans(factor[,c("x1","x5")])
 
 # Cohérence interne (alpha de Cronbach)
-alphaCronbach(factor[,c("x4","x8","x11")])
-alpha_Cronbach(factor[,c("x3","x6","x9","x12")])
-alpha_Cronbach(factor[,c("x2","x7","x10")])
-alpha_Cronbach(factor[,c("x1","x5")])
+alpha(factor[,c("x4","x8","x11")])
+alpha(factor[,c("x3","x6","x9","x12")])
+alpha(factor[,c("x2","x7","x10")])
+alpha(factor[,c("x1","x5")])
   
 # Autre alternative: la fonction du paquet psych
 # psych::alpha(factor[,c("x4","x8","x11")])$total$raw_alpha
@@ -101,8 +111,7 @@ poids_fact <- t(fa4$loadings) %*% solve(fa4$correlation)
 scores <- tcrossprod(x = scale(factor, center = TRUE, 
                            scale = TRUE), 
                      y = poids_fact)
-# Retourner les scores - 
-# voir option ci-dessous avec scores = "reg"
+# Retourner les scores - # voir option ci-dessous avec scores = "reg"
 # On vérifie que les résultats sont identiques 
 # à ceux de notre calcul manuel
 isTRUE(all.equal(scores, 

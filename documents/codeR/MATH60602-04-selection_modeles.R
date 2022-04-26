@@ -9,26 +9,35 @@ test <- haven::read_sas(data_file = file)
 library(ggplot2)
 # Graphiques avec ggplot2 (plus joli, mais courbe d'apprentissage plus élevée)
 # La fonction ne prend que des jeux de données en format `data.frame`
-print(ggplot(data = train, mapping = aes(x=x,y=y)) + geom_point())
+ggplot(data = train, 
+       mapping = aes(x=x,y=y)) + 
+       geom_point()
 
-# Validation croisée avec k groupes - fonction codée par le prof
+# Validation croisée avec k groupes
 lmkfold <- function(formula, data, k, ...){
+   # Créer un accumulateur pour le calcul de l'EQM
    accu <- 0
-   k <- as.integer(k)
-   n <- nrow(data)
+   k <- as.integer(k) # nombre de groupes
+   n <- nrow(data) # nombre d'observations
+   # Permuter les indices des observatoins
    gp <- sample.int(n, n, replace = FALSE)
-   folds <- split(gp, cut(seq_along(gp), 10, labels = FALSE))
-   for(i in 1:k){
+   # Créer une liste de k éléments avec les nos d'observations
+   folds <- split(gp, cut(seq_along(gp), k, labels = FALSE))
+   for(i in seq_len(k)){
+      # Extraire les indices des observations de la portion validation
       g <- as.integer(unlist(folds[i]))
-      fitlm <- lm(formula, data[-g,])
+      # Ajuster le modèles à toutes les données, moins celles de la portion validation
+      fitlm <- lm(formula, data = data[-g,])
+      # ajouter l'erreur quadratique du pli de validation
       accu <- accu + sum((data[g, all.vars(formula)[1]] -predict(fitlm, newdata=data[g,]))^2)
    }
+   # Diviser par la taille de l'échantillon pour obtenir la moyenne
    return(accu/n)
 }
 
-# Créer un contenant pour l'erreur moyenen quadratique
-emq <- matrix(0, nrow = 10, ncol = 7)
-emqcv <- matrix(0, nrow = 10, ncol = 100)
+# Créer un contenant pour l'erreur quadratique moyenne
+eqm <- matrix(0, nrow = 10, ncol = 7)
+eqmcv <- matrix(0, nrow = 10, ncol = 100)
 library(caret)
 library(ggplot2)
 for(i in 1:10){
@@ -38,27 +47,27 @@ for(i in 1:10){
                           termlabels = paste0("I(x^", 1:i,")"))
    mod <-  lm(meanmod, data = train)
    # Calculer l'erreur moyenne dans les deux échantillons
-   emq[i,1:2] <- c(mean(resid(mod)^2), #apprentissage
+   eqm[i,1:2] <- c(mean(resid(mod)^2), #apprentissage
                     mean((test$y - predict(mod, newdata = test))^2)) #échantillon test
-   emq[i,3] <- summary(mod)$r.squared
-   emq[i,4] <- summary(mod)$adj.r.squared
-   emq[i,5] <- AIC(mod) # Valeurs pas identiques à la sortie SAS, mais comparables entre elles
-   emq[i,6] <- BIC(mod)
+   eqm[i,3] <- summary(mod)$r.squared
+   eqm[i,4] <- summary(mod)$adj.r.squared
+   eqm[i,5] <- AIC(mod) # Valeurs pas identiques à la sortie SAS, mais comparables entre elles
+   eqm[i,6] <- BIC(mod)
    # validation croisée avec 10 groupes
-   emqcv[i,] <-  replicate(n = 100L, 
+   eqmcv[i,] <-  replicate(n = 100L, 
                            train(form = meanmod, data = train, method = "lm",
                                  trControl = trainControl(method = "cv", 
                                                           number = 10))$results$RMSE^2)
-   # emq[i,7] <- lmkfold(formula = meanmod, data = train, k = 10)
+   # eqm[i,7] <- lmkfold(formula = meanmod, data = train, k = 10)
 }
-emq[,7] <- rowMeans(emqcv)
+eqm[,7] <- rowMeans(eqmcv)
 
 
-emqdat <- data.frame(ordre = rep(1:10, length.out = 20), 
-                     emq = c(emq[,1:2]),
+eqmdat <- data.frame(ordre = rep(1:10, length.out = 20), 
+                     eqm = c(eqm[,1:2]),
                      echantillon = factor(c(rep("apprentissage",10), rep("théorique", 10)))
 )
-ggplot(data = emqdat, aes(x=ordre, y=emq, color=echantillon)) +
+ggplot(data = eqmdat, aes(x=ordre, y=eqm, color=echantillon)) +
    geom_line() + 
    geom_point(aes(shape=echantillon, color=echantillon)) + 
    labs(title = "Erreur moyenne quadratique estimée en fonction de l'ordre", 
@@ -68,17 +77,17 @@ ggplot(data = emqdat, aes(x=ordre, y=emq, color=echantillon)) +
          legend.title=element_blank())
 
 #Mesures d'adéquation du modèle linéaire et estimés de l'erreur
-resultats <- emq[,c(2,1,3:6)]
-colnames(resultats) <- c("EMQ","EMQa","R2","R2ajust","AIC","BIC")
+resultats <- eqm[,c(2,1,3:6)]
+colnames(resultats) <- c("eqm","eqma","R2","R2ajust","AIC","BIC")
 
 
 # Graphique 
-emqdat <- data.frame(ordre = rep(1:10, length.out = 20), 
-                     emq = c(emq[,2], rowMeans(emqcv)),
+eqmdat <- data.frame(ordre = rep(1:10, length.out = 20), 
+                     eqm = c(eqm[,2], rowMeans(eqmcv)),
                      echantillon = factor(c(rep("théorique",10), rep("validation croisée", 10)))
 )
-ggplot(data = emqdat, aes(x = ordre, y = emq)) +
-   geom_boxplot(data = data.frame(emq = c(t(emqcv)), 
+ggplot(data = eqmdat, aes(x = ordre, y = eqm)) +
+   geom_boxplot(data = data.frame(eqm = c(t(eqmcv)), 
                                   ordre = rep(1:10, each = 100)), 
                 mapping = aes(group = ordre),
                 show.legend = FALSE) +
@@ -197,43 +206,71 @@ set.seed(20200207)
 #' @param aic logique; si \code{FALSE}, le critère BIC est employé
 #' @param B nombre de répétitions
 #' @return un vecteur de coefficients correspondant à la formule
-moyennemodeles <- function(dat, form, aic=FALSE, B = 100L){
-  N <- nrow(dat)
-  noms <- attr(terms(form), "term.labels")
-  params <- rep(0, length(noms) + 1L)
-  names(params) <- c("(Intercept)", noms)
-  nselect <- rep(0, length(params))
+moyennemodeles <- function(
+    data, 
+    form, 
+    aic = FALSE, 
+    B = 100L){
+  B <- as.integer(B)
+  stopifnot(is.logical(aic),
+            length(aic) == 1L,
+            inherits(form, "formula"),
+            B > 1,
+            inherits(data, "data.frame"))
+  N <- nrow(data)
+  matmod <- model.matrix(form, data = data)
+  p <- ncol(matmod) - 1L
+  fmod <- formula(paste0("y ~", paste0("x", seq_len(p), collapse = "+")))
+  noms <- colnames(matmod)
+  nom_reponse <- all.vars(form)[attr(terms(form), "response")]
+  matmod <- data.frame(cbind(
+    y = get(nom_reponse, data), 
+    matmod[,-1]))
+    # Créer un vecteur avec tous les coefficients (initialement nuls)
+  params <- rep(0, length(noms))
+  nselect <- rep(0, length(noms) - 1L)
+
+  # Boucle
   for(b in seq_len(B)){
   # Procédure de sélection avec AIC ou BIC
-  modselect <- MASS::stepAIC(
-    lm(formula = ymontant~1, 
-       data = dat[sample.int(n = N, size = N, replace = TRUE),]),
-                             scope = form,
-                             k = ifelse(aic, 2, log(nrow(dat))), # BIC
-                             direction = "both", trace = FALSE)
-  # Créer un vecteur avec tous les coefficients (initialement nuls)
-  
+  modselect <- MASS::selectAIC(
+    lm(formula = formula(paste0("y~1")), 
+   # Rééchantillonner données (avec remplacement)
+       data = matmod[sample.int(n = N, 
+                             size = N, 
+                             replace = TRUE),]),
+    scope = fmod,
+    k = ifelse(aic, 2, log(N)), # BIC
+    direction = "both", 
+    trace = FALSE)
+
   # Trouver quelles colonnes représentent un coefficient non-nul
-  colind <- c(1L, match(x = names(modselect$coefficients[-1]), noms) + 1L)
+  colind <- match(names(modselect$coefficients),
+                  noms)
   # Remplacer cette valeur
   params[colind] <- params[colind] + modselect$coefficients
-  nselect[colind] <- nselect[colind] + 1L
+  nselect[colind[-1]] <- nselect[colind[-1]] + 1L
   }
+  names(nselect) <- noms[-1]
+  names(params) <- noms
   return(list(coefs = params / B,
-              nselect = nselect))
+              nselect = nselect / B))
 }
 
+
 # Définir contenant
-mmodeles <- moyennemodeles(dat = dbm_entrainement, 
-             form = formula(modelcomplet),
-             B = 10L)
+mmodeles <- 
+  moyennemodeles(
+    data = dbm_entrainement, 
+    form = formule,
+    B = 10L)
 
 # Proportion des modèles dans laquelle la variable est sélectionnée
 sum(mmodeles$nselect > 0)
 # moyenne des coefficients
 mmodeles$coefs
 # Valeurs prédites égales à x * betahat
-emqmoymod <- mean((as.matrix(dbm_validation[,-1]) %*% mmodeles$coefs[-1] + meancoef [1] - 
+eqmmoymod <- mean((as.matrix(dbm_validation[,-1]) %*% mmodeles$coefs[-1] + meancoef [1] - 
                            dbm_validation$ymontant)^2)
 
 
@@ -255,5 +292,5 @@ lasso_best <- glmnet(x = as.matrix(dbm_entrainement[,-1]),
 pred <- predict(lasso_best, 
                 s = lambopt, 
                 newx = as.matrix(dbm_validation[,-1]))
-emqlasso <- mean((pred - dbm_validation$ymontant)^2)
-emqlasso
+eqmlasso <- mean((pred - dbm_validation$ymontant)^2)
+eqmlasso

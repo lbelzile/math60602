@@ -1,0 +1,738 @@
+# Réduction de la dimension {#analyse-factorielle}
+
+```{r}
+#| label: setup2
+#| include: false
+#| message: false
+#| warning: false
+library(knitr)
+library(kableExtra)
+set.seed(1014)
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  cache = TRUE,
+  out.width = "90%",
+  fig.align = 'center',
+  fig.width = 6.5,
+  fig.asp = 0.618  # 1 / phi
+)
+options(knitr.table.format = function() {
+  if (knitr::is_latex_output()) 
+    "latex" else "html"
+})
+
+options(dplyr.print_min = 6, dplyr.print_max = 6)
+options(knitr.graphics.auto_pdf = TRUE)
+options(scipen = 1, digits = 3)
+library(viridis)
+library(ggplot2, warn.conflicts = FALSE, quietly = TRUE)
+library(poorman, quietly = TRUE, warn.conflicts = FALSE)
+options(knitr.kable.NA = '')
+safe_colorblind_palette <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
+                             "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
+
+options(ggplot2.continuous.colour="viridis")
+options(ggplot2.continuous.fill = "viridis")
+scale_colour_discrete <- ggthemes::scale_colour_colorblind
+scale_fill_discrete <- ggthemes::scale_fill_colorblind
+theme_set(theme_minimal())
+```
+
+
+## Introduction
+
+Ce chapitre traite de réduction de la dimensionalité d'un problème d'analyse multidimensionnelle. On dispose de $p$ variables $X_1, \ldots, X_p$: comment résumer cet ensemble avec moins de variables (disons $k$) tout en conservant le plus de variabilité possible? Nous couvrons deux méthodes dans ce chapitre: la première, intitulée **analyse en composantes principales**, cherche à **réduire le nombre de variables explicatives** tout en préservant le plus possible de variabilité exprimée et en créant de nouvelles variables explicatives qui ne sont pas corrélées les unes avec les autres.
+
+La deuxième, appelée analyse factorielle exploratoire, cherche à expliquer la structure de corrélation entre les $p$ variables à l'aide d'un nombre restreint de facteurs. Elle répond aux questions suivantes: 
+
+- Y a-t-il des groupements de variables?
+- Est-ce que les variables faisant partie d'un groupement semblent mesurer certains aspects d'un facteur commun (non observé)? 
+
+De tels groupements peuvent être détecté si plusieurs variables sont très corrélées entre elles. Une analyse factorielle cherchera à identifier automatiquement ces groupes de variables.
+ 
+
+Les facteurs sont des variables latentes qui mesurent des constructions. Par exemple, l'habileté quantitative, habileté sociale, importance accordée à la qualité du service, importance accordée à la loyauté, habileté de leader, etc.
+
+L'analyse factorielle est aussi une méthode de réduction du nombre de variables. En effet, une fois qu'on a identifié les facteurs, on peut remplacer les variables individuelles par un résumé pour chaque facteur (qui est souvent la moyenne des variables qui font partie du facteur). 
+
+
+## Coefficient de corrélation linéaire
+
+On veut examiner la relation entre deux variables $X_j$ et $X_k$ et on dispose de $n$ couples d'observations, où $x_{i, j}$ (respectivement $x_{i, k}$) est la valeur de la variable $X_j$ ($X_k$) pour la $i$e observation.
+
+Le coefficient de corrélation linéaire entre $X_j$ et $X_k$, que l'on note $r_{j, k}$, cherche à mesurer la force de la relation linéaire entre deux variables, c'est-à-dire à quantifier à quel point les observations sont alignées autour d'une droite. Le coefficient de corrélation est 
+\begin{align*}
+r_{j, k} &= \frac{\widehat{\mathsf{Co}}(X_j, X_k)}{\{\widehat{\mathsf{Va}}(X_j) \widehat{\mathsf{Va}}(X_k)\}^{1/2}} 
+%\\&=\frac{\sum_{i=1}^n (x_{i, j}-\overline{x}_j)(x_{i, k} -\overline{x}_{k})}{\left\{\sum_{i=1}^n (x_{i, j}-\overline{x}_j)^2 \sum_{i=1}^n(x_{i, k} -\overline{x}_{k})^2\right\}^{1/2}}
+\end{align*}
+
+Les propriétés les plus importantes du coefficient de corrélation linéaire $r$ sont les suivantes:
+
+1) $-1 \leq r \leq 1$;
+2) $r=1$ (respectivement $r=-1$) si et seulement si les $n$ observations sont exactement alignées sur une droite de pente positive (négative). C'est-à-dire, s'il existe deux constantes $a$ et $b>0$ ($b<0$) telles que $y_i=a+b x_i$ pour tout $i=1, \ldots, n$.
+
+Règle générale, 
+
+- Le signe de la corrélation détermine l'orientation de la pente (négative ou positive)
+- Plus la corrélation est près de 1 en valeur absolue, plus les points auront tendance à être alignés autour d'une droite.
+- Lorsque la corrélation est presque nulle, les points n'auront pas tendance à être alignés autour d'une droite. Il est très important de noter que cela n'implique pas qu'il n'y a pas de relation entre les deux variables. Cela implique seulement qu'il n'y a pas de **relation linéaire** entre les deux variables. La @fig-datasaurus montre bien ce point: ces jeux de données ont la même corrélation linéaire (quasi-nulle), mais ne sont pas clairement pas indépendantes puisqu'elles permettent de dessiner un dinosaure ou une étoile.
+
+::: {#fig-datasaurus}
+![](figures/DataSaurusDozen.gif)
+
+ Datasaurus (Alberto Cairo): une douzaine de jeux de données qui ont les mêmes statistiques descriptives (à deux décimales près) et une faible corrélation, mais qui sont visuellement distincts.
+:::
+
+La matrice de corrélation entre $X_1, \ldots, X_p$, dont l'entrée $(i, j)$ contient la corrélation entre $X_i$ et $X_j$, est une matrice symmétrique dont les éléments de la diagonale sont égaux à 1. À mesure que le nombre de variables augmente, le nombre de corrélations à estimer augmente: puisque la matrice est $p \times p$, ce nombre augmente comme le carré du nombre de variables explicatives. L'estimation ne sera pas fiable à moins que $n \gg p$.
+
+## Présentation des données
+
+Le questionnaire suivant porte sur une étude dans un magasin. Pour les besoins d'une enquête, on a demandé à 200 consommateurs adultes de répondre aux questions suivantes par rapport à un certain type de magasin sur une échelle de 1 à 5, où 
+
+1. pas important
+2. peu important
+3. moyennement important
+4. assez important
+5. très important
+
+Pour vous, à quel point est-ce important\ldots
+
+1. que le magasin offre de bons prix tous les jours?
+2. que le magasin accepte les cartes de crédit majeures (Visa, Mastercard)?
+3. que le magasin offre des produits de qualité?
+4. que les vendeurs connaissent bien les produits?
+5. qu'il y ait des ventes spéciales régulièrement?
+6. que les marques connues soient disponibles?
+7. que le magasin ait sa propre carte de crédit?
+8. que le service soit rapide?
+9. qu'il y ait une vaste sélection de produits?
+10. que le magasin accepte le paiement par carte de débit?
+11. que le personnel soit courtois?
+12. que le magasin ait en stock les produits annoncés?
+
+
+Les statistiques descriptives ainsi que la matrice des corrélations sont obtenues en exécutant les lignes suivantes:
+
+```{r}
+#| label: correlation-facto
+#| eval: false
+#| echo: true
+data(factor, package = "hecmulti")
+# Matrice de corrélation
+cor(factor)
+# Statistiques descriptives
+summary(factor)
+```
+
+```{r}
+#| label: tbl-corrmat
+#| tbl-cap: "Matrice de corrélation de `factor`."
+#| eval: true
+#| echo: false
+#| fig-align: 'center'
+data(factor, package = "hecmulti")
+cormat <- cor(factor)
+cormat[lower.tri(cormat, diag = TRUE)] <- NA
+cormat <- round(cormat, 2)
+options(knitr.kable.NA = "")
+knitr::kable(cormat)  |>
+  kableExtra::kable_styling(full_width = FALSE)
+```
+
+```{r}
+#| label: fig-corrmat
+#| fig-cap: "Corrélogramme de la base de données `factor`."
+#| eval: true
+#| echo: false
+#| out-width: '100%'
+corrplot::corrplot(cor(factor), 
+                   type = "upper", 
+                   diag = FALSE,
+                   tl.col = "black")
+
+```
+
+```{r}
+#| label: tbl-statdescriptfactor
+#| tbl-cap: "Statistiques descriptives des 12 variables du jeu de données `factor`."
+#| echo: false
+#| eval: true
+#| fig-align: 'center'
+tibble::tibble(moyenne = apply(factor, 2, mean),
+               "écart-type" = apply(factor, 2, sd),
+               min = apply(factor, 2, min),
+               max = apply(factor, 2, max),
+               histogramme = apply(factor, 2, function(x){skimr::inline_hist(x = x, n_bins = 5)})) |>
+  knitr::kable(digits = 2) |>
+  kableExtra::kable_styling(full_width = TRUE)
+```
+
+On voit dans la @fig-corrmat que quelques groupes de variables sont corrélés entre eux. On peut également regrouper certaines questions sous des thèmes manuellement: le but de l'analyse factorielle sera d'automatiser ce regroupement.
+
+## Analyse en composantes principales
+
+Le but de l'analyse en composantes principales est de réduire le nombre de variables explicatives. En partant de $p$ variables $X_1, \ldots, X_p$, on forme de nouvelles variables qui sont des combinaisons linéaires des variables originales, 
+\begin{align*}
+C_j &= w_{j1} X_1 + w_{j2} X_2 + \cdots + w_{jp} X_p, \qquad (j=1, \ldots, p),
+\end{align*}
+de telle sorte que 
+
+- La première variable formée, $C_1$, appelée première composante principale, possède la variance maximale parmi toutes les combinaisons linéaires sous la contrainte $w_{11}^2 + \cdots + w_{1p}^2=1$^[Les contraintes sont nécessaires afin de standardiser le problème car il serait possible d'avoir des variances infinies sinon.].
+- Pour $j=2, \ldots, p$, la $j$e composante principale $C_j$ possède la variance maximale parmi toutes les combinaisons linéaires qui sont non corrélées avec $C_1, \ldots, C_{j-1}$  sous la contrainte $w_{j1}^2 + \cdots + w_{jp}^2=1$.
+
+Ainsi, les composantes principales forment un ensemble de variables non corrélées entre elles, qui récupèrent en ordre décroissant le plus possible de la variance des variables originales. La somme des variances des $p$ composantes principales est égale à la somme des variances des $p$ variables originales. 
+
+Mathématiquement, les composantes principales correspondent aux vecteurs propres de la matrice de covariance, mais on peut également utiliser la matrice de corrélation^[La fonction `princomp` peut directement utiliser la base de données numériques, ou la matrice de covariance. Dans le premier cas, on peut spécifier que l'on veut la décomposition de la matrice de corrélation à l'aide de l'argument, `cor`]. L'avantage de la matrice de corrélation (ou de la standardisation des variables) est que l'unité de mesure n'impacte pas le résultat; autrement, un poids plus important est attribué aux variables qui ont la plus forte hétérogénéité.
+
+Si on conserve toutes les composantes principales, cela revient à changer le système de coordonnées dans lequel sont exprimées nos observations en effectuant une rotation: avec deux variables, on on trouve la direction dans le système 2D dans lequel l'étendue est la plus grande. Si une simple rotation peut sembler inutile, la méthode est fort utile en haute dimension. On espère en général qu'un petit nombre de composantes principales réussira à expliquer la plus grande partie de la variance totale. 
+
+```{r}
+#| label: fig-acprotation
+#| echo: false
+#| out-width: '90%'
+#| fig-align: 'center'
+#| fig-cap: "Nuage de points avant (gauche) et après (droite) analyse en composantes principales. Les directions des composantes principales (lignes pleines et traitillés), qui forment un angle droit, sont ajoutées au nuage de points à gauche. On peut constater que la corrélation entre les deux composantes principales est nulle."
+Sigma <- diag(c(4,1)) %*% cbind(c(1,0.9),c(0.9,1))
+set.seed(123456)
+data <- rbind(MASS::mvrnorm(n = 200, 
+                      mu = c(4,4), 
+                      Sigma = Sigma),
+                MASS::mvrnorm(n = 50, 
+                              mu = c(-4,-2), 
+                              Sigma = Sigma))
+pc <- princomp(data, cor = FALSE)
+data <- data.frame(x1 = data[,1],
+                   x2 = data[,2])
+pcdata <- data.frame(x1 = pc$scores[,1],
+                     x2 = pc$scores[,2])
+library(ggplot2)
+library(patchwork)
+g1 <- ggplot(data = data, aes(x = x1, y = x2)) +
+  geom_point(alpha = 0.8) + 
+  geom_abline(slope = pc$loadings[1,2], 
+              intercept = pc$loadings[1,1]) + 
+  geom_abline(slope = pc$loadings[2,2], 
+              intercept = pc$loadings[2,1],
+              linetype = 2) + 
+  ggpubr::stat_cor(aes(label = ..rr.label..),
+                   r.accuracy = 0.01,
+                   label.x = 3, 
+                   label.y = 0) +
+  ylim(-10,10) + 
+  xlim(-10,10) +
+  labs(x = "variable 1",
+       y = "variable 2") + 
+  coord_fixed()
+g2 <- ggplot(data = pcdata, aes(x = x1, y = x2)) +
+  geom_point(alpha = 0.8) +
+  ggpubr::stat_cor(aes(label = ..rr.label..),
+                   r.accuracy = 0.01,
+                   label.x = -10, 
+                   label.y = -2) +
+  labs(x = "composante principale 1",
+       y = "composante principale 2")
+
+g1 + g2
+```
+
+La figure @fig-acprotation démontre cette décomposition sur des données bidimensionnelles simulées. La variance des données dans le premier panneau est `r round(var(data)[1,1], 2)` pour l'axe des abscisse et `r round(var(data)[2,2], 2)` pour l'axe des ordonnées avec une corrélation de `r round(cor(data)[1,2],2)`, à comparer avec des variances de `r round(pc$sdev[1]^2,2)` et `r round(pc$sdev[2]^2, 2)` et une corrélation nulle entre les deux composantes principales.
+
+Dans une analyse en composantes principales, on conservera un nombre $k<p$ de variables explicatives pour résumer les données. Ce outil est utilisé à des fins exploratoires, puisqu'on n'implique pas de variable réponse dans le modèle.
+L'analyse en composantes principales est utilisé pour réduire la dimension afin de faire de la classification, de l'analyse de regroupements et aussi réduire les coûts associés à ces méthodes en projetant les données dans un sous-espace de dimension plus faible.
+
+En **R**, on effectue l'analyse en composantes principales avec la fonction `princomp`^[On pourrait aussi utiliser `eigen(cor(factor))` pour extraire directement la décomposition en valeurs propres/vecteurs propres, mais on n'aurait pas accès aux méthodes pour la visualisation.].
+
+La sortie contient 
+
+- l'écart-type de chaque composante, `acp$sdev`
+- les poids $w_{ij}$, appelés chargements (*loadings*), qui donnent la correspondance entre le système de coordonnées des composantes principales et celui des variables $\boldsymbol{X}$ originales.
+- les nouvelles coordonnées dans l'espace des composantes principales, `acp$scores`
+
+On peut représenter les données à l'aide d'un bigramme: c'est une nuage de points de chaque observations dans l'espace des deux premières composantes principales. Si on couple cela avec les directions offertes par les chargements pour chacune des variables explicatives $X_1, \ldots, X_p$, il en ressort que certaines variables augmentent/diminuent de pair. Ainsi, on voit dans @fig-biplot que les variables `x3`, `x6`, `x9` et `x12` tendent dans la même direction, comme `x4`, `x8` et `x11`. On reviendra sur ce point dans une section subséquente.
+
+
+Une fois qu'on a choisit le nombre de composantes, on pourrait ne conserver que les $k$ premières colonnes de la matrice des composantes principales `acp$scores` pour faire les graphiques ou pour approximer la matrice de covariance. Il faut garder en tête qu'il faudra néanmoins collecter les mêmes questions pour recréer les composantes principales avec de nouvelles observations, ce qui est peu commode si ce qu'on veut est réduire le coût de la collecte. 
+
+
+```{r}
+#| label: acpfactor
+#| eval: false
+#| echo: true
+# Analyse en composantes principales
+# de la matrice de corrélation
+acp <- princomp(factor, cor = TRUE)
+loadings(acp) # chargements
+biplot(acp) # bigramme
+```
+
+```{r}
+#| label: fig-biplot
+#| echo: false
+#| fig-cap: "Bigramme: nuage de point des coordonnées des deux premières composantes principales et direction selon chargements des variables explicatives originales."
+#| out-width: '100%'
+# Analyse en composantes principales
+# de la matrice de corrélation
+acp <- princomp(factor, cor = TRUE)
+# loadings(acp)
+biplot(acp, xlab = "composante principale 1",
+       ylab = "composante principale 2",
+       cex = 0.5
+       )
+```
+
+On peut étudier la sortie pour vérifier les propriétés de notre décomposition. Le @tbl-eigenvalues montre la variance de chaque composante principale. Si on additionne l'ensemble des variances (sans arrondir), on obtient une variance cumulative des 12 composantes principales, `r sum(acp$sdev^2)`, soit le même que le nombre de variables explicatives puisque les variables standardisées ont variance unitaire. Si on calcule la matrice de corrélation, `cor(acp$scores)`, on remarquera que la corrélation est nulle entre les variables.
+
+```{r}
+#| label: tbl-eigenvalues
+#| echo: false
+#| tbl-align: 'center'
+#| tbl-cap: "Variance des composantes principales"
+acp_var <- t(formatC(round(acp$sdev^2,3), digits = 2,
+                          format = "f")
+                  )
+colnames(acp_var) <- paste0("C",1:12)
+knitr::kable(acp_var, align = "c",
+             row.names = FALSE) |>
+  kableExtra::kable_styling(full_width = TRUE)
+```
+
+
+### Choix du nombre de composantes principales {#sec-acp-choix}
+
+Si on désire réduire la dimension, il nous faudra choisir $k \leq p$ variables. Cette section traite du choix du nombre de variables explicatives à retenir. Idéalement, ce nombre devrait être beaucoup plus petit que le nombre original de variables. 
+
+Une première approche est de regarder le pourcentage de la variance totale expliquée. Puisque les composantes principales sont ordonnées en ordre décroissant de variance, on peut étudier la variance cumulative des $k$ premières composantes et choisir un nombre qui explique le plus possible. Si l'ajout d'une variable augmente peu la variabilité totale expliquée par l'ensemble, alors cette variable est probablement superflue. On pourrait choisir un nombre de composantes pour expliquer un pourcentage prédéfini de la vairance totale, disons 70%. Deux autres critères couramment employés sont:
+
+- **critère du coude de Cattell**: ce critère consiste à sélectionner un nombre de composantes dans le diagramme d'éboulis  (`screeplot`), un graphique des variances des composantes principales^[Soit les valeurs propres de la matrice de covariance ou corrélation]. Habituellement, il y a une décroissance rapide de la variance suivie d'un plateau: on prendra le nombre de composantes qui correspond au $k$ juste avant l'apparition du plateau (le début du coude, où il a stabilisation apparente). C'est un critère très subjectif, puisqu'il y a souvent plusieurs plateaux et que la variance peut décroître très lentement. On peut utiliser la fonction `screeplot` pour obtenir le diagramme d'éboulis mais il est facile de le créer manuellement et le résultat est esthétiquement plus réussi.
+- **critère de Kaiser**: un critère basé sur les valeurs propres de la matrice de corrélation. Le nombre de facteurs choisis est le nombre de composantes principales dont la variance est supérieures à 1. L’idée est de garder seulement les facteurs qui expliquent plus de variance qu’une variable individuelle. 
+
+Si on utilise le critère de Kaiser avec les données `factor`, on conservera `r sum(acp$sdev>1)` composantes principales qui expliqueront `r round(100*sum(acp$sdev[acp$sdev>1]^2)/length(acp$sdev), 1)` pourcent de la variance totale des variables originales - voir le @tbl-eigenvalues. Le diagramme d'éboulis de la @fig-screeplot, qui peut être produit avec la fonction `hecmulti::eboulis(eigen(cor(factor))` suggère quant à lui cinq composantes.
+
+```{r}
+#| label: "fig-screeplot"
+#| code-fold: true
+#| eval: true
+#| fig-cap: "Diagramme d'éboulis (gauche) représentant la variance des composantes principales (en ordonnée) en fonction du nombre composantes principales (en abscisse). Variance cumulative en fonction du nombre de composantes principales (droite)."
+var_cp <- acp$sdev^2
+df <- data.frame(
+  k = 1:12,
+  var = var_cp,
+  cumvar = cumsum(var_cp)/sum(var_cp)
+  )
+g1 <- ggplot(data = df,
+       mapping = aes(x = k, y = var)) + 
+  geom_line() + 
+  geom_point() + 
+  scale_x_continuous(breaks = 1:12,
+                     minor_breaks = NULL) +
+  labs(x = "nombre de composantes",
+       y = "variance")
+g2 <- ggplot(data = df,
+       mapping = aes(x = k, y = cumvar)) + 
+  geom_line() + 
+  scale_x_continuous(breaks = 1:12,
+                     minor_breaks = NULL) +
+  labs(x = "nombre de composantes",
+       y = "variance cumulative (pourcentage)")
+g1 + g2
+# hecmulti::eboulis(eigen(cor(factor)))
+```
+
+### Formulation mathématique
+
+Ce complément d'information est optionnel.
+
+Mathématiquement, le problème de l'analyse en composantes principales revient à calculer la décomposition en valeurs propres et vecteurs propres de la matrice de covariance $\mathsf{Co}(\boldsymbol{X})=\boldsymbol{\Sigma}$.
+On peut écrire
+\begin{align*}
+\boldsymbol{\Sigma} = \boldsymbol{Q}\boldsymbol{\Lambda}\boldsymbol{Q}^\top
+\end{align*}
+où $\boldsymbol{\Lambda} = \mathrm{diag}\{\lambda_1, \ldots, \lambda_p\}$ est une matrice diagonale contenant les valeurs propres en ordre décroissant ($\lambda_1 \geq \cdots \geq \lambda_p > 0$) et $\boldsymbol{Q}$ est une matrice carrée $p \times p$ orthogonale contenant les vecteurs propres.
+La meilleure approximation de rang $k \leq p$ de $\boldsymbol{\Sigma}$ est obtenue en spécifiant
+\begin{align*}
+\widetilde{\boldsymbol{\Sigma}}_k = \sum_{j=1}^k \lambda_j \boldsymbol{q}_j\boldsymbol{q}_j^\top,
+\end{align*}
+une combinaison des vecteurs propres $\boldsymbol{q}_1, \ldots, \boldsymbol{\gamma}_k \in \mathbb{R}^p$ non corrélés.
+
+## Analyse factorielle exploratoire
+
+Si le bigramme a permis de faire ressortir quelques orientations communes, on aimerait aller plus loin dans notre exploration.
+On considère encore une fois la matrice de covariance associée avec $p$ variables explicatives $X_1, \ldots, X_p$: le modèle d'analyse factorielle cherche à décrire cette dernière en fonction d'un plus petit nombre de paramètres.
+
+Conceptuellement, le modèle d'analyse factorielle suppose qu'on peut regrouper les variables explicatives numériques (parfois avec quelques variables binaires) à l'aide de concepts communs appelés facteurs. Certaines variables explicatives devraient donc idéalement être fortements corrélées entre elles. Le choix des variables est dicté par le bon sens: on inclut dans le modèle des variables qui peuvent logiquement être associée, par exemple des items de questionnaires excluant les données sociodémographiques.
+
+
+Le modèle d'analyse factorielle fait l'hypothèse que les variables dépendent linéairement d'un plus petit nombre $m$ de variables aléatoires, $F_1, \ldots, F_m$, appelées facteurs communs.
+Cette relation n'est pas parfaite, aussi on inclut $p$ termes d'aléas $\varepsilon_1, \ldots, \varepsilon_p$, de moyenne zéro et de variance $\mathsf{Va}(\varepsilon_i)=\psi_i$ ($i=1, \ldots, p$). À des fins d'identifiabilité,  on suppose que les aléas ne sont pas corrélées aux facteurs $F$ et entre elles et que les facteurs $F_1, \ldots, F_m$  ont une moyenne nulle et une variance unitaire, donc $\mathsf{E}(F_i)=0$ et $\mathsf{Va}(F_i)=1$ ($i=1, \ldots, p$).
+
+
+Le modèle d'analyse factorielle s'écrit
+\begin{align*}
+\boldsymbol{X} &= \boldsymbol{\mu} + \boldsymbol{\Gamma}\boldsymbol{F} + \boldsymbol{\varepsilon},
+\end{align*}
+ou si on écrit le système ligne par ligne,
+\begin{align*}
+X_1 &= \mu_1 + \gamma_{11}F_1 + \gamma_{12} F_2 + \cdots + \gamma_{1m}F_m + \varepsilon_1\\
+X_2 &= \mu_2 + \gamma_{21}F_1 + \gamma_{22} F_2 + \cdots + \gamma_{2m}F_m + \varepsilon_2\\
+&\vdots \\
+X_p &= \mu_p + \gamma_{p1}F_1 + \gamma_{p2} F_2 + \cdots + \gamma_{pm}F_m + \varepsilon_p, 
+\end{align*}
+où $\mu_i$ est l'espérance (moyenne théorique) de la variable aléatoire $X_i$, où $\boldsymbol{\Gamma}$ est une matrice $p \times m$ avec éléments $\gamma_{ij}$, qui reprsentent le chargement de la variable $X_i$ sur le facteur $F_j$ ($i=1, \ldots, p$; $j=1, \ldots, m$).
+
+Les espérances ($\mu_i$), les chargements ($\gamma_{ij}$) et les variances ($\psi_i$) sont des quantités fixes, mais inconnues, tandis que les facteurs communs ($F_i$) et les aléas ($\varepsilon_i$) sont des variables aléatoires non observables.
+
+Selon ce modèle, on obtient
+\begin{align*}
+\mathsf{Va}(\boldsymbol{X}) &= \boldsymbol{\Gamma}\mathsf{Va}(\boldsymbol{F})\boldsymbol{\Gamma}^\top + \mathsf{Va}(\boldsymbol{\varepsilon})\\
+& = \boldsymbol{\Gamma}\boldsymbol{\Gamma}^\top + \mathrm{diag}(\boldsymbol{\psi}).
+\end{align*}
+Les éléments diagonaux de cette matrice sont  $\mathsf{Va}(X_j) = \sum_{l=1}^k \gamma_{jl}^2 + \psi_j$: on appelle **communalité** le terme $h_j = \sum_{l=1}^k \gamma_{jl}^2$, qui représente la proportion de variance totale de $X_j$ due à la corrélation entre les facteurs. Le terme $\psi_j$ est dénommé **unicité**.
+
+Si les variables ont été préalablement standardisées de telle sorte que $\mathsf{E}(X_i)=0$ et $\mathsf{Va}(X_i)=1$ (ce qui revient à utiliser la matrice de corrélation des observations dans l'analyse), alors $\mathsf{Cor}(X_i, F_j)=\gamma_{ij}$, c'est-à-dire, le chargement de la variable $X_i$ sur le facteur $F_j$ est le coefficient de corrélation entre les deux.
+
+Sans aucune contrainte sur le modèle, la matrice de covariance de $X_1, \ldots, X_p$ possède $p(p+1)/2$ paramètres, soit $p$ variances et $p(p-1)/2$ termes de corrélation. Avec le modèle d’analyse factorielle, on suppose que l’on peut décrire cette structure en utilisant seulement $p(m+1) - m(m-1)/2$ paramètres^[Soit $p$ variances spécifiques et $pm$ chargements, moins les contraintes de diagonalisation dues à l'invariance du modèle à des rotations orthogonales.]. Par exemple, avec $p=50$ variables explicatives et $m=6$ facteurs, on essaie de décrire la structure de covariance à l’aide de 350 paramètres au lieu de 1275.
+
+
+Pour faire une analyse factorielle, la taille d’échantillon devrait être quand même conséquente: le nombre d’entrées dans la base de données est $np$ et ce nombre représente la quantité d'unités (information) disponible pour estimer les covariances. Plusieurs références suggèrent d’avoir une taille d’échantillon entre cinq et 20 fois le fois le nombre de variables, ou bien un nombre minimal de 100 à 1000 observations. Des études de simulations suggèrent que la taille critique dépend des paramètres, communalités, distribution des données, etc. Ces règles du pouce sont donc essentiellement arbitraires.
+
+Il existe plusieurs méthodes pour extraire les facteurs, c'est-à-dire pour estimer les paramètres du modèle (les $\psi_i$ et les $\gamma_{ij}$). Nous allons discuter de deux d'entre elles: la méthode du maximum de vraisemblance et la méthode des composantes principales. L'avantage de l'estimation par maximum de vraisemblance est qu'elle permet l'utilisation de critères d'information et de statistiques de tests pour guider le choix du nombre de facteurs, en supposant toutefois la normalité des facteurs et des aléas. 
+
+
+### Rotation des facteurs
+
+Dans le modèle d’analyse factorielle, on peut montrer que, lorsqu’il y a deux facteurs ou plus, il existe plusieurs configurations de facteurs qui donnent la même structure de covariance. En fait, les chargements peuvent seulement être déterminés à une transformation orthogonale près^[Une transformation orthogonale est une transformation qui préserve le produit scalaire; elle préserve ainsi toutes les distances et les angles entre deux vecteurs.]. Si les chargements provenant d’une méthode d’extraction des facteurs ne sont pas uniques, la matrice de corrélation estimée par le modèle est par contre unique.
+
+Il existe plusieurs techniques de rotation de facteurs. Le but de ces techniques est d’essayer de trouver une solution qui fera en sorte que les facteurs seront facilement interprétables. La méthode la plus utilisée est la méthode **varimax**: elle produit une configuration de chargement en maximisant la variance de la somme des carrés des chargements pour les $m$ facteurs. 
+
+La méthode varimax tend à produire une configuration de facteurs tel que les chargements de chaque variable sont dispersés (des chargements élevés positifs ou négatifs et d’autres presque nuls). Il est conseillé de toujours tenter d’interpréter la solution avec une rotation varimax. Si ce n’est pas suffisamment clair, il existe d’autres méthodes de rotation dont certaines (les rotations de type oblique) permettent la présence de corrélation entre les facteurs. 
+
+
+
+#### Estimation par la méthode des composantes principales
+
+La façon la plus simple d'estimer les chargements est d'utiliser la méthode des composantes principales en prenant comme estimation 
+\begin{align*}
+\widehat{\boldsymbol{\Gamma}} = \boldsymbol{Q}_{1:m} \mathrm{diag}(\lambda_1^{1/2}, \ldots, \lambda_m^{1/2}),\end{align*} où $\lambda_j$ est la $j$e plus grande valeur propre de $\boldsymbol{S}$, la matrice de covariance empirique, et $\boldsymbol{Q}_{1:m}$ est la sous-matrice formée par les $m$ premières colonnes de $\boldsymbol{Q}$. le vecteur propre associé. On peut estimer les variances des aléas à travers 
+\begin{align*}
+\widehat{\boldsymbol{\psi}} = \mathrm{diag}\left(\mathbf{S} - \widehat{\boldsymbol{\Gamma}}\widehat{\boldsymbol{\Gamma}}^\top\right).
+\end{align*}
+L'avantage de cette approche est que l'on peut utiliser la même décomposition en valeurs propres et vecteurs propres pour chaque valeur de $m$: seule la rotation dépend de la dimension choisie. La solution est également toujours valide avec la garantie que $\widehat{\psi}_j>0$. On peut utiliser la discussion de la @sec-acp-choix pour choisir le nombre de variables.
+
+```{r}
+#| label: acp-factor
+#| eval: false
+#| echo: true
+# Décomposition valeurs propres/vecteurs propres
+decompo <- eigen(cor(factor))
+# Extraire les valeurs propres
+valpropres <- decompo$values
+# Critère de Kaiser
+ckaiser <- sum(valpropres > 1)
+# Extraire les premiers vecteurs propres
+Gamma_est <- decompo$vectors[,seq_len(ckaiser)] %*%
+  diag(sqrt(valpropres[seq_len(ckaiser)]))
+# Solution (chargements) avec rotation varimax
+facto_cp <- varimax(Gamma_est)
+```
+
+#### Estimation par maximum de vraisemblance
+
+Si on suppose que les aléas et les facteurs suivent des lois Gaussiennes, alors on peut obtenir une forme explicite pour la fonction de vraisemblance de la matrice de covariance.
+L'estimation des paramètres requiert une optimisation numérique qui est souvent difficile et qui mène parfois à des solutions paradoxales. On obtient un cas de quasi-Heywood quand $h_j=1$ pour une variable $j$, (on parle de cas de Heywood si $h_j > 1$). Si on modélise des variables explicatives centrées réduites, $\mathsf{Va}(X_j)=1$, d'où un problème d'interprétation car le terme $\psi_j$ serait nul (cas de quasi-Heywood) ou négatif (cas de Heywood) alors même que ce terme représente la variance du $j$e aléa. Les cas de quasi-Heywood ont plusieurs causes, lesquelles sont listées dans la [documentation **SAS**](https://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm#statug_factor_sect022.htm). Souvent, c'est dû à l'utilisation d'un trop petit ou trop grand nombre de facteurs ou une taille d'échantillon trop petite, etc. Cela complique l'interprétation et nous amène à questionner la validité du modèle d'analyse factorielle comme simplification de la structure de covariance.
+
+
+Les chargements estimés pour la solution à quatre facteurs, suite à la rotation varimax, sont obtenus avec le code suivant:
+
+```{r}
+#| label: factanal4
+#| eval: false
+#| echo: true
+# Ajuster le modèle factoriel par maximum de vraisemblance
+fa4 <- factanal(x = factor, 
+                factors = 4L)
+# Imprimer les chargements en omettant les valeurs inférieures à 0.3
+print(fa4$loadings, 
+      cutoff = 0.3)
+```
+
+
+```{r}
+#| label: tbl-factanal4
+#| echo: false
+#| eval: true
+#| tbl-cap: "Estimés des chargements (multipliés par 100) pour le modèle à quatres facteurs avec rotation varimax estimé à l'aide de la méthode du maximum de vraisemblance. Les chargements inférieurs à 0.3 sont omis."
+fa4 <- factanal(x = factor, 
+                factors = 4L)
+# Imprimer les chargements en omettant les valeurs inférieures à 0.3
+chargements <- fa4$loadings
+class(chargements) <- "matrix"
+chargements[chargements < 0.3] <- NA
+colnames(chargements) <- paste0("F", 1:4)
+options(knitr.kable.NA = '')
+knitr::kable(100*chargements, digits = 0, row.names = TRUE) |>
+  kableExtra::kable_styling(full_width = TRUE)
+```
+
+On constate à la lecture du @tbl-factanal4 des chargements que le chargement associé à la première variable est de `r round(fa4$loading["x1","Factor4"],3)` pour le facteur 4: cela correspondrait à un facteur avec une corrélation de presque un, donc $F_4 \approx X_1$. Le modèle obtenu avec la méthode du maximum de vraisemblance n'est donc pas adéquat puisque l'optimisation a convergée vers un cas de quasi-Heywood. Pour diagnostiquer le tout, on peut aussi analyser les valeurs d'unicité: la minimum de `min(fa4$uniqueness)` est `r min(fa4$uniquenesses)`, ce qui correspond à la tolérance de l'algorithme (valeur minimale permise dans l'optimisation), voir `?factanal`.  On retourne à la planche à dessin en réduisant le nombre de variables.
+
+En général, on associe une variable à un groupe (facteur) si son chargement est supérieur à 0.3 (en valeur absolue), ce qui donne
+
+- Facteur 1: $X_4$, $X_8$ et $X_{11}$
+- Facteur 2: $X_3$, $X_6$, $X_9$ et $X_{12}$
+- Facteur 3: $X_2$, $X_7$ et $X_{10}$
+- Facteur 4: $X_1$ et $X_5$.
+
+Ces facteurs sont interprétables:
+
+- Le facteur 1 représente l’importance accordée au service.
+- Le facteur 2 représente l’importance accordée aux produits.
+- Le facteur 3 représente l’importance accordée à la facilité de paiement.
+- Le facteur 4 représente l’importance accordée aux prix.
+
+Dans cet exemple, les choses se sont bien passées et le nombre de facteurs que nous avons spécifié semble être adéquat (hormis le cas de quasi-Heywood), mais ce n'est pas toujours aussi évident. Il est utile d'avoir des outils pour guider le choix du nombre de facteurs.
+
+### Choix du nombre de facteurs
+
+Il existe différentes méthodes pour se guider dans le nombre de facteurs, $m$, à utiliser. Cependant, le point important à retenir est que, peu importe le nombre choisi, il faut que les facteurs soient **interprétables**. Par conséquent, les méthodes qui
+suivent ne devraient servir que de guide et non pas être suivies aveuglément.
+La méthode du maximum de vraisemblance que nous avons utilisée dans l’exemple possède l’avantage de fournir trois critères pour choisir le nombre de facteurs appropriés. Ces critères sont: 
+
+- le critère d'information d'Akaike (AIC)
+- le critère d'information bayésien de Schwarz (BIC)
+- le test du rapport de vraisemblance pour l'hypothèse nulle que le modèle de corrélation décrit le modèle factoriel avec $m$ facteurs est adéquat, contre l'alternative qu'il n'est pas adéquat.
+
+Les critères d'information servent à la sélection de modèles; ils seront traités plus en détail dans les chapitres qui suivent. Pour l’instant, il est suffisant de savoir que le modèle avec la valeur du critère AIC (ou BIC) la plus petite est considéré le « meilleur » (selon ce critère).
+
+Le paquet `hecmulti` contient des méthodes pour extraire la log-vraisemblance, les critères d'information pour un modèle d'analyse factorielle  (objet de classe `factanal`).
+On peut extraire la valeur-$p$ pour le test du rapport de vraisemblance comparant le modèle à 12 variables (corrélation empirique) avec le modèle simplifié obtenu en utilisant quatre facteurs: une valeur-$p$ supérieur à un seuil prédéfini (typiquement $\alpha=0.05$)  indique que la simplification est adéquate puisqu'on ne rejette pas l'hypothèse nulle. La sortie suivante dans le @tbl-emvcrit présente les diagnostics du modèle en fonction du nombre de facteurs pour les modèles ajustés selon la méthode du maximum de vraisemblance.
+
+```{r}
+#| label: emv-criteres
+#| echo: true
+#| eval: false
+library(hecmulti)
+ajustement_factanal(
+    covmat = cov(factor),
+    factors = 1:5,
+    n.obs = nrow(factor))
+```
+
+```{r}
+#| label: tbl-emvcrit
+#| eval: true
+#| echo: false
+#| tbl-cap: "Ajustement de modèles d'analyse factorielle par la méthode du maximum de vraisemblance pour différent nombres de facteurs: critères d'informations AIC et BIC, valeur-_p_ du test de rapport de vraisemblance, nombre de paramètres estimés et indicateur pour les cas de (quasi)-Heywood"
+emv_crit <- hecmulti::adjustement_factanal(
+    covmat = cov(factor),
+    factors = 1:5,
+    n.obs = nrow(factor))
+colnames(emv_crit)[4] <- "valeur-p"
+knitr::kable(emv_crit, digits = c(2,2,2,0,0)) |>
+  kableExtra::kable_styling(full_width = TRUE)
+```
+
+Le nombre de facteurs à utiliser selon le AIC est `r which.min(emv_crit$AIC)`, 
+versus `r which.min(emv_crit$BIC)` selon le BIC. Le nombre mimimal de critères selon le test du rapport de vraisemblance est `r which(emv_crit$pval > 0.05)[1]`. Ainsi, on retient la solution à trois facteurs dans tous les cas: cette adéquation entre les critères est l'exception plutôt que la règle.
+
+
+<!-- Pour choisir le nombre de facteurs avec les critères d'information, il faut ajuster le modèle en faisant varier le nombre de facteurs (option `nfact`) et extraire la valeur numérique correspondante. Si `nfact` dépasse le nombre de valeurs propres estimées supérieures à $1$ (critère `mineigen`), la spécification `nfact` sera ignorée à moins que vous ne spécifiez un autre critère, par exemple `priors=one`. Cette option revient à démarrer l'algorithme d'optimisation avec la contrainte $\sum_{l=1}^k \gamma_{jl}^2=1, \psi_j=0$. En revanche, méfiez-vous: cela mène à des maximums locaux, n'employez l'option que si nécessaire. -->
+
+Il faut garder en tête que l'estimation par maximum de vraisemblance du modèle d'analyse factorielle est très sensible à l'initialisation: on peut aussi parfois obtenir des valeurs différentes selon les logiciels. Cette fragilité, couplée à la haute fréquence de cas de Heywood, fait en sorte que je préfère utiliser la méthode des composantes principales pour l'estimation.
+
+On peut considérer le modèle avec trois facteurs: les chargements (après rotation varimax) sont données dans le @tbl-factanal3
+
+```{r}
+#| label: tbl-factanal3
+#| echo: false
+#| eval: true
+#| tbl-cap: "Estimés des chargements (multipliés par 100) pour le modèle à trois facteurs avec rotation varimax estimé à l'aide de la méthode du maximum de vraisemblance. Les chargements inférieurs à 0.3 sont omis."
+fa3 <- factanal(x = factor, 
+                factors = 3L)
+# Imprimer les chargements en omettant les valeurs inférieures à 0.3
+chargements <- fa3$loadings
+
+class(chargements) <- "matrix"
+chargements[chargements < 0.3] <- NA
+options(knitr.kable.NA = '')
+colnames(chargements) <- paste0("F", 1:3)
+knitr::kable(100*chargements, digits = 0, row.names = TRUE) |>
+  kableExtra::kable_styling(full_width = TRUE)
+```
+
+Cette solution récupère les trois facteurs _service_, _produits_ et _paiement_ de la solution précédente à quatre facteurs. Le facteur _prix_ (qui était formé de $X_1$ et $X_5$) n’est plus présent.
+
+On suggère d'utiliser les trois critères découlant de l'utilisation de la vraisemblance et de déterminer le nombre de facteurs à extraire selon différents critères avant d'examiner les modèles avec ce nombre de facteurs et ceux
+avec un facteur de moins ou de plus. Au final, le plus important est de pouvoir interpréter raisonnablement les facteurs: la configuration de facteurs choisie est logique et compréhensible. 
+
+## Construction d'échelles à partir des facteurs
+
+Si le seul but de l’analyse factorielle est de comprendre la structure de corrélation entre les variables, alors se limiter à l’interprétation des facteurs est suffisant.
+
+Si par contre, le but est de réduire le nombre de variables pour pouvoir par la suite procéder à d’autres analyses statistiques, l’analyse factorielle peut alors servir de guide pour construire de nouvelles variables (échelles). En supposant que l’analyse factorielle a produit des facteurs qui sont interprétables et satisfaisants, la méthode de construction d’échelles la plus couramment utilisée consiste à construire $m$ nouvelles variables, une par facteur. Pour un facteur donné, la nouvelle variable est simplement la moyenne des variables ayant des chargements élevés sur ce facteur (positifs ou négatifs, mais de même signe). Une autre méthode, les scores factoriels, sera présentée plus loin. 
+
+Lorsqu’on construit une échelle, il est important d’examiner sa cohérence interne. Ceci peut être fait à l’aide du coefficient alpha de Cronbach. Ce coefficient mesure à quel point chaque variable faisant partie d’une échelle est corrélée avec le total de toutes les variables pour cette échelle.
+Plus le coefficient est élevé, plus les variables ont tendance à être corrélées entre elles. L'alpha de Cronbach est 
+\begin{align*}
+\alpha=\frac{k}{k-1} \frac{S^2-\sum_{i=1}^k S_i^2}{S^2}, 
+\end{align*}
+où $k$ est le nombre de variables dans l'échelle, $S^2$ est la variance empirique de la somme des variables et $S_i^2$ est la variance empirique de la $i$e variable. En pratique, on voudra que ce coefficient soit au moins égal à 0, 6 pour être satisfait de la cohérence interne de l’échelle.
+
+Le paquet `hecmulti` contient une fonction, `alpha`, pour faire l'estimation du $\alpha$ de Cronbach
+
+```{r}
+#| label: alphaCronbach
+#| echo: true
+#| eval: false
+# Création des échelles
+ech_service <- rowMeans(factor[,c("x4","x8","x11")])
+ech_produit <- rowMeans(factor[,c("x3","x6","x9","x12")])
+ech_paiement <- rowMeans(factor[,c("x2","x7","x10")])
+ech_prix <- rowMeans(factor[,c("x1","x5")])
+
+# Cohérence interne (alpha de Cronbach)
+alpha(factor[,c("x4","x8","x11")])
+alpha(factor[,c("x3","x6","x9","x12")])
+alpha(factor[,c("x2","x7","x10")])
+alpha(factor[,c("x1","x5")])
+```
+
+```{r}
+#| label: tbl-alphaCronbach
+#| echo: false
+#| eval: true
+#| tbl-cap: "Coefficient alpha de Cronbach pour les quatre échelles formées."
+
+# Création des échelles
+# Cohérence interne (alpha de Cronbach)
+alph <- c(
+  hecmulti::alpha_Cronbach(factor[,c("x4","x8","x11")]),
+  hecmulti::alpha_Cronbach(factor[,c("x3","x6","x9","x12")]),
+  hecmulti::alpha_Cronbach(factor[,c("x2","x7","x10")]),
+  hecmulti::alpha_Cronbach(factor[,c("x1","x5")]))
+names(alph) <- c("service","produit","paiement","prix")
+knitr::kable(t(alph), 
+             digits = 3,  
+             row.names = FALSE) |>
+  kableExtra::kable_styling(full_width = TRUE)
+```
+Ainsi, les $\alpha$ de Cronbach sont tous satisfaisants (plus grand que 0.6) sauf pour le facteur _prix_ (0.546). Tout est donc cohérent. Les échelles provenant des facteurs _service_, _produits_ et _paiement_, sont satisfaisantes. Ces facteurs sont identifiés à la fois dans la solution à quatre, mais aussi dans la solution à trois facteurs. Le facteur _prix_ est celui qui apparaît en plus dans la solution à quatre facteurs. Il a une interprétation claire (c'est essentiellement `x1`), mais son faible alpha ferait en sorte qu’il serait discutable de travailler avec l’échelle _prix_ dans d’autres analyses (du moins avec selon l’usage habituel du alpha) plutôt que d'utiliser directement la variable `x1`.
+
+## Compléments d'information
+
+### Variables ordinales
+
+Théoriquement, une analyse factorielle ne devrait être faite qu’avec des variables continues. Par contre, en pratique, on l’utilise souvent aussi avec des variables ordinales (comme pour l’exemple portant sur le questionnaire) et même avec des variables binaires (0-1).
+
+Dans ce genre de situation, on peut aussi utiliser d’autres mesures d’associations au lieu du coefficient de corrélation linéaire. Par exemple, on peut utiliser la corrélation polychorique, qui est une mesure de corrélation entre deux variables ordinales. La corrélation tétrachorique correspond au cas spécial de deux variables binaires.
+
+Ma suggestion est d’utiliser la corrélation linéaire ordinaire avec des variables ordinales (même binaires). Si les résultats ne sont pas satisfaisants, on peut alors essayer avec d’autres mesures d’associations.
+
+
+### Autres méthodes de rotation des facteurs
+
+Jusqu’à présent, nous avons utilisé la méthode de rotation orthogonale varimax. Il existe de nombreuses autres méthodes de rotations orthogonales fournies dans le paquet `psych`. Rappelez-vous que le modèle d’analyse factorielle de base suppose que les facteurs sont non corrélés. Les rotations de type obliques permettent d’introduire de la corrélation entre les facteurs: quelquefois, une telle rotation facilitera davantage l’interprétation des facteurs qu’une rotation orthogonale. Notez qu'il faut être prudent lorsqu’on utilise une méthode de rotation oblique car il y aura trois matrices de chargements après rotation (coefficients de régression normalisés, corrélations semi-partielles ou corrélations). On suggère l'utilisation de la première, soit la représentation avec **coefficients de régression normalisés**. Il s’agit des coefficients de régression si on voulait prédire les variables à l’aide des facteurs. Ils indiquent donc à quel point chaque facteur est associé à chaque variable. Dans le cas d’une rotation orthogonale, ces trois matrices sont les mêmes et il s’agit de trois interprétations valides des chargements.
+
+### Scores factoriels
+
+Avec les données de l’exemple, en nous basant sur les résultats de l’analyse factorielle, nous avons créé quatre nouvelles échelles (une par facteur) que l’on peut calculer pour chaque individu: 
+
+- `service` = $(X_4+X_8+X_{11})/3$, 
+- `produit` = $(X_3+X_6+X_9+X_{12})/4$, 
+- `paiement` = $(X_2+X_7+X_{10})/3$, 
+- `prix` = $(X_1+X_5)/2$.
+
+Par exemple, la variable _prix_ peut donc être vu comme une combinaison linéaire des 12
+variables où seulement $X_1$ et $X_5$ reçoivent un poids (égal) différent de zéro. Une autre façon de créer de nouvelles variables consiste à calculer des scores factoriels (un pour chaque facteur) pour chaque individu à partir de la matrice de données centrées et réduite $\mathbf{Z}$ (de telle sorte que la moyenne de chaque colonne soit 0 et la variance 1). Les score factoriel 
+\begin{align*}
+\widehat{F}_{i, k} &= \left[\mathbf{Z}\mathbf{R}^{-1}\widehat{\boldsymbol{\Gamma}}\right]_{ik}\\&=
+\widehat{\beta}_{1, k} z_{i, 1} + \cdots + \widehat{\beta}_{12, k}z_{i, 12}
+\end{align*}
+où $\widehat{\boldsymbol{\Gamma}}$ est la matrice $p \times m$ des chargements, $\mathbf{R}$ la matrice $p \times p$ des corrélation empirique et où $z_{i, 1}, \ldots, z_{i, 12}$ est la $i$e ligne (observation) de $\mathbf{Z}$. La matrice $p \times m$ de coefficients $\boldsymbol{\beta} = \mathbf{R}^{-1}\widehat{\boldsymbol{\Gamma}}$.
+
+
+Ainsi, chacune des 12 variables originales contribue au calcul du score
+factoriel. Les variables ayant des chargements plus élevés sur ce facteur auront tendance à avoir des poids ($\widehat{\gamma}$) plus élevés. Par contre, les scores factoriels ne sont pas uniques car ils dépendent des chargements utilisés (et donc à la fois de la méthode d’estimation et de la méthode de rotation).
+On peut également utiliser les scores factoriels au lieu des 12 variables
+originales dans des analyses subséquentes. Il est suggéré d'utiliser les nouvelles variables (échelles) obtenues en faisant les moyennes des variables identifiées comme faisant partie de chaque facteur pour les raisons suivantes:
+
+- l’interprétation des scores factoriels est moins claire (chaque facteur dépend de toutes les variables)
+- les scores factoriels ne sont pas uniques (ils dépendent de la méthode d’estimation et de rotation).
+- les coefficients servant au calcul seront différents d’une étude à l’autre.
+
+```{r}
+#| label: tbl-scores
+#| echo: false
+#| eval: true
+#| tbl-cap: "Coefficients du score (modèle de régression, maximum de vraisemblance) pour le modèle d'analyse factorielle à quatre facteurs."
+scores <- solve(fa4$correlation) %*% loadings(fa4)
+colnames(scores) <- paste0("facteur ", 1:4)
+knitr::kable(scores, digits = 2) |>
+  kableExtra::kable_styling(full_width = TRUE)
+```
+
+Les scores factoriels sont obtenus en spécifiant `scores = "regression"` dans les options de la fonction `factanal`. Les poids avec le modèle à quatre facteurs sont rapportés dans le @tbl-scores. On remarque que
+
+- pour le premier facteur, trois variables ont des poids importants ($X_4$, $X_8$ et $X_{11}$). Il s’agit donc d’un facteur très proche du facteur _service_.
+- pour le deuxième facteur, les variables $X_3$, $X_6$, $X_9$ et $X_{12}$ ont des poids importants. Il s’agit donc d’un facteur très proche du facteur _produits_. 
+- pour le troisième facteur, les variables $X_2$, $X_7$, $X_{10}$ ont des poids importants. Il s’agit donc d’un facteur très proche du facteur _paiement_.
+- pour le quatrième facteur, seule la variable $X_1$ a un poids important.
+On aurait pu s’attendre à ce que ce soit également le cas pour $X_5$, en lien avec le facteur _prix_  --- ce facteur était moins clair selon le alpha de Cronbach.
+
+Les corrélations entre les échelles (construites avec les moyennes) et les scores factoriels sont données dans le @tbl-corr-echelles-scores. On remarque la forte corrélation entre le score factoriel et les échelles construites avec les moyennes pour les facteurs _service_, _produits_ et _paiement_. Cela veut dire qu’utiliser les échelles ou les scores factoriels ne devrait pas faire de différence dans des analyses subséquentes. Par contre, cette corrélation est plus faible (0.82) pour le facteur _prix_.
+
+```{r}
+#| label: tbl-corr-echelles-scores
+#| echo: false
+#| eval: true
+#| tbl-cap: "Corrélation entre quatre premiers scores (modèle d'analyse factorielle à quatre facteurs) et échelles."
+ech1 <- rowMeans(factor[,c("x4","x8","x11")])
+ech2 <- rowMeans(factor[,c("x3","x6","x9","x12")])
+ech3 <- rowMeans(factor[,c("x2","x7","x10")])
+ech4 <- rowMeans(factor[,c("x1","x5")])
+scores <- factanal(x = factor, 
+                   factors = 4, 
+                   scores = "regression")$scores
+corr <- cor(cbind(ech1, ech2, ech3, ech4, scores[,1:4]))[1:4,5:8]
+corr <- round(corr, 2)
+colnames(corr) <- paste0("score ", 1:4)
+rownames(corr) <- paste0("échelle ", 1:4)
+knitr::kable(corr) |>
+  kableExtra::kable_styling(full_width = TRUE)
+```
+
+:::{.callout-tip}
+## Étapes de l'analyse factorielle exploratoire
+
+- Déterminer les variables à utiliser dans l'analyse
+- Vérifier les prérequis
+- Sélectionner une méthode d'estimation et extraire les facteurs
+- Déterminer le nombre de facteurs 
+- Effectuer une rotation des facteurs
+- Interpréter les facteurs
+- Évaluer la validité du modèle
+:::
+
+
+::: {.callout-note}
+
+## En résumé
+
+- La corrélation mesure la force de la dépendance linéaire entre deux variables: plus elle est élevée, plus les points s'alignent.
+- Si le nombre de variables explicatives $p$ est conséquent par rapport au nombre d'observations $n$, on a peu d'information disponible pour estimer de manière fiable les corrélations.
+- Une analyse en composante principales fait une décomposition en valeurs propres/vecteurs propres de la matrice de covariance ou de corrélation. 
+   - Ces nouvelles variables sont orthogonales (corrélation nulle) entre elles.
+   - Les composantes principales sont ordonnées en ordre décroissant de variance: si on ne conserve que $k<p$ de variables, on maximise la variance expliquée.
+   - Le choix du nombre de variables est basé sur des règles du pouce: le critère des valeurs propres de Kaiser suggère de prendre autant de composantes principales que de variances supérieures à 1.
+    - Un bigramme permet de représenter graphiquement les directions des variables en fonction des deux premières composantes principales.
+- L'analyse factorielle exploratoire fournit un modèle pour la matrice de corrélation
+    - La solution du problème n'est pas unique: on choisit celle qui permet de mieux séparer les variables.
+    - Seules les variables numériques pour lesquelles on suspecte une dimension commune sont incluses dans l'analyse.
+    - On doit avoir beaucoup d'observations (au moins 100, 10 fois plus que de variables) pour estimer le modèle.
+    - On estime le modèle à l'aide de la méthode des composantes principales (modèle toujours valide et moins coûteux en calcul, mais critères pour la sélection du nombre de facteurs arbitraires) ou du maximum de vraisemblance (optimisation numérique avec solutions fréquemment problématique, critères d'information pour choix du nombre de facteurs).
+    - Le nombre de facteurs retenu doit donner des regroupements logiques (facteur *wow*).
+    - On utilise toujours une rotation orthogonale pour faciliter l'interprétation (varimax par défaut).
+    - L'interprétation se fait à partir des chargements (corrélation entre variables et facteurs).
+    - On crée des échelles en prenant la moyenne des variables qui ont un chargement élevés en lien avec un facteur donné (de même signe).
+    - Les échelles sont cohérentes si le $\alpha$ de Cronbach est supérieur à 0.6, faute de quoi elles sont rejetées.
+:::

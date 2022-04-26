@@ -336,7 +336,7 @@ predict(multi1, type = "class")
 multi2a <- MASS::polr(ordered(y2) ~ x, data = logit6, method = "logistic", Hess = TRUE)
 multi2b <- nnet::multinom(y2 ~ x, data = logit6, Hess = TRUE)
 confint(multi2b)
-# Le modèle est paramétrisé en terme du rapport de cote, ascendant
+# Le modèle est paramétré en terme du rapport de cote, ascendant
 
 # Test du rapport de vraisemblance pour modèle à cote proportionnelle
 pchisq(-2*(logLik(multi2a)[[1]] - logLik(multi2b)[[1]]), df = 1, lower.tail = FALSE)
