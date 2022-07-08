@@ -1,0 +1,315 @@
+La base de données `logit6` contient 100 observations obtenues par voie de sondage auprès d'adultes âgés de 18 à 45 ans pour des destinations vacances et les visites au cinéma. Le fichier contient les réponses aux questions suivantes:
+
+- `y1`: quelle a été votre destination vacances l'année dernière: Québec ($\texttt{0}$), États-Unis ($\texttt{1}$) ou ailleurs ($\texttt{2}$)?
+- `y2`: combien de fois êtes-vous allé au cinéma l'année dernière: moins de 5 fois ($\texttt{1}$), entre 5 et 10 fois ($\texttt{2}$), ou plus de 10 fois ($\texttt{3}$).
+- `x`: âge (en année) du répondant.
+
+Nous allons modéliser la destination vacance $Y_1$ à l'aide d'une régression logistique multinomiale avec l'âge comme variable explicative.
+
+```{r}
+#| label: tbl-multinom_means-y1
+#| echo: false
+#| eval: true
+#| tbl-cap: "Statistiques descriptives des destinations de vacances."
+data(logit6, package = "hecmulti")
+tab <- logit6 |>
+  dplyr::group_by(y1) |>
+  dplyr::summarize("n" = dplyr::n(), 
+            "moyenne" = round(mean(x),2), 
+            "écart-type" = round(sd(x),2), 
+            "minimum" = min(x), 
+            "maximum" = max(x))
+knitr::kable(tab, booktabs = TRUE) |>
+    kableExtra::kable_styling(full_width = TRUE)
+```
+
+On voit que les gens qui ont passé leurs vacances au Québec ($Y_1=0$) ont 26.5 ans en moyenne. Ils sont plus jeunes que ceux qui ont passé leurs vacances aux États-Unis (âge moyen de 33 ans). Finalement, ceux dont la destination vacances était ailleurs sont les plus vieux avec une moyenne de 37.3 ans.
+
+Pour le modèle logit multinomial, nous allons prendre $Y_1=0$ comme catégorie de référence. Il est d'usage pour réduire le risque de problèmes numériques et accélrer la procédure de centrer et réduire les variables explicatives.
+
+```{r}
+#| label: mullogit
+#| eval: false
+#| echo: true
+data(logit6, package = "hecmulti")
+# Modèle multinomial
+multi1 <- nnet::multinom(y1 ~ x, 
+                         data = logit6, 
+                         Hess = TRUE,
+                         trace = FALSE) 
+# Tableau résumé de l'ajustement
+summary(multi1)
+# Estimations des coefficients
+coef(multi1)
+# Intervalles de confiance pour les estimations
+confint(multi1)
+# Critères d'information
+AIC(multi1); BIC(multi1)
+# Prédiction du modèle, soit probabilité de chaque scénario
+predict(multi1, type = "probs")
+# Autrement, la classe la plus susceptible
+predict(multi1, type = "class")
+```
+
+
+```{r}
+#| label: tbl-multinom-coefs
+#| eval: true
+#| echo: false
+#| tbl-cap: "Estimation des coefficients et intervalles de confiance à 95 pourcent pour le modèle multinomial logistique avec les données de destination vacances."
+data(logit6, package = "hecmulti")
+# Modèle multinomial
+multi1 <- nnet::multinom(y1 ~ x, 
+                         data = logit6, 
+                         Hess = TRUE,
+                         trace = FALSE)
+ic_multinom <- confint(multi1)
+tab1 <- cbind(coef(multi1)[1,],ic_multinom[,,1])
+tab2 <- cbind(coef(multi1)[2,],ic_multinom[,,2])
+rownames(tab1)[1] <- rownames(tab2)[1] <- "cst"
+colnames(tab1) <- colnames(tab2) <- 
+  c("coefficient", "IC (2.5%)", "IC (97.5%)")
+knitr::kable(tab1, 
+                digits = 3,
+                caption = " catégorie \\(Y=1\\) vs référence", 
+                booktabs = TRUE) |>
+  kableExtra::kable_styling(full_width = TRUE)
+knitr::kable(tab1, 
+                digits = 3, 
+                caption = " catégorie \\(Y=2\\) vs référence", 
+                booktabs = TRUE) |>
+  kableExtra::kable_styling(full_width = TRUE)
+```
+
+Comme il y a trois catégories pour la variable dépendante, il y a deux équations pour le modèle ajusté. En regardant les coefficients dans le @tbl-multinom-coefs, on obtient:
+\begin{align*}
+\ln \left\{\frac{\Pr(Y_{1i}=1 \mid \mathrm{X}_i)}{\Pr(Y_{1i}=0 \mid \mathrm{X}_i)} \right\} &= -4.10 + 0.13\mathrm{X}_i, \\ \ln \left\{\frac{\Pr(Y_{1i}=2 \mid \mathrm{X}_i)}{\Pr(Y_{1i}=0 \mid \mathrm{X}_i)} \right\} &= -7.98+0.22\mathrm{X}_i. 
+\end{align*}
+
+Plus l'âge du répondant augmente, plus la probabilité qu'il ait passé ses vacances aux États-Unis par rapport au Québec augmente. En fait, pour chaque augmentation de 1 de l'âge, le rapport des cote pour $Y_1=1$ par rapport à $Y_1=0$ est multipliée par ${1.133}=\exp({0.1253})$.
+
+On peut comparer les modèles emboîtés à l'aide de tests de rapport de vraisemblance.
+
+```{r}
+#| label: lrt-test
+#| echo: true
+#| eval: false
+# Ajuster modèle sous H0: les
+# prédictions correspondent à la
+# proportion empirique de chaque catégorie
+multi0 <- nnet::multinom(y1 ~ 1,
+                         data = logit6,
+                         trace = FALSE)
+# Test de rapport de vraisemblance
+anova(multi0, multi1)
+```
+
+```{r}
+#| label: tbl-anova-multinom
+#| echo: false
+#| eval: true
+#| tbl-cap: "Analyse de déviance: test du rapport de vraisemblance pour la variable explicative dans le modèle multinomial logistique."
+multi0 <- nnet::multinom(y1 ~ 1,
+                         data = logit6,
+                         trace = FALSE)
+tab <- anova(multi0, multi1)[,-4]
+tab$`Pr(Chi)`[2] <- format.pval(tab$`Pr(Chi)`[2])
+knitr::kable(tab, digits = 2,
+  col.names = c("modèle", 
+                "DL",
+                "déviance",
+                "DL",
+                "rapport vrais.",
+                "valeur-p")) |>
+  kableExtra::kable_styling(full_width = TRUE)
+
+```
+
+Cette valeur est donnée dans la dernière colonne du tableau. De plus, cet effet est significatif car la valeur-$p$ est inférieure à $10^{-4}$.
+
+De même, plus l'âge du répondant augmente, plus la probabilité qu'il ait passé ses vacances ailleurs qu'aux États-Unis ou au Québec par rapport au Québec augmente. En fait, pour chaque augmentation de l'âge d'un an, le rapport des cote pour $Y_1=1$ par rapport à $Y_1=0$ est multiplié par ${1.25}$. Cet effet est également statistiquement significatif.
+
+Nous venons donc de comparer chacune des catégories $Y_1=1$ et $Y_1=2$ à la catégorie de référence $Y_1=0$. Pour une comparaison directe entre $Y_1=1$ et $Y_1=2$, il suffit de changer la catégorie de référence.
+
+### Régression logistique cumulative à cotes proportionnelles
+
+
+Si les modalités de la réponse sont ordinales, la régression logistique multinomiale est toujours appropriée. Il peut néanmoins être préférable d'utiliser un modèle qui utilise l'ordre des modalités pour obtenir un modèle plus facile à interpréter et plus parcimonieux. Le modèle de régression logistique cumulative à cotes proportionnelles est un simplification sous l'hypothèse que les cotes sont proportionnelles.
+
+Supposons que la variable $Y$ est ordinale et peut prendre les $K+1$ valeurs ordonnées de la plus petite à la plus grande selon les catégories de $Y$ ($0, 1, 2, \ldots, K$). Supposons que l'on dispose de $p$ variables explicatives $\mathrm{X}_1, \ldots, \mathrm{X}_p$.
+
+Soit $p_{ik}=\Pr(Y_i=k \mid \mathrm{X}_{i1}, \ldots, \mathrm{X}_{ip})$ ($k=0, 1, \ldots, K$) la probabilité que $Y_{ik}$ prenne la valeur $k$. On dénote 
+\begin{align*}
+S_{ij}=\sum_{k=j}^K p_{ik}= \Pr(Y_{i} > j - 1 \mid \mathrm{X}_{i1}, \ldots, \mathrm{X}_{ip}), \qquad j=1, \ldots, K.
+\end{align*}
+La quantité $S_{ij}$ est la probabilité que $Y_i$ soit plus grand ou égal à $j$; $S_{i0}$ est égal à 1 et $S_{iK} = \Pr(Y_i=K \mid \mathrm{X}_{i1}, \ldots, \mathrm{X}_{ip})=p_{iK}$.
+
+Le modèle logistique cumulé spécifie que 
+\begin{align*}
+\ln \left( \frac{S_{ij}}{1-S_{ij}}\right) = \beta_{0j} + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p \mathrm{X}_{ip}, \qquad \qquad  j=1, \ldots, K.
+\end{align*}
+
+Il y a donc $K$ équations logistiques. Les paramètres quantifiant les effets des variables explicatives, $\beta_1, \ldots, \beta_p$ sont les mêmes pour chacune des log-cotes, mais il y a une ordonnée à l'origine différente par log de rapport de cote. Par conséquent, pour modéliser une variable ordinale $Y$ ayant $K+1$ valeurs possibles avec $p$ variables explicatives, le modèle cumulatif logistique utilise $p + K$ paramètres. Le modèle logit multinomial, qui peut également être utilisé pour les données ordinales, utilise $K \cdot(p+1)$ paramètres. Le modèle multinomial ordonné est donc plus parcimonieux et, pour autant qu'il soit approprié, mènera à des estimations des paramètres plus précises qu'avec le modèle de régression logistique multinomiale. Les deux modèles sont identiques au modèle de régression logistique si la variable ordinale a deux modalités.
+
+
+La cote $S_{ij}/(1-S_{ij})$ mesure à quel point il est plus probable que $Y_i$ prenne une valeur plus grande ou égale à $j$ par rapport à une valeur plus petite que $j$, viz.
+\begin{align*}
+\frac{S_{ij}}{1-S_{ij}} = \exp( \beta_{0j} + \beta_1\mathrm{X}_{i1} + \cdots + \beta_p \mathrm{X}_{ip}).
+\end{align*}
+Dans cet exemple, aucune fonction autre qu'additive en $X$, ni aucune interaction n'est présente. Si le paramètre $\beta_j$ est positif, cela indique que plus $\mathrm{X}_j$ prend une valeur élevée, plus la variable $Y$ a tendance à prendre aussi une valeur élevée. Inversement, si le paramètre $\beta_j$ est négatif, cela indique que plus $\mathrm{X}_j$ prend une valeur élevée, plus la variable $Y$ a tendance à prendre une valeur basse. Plus précisément, pour chaque augmentation d'une unité de $\mathrm{X}_j$, la cote $S_k/(1-S_k)$ est multipliée par $\exp(\beta_j)$, peu importe la valeur de $Y$. Ainsi, la cote d'être dans une catégorie plus élevée, par rapport à une catégorie moins élevée, est multipliée par $\exp(\beta_j)$. En terme de probabilités cumulées d'excéder $k$,
+\begin{align*}
+S_{ik} &= \Pr(Y_i \geq k \mid \mathrm{X}_{i1}, \ldots, \mathrm{X}_{ip}) 
+\\& = \textrm{expit}(\beta_{0k} + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p \mathrm{X}_{ip}), \qquad j =1, \ldots, K.
+\end{align*}
+En utilisant ces expressions, on peut obtenir la probabilité de chaque catégorie,
+\begin{align*}
+&\Pr(Y_i = k \mid \mathrm{X}_{i1}, \ldots, \mathrm{X}_{ip}) \\&\quad=\Pr(Y_i \geq k \mid \mathrm{X}_{i1}, \ldots, \mathrm{X}_{ip}) -\Pr(Y_i \geq k+1 \mid \mathrm{X}_{i1}, \ldots, \mathrm{X}_{ip}) \\&\quad= S_{k} - S_{k+1}.
+\end{align*}
+
+Nous considérons maintenant la variable $Y_2$ du fichier `logit6`, qui donne le nombre de visites au cinéma. Pour cet exemple, nous allons chercher à modéliser $Y_2$ à l'aide de $X$ (âge) en utilisant le modèle multinomial cumulé à cotes proportionnelles.
+
+```{r}
+#| label: tbl-multinom_means-y2
+#| echo: false
+#| eval: true
+#| tbl-cap: "Statistiques descriptives du nombre de visites au cinéma."
+data(logit6, package = "hecmulti")
+tab <- logit6 |>
+  dplyr::group_by(y2) |>
+  dplyr::summarize("n" = dplyr::n(), 
+            "moyenne" = round(mean(x),2), 
+            "écart-type" =round(sd(x),2), 
+            "minimum" = min(x), 
+            "maximum" = max(x))
+knitr::kable(tab, booktabs = TRUE) |>
+    kableExtra::kable_styling(full_width = TRUE)
+```
+
+Ainsi, les répondants qui sont allés moins de cinq fois au cinéma ont en moyenne 33.5 ans, ceux qui sont allés entre cinq et 10 fois ont 30.4 ans en moyenne, et ceux qui sont allés plus de 10 fois ont 25.1 ans en moyenne. Il y a une progression et on voit que les répondants plus jeunes vont plus souvent au cinéma.
+
+```{r}
+#| label: ordinal-logistique
+#| eval: false
+#| echo: true
+# Modèle de régression logistique 
+# multinomiale ordinale à cote proportionnelle
+multi2a <- MASS::polr(ordered(y2) ~ x, 
+                      data = logit6, 
+                      method = "logistic", 
+                      Hess = TRUE)
+multi2b <- nnet::multinom(y2 ~ x, 
+                          data = logit6, 
+                          Hess = TRUE,
+                          trace = FALSE)
+# Le modèle est paramétré en terme
+#  du rapport de cote, ascendant
+summary(multi2a)
+# Test du rapport de vraisemblance pour 
+# modèle à cote proportionnelle
+# deviance = -2*ll
+pchisq(deviance(multi2a) - deviance(multi2b),
+       df = 1, 
+       lower.tail = FALSE)
+# Intervalles de confiance pour beta_x
+#  - vraisemblance profilée
+confint(multi2a)
+# Critères d'information
+AIC(multi2a)
+BIC(multi2a)
+
+# Tableau des coefficients 
+# Ordonnées à l'origine:
+multi2a$zeta
+# Uniquement pour variables explicatives
+# exp(beta) avec l'IC de vraisemblance profilée
+exp(c(coef(multi2a), confint(multi2a)))
+# On peut obtenir les intervalles de Wald 
+# avec confint.default
+
+# Test du rapport de vraisemblance
+# Adéquation (comparaison avec modèle saturé)
+pchisq(q = deviance(multi2a),
+       df = df.residual(multi2a),
+       lower.tail = FALSE)
+
+```
+
+
+
+```{r}
+#| label: tbl-ordered-logistic
+#| tbl-cap: "Tableau des estimations des coefficients du modèle pour réponses ordinales pour la régression logistique à cotes proportionnelles."
+#| echo: false
+#| eval: true
+#| message: false
+multi2a <- MASS::polr(ordered(y2) ~ x, 
+                      data = logit6, 
+                      method = "logistic", 
+                      Hess = TRUE)
+multi2b <- nnet::multinom(y2 ~ x, 
+                          data = logit6, 
+                          Hess = TRUE,
+                          trace = FALSE)
+rapp <- summary(multi2a)
+coefs <- rapp$coefficients
+kableExtra::kbl(tibble::as_tibble(coefs[,1:2]),
+	        longtable = FALSE, 
+	        booktabs = TRUE,
+                col.names = c("coefficient","erreur-type"),
+                digits = 3) |>
+  kableExtra::kable_styling(full_width = TRUE)
+
+```
+
+Avant toute chose, il faut s'assurer que le modèle est approprié. Rappelez-vous que l'une des hypothèses de ce modèle est que les effets des variables explicatives sont les mêmes pour chaque équation. 
+
+- $\mathscr{H}_0$ : l'effet de chaque variable est le même pour les $K$ logit du modèle multinomial logistique, soit $\beta_{11} = \cdots =\beta_{1K}$, $\ldots$, $\beta_{p1} = \cdots =\beta_{pK}$.
+
+Une très petite valeur-$p$ (rejet de $\mathscr{H}_0$) pour ce test serait une indication que le modèle de régression multinomiale ordinale n'est pas approprié et que le modèle multinomial logistique serait préférable. Comme la valeur-$p$ est 0.2577 ici, on ne rejette pas $\mathscr{H}_0$ et il n'y a pas lieu de douter de cette hypothèse de cote proportionnelle. 
+
+```{r}
+#| label: fig-predmultinom
+#| fig-cap: "Probabilités prédites pour chaque modalités selon le modèle de régression multinomiale logistique et le modèle de régression ordinales à cotes proportionnelles."
+#| cache: true
+#| eval: true
+#| echo: false
+xpred <- seq(0, 20, by = 0.1)
+nobs <- length(xpred)
+pred1 <- predict(multi2b, 
+                 newdata = data.frame(x = xpred),
+                 type = "prob")
+pred2 <- predict(multi2a, 
+                 newdata = data.frame(x = xpred),
+                 type = "prob")
+df <- data.frame(
+  x = rep(xpred, length.out = 6*nobs),
+  modele = factor(rep(c("multinomial", "ordinal"), 
+                       each = 3*nobs)),
+  reponse = factor(c(rep(1:3, each = nobs),
+              rep(1:3, each = nobs))),
+  pred = c(pred1, pred2))
+                  
+ggplot2::ggplot(
+  data = df,
+  mapping = ggplot2::aes(
+    x = x,
+    y = pred,
+    color = reponse,
+    linetype = modele)) + 
+  ggplot2::geom_line() +
+  ggplot2::labs(y = "probabilité prédite",
+       linetype = "modèle",
+       color = "modalité") +
+  MetBrewer::scale_color_met_d("Hiroshige") + 
+  ggplot2::theme_minimal() +
+  ggplot2::theme(legend.position = "bottom") 
+  
+```
+
+On peut donc aller de l'avant et interpréter le modèle.
+
+Ici, l'effet estimé de l'âge ($X$) est $-{0.0916}$ et ce paramètre est significativement différent de zéro (valeur-$p$ de 0.0004). Rappelez-vous que $Y_2$ représente le nombre d'entrées au cinéma dans la dernière année.
+
+Ainsi, plus l'âge augmente, plus $Y_2$ a tendance à prendre une petite valeur, c'est-à-dire, plus la personne a tendance à aller moins souvent au cinéma. Plus précisément, lorsque l'âge augmente de 1, la cote d'être dans une catégorie plus élevée de $Y_2$, par rapport à une catégorie plus basse, est multipliée par 0.912 (la cote diminue donc et aussi la probabilité d'être dans une catégorie plus élevée).
+
+On a précédemment utilisé un test du rapport de vraisemblance pour valider l'hypothèse des cotes proportionnelles: il n'y avait aucune indication que la simplification n'était pas adéquate, même si les probabilités ajustées sont différentes, comme en témoigne la @fig-predmultinom. On peut également vérifier si le modèle est adéquat pour décrire les données en comparant le modèle pour les données ordinales avec un modèle saturé (autant de paramètres que d'observations): ce dernier indique que le modèle n'est pas adéquat et a un piètre pouvoir explicatif.

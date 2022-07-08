@@ -16,6 +16,7 @@ kapm <- survfit(Surv(time, 1-censure) ~ 1,
                 type="kaplan-meier", 
                 conf.type="log", data = survival1)
 summary(kapm)
+quantile(kapm)
 plot(kapm, ylab = "fonction de survie", xlab = "temps") 
 
 # test du khi-deux pour le log des rangs

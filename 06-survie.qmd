@@ -1,38 +1,64 @@
-::: {.hidden}
-$$
-\newcommand{\bs}[1]{\boldsymbol{#1}}
-\newcommand{\eps}{\varepsilon}
-\newcommand{\Rlang}{\textsf{R}}
-\newcommand{\SAS}{\textsf{SAS}}
-\newcommand{\Sp}{\mathscr{S}}
-\renewcommand{\P}[1]{{\mathsf P}\left(#1\right)}
-\newcommand{\E}[1]{{\mathsf E}\left(#1\right)}
-\newcommand{\Va}[1]{{\mathsf{Var}}\left(#1\right)}
-\newcommand{\Cor}[1]{{\mathsf{Cor}}\left(#1\right)}
-\newcommand{\I}[1]{{\mathbf 1}_{#1}}
-\newcommand{\expit}{\mathrm{expit}}
-\newcommand{\logit}{\mathrm{logit}}
-\newcommand{\code}[1]{\texttt{#1}}
-\newcommand{\Hy}{\mathcal{H}}
-\renewcommand{\d}{\mathrm{d}}
-$$
-:::
-
 
 # Analyse de survie {#analyse-survie}
 
+
+```{r}
+#| label: setup06
+#| include: false
+#| message: false
+#| warning: false
+# automatically create a bib database for R packages
+library(knitr)
+library(kableExtra)
+knitr::write_bib(c(
+  .packages(), 'bookdown', 'knitr', 'rmarkdown'
+), 'packages.bib')
+set.seed(1014)
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  cache = TRUE,
+  out.width = "80%",
+  fig.align = 'center',
+  fig.width = 8.5,
+  fig.asp = 0.618,  # 1 / phi
+  fig.show = "hold"
+)
+options(knitr.table.format = function() {
+  if (knitr::is_latex_output()) 
+    "latex" else "html"
+})
+
+options(dplyr.print_min = 6, dplyr.print_max = 6)
+options(knitr.graphics.auto_pdf = TRUE)
+options(scipen = 1, digits = 3)
+library(viridis)
+library(ggplot2, warn.conflicts = FALSE, quietly = TRUE)
+library(poorman, quietly = TRUE, warn.conflicts = FALSE)
+
+
+safe_colorblind_palette <- MetBrewer::met.brewer("Hiroshige",10)
+
+options(ggplot2.continuous.colour="viridis")
+options(ggplot2.continuous.fill = "viridis")
+scale_colour_discrete <- scale_color_manual(MetBrewer::met.brewer("Hiroshige",10))
+scale_fill_discrete <- scale_fill_manual(MetBrewer::met.brewer("Hiroshige",10))
+theme_set(theme_minimal())
+```
+
 ## Introduction
 
-Le but de cette section est d'étudier l'effet de variables explicatives sur le temps de survie. Plusieurs méchanismes de survie peuvent impacter la survie, de façon aléatoire ou pas. 
-Considérons l'exemple d'une étude sur le chômage dû à la crise du coronavirus. On s'intéresse à tous ceux qui étaient en recherche active d'emploi entre mars et juin; seuls ceux qui étaient au chômage durant cette période seront considérés. Certaines personnes seront déjà au chômage en avril et donc leur durée de chômage sera plus longue (troncature à gauche). Lors de notre suivi, d'autre mentionneront avoir trouvé un emploi lors de notre appel, mais ne pourront nous renseigner sur la date exacte de leur embauche (censure à gauche); cette dernière précèdera notre prise de contact, mais nous est inconnue. D'autres personnes seront toujours au chômage en juin à la fin de l'étude et on ignorera le nombre réel de mois passés au chômage (censure à droite). Enfin, certaines personnes cesseront de chercher activement un emploi et donc quitteront l'étude. Tous ces méchanismes (complexes) peuvent être dictés par certaines covariables (employabilité, découragement) et être aléatoires ou pas. Pour estimer le taux de chômage, il faudra prendre en compte les méchanismes de survie dans notre modèle. On se concentrera sur le cas simple des données censurées à droite de façon aléatoire.
+Cette section traite de temps avant qu'un événement survienne. Le traitement de ce type de données, dites données de survie en référence au domain médical, est particulier parce que l'information disponible est incomplète. Plusieurs mécanismes peuvent impacter la survie.
+
+On considère comme exemple une étude sur le chômage dû à la crise du coronavirus. On s'intéresse à tous ceux qui étaient en recherche active d'emploi entre mars et juin; seuls ceux qui étaient au chômage durant cette période seront considérés. Certaines personnes seront déjà au chômage en avril et donc leur durée de chômage en mars est déjà longue (troncature à gauche). Lors de notre suivi, d'autre mentionneront avoir trouvé un emploi lors de notre appel, mais ne pourront nous renseigner sur la date exacte de leur embauche: cette dernière précèdera notre prise de contact, mais nous est inconnue (censure à gauche). D'autres personnes seront toujours au chômage en juin à la fin de l'étude et on ignorera le nombre réel de mois passés au chômage (censure à droite). Enfin, certaines personnes cesseront de chercher activement un emploi et donc quitteront l'étude. Tous ces méchanismes (complexes) peuvent être dictés par certaines covariables (employabilité, découragement) et être aléatoires ou pas. Pour estimer le taux de chômage, il faudra prendre en compte les méchanismes de survie dans notre modèle. On se concentrera sur le cas simple des données censurées à droite de façon aléatoire.
 
 
 ### Exemple du temps d'abonnement 
 
-Une entreprise oeuvrant dans le secteur des télécommunications s'intéresse aux facteurs influençant le temps qu'un client reste abonné à son service de téléphone cellulaire. Des données provenant d'un échantillon de clients se trouvent dans le fichier `survival1.sas7bdat`, qui contient les variables suivantes:
+Une entreprise oeuvrant dans le secteur des télécommunications s'intéresse aux facteurs influençant le temps qu'un client reste abonné à son service de téléphone cellulaire. Des données provenant d'un échantillon de clients se trouvent dans le fichier `survie1`, qui contient les variables suivantes:
 
-- $\texttt{t}$: temps (en semaines) que le client est resté abonné au service de téléphone cellulaire. Il s'agit du vrai temps si le client n'est plus abonné et d'un temps censuré à droite si le client est toujours abonné.
-- $\texttt{censure}$: variable binaire qui indique si la variable $\texttt{t}$ est censurée ($1$ si le client est toujours abonné) ou non ($0$, la variable $\texttt{t}$ est la durée finale de l'abonnement).
+- $\texttt{temps}$: temps (en semaines) que le client est resté abonné au service de téléphone cellulaire. Il s'agit du vrai temps si le client n'est plus abonné et d'un temps censuré à droite si le client est toujours abonné.
+- $\texttt{censure}$: variable binaire qui indique si la variable $\texttt{t}$ est censurée ($0$ si le client est toujours abonné) ou non ($1$, la variable $\texttt{t}$ est la durée finale de l'abonnement).
 - $\texttt{age}$: âge du client au début de l'abonnement.
 - $\texttt{sexe}$: sexe du client, soit femme ($1$), soit homme ($0$).
 - $\texttt{service}$: nombre de services en plus du cellulaire auquel le client est abonné parmi internet, téléphone fixe, télévision (câble ou antenne parabolique). 
@@ -67,17 +93,17 @@ Nous discuterons seulement de la première approche dans ce chapitre. Le tableau
 | binaire                            	| proportion                                 	| test d'indépendance du khi-deux                    	| régression logistique 	|
 | temps de survie (censure à droite) 	|  fonction de survie temps de survie médian 	|  test log-rang test de Wilcoxon généralisé (Gehan) 	| modèle de Cox         	|
 
-La structure de données de base que l'on doit avoir pour travailler en **SAS** (et avec la plupart des autres logiciels) est la suivante:
+La structure de données de base que l'on doit avoir pour travailler est la suivante:
 
 1) une variable temps, $T$.
-2) une variable $C$ (censure), qui vaut un si l'observation est censurée et zéro sinon.
+2) une variable binaire $C$ (censure).
 3) d'autres variables explicatives $X_1, \ldots, X_p$, une par colonne.
 
 ## Fonctions de survie et de risque
 
-Un des éléments de base d'une analyse de survie (_survival analysis_) est la **fonction (ou courbe) de survie**. Soit $F(t)=\P{T \leq t}$ la fonction de répartition du temps de survie $t$ et $f(t) = \d/ \d t F(t)$. La fonction de survie  est 
+Un des éléments de base d'une analyse de survie (_survival analysis_) est la **fonction (ou courbe) de survie**. Soit $F(t)=\Pr(T \leq t)$ la fonction de répartition du temps de survie $t$ et $f(t) = \mathrm{d} / \mathrm{d} t F(t)$. La fonction de survie  est 
 \begin{align*}
-S(t)= \P{T > t} = 1-F(t)
+S(t)= \Pr(T > t) = 1-F(t)
 \end{align*}
 et donne la probabilité que le temps de survie soit supérieur à $t$. On verra plus loin comment estimer cette fonction avec un échantillon et comment tester l'égalité de deux (ou plusieurs) fonctions de survie.
 
@@ -86,129 +112,221 @@ La **fonction de risque** (en anglais, _hazard_) est
 h(t) =  \frac{f(t)}{S(t)}
 \end{align*}
 où $f(t)$ est la fonction de densité (pour $T$ continu) ou de masse pour $T$ discret.
-Dans le cas discret où le temps peut seulement prendre les valeurs $0, 1, 2, \ldots$, la fonction de risque est donc simplement la probabilité que l'événement survienne au temps $t$, étant donné qu'il n'était pas survenu avant, $\P{T=t \mid T > t} = \P{T=t} / \P{T >t} = f(t)/S(t)$; c'est une probabilité conditionnelle. Dans le cas général, la fonction de risque est nécessairement positive mais peut prendre des valeurs supérieures à un. On ne peut donc pas, à strictement parler, la voir comme une probabilité et c'est pourquoi on parle plutôt de risque. En fait, cette fonction mesure le risque instantané que l'événement survienne au temps $t$, étant donné qu'il n'était pas survenu avant. 
+Dans le cas discret où le temps peut seulement prendre les valeurs $0, 1, 2, \ldots$, la fonction de risque est donc simplement la probabilité que l'événement survienne au temps $t$, étant donné qu'il n'était pas survenu avant, 
+\begin{align*}
+\Pr(T=t \mid T > t) = \Pr(T=t) / \Pr(T >t) = f(t)/S(t);
+\end{align*}
+c'est une probabilité conditionnelle. Dans le cas général, la fonction de risque est nécessairement positive mais peut prendre des valeurs supérieures à un. On ne peut donc pas, à strictement parler, la voir comme une probabilité et c'est pourquoi on parle plutôt de risque. En fait, cette fonction mesure le risque instantané que l'événement survienne au temps $t$, étant donné qu'il n'était pas survenu avant. 
 
 Cette fonction est importante car il s'agit de celle que nous allons modéliser avec le modèle de régression de Cox. Si, en régression logistique, on modélise le logarithme des cotes, on modélise plutôt la fonction de risque en analyse de survie.
 Les fonctions de survie et de risque sont intimement reliées et 
 \begin{align*}
-h(t) = - \frac{\d \ln\{S(t)\}}{\d t}, \qquad \qquad S(t) = \exp \left\{ -\int_0^t h(u) \d u\right\}.
+h(t) = - \frac{\mathrm{d} \ln\{S(t)\}}{\mathrm{d} t}, \qquad \qquad S(t) = \exp \left\{ -\int_0^t h(u) \mathrm{d} u\right\}.
 \end{align*}
 Ainsi, si on connaît la fonction de survie, on peut retrouver la fonction de risque et vice-versa. Par conséquent, un modèle pour la fonction de survie spécifie une fonction de risque (et vice-versa).
 
 ## Estimation d'une courbe de survie et de risque
 
-L'estimateur nonparamétrique le plus couramment utilisé pour l'estimation de la fonction de survie en présense de censure à droite est l'estimateur de Kaplan--Meier. De plus, cette méthode est nonparamétrique en ce sens qu'on ne suppose aucun modèle et qu'on suppose uniquement que la censure est non-informative. Dans **SAS**, la procédure `lifetest` fournit l'estimation de Kaplan--Meier de la courbe de survie et permet aussi d'estimer la fonction de risque correspondante.
+L'estimateur nonparamétrique le plus couramment utilisé pour l'estimation de la fonction de survie en présense de censure à droite est l'estimateur de Kaplan--Meier. De plus, cette méthode est nonparamétrique en ce sens qu'on ne suppose aucun modèle et qu'on suppose uniquement que la censure est non-informative. 
 
 Si l'échantillon ne contient aucune observation censurée (on a des temps exacts pour tous les sujets), l'estimateur de Kaplan--Meier de la fonction de survie à un temps $t$ donné est alors simplement la proportion des observations dans l'échantillon qui possède un temps de survie supérieur à $t$. Par convention, on considère qu'une observation censurée à droite faisait partie de l'ensemble d'observations à risque au temps de censure observé.
 
-On considère l'exemple des temps d'abonnement pour illustrer le concept; les commandes **SAS** sont dans `survival1_fonction_survie.sas`. L'estimation de la fonction de survie selon la méthode Kaplan--Meier est obtenue grâce aux commandes suivantes:
+On considère l'exemple des temps d'abonnement pour illustrer le concept. L'estimation de la fonction de survie selon la méthode Kaplan--Meier est obtenue grâce aux commandes suivantes:
 
-```{sas survie1, eval = FALSE, echo = TRUE}
-proc lifetest data=multi.survival1 method=km
-       plots=survival(cl nocensor);
-time t*censure(1);
-run;
+```{r}
+#| label: survie1
+#| eval: false
+#| echo: true
+library(survival)
+data(survie1, package = "hecmulti")
+# Estimateur de Kaplan-Meier
+# La réponse "temps"est le temps de survie 
+# et l'indicateur de censure "censure" est
+# "0" pour censuré à droite, "1" pour événement
+kapm <- 
+  survfit(Surv(temps, censure) ~ 1, 
+          type = "kaplan-meier", 
+          conf.type = "log", 
+          data = survie1)
+summary(kapm)
+quantile(kapm)
+plot(kapm, 
+     ylab = "fonction de survie", 
+     xlab = "temps") 
 ```
 
-Le premier tableau renvoyé par **SAS** contient une ligne par observation et permet de lire l'estimé de la fonction de survie. Par exemple, on voit que l'estimation de la probabilité que le temps d'abonnement soit supérieur à 30 semaines est $\widehat{S}(30)=0,986$.
+La fonction résumé (`summary`) renvoit l'estimation de la fonction de survie pour chaque temps d'échec (événement): l'estimateur est indéfini à ces valeurs. Le @tbl-survie1-tableau offre une sortie (tronquée) du résumé, modifié pour mieux illustrer les changements. L'estimation de la probabilité que le temps d'abonnement soit supérieur à 30 semaines est $\widehat{S}(30)=0.986$.
 
-```{r fig-f5e1, echo = FALSE, out.width='70%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e1.png")
+```{r}
+#| label: tbl-survie1-tableau
+#| tbl-cap: "Estimation de la fonction de survie (Kaplan--Meier) pour les données de survie d'abonnement."
+#| fig-align: "center"
+#| eval: true
+#| echo: false
+library(survival)
+data(survie1, package = "hecmulti")
+kapm <- survfit(Surv(temps, censure) ~ 1, 
+                type = "kaplan-meier", 
+                conf.type = "log", 
+                data = survie1)
+options(knitr.kable.NA = "")
+km_tab <- with(summary(kapm), 
+               data.frame(time, n.risk, n.event, cumsum(n.event), surv, std.err))
+
+colnames(km_tab) <- c("temps", 
+                      "nb à risque",
+                      "nb échecs",
+                      "nb cumul.",
+                      "survie",
+                      "erreur-type")
+km_subtab <- with(km_tab, rbind(km_tab[temps <= 34,], 
+                                rep(NA, 6),
+                   km_tab[temps >= 180,]))
+knitr::kable(km_subtab, 
+                digits = c(0,0,0,0,3,3),
+                booktabs = TRUE, 
+                longtable = FALSE,
+                row.names = FALSE) |>
+  kableExtra::kable_styling(full_width = TRUE)
 ```
 
-\begin{align*} \vdots \end{align*}
-
-```{r fig-f5e2, echo = FALSE, out.width='70%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e2.png")
+```{r}
+#| label: fig-km-survie1
+#| out-width: '95%'
+#| fig-align: "center"
+#| fig-cap: "Estimation de Kaplan--Meier de la fonction de survie pour les données d'abonnement avec intervalles de confiance ponctuels à 95%."
+ggsurv <- survminer::ggsurvplot(kapm, palette = 1)
+ggsurv$plot + 
+  ggplot2::theme(legend.position = "none") + 
+  ggplot2::labs(x = "temps", 
+       y = "survie")
+# par(bty = "l")
+# plot(kapm, 
+#      ylab = "fonction de survie", 
+#      xlab = "temps") 
 ```
 
-La sortie contient également un tableau contenant les quartiles. On utilise généralement le temps de survie médian (au lieu de la moyenne) dans ce type d'étude. Ici, l'estimé du  temps de survie médian est de 114 semaines: on estime que la moitié des clients vont avoir une durée d'abonnement supérieure à 114 semaines. De même, la moitié des clients vont avoir une durée d'abonnement inférieure à 114 semaines. Un intervalle de confiance de niveau 95% pour ce temps médian est [$110; 119$].
+On peut également utiliser la fonction `quantile` pour obtenir une estimation des quartiles et un intervalle de confiance On utilise généralement le temps de survie médian (au lieu de la moyenne) dans ce type d'étude. Ici, l'estimé du temps de survie médian est de 114 semaines: on estime que la moitié des clients vont avoir une durée d'abonnement supérieure à 114 semaines. De même, la moitié des clients vont avoir une durée d'abonnement inférieure à 114 semaines. Un intervalle de confiance de niveau 95% pour ce temps médian est [$110; 119$].
 
 Un estimé de la moyenne et de l'écart-type est donné, mais ce dernier est biaisé (trop bas) puisque les données censurées ne donnent qu'une borne inférieure pour la vraie valeur. Avec un modèle paramétrique pour la survie (par ex., une loi exponentielle), les paramètres estimés du modèle dicteraient ces deux valeurs. Le modèle de Kaplan--Meier estime la survie, mais si la plus grande observation est censurée, la courbe n'atteindra pas zéro.
 
 
 Le graphique de la fonction de survie permet de lire le temps de survie pour une probabilité donnée. Les bandes donnent un intervalle de confiance ponctuel de niveau 95% pour chaque temps donné.
 
-```{r fig-f5e4, echo = FALSE, out.width='90%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e4.png")
-```
-
-Le tableau @fig-f5e5 donne le nombre de données censurées: parmi les 500 observations, il y a 334 clients qui ont terminé leur abonnement et 166 qui sont censurées (le client est toujours abonné et le temps est donc une borne inférieure de la durée d'abonnement).
-
-
-```{r fig-f5e5, fig.cap="Fraction de valeurs censurées", echo = FALSE, out.width='60%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e5.png")
-```
+Une information pertinente de la sortie est nombre de données censurées: parmi les 500 observations, il y a 334 clients qui ont terminé leur abonnement et 166 qui sont censurées (le client est toujours abonné et le temps est donc une borne inférieure de la durée d'abonnement). Les données censurées contiennent moins d'information que les temps observés de défaillance puisqu'on sait uniquement la borne inférieure de la plage possible des valeurs pour le vrai temps de défaillance.
 
 
 ### Calcul de l'estimateur de Kaplan--Meier
 
 Cette partie peut être omise; elle est incluse seulement par souci de complétude. Soit $T_1, \ldots, T_n$ les $n$ réalisations aléatoires de la variable temps (certaines censurées, d'autres pas). Supposons qu'il y a $m$ temps distincts où au moins un individu expérimente l'événement. Soient $t_{(1)} < \cdots < t_{(m)}$, ces temps ordonnés en ordre croissant et $r_i$  le nombre d'individus à risque au temps $t_{(i)}$ (les individus qui n'ont pas encore expérimenté l‘événement, et qui ne sont pas encore censurés avant $t_{(i)}$). On note $d_i$ le nombre d'individus qui expérimentent l'événement au temps $t_{(i)}$. L'estimateur de Kaplan--Meier de la fonction de survie à un temps $t$ est
-\[ \widehat{S}(t) = \left( 1- \frac{d_1}{r_1}\right) \times \cdots \left( 1- \frac{d_{i(t)}}{r_{i(t)}}\right), \qquad t_{(1)} \leq t \leq t_{(m)},
-\]
-où $i(t) =\max(j \in \{1, \ldots, m\}:  t \geq t_{j})$, soit le plus grand indice parmi $1, \ldots, m$ tel que $t \geq t_{i(t)}$. Par convention, si $t < t_{(1)}$, on fixe $\widehat{S}(t)=1$.
+\begin{align*}
+ \widehat{S}(t) = \left( 1- \frac{d_1}{r_1}\right) \times \cdots \left( 1- \frac{d_{i(t)}}{r_{i(t)}}\right), \qquad t_{(1)} \leq t \leq t_{(m)},
+\end{align*}
+où $i(t) =\max(j \in \{1, \ldots, m\}:  t \geq t_{j})$, soit le plus grand indice parmi $1, \ldots, m$ tel que $t \geq t_{i(t)}$. Par convention, si $t < t_{(1)}$, on fixe $\widehat{S}(t)=1$. La fonction de survie n'est pas définie aux temps de défaillance observée, mais la convention veut qu'elle soit continue à gauche.
 
 
 ## Comparaison de deux courbes de survie
 
-Supposons que les individus ont été divisés en deux groupes et que $S_1(t)$ et $S_2(t)$ dénotent respectivement  la fonction de survie du premier groupe et du deuxième groupe. On est souvent intéressé à tester l'égalité des fonctions de survie, c'est-à-dire, les hypothèses $\Hy_0: S_1(t) = S_2(t)$ pour tout $t$ et $\Hy_1: S_1(t) \neq S_2(t)$ pour au moins une valeur de $t$. 
+Supposons que les individus ont été divisés en deux groupes et que $S_1(t)$ et $S_2(t)$ dénotent respectivement  la fonction de survie du premier groupe et du deuxième groupe. On est souvent intéressé à tester l'égalité des fonctions de survie, c'est-à-dire, les hypothèses $\mathscr{H}_0: S_1(t) = S_2(t)$ pour tout $t$ et $\mathscr{H}_1: S_1(t) \neq S_2(t)$ pour au moins une valeur de $t$. 
 
 Par exemple, dans une étude sur le temps de survie après avoir été diagnostiqué avec un certain type de cancer, on pourrait vouloir comparer le temps de survie des individus ayant reçu le traitement standard (groupe 1) au temps de survie des individus ayant reçu un nouveau traitement (groupe 2).
 
 Les deux tests utilisés habituellement sont le test du log-rang (_log-rank test_) et le test de Wilcoxon généralisé (ou test de Gehan).
 
-Testons l'hypothèse que la courbe de survie des clients masculins est la même que celle des clients féminins dans l'exemple des données d'abonnement. Ce test est effectué grâce à l'option `strata` de la procédure `lifetest`  à l'aide des commandes suivantes (voir le fichier `survival1_fonction_survie.sas`):
+Testons l'hypothèse que la courbe de survie des clients masculins est la même que celle des clients féminins dans l'exemple des données d'abonnement:
 
-```{sas survie2, eval = FALSE, echo = TRUE}
-proc lifetest data=multi.survival1 method=km plots=(s) censoredsymbol=none;
-time t*censure(1);
-strata sexe;
-run;
+```{r}
+#| label: test-lograng
+#| eval: true
+#| echo: true
+##valeur-p du test asymptotique
+survdiff(formula = Surv(temps, censure) ~ sexe, 
+         data = survie1)
+# valeur-p exact par simulation
+# (pour petits échantillons, utiliser distribution="exact")
+coin::logrank_test(
+  Surv(temps, censure) ~ factor(sexe), 
+  data = survie1, 
+  distribution = coin::approximate(nresample = 1e5))
+
+# Le test du log-rang calcule si les 
+#  deux courbes sont identiques
+# Idée de base: sous H0, les étiquettes 
+#  'sexe' ne sont pas pertinentes
+#  On peut les permuter et comparer les courbes
 ```
 
 On retrouve dans la sortie les estimés de la fonction de survie, de même que les quartiles par strate: la première strate correspond aux hommes (`sexe=0`) et la deuxième aux femmes (`sexe=1`). 
 
+Si on utilise les méthodes (`print`, `summary`, `plot`, `quantile`), on obtiendra les résultats pour chaque strate (ou niveaux de la variable catégorielle). Par exemple, il y a 309 hommes et 191 femmes et l'estimation du temps de survie médian est de 110 semaines pour les hommes et de 123 semaines pour les femmes. 
 
-```{r fig-f5e6, echo = FALSE, out.width='75%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e6.png")
+La fonction `survdiff` avec la formule retourne le résultat du test asymptotique du log-rang pour l'hypothèse d'égalité des fonctions de survie. La valeurs-$p$ du test est inférieure à $10^{-4}$: on rejette donc $\mathscr{H}_0$ pour conclure qu'il y a donc une différence significative entre les deux courbes de survie.
+
+
+Les courbes de survie selon le sexe sont représentées dans la @fig-survie-comparaison-courbes. On voit que la courbe des femmes est systématiquement au-dessus de celle des hommes. Les femmes ont donc tendance à rester abonnées plus longtemps que les hommes, et cette différence est significative. 
+
+
+```{r}
+#| label: fig-survie-comparaison
+#| eval: false
+#| echo: true
+plot(survfit(Surv(temps, censure) ~ sexe, 
+             data = survie1), 
+     conf.int = FALSE,
+     col = c("red", "blue"), 
+     xlab = "temps", 
+     ylab = "fonction de survie")
 ```
 
-```{r fig-f5e7, echo = FALSE, out.width='75%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e7.png")
+```{r}
+#| label: fig-survie-comparaison-courbes
+#| out-width: '90%'
+#| fig-align: center
+#| eval: true
+#| echo: false
+#| fig-cap: "Courbes de survie pour les durées d'abonnement selon le sexe de l'individu."
+modele_survdiff <- 
+  survfit(Surv(temps, censure) ~ sexe, 
+          data = survie1)
+survdiffgraph <- 
+  survminer::ggsurvplot(modele_survdiff,
+                      legend.labs = c("homme","femme"))
+survdiffgraph$plot + 
+  ggplot2::theme(legend.position = "bottom") + 
+  ggplot2::labs(x = "temps",
+       y = "survie",
+       color = "sexe")
 ```
 
-```{r fig-f5e8, echo = FALSE, out.width='75%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e8.png")
-```
-
-On voit qu'il y a 309 hommes et 191 femmes. L'estimation du temps de survie médian est de 110 semaines pour les hommes et de 123 semaines pour les femmes. 
-
-```{r fig-f5e9, echo = FALSE, out.width='55%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e9.png")
-```
-
-
-Un des tableaux contient les statistiques et valeurs-$p$ pour trois tests de l'hypothèse d'égalité des fonctions de survie, le test du log-rang et le test de Gehan. Le troisième test dans le tableau (`-2Log(LR)`) est un test du rapport de vraisemblance sous l'hypothèse que les temps de survie des deux groupes suivent une loi exponentielle. Il est préférable d'utiliser les deux premiers qui ne font pas d'hypothèses quant à la distribution du temps de survie. Les valeurs-$p$ des tests log-rang et de Wilcoxon généralisé sont toutes les deux inférieures à $10^{-4}$. On rejette donc $\Hy_0$ pour conclure qu'il y a donc une différence significative entre les deux courbes de survie.
-
-
-Le test de Wilcoxon généralisé accorde plus de poids au temps près du début de la distribution qu'au temps plus loin. Il est donc, en général, plus puissant lorsque la différence entre les deux fonctions de survie survient tôt dans la distribution. Le test log-rang quant à lui suppose que le ratio des fonctions de risques des deux groupes est constant pour toute la période d'intérêt. 
-
-Ces courbes sont représentées dans la Figure @fig-f5e10. On voit que la courbe des femmes est systématiquement au-dessus de celle des hommes. Les femmes ont donc tendance à rester abonnées plus longtemps que les hommes, et cette différence est significative. 
-
-```{r fig-f5e10, fig.cap = "Courbes de survie estimées par sexe (Kaplan--Meier)", echo = FALSE, out.width='83%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e10.png")
-```
-
-
-
-Il est également possible de tester l'égalité des courbes de survie avec plus de deux groupes. Par exemple, s'il y a trois groupes, l'hypothèse nulle est alors $\Hy_0: S_1(t)=S_2(t)=S_3(t)$ pour tout $t$, versus l'alternative qu'au moins deux des fonctions ont une valeur différente pour au moins une valeur de $t$. Les commandes **SAS** pour exécuter le test sont les mêmes: il suffit de mettre la variable identifiant les groupes à la ligne `strata`. 
+Il est également possible de tester l'égalité des courbes de survie avec plus de deux groupes. Par exemple, s'il y a $k$ groupes, l'hypothèse nulle est alors $\mathscr{H}_0: S_1(t)=S_2(t)=\cdots = S_k(t)$ pour tout $t$, versus l'alternative qu'au moins deux des fonctions ont une valeur différente pour au moins une valeur de $t$; la loi nulle asymptotique du test est alors $\chi^2_{k-1}$. 
 
 L'estimateur de Kaplan--Meier ne permet pas l'inclusion de variables explicatives à proprement parler: si on peut veut les différences au niveau de la survie selon les modalités d'une variable explicative catégorielle, on divise pour ce faire l'échantillon en sous-groupes et on utilise l'estimateur de Kaplan--Meier pour chacune des modalités en gardant en tête que cela réduit la taille de l'échantillon disponible et que l'estimation résultante est possiblement trop variable pour être utile. 
 
 
+
+
+::: {.callout-note}
+
+## En résumé
+
+- L'analyse de survie est l'étude de temps d'attente (variable positive) avant que survienne un événement.
+- L'étude des temps de défaillance nécessite l'utilisation d'outils statistiques spécifiques en raison des mécanismes de censure et de troncation.
+- La fonction de survie $S(t)$ encode la probabilité que le temps de défaillance excède le temps $t$.
+- La fonction de risque encode la probabilité de mourir au temps $t$ sachant qu'on a survécu jusque là.
+- La connaissance de la fonction de survie permet d'obtenir la fonction de risque et vice-versa.
+- Le mécanisme d'information partielle le plus courant en analyse de survie est la censure à droite (on ne connaît qu'une borne inférieure pour le temps de défaillance, l'événement n'étant toujours pas survenu au temps donné).
+- Si on traitait les temps de censure comme des temps de défaillance observée, on *sous-estimerait* la durée de survie.
+- L'estimateur de Kaplan--Meier est l'estimateur du maximum de vraisemblance nonparamétrique si on a de la censure à droite aléatoire ou non-informative. Il ne fait aucun postulat sur la distribution de la survie.
+- Pour que l'estimation soit de qualité, il faut un nombre *conséquent* d'observations (disons 1000). La quantité d'observations censurées impacte la précision de l'estimation.
+- L'estimateur est déficient si le plus grand temps observé est censuré à droite (l'estimation de la fonction de survie ne décroît pas à zéro)
+- Le test du log-rang permet de valider si deux fonctions de survie sont égales (en tout temps).
+- On peut estimer la fonction de survie indépendamment pour chaque modalité d'une variable explicative catégorielle en stratifiant: cela réduit la taille de l'échantillon pour chaque strate.
+
+:::
+
 ## Modèle à risques proportionnels de Cox 
 
-Le modèle à risques proportionnels de Cox (_proportional hazard model_) est l'un des modèles les plus utilisés pour analyser des données de survie. 
+Le modèle à risques proportionnels de Cox (_proportional hazard model_) est l'un des modèles les plus utilisés pour l'analyse des données de survie. 
 
 ### Description du modèle de Cox
 
@@ -231,101 +349,233 @@ Par conséquent, l'impact d'une augmentation de $X$ d'une unité (quand $x_1-x_0
 Le terme **risques proportionnels** fait référence à la situation  où le rapport de risque dépend seulement de la différence $x_1-x_0$ et non pas du temps lui-même. Le rapport de risque est constant par rapport au temps $t$. Cela implique que l'effet d'une variable est stable dans le temps. Nous verrons plus loin comment faire en sorte que l'effet d'une variable puisse varier dans le temps.
 
 
-Débutons avec un exemple simple en utilisant les données d'abonnement: on ajuste un modèle de Cox en utilisant seulement la variable binaire sexe (`survival2_cox.sas`). Ceci peut être fait avec la procédure `phreg`, comme suit:
+Débutons avec un exemple simple en utilisant les données d'abonnement: on ajuste un modèle de Cox en utilisant seulement la variable binaire sexe. 
 
-```{sas survie3, eval = FALSE, echo = TRUE}
-proc phreg data=multi.survival1;
-model t*censure(1)=sexe / ties=exact; 
-run;
+```{r}
+#| label: survie-cox-sexe
+#| eval: false
+#| echo: true
+cox1 <- coxph(Surv(temps, censure) ~ sexe, 
+              data = survie1,
+              ties = "exact")
+summary(cox1)
+car::Anova(cox1, type = 3)
 ```
 
-La sortie inclut notamment des tests de significativité globale basés sur la vraisemblance pour les variables explicatives (rapport de vraisemblance, score et Wald) ainsi qu'un tableau des coefficients et des statistiques sur la qualité de l'ajustement pour le modèle sans variable explicative et celui qui inclut sexe. 
+La sortie inclut notamment des tests de significativité globale basés sur la vraisemblance comparant le modèle sans variable explicative avec celui ajusté (rapport de vraisemblance, score et Wald). Ces trois statistiques ciblent la même hypothèse, aussi on peut ne s'attarder qu'au test du rapport de vraisemblance, qui est plus fiable et généralement plus puissant. Le tableau des coefficients donne les estimations $\widehat{\beta}$, le rapport de risque $\exp(\widehat{\beta})$ pour `sexe=1` versus `sexe=0` et le rapport de risque pour `sexe=0` versus `sexe=1`, soit $\exp(-\widehat{\beta})$. Les statistiques de test et la valeur-$p$ associée sont basées sur la statistique de Wald, soit $\widehat{\beta}/\mathsf{se}(\widehat{\beta})$, tandis que les intervalles de confiance à 95% pour le rapport de risque sont basés sur la vraisemblance profilée: un rapport de risque de 1 signifie que le risque n'est pas affecté par la variable explicative, et un intervalle de confiance 95% signifie que le test du rapport de vraisemblance correspondant pour l'hypothèse nulle $\beta=0$ ou $\exp(\beta)=1$ ne mène pas au rejet de l'hypothèse que la variable n'impacte pas le risque. Comme à l'accoutumée, on préfère les intervalles de confiance (qui correspondent au rapport de vraisemblance profilée) plutôt que la statistique de Wald pour l'inférence, puisque cette dernière dépend de la paramétrisation du modèle et l'approximation est mauvaise si la loi du paramètre est fortement asymmétrique.
 
-```{r fig-f5e11, echo = FALSE, out.width='45%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e11.png")
+```{r}
+#| label: tbl-cox1 
+#| eval: true
+#| echo: false
+#| tbl-cap: "Rapport de risques et intervalles de confiance basés sur la vraisemblance profilée à niveau 95%."
+data(survie1, package = "hecmulti")
+cox1 <- coxph(Surv(temps, censure) ~ sexe, 
+              data = survie1,
+              ties = "exact")
+tab1 <- broom::tidy(cox1, 
+            exponentiate = TRUE, 
+            conf.int = TRUE)[,-(3:5)]
+colnames(tab1) <- c("terme",
+                    "exp(coef)",
+                    "borne inf.", 
+                    "borne sup.")
+knitr::kable(tab1,
+               digits = 2,
+               booktabs = TRUE) |>
+  kableExtra::kable_styling(full_width = TRUE)
 ```
 
-```{r fig-f5e12, echo = FALSE, out.width='85%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e12.png")
-```
-
-
-Il y a une seule variable explicative, le sexe de l'individu. L'estimation du paramètre de l'effet de sexe est $\hat{\beta}=-0,466$. Ce paramètre est significativement différent de $0$ (valeur-$p$ inférieure à $10^{-4}$). Pour l'interprétation, on utilise la colonne « Rapport de risque » qui contient la valeur $\exp(\hat{\beta}_{\texttt{sexe}}) = \exp(-0,466) = 0,628$. Ainsi, le rapport du risque d'une femme par rapport à un homme est
+Il y a une seule variable explicative, le sexe de l'individu. L'estimation du paramètre de l'effet de sexe est `r round(coef(cox1), 2)`. Ce paramètre est significativement différent de $0$ (valeur-$p$ du test du rapport de vraisemblance inférieure à $10^{-10}$). Pour l'interprétation, on utilise la colonne `exp(coef)` qui contient la valeur $\exp(\hat{\beta}_{\texttt{sexe}}) = \exp(-0.466) = 0.628$. Ainsi, le rapport du risque d'une femme par rapport à un homme est
 \begin{align*}
- \frac{\hat{h}(t; \texttt{sexe}=1)}{\hat{h}(t; \texttt{sexe}=0)}= 0,628.
+ \frac{\hat{h}(t; \texttt{sexe}=1)}{\hat{h}(t; \texttt{sexe}=0)}= 0.628.
 \end{align*}
-Par conséquent, le risque qu'une femme interrompe son abonnement est 0,628 fois celui d'un homme. Une femme est donc moins à risque de quitter qu'un homme. Nous avions déjà vu cela à la section précédente lorsque nous avions comparé les courbes de survie des hommes et des femmes. Il est important de se rappeler qu'avec ce modèle, l'effet d'une variable est le même dans le temps (peu importe la valeur de $t$). Donc, une femme est moins à risque de quitter qu'un homme à tout moment, d'après ce modèle. Inversement, le ratio du risque d'un homme par rapport à une femme est $1/0,628=1,59$. Ainsi, à tout moment, un homme a un risque d'interrompre son abonnement qui est 59% plus élevé que celui d'une femme.
+Par conséquent, le risque qu'une femme interrompe son abonnement est 0.628 fois celui d'un homme. Une femme est donc moins à risque de quitter qu'un homme. Nous avions déjà vu cela à la section précédente lorsque nous avions comparé les courbes de survie des hommes et des femmes. Il est important de se rappeler qu'avec ce modèle, l'effet d'une variable est le même dans le temps (peu importe la valeur de $t$). Donc, une femme est moins à risque de quitter qu'un homme à tout moment, d'après ce modèle. Inversement, le ratio du risque d'un homme par rapport à une femme est $\exp(-\hat{\beta}_{\texttt{sexe}}) = 1/0.628=1.59$. Ainsi, à tout moment, un homme a un risque d'interrompre son abonnement qui est 59% plus élevé que celui d'une femme.
 
-Comme il y a un seul paramètre ici, les tests basés sur la vraisemblance pour $\Hy_0: \boldsymbol{\beta}=\boldsymbol{0}$ reviennent à tester l'effet de la variable sexe. Le test de Wald est le même que celui du tableau des coefficients. Dans le cas particulier où il y a une seule variable explicative binaire (comme ici), le test du score est équivalent au test du log-rang que nous avons vu à la section précédente (à une petite différence près lorsqu'il y a des ex aequo dans les temps de survie). 
+Comme il y a un seul paramètre ici, les tests basés sur la vraisemblance pour $\mathscr{H}_0: \boldsymbol{\beta}=\boldsymbol{0}$ reviennent à tester l'effet de la variable sexe. Le test de Wald est le même que celui du tableau des coefficients. Dans le cas particulier où il y a une seule variable explicative catégorielle comme ici, le test du score est équivalent au test du log-rang que nous avons vu à la section précédente (à une petite différence près lorsqu'il y a des ex aequo dans les temps de survie). 
 
 On pourrait également utiliser une variable explicative continue plutôt qu'une variable binaire; le principe est le même.
 
-```{r fig-f5e13, echo = FALSE, out.width='45%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e13.png")
+```{r}
+#| label: survie4
+#| eval: false
+#| echo: true
+cox2 <- coxph(Surv(temps, censure) ~ age, 
+              data = survie1,
+              ties = "exact")
+summary(cox2)
 ```
 
-```{r fig-f5e14, echo = FALSE, out.width='85%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e14.png")
+Le rapport de risque pour âge est 0.959 et donc le risque diminue de 4.1% chaque fois que l'âge augmente d'un an --- le risque d'interrompre l'abonnement diminue lorsque l'âge augmente et cet effet est significatif (valeur-$p$ du test  de significativité globale inférieures à $10^{-4}$). 
+
+Généralement, on considérera le modèle de Cox avec toutes les variables explicatives simultanément. La variable $\texttt{region}$ est nominale tandis que la variable $\texttt{service}$ est ordinale (avec quatre modalités). Nous allons les incorporer, comme d'habitude, en utilisant des variables indicatrices avec  $\texttt{region=1}$ et $\texttt{service=0}$ (le client n'est abonné à aucun autre service) comme catégories de référence.
+
+```{r}
+#| label: survie-cox-modele-complet
+#| eval: false
+#| echo: true
+with(survie1, table(service))
+cox3 <- coxph(Surv(temps, censure) ~ 
+                age + sexe + region + service, 
+              data = survie1, 
+              ties = "exact")
+summary(cox3)
+# Effets de type 3 
+# (modèle avec toutes les variables sauf une)
+car::Anova(cox3, 
+           type = 3)
 ```
 
-Le rapport de risque pour âge est 0,959 et donc le risque diminue de 4,1% chaque fois que l'âge augmente d'un an --- le risque d'interrompre l'abonnement diminue lorsque l'âge augmente et cet effet est significatif (valeur-$p$ des tests inférieures à $10^{-4}$). 
-
-Généralement, on considérera le modèle de Cox avec toutes les variables explicatives simultanément. La variable $\texttt{region}$ est nominale tandis que la variable $\texttt{service}$ est ordinale (avec quatre modalités). Nous allons les incorporer, comme d'habitude, en utilisant des variables indicatrices avec  $\texttt{region=5}$ et $\texttt{service=0}$ (le client n'est abonné à aucun autre service) comme catégories de référence.
-
-```{sas survie4, eval = FALSE, echo = TRUE}
-proc phreg data=multi.survival1;
-class region(ref='5') service(ref='0') / param=ref;
-model t*censure(1)=age sexe region service / ties=exact; 
-run;
+```{r}
+#| label: tbl-survie5-coefs
+#| eval: true
+#| echo: false
+#| tbl-cap: "Rapport de risque et intervalles de confiance à niveau 95% basés sur la vraisemblance profilés pour le modèle de Cox de base avec toutes les variables explicatives."
+cox3 <- coxph(Surv(temps, censure) ~ 
+                age + sexe + region + service, 
+              data = survie1, 
+              ties = "exact")
+tab1 <- broom::tidy(cox3,
+            exponentiate = TRUE, 
+            conf.int = TRUE)[,-(3:5)]
+colnames(tab1) <- c("terme",
+                    "exp(coef)",
+                    "borne inf.", 
+                    "borne sup.")
+knitr::kable(tab1,
+               digits = 2,
+               booktabs = TRUE) |>
+  kableExtra::kable_styling(full_width = TRUE)
 ```
 
+```{r}
+#| label: tbl-survie5-deviance
+#| tbl-cap: "Tests du rapport de vraisemblance pour les effets de type III pour le modèle de Cox avec toutes les variables explicatives."
+#| eval: true
+#| echo: false
+tab2 <- broom::tidy(car::Anova(cox3, 
+           type = 3, 
+           test.statistic = "LR"))
+tab2$p.value <- format.pval(tab2$p.value,
+                            eps = 1e-4, 
+                            digits = 2)
+colnames(tab2) <- c("terme", 
+                    "statistique", 
+                    "ddl", 
+                    "valeur-p")
 
-```{r fig-f5e15, echo = FALSE, out.width='45%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e15.png")
+knitr::kable(tab2,
+             digits = 2,
+             booktabs = TRUE) |>
+  kableExtra::kable_styling(full_width = TRUE)
 ```
 
+Les effets des variables sont maintenant des effets marginaux. Ainsi, lorsque les autres variables demeurent fixes, le risque de quitter d'une femme est `r round(exp(coef(cox3)),3)[2]` fois plus petit que celui d'un homme.  L'effet marginal (une fois que les autres variables sont incluses) de la variable sexe est significatif (valeur-$p$ inférieure à $10^{-4}$).
 
-```{r fig-f5e16, echo = FALSE, out.width='45%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e16.png")
-```
+Toutes autres choses étant égales, chaque augmentation de l'âge d'un an fait diminuer le risque d'interrompre l'abonnement. Plus précisément, le risque est multiplié par `r round(exp(coef(cox3)),3)[1]` lorsque l'âge augmente d'un an et cet effet est significatif.
 
+Pour la variable service, l'interprétation se fait par rapport à la catégorie de référence, qui est la catégorie $\texttt{0}$ (abonné à aucun autre service). Ainsi, si le client est abonné à un autre service, son risque de quitter est `r round(as.numeric(exp(coef(cox3))),3)[7]` fois celui d'un client qui n'est pas abonné à un autre service (toutes autres choses étant égales). Si le client est abonné à deux autres services, son risque de quitter est encore plus petit comparativement à un client qui n'est pas abonné à un autre service (rapport de risque de `r round(as.numeric(exp(coef(cox3))),3)[8]`) Finalement, si le client est abonné à trois autres services, son risque de quiter est encore plus petit (rapport de risque de `r round(as.numeric(exp(coef(cox3))),3)[9]`). Les paramètres de ces trois variables sont tous significatifs. Ainsi, les clients qui sont abonnés à un, deux ou trois services ont un risque de quitter qui est significativement plus faible que celui d'un client qui n'est pas abonné à un autre service. Le tableau d'analyse de déviance (effets de type 3) donne les statistiques du rapport de vraisemblance pour tester globalement la significativité d'une variable explicative modélisée avec plusieurs indicatrices. Pour la variable $\texttt{service}$, le test présenté teste l'hypothèse nulle $\mathscr{H}_0: \beta_{\texttt{service}_1}=\beta_{\texttt{service}_2}=\beta_{\texttt{service}_3}=0$ contre l'alternative qu'un moins un de ces trois paramètres est non-nul. Le test est largement significatif (statistique du rapport de vraisemblance valant `r round(as.numeric(tab2[4,2]), 2)` avec une valeur-$p$ inférieure à $10^{-4}$). L'effet de la variable $\texttt{service}$ est donc globalement significatif. Afin de comparer les autres modalités entre elles, par exemple afin de voir si le risque de quitter est différent entre un client qui a deux services et un autre qui a trois services, il suffit de changer la catégorie de référence à la commande `class` et de réajuster le modèle.
 
-```{r fig-f5e17, echo = FALSE, out.width='45%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e17.png")
-```
-
-
-```{r fig-f5e18, echo = FALSE, out.width='85%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e18.png")
-```
-
-Les effets des variables sont maintenant des effets marginaux. Ainsi, lorsque les autres variables demeurent fixes, le risque de quitter d'une femme est $0,514$ fois plus petit que celui d'un homme.  L'effet marginal (une fois que les autres variables sont incluses) de la variable sexe est significatif (valeur-$p$ inférieure à $10^{-4}$).
-
-Toutes autres choses étant égales, chaque augmentation de l'âge d'un an fait diminuer le risque d'interrompre l'abonnement. Plus précisément, le risque est multiplié par 0,95 lorsque l'âge augmente d'un an et cet effet est significatif.
-
-Pour la variable service, l'interprétation se fait par rapport à la catégorie de référence, qui est la catégorie $\texttt{0}$ (abonné à aucun autre service). Ainsi, si le client est abonné à un autre service, son risque de quitter est $0,358$ fois celui d'un client qui n'est pas abonné à un autre service (toutes autres choses étant égales). Si le client est abonné à deux autres services, son risque de quitter est encore plus petit comparativement à un client qui n'est pas abonné à un autre service (rapport de risque de $0,177$) Finalement, si le client est abonné à trois autres services, son risque de quiter est encore plus petit (rapport de risque de $0,118$). Les paramètres de ces trois variables sont tous significatifs. Ainsi, les clients qui sont abonnés à un, deux ou trois services ont un risque de quitter qui est significativement plus faible que celui d'un client qui n'est pas abonné à un autre service. Le tableau `Tests Type 3` permet de tester globalement la significativité d'une variable explicative modélisée avec plusieurs indicatrices. Pour la variable $\texttt{service}$, le test présenté teste l'hypothèse nulle $\Hy_0: \beta_{\texttt{service}_1}=\beta_{\texttt{service}_2}=\beta_{\texttt{service}_3}=0$ contre l'alternative qu'un moins un de ces trois paramètres est non-nul. Le test est largement significatif (statistique de Wald du $\chi^2_4$ valant 149,52 avec une valeur-$p$ inférieure à $10^{-4}$). L'effet de la variable $\texttt{service}$ est donc globalement significatif. Afin de comparer les autres modalités entre elles, par exemple afin de voir si le risque de quitter est différent entre un client qui a deux services et un autre qui a trois services, il suffit de changer la catégorie de référence à la commande `class` et de réajuster le modèle.
-
-Finalement, la variable $\texttt{region}$ n'est pas globalement significative (statistique de Wald de 7,56 avec une valeur-$p$ de 0,11).
+Finalement, la variable $\texttt{region}$ n'est pas globalement significative (statistique du rapport de vraisemblance de `r round(as.numeric(tab2[3,2]),2)` avec une valeur-$p$ de `r tab2[3,4]`)) basée sur une loi $\chi^2_4$.
 
 ### Estimation de la fonction de survie pour des valeurs particulières des variables explicatives
 
-Il est possible d'obtenir l'estimation de la fonction de survie pour des valeurs particulières des variables explicatives avec la commande `baseline` (voir le script `survival2_cox.sas` pour plus de détails).  Pour ce faire, il faut avoir un autre fichier de données qui contient les valeurs des variables explicatives pour lesquelles on veut une estimation de la fonction de survie. 
+Il est possible d'obtenir l'estimation de la fonction de survie pour des valeurs particulières des variables explicatives.  Pour ce faire, il faut avoir un autre fichier de données qui contient les valeurs des variables explicatives pour lesquelles on veut une estimation de la fonction de survie. Si on ajuste le modèle avec aucune variable explicative, on retrouvera alors l'estimation de Kaplan--Meier de la fonction de survie.
 
-Si on ajuste le modèle avec aucune variable explicative, on retrouvera alors l'estimation de Kaplan--Meier de la fonction de survie comme avec la procédure `lifetest`.
-
-Supposons qu'on ajuste le modèle avec les variables sexe et âge seulement dans l'exemple du temps d'abonnement, et que l'on désire la fonction de survie pour les hommes de 25 et 60 ans et pour les femmes de 25 et 60 ans. Le fichier `survival2.sas7bdat` contient les données qui seront utilisées à cette fin. Il contient seulement les quatre lignes suivantes.
+Supposons qu'on ajuste le modèle avec les variables sexe et âge seulement dans l'exemple du temps d'abonnement, et que l'on désire la fonction de survie pour les hommes de 25 et 60 ans et pour les femmes de 25 et 60 ans. Le fichier `survie2` contient les données qui seront utilisées à cette fin. 
 
 
-```{r fig-f5e19, echo = FALSE, out.width='15%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e19.png")
+```{r}
+#| label: fig-courbes-survie
+#| echo: true
+#| eval: true
+#| fig-cap: "Courbes de survies du modèle de Cox pour les quatre profils client."
+#| out-width: '90%'
+#| fig-width: 6
+#| fig-height: 4
+cox4 <- survival::coxph(
+  Surv(time = temps, 
+       event = censure, 
+       type = "right") ~
+    sexe + age,
+  data = survie1,
+  ties = "exact"
+)
+data(survie2, package = "hecmulti")
+# Calculer la fonction de survie
+fsurv <- survfit(cox4, 
+             newdata = survie2, 
+             type = "kaplan-meier")
+# Tracer la fonction de survie selon le profil
+plot(fsurv,
+     col = 1:4,
+     ylab = "survie",
+     xlab = "temps d'abonnement (semaines)",
+     bty = "n")
+legend(x = "bottomleft",
+       legend = c("homme, 25 ans", 
+                  "femme, 25 ans",
+                  "homme, 60 ans", 
+                  "femme, 60 ans"),
+       col = 1:4,
+       lty = 1,
+       bty = "n")
 ```
 
 
-Les quatre fonctions de la Figure @fig-f5e20 correspondent aux profils pour lesquels nous désirons une estimation de la courbe de survie. La courbe 1 est pour les hommes de 25 ans, la courbe 2 pour les femmes de 25 ans, la courbe 3 pour les hommes de 60 ans et la courbe 4 pour les femmes de 60 ans. On voit donc que, parmi ces quatre profils, les hommes de 25 ans sont le plus à risque de quitter tandis que les femmes de 60 ans sont le moins à risque de quitter.
+Les quatre fonctions de la @fig-courbes-survie correspondent aux profils pour lesquels nous désirons une estimation de la courbe de survie. La courbe 1 est pour les hommes de 25 ans, la courbe 2 pour les femmes de 25 ans, la courbe 3 pour les hommes de 60 ans et la courbe 4 pour les femmes de 60 ans. On voit donc que, parmi ces quatre profils, les hommes de 25 ans sont le plus à risque de quitter tandis que les femmes de 60 ans sont le moins à risque de quitter.
 
-```{r fig-f5e20, echo = FALSE, out.width='80%', fig.cap="Courbes de survie pour hommes et femmes de 25 et 60 ans.", fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e20.png")
+
+### Postulat de risques proportionnels
+
+Le modèle de Cox fait l'hypothèse que la fonction de risque de base est identique peut importe la valeur des variables catégorielles. Si ce n'est pas le cas, alors les résultats du modèle ne sont pas nécessairement fiables.
+
+Comme pour un modèle de régression, il est possible de créer des résidus du modèles et de faire des graphiques diagnostics pour potentiellement infirmer le postulat de risques proportionnels [@Grambsch.Therneau:1994]. Si l'hypothèse tient la route, alors il ne devrait pas y avoir de tendance temporelle dans les résidus.
+
+La commande `cox.zph` permet de tester le postulat de risques proportionnels à l'aide d'un test du score pour voir si la pente $\beta(t)$ associée à une covariable est nulle en fonction du temps $t$; si la valeur-$p$ est grande, cela indique une absence de preuve. La fonction `plot` permet également d'obtenir un graphique des résidus en fonction du temps.
+
+
+```{r}
+#| label: fig-coxph-hypothese
+#| fig-cap: "Estimations des coefficients en fonction du temps basés sur les moindres carrés pondérés (diagnostic graphique de Grampsch et Therneau)."
+#| eval: true
+#| echo: false
+#| fig-align: center
+par(mfrow = c(2,2), mar = c(4,4,1,1))
+plot(cox.zph(cox3))
+graphics.off()
 ```
+
+```{r}
+#| label: tbl-coxph-hypothese
+#| eval: true
+#| echo: false
+#| tbl-cap: "Postulat de risques proportionnels: test du score de Grampsch et Therneau (1994) pour les coefficients constants dans le temps et valeur-p asymptotique basée sur la loi null khi-deux." 
+tab3 <- as.data.frame(cox.zph(cox3)$table)
+tab3$p <- format.pval(tab3$p, digits = 2, eps = 1e-4)
+tab3 <- cbind(effet = tolower(rownames(tab3)), tab3)
+tab3 <- tibble::as_tibble(tab3)
+colnames(tab3) <- c("effet", "score", "ddl", "valeur-p")
+
+knitr::kable(tab3,
+             digits = c(0,2,2,0,3),
+             booktabs = TRUE) |>
+  kableExtra::kable_styling(full_width = TRUE)
+```
+
+
+Dans la @fig-coxph-hypothese, on voit que le coefficient pour service augmente au fil du temps pour tous les groupes. On pourrait capturer cette interaction ou stratifier pour calculer le risque selon le nombre de services, au risque d'avoir trop peu d'observations pour estimer de manière fiable le risque de base. C'est explicable par le fait que les personnes avec plus de services tendent à avoir plus une survie plus longue.
+
+```{r}
+#| label: coxph-hypothese
+#| eval: false
+#| echo: true
+diag_risqueprop <- cox.zph(cox3)
+print(diag_risqueprop)
+plot(diag_risqueprop)
+```
+
+Si le postulat n'est pas validé, on peut interpréter l'effet comme un rapport de risque moyen pondéré sur la période de suivi, mais ce dernier change selon le moment [@Stensrud.Hernan:2020]. Cela implique également que les erreurs-types associées aux estimations sont trompeuses. La section suivante permettra de généraliser le modèle de Cox et traiter ce cas de figure.
 
 ## Extensions du modèle de Cox
 
@@ -334,6 +584,8 @@ Dans cette section, nous allons voir deux extensions du modèle à risques propo
 
 i) Inclusion de variables explicatives dont la valeur change dans le temps.
 ii) Modèle à risques compétitifs (_competing risks_) pour étudier la situation où il y a plusieurs manières de quitter l'état.
+
+La vignette [*Using Time Dependent Covariates and Time Dependent Coefficients in the Cox Model* de Therneau, Crowson et Atkinson](https://cran.r-project.org/web/packages/survival/vignettes/timedep.pdf) du paquet `survival` offre des détails sur l'implémentation des méthodes qui suivent.
 
 
 ### Variables explicatives dont la valeur change dans le temps 
@@ -351,28 +603,40 @@ où $x_1(t)$ indique que la valeur de $X_1$ dépend du temps $t$.
 
 Supposons que la variable $\texttt{service}$, qui représente le nombre d'autres services souscrits, est la seule que nous voulons modéliser comme une variable qui varie dans le temps. Pour l'âge, nous prenons simplement l'âge au début de l'abonnement, idem pour la région.
 
-Le plus difficile est de créer correctement le fichier de données pour effectuer ce genre d'analyse. Supposons pour cet exemple qu'il y a eu au plus un changement dans la variable $\texttt{service}$, comme présenté dans le fichier `survival3.sas7bdat`. Les variables $\texttt{t}$, $\texttt{censure}$, $\texttt{age}$, $\texttt{sexe}$ et $\texttt{region}$ sont comme précédemment. Trois nouvelles variables remplacent l'ancienne variable service.
+Le plus difficile est de créer correctement le fichier de données pour effectuer ce genre d'analyse. Pour chaque personne, on peut identifier plusieurs moments où l'une ou l'autres des valeurs des variables explicatives change. Supposons qu'on a observé un événement au temps $t_1$, et que la valeur de la covariable change à $t_0$, où $0 < t_0 < t_1$. On peut envisager cette observation donne deux contributions: une pour la trajectoire sur l'intervalle $(0, t_0]$ et l'autre, après la modification, sur l'intervalle $(t_0, t_1]$. Puisque la valeur est observée passée le premier intervalle, on a besoin de l'information sur toute la fenêtre (les deux bornes) et le type d'événement pour la première fenêtre sera de la censure à droite.
 
-- $\verb+service_avant+$: nombre d'autres services auxquels le client est abonné au début de son abonnement.
-- $\verb+temps_ch+$: temps au moment où un changement est survenu quant au nombre d'autres services. En l'absence de changement, l'observation est remplacée par une valeur manquante (`.`).
-- $\verb+service_apres+$: nombre d'autres services auxquels le client est abonné à partir du temps $\verb+temps_ch+$.
+La base de données `survie3` contient le format adéquat: une colonne `evenement` qui indique la censure (tout intervalle intermédiaire pour un individu est traité comme de la censure à droite) et les bornes de la fenêtre, `debut` et `fin`. Dans cet exemple, il y a eu au plus un changement dans la variable $\texttt{service}$, comme présenté dans le fichier `survie3`. Les variables explicatives $\texttt{age}$, $\texttt{sexe}$ et $\texttt{region}$ sont comme précédemment. 
 
 
-```{r fig-f5e21, echo = FALSE, out.width='80%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e21.png")
+```{r}
+#| label: tbl-survie3-donnees
+#| tbl-cap: "Aperçu des cinq premières observations de la base de données `survie3`."
+#| echo: false
+#| eval: true
+data(survie3, package = "hecmulti")
+knitr::kable(survie3 |> dplyr::filter(id <= 5),
+             digits = 0,
+             booktabs = TRUE) |>
+  kableExtra::kable_styling(full_width = TRUE)
 ```
 
-On regarde plus en détail le profil des cinq premiers clients, dont seuls deux ont changé le nombre d'abonnements; les individus 3--5 se sont désabonnés du service cellulaire à un moment donné. Le premier client était abonné à deux autres services au début de son abonnement au téléphone cellulaire mais, après 130 semaines d'abonnement, a effectué un changement à son forfait pour ne conserver qu'un autre service en plus du cellulaire. Pour le deuxième client, comme $\verb+temps_ch+$ est manquante, il est toujours abonné à deux autres services et ce, jusqu'à la fin de l'étude. 
-
-Les commandes **SAS** permettant d'ajuster le modèle avec point de rupture se trouvent dans le fichier `survival3_varie_temps.sas`. Notez que lorsqu'on a une variable catégorielle qui varie dans le temps (comme ici avec la variable service), on ne peut pas utiliser `class` pour la déclarer catégorielle; il faut plutôt créer nous-mêmes les variables indicatrices nécessaires à l'intérieur même de l'appel à la fonction `phreg` (voir le script). Ici, nous utiliserons la catégorie $\texttt{0}$ (aucun autre service) comme catégorie de référence.
+On regarde plus en détail le profil des cinq premiers clients présenté dans le @tbl-survie3-donnees, dont seuls deux ont changé le nombre d'abonnements; les individus 3--5 se sont désabonnés du service cellulaire à un moment donné. Le premier client était abonné à deux autres services au début de son abonnement au téléphone cellulaire mais, après 130 semaines d'abonnement, a effectué un changement à son forfait pour ne conserver qu'un autre service en plus du cellulaire. Pour le deuxième client, comme $\verb+temps_ch+$ est manquante, il est toujours abonné à deux autres services et ce, jusqu'à la fin de l'étude. 
 
 
-```{r fig-f5e22, echo = FALSE, out.width='85%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e22.png")
+
+```{r}
+#| label: cox-risques-nonprop
+#| eval: true
+#| echo: true
+data(survie3, package = "hecmulti")
+cox4 <- coxph(Surv(time = debut, 
+                   time2 = fin, 
+                   event = evenement) ~ 
+                age + sexe + region + service, 
+              data = survie3)
 ```
 
-
-L'interprétation se fait comme précédemment. Ici, c'est la valeur d'une variable qui varie dans le temps et non pas son effet. Ainsi, le ratio de risque de quitter pour un client qui a un autre service est 0,604 fois celui d'un client qui n'a aucun autre service (référence). Le fait d'avoir deux ou trois services diminue encore plus le risque de quitter (ratios de risque de 0,267 et 0,21, respectivement). 
+L'interprétation se fait comme précédemment; on a omis l'option `ties = "exact"` parce que cette option est trop gourmande en calcul. Puisque c'est la valeur d'une variable qui varie dans le temps et non pas son effet, on a l'interprétation usuelle. Par exemple, le rapport de risque de quitter pour un client qui a un autre service est `r round(exp(coef(cox4))['service1'], 3)` fois celui d'un client qui n'a aucun autre service (référence). Le fait d'avoir deux ou trois services diminue encore plus le risque de quitter (ratios de risque de `r round(exp(coef(cox4))['service2'], 3)` et `r round(exp(coef(cox4))['service3'], 3)`, respectivement). 
 
 ### Modèle à risques compétitifs
 
@@ -390,68 +654,71 @@ Ce qui simplifie énormément la situation est qu'il est prouvé qu'on peut esti
 
 Dans notre exemple d'abonnement cellulaire, supposons que nous avons trois causes possibles pour la perte d'un client: soit il a interrompu son abonnement pour aller chez le compétiteur A, soit pour aller chez le compétiteur B, soit il n'a plus de cellulaire du tout.
 
-Les données pour cet exemple se trouvent dans le fichier `survival4.sas7bdat` et le programme dans le fichier `survival4_risques_competitifs.sas`. La seule nouveauté par rapport au fichier original est la variable $\texttt{censure}$ qui est maintenant codée ainsi
+Les données pour cet exemple se trouvent dans le fichier `survie4`. La seule nouveauté par rapport au fichier original est la variable $\texttt{censure}$ qui est maintenant codée ainsi
 
 - 1, si le temps est censuré (l'individu est toujours abonné à notre service)
 - 2, si l'individu a quitté pour aller chez le compétiteur A
 - 3, si l'individu a quitté pour aller chez le compétiteur B
 - 4, si l'individu a quitté parce qu'il n'a plus besoin de cellulaire.
 
-On peut calculer la fréquence de chaque modalité.
-
-
-```{r fig-f5e23, echo = FALSE, out.width='65%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e23.png")
-```
+On peut calculer la fréquence de chaque modalité avec `table`.
 Ainsi, il y a donc 166 clients toujours abonnés, 170 qui nous ont quitté pour aller chez A, 121 pour aller chez B, et 43 qui n'ont plus de cellulaires.
 
 Pour ajuster le modèle lorsque la cause du départ est le compétiteur A, le code est
-```{sas survie6, eval = FALSE, echo = TRUE}
-proc phreg data=multi.survival4;
-class region(ref='5') service(ref='0') / param=ref;
-model t*censure(1,3,4)=age sexe region service / ties=exact; 
-run;
+
+```{r}
+#| label: risque-competitif
+#| eval: false
+#| echo: true
+# Rappel pour `event`:
+#   1 pour observation, 
+#   0 pour censure à droite
+# On utilise la convention TRUE = 1, FALSE = 0
+data(survie4, package = "hecmulti")
+cox5 <- coxph(Surv(time = temps, 
+                   event = censure == 2,
+                   type = "right") ~ 
+                age + sexe + region + service, 
+              data = survie4,
+              ties = "exact")
+summary(cox5)
 ```
 
+
+
+```{r}
+#| label: tbl-cox-risquecompetA
+#| echo: false
+#| eval: true
+#| tbl-cap: "Rapport de risque et intervalles de confiance à niveau 95% basés sur la vraisemblance profilés pour le modèle à risques compétitifs (probabilité de quitter pour compétiteur A)."
+data(survie4, package = "hecmulti")
+cox5 <- coxph(Surv(time = temps, 
+                   event = censure == 2,
+                   type = "right") ~ 
+                age + sexe + region + service, 
+              data = survie4,
+              ties = "exact")
+tab5 <- broom::tidy(cox5,
+            exponentiate = TRUE, 
+            conf.int = TRUE)[,-(3:5)]
+colnames(tab5) <- c("terme",
+                    "exp(coef)",
+                    "borne inf.", 
+                    "borne sup.")
+knitr::kable(tab5,
+               digits = 2,
+               booktabs = TRUE) |>
+  kableExtra::kable_styling(full_width = TRUE)
+```
 Notez qu'on précise que les valeurs 1, 3 et 4 sont des observations censurées. Ici, l'événement d'intérêt est que le client est parti chez le compétiteur A. S'il est toujours abonné ($\texttt{censure=1}$), s'il est parti chez le compétiteur B ($\texttt{censure=3}$) ou s'il nous a quitté car il n'a plus de cellulaire ($\texttt{censure=4}$), alors l'événement « quitter pour aller chez A » n'est pas survenu. C'est pourquoi on doit traiter ces situations comme des censures. 
 
-```{r fig-f5e24, echo = FALSE, out.width='65%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e24.png")
-```
-
-```{r fig-f5e25, echo = FALSE, out.width='85%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e25.png")
-```
+Ainsi, on voit que l'événement est survenu 170 fois et qu'il y a 330 censures. L'interprétation des paramètres se fait comme précédemment. Sauf qu'il faut préciser qu'il s'agit du risque de quitter pour aller chez le compétiteur A. Par exemple, le risque de quitter pour aller chez le compétiteur A d'une femme est 0.444 fois le risque de quitter pour aller chez le compétiteur A d'un homme. Ainsi, les femmes sont moins à risque de quitter pour aller chez le compétiteur A que les hommes.
 
 
-Ainsi, on voit que l'événement est survenu 170 fois et qu'il y a 330 censures. L'interprétation des paramètres se fait comme précédemment. Sauf qu'il faut préciser qu'il s'agit du risque de quitter pour aller chez le compétiteur A. Par exemple, le risque de quitter pour aller chez le compétiteur A d'une femme est 0,444 fois le risque de quitter pour aller chez le compétiteur A d'un homme. Ainsi, les femmes sont moins à risque de quitter pour aller chez le compétiteur A que les hommes.
+Pour ajuster le modèle lorsque la cause du départ est le compétiteur B, procède de la même manière. Notez que cette fois-ci, ce sont les valeurs 1, 2 et 4 de la variable censure qui correspondent au fait que l'événement n'est pas survenu.  Il y a 121 clients qui ont quitté pour aller chez B et 379 cas autre (censure). L'interprétation des paramètres se fait en termes de risque de quitter pour aller chez le compétiteur B.
 
 
-Pour ajuster le modèle lorsque la cause du départ est le compétiteur B, procède de la même manière. Notez que cette fois-ci, ce sont les valeurs 1, 2 et 4 de la variable censure qui correspondent au fait que l'événement n'est pas survenu; on spécifie donc `censure(1,2,4)` dans l'appel à la fonction `phreg`.  Il y a 121 clients qui ont quitté pour aller chez B et 379 cas autre (censure). L'interprétation des paramètres se fait en termes de risque de quitter pour aller chez le compétiteur B.
-
-```{r fig-f5e26, echo = FALSE, out.width='65%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e26.png")
-```
-
-```{r fig-f5e27, echo = FALSE, out.width='85%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e27.png")
-```
-
-
-
-Si on ajuste le modèle pour le cas de figure où la cause de départ est que le client n'a plus besoin de cellulaire, on obtient une sortie similaire. On voit, que contrairement aux deux premiers modèles, l'effet de la variable sexe n'est pas significatif ici. 
-
-
-```{r fig-f5e28, echo = FALSE, out.width='65%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e28.png")
-```
-
-```{r fig-f5e29, echo = FALSE, out.width='85%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e29.png")
-```
-
-
-En fait, comme il y a seulement 43 événements (quitter car on n'a plus besoin de cellulaire), les estimations des paramètres sont moins précises, ce qu'on peut voir avec les erreurs-types qui sont plus élevés. Les observations censurées contiennent moins d'information que les événements, d'où cette perte de précision.
+Si on ajuste le modèle pour le cas de figure où la cause de départ est que le client n'a plus besoin de cellulaire, on obtient une sortie similaire. Comme il y a seulement 43 événements (quitter car on n'a plus besoin de cellulaire), les estimations des paramètres sont moins précises, ce qu'on peut voir avec les erreurs-types qui sont plus élevés. Les observations censurées contiennent moins d'information que les événements, d'où cette perte de précision.
 
 ## Risques non proportionnels
 
@@ -466,61 +733,97 @@ h(t; x) = h_0(t) \exp(\beta_1x + \beta_2xt).
 \end{align*}
 Pour ce modèle, le rapport de risque, pour une augmentation d'une unité de $X$ est $\exp(\beta_1+ \beta_2t)$ et dépend du temps $t$: c'est un modèle avec risques non proportionnels. On retombe sur le modèle à risques proportionnels lorsque $\beta_2=0$. 
 
-Ajustons le modèle pour l'abonnement cellulaire en ajoutant une interaction entre l'âge et le temps. Les commandes se trouvent dans `survival5_non_proportionnel.sas`, dont l'extrait montre comment créer la variable produit.
+Ajustons le modèle pour l'abonnement cellulaire en ajoutant une interaction entre l'âge et le temps. 
+On spécifie avec l'option `tt()` la variable qui change dans le temps et on spécifie par la suite la nature de l'interaction temporelle.
 
-```{sas survie7, echo =TRUE, eval = FALSE}
-proc phreg data=temp;
-class region(ref='5') service(ref='0') / param=ref;
-model t*censure(1)=age iaget sexe region service / ties=exact;
-iaget=age*t; 
-run;
+```{r}
+#| label: interaction-temps-covariable
+#| echo: true
+#| eval: false
+# interaction entre service et temps
+# objet avec 'tt' varie dynamiquement
+cox6 <- survival::coxph(
+    Surv(temps, censure) ~ 
+     age + tt(age) + sexe + region + service, 
+     data = survie1, 
+     tt = function(x, t, ...){ x * t })
+summary(cox6)
 ```
 
-L'interaction entre l'âge et le temps est spécifiée en incluant une nouvelle variable, $\texttt{iaget}$, créée à l'intérieur de l'appel à la procédure `phreg`, et qui est égale au produit entre l'$\texttt{age}$ et $\texttt{t}$. On remarque que le terme d'interaction est tout juste non significatif (valeur-$p$ de 0,061). 
-
-```{r fig-f5e30, echo = FALSE, out.width='85%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e30.png")
+```{r}
+#| label: tbl-cox-np
+#| echo: false
+#| eval: true
+#| tbl-cap: "Rapport de risque et intervalles de confiance à niveau 95% basés sur la vraisemblance profilés pour le modèle à risques non proportionnels (interaction linéaire entre temps et âge)."
+cox6 <- survival::coxph(
+    Surv(temps, censure) ~ 
+     age + tt(age) + sexe + region + service, 
+     data = survie1, 
+     tt = function(x, t, ...){ x * t },
+     ties = "exact")
+tab6 <- broom::tidy(cox6,
+            exponentiate = TRUE, 
+            conf.int = TRUE)[,-(3:5)]
+colnames(tab6) <- c("terme",
+                    "exp(coef)",
+                    "borne inf.", 
+                    "borne sup.")
+knitr::kable(tab6,
+               digits = 2,
+               booktabs = TRUE) |>
+  kableExtra::kable_styling(full_width = TRUE)
 ```
 
+L'interaction entre l'âge et le temps est spécifiée en incluant `tt`: la variable produit `age * t` est créée à l'intérieur de l'appel à la fonction `coxph`, et qui est égale au produit entre l'$\texttt{age}$ et $\texttt{t}$. On remarque que le terme d'interaction est tout juste non significatif selon le test de Wald (valeur-$p$ de `r format.pval(eps = 1e-4, summary(cox5)$coefficients[2,5])`).^[Pour des raisons techniques hors du niveau du cours, le test du rapport de vraisemblance pour l'effet de l'interaction est probablement illogique ici.] 
+
+L'interaction employée ici n'est pas la seule fonction du temps qu'on pourrait spécifier, ni la plug logique. Par exemple, on pourrait spécifier un effet de l'âge par pallier selon une catégorie d'âge, ou un spline pour un effet plus flexible.
 
 ### Stratification
 
 Une autre manière de modéliser la non-proportionnalité est par la stratification. Il est important de comprendre qu'on ne pourra pas estimer l'effet de la variable de stratification. On devrait donc seulement utiliser une variable qui ne nous intéresse pas en soi, mais qui peut avoir un effet sur le temps de survie. 
 
-Encore une fois, pour simplifier, supposons que nous avons deux variables $X$ et $Z$; cette dernière est binaire et prend les valeurs $0$ et $1$. On s'intéresse à l'effet de la variable $X$ mais pas à celui de la variable $Z$; néanmoins, on croit que $Z$ impacte le temps de survie et que, de ce fait, le postulat de proportionnalité de la fonction de risque n'est pas validé. Le modèle de Cox avec stratification (pour la variable $Z$) est 
-\begin{align*}
+Encore une fois, pour simplifier, supposons que nous avons deux variables $X$ et $Z$; cette dernière est binaire et prend les valeurs $0$ et $1$. On s'intéresse à l'effet de la variable $X$ mais pas à celui de la variable $Z$; néanmoins, on croit que $Z$ impacte le temps de survie et que, de ce fait, le postulat de proportionnalité de la fonction de risque n'est pas validé. Le modèle de Cox avec stratification (pour la variable $Z$) est \begin{align*}
 h(t; x, z) = h_z(t) \exp(\beta x),
 \end{align*}
 où $h_0(t)$ est la fonction de risque de base quand $Z=0$ et $h_1(t)$ est la fonction de risque de base lorsque $Z=1$. L'effet de la variable $X$ est supposé être le même peut importe la valeur de $Z$, mais la fonction de risque de base peut différer. Le rapport de risque pour $Z=1$ versus $Z=0$ est $h_1(t)/h_0(t)$; cette quantité dépend du temps $t$. L'effet de la variable  est donc variable dans le temps (et non pas constant). Ce modèle permet donc de modéliser la non-proportionnalité pour la variable $Z$. Si on stratifie par rapport à une variable, il ne faut pas l'inclure dans le modèle en plus car elle est déjà modélisée via la stratification. Notez que les paramètres $\boldsymbol{\beta}$ seront estimés à l'aide des données de toutes les strates.
 
-L'avantage de la stratification est que cette méthode permet de modéliser n'importe quel changement dans l'effet d'une variable dans le temps sans devoir spécifier un type de changement particulier, comme lorsqu'on doit choisir la forme de l'interaction. Par contre, on perd la possibilité de tester l'effet de la variable de stratification on réduit la taille de l'échantillon pour l'estimation de la fonction de risque de base. On devrait donc utiliser la stratification seulement avec des variables pour lesquelles nous n'avons pas besoin d'estimer l'effet (variables secondaires ou de contrôles).
+L'avantage de la stratification est que cette méthode permet de modéliser n'importe quel changement dans l'effet d'une variable dans le temps sans devoir spécifier un type de changement particulier, comme lorsqu'on doit choisir la forme de l'interaction. Par contre, on perd la possibilité de tester l'effet de la variable de stratification on réduit la taille de l'échantillon pour l'estimation de la fonction de risque de base. On devrait donc utiliser la stratification seulement avec des variables pour lesquelles nous n'avons pas besoin d'estimer l'effet (variables secondaires ou de contrôles). On peut néanmoins résumer l'information pour cette variable en calculant une statistique descriptive, par exemple les différences de survie à des temps donnés.
 
-On considère la stratification par rapport à la région pour notre modèle pour le temps d'abonnement à un forfait cellulaire; un test permet de voir que l'hypothèse de non-proportionnalité des fonctions de risque n'est pas valide pour région. Le modèle contient toutes les variables explicative, hormis région qui est utilisée pour la stratification.
-
-
-Les commandes pour ajuster le modèle sont
-```{sas survie8, eval = FALSE, echo = TRUE}
-proc phreg data=multi.survival1;
-class service(ref='0') / param=ref;
-model t*censure(1)=age sexe service / ties=exact;
-strata region;
-run;
+```{r}
+#| label: cox-stratification
+#| eval: false
+#| echo: true
+# Stratification par service
+cox7 <- coxph(Surv(temps, 1-censure) ~ 
+                age + sexe + strata(region) + service, 
+              data = survie1,
+              ties = "exact")
+# Décompte par région
+with(survie1, table(region))
+# Coefficients
+summary(cox7)
 ```
 
-
-```{r fig-f5e31, echo = FALSE, out.width='75%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e31.png")
+```{r}
+#| label: tbl-cox-stratif
+#| tbl-cap: "Rapport de risques et intervalles de confiances à niveau 95% basés sur la vraisemblance profilée pour un modèle de Cox stratifié par région."
+#| eval: true
+#| echo: false
+cox7 <- coxph(Surv(temps, 1-censure) ~ 
+                age + sexe + service + strata(region), 
+              data = survie1,
+              ties = "exact")
+tab7 <- broom::tidy(cox7, 
+            exponentiate = TRUE, 
+            conf.int = TRUE)[,-(3:5)]
+colnames(tab7) <- c("terme",
+                    "exp(coef)",
+                    "borne inf.", 
+                    "borne sup.")
+knitr::kable(tab7,
+               digits = 2,
+               booktabs = TRUE) |>
+  kableExtra::kable_styling(full_width = TRUE)
 ```
 
-
-
-```{r fig-f5e32, echo = FALSE, out.width='85%', fig.align = "center"}
-knitr::include_graphics("figures/05-survie-e32.png")
-```
-
-
-On voit à la lecture de la sortie **SAS** qu'il n'y a pas de paramètres pour la variable région. Les paramètres des autres variables s'interprètent comme d'habitude.
-
-
-
-Le commentaire suivant est technique et peut être omis. Le postulat de risques proportionnels est rarement validé en pratique (et difficile à tester). Cela aura pour conséquences que les erreurs-types des variables explicatives autres que binaires sont faussées, problème qu'on peut régler en utilisant des procédures d'autoamorçage. La valeur du rapport de risque dépend de la distribution des pertes de suivi, même quand ces dernières surviennent de manière aléatoire; une recommendation récente est d'utiliser des rapports de risques pondérées par la probabilité inverse d'appartenance, le tout complémenté par des mesures d'effets comme la différence de survie, la moyenne de survie (estimation restreinte) à des temps préspécifiés.
+On voit à la lecture de la sortie dans le @tbl-cox-stratif qu'il n'y a pas de paramètres pour la variable `region`. Les paramètres des autres variables s'interprètent comme d'habitude.

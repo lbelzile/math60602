@@ -34,14 +34,16 @@ library(viridis)
 library(ggplot2, warn.conflicts = FALSE, quietly = TRUE)
 library(poorman, quietly = TRUE, warn.conflicts = FALSE)
 
-safe_colorblind_palette <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
-                             "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
+# safe_colorblind_palette <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
+#                              "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
+
+safe_colorblind_palette <- MetBrewer::met.brewer("Hiroshige",10)
 
 options(ggplot2.continuous.colour="viridis")
 options(ggplot2.continuous.fill = "viridis")
-scale_colour_discrete <- ggthemes::scale_colour_colorblind
-scale_fill_discrete <- ggthemes::scale_fill_colorblind
-ggplot2::theme_set(ggplot2::theme_minimal())
+scale_colour_discrete <- scale_color_manual(MetBrewer::met.brewer("Hiroshige",10))
+scale_fill_discrete <- scale_fill_manual(MetBrewer::met.brewer("Hiroshige",10))
+theme_set(theme_minimal())
 ```
 
 L'analyse exploratoire, comme son nom l'indique, est une étape préliminaire à la modélisation servant à l'acquisition d'une meilleure compréhension des données. 
@@ -60,13 +62,15 @@ Dans un rapport, un résumé des caractéristiques les plus importantes devrait 
 
 Le choix de modèle statistique ou de test dépend souvent du type de variables collectées. Les variables peuvent être de plusieurs types: quantitatives (discrètes ou continues) si elles prennent des valeurs numériques, qualitatives (binaires, nominales ou ordinales) si elles sont décrites par un adjectif; je préfère le terme catégorielle, plus évocateur.  
 
-```{r}
-#| label: fig-variablesquanti
-#| fig-cap: "Illustration par Allison Horst de variables continues (gauche) et discrètes (droite)."
-#| echo: false
-#| out-width: '100%'
-knitr::include_graphics('figures/continuous_discrete.png')
-```
+::: {#fig-types-variables  layout="[[45,55]]"} 
+
+![](figures/continuous_discrete.png)
+
+![](figures/nominal_ordinal_binary.png)
+
+Illustrations par Allison Horst de variables numériques (gauche) et catégorielles (droite).
+
+:::
 
 On distingue deux types de variables quantitatives:
 
@@ -80,13 +84,6 @@ Les variables catégorielles représentent un ensemble fini de possibilités. On
 
 La codification des modalités des variables catégorielle est arbitraire; en revanche, on préservera l'ordre lorsqu'on représentera graphiquement les variables ordinales. Lors de l'estimation, chaque variable catégorielle doit est transformée en un ensemble d'indicateurs binaires: il est donc essentiel de déclarer ces dernières dans votre logiciel statistique, surtout si elles sont encodées dans la base de données à l'aide de valeurs entières.
 
-```{r}
-#| label: fig-variablescateg
-#| fig-cap: "Illustration par Allison Horst de variables catégorielles nominales (gauche), ordinales (centre) et binaires (droite)."
-#| echo: false
-#| out-width: '100%'
-knitr::include_graphics('figures/nominal_ordinal_binary.png')
-```
 
 ## Validation des données.
 
@@ -290,7 +287,7 @@ renfe |>
 a <- renfe |> 
   subset(tarif  == "Flexible") |> 
   dplyr::count(prix, classe)
-knitr::kable(a,
+kableExtra::kbl(a,
              longtable = FALSE, 
              booktabs = TRUE) |>
   kableExtra::kable_styling(full_width = FALSE)
@@ -325,7 +322,7 @@ Si vous incluez un graphique (ou un tableau), il est important d'ajouter une lé
 - Une base de données est normalement constituée de plusieurs variables (colonnes); les lignes représentent les différentes observations.
 - On classifie grossièrement les variables en variables catégorielles (nominales, ordinales ou binaires) et numériques (continues, entières).
 - L'analyse exploratoire est une procédure dynamique qui sert à mieux comprendre les données pour proposer des modèles adéquats. Elle consiste à poser des questions et à raffiner les conclusions à l'aide de tableaux résumés et de graphique.
-- Le nettoyage et la validation des données est la première étape de toute analyse. On peut déclarer nos attentes et l'utiliser pour vérifier de la conformité de notre base de données (en utilisant des outils comme le [paquet `pointblank`](https://github.com/rich-iannone/pointblank).
+- Le nettoyage et la validation des données est la première étape de toute analyse. On peut formuler nos attentes et l'utiliser pour vérifier de la conformité de notre base de données (en utilisant des outils comme le [paquet `pointblank`](https://github.com/rich-iannone/pointblank)).
 - Une bonne compréhension des données est nécessaire avant d'envisager la modélisation.
 - Il faut déclarer correctement les variables explicatives catégorielles (souvent encodées avec des entiers).
 - L'utilisation de graphiques est privilégiée par rapport aux tableaux: une image vaut mille mots.

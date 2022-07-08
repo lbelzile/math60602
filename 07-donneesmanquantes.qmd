@@ -1,5 +1,46 @@
 # Données manquantes {#donnees-manquantes}
 
+
+```{r}
+#| label: setup7
+#| include: false
+#| message: false
+#| warning: false
+library(knitr)
+library(kableExtra)
+set.seed(1014)
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  cache = TRUE,
+  out.width = "90%",
+  fig.align = 'center',
+  fig.width = 6.5,
+  fig.asp = 0.618  # 1 / phi
+)
+options(knitr.table.format = function() {
+  if (knitr::is_latex_output()) 
+    "latex" else "html"
+})
+
+options(dplyr.print_min = 6, dplyr.print_max = 6)
+options(knitr.graphics.auto_pdf = TRUE)
+options(scipen = 1, digits = 3)
+library(viridis)
+library(ggplot2, warn.conflicts = FALSE, quietly = TRUE)
+library(poorman, quietly = TRUE, warn.conflicts = FALSE)
+options(knitr.kable.NA = '')
+
+safe_colorblind_palette <- MetBrewer::met.brewer("Hiroshige",10)
+
+options(ggplot2.continuous.colour="viridis")
+options(ggplot2.continuous.fill = "viridis")
+scale_colour_discrete <- scale_color_manual(MetBrewer::met.brewer("Hiroshige",10))
+scale_fill_discrete <- scale_fill_manual(MetBrewer::met.brewer("Hiroshige",10))
+theme_set(theme_minimal())
+```
+
+
 Il arrive fréquemment d'avoir des valeurs manquantes dans notre échantillon. Ces valeurs peuvent être manquantes pour diverses raisons. Si on prélève nous-mêmes nos données, un répondant peut refuser de répondre à certaines questions. Si on acquiert nos données d'une source externe, les valeurs de certaines variables peuvent être manquantes directement dans le fichier obtenu.  Si on ne prend pas en compte le méchanisme générant les valeurs manquantes, ces dernières peuvent également biaiser nos analyses. Le but de ce chapitre est de faire un bref survol de ce sujet.
 
 ## Principes de base
@@ -28,7 +69,7 @@ Par exemple, les gens qui ont un revenu élevé pourraient avoir plus de rétice
 
 La première idée naïve pour une analyse est de retirer les observations avec données manquantes pour conserver les cas complets (*listwise deletion*, ou _complete case analysis_).
 
-Cette méthode consiste à garder seulement les observations qui n'ont aucune valeur manquante pour les variables utilisées dans l'analyse demandée. Dès qu'une variable est manquante, on enlève le sujet au complet. C'est la méthode utilisée par défaut dans la plupart des logiciels, dont **SAS**. 
+Cette méthode consiste à garder seulement les observations qui n'ont aucune valeur manquante pour les variables utilisées dans l'analyse demandée. Dès qu'une variable est manquante, on enlève le sujet au complet. C'est la méthode utilisée par défaut dans la plupart des logiciels, dont **R**. 
 
 - Si le processus est MCAR, cette méthode est valide car l'échantillon utilisé est vraiment un sous-échantillon aléatoire de l'échantillon original. Par contre, ce n'est pas nécessairement la meilleure solution car on perd de la précision en utilisant moins d'observations.
 - Si le processus est seulement MAR ou MNAR, cette méthode produit généralement des estimations biaisées des paramètres.
@@ -93,7 +134,7 @@ missing1 <- haven::read_sas(url)
 smallmiss <- missing1[1:10,]
 smallmisst <- apply(smallmiss,c(1,2), function(x){sprintf("%i", x)})
 smallmisst[is.na(smallmiss)] <- "."
-kableExtra::kbl(smallmisst, row.names = FALSE,
+knitr::kable(smallmisst, row.names = FALSE,
              booktabs = TRUE,
              longtable = FALSE,
              col.names = c(paste0("\\(X_",1:6,"\\)"),"\\(y\\)"),
@@ -118,7 +159,7 @@ data(manquantes, package = 'hecmulti')
 manq <- formatC(apply(manquantes, 2, 
                       function(x){c(sum(is.na(x)), mean(is.na(x)))}))
 rownames(manq) <- c("nombre", "pourcentage")
-kableExtra::kbl(manq,
+knitr::kable(manq,
                 booktabs = TRUE) |>
   kableExtra::kable_styling(full_width = TRUE)
 ```
@@ -233,7 +274,7 @@ combif <- apply(combi, c(1,2), function(x){
          formatC(x, digits = 2, format = "f",) #, 
          #"\\)"
          )} )
-kableExtra::kbl(combif, col.names = rep(c("\\(\\widehat{\\boldsymbol{\\beta}}\\)", "\\(\\mathrm{se}(\\widehat{\\boldsymbol{\\beta}})\\)","valeur-\\(p\\)"), 3),
+knitr::kable(combif, col.names = rep(c("\\(\\widehat{\\boldsymbol{\\beta}}\\)", "\\(\\mathrm{se}(\\widehat{\\boldsymbol{\\beta}})\\)","valeur-\\(p\\)"), 3),
              booktabs = TRUE,
              longtable = FALSE,
                 align = 'rccrccrcc') |>

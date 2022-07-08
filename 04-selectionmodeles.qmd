@@ -174,7 +174,7 @@ Ces données ont été obtenues par simulation et le vrai modèle sous-jacent (c
 
 
 
-J'ai ajusté tour à tour à tour les modèles polynomiaux jusqu'à l'ordre 10, avec l'échantillon d'apprentissage de taille 100. C'est-à-dire, le modèle linéaire avec un polynôme d'ordre $k=1$ (linéaire), $k=2$ (quadratique), etc., jusqu'à $k=10$. J'ai ensuite obtenu la valeur de l'erreur quadratique moyenne d'apprentissage pour chacun de ces modèles. En pratique, on ne pourrait pas calculer l'erreur quadratique moyenne de généralization, mais j'ai approximé cette dernière en simulant 100 000 observations du vrai modèle (`selection1_test`), en obtenant la prédiction pour chacune de ces 100 000 observations en utilisant le modèle d'ordre $k$ ajusté sur les données d'apprentissage et en calculant l'erreur quadratique moyenne par la suite. En pratique, on ne peut réaliser cette opération car on ne connaît pas le vrai modèle.
+J'ai ajusté tour à tour à tour les modèles polynomiaux jusqu'à l'ordre 10, avec l'échantillon d'apprentissage de taille 100. C'est-à-dire, le modèle linéaire avec un polynôme d'ordre $k=1$ (linéaire), $k=2$ (quadratique), etc., jusqu'à $k=10$. J'ai ensuite obtenu la valeur de l'erreur quadratique moyenne d'apprentissage pour chacun de ces modèles. En pratique, on ne pourrait pas calculer l'erreur quadratique moyenne de généralization puisqu'on ne connaît pas le vrai modèle. J'ai fait une approximation de cette dernière en simulant 100 000 observations du vrai modèle (`selection1_test`), en obtenant la prédiction pour chacune de ces 100 000 observations en utilisant le modèle d'ordre $k$ ajusté sur les données d'apprentissage et en calculant l'erreur quadratique moyenne par la suite. 
 
 
 ```{r}
@@ -436,8 +436,7 @@ Voici les étapes à suivre pour faire une validation croisée à $K$ groupes (_
     i. Enlever la partie $j$.
     ii. Estimer les paramètres du modèle en utilisant les observations des $K-1$ autres parties combinées.
     iii. Calculer la mesure de performance (par exemple la somme du carré des erreurs) de ce modèle pour le groupe $P_j$.
-3. Combiner les $K$ estimations de performance pour obtenir une mesure de performance finale.
-
+3. Combiner les $K$ estimations de performance pour obtenir une mesure de performance finale.^[Le fait d'utiliser $K \neq n$ mène à une estimation biaisée de la quantité d'intérêt et ce biais peut être important si $n$ est petit; un ajustement simple est possible pour réduire ce dernier est présenté dans Davison et Hinkley (1997), *Bootstrap Methods and their Application*, Cambridge University Press à l'équation 6.48.]
 
 Pour l'erreur quadratique moyenne, cette dernière étape revient à additionner la somme du carré des erreurs avant de diviser par la taille de l'échantillon totale.
 
@@ -474,7 +473,7 @@ ggplot(df, aes(x, y)) +
 
 ```
 
-On recommande habituellement de prendre entre $K=5$ et $10$ groupes (le choix de 10 groupes est celui qui revient le plus souvent en pratique). Si on prend $K=10$ groupes, alors chaque modèle est estimé avec 90% des données et on prédit ensuite le 10% restant. Comme on passe en boucle les 10 parties, chaque observation est prédite une et une seule fois à la fin. Il est important de souligner que les groupes sont formés de façon aléatoire et donc que l'estimé que l'on obtient peut être très variable, surtout si la taille de l'échantillon d'apprentissage est petite. Il arrive également que le modèle ajusté sur un groupe ne puisse pas être utilisé pour prédire les observations mises de côté, notamment si des variables catégorielles sont présentes mais qu'une modalité n'est présente que dans un des groupes; ce problème se présente en pratique si certaines classes ont peu d'observations. Un échantillonnage stratifié permet de pallier à cette lacune et de s'assurer d'une répartition plus homogène des variables catégorielles.
+On recommande habituellement de prendre $K=\min\{n^{1/2}, 10\}$ groupes (le choix de cinq ou 10 groupes sont ceux qui revient le plus souvent en pratique). Si on prend $K=10$ groupes, alors chaque modèle est estimé avec 90% des données et on prédit ensuite le 10% restant. Comme on passe en boucle les 10 parties, chaque observation est prédite une et une seule fois à la fin. Il est important de souligner que les groupes sont formés de façon aléatoire et donc que l'estimé que l'on obtient peut être très variable, surtout si la taille de l'échantillon d'apprentissage est petite. Il arrive également que le modèle ajusté sur un groupe ne puisse pas être utilisé pour prédire les observations mises de côté, notamment si des variables catégorielles sont présentes mais qu'une modalité n'est présente que dans un des groupes; ce problème se présente en pratique si certaines classes ont peu d'observations. Un échantillonnage stratifié permet de pallier à cette lacune et de s'assurer d'une répartition plus homogène des variables catégorielles.
 
 ```{r}
 #| label: validation-croisée
@@ -595,37 +594,25 @@ str(dbm)
 ```
 
 ```{r}
-#| label: setup-dbm
-#| echo: false
-#| eval: true
-dbm_sub <- dbm |>
-  dplyr::filter(test == 0) |>
-  dplyr::select(!test) #|>
-  # dplyr::rename(sexe = x1,
-  #               age = x2,
-  #               revenu = x3, 
-  #               region = x4,
-  #               couple = x5) |>
-  # dplyr::mutate(achat = factor(yachat, 
-  #               labels = c("non","oui"))) 
-# skimr::skim(dbm_sub)
-```
-
-```{r}
 #| label: tbl-contingence-dbm
 #| tbl-cap: "Tableaux de fréquence pour les variables catégorielles de la base de données marketing."
 #| eval: true
 #| echo: false
+#| warning: false
+dbm_sub <- dbm |>
+  dplyr::filter(test == 0) |>
+  dplyr::select(!test)
 knitr::kables(list(
 knitr::kable(table(dbm_sub$x1), 
+             booktabs = TRUE, 
              col.names = c("sexe", "décompte")),
-knitr::kable(table(dbm_sub$x3), 
+knitr::kable(table(dbm_sub$x3), booktabs = TRUE, 
              col.names = c("revenu", "décompte")),
-knitr::kable(table(dbm_sub$x5), 
+knitr::kable(table(dbm_sub$x5), booktabs = TRUE, 
              col.names = c("couple", "décompte")),
-knitr::kable(table(dbm_sub$x4), 
+knitr::kable(table(dbm_sub$x4), booktabs = TRUE, 
              col.names = c("région", "décompte")))) |>
-    kableExtra::kable_styling(full_width = TRUE)
+       kableExtra::kable_styling(full_width = TRUE)
 
 ```
 
@@ -634,6 +621,7 @@ knitr::kable(table(dbm_sub$x4),
 #| echo: false
 #| eval: true
 #| fig-cap: "Histogrammes des variables continues de la base de données `dbm` pour les 1000 clients par intention d'achat."
+#| warning: false
 #| out-width: '100%'
 g1 <- ggplot(data = dbm_sub,
              aes(x = x2)) +
@@ -703,6 +691,7 @@ Il y a 46.6% de femmes parmi les 1000 clients de l'échantillon. De plus, 39.7% 
 #| tbl-cap: "Statistiques descriptives des variables numériques de la base de données marketing."
 #| echo: false
 #| eval: true
+#| warning: false
 dbm_sub_c <- dbm_sub |>
     dplyr::select(x2, x6, x7, x8, x9, x10)
 tibble::tibble(variable = c("x2","x6","x7","x8","x9","x10"),
@@ -711,7 +700,7 @@ tibble::tibble(variable = c("x2","x6","x7","x8","x9","x10"),
                "écart-type" = apply(dbm_sub_c, 2, sd),
                min = apply(dbm_sub_c, 2, min),
                max = apply(dbm_sub_c, 2, max)) |>
-  knitr::kable(digits = 2,) |>
+  knitr::kable(digits = 2, booktabs = TRUE) |>
   kableExtra::kable_styling(full_width = TRUE)
 ```
 
@@ -776,6 +765,7 @@ En fait, supposons qu'on a $p$ variables distinctes disponibles. Avant même de 
 #| echo: false
 #| eval: true
 #| tbl-cap: "Nombres de modèles en fonction du nombre de paramètres."
+#| warning: false
 p <- c(5,10,15,20,25,30)
 npar <- 2^p
 options(scipen=100)
@@ -834,7 +824,8 @@ resume_recherche <- summary(exhaustive)
 knitr::kable(data.frame(variables =  apply(resume_recherche$which, 1, function(x){paste(colnames(resume_recherche$which)[x][-1], collapse = " ")}),
            BIC = resume_recherche$bic,
            AIC = resume_recherche$bic - rowSums(resume_recherche$which)*(log(nrow(dbm_apprentissage))-2)
-), digits = c(0,2,2))|>
+), digits = c(0,2,2),
+booktabs = TRUE)|>
     kableExtra::kable_styling(full_width = TRUE)
 ```
 
@@ -1293,7 +1284,11 @@ transfo <- function(x){
 itransfo <- function(x){
   as.numeric((x - mean(valid_ext))/sd(valid_ext)*sd(bic_seq) + mean(bic_seq))
 }
-pos <- data.frame(methode = c("externe","validation croisée", "AIC", "BIC"),
+pos <- data.frame(methode = 
+                    c("externe", 
+                      "validation croisée", 
+                      "AIC", 
+                      "BIC"),
                   min = c(which.min(valid_ext) + 1L,
                     which.min(valid_croi) + 1L,
                     which.min(aic_seq) + 1L,
@@ -1335,7 +1330,7 @@ ggplot(data = df_g,
   labs(color = "méthode",
        linetype = "méthode") +
   theme_classic() +
-  theme(legend.position = "false") 
+  theme(legend.position = "bottom") 
 ## Base R plots 
 # plot(k, aic_seq, type = 'l', xlim = c(1,40))
 # lines(k, bic_seq, col = 2)
@@ -1364,9 +1359,10 @@ Les estimateurs des moindres carrés ordinaires pour la régression linéaire re
 \begin{align*}
 \mathsf{SCE} = \sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^pX_{ij}\beta_{j}\right)^2.
 \end{align*}
-On peut ajouter à cette fonction objective $\mathsf{SCE}$ un terme additionnel de pénalité qui va contraindre les paramètres à ne pas être trop grand. On considère une pénalité additionnelle pour la valeur absolue des coefficients,  \[
+On peut ajouter à cette fonction objective $\mathsf{SCE}$ un terme additionnel de pénalité qui va contraindre les paramètres à ne pas être trop grand. On considère une pénalité additionnelle pour la valeur absolue des coefficients, 
+\begin{align*}
 q_1(\lambda) = \lambda \sum_{j=1}^p |\beta_j|.
-\]
+\end{align*}
 Pour chaque valeur de $\lambda$ donnée, on obtiendra une solution différente pour les estimés car on minimisera désormais $\mathsf{SCE} + q_1(\lambda)$. On ne pénalise pas l'ordonnée à l'origine $\beta_0$, parce que ce coefficient sert à recentrer les observations et a une signification particulière: si on standardise les données, de manière à ce que leur moyenne empirique soit zéro et leur écart-type un, alors $\widehat{\beta}_0 = \overline{y}$.
 
 

@@ -2,48 +2,40 @@
 
 ## Introduction
 
-On cherche à créer des regroupements (*clusters*) d'individus homogènes en utilisant $p$ variables $X_1, \ldots, X_p$. Plus précisément, on veut combiner des sujets en groupes (interprétables) de telle sorte que les individus d'un même groupe soient le plus semblables possible par rapport à certaines caractéristiques et que les groupes soient le plus différent possible.  
+Si la publicité ciblée personnalisée a pris de l'essort ces derniers années en commercialisation, la segmentation de consommateurs reste une partie prenante essentielle de toute campagne de publicité ou de développement de produits.
 
-Nous disposons des observations pour $n$ individus et $X_{ij}$ dénote la valeur de la $j$e variable explicative pour le $i$e sujet: les variables correspondant au $i$e sujet $S_i$ sont donc $X_{i1}, \ldots, X_{ip}$. Le résultat de l'analyse de regroupements sera une étiquette associée à chaque observation l'assignant à un regroupement ou l'identifiant comme aberrance.
+L'analyse de regroupement est une technique d'**analyse descriptive** qui sert à combiner des sujets en groupes de telle sorte que les individus d'un même groupe soient le plus semblables possible par rapport à certaines caractéristiques et que les groupes soient le plus différent possible les uns des autres. Le résultat de l'analyse de regroupement sera une étiquette associée à chaque observation l'assignant à un regroupement ou l'identifiant comme aberrance, nous permettant ainsi de caractériser (par le biais de statistiques descriptives) les différents segments obtenus.
 
-Il y a une certaine analogie avec l'analyse factorielle. En analyse factorielle, on cherche à déterminer s'il y a des groupes de **variables** corrélées entre elles. On cherche donc à regrouper des variables. En analyse de regroupements, on cherche plutôt à créer des groupes de **sujets** similaires. Les deux méthodes servent pour l'analyse exploratoire.
+Il y a une certaine analogie avec l'analyse factorielle. En analyse factorielle, on cherche à déterminer s'il y a des groupes de **variables** corrélées entre elles et à les regrouper. En analyse de regroupements, on cherche plutôt à créer des groupes de **sujets** similaires. Les deux méthodes servent pour l'analyse exploratoire.
+
+On cherche à créer des regroupements (*clusters*) d'observations homogènes en utilisant $p$ variables explicatives $X_1, \ldots, X_p$ pour $n$ observations, où $X_{ij}$ dénote la valeur de la $j$e variable explicative pour le $i$e sujet.
+
+
 
 :::{.callout-tip}
 ## Étapes d'une analyse de regroupements
 
-1. Choisir les variables pertinentes à l'analyse.
-2. Décider comment seront mesurées les « distances » entre les sujets. 
-3. Décider quel algorithme ou modèle sera utilisé.
-4. Choisir les hyperparamètres de l'algorithme (nombre de regroupements, rayon, etc.), qui déterminent la qualité de la segmentation. 
-5. Assigner les étiquettes aux observations et calculer un représentant-type de groupe. Interpréter les regroupements obtenus.
-6. Utiliser ces groupes dans d'autres analyses, le cas échéant.
+1. Choisir les variables pertinentes à l'analyse. Cette étape peut nécessiter de créer, transformer de nouvelles variables ou d'aggréger les données.
+2. Décider quel méthode (algorithme, modèle) sera utilisé pour la segmentation.
+3. Choisir les hyperparamètres de l'algorithme (nombre de regroupements, rayon, etc.), qui déterminent la segmentation. 
+4. Décider comment seront mesurées les « distances » entre les sujets.
+5. Procéder à l'analyse de regroupements et calculer une mesure de qualité.
+6. Assigner les étiquettes aux observations et calculer un représentant-type de groupe. Interpréter les regroupements obtenus.
+7. Utiliser ces groupes dans des analyses subséquentes, le cas échéant.
 
 :::
 
+## Données
+
+Les données simulées sont inspirées de programmes de fidélisation client présents dans de grandes chaînes (pharmacies, épiceries). En échange de rabais et d'offres promotionnelles, la clientèle fournit des informations sociodémographique (nom, adresse, date de naissance, etc.) et utilise un identifiant numérique, une carte ou une application pour inscrire chaque achat: ce faisant, le système peut traquer les habitudes de consommation. Il existe bien sûr d'autres méthodes de traque pour les personnes qui n'ont pas de compte client, notamment par le biais de numéros de carte de débit ou de crédit qui permettent de regrouper les transactions. Les algorithmes utilisés pour l'analyse de regroupements peuvent également servir à la résolution d'entité, qui consiste à fusionner les profils de bases de données sans identifiant unique client.
+
+Un exemple similaire d'analyse de regroupements est la segmentation de la clientèle de transport en commun. Dans la région métropolitaine de Montréal, les cartes à puce Opus permettent d'inscrire les transactions (achat de passes mensuelles ou de billets unitaires, lieu de l'achat, etc.) ainsi que les passages (heure, type de véhicule, emplacement approximatif pour les services d'autobus ou station de métro). En créant des regroupements, une agence de transport peut ainsi ajuster son offre et proposer des abonnements ou des produits qui reflètent les besoins de sa clientèle. Un exemple extrême de traquage de compagnie de transport est NS: toute personne qui veut voyager en train sur les chemins de fers néerlandais doit acheter une carte à puce et la charger, en plus de composter son billet au départ et à l'arrivée de son voyage. Cette approche, qui peut sembler intrusive, permet néanmoins de mesurer précisément la demande sur les lignes en fonction du moment de la journée et de l'associer à chaque client.
 
 ## Présentation des données
 
-Les données sont inspirées d'un article traitant de la segmentation de seniors qui participent à des voyages organisés: 
+Les bases de données marketing sont souvent de nature longitudinale: chaque ligne correspond à une transaction, mais plusieurs d'entre elles peuvent être le fait d'une même personne/compte. Une fois l'analyse exploratoire des données complétée, on procédera à l'aggrégation des observations par compte client, puisque la segmentation doit être effectuée à cette échelle. C'est également à ce stade qu'on pourra créer de nouvelles variables explicatives à partir de l'information présente dans la base de données: par exemple, on pourrait considérer la fréquence moyenne d'achat, le montant moyen par transaction, le mode du moment de la journée, la variabilité de cette fréquentation, le pourcentage des ventes provenant d'articles en solde, la variabilité du montant du panier, etc. 
 
-> Hsu, C. H. C. et Lee E.-J. (2002). Segmentation of Senior Motorcoach Travelers. *Journal of Travel Research*, **40**, 364-373.
-
-Les buts principaux de l'étude étaient
-
-1) Regrouper les gens de 55 et plus qui participent à des voyages organisés en autobus en groupes homogènes selon des caractéristiques reliées au choix de l'opérateur et du voyage.
-2) Examiner les caractéristiques démographiques de ces groupes.
-
-Un questionnaire a été élaboré afin d'évaluer l'importance de 55 caractéristiques des opérateurs de voyages organisés en autobus et des voyages eux-mêmes à l'aide d'une échelle de Likert à cinq points, allant de extrêmement important ($\texttt{5}$) à pas important du tout ($\texttt{1}$). Des données sont disponibles pour 150 sujets (il y en avait 817 dans l'article). Elles se trouvent dans la base de données `cluster`.
-
-Au lieu de faire une analyse de regroupements avec les 55 items du questionnaire, les auteurs ont choisi de faire une analyse factorielle avec rotation varimax au préalable afin de réduire le nombre de variables à six facteurs interprétables  :
-
-- Activités sociales ($X_1$): formé de cinq items
-- Politiques de l'opérateur et références ($X_2$)  : formé de six items.
-- Horaires flexibles ($X_3$): formé de trois items.
-- Santé et sécurité ($X_4$) : formé de quatre items.
-- Matériel publicitaire ($X_5$): formé de deux items.
-- Réputation ($X_6$): formé de deux items.
-
-On voit donc que 22 items, parmi les 55, sont utilisés dans la définition de ces six facteurs. Dans l'article, les auteurs ont décidé d'inclure ces 22 items dans l'analyse de regroupements. Pour notre part et afin de simplifier l'exemple, nous allons plutôt créer six nouvelles échelles en faisant la moyenne des items de chaque facteur ci-haut et utiliser seulement ces six échelles dans l'analyse de regroupements. Les valeurs de ces six variables pour les 150 sujets se trouvent dans le fichier `cluster.sas7bdat` et sont toutes dans l'intervalle [1, 5], puisqu'elles représentent la moyenne d'échelles de Likert. Le @tbl-statdescriptcluster présente les statistiques descriptives de la base de données.
+Cette liste, non exhaustive, illustre l'étape cruciale de l'extraction de l'information utilisée dans l'analyse statistique: la qualité de la segmentation dépend du choix des variables employées.
 
 ```{r}
 #| label: tbl-statdescriptcluster
@@ -52,13 +44,24 @@ On voit donc que 22 items, parmi les 55, sont utilisés dans la définition de c
 #| eval: true
 #| fig-align: 'center'
 data(cluster, package = "hecmulti")
+
+
+if(knitr::opt\mathbf{X}_knit$get("rmarkdown.pandoc.to") == "html"){
 tibble::tibble(moyenne = apply(cluster, 2, mean),
                "écart-type" = apply(cluster, 2, sd),
                min = apply(cluster, 2, min),
                max = apply(cluster, 2, max),
                histogramme = apply(cluster, 2, function(x){skimr::inline_hist(x = x, n_bins = 8)})) |>
-  knitr::kable(digits = 2) |>
+  kableExtra::kbl(digits = 2) |>
   kableExtra::kable_styling(full_width = TRUE)
+ } else{
+ tibble::tibble(moyenne = apply(cluster, 2, mean),
+               "écart-type" = apply(cluster, 2, sd),
+               min = apply(cluster, 2, min),
+               max = apply(cluster, 2, max)) |>
+  kableExtra::kbl(digits = 2) |>
+  kableExtra::kable_styling(full_width = TRUE)
+ }
 ```
 
 
@@ -67,40 +70,7 @@ tibble::tibble(moyenne = apply(cluster, 2, mean),
 Comme c'est le cas avec n'importe quelle analyse statistique, il est utile d'explorer les données graphiquement. On peut parfois réussir à visualiser les groupes d'observations, ce qui nous permettra une fois l'analyse de regroupement complétée de vérifier la qualité de cette dernière. 
 
 On pourrait produire un nuage de points pour chaque paire de variables mais cette idée est problématique pour deux raisons:
-
-1. il y aura beaucoup de graphes si le nombre de variables est grand et
-2. on examine seulement les relations bivariées.
-
-
-```{r }
-#| label: fig-pairplot
-#| echo: false
-#| eval: true
-#| fig-width: 9 
-#| fig-height: 20
-#| out-width: '100%' 
-#| fig-align: "center"
-#| fig-cap: "Nuage de point des paires d'observations des données `cluster`."
-data(cluster, package = "hecmulti")
-library(ggplot2)
-library(patchwork)
-scatter_fun = function(x, y) {
-     ggplot(cluster, aes(x = .data[[x]], y = .data[[y]]) ) +
-          geom_point() +
-          theme_classic()
-}
-plot_list <- list()
-ind <- 0L
-for(i in 1:5){
-  for(j in ((i+1):6)){
-    ind <- ind + 1L
-    plot_list[[ind]] <- scatter_fun(paste0("x",i), paste0("x",j))
-  }
-}
-cowplot::plot_grid(plotlist = plot_list,nrow = 5, ncol = 3)
-```
-
-Il n'est pas nécessairement évident de détecter des groupes d'observations ainsi, alors qu'on n'a déjà que six variables.
+il y aura beaucoup de graphes si le nombre de variables est grand et on examine seulement les relations bivariées.
 
 On peut utiliser les outils du chapitre précédent et réduire le nombre de variables en considérant plutôt les composantes principales. Dans notre exemple, on va seulement s'en servir comme outil graphique pour une analyse de regroupements en réduisant la dimension afin de permettre la visualisation des regroupements obtenus. Ces dernières pourraient aussi servir de variables pour l'analyse de regroupement: une fois les étiquettes obtenues, il suffirait de calculer les statistiques descriptives sur les variables originales. 
 
@@ -169,16 +139,28 @@ La compréhension de la base de données est cruciale pour comprendre le comport
 
 Pour voir si certaines variables sont inutiles, il peut être utile de comparer les représentants des groupes (par exemple, le barycentre ou une observation lambda du groupe) pour voir si les moyennes ou caractéristiques diffèrent. Si ce n'est pas le cas, on pourrait envisager de recommencer la procédure en enlevant cette variable.
 
-Si on a un nombre important de variables explicatives à disposition, il est parfois utile de réduire la dimension (par exemple, en effectuant une analyse en composantes principales) préalablement et à ne retenir que les premières composantes pour faciliter la tâche. Cette approche n'est pas la panacée: quelquefois, cette réduction de la dimension masque les différences entre groupe et mène à une segmentation inférieure à l'utilisation des variables originales.
+Si on a un nombre important de variables explicatives à disposition, il est parfois utile de réduire préalablement la dimension (par exemple, en effectuant une analyse en composantes principales) et à ne retenir que les premières composantes pour faciliter la tâche. Cette approche n'est pas la panacée: quelquefois, cette réduction de la dimension masque les différences entre groupe et mène à une segmentation inférieure à l'utilisation des variables originales.
 
-Malheureusement, il n'est pas évident de prime abord de déterminer quelles variables inclure dans la base de données pas plus qu'il n'est facile de juger de la qualité d'une segmentation ou du nombre de regroupements à effectuer. Les choix individuels auront un impact certains sur les regroupements obtenus: on recommande d'essayer plusieurs alternatives et de vérifier graphiquement ou à l'aide de critères d'ajustement si les regroupements obtenus sont homogènes, si la distance inter-groupe est élevée et la distance intra-groupe faible (groupements compacts).
+Malheureusement, il n'est pas évident de prime abord de déterminer quelles variables inclure dans la base de données pas plus qu'il n'est facile de juger de la qualité d'une segmentation ou du nombre de regroupements à effectuer. Les choix individuels auront un impact certain sur les regroupements obtenus: on recommande d'essayer plusieurs alternatives et de vérifier graphiquement ou à l'aide de critères d'ajustement si les regroupements obtenus sont homogènes et compacts.
+
+Si certaines variables définissent naturellement des groupes, par exemple l'âge des personnes, et fait qu'ils et elles ont des caractéristiques intrinsèquement différentes, il peut être utile de faire une segmentation indépendamment pour chacun de ces sous-groupes. 
+
+
+## Algorithmes pour regroupements
+
+
+## Autres considérations pratiques
+
+### Évaluation de la qualité d'une segmentation
+
+### Choix des hyperparamètres
 
 ### Standardisation
 
 En général, plus une variable a une grande variance, plus elle aura de l'influence sur le calcul de la distance. Ainsi, en utilisant les variables telles quelles, nous accordons plus de poids aux variables avec de grandes variances, ce qui peut être bon ou mauvais selon la structure des groupes. Règle générale, il est préférable d'éviter qu'une variable domine dans la segmentation.
 
 
-On peut standardiser au préalable les variables avant de faire l'analyse. Par défaut, les variables seront standardisées afin d'avoir une moyenne de zéro et une variance de un (`scale`). On peut ensuite faire les analyses comme précédemment. Si on a des valeurs aberrantes, cela peut impacter le calcul des moyennes et variances; d'autres estimateurs de localisation et d'échelles plus robustes, par exemple en soustrayant la médiane de chaque colonne et en divisant par la déviation absolue par rapport à la médiane (`mad`). Ces deux mesures pourraient être utilisées lors de la standardisation pour diminuer l'impact des valeurs aberrantes même si le coût de calcul associé est plus conséquent.
+On peut standardiser au préalable les variables avant de faire l'analyse. Par défaut, les variables seront standardisées afin d'avoir une moyenne de zéro et une variance de un (`scale`). On peut ensuite faire les analyses comme précédemment. Si on a des valeurs aberrantes, cela peut impacter le calcul des moyennes et variances; d'autres estimateurs de localisation et d'échelles plus robustes, par exemple en soustrayant la médiane de chaque colonne et en divisant par la déviation absolue par rapport à la médiane (`mad`). Ces deux mesures pourraient être utilisées lors de la standardisation pour diminuer l'impact des valeurs aberrantes même si le coût de calcul associé est plus conséquent. Il est illogique de standardiser les variables binaires.
 
 ```{r}
 #| label: standardisation
@@ -201,7 +183,7 @@ cluster_std_rob <- apply(cluster,
 
 ## Mesures de dissemblance et de similarité
 
-Comment mesurer si deux observations appartiennent à un même regroupement et sont similaires? Idéalement, on aimerait avoir une situation comme dans la @fig-regroupements-bidons où les regroupements sont clairement visibles. On aimerait que la similarité entre observations intra-groupe soit élevée et que la similarité entre groupe soit faible. Les regroupements devraient être éloignés les uns des autres, tandis que les observations au sein de ces regroupements devraient être proches. Dans la plupart des cas, il y aura des observations isolées qui n'appartiennent pas nécessairement logiquement à l'un ou l'autre des groupes. On appelle parfois ces observations aberrances.
+Comment mesurer si deux observations appartiennent à un même regroupement et sont similaires? Idéalement, on aimerait avoir une situation comme dans la @fig-regroupements-bidons où les regroupements sont clairement visibles. On aimerait que la similarité entre observations d'un même groupe, ou intra-groupe, soit élevée et que la similarité entre groupe soit faible. Les regroupements devraient être éloignés les uns des autres, tandis que les observations au sein de ces regroupements devraient être proches. Dans la plupart des cas, il y aura des observations isolées qui n'appartiennent pas nécessairement logiquement à l'un ou l'autre des groupes: on appelle parfois ces observations aberrances.
 
 ```{r}
 #| label: fig-regroupements-bidons
@@ -227,38 +209,31 @@ ggplot(data = dat, aes(x = x1, y = x2)) +
   theme_minimal()
 
 ```
-### Mesure de dissemblance
 
-Une mesure de dissemblance sert à quantifier la distance entre deux sujets $S_i$ et $S_j$ en se basant sur les $p$ variables $X_1, \ldots, X_p$. Plus cette mesure est petite, plus les sujets $S_i$ et $S_j$ sont similaires. Même s'il y a des exceptions, la plupart des mesures de dissemblances $d$ ont les propriétés suivantes :
 
-1) $d(S_i, S_j) \geq 0$ (positivité);
-2) $d(S_i, S_i)=0$;
-3) $d(S_i, S_j)=d(S_j, S_i)$ (symmétrie);
-4) $d(S_i, S_j)$ augmente au fur et à mesure que les deux sujets deviennent plus différents.
+Une **mesure de dissemblance** sert à quantifier la proximité de deux objets à partir de leurs coordoonnées. Elle mesure la distance entre deux vecteurs d'observations $\mathbf{X}_i$ et $\mathbf{X}_j$ en se basant sur les $p$ variables explicatives $X_1, \ldots, X_p$. Plus la dissemblance est petite, plus les sujets $\mathbf{X}_i$ et $\mathbf{X}j$ sont similaires. Même s'il y a des exceptions, la plupart des mesures de dissemblances $d$ ont les propriétés suivantes d'une distance:
 
-Lorsque toutes les variables sont continues, la mesure de dissemblance la plus utilisée est la distance euclidienne entre sujets, soit
+1) $d(\mathbf{X}_i, \mathbf{X}_j) \geq 0$ (positivité), avec égalité (distance nulle) si et seulement si $\mathbf{X}_i=\mathbf{X}_j$;
+2) $d(\mathbf{X}_i, \mathbf{X}_j)=d(\mathbf{X}_j, \mathbf{X}_i)$ (symmétrie);
+
+Toute mesure de distance (qui respecte l'inégalité du triangle) est une mesure de dissemblance. La mesure de dissemblance la plus utilisée est la distance euclidienne entre sujets, soit
 \begin{align*}
-d(S_i, S_j; l_2) = \sqrt{(X_{i1}-X_{j1})^2 + \cdots + (X_{ip}-X_{jp})^2}.
+d(\mathbf{X}_i, \mathbf{X}_j; l_2) = \sqrt{(X_{i1}-X_{j1})^2 + \cdots + (X_{ip}-X_{jp})^2}.
 \end{align*}
-La distance euclidienne est tout simplement la longueur du segment qui relie les deux points dans l'espace. 
+C'est tout simplement la longueur du segment qui relie les deux points dans l'espace. 
 
-
-Il existe un très grand nombre d'autres mesures de dissemblance pour variables quantitatives, ordinales, nominales et binaires. Voici une brève description de certaines d'entre elles, qui sont disponibles dans `proc distance`.
-
-**Mesures de dissemblance pour variables quantitatives:**
-
-On peut considérer d'autres mesures de distance. Par exemple, la distance $l_1$, ou distance de Manhattan, est la somme des valeurs absolues entre chaque composante:^[En deux dimensions, si on considère une ville comme New York dont les rues sont quadrillées, cela revient à marcher le long des rues alors que la distance Euclidienne traverse les édifices.] 
+Plus généralement, la distance de Minkowski ou distance $l_q$ entre les vecteurs ligne $\mathbf{X}_i$ et $\mathbf{X}_j$ est
 \begin{align*}
-d(S_i, S_j; l_1) = |X_{i1}-X_{j1}| + \cdots + |X_{ip}-X_{jp}|
+d(\mathbf{X}_i, \mathbf{X}_j; l_q) = \left( \sum_{k=1}^p \left\{|X_{ik}-X_{jk}|^q \right)^{1/q},\qquad q > 0;
 \end{align*}
-Plus généralement, la distance de Minkowski ou distance $l_q$
-\begin{align*}
-d(S_i, S_j; l_q) = \left\{(X_{i1}-X_{j1})^q + \cdots + (X_{ip}-X_{jp})^q\right\}^{1/q}
-\end{align*}
+la distance Euclidienne correspondant à $q=2$, et la distance de Manhattan à $q=1$^[La distance de Manhattan est la somme des valeurs absolues entre chaque composante. En deux dimensions, si on considère une ville comme New York dont les rues sont quadrillées, cela revient à marcher le long des rues alors que la distance Euclidienne traverse les édifices.] . Finalement, si $q=\infty$, la distance se réduit à $\max_{k=1}^p |X_{ik}-X_{jk}|$, soit le maximum des différences entre coordonnées des vecteurs d'observations.
 
-**Mesure de dissemblance pour variables catégorielles:**
 
-Le plus simple est d'utiliser la mesure d'appariement simple (*simple matching*). Cette mesure est simplement de la proportion des variables pour lesquelles les deux sujets ont des valeurs différentes.
+Il existe un très grand nombre d'autres mesures de dissemblance pour variables quantitatives, ordinales, nominales et binaires.
+
+Si les variables sont toutes binaires, la mesure d'appariement simple (*simple matching*), qui mesure la proportion des variables pour lesquelles les deux sujets ont des valeurs différentes, est une mesure de dissemblance adéquate.
+
+La distance de Gower, 
 
 On peut traiter les variables ordinales comme continues ou les traiter comme des variables nominales avec la mesure d'appariement simple; ce faisant, on n'utilise pas l'ordre entre les modalités.
 
@@ -285,7 +260,7 @@ L'algorithme de $K$-moyennes est un des plus populaires pour la segmentation en 
 #| out-width: '100%'
 #| fig-format: 'png'
 
-#fig.cap = ifelse(knitr::opts_knit$get("rmarkdown.pandoc.to") == "html","Algorithme des $K$-moyennes avec trois groupes illustré en deux dimensions avec les composantes principales, étape par étape","Algorithme des $K$-moyennes avec trois groupes illustré en deux dimensions avec les composantes principales"), fig.show = 'animate'}
+#fig.cap = ifelse(knitr::opt\mathbf{X}_knit$get("rmarkdown.pandoc.to") == "html","Algorithme des $K$-moyennes avec trois groupes illustré en deux dimensions avec les composantes principales, étape par étape","Algorithme des $K$-moyennes avec trois groupes illustré en deux dimensions avec les composantes principales"), fig.show = 'animate'}
 set.seed(1234)
 library(animation)
 cluster_eig <- as.matrix(princomp(cluster)$scores[,1:2])
@@ -360,7 +335,7 @@ with(cluster1a, text(x2, x1, 1:nrow(cluster1a), pos = 4))
 ```
 
 
-```{r 'fig-wardAnimation', fig.cap = ifelse(knitr::opts_knit$get("rmarkdown.pandoc.to") == "html","Regroupements hiérarchiques sur le sous-ensemble des données, étape par étape","Regroupements hiérarchiques avec la méthode de Ward (solution à trois groupes)"),  animation.hook = "gifski", fig.show = 'animate'}
+```{r 'fig-wardAnimation', fig.cap = ifelse(knitr::opt\mathbf{X}_knit$get("rmarkdown.pandoc.to") == "html","Regroupements hiérarchiques sur le sous-ensemble des données, étape par étape","Regroupements hiérarchiques avec la méthode de Ward (solution à trois groupes)"),  animation.hook = "gifski", fig.show = 'animate'}
 #| eval: true
 #| echo: false
 #| cache: true
@@ -368,7 +343,7 @@ with(cluster1a, text(x2, x1, 1:nrow(cluster1a), pos = 4))
 #| fig-height: 8
 #| out-width: '100%'
 #| fig-format: 'png'
-out_type <- knitr::opts_knit$get("rmarkdown.pandoc.to")
+out_type <- knitr::opt\mathbf{X}_knit$get("rmarkdown.pandoc.to")
 suppressPackageStartupMessages(library(factoextra))
 # Téléchargement des données
 url <- "https://lbelzile.bitbucket.io/MATH60602/cluster1a.sas7bdat"
@@ -517,7 +492,7 @@ Notez qu'on **ne peut pas** tester l'égalité des moyennes des variables pour l
 ## Calcul alternatif des distances pour le regroupement hiérarchique
 
 
-Nous avons utilisé la méthode de Ward afin de calculer la distance entre les groupes et procéder au passage de $n$  groupes à un groupe, avec l'approche hiérarchique. Supposons que nous avons choisi une mesure de dissemblance $d(S_i, S_j)$  quelconque (distance euclidienne par exemple) pour mesurer la distance entre deux sujets. Voici comment sont choisis les regroupements avec ces méthodes.
+Nous avons utilisé la méthode de Ward afin de calculer la distance entre les groupes et procéder au passage de $n$  groupes à un groupe, avec l'approche hiérarchique. Supposons que nous avons choisi une mesure de dissemblance $d(\mathbf{X}_i, \mathbf{X}_j)$  quelconque (distance euclidienne par exemple) pour mesurer la distance entre deux sujets. Voici comment sont choisis les regroupements avec ces méthodes.
 
 - Méthode du plus proche voisin ou méthode de liaison simple (*nearest neighbor*, *single linkage*): utilise la distance minimale entre chaque paire de sujets (un pour chaque groupe) provenant des deux groupes. Cette méthode fonctionne bien si l'écart entre deux regroupements est suffisamment grand. À l'inverse, s'il y a des observations bruitées entre deux regroupements, la qualité des regroupements en sera affectée.
 - Méthode du voisin le plus éloigné ou méthode de liaison complète (*complete linkage*): utilise la distance maximale entre toutes les paires de sujets (un pour chaque groupe) provenant des deux groupes. Cette méthode est moins sensible au bruit et aux faibles écarts entre regroupements, mais a tendance à casser les regroupements globulaires.
@@ -631,7 +606,7 @@ L'interprétation des groupes est la même que précédemment.
 knitr::include_graphics("figures/04-clustering-e17.png")
 ```
 
-Le champ des applications des $K$-moyennes est parfois surprenant. Par exemple, [cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais](https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/). Un autre exemple incongru est la compression d'images: la Figure @fig-decelles montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l'algorithme des $K$-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l'image.
+Le champ des applications des $K$-moyennes est parfois surprenant. Par exemple, [cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais](https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/) ou des [quartiers de Los Angeles](https://fivethirtyeight.com/features/the-6-political-neighborhoods-of-los-angeles/). Un autre exemple incongru est la compression d'images: la Figure @fig-decelles montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l'algorithme des $K$-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l'image.
 
 
 ```{r fig-decelles}
@@ -640,7 +615,7 @@ Le champ des applications des $K$-moyennes est parfois surprenant. Par exemple, 
 #| out-width: '100%'
 #| fig-align: "center" 
 #| fig-cap: "Compression d'image avec l'algorithme des $K$-moyennes: image originale (en haut à gauche), compression avec trois (en haut à droite), quatre (en bas à gauche) et 10 (en bas à droite) couleurs."
-knitr::include_graphics("figures/kmoyennes_decelles.png")
+knitr::include_graphics("figures/kmoyenne\mathbf{X}_decelles.png")
 ```
 
 

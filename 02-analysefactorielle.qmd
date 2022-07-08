@@ -1,21 +1,26 @@
 # Réduction de la dimension {#analyse-factorielle}
 
 ```{r}
-#| label: setup2
+#| label: setup02
 #| include: false
 #| message: false
 #| warning: false
+# automatically create a bib database for R packages
 library(knitr)
 library(kableExtra)
+knitr::write_bib(c(
+  .packages(), 'bookdown', 'knitr', 'rmarkdown'
+), 'packages.bib')
 set.seed(1014)
 
 knitr::opts_chunk$set(
   collapse = TRUE,
   cache = TRUE,
-  out.width = "90%",
+  out.width = "70%",
   fig.align = 'center',
-  fig.width = 6.5,
-  fig.asp = 0.618  # 1 / phi
+  fig.width = 8.5,
+  fig.asp = 0.618,  # 1 / phi
+  fig.show = "hold"
 )
 options(knitr.table.format = function() {
   if (knitr::is_latex_output()) 
@@ -28,14 +33,14 @@ options(scipen = 1, digits = 3)
 library(viridis)
 library(ggplot2, warn.conflicts = FALSE, quietly = TRUE)
 library(poorman, quietly = TRUE, warn.conflicts = FALSE)
-options(knitr.kable.NA = '')
-safe_colorblind_palette <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
-                             "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
+
+
+safe_colorblind_palette <- MetBrewer::met.brewer("Hiroshige",10)
 
 options(ggplot2.continuous.colour="viridis")
 options(ggplot2.continuous.fill = "viridis")
-scale_colour_discrete <- ggthemes::scale_colour_colorblind
-scale_fill_discrete <- ggthemes::scale_fill_colorblind
+scale_colour_discrete <- scale_color_manual(MetBrewer::met.brewer("Hiroshige",10))
+scale_fill_discrete <- scale_fill_manual(MetBrewer::met.brewer("Hiroshige",10))
 theme_set(theme_minimal())
 ```
 
@@ -78,11 +83,9 @@ Règle générale,
 - Plus la corrélation est près de 1 en valeur absolue, plus les points auront tendance à être alignés autour d'une droite.
 - Lorsque la corrélation est presque nulle, les points n'auront pas tendance à être alignés autour d'une droite. Il est très important de noter que cela n'implique pas qu'il n'y a pas de relation entre les deux variables. Cela implique seulement qu'il n'y a pas de **relation linéaire** entre les deux variables. La @fig-datasaurus montre bien ce point: ces jeux de données ont la même corrélation linéaire (quasi-nulle), mais ne sont pas clairement pas indépendantes puisqu'elles permettent de dessiner un dinosaure ou une étoile.
 
-::: {#fig-datasaurus}
-![](figures/DataSaurusDozen.gif)
 
- Datasaurus (Alberto Cairo): une douzaine de jeux de données qui ont les mêmes statistiques descriptives (à deux décimales près) et une faible corrélation, mais qui sont visuellement distincts.
-:::
+![Datasaurus (Alberto Cairo): une douzaine de jeux de données qui ont les mêmes statistiques descriptives (à deux décimales près) et une faible corrélation, mais qui sont visuellement distincts.](figures/DataSaurusDozen){#fig-datasaurus}
+
 
 La matrice de corrélation entre $X_1, \ldots, X_p$, dont l'entrée $(i, j)$ contient la corrélation entre $X_i$ et $X_j$, est une matrice symmétrique dont les éléments de la diagonale sont égaux à 1. À mesure que le nombre de variables augmente, le nombre de corrélations à estimer augmente: puisque la matrice est $p \times p$, ce nombre augmente comme le carré du nombre de variables explicatives. L'estimation ne sera pas fiable à moins que $n \gg p$.
 
@@ -136,7 +139,8 @@ cormat <- cor(factor)
 cormat[lower.tri(cormat, diag = TRUE)] <- NA
 cormat <- round(cormat, 2)
 options(knitr.kable.NA = "")
-knitr::kable(cormat)  |>
+knitr::kable(cormat,
+                booktabs = TRUE)  |>
   kableExtra::kable_styling(full_width = FALSE)
 ```
 
@@ -155,17 +159,29 @@ corrplot::corrplot(cor(factor),
 
 ```{r}
 #| label: tbl-statdescriptfactor
-#| tbl-cap: "Statistiques descriptives des 12 variables du jeu de données `factor`."
 #| echo: false
+#| cache: true
 #| eval: true
-#| fig-align: 'center'
-tibble::tibble(moyenne = apply(factor, 2, mean),
-               "écart-type" = apply(factor, 2, sd),
+#| tbl-cap: "Statistiques descriptives des 12 variables du jeu de données factor."
+ if(knitr::opts_knit$get("rmarkdown.pandoc.to") == "html"){
+ tibble::tibble(moyenne = apply(factor, 2, mean),
+              "écart-type" = apply(factor, 2, sd),
                min = apply(factor, 2, min),
                max = apply(factor, 2, max),
                histogramme = apply(factor, 2, function(x){skimr::inline_hist(x = x, n_bins = 5)})) |>
-  knitr::kable(digits = 2) |>
+  knitr::kable(digits = 2,
+               booktabs = TRUE) |>
   kableExtra::kable_styling(full_width = TRUE)
+ } else{
+tibble::tibble(moyenne = apply(factor, 2, mean),
+               "écart-type" = apply(factor, 2, sd),
+               min = apply(factor, 2, min),
+               max = apply(factor, 2, max)) |>
+  kableExtra::kbl(digits = 2,
+  	          longtable = FALSE, 
+                  booktabs = TRUE) |>
+  kableExtra::kable_styling(full_width = TRUE)
+}
 ```
 
 On voit dans la @fig-corrmat que quelques groupes de variables sont corrélés entre eux. On peut également regrouper certaines questions sous des thèmes manuellement: le but de l'analyse factorielle sera d'automatiser ce regroupement.
@@ -292,8 +308,10 @@ acp_var <- t(formatC(round(acp$sdev^2,3), digits = 2,
                           format = "f")
                   )
 colnames(acp_var) <- paste0("C",1:12)
-knitr::kable(acp_var, align = "c",
-             row.names = FALSE) |>
+knitr::kable(acp_var, 
+                align = "c",
+                row.names = FALSE,
+                booktabs = TRUE) |>
   kableExtra::kable_styling(full_width = TRUE)
 ```
 
@@ -353,7 +371,7 @@ La meilleure approximation de rang $k \leq p$ de $\boldsymbol{\Sigma}$ est obten
 \begin{align*}
 \widetilde{\boldsymbol{\Sigma}}_k = \sum_{j=1}^k \lambda_j \boldsymbol{q}_j\boldsymbol{q}_j^\top,
 \end{align*}
-une combinaison des vecteurs propres $\boldsymbol{q}_1, \ldots, \boldsymbol{\gamma}_k \in \mathbb{R}^p$ non corrélés.
+une combinaison des vecteurs propres $\boldsymbol{q}_1, \ldots, \boldsymbol{q}_k \in \mathbb{R}^p$ non corrélés.
 
 ## Analyse factorielle exploratoire
 
@@ -470,7 +488,10 @@ class(chargements) <- "matrix"
 chargements[chargements < 0.3] <- NA
 colnames(chargements) <- paste0("F", 1:4)
 options(knitr.kable.NA = '')
-knitr::kable(100*chargements, digits = 0, row.names = TRUE) |>
+knitr::kable(100*chargements, 
+                digits = 0,
+                booktabs = TRUE,
+                row.names = TRUE) |>
   kableExtra::kable_styling(full_width = TRUE)
 ```
 
@@ -523,12 +544,15 @@ ajustement_factanal(
 #| eval: true
 #| echo: false
 #| tbl-cap: "Ajustement de modèles d'analyse factorielle par la méthode du maximum de vraisemblance pour différent nombres de facteurs: critères d'informations AIC et BIC, valeur-_p_ du test de rapport de vraisemblance, nombre de paramètres estimés et indicateur pour les cas de (quasi)-Heywood"
-emv_crit <- hecmulti::adjustement_factanal(
+emv_crit <- hecmulti::ajustement_factanal(
     covmat = cov(factor),
     factors = 1:5,
     n.obs = nrow(factor))
 colnames(emv_crit)[4] <- "valeur-p"
-knitr::kable(emv_crit, digits = c(2,2,2,0,0)) |>
+knitr::kable(emv_crit, 
+                digits = c(2,2,2,0,0),
+                row.names = TRUE,
+                booktabs = TRUE) |>
   kableExtra::kable_styling(full_width = TRUE)
 ```
 
@@ -556,7 +580,10 @@ class(chargements) <- "matrix"
 chargements[chargements < 0.3] <- NA
 options(knitr.kable.NA = '')
 colnames(chargements) <- paste0("F", 1:3)
-knitr::kable(100*chargements, digits = 0, row.names = TRUE) |>
+knitr::kable(100*chargements, 
+                digits = 0,
+                booktabs = TRUE,
+                row.names = TRUE) |>
   kableExtra::kable_styling(full_width = TRUE)
 ```
 
@@ -591,10 +618,10 @@ ech_paiement <- rowMeans(factor[,c("x2","x7","x10")])
 ech_prix <- rowMeans(factor[,c("x1","x5")])
 
 # Cohérence interne (alpha de Cronbach)
-alpha(factor[,c("x4","x8","x11")])
-alpha(factor[,c("x3","x6","x9","x12")])
-alpha(factor[,c("x2","x7","x10")])
-alpha(factor[,c("x1","x5")])
+alphaC(factor[,c("x4","x8","x11")])
+alphaC(factor[,c("x3","x6","x9","x12")])
+alphaC(factor[,c("x2","x7","x10")])
+alphaC(factor[,c("x1","x5")])
 ```
 
 ```{r}
@@ -606,13 +633,14 @@ alpha(factor[,c("x1","x5")])
 # Création des échelles
 # Cohérence interne (alpha de Cronbach)
 alph <- c(
-  hecmulti::alpha_Cronbach(factor[,c("x4","x8","x11")]),
-  hecmulti::alpha_Cronbach(factor[,c("x3","x6","x9","x12")]),
-  hecmulti::alpha_Cronbach(factor[,c("x2","x7","x10")]),
-  hecmulti::alpha_Cronbach(factor[,c("x1","x5")]))
+  hecmulti::alphaC(factor[,c("x4","x8","x11")]),
+  hecmulti::alphaC(factor[,c("x3","x6","x9","x12")]),
+  hecmulti::alphaC(factor[,c("x2","x7","x10")]),
+  hecmulti::alphaC(factor[,c("x1","x5")]))
 names(alph) <- c("service","produit","paiement","prix")
 knitr::kable(t(alph), 
-             digits = 3,  
+             digits = 3, 
+             booktabs = TRUE,
              row.names = FALSE) |>
   kableExtra::kable_styling(full_width = TRUE)
 ```
@@ -667,7 +695,8 @@ originales dans des analyses subséquentes. Il est suggéré d'utiliser les nouv
 #| tbl-cap: "Coefficients du score (modèle de régression, maximum de vraisemblance) pour le modèle d'analyse factorielle à quatre facteurs."
 scores <- solve(fa4$correlation) %*% loadings(fa4)
 colnames(scores) <- paste0("facteur ", 1:4)
-knitr::kable(scores, digits = 2) |>
+knitr::kable(scores, digits = 2,
+                booktabs = TRUE) |>
   kableExtra::kable_styling(full_width = TRUE)
 ```
 
@@ -697,7 +726,8 @@ corr <- cor(cbind(ech1, ech2, ech3, ech4, scores[,1:4]))[1:4,5:8]
 corr <- round(corr, 2)
 colnames(corr) <- paste0("score ", 1:4)
 rownames(corr) <- paste0("échelle ", 1:4)
-knitr::kable(corr) |>
+knitr::kable(corr,  
+             booktabs = TRUE) |>
   kableExtra::kable_styling(full_width = TRUE)
 ```
 
