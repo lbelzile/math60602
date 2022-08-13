@@ -1,4 +1,4 @@
-# Analyse exploratoire de données {#analyse-exploratoire}
+# Analyse exploratoire {#analyse-exploratoire}
 
 ```{r}
 #| label: setup01
@@ -43,7 +43,7 @@ options(ggplot2.continuous.colour="viridis")
 options(ggplot2.continuous.fill = "viridis")
 scale_colour_discrete <- scale_color_manual(MetBrewer::met.brewer("Hiroshige",10))
 scale_fill_discrete <- scale_fill_manual(MetBrewer::met.brewer("Hiroshige",10))
-theme_set(theme_minimal())
+theme_set(theme_classic())
 ```
 
 L'analyse exploratoire, comme son nom l'indique, est une étape préliminaire à la modélisation servant à l'acquisition d'une meilleure compréhension des données. 
@@ -108,16 +108,25 @@ Le principal type de graphique pour représenter la distribution d'une variable 
 #| fig-cap: "Diagramme en bâtons pour la classe des billets de trains du jeu de données Renfe."
 #| out-width: '100%'
 library(ggplot2); 
-library(poorman)
 library(patchwork)
 data(renfe, package = "hecmodstat")
 
-g1 <- ggplot(data = renfe, aes(x = classe)) + 
-  geom_bar() + 
-  labs(x = "classe", y = "dénombrement")
-g2 <- ggplot(data = renfe, aes(x = type)) + 
-  geom_bar() + 
-  labs(x = "type de train", y = "dénombrement")
+g1 <- renfe |>
+    dplyr::count(classe) |>
+    dplyr::mutate(classe = forcats::fct_reorder(classe, n))  |>
+ggplot(mapping = aes(y = classe, x = n)) + 
+    geom_col() + 
+    labs(subtitle = "classe", 
+    x = "dénombrement", 
+    y = "")
+g2 <- renfe |>
+    dplyr::count(type) |>
+    dplyr::mutate(type = forcats::fct_reorder(type, n))  |>
+ggplot(mapping = aes(y = type, x = n)) + 
+    geom_col() + 
+    labs(subtitle = "type de train", 
+         x = "dénombrement", 
+         y = "")
 g1 + g2
 ```
 
@@ -178,7 +187,7 @@ Si on veut représenter la covariabilité de deux variables continues, on utilis
 
 Plutôt que de décrire plus en détail le processus de l'analyse exploratoire, on présente un exemple qui illustre le cheminement habitue sur les données de trains de la Renfe introduites précédemment. 
 
-## Analyse exploratoire des billets de trains Renfe
+## Exemple
 
 La première étape consisterait à lire la description de la base de données. Le jeu de données `renfe` contient les variables suivantes:
 

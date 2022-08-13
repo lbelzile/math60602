@@ -262,7 +262,7 @@
 \begin{document}
 \frontmatter
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, breakable, boxrule=0pt, enhanced, sharp corners, borderline west={3pt}{0pt}{shadecolor}, frame hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, breakable, interior hidden, sharp corners, borderline west={3pt}{0pt}{shadecolor}, frame hidden, enhanced]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table des matières}
 {
@@ -515,7 +515,7 @@ prévision.
 \bookmarksetup{startatroot}
 
 \hypertarget{analyse-exploratoire}{%
-\chapter{Analyse exploratoire de données}\label{analyse-exploratoire}}
+\chapter{Analyse exploratoire}\label{analyse-exploratoire}}
 
 L'analyse exploratoire, comme son nom l'indique, est une étape
 préliminaire à la modélisation servant à l'acquisition d'une meilleure
@@ -678,16 +678,25 @@ mesurer les proportions) --- ce n'est pas de la tarte!
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{library}\NormalTok{(ggplot2); }
-\FunctionTok{library}\NormalTok{(poorman)}
 \FunctionTok{library}\NormalTok{(patchwork)}
 \FunctionTok{data}\NormalTok{(renfe, }\AttributeTok{package =} \StringTok{"hecmodstat"}\NormalTok{)}
 
-\NormalTok{g1 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ renfe, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ classe)) }\SpecialCharTok{+} 
-  \FunctionTok{geom\_bar}\NormalTok{() }\SpecialCharTok{+} 
-  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"classe"}\NormalTok{, }\AttributeTok{y =} \StringTok{"dénombrement"}\NormalTok{)}
-\NormalTok{g2 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ renfe, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ type)) }\SpecialCharTok{+} 
-  \FunctionTok{geom\_bar}\NormalTok{() }\SpecialCharTok{+} 
-  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"type de train"}\NormalTok{, }\AttributeTok{y =} \StringTok{"dénombrement"}\NormalTok{)}
+\NormalTok{g1 }\OtherTok{\textless{}{-}}\NormalTok{ renfe }\SpecialCharTok{|\textgreater{}}
+\NormalTok{    dplyr}\SpecialCharTok{::}\FunctionTok{count}\NormalTok{(classe) }\SpecialCharTok{|\textgreater{}}
+\NormalTok{    dplyr}\SpecialCharTok{::}\FunctionTok{mutate}\NormalTok{(}\AttributeTok{classe =}\NormalTok{ forcats}\SpecialCharTok{::}\FunctionTok{fct\_reorder}\NormalTok{(classe, n))  }\SpecialCharTok{|\textgreater{}}
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{mapping =} \FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ classe, }\AttributeTok{x =}\NormalTok{ n)) }\SpecialCharTok{+} 
+    \FunctionTok{geom\_col}\NormalTok{() }\SpecialCharTok{+} 
+    \FunctionTok{labs}\NormalTok{(}\AttributeTok{subtitle =} \StringTok{"classe"}\NormalTok{, }
+    \AttributeTok{x =} \StringTok{"dénombrement"}\NormalTok{, }
+    \AttributeTok{y =} \StringTok{""}\NormalTok{)}
+\NormalTok{g2 }\OtherTok{\textless{}{-}}\NormalTok{ renfe }\SpecialCharTok{|\textgreater{}}
+\NormalTok{    dplyr}\SpecialCharTok{::}\FunctionTok{count}\NormalTok{(type) }\SpecialCharTok{|\textgreater{}}
+\NormalTok{    dplyr}\SpecialCharTok{::}\FunctionTok{mutate}\NormalTok{(}\AttributeTok{type =}\NormalTok{ forcats}\SpecialCharTok{::}\FunctionTok{fct\_reorder}\NormalTok{(type, n))  }\SpecialCharTok{|\textgreater{}}
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{mapping =} \FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ type, }\AttributeTok{x =}\NormalTok{ n)) }\SpecialCharTok{+} 
+    \FunctionTok{geom\_col}\NormalTok{() }\SpecialCharTok{+} 
+    \FunctionTok{labs}\NormalTok{(}\AttributeTok{subtitle =} \StringTok{"type de train"}\NormalTok{, }
+         \AttributeTok{x =} \StringTok{"dénombrement"}\NormalTok{, }
+         \AttributeTok{y =} \StringTok{""}\NormalTok{)}
 \NormalTok{g1 }\SpecialCharTok{+}\NormalTok{ g2}
 \end{Highlighting}
 \end{Shaded}
@@ -819,9 +828,8 @@ Plutôt que de décrire plus en détail le processus de l'analyse
 exploratoire, on présente un exemple qui illustre le cheminement habitue
 sur les données de trains de la Renfe introduites précédemment.
 
-\hypertarget{analyse-exploratoire-des-billets-de-trains-renfe}{%
-\section{Analyse exploratoire des billets de trains
-Renfe}\label{analyse-exploratoire-des-billets-de-trains-renfe}}
+\hypertarget{exemple}{%
+\section{Exemple}\label{exemple}}
 
 La première étape consisterait à lire la description de la base de
 données. Le jeu de données \texttt{renfe} contient les variables
@@ -1129,7 +1137,7 @@ particulier, votre description devrait coïncider avec le rendu. Votre
 graphique raconte une histoire, aussi prenez-soin que cette dernière
 soit nécessaire et attrayante.
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, leftrule=.75mm, arc=.35mm, colback=white, rightrule=.15mm, bottomtitle=1mm, left=2mm, toprule=.15mm, colframe=quarto-callout-note-color-frame, opacityback=0, toptitle=1mm, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, coltitle=black, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, toptitle=1mm, rightrule=.15mm, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, colback=white, titlerule=0mm, opacitybacktitle=0.6, breakable, leftrule=.75mm, bottomtitle=1mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, arc=.35mm, coltitle=black, colframe=quarto-callout-note-color-frame, toprule=.15mm, left=2mm]
 
 \begin{itemize}
 \tightlist
@@ -1284,7 +1292,7 @@ Règle générale,
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{./figures/DataSaurusDozen.pdf}
+{\centering \includegraphics{./figures/DataSaurusDozen.png}
 
 }
 
@@ -1457,7 +1465,9 @@ Le but de l'analyse en composantes principales est de réduire le nombre
 de variables explicatives. En partant de \(p\) variables
 \(X_1, \ldots, X_p\), on forme de nouvelles variables qui sont des
 combinaisons linéaires des variables originales, \begin{align*}
-C_j &= w_{j1} X_1 + w_{j2} X_2 + \cdots + w_{jp} X_p, \qquad (j=1, \ldots, p),
+C_j &= \underset{\text{somme de poids fois variables explicatives}}{w_{j1} X_1 + w_{j2} X_2 + \cdots + w_{jp} X_p}, \qquad (j=1, \ldots, p),
+\\
+1 &= \underset{\text{poids standardisés}}{w_{j1}^2 + \cdots + w_{jp}^2}
 \end{align*} de telle sorte que
 
 \begin{itemize}
@@ -1466,9 +1476,9 @@ C_j &= w_{j1} X_1 + w_{j2} X_2 + \cdots + w_{jp} X_p, \qquad (j=1, \ldots, p),
   La première variable formée, \(C_1\), appelée première composante
   principale, possède la variance maximale parmi toutes les combinaisons
   linéaires sous la contrainte
-  \(w_{11}^2 + \cdots + w_{1p}^2=1\)\footnote{Les contraintes sont
-    nécessaires afin de standardiser le problème car il serait possible
-    d'avoir des variances infinies sinon.}.
+  \(w_{1i}^2 + \cdots + w_{1p}^2=1\).\footnote{Les contraintes sur les
+    poids sont nécessaires afin de standardiser le problème car il
+    serait possible d'avoir des variances infinies sinon.}
 \item
   Pour \(j=2, \ldots, p\), la \(j\)e composante principale \(C_j\)
   possède la variance maximale parmi toutes les combinaisons linéaires
@@ -1517,8 +1527,8 @@ nulle.}
 
 \end{figure}
 
-La figure Figure~\ref{fig-acprotation} démontre cette décomposition sur
-des données bidimensionnelles simulées. La variance des données dans le
+La Figure~\ref{fig-acprotation} démontre cette décomposition sur des
+données bidimensionnelles simulées. La variance des données dans le
 premier panneau est 13.51 pour l'axe des abscisse et 6.43 pour l'axe des
 ordonnées avec une corrélation de 0.86, à comparer avec des variances de
 18.65 et 1.21 et une corrélation nulle entre les deux composantes
@@ -1560,7 +1570,7 @@ de points de chaque observations dans l'espace des deux premières
 composantes principales. Si on couple cela avec les directions offertes
 par les chargements pour chacune des variables explicatives
 \(X_1, \ldots, X_p\), il en ressort que certaines variables
-augmentent/diminuent de pair. Ainsi, on voit dans
+augmentent/diminuent de pair. Ainsi, on voit dans la
 Figure~\ref{fig-biplot} que les variables \texttt{x3}, \texttt{x6},
 \texttt{x9} et \texttt{x12} tendent dans la même direction, comme
 \texttt{x4}, \texttt{x8} et \texttt{x11}. On reviendra sur ce point dans
@@ -1679,29 +1689,7 @@ composantes.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{var\_cp }\OtherTok{\textless{}{-}}\NormalTok{ acp}\SpecialCharTok{$}\NormalTok{sdev}\SpecialCharTok{\^{}}\DecValTok{2}
-\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
-  \AttributeTok{k =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{12}\NormalTok{,}
-  \AttributeTok{var =}\NormalTok{ var\_cp,}
-  \AttributeTok{cumvar =} \FunctionTok{cumsum}\NormalTok{(var\_cp)}\SpecialCharTok{/}\FunctionTok{sum}\NormalTok{(var\_cp)}
-\NormalTok{  )}
-\NormalTok{g1 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ df,}
-       \AttributeTok{mapping =} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ k, }\AttributeTok{y =}\NormalTok{ var)) }\SpecialCharTok{+} 
-  \FunctionTok{geom\_line}\NormalTok{() }\SpecialCharTok{+} 
-  \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+} 
-  \FunctionTok{scale\_x\_continuous}\NormalTok{(}\AttributeTok{breaks =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{12}\NormalTok{,}
-                     \AttributeTok{minor\_breaks =} \ConstantTok{NULL}\NormalTok{) }\SpecialCharTok{+}
-  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"nombre de composantes"}\NormalTok{,}
-       \AttributeTok{y =} \StringTok{"variance"}\NormalTok{)}
-\NormalTok{g2 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ df,}
-       \AttributeTok{mapping =} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ k, }\AttributeTok{y =}\NormalTok{ cumvar)) }\SpecialCharTok{+} 
-  \FunctionTok{geom\_line}\NormalTok{() }\SpecialCharTok{+} 
-  \FunctionTok{scale\_x\_continuous}\NormalTok{(}\AttributeTok{breaks =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{12}\NormalTok{,}
-                     \AttributeTok{minor\_breaks =} \ConstantTok{NULL}\NormalTok{) }\SpecialCharTok{+}
-  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"nombre de composantes"}\NormalTok{,}
-       \AttributeTok{y =} \StringTok{"variance cumulative (pourcentage)"}\NormalTok{)}
-\NormalTok{g1 }\SpecialCharTok{+}\NormalTok{ g2}
-\CommentTok{\# hecmulti::eboulis(eigen(cor(factor)))}
+\NormalTok{hecmulti}\SpecialCharTok{::}\FunctionTok{eboulis}\NormalTok{(}\FunctionTok{eigen}\NormalTok{(}\FunctionTok{cor}\NormalTok{(factor)))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1743,6 +1731,43 @@ contenant les vecteurs propres. La meilleure approximation de rang
 \(\boldsymbol{q}_1, \ldots, \boldsymbol{q}_k \in \mathbb{R}^p\) non
 corrélés.
 
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, toptitle=1mm, rightrule=.15mm, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, colback=white, titlerule=0mm, opacitybacktitle=0.6, breakable, leftrule=.75mm, bottomtitle=1mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, arc=.35mm, coltitle=black, colframe=quarto-callout-note-color-frame, toprule=.15mm, left=2mm]
+
+\begin{itemize}
+\tightlist
+\item
+  La corrélation mesure la force de la dépendance linéaire entre deux
+  variables: plus elle est élevée, plus les points s'alignent.
+\item
+  Si le nombre de variables explicatives \(p\) est conséquent par
+  rapport au nombre d'observations \(n\), on a peu d'information
+  disponible pour estimer de manière fiable les corrélations.
+\item
+  Une analyse en composante principales fait une décomposition en
+  valeurs propres/vecteurs propres de la matrice de covariance ou de
+  corrélation.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ces nouvelles variables sont orthogonales (corrélation nulle) entre
+    elles.
+  \item
+    Les composantes principales sont ordonnées en ordre décroissant de
+    variance: si on ne conserve que \(k<p\) de variables, on maximise la
+    variance expliquée.
+  \item
+    Le choix du nombre de variables est basé sur des règles du pouce: le
+    critère des valeurs propres de Kaiser suggère de prendre autant de
+    composantes principales que de variances supérieures à 1.
+  \item
+    Un bigramme permet de représenter graphiquement les directions des
+    variables en fonction des deux premières composantes principales.
+  \end{itemize}
+\end{itemize}
+
+\end{tcolorbox}
+
 \hypertarget{analyse-factorielle-exploratoire-1}{%
 \section{Analyse factorielle
 exploratoire}\label{analyse-factorielle-exploratoire-1}}
@@ -1783,7 +1808,7 @@ X_2 &= \mu_2 + \gamma_{21}F_1 + \gamma_{22} F_2 + \cdots + \gamma_{2m}F_m + \var
 X_p &= \mu_p + \gamma_{p1}F_1 + \gamma_{p2} F_2 + \cdots + \gamma_{pm}F_m + \varepsilon_p, 
 \end{align*} où \(\mu_i\) est l'espérance (moyenne théorique) de la
 variable aléatoire \(X_i\), où \(\boldsymbol{\Gamma}\) est une matrice
-\(p \times m\) avec éléments \(\gamma_{ij}\), qui reprsentent le
+\(p \times m\) avec éléments \(\gamma_{ij}\), qui représentent le
 chargement de la variable \(X_i\) sur le facteur \(F_j\)
 (\(i=1, \ldots, p\); \(j=1, \ldots, m\)).
 
@@ -2163,7 +2188,7 @@ important est de pouvoir interpréter raisonnablement les facteurs: la
 configuration de facteurs choisie est logique et compréhensible.
 
 \hypertarget{construction-duxe9chelles-uxe0-partir-des-facteurs}{%
-\section{Construction d'échelles à partir des
+\subsection{Construction d'échelles à partir des
 facteurs}\label{construction-duxe9chelles-uxe0-partir-des-facteurs}}
 
 Si le seul but de l'analyse factorielle est de comprendre la structure
@@ -2193,8 +2218,8 @@ ont tendance à être corrélées entre elles. L'alpha de Cronbach est
 \end{align*} où \(k\) est le nombre de variables dans l'échelle, \(S^2\)
 est la variance empirique de la somme des variables et \(S_i^2\) est la
 variance empirique de la \(i\)e variable. En pratique, on voudra que ce
-coefficient soit au moins égal à 0, 6 pour être satisfait de la
-cohérence interne de l'échelle.
+coefficient soit au moins égal à 0.6 pour être satisfait de la cohérence
+interne de l'échelle.\footnote{Bien que ce nombre soit arbitraire.}
 
 Le paquet \texttt{hecmulti} contient une fonction, \texttt{alpha}, pour
 faire l'estimation du \(\alpha\) de Cronbach
@@ -2243,10 +2268,11 @@ cohérent. Les échelles provenant des facteurs \emph{service},
 sont identifiés à la fois dans la solution à quatre, mais aussi dans la
 solution à trois facteurs. Le facteur \emph{prix} est celui qui apparaît
 en plus dans la solution à quatre facteurs. Il a une interprétation
-claire (c'est essentiellement \texttt{x1}), mais son faible alpha ferait
-en sorte qu'il serait discutable de travailler avec l'échelle
+claire (c'est essentiellement \texttt{x1}), mais son faible \(\alpha\)
+ferait en sorte qu'il serait discutable de travailler avec l'échelle
 \emph{prix} dans d'autres analyses (du moins avec selon l'usage habituel
-du alpha) plutôt que d'utiliser directement la variable \texttt{x1}.
+du \(\alpha\)) plutôt que d'utiliser directement la variable
+\texttt{x1}.
 
 \hypertarget{compluxe9ments-dinformation}{%
 \section{Compléments d'information}\label{compluxe9ments-dinformation}}
@@ -2260,10 +2286,11 @@ avec des variables ordinales (comme pour l'exemple portant sur le
 questionnaire) et même avec des variables binaires (0-1).
 
 Dans ce genre de situation, on peut aussi utiliser d'autres mesures
-d'associations au lieu du coefficient de corrélation linéaire. Par
-exemple, on peut utiliser la corrélation polychorique, qui est une
-mesure de corrélation entre deux variables ordinales. La corrélation
-tétrachorique correspond au cas spécial de deux variables binaires.
+d'associations au lieu du coefficient de corrélation linéaire de
+Pearson. Par exemple, on peut utiliser la corrélation polychorique, qui
+est une mesure de corrélation entre deux variables ordinales. La
+corrélation tétrachorique correspond au cas spécial de deux variables
+binaires.
 
 Ma suggestion est d'utiliser la corrélation linéaire ordinaire avec des
 variables ordinales (même binaires). Si les résultats ne sont pas
@@ -2446,7 +2473,7 @@ contre, cette corrélation est plus faible (0.82) pour le facteur
 
 \end{table}
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, leftrule=.75mm, arc=.35mm, colback=white, rightrule=.15mm, bottomtitle=1mm, left=2mm, toprule=.15mm, colframe=quarto-callout-tip-color-frame, opacityback=0, toptitle=1mm, titlerule=0mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes de l'analyse factorielle exploratoire}, bottomrule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, coltitle=black, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, toptitle=1mm, rightrule=.15mm, bottomrule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, colback=white, titlerule=0mm, opacitybacktitle=0.6, breakable, leftrule=.75mm, bottomtitle=1mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes de l'analyse factorielle exploratoire}, arc=.35mm, coltitle=black, colframe=quarto-callout-tip-color-frame, toprule=.15mm, left=2mm]
 
 \begin{itemize}
 \tightlist
@@ -2468,39 +2495,10 @@ contre, cette corrélation est plus faible (0.82) pour le facteur
 
 \end{tcolorbox}
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, leftrule=.75mm, arc=.35mm, colback=white, rightrule=.15mm, bottomtitle=1mm, left=2mm, toprule=.15mm, colframe=quarto-callout-note-color-frame, opacityback=0, toptitle=1mm, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, coltitle=black, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, toptitle=1mm, rightrule=.15mm, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, colback=white, titlerule=0mm, opacitybacktitle=0.6, breakable, leftrule=.75mm, bottomtitle=1mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, arc=.35mm, coltitle=black, colframe=quarto-callout-note-color-frame, toprule=.15mm, left=2mm]
 
 \begin{itemize}
 \tightlist
-\item
-  La corrélation mesure la force de la dépendance linéaire entre deux
-  variables: plus elle est élevée, plus les points s'alignent.
-\item
-  Si le nombre de variables explicatives \(p\) est conséquent par
-  rapport au nombre d'observations \(n\), on a peu d'information
-  disponible pour estimer de manière fiable les corrélations.
-\item
-  Une analyse en composante principales fait une décomposition en
-  valeurs propres/vecteurs propres de la matrice de covariance ou de
-  corrélation.
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Ces nouvelles variables sont orthogonales (corrélation nulle) entre
-    elles.
-  \item
-    Les composantes principales sont ordonnées en ordre décroissant de
-    variance: si on ne conserve que \(k<p\) de variables, on maximise la
-    variance expliquée.
-  \item
-    Le choix du nombre de variables est basé sur des règles du pouce: le
-    critère des valeurs propres de Kaiser suggère de prendre autant de
-    composantes principales que de variances supérieures à 1.
-  \item
-    Un bigramme permet de représenter graphiquement les directions des
-    variables en fonction des deux premières composantes principales.
-  \end{itemize}
 \item
   L'analyse factorielle exploratoire fournit un modèle pour la matrice
   de corrélation
@@ -2689,49 +2687,22 @@ prédictions sont biaisés.
 \CommentTok{\# Vérifier si ces dernières se trouvent}
 \CommentTok{\#  dans l\textquotesingle{}intervalle de confiance}
 \FunctionTok{coef}\NormalTok{(mod\_1a) }\CommentTok{\#coefficients}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-(Intercept)          X1 
-  22.617487    2.003719 
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
+\DocumentationTok{\#\# (Intercept)          X1 }
+\DocumentationTok{\#\#        22.6         2.0}
 \FunctionTok{confint}\NormalTok{(mod\_1a) }\CommentTok{\#intervalles de confiance}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-                2.5 %    97.5 %
-(Intercept) 21.872043 23.362931
-X1           1.801284  2.206154
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
+\DocumentationTok{\#\#             2.5 \% 97.5 \%}
+\DocumentationTok{\#\# (Intercept)  21.9  23.36}
+\DocumentationTok{\#\# X1            1.8   2.21}
 \FunctionTok{coef}\NormalTok{(mod\_2a)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-(Intercept)          X1          X2 
-  19.984337    2.027571    5.014782 
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
+\DocumentationTok{\#\# (Intercept)          X1          X2 }
+\DocumentationTok{\#\#       19.98        2.03        5.01}
 \FunctionTok{confint}\NormalTok{(mod\_2a)}
+\DocumentationTok{\#\#             2.5 \% 97.5 \%}
+\DocumentationTok{\#\# (Intercept) 19.66   20.3}
+\DocumentationTok{\#\# X1           1.95    2.1}
+\DocumentationTok{\#\# X2           4.73    5.3}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-                2.5 %    97.5 %
-(Intercept) 19.664527 20.304148
-X1           1.950967  2.104175
-X2           4.727644  5.301919
-\end{verbatim}
 
 Ainsi, il est généralement préférable d'avoir un modèle légèrement
 surspécifié qu'un modèle sous-spécifié. Plus généralement, il est
@@ -2986,7 +2957,7 @@ critère d'information d'Akaike, \(\mathsf{AIC}\), est \begin{align*}
 est petite, meilleur est l'adéquation. Que se passe-t-il lorsqu'on
 ajoute un paramètre à un modèle? D'une part, la somme du carré des
 erreurs va méchaniquement diminuer tout comme l'erreur quadratique
-moyenne \(\textsf{eqm} = \textsf{SCE}/n\), donc la quantité
+moyenne \(\textsf{EQM} = \textsf{SCE}/n\), donc la quantité
 \(n \ln (\mathsf{EQM})\) va diminuer. D'autre part, la valeur de \(p\)
 augmente de \(1\). Ainsi, le \(\mathsf{AIC}\) peut soit augmenter, soit
 diminuer, lorsqu'on ajoute un paramètre; idem pour le \(\mathsf{BIC}\).
@@ -3029,56 +3000,37 @@ cubique:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{data}\NormalTok{(selection1\_train, }\AttributeTok{package =} \StringTok{"hecmulti"}\NormalTok{)}
+\FunctionTok{data}\NormalTok{(polynome, }\AttributeTok{package =} \StringTok{"hecmulti"}\NormalTok{)}
 \CommentTok{\# Ajuster un polynôme de degré trois (modèle cubique)}
 \NormalTok{mod\_cub }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}} \FunctionTok{poly}\NormalTok{(x, }\DecValTok{3}\NormalTok{),}
-              \AttributeTok{data =}\NormalTok{ selection1\_train)}
+              \AttributeTok{data =}\NormalTok{ polynome)}
 \FunctionTok{summary}\NormalTok{(mod\_cub) }\CommentTok{\# Tableau résumé des coefficients}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-
-Call:
-lm(formula = y ~ poly(x, 3), data = selection1_train)
-
-Residuals:
-     Min       1Q   Median       3Q      Max 
--111.908  -34.114    2.079   36.688  142.481 
-
-Coefficients:
-            Estimate Std. Error t value Pr(>|t|)    
-(Intercept)   -9.772      5.224  -1.871  0.06446 .  
-poly(x, 3)1  824.808     52.242  15.788  < 2e-16 ***
-poly(x, 3)2 -281.951     52.242  -5.397 4.88e-07 ***
-poly(x, 3)3  160.993     52.242   3.082  0.00269 ** 
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 52.24 on 96 degrees of freedom
-Multiple R-squared:  0.7499,    Adjusted R-squared:  0.7421 
-F-statistic: 95.96 on 3 and 96 DF,  p-value: < 2.2e-16
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
+\DocumentationTok{\#\# }
+\DocumentationTok{\#\# Call:}
+\DocumentationTok{\#\# lm(formula = y \textasciitilde{} poly(x, 3), data = polynome)}
+\DocumentationTok{\#\# }
+\DocumentationTok{\#\# Residuals:}
+\DocumentationTok{\#\#     Min      1Q  Median      3Q     Max }
+\DocumentationTok{\#\# {-}111.91  {-}34.11    2.08   36.69  142.48 }
+\DocumentationTok{\#\# }
+\DocumentationTok{\#\# Coefficients:}
+\DocumentationTok{\#\#             Estimate Std. Error t value Pr(\textgreater{}|t|)    }
+\DocumentationTok{\#\# (Intercept)    {-}9.77       5.22   {-}1.87   0.0645 .  }
+\DocumentationTok{\#\# poly(x, 3)1   824.81      52.24   15.79  \textless{} 2e{-}16 ***}
+\DocumentationTok{\#\# poly(x, 3)2  {-}281.95      52.24   {-}5.40  4.9e{-}07 ***}
+\DocumentationTok{\#\# poly(x, 3)3   160.99      52.24    3.08   0.0027 ** }
+\DocumentationTok{\#\# {-}{-}{-}}
+\DocumentationTok{\#\# Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
+\DocumentationTok{\#\# }
+\DocumentationTok{\#\# Residual standard error: 52.2 on 96 degrees of freedom}
+\DocumentationTok{\#\# Multiple R{-}squared:  0.75,   Adjusted R{-}squared:  0.742 }
+\DocumentationTok{\#\# F{-}statistic:   96 on 3 and 96 DF,  p{-}value: \textless{}2e{-}16}
 \FunctionTok{AIC}\NormalTok{(mod\_cub)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-[1] 1080.882
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
+\DocumentationTok{\#\# [1] 1081}
 \FunctionTok{BIC}\NormalTok{(mod\_cub)}
+\DocumentationTok{\#\# [1] 1094}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-[1] 1093.908
-\end{verbatim}
 
 Le Tableau~\ref{tbl-polynome-ajustement} résume ces quantités pour tous
 les modèles de l'ordre 1 à l'ordre 10.
@@ -3094,17 +3046,17 @@ les modèles de l'ordre 1 à l'ordre 10.
 \toprule
   & \(\mathsf{EQM}\) & \(\widehat{\mathsf{EQM}}_a\) & \(R^2\) & \(\mathsf{AIC}\) & \(\mathsf{BIC}\) & \(\mathsf{VC}_{10}\)\\
 \midrule
-1 & 3191.29 & 3674.20 & 0.65 & 1110.70 & 1118.51 & 3675.37\\
-2 & 3132.67 & 2879.24 & 0.73 & 1088.32 & 1098.74 & 2897.94\\
-3 & 2697.40 & 2620.05 & 0.75 & 1080.88 & 1093.91 & 2675.51\\
-4 & 2766.68 & 2581.70 & 0.75 & 1081.41 & 1097.04 & 2666.16\\
-5 & 2771.05 & 2580.86 & 0.75 & 1083.38 & 1101.61 & 2711.11\\
+1 & 3191 & 3674 & 0.65 & 1111 & 1119 & 3675\\
+2 & 3133 & 2879 & 0.73 & 1088 & 1099 & 2898\\
+3 & 2697 & 2620 & 0.75 & 1081 & 1094 & 2676\\
+4 & 2767 & 2582 & 0.75 & 1081 & 1097 & 2666\\
+5 & 2771 & 2581 & 0.75 & 1083 & 1102 & 2711\\
 \addlinespace
-6 & 2779.66 & 2577.60 & 0.75 & 1085.25 & 1106.09 & 2757.13\\
-7 & 2780.21 & 2577.49 & 0.75 & 1087.24 & 1110.69 & 2787.95\\
-8 & 2797.35 & 2531.00 & 0.76 & 1087.42 & 1113.48 & 2845.78\\
-9 & 2811.07 & 2527.85 & 0.76 & 1089.30 & 1117.96 & 2895.61\\
-10 & 2848.81 & 2519.14 & 0.76 & 1090.95 & 1122.22 & 2976.04\\
+6 & 2780 & 2578 & 0.75 & 1085 & 1106 & 2757\\
+7 & 2780 & 2577 & 0.75 & 1087 & 1111 & 2788\\
+8 & 2797 & 2531 & 0.76 & 1087 & 1113 & 2846\\
+9 & 2811 & 2528 & 0.76 & 1089 & 1118 & 2896\\
+10 & 2849 & 2519 & 0.76 & 1091 & 1122 & 2976\\
 \bottomrule
 \end{tabu}
 
@@ -3470,25 +3422,22 @@ statistiques descriptives pour l'échantillon d'apprentissage.
 \begin{Highlighting}[]
 \FunctionTok{data}\NormalTok{(dbm, }\AttributeTok{package =} \StringTok{"hecmulti"}\NormalTok{)}
 \FunctionTok{str}\NormalTok{(dbm)}
+\DocumentationTok{\#\# tibble [101,000 x 13] (S3: tbl\_df/tbl/data.frame)}
+\DocumentationTok{\#\#  $ x1      : int [1:101000] 1 1 0 0 1 1 0 0 0 1 ...}
+\DocumentationTok{\#\#  $ x2      : num [1:101000] 42 59 52 32 38 63 35 32 26 32 ...}
+\DocumentationTok{\#\#  $ x3      : Factor w/ 3 levels "1","2","3": 1 2 3 1 2 2 2 1 3 1 ...}
+\DocumentationTok{\#\#  $ x4      : Factor w/ 5 levels "1","2","3","4",..: 3 3 5 1 5 5 1 3 1 5 ...}
+\DocumentationTok{\#\#  $ x5      : int [1:101000] 1 1 1 0 0 1 1 0 0 0 ...}
+\DocumentationTok{\#\#  $ x6      : num [1:101000] 8.6 8.6 1.4 10.7 9.1 9.4 10.6 4.8 4 10.3 ...}
+\DocumentationTok{\#\#  $ x7      : num [1:101000] 8 9 9 42 5 1 6 5 48 9 ...}
+\DocumentationTok{\#\#  $ x8      : num [1:101000] 49 70 120 31 30 28 59 70 73 55 ...}
+\DocumentationTok{\#\#  $ x9      : num [1:101000] 159 123 434 110 55 102 593 298 83 90 ...}
+\DocumentationTok{\#\#  $ x10     : num [1:101000] 5 5 8 3 3 8 10 6 2 3 ...}
+\DocumentationTok{\#\#  $ yachat  : int [1:101000] 0 0 0 0 0 0 0 1 1 1 ...}
+\DocumentationTok{\#\#  $ ymontant: num [1:101000] NA NA NA NA NA NA NA 52 79 77 ...}
+\DocumentationTok{\#\#  $ test    : Factor w/ 2 levels "0","1": 1 1 1 1 1 1 1 1 1 1 ...}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-tibble [101,000 x 13] (S3: tbl_df/tbl/data.frame)
- $ x1      : int [1:101000] 1 1 0 0 1 1 0 0 0 1 ...
- $ x2      : num [1:101000] 42 59 52 32 38 63 35 32 26 32 ...
- $ x3      : Factor w/ 3 levels "1","2","3": 1 2 3 1 2 2 2 1 3 1 ...
- $ x4      : Factor w/ 5 levels "1","2","3","4",..: 3 3 5 1 5 5 1 3 1 5 ...
- $ x5      : int [1:101000] 1 1 1 0 0 1 1 0 0 0 ...
- $ x6      : num [1:101000] 8.6 8.6 1.4 10.7 9.1 9.4 10.6 4.8 4 10.3 ...
- $ x7      : num [1:101000] 8 9 9 42 5 1 6 5 48 9 ...
- $ x8      : num [1:101000] 49 70 120 31 30 28 59 70 73 55 ...
- $ x9      : num [1:101000] 159 123 434 110 55 102 593 298 83 90 ...
- $ x10     : num [1:101000] 5 5 8 3 3 8 10 6 2 3 ...
- $ yachat  : int [1:101000] 0 0 0 0 0 0 0 1 1 1 ...
- $ ymontant: num [1:101000] NA NA NA NA NA NA NA 52 79 77 ...
- $ test    : Factor w/ 2 levels "0","1": 1 1 1 1 1 1 1 1 1 1 ...
-\end{verbatim}
 
 \hypertarget{tbl-contingence-dbm}{}
 \begin{table}
@@ -3711,7 +3660,7 @@ l'origine englobera toutes les autres valeurs de \texttt{x3}, à savoir
   fois. La fonction \texttt{leaps::regsubsets} va quant à elle créer des
   indicateurs binaires.}
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, leftrule=.75mm, arc=.35mm, colback=white, rightrule=.15mm, bottomtitle=1mm, left=2mm, toprule=.15mm, colframe=quarto-callout-tip-color-frame, opacityback=0, toptitle=1mm, titlerule=0mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Danger de surajustement}, bottomrule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, coltitle=black, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, toptitle=1mm, rightrule=.15mm, bottomrule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, colback=white, titlerule=0mm, opacitybacktitle=0.6, breakable, leftrule=.75mm, bottomtitle=1mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Danger de surajustement}, arc=.35mm, coltitle=black, colframe=quarto-callout-tip-color-frame, toprule=.15mm, left=2mm]
 La principale cause de mauvaise performance est le surajustement
 sélectif. Dans l'exemple que l'on considère avec la base de données
 marketing, la plupart des modalités des variables catégorielles semblent
@@ -3826,21 +3775,21 @@ avec \texttt{x5} et \texttt{x6}.
 \toprule
 variables & BIC & AIC\\
 \midrule
-x5 & -95.96 & -102.65\\
-x5 x6 & -196.41 & -206.45\\
-x31 x5 x6 & -311.09 & -324.48\\
-x31 x5 x6 x10 & -351.05 & -367.79\\
-x1 x31 x5 x6 x10 & -369.33 & -389.41\\
+x5 & -96 & -103\\
+x5 x6 & -196 & -206\\
+x31 x5 x6 & -311 & -324\\
+x31 x5 x6 x10 & -351 & -368\\
+x1 x31 x5 x6 x10 & -369 & -389\\
 \addlinespace
-x1 x31 x5 x6 x7 x10 & -387.09 & -410.52\\
-x1 x31 x5 x6 x7 x8 x10 & -392.18 & -418.95\\
-x1 x31 x44 x5 x6 x7 x8 x10 & -390.68 & -420.80\\
-x1 x2 x31 x44 x5 x6 x7 x8 x10 & -390.05 & -423.53\\
-x1 x2 x31 x44 x5 x6 x7 x8 x9 x10 & -386.94 & -423.75\\
+x1 x31 x5 x6 x7 x10 & -387 & -411\\
+x1 x31 x5 x6 x7 x8 x10 & -392 & -419\\
+x1 x31 x44 x5 x6 x7 x8 x10 & -391 & -421\\
+x1 x2 x31 x44 x5 x6 x7 x8 x10 & -390 & -424\\
+x1 x2 x31 x44 x5 x6 x7 x8 x9 x10 & -387 & -424\\
 \addlinespace
-x1 x2 x31 x43 x44 x5 x6 x7 x8 x9 x10 & -382.86 & -423.03\\
-x1 x2 x31 x41 x42 x43 x44 x5 x6 x7 x8 x10 & -378.39 & -421.91\\
-x1 x2 x31 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10 & -374.76 & -421.62\\
+x1 x2 x31 x43 x44 x5 x6 x7 x8 x9 x10 & -383 & -423\\
+x1 x2 x31 x41 x42 x43 x44 x5 x6 x7 x8 x10 & -378 & -422\\
+x1 x2 x31 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10 & -375 & -422\\
 \bottomrule
 \end{tabu}
 
@@ -3856,8 +3805,8 @@ sous-ensembles. Dans l'exemple, on voit que le modèle avec les variables
 \texttt{x1} \texttt{x2} \texttt{x31} \texttt{x44} \texttt{x5}
 \texttt{x6} \texttt{x7} \texttt{x8} \texttt{x9} et \texttt{x10} est
 celui qui minimise le \(\mathsf{AIC}\) globalement (\(\mathsf{AIC}\) de
--423.7539583). Le modèle choisi par le \(\mathsf{BIC}\) contient
-seulement sept variables explicatives (plutôt que 10), soit \texttt{x1}
+-423.754). Le modèle choisi par le \(\mathsf{BIC}\) contient seulement
+sept variables explicatives (plutôt que 10), soit \texttt{x1}
 \texttt{x31} \texttt{x5} \texttt{x6} \texttt{x7} \texttt{x8}
 \texttt{x10}.
 
@@ -4163,7 +4112,7 @@ intervient dans un coin avec certaines coordonnées nulles.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{./04-selectionmodeles_files/figure-pdf/fig-lassopenalty-1.pdf}
+{\centering \includegraphics[width=1\textwidth,height=\textheight]{./04-selectionmodeles_files/figure-pdf/fig-lassopenalty-1.pdf}
 
 }
 
@@ -4526,7 +4475,7 @@ des parties d'effet par le rétrécissement (\emph{shrinkage}). De récents
 développements théoriques permettent aussi de corriger les
 valeurs-\emph{p} pour faire de l'inférence post-sélection avec le LASSO.
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, leftrule=.75mm, arc=.35mm, colback=white, rightrule=.15mm, bottomtitle=1mm, left=2mm, toprule=.15mm, colframe=quarto-callout-note-color-frame, opacityback=0, toptitle=1mm, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, coltitle=black, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, toptitle=1mm, rightrule=.15mm, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, colback=white, titlerule=0mm, opacitybacktitle=0.6, breakable, leftrule=.75mm, bottomtitle=1mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, arc=.35mm, coltitle=black, colframe=quarto-callout-note-color-frame, toprule=.15mm, left=2mm]
 
 \begin{itemize}
 \tightlist
@@ -6490,7 +6439,7 @@ modèle & no. variables & pt. coupure &  sensibilité & taux bonne classif. & pr
 (d) & 28 & 0.15 & 0.526 & 0.788 & 970269\\
 (e) & 8 & 0.17 & 0.5265 & 0.788 & 978226\\
 \addlinespace
-(f) & 10 & 0.17 & 0.529 & 0.79 & 971165\\
+(f) & 9 & 0.19 & 0.5455 & 0.8 & 960225\\
 (g) & 14 & 0.21 & 0.5037 & 0.771 & 957873\\
 \bottomrule
 \end{tabu}
@@ -7638,7 +7587,7 @@ gardant en tête que cela réduit la taille de l'échantillon disponible et
 que l'estimation résultante est possiblement trop variable pour être
 utile.
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, leftrule=.75mm, arc=.35mm, colback=white, rightrule=.15mm, bottomtitle=1mm, left=2mm, toprule=.15mm, colframe=quarto-callout-note-color-frame, opacityback=0, toptitle=1mm, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, coltitle=black, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, toptitle=1mm, rightrule=.15mm, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, colback=white, titlerule=0mm, opacitybacktitle=0.6, breakable, leftrule=.75mm, bottomtitle=1mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, arc=.35mm, coltitle=black, colframe=quarto-callout-note-color-frame, toprule=.15mm, left=2mm]
 
 \begin{itemize}
 \tightlist
@@ -8478,10 +8427,9 @@ L'interaction entre l'âge et le temps est spécifiée en incluant
 l'intérieur de l'appel à la fonction \texttt{coxph}, et qui est égale au
 produit entre l'\(\texttt{age}\) et \(\texttt{t}\). On remarque que le
 terme d'interaction est tout juste non significatif selon le test de
-Wald (valeur-\(p\) de \textless0.0001).\footnote{Pour des raisons
-  techniques hors du niveau du cours, le test du rapport de
-  vraisemblance pour l'effet de l'interaction est probablement illogique
-  ici.}
+Wald (valeur-\(p\) de 0.06).\footnote{Pour des raisons techniques, le
+  test du rapport de vraisemblance pour l'effet de l'interaction est
+  probablement illogique.}
 
 L'interaction employée ici n'est pas la seule fonction du temps qu'on
 pourrait spécifier, ni la plug logique. Par exemple, on pourrait

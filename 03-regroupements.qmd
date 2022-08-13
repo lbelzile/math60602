@@ -1,14 +1,57 @@
 # Analyse de regroupements {#analyse-regroupements}
 
+
+```{r}
+#| label: setup-section3
+#| include: false
+#| message: false
+#| warning: false
+# automatically create a bib database for R packages
+library(knitr)
+library(kableExtra)
+set.seed(1014)
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  cache = TRUE,
+  out.width = "100%",
+  fig.align = 'center',
+  fig.width = 8.5,
+  fig.asp = 0.618,  # 1 / phi
+  fig.show = "hold"
+)
+options(knitr.table.format = function() {
+  if (knitr::is_latex_output())
+    "latex" else "html"
+})
+
+options(dplyr.print_min = 6, dplyr.print_max = 6)
+options(knitr.graphics.auto_pdf = TRUE)
+options(scipen = 1, digits = 3)
+library(viridis)
+library(ggplot2, warn.conflicts = FALSE, quietly = TRUE)
+library(poorman, quietly = TRUE, warn.conflicts = FALSE)
+
+
+safe_colorblind_palette <- MetBrewer::met.brewer("Hiroshige",10)
+
+options(ggplot2.continuous.colour="viridis")
+options(ggplot2.continuous.fill = "viridis")
+scale_colour_discrete <- scale_color_manual(MetBrewer::met.brewer("Hiroshige",10))
+scale_fill_discrete <- scale_fill_manual(MetBrewer::met.brewer("Hiroshige",10))
+theme_set(theme_classic())
+```
+
+
 ## Introduction
 
 Si la publicité ciblée personnalisée a pris de l'essort ces derniers années en commercialisation, la segmentation de consommateurs reste une partie prenante essentielle de toute campagne de publicité ou de développement de produits.
 
-L'analyse de regroupement est une technique d'**analyse descriptive** qui sert à combiner des sujets en groupes de telle sorte que les individus d'un même groupe soient le plus semblables possible par rapport à certaines caractéristiques et que les groupes soient le plus différent possible les uns des autres. Le résultat de l'analyse de regroupement sera une étiquette associée à chaque observation l'assignant à un regroupement ou l'identifiant comme aberrance, nous permettant ainsi de caractériser (par le biais de statistiques descriptives) les différents segments obtenus.
+L'analyse de regroupement est une technique d'**analyse descriptive** qui sert à combiner des sujets en groupes de telle sorte que les individus d'un même groupe soient le plus semblables possible  et que les groupes soient le plus différent possible les uns des autres. Cette similarité est définie selon des caractéristiques provenant de variables explicatives. Le résultat de l'analyse de regroupement sera une étiquette associée à chaque observation l'assignant à un regroupement ou l'identifiant comme aberrance, nous permettant ainsi de caractériser (par le biais de statistiques descriptives) les différents **segments** obtenus.
 
-Il y a une certaine analogie avec l'analyse factorielle. En analyse factorielle, on cherche à déterminer s'il y a des groupes de **variables** corrélées entre elles et à les regrouper. En analyse de regroupements, on cherche plutôt à créer des groupes de **sujets** similaires. Les deux méthodes servent pour l'analyse exploratoire.
+Il y a une certaine analogie avec l'analyse factorielle. En analyse factorielle, on cherche à déterminer s'il y a des groupes de **variables** corrélées entre elles et à les regrouper pour réduire le nombre de variables. En analyse de regroupements, on cherche plutôt à créer des groupes de **sujets** similaires. Les deux méthodes servent pour l'analyse exploratoire.
 
-On cherche à créer des regroupements (*clusters*) d'observations homogènes en utilisant $p$ variables explicatives $X_1, \ldots, X_p$ pour $n$ observations, où $X_{ij}$ dénote la valeur de la $j$e variable explicative pour le $i$e sujet.
+Pour créer les regroupements, on utilisera $p$ variables explicatives $X_1, \ldots, X_p$ pour chacune des $n$ observations, où $X_{ij}$ dénotera la valeur de la $j$e variable explicative pour le $i$e sujet.
 
 
 
@@ -16,61 +59,63 @@ On cherche à créer des regroupements (*clusters*) d'observations homogènes en
 ## Étapes d'une analyse de regroupements
 
 1. Choisir les variables pertinentes à l'analyse. Cette étape peut nécessiter de créer, transformer de nouvelles variables ou d'aggréger les données.
-2. Décider quel méthode (algorithme, modèle) sera utilisé pour la segmentation.
-3. Choisir les hyperparamètres de l'algorithme (nombre de regroupements, rayon, etc.), qui déterminent la segmentation. 
-4. Décider comment seront mesurées les « distances » entre les sujets.
-5. Procéder à l'analyse de regroupements et calculer une mesure de qualité.
-6. Assigner les étiquettes aux observations et calculer un représentant-type de groupe. Interpréter les regroupements obtenus.
-7. Utiliser ces groupes dans des analyses subséquentes, le cas échéant.
+2. Décider quel méthode (algorithme, modèle, mesure de dissemblance) sera utilisé pour la segmentation.
+3. Choisir les hyperparamètres de l'algorithme (nombre de regroupements, rayon, etc.) 
+4. Procéder à l'analyse de regroupements.
+5. Calculer une mesure de qualité.
+6. Assigner les étiquettes aux observations et calculer un représentant-type de groupe. 
+7. Interpréter les regroupements obtenus.
+
 
 :::
 
 ## Données
 
-Les données simulées sont inspirées de programmes de fidélisation client présents dans de grandes chaînes (pharmacies, épiceries). En échange de rabais et d'offres promotionnelles, la clientèle fournit des informations sociodémographique (nom, adresse, date de naissance, etc.) et utilise un identifiant numérique, une carte ou une application pour inscrire chaque achat: ce faisant, le système peut traquer les habitudes de consommation. Il existe bien sûr d'autres méthodes de traque pour les personnes qui n'ont pas de compte client, notamment par le biais de numéros de carte de débit ou de crédit qui permettent de regrouper les transactions. Les algorithmes utilisés pour l'analyse de regroupements peuvent également servir à la résolution d'entité, qui consiste à fusionner les profils de bases de données sans identifiant unique client.
-
-Un exemple similaire d'analyse de regroupements est la segmentation de la clientèle de transport en commun. Dans la région métropolitaine de Montréal, les cartes à puce Opus permettent d'inscrire les transactions (achat de passes mensuelles ou de billets unitaires, lieu de l'achat, etc.) ainsi que les passages (heure, type de véhicule, emplacement approximatif pour les services d'autobus ou station de métro). En créant des regroupements, une agence de transport peut ainsi ajuster son offre et proposer des abonnements ou des produits qui reflètent les besoins de sa clientèle. Un exemple extrême de traquage de compagnie de transport est NS: toute personne qui veut voyager en train sur les chemins de fers néerlandais doit acheter une carte à puce et la charger, en plus de composter son billet au départ et à l'arrivée de son voyage. Cette approche, qui peut sembler intrusive, permet néanmoins de mesurer précisément la demande sur les lignes en fonction du moment de la journée et de l'associer à chaque client.
-
-## Présentation des données
 
 Les bases de données marketing sont souvent de nature longitudinale: chaque ligne correspond à une transaction, mais plusieurs d'entre elles peuvent être le fait d'une même personne/compte. Une fois l'analyse exploratoire des données complétée, on procédera à l'aggrégation des observations par compte client, puisque la segmentation doit être effectuée à cette échelle. C'est également à ce stade qu'on pourra créer de nouvelles variables explicatives à partir de l'information présente dans la base de données: par exemple, on pourrait considérer la fréquence moyenne d'achat, le montant moyen par transaction, le mode du moment de la journée, la variabilité de cette fréquentation, le pourcentage des ventes provenant d'articles en solde, la variabilité du montant du panier, etc. 
 
 Cette liste, non exhaustive, illustre l'étape cruciale de l'extraction de l'information utilisée dans l'analyse statistique: la qualité de la segmentation dépend du choix des variables employées.
 
+
+
+Les programmes de fidélisation font partie de la stratégie de commercialisation de plusieurs grandes chaînes (pharmacies, épiceries): en échange de rabais et d'offres promotionnelles, la clientèle fournit des informations sociodémographique (nom, adresse, date de naissance, etc.) et utilise un identifiant numérique, une carte ou une application pour inscrire chaque achat: ce faisant, le système peut traquer les habitudes de consommation.^[Il existe bien sûr d'autres méthodes de traque pour les personnes qui n'ont pas de compte client, notamment par le biais de numéros de carte de débit ou de crédit qui permettent de regrouper les transactions.] Créer des regroupements permet de mieux cerner les besoins et habitudes de segments de consommateurs et ainsi d'adapter l'offre promotionnelle. Les algorithmes utilisés pour l'analyse de regroupements peuvent également servir à la résolution d'entité, qui consiste à fusionner les profils de bases de données sans identifiant unique client.
+
+
+Un autre exemple d'application de l'analyse de regroupements est la segmentation de la clientèle de transport en commun. Dans la région métropolitaine de Montréal, les cartes à puce Opus permettent d'inscrire les transactions (achat de passes mensuelles ou de billets unitaires, lieu de l'achat, etc.) ainsi que les passages (heure, type de véhicule, emplacement approximatif pour les services d'autobus ou station de métro). En créant des regroupements, une agence de transport peut ainsi ajuster son offre et proposer des abonnements ou des produits qui reflètent les besoins de sa clientèle. Un exemple extrême de traquage de compagnie de transport est NS: toute personne qui veut voyager en train sur les chemins de fers néerlandais doit acheter une carte à puce et la charger, en plus de composter son billet au départ et à l'arrivée de son voyage. Cette approche, qui peut sembler intrusive, permet néanmoins de mesurer précisément la demande sur les lignes en fonction du moment de la journée et de l'associer à chaque client.
+
+Dans ce chapitre, nous utiliserons des données simulées inspirées de campagnes de financement d'organismes de charité. Ces dernières font souvent du démarchage publicitaire auprès de donateurs ou envoient par publipostage des demandes de dons à toutes les adresses postales. Ces efforts ont un coût important: nous essaierons de créer des catégories de donateurs afin de mieux cibler les donateurs et donatrices et le moment adéquat pour ce démarchage.
+
+
+La base de données `dons` contient `r nrow(hecmulti::dons)` observations pour `r ncol(hecmulti::dons)` variables: elle a été crée en regroupement les identifiants: de nombreuses variables explicatives sont dérivées des données brutes, notamment le temps entre dons, les statistiques descriptives (montant moyen, minimum maximum) pour les dons monétaires. Ces choix de variables sont loins d'être anodins et peuvent influencer la segmentation décrite dans ce chapitre. Une rapide exploration des données révèle que près de `r round(sum(is.na(dons$vdons))/nrow(dons), 2)` des employé(e)s n'ont pas donné à l'organisme. Une poignée de dons sont très élevés, mais la plupart des montants tourne autour de 5$, 10$, 20$, etc.
+
+
 ```{r}
-#| label: tbl-statdescriptcluster
-#| tbl-cap: "Statistiques descriptives des six variables du jeu de données `cluster`."
+#| label: tbl-statdescriptdons
 #| echo: false
+#| cache: true
 #| eval: true
-#| fig-align: 'center'
-data(cluster, package = "hecmulti")
-
-
-if(knitr::opt\mathbf{X}_knit$get("rmarkdown.pandoc.to") == "html"){
-tibble::tibble(moyenne = apply(cluster, 2, mean),
-               "écart-type" = apply(cluster, 2, sd),
-               min = apply(cluster, 2, min),
-               max = apply(cluster, 2, max),
-               histogramme = apply(cluster, 2, function(x){skimr::inline_hist(x = x, n_bins = 8)})) |>
-  kableExtra::kbl(digits = 2) |>
+#| tbl-cap: "Statistiques descriptives des variables du jeu de données dons."
+  tibble::tibble(moyenne = apply(dons, 2, mean, na.rm = TRUE),
+              "écart-type" = apply(dons, 2, sd, na.rm = TRUE),
+               min = apply(dons, 2, min, na.rm = TRUE),
+               max = apply(dons, 2, max, na.rm = TRUE),
+               manquant = apply(dons, 2, function(x){sum(is.na(x))})) |>
+  knitr::kable(digits = 2,
+               booktabs = TRUE) |>
   kableExtra::kable_styling(full_width = TRUE)
- } else{
- tibble::tibble(moyenne = apply(cluster, 2, mean),
-               "écart-type" = apply(cluster, 2, sd),
-               min = apply(cluster, 2, min),
-               max = apply(cluster, 2, max)) |>
-  kableExtra::kbl(digits = 2) |>
-  kableExtra::kable_styling(full_width = TRUE)
- }
 ```
 
+La grande proportion de données manquantes pose un problème immédiat pour la segmentation, puisque la plupart des procédures ne permettent pas de traiter ces dernières et éliminent d'office ces lignes. Ici, plusieurs valeurs manquantes (`NA`) peuvent être logiquement remplacées par des valeurs numériques: par exemple, la valeur cumulative des dons (`vdons`) d'une personne qui n'a jamais donné est nulle. Imputer par la moyenne, etc. serait illogique (et incorrect). En revanche, le temps d'attente entre deux dons pour une personne qui a fait un don ou moins n'est pas bien défini.
+
+Si on essaie de créer manuellement des groupes, il apparaît logique de séparer en trois segments initiaux la base de données: les personnes qui n'ont jamais donné, les personnes qui ont fait un seul don et celles qui ont fait des dons multiples. Un algorithme ferait de toute façon ressortir cette information, mais nous empêcherait d'exploiter pleinement l'ensemble des variables explicatives et de ses dérivées. On pourra effectuer la segmentation séparément sur chaque groupe avec en intrant des variables explicatives différentes.
+
+On pourrait aisément créer de nouvelles variables pour faire ressortir des informations jugées pertinentes. Est-ce qu'on s'intéresse au montant moyen des dons, soit `vdons/ndons`? Est-ce que la valeur des radiations nous intéresse, ou bien le pourcentage de la valeur promise réalisée?
 
 ## Analyse exploratoire graphique
 
 Comme c'est le cas avec n'importe quelle analyse statistique, il est utile d'explorer les données graphiquement. On peut parfois réussir à visualiser les groupes d'observations, ce qui nous permettra une fois l'analyse de regroupement complétée de vérifier la qualité de cette dernière. 
 
-On pourrait produire un nuage de points pour chaque paire de variables mais cette idée est problématique pour deux raisons:
-il y aura beaucoup de graphes si le nombre de variables est grand et on examine seulement les relations bivariées.
+On pourrait produire un nuage de points pour chaque paire de variables mais cette idée est problématique pour deux raisons: il y aura beaucoup de graphes si le nombre de variables est grand et on examine seulement les relations bivariées.
 
 On peut utiliser les outils du chapitre précédent et réduire le nombre de variables en considérant plutôt les composantes principales. Dans notre exemple, on va seulement s'en servir comme outil graphique pour une analyse de regroupements en réduisant la dimension afin de permettre la visualisation des regroupements obtenus. Ces dernières pourraient aussi servir de variables pour l'analyse de regroupement: une fois les étiquettes obtenues, il suffirait de calculer les statistiques descriptives sur les variables originales. 
 
@@ -80,12 +125,17 @@ On peut utiliser les outils du chapitre précédent et réduire le nombre de var
 #| echo: false
 #| out-width: '100%'
 #| fig-align: "center"
-#| fig-cap: "Diagramme d'éboulis de la matrice de corrélation des données `cluster`."
-hecmulti::eboulis(eigen(cor(cluster)))
+#| fig-cap: "Diagramme d'éboulis de la matrice de corrélation des données `dons` pour les donateurs multiples."
+data(dons, package = "hecmulti")
+dons |>
+  dplyr::filter(ndons > 1) |>
+  cor(use = "pairwise.complete.obs") |>
+  eigen() |>
+  hecmulti::eboulis()
 ```
 
 
-La proportion de la variance totale qui est expliquée par les deux premières composantes principales équivaut 76.7\% de la variance totale originale. On ne retient que ces deux premières.
+La proportion de la variance totale qui est expliquée par les cinq premières composantes principales équivaut 76.7\% de la variance totale originale. On ne retient que ces deux premières.
 
 Même en ne connaissant pas l'appartenance des observations au regroupement, on distingue environ trois groupes. Le panneau droit du graphique @fig-04-acp montre les deux composantes principales, mais avec l'identification des groupes obtenus suite à l'analyse de regroupement avec la méthode des $K$-moyennes couverte plus tard.
 
@@ -148,6 +198,63 @@ Si certaines variables définissent naturellement des groupes, par exemple l'âg
 
 ## Algorithmes pour regroupements
 
+### $K$-moyennes
+
+### DBScan
+
+### Mélanges de modèles
+
+
+## Mélange de modèles
+
+L'algorithme des $K$-moyennes fait une allocation rigide: chaque observation est assignée à un seul regroupement, ignorant de ce fait l'incertitude rattachée à l'étiquetage des observations.
+Les frontières de la région, obtenue en calculant l'intersection des courbes sphériques de regroupement, sont linéaires.
+
+Peut-être plus problématique, la distance euclidienne non pondérée impose des regroupement sphériques de taille semblable: la qualité des regroupements des $K$ moyennes est donc mauvaise si les regroupements ne sont pas sphériques ou de concentration inégale.
+
+
+Une approche plus générale considère que $X_1, \ldots, X_p$ sont tirées d'un mélange à $K$ composantes de lois aléatoires spécifiées. Généralement, on spécifie une loi normale multidimensionnelle pour le $k$e groupe $G$,
+\begin{align*}
+\boldsymbol{X} \mid G=k \sim \mathsf{No}_p(\boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k)
+\end{align*}
+On suppose qu'on a $K$ groupes, chacun caractérisé par une densité de dimension $p$, soit $f_k(\boldsymbol{X}_i;\boldsymbol{\theta}_k)$ si $\boldsymbol{X}_i$ provient du groupe $k$ pour $k=1, \ldots, K$.
+
+On réécrit la vraisemblance en fonction de $\pi_k$, la probabilité qu'une observation tombe dans le groupe $k$,
+\begin{align*}
+ L(\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_K; \pi_1, \ldots, \pi_K, \b{X})= \prod_{i=1}^n \sum_{k=1}^K \pi_k
+f_{k}(\boldsymbol{X}_i,
+\boldsymbol{\theta}_{k}).
+\end{align*}
+Si on connaissait les poids du mélange $\boldsymbol{\pi}$ avec $\sum_{k=1}^K \pi_k = 1$ et $\pi_k \in (0,1)$, on peut simplement obtenir les estimation du maximum de vraisemblance pour le paramètre de moyenne et de variance. Comme les poids sont inconnus, on estime le modèle à l'aide de l'algorithme d'espérance-maximisation. Le paramètres retournés correspondent à un maximum local, et on peut également obtenir un estimé de la variabilité de ces paramètres. Ainsi, le mélange de modèle nous donne accès à la fois à l'incertitude des paramètres et la probabilité $\pi_k$ qu'une observation appartiennent au groupe $G_k$.
+
+Si $p$ est élevé, la structure de covariance non structurée possède trop de paramètres. On choisit plutôt une paramétrisation plus parsimonieuse qui impose des contraintes sur la forme des ellipsoïdes.
+\begin{align}
+\boldsymbol{\Sigma}_k =\lambda_k\boldsymbol{D}_k\boldsymbol{A}_k\boldsymbol{D}_k^\top   \label{eqvarcov}
+\end{align}
+avec $\boldsymbol{D}_k$ une matrice orthogonale
+de vecteurs propres,  $\boldsymbol{A}_k$ une matrice
+diagonale dont les éléments sont proportionnels aux valeurs propres  et $\lambda_k$ un scalaire. La matrice orthogonale $\boldsymbol{D}_k$ gouverne l'orientation de l'ellipsoïde, la matrice diagonale $\boldsymbol{A}_k$ sa forme et $\lambda_k$ son volume, lequel est proportionnel à $\lambda_k^p \det(A_k)$.
+
+
+| Nom |$\boldsymbol{\Sigma}_k$ |   \textbf{volume}  |  \textbf{forme}  |  \textbf{orientation} |
+|:-----|:-----|:------:|:------:|:------:|
+| EII | $\lambda \boldsymbol{I}_p$  |    constant  |  sphérique  |  non-définie |
+| VII | $\lambda_k\boldsymbol{I}_p$  |    variable  | sphérique  |  non-définie |
+| EEE | $\lambda \boldsymbol{DAD}^\top$  |  constant  |  constante  |  constant |
+| EEV | $\lambda \boldsymbol{D}_k\boldsymbol{A}\boldsymbol{D}_k^\top$ | constant | constante  | variable |
+| EVV | $\lambda \boldsymbol{D}_k\boldsymbol{A}_k\boldsymbol{D}_k^\top$ | constant | variable  | variable |
+| VVV | $\lambda_k \boldsymbol{D}_k\boldsymbol{A}_k\boldsymbol{D}_k^\top$  |   variable  |  variable  | variable |
+
+Le choix du nombre de composantes, de même que la forme du modèle, est basée sur la sélection bayésienne de modèles. On utilise une approximation basée sur le critère d'information bayésien, ou $\mathsf{BIC}$, en choisissant le nombre de composantes qui minimise le $\mathsf{BIC}$. 
+
+
+Avantage: plus flexible que $K$-moyennes
+Avantage: composante uniforme permet de gérer aberrance
+Désavantage: algorithme EM mène à un minimum local
+Désavantage: coût de calcul élevé
+
+### Regroupements spectraux
+
 
 ## Autres considérations pratiques
 
@@ -157,10 +264,10 @@ Si certaines variables définissent naturellement des groupes, par exemple l'âg
 
 ### Standardisation
 
-En général, plus une variable a une grande variance, plus elle aura de l'influence sur le calcul de la distance. Ainsi, en utilisant les variables telles quelles, nous accordons plus de poids aux variables avec de grandes variances, ce qui peut être bon ou mauvais selon la structure des groupes. Règle générale, il est préférable d'éviter qu'une variable domine dans la segmentation.
+En général, plus une variable a une grande variance, plus elle aura de l'influence sur le calcul de la distance, ce qui peut être bon ou mauvais selon la structure des groupes. Règle générale, il est préférable d'éviter qu'une variable domine dans la segmentation.
 
 
-On peut standardiser au préalable les variables avant de faire l'analyse. Par défaut, les variables seront standardisées afin d'avoir une moyenne de zéro et une variance de un (`scale`). On peut ensuite faire les analyses comme précédemment. Si on a des valeurs aberrantes, cela peut impacter le calcul des moyennes et variances; d'autres estimateurs de localisation et d'échelles plus robustes, par exemple en soustrayant la médiane de chaque colonne et en divisant par la déviation absolue par rapport à la médiane (`mad`). Ces deux mesures pourraient être utilisées lors de la standardisation pour diminuer l'impact des valeurs aberrantes même si le coût de calcul associé est plus conséquent. Il est illogique de standardiser les variables binaires.
+On peut standardiser au préalable les variables avant de faire l'analyse. Par défaut, les variables continues seront standardisées afin d'avoir une moyenne de zéro et une variance de un (`scale`). On peut ensuite faire les analyses comme précédemment. Si on a des valeurs aberrantes, cela peut impacter le calcul des moyennes et variances; d'autres estimateurs de localisation et d'échelles plus robustes, par exemple la médiane et la déviation absolue par rapport à la médiane (`mad`) peuvent alors être plus adéquats pour diminuer l'impact des valeurs aberrantes même si le coût de calcul associé est plus conséquent. Il est illogique de standardiser les variables binaires et catégorielles.
 
 ```{r}
 #| label: standardisation
@@ -211,12 +318,12 @@ ggplot(data = dat, aes(x = x1, y = x2)) +
 ```
 
 
-Une **mesure de dissemblance** sert à quantifier la proximité de deux objets à partir de leurs coordoonnées. Elle mesure la distance entre deux vecteurs d'observations $\mathbf{X}_i$ et $\mathbf{X}_j$ en se basant sur les $p$ variables explicatives $X_1, \ldots, X_p$. Plus la dissemblance est petite, plus les sujets $\mathbf{X}_i$ et $\mathbf{X}j$ sont similaires. Même s'il y a des exceptions, la plupart des mesures de dissemblances $d$ ont les propriétés suivantes d'une distance:
+Une **mesure de dissemblance** sert à quantifier la proximité de deux objets à partir de leurs coordoonnées. Elle mesure la distance entre deux vecteurs d'observations $\mathbf{X}_i$ et $\mathbf{X}_j$ en se basant sur les $p$ variables explicatives $X_1, \ldots, X_p$. Plus la dissemblance est petite, plus les sujets $\mathbf{X}_i$ et $\mathbf{X}j$ sont similaires. Même s'il y a des exceptions, la plupart des mesures de dissemblances $d$ ont les propriétés mathématiques suivantes:
 
 1) $d(\mathbf{X}_i, \mathbf{X}_j) \geq 0$ (positivité), avec égalité (distance nulle) si et seulement si $\mathbf{X}_i=\mathbf{X}_j$;
 2) $d(\mathbf{X}_i, \mathbf{X}_j)=d(\mathbf{X}_j, \mathbf{X}_i)$ (symmétrie);
 
-Toute mesure de distance (qui respecte l'inégalité du triangle) est une mesure de dissemblance. La mesure de dissemblance la plus utilisée est la distance euclidienne entre sujets, soit
+Toute mesure de distance^[Une fonction de distance respecte en plus l'inégalité du triangle.} est une mesure de dissemblance. La mesure de dissemblance la plus utilisée est la distance euclidienne entre sujets, soit
 \begin{align*}
 d(\mathbf{X}_i, \mathbf{X}_j; l_2) = \sqrt{(X_{i1}-X_{j1})^2 + \cdots + (X_{ip}-X_{jp})^2}.
 \end{align*}
@@ -233,11 +340,23 @@ Il existe un très grand nombre d'autres mesures de dissemblance pour variables 
 
 Si les variables sont toutes binaires, la mesure d'appariement simple (*simple matching*), qui mesure la proportion des variables pour lesquelles les deux sujets ont des valeurs différentes, est une mesure de dissemblance adéquate.
 
-La distance de Gower, 
+Dans le cas de jeux de données avec des variables mixes, une option populaire est la distance de Gower [@Gower:1971]. Cette dernière compare deux individus selon leurs caractéristiques et est construite à partir de similarité, avec $(1-\mathbf{S})^{1/2}$ comme dissimilarité. La similarité entre deux individus est définie comme
+\begin{align*}
+S_{ij} = \frac{\sum_{k=1}^p s_{ijk} \delta_{ijk}}{\sum_{k=1}^p \delta_{ijk}}
+\end{align*}
+où $\delta_{ijk}$ vaut zéro si la variable $\mathrm{X}_k$ est manquante pour l'un ou l'autre des individus. 
+
+On distingue trois type de variables: 
+
+- les variables binaires asymmétrique  de type absence/présence donnent une valeur de $\delta=1, s=1$ si les deux sont présentes $X_{ik}=X_{jk}=1$, $\delta_{ijk}=1$ et $s_{ijk}=0$ si $X_{ik} \neq X_{jk}$ et $\delta_{ijk}=0$ si $X_{ik}=X_{jk}=0$.
+- $s_{ijk}=1$ les variables qualitatives ont la même modalité et $s_{ijk}=0$ sinon
+- $s_{ijk} = 1-|X_{ik}-X_{jk}|/R_k$ pour une variable continue, où $R_k$ est l'étendue de la variable $R_k=\max_{i} X_{ik} - \min_i X_{ik}$ dans l'échantillon. 
+
+La dissemblance résultante pour les types mixtes vaut 1 quand toutes les variables sont similaires/égales et zéro si elles sont complètement différentes/maximalement distantes.
 
 On peut traiter les variables ordinales comme continues ou les traiter comme des variables nominales avec la mesure d'appariement simple; ce faisant, on n'utilise pas l'ordre entre les modalités.
 
-
+Dans plusieurs cas, on se trouvera en présence de valeurs manquantes dans le jeu de données. Cela peut arriver pour plusieurs raisons valables (aucun candidature ne représente un partir dans une circonscription donnée lors d'une élection, l'information est manquante, une femme ne peut avoir de cancer de la prostate, etc.) Il faut bien penser à regarder si l'algorithme de votre choix peut gérer ces valeurs manquantes. Sinon, ces dernières devront être imputées ou vous devrez faire sans les variables explicatives correspondantes.
 
 
 

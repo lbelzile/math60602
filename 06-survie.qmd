@@ -43,7 +43,7 @@ options(ggplot2.continuous.colour="viridis")
 options(ggplot2.continuous.fill = "viridis")
 scale_colour_discrete <- scale_color_manual(MetBrewer::met.brewer("Hiroshige",10))
 scale_fill_discrete <- scale_fill_manual(MetBrewer::met.brewer("Hiroshige",10))
-theme_set(theme_minimal())
+theme_set(theme_classic())
 ```
 
 ## Introduction
@@ -369,6 +369,7 @@ La sortie inclut notamment des tests de significativité globale basés sur la v
 #| eval: true
 #| echo: false
 #| tbl-cap: "Rapport de risques et intervalles de confiance basés sur la vraisemblance profilée à niveau 95%."
+#| cache: true
 data(survie1, package = "hecmulti")
 cox1 <- coxph(Surv(temps, censure) ~ sexe, 
               data = survie1,
@@ -430,6 +431,7 @@ car::Anova(cox3,
 #| label: tbl-survie5-coefs
 #| eval: true
 #| echo: false
+#| cache: true
 #| tbl-cap: "Rapport de risque et intervalles de confiance à niveau 95% basés sur la vraisemblance profilés pour le modèle de Cox de base avec toutes les variables explicatives."
 cox3 <- coxph(Surv(temps, censure) ~ 
                 age + sexe + region + service, 
@@ -453,6 +455,7 @@ knitr::kable(tab1,
 #| tbl-cap: "Tests du rapport de vraisemblance pour les effets de type III pour le modèle de Cox avec toutes les variables explicatives."
 #| eval: true
 #| echo: false
+#| cache: true
 tab2 <- broom::tidy(car::Anova(cox3, 
            type = 3, 
            test.statistic = "LR"))
@@ -489,6 +492,7 @@ Supposons qu'on ajuste le modèle avec les variables sexe et âge seulement dans
 #| label: fig-courbes-survie
 #| echo: true
 #| eval: true
+#| cache: true
 #| fig-cap: "Courbes de survies du modèle de Cox pour les quatre profils client."
 #| out-width: '90%'
 #| fig-width: 6
@@ -550,6 +554,7 @@ graphics.off()
 #| label: tbl-coxph-hypothese
 #| eval: true
 #| echo: false
+#| cache: true
 #| tbl-cap: "Postulat de risques proportionnels: test du score de Grampsch et Therneau (1994) pour les coefficients constants dans le temps et valeur-p asymptotique basée sur la loi null khi-deux." 
 tab3 <- as.data.frame(cox.zph(cox3)$table)
 tab3$p <- format.pval(tab3$p, digits = 2, eps = 1e-4)
@@ -628,6 +633,7 @@ On regarde plus en détail le profil des cinq premiers clients présenté dans l
 #| label: cox-risques-nonprop
 #| eval: true
 #| echo: true
+#| cache: true
 data(survie3, package = "hecmulti")
 cox4 <- coxph(Surv(time = debut, 
                    time2 = fin, 
@@ -691,8 +697,9 @@ summary(cox5)
 #| echo: false
 #| eval: true
 #| tbl-cap: "Rapport de risque et intervalles de confiance à niveau 95% basés sur la vraisemblance profilés pour le modèle à risques compétitifs (probabilité de quitter pour compétiteur A)."
+#| cache: true
 data(survie4, package = "hecmulti")
-cox5 <- coxph(Surv(time = temps, 
+cox5 <- survival::coxph(Surv(time = temps, 
                    event = censure == 2,
                    type = "right") ~ 
                 age + sexe + region + service, 
@@ -755,6 +762,7 @@ summary(cox6)
 #| echo: false
 #| eval: true
 #| tbl-cap: "Rapport de risque et intervalles de confiance à niveau 95% basés sur la vraisemblance profilés pour le modèle à risques non proportionnels (interaction linéaire entre temps et âge)."
+#| cache: true
 cox6 <- survival::coxph(
     Surv(temps, censure) ~ 
      age + tt(age) + sexe + region + service, 
@@ -774,7 +782,7 @@ knitr::kable(tab6,
   kableExtra::kable_styling(full_width = TRUE)
 ```
 
-L'interaction entre l'âge et le temps est spécifiée en incluant `tt`: la variable produit `age * t` est créée à l'intérieur de l'appel à la fonction `coxph`, et qui est égale au produit entre l'$\texttt{age}$ et $\texttt{t}$. On remarque que le terme d'interaction est tout juste non significatif selon le test de Wald (valeur-$p$ de `r format.pval(eps = 1e-4, summary(cox5)$coefficients[2,5])`).^[Pour des raisons techniques hors du niveau du cours, le test du rapport de vraisemblance pour l'effet de l'interaction est probablement illogique ici.] 
+L'interaction entre l'âge et le temps est spécifiée en incluant `tt`: la variable produit `age * t` est créée à l'intérieur de l'appel à la fonction `coxph`, et qui est égale au produit entre l'$\texttt{age}$ et $\texttt{t}$. On remarque que le terme d'interaction est tout juste non significatif selon le test de Wald (valeur-$p$ de `r format.pval(eps = 1e-4, summary(cox6)$coefficients[2,5])`).^[Pour des raisons techniques, le test du rapport de vraisemblance pour l'effet de l'interaction est probablement illogique.] 
 
 L'interaction employée ici n'est pas la seule fonction du temps qu'on pourrait spécifier, ni la plug logique. Par exemple, on pourrait spécifier un effet de l'âge par pallier selon une catégorie d'âge, ou un spline pour un effet plus flexible.
 
@@ -809,6 +817,7 @@ summary(cox7)
 #| tbl-cap: "Rapport de risques et intervalles de confiances à niveau 95% basés sur la vraisemblance profilée pour un modèle de Cox stratifié par région."
 #| eval: true
 #| echo: false
+#| cache: true
 cox7 <- coxph(Surv(temps, 1-censure) ~ 
                 age + sexe + service + strata(region), 
               data = survie1,

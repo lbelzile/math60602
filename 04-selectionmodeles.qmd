@@ -39,7 +39,7 @@ options(ggplot2.continuous.colour="viridis")
 options(ggplot2.continuous.fill = "viridis")
 scale_colour_discrete <- scale_color_manual(MetBrewer::met.brewer("Hiroshige",10))
 scale_fill_discrete <- scale_fill_manual(MetBrewer::met.brewer("Hiroshige",10))
-theme_set(theme_minimal())
+theme_set(theme_classic())
 ```
 
 ## Introduction
@@ -297,7 +297,7 @@ tandis que le  critère d'information bayésien de Schwartz, $\mathsf{BIC}$, est
 \begin{align*}
 \mathsf{BIC} &=-2 \ell(\widehat{\boldsymbol{\beta}}, \widehat{\sigma}^2) + p\ln(n)=n \ln (\mathsf{EQM}) + p\ln(n) + \text{constante}.
 \end{align*}
-Plus la valeur du $\mathsf{AIC}$ (ou du $\mathsf{BIC}$) est petite, meilleur est l'adéquation. Que se passe-t-il lorsqu'on ajoute un paramètre à un modèle? D'une part, la somme du carré des erreurs va méchaniquement diminuer tout comme l'erreur quadratique moyenne  $\textsf{eqm} = \textsf{SCE}/n$, donc la quantité $n \ln (\mathsf{EQM})$ va diminuer. D'autre part, la valeur de $p$ augmente de $1$. Ainsi, le $\mathsf{AIC}$ peut soit augmenter, soit diminuer, lorsqu'on ajoute un paramètre; idem pour le $\mathsf{BIC}$. Par exemple, le $\mathsf{AIC}$ va diminuer seulement si la baisse de la somme du carré des erreurs est suffisante pour compenser le fait que le terme $2p$ augmente à $2 (p+1)$.
+Plus la valeur du $\mathsf{AIC}$ (ou du $\mathsf{BIC}$) est petite, meilleur est l'adéquation. Que se passe-t-il lorsqu'on ajoute un paramètre à un modèle? D'une part, la somme du carré des erreurs va méchaniquement diminuer tout comme l'erreur quadratique moyenne  $\textsf{EQM} = \textsf{SCE}/n$, donc la quantité $n \ln (\mathsf{EQM})$ va diminuer. D'autre part, la valeur de $p$ augmente de $1$. Ainsi, le $\mathsf{AIC}$ peut soit augmenter, soit diminuer, lorsqu'on ajoute un paramètre; idem pour le $\mathsf{BIC}$. Par exemple, le $\mathsf{AIC}$ va diminuer seulement si la baisse de la somme du carré des erreurs est suffisante pour compenser le fait que le terme $2p$ augmente à $2 (p+1)$.
 
 Ces critères pénalisent l'ajout de variables afin de se prémunir contre le surajustement. De plus, le $\mathsf{BIC}$ pénalise plus que le $\mathsf{AIC}$. Par conséquent, le critère $\mathsf{BIC}$ va choisir des modèles contenant soit le même nombre, soit moins de paramètres que le $\mathsf{AIC}$.
 
@@ -323,10 +323,10 @@ Il est facile d'obtenir le $\mathsf{AIC}$ et $\mathsf{BIC}$ avec les méthodes `
 #| label: modelecubique
 #| eval: true
 #| echo: true
-data(selection1_train, package = "hecmulti")
+data(polynome, package = "hecmulti")
 # Ajuster un polynôme de degré trois (modèle cubique)
 mod_cub <- lm(y ~ poly(x, 3),
-              data = selection1_train)
+              data = polynome)
 summary(mod_cub) # Tableau résumé des coefficients
 AIC(mod_cub)
 BIC(mod_cub)
