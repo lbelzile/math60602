@@ -1,6 +1,7 @@
+html:
+	quarto render --to html
 serve:
 	quarto preview
 
-html:
-	quarto render --to html
+
 
