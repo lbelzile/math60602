@@ -1,1 +1,122 @@
-client présents dans de grandes chaînes (pharmacies, épiceries). En échange de rabais et d'offres promotionnelles, la clientèle fournit des informations sociodémographique (nom, adresse, date de naissance, etc.) et utilise un identifiant numérique, une carte ou une application pour inscrire chaque achat: ce faisant, le système peut traquer les habitudes de consommation de la clientèle.^[Il existe bien sûr d'autres méthodes de traque pour les personnes qui n'ont pas de compte client, notamment par le biais de numéros de carte de débit ou de crédit qui permettent de regrouper les transactions.] Les algorithmes utilisés pour l'analyse de regroupements peuvent également servir à la résolution d'entité, qui consiste à fusionner les profils de bases de données sans identifiant unique client.
+
+
+## Méthodes non hiérarchiques
+
+Contrairement aux méthodes hiérarchiques, il faut spécifier le nombre de groupe désiré dès le départ pour les méthodes non hiérarchiques. 
+
+Nous allons utiliser cette procédure pour raffiner la solution obtenue précédemment avec la méthode de Ward en utilisant les moyennes des groupes comme centres préliminaires. Le fichier `cluster5_non-hierarchique.sas` explique les différentes options. La syntaxe de la procédure **SAS** `fastclus` est la suivante:
+
+```{sas 04-kmeans, eval = FALSE, echo = TRUE}
+proc fastclus data=temp seed=initial distance maxclusters=3 out=temp3 maxiter=30;
+var x1 x2 x3 x4 x5 x6;
+run;
+```
+
+Voici une partie de la sortie **SAS**:
+
+
+```{r}
+#| label: fig-f4-e14
+#| echo: false
+#| out-width: '70%'
+#| fig-align: "center"
+knitr::include_graphics("figures/04-clustering-e14.png")
+```
+
+
+```{r fig-f4-e15}
+#| echo: false
+#| out-width: '90%'
+#| fig-align: "center"
+knitr::include_graphics("figures/04-clustering-e15.png")
+```
+
+
+```{r }
+#| label: fig-f4-e16
+#| echo: false
+#| out-width: '50%'
+#| fig-align: "center"
+knitr::include_graphics("figures/04-clustering-e16.png")
+```
+
+
+Évidemment, comme la solution obtenue avec la méthode de Ward est déjà excellente, on ne pourra pas avoir une amélioration notable. Il y a peu de changements par rapport à la solution de la méthode de Ward. Les tailles des groupes étaient de (43, 75, 32) avant. Elles sont maintenant (45, 77, 28). Le $R^2$ passe de 65,7\% (avec Ward) à 66.2%.
+
+L'interprétation des groupes est la même que précédemment.
+
+
+```{r}
+#| label: fig-f4-e17
+#| echo: false
+#| out-width: '70%'
+#| fig-align: "center"
+knitr::include_graphics("figures/04-clustering-e17.png")
+```
+
+
+
+La proportion de la variance totale qui est expliquée par les cinq premières composantes principales équivaut 76.7\% de la variance totale originale. On ne retient que ces deux premières.
+
+Même en ne connaissant pas l'appartenance des observations au regroupement, on distingue environ trois groupes. Le panneau droit du graphique @fig-04-acp montre les deux composantes principales, mais avec l'identification des groupes obtenus suite à l'analyse de regroupement avec la méthode des $K$-moyennes couverte plus tard.
+
+```{r}
+#| label: fig-04-acp
+#| eval: true
+#| echo: false
+#| out-width: '100%'
+#| fig-align: "center"
+#| fig-cap: "Projection des observations sur les composantes principales avec les regroupements finaux créés à la fin du chapitre avec la méthode des $K$-moyennes."
+library(ggplot2)
+par(mar = c(4,4,1,1), mfrow = c(1,2))
+dat <- dons |>
+  dplyr::filter(ndons > 1) |>
+  na.omit() |>
+  scale()
+clusters <- kmeans(x = dat, centers = 3)$cluster
+cp <- princomp(dat)$scores[,1:2]
+data <- data.frame(prin1 = cp[,1], 
+                   prin2 = cp[,2], 
+                  regroupements = factor(clusters))
+g1 <- ggplot(data = data, aes(x = prin1, y = prin2)) + 
+  geom_point() + 
+  labs(x = "composante principale 1", 
+       y = "composante principale 2") +
+   theme_classic()
+g2 <- ggplot(data = data, aes(x = prin1, 
+                              y = prin2, 
+                              col = regroupements)) + 
+  geom_point() + 
+  theme_classic() + 
+  theme(legend.position ="none") + 
+  labs(x = "composante principale 1", 
+       y = "composante principale 2") 
+library(patchwork)
+g1 + g2
+# plot(princomp(cluster1[,1:6])$scores[,1:2], 
+#      xlab = "composante principale 1", 
+#      ylab= "composante principale 2", bty = "l", pch = 20)
+# 
+# plot(princomp(cluster1[,1:6])$scores[,1:2], 
+#      xlab = "composante principale 1", 
+#      ylab= "composante principale 2", bty = "l",  
+#      col = cluster1$cluster_vrai, 
+#      pch = 14 + cluster1$cluster_vrai)
+```
+
+
+
+
+## Considérations pratiques
+
+Il peut être intéressant de comparer les résultats provenant d'une même méthode avec des nombres différents de groupes et aussi comparer ceux provenant de plusieurs méthodes (voir plus loin pour la description de certaines autres méthodes). Le choix de la méthode et du nombre de groupe n'est pas facile et devrait être basé sur des considérations pratiques et d'interprétation (comme en analyse factorielle). Il n'est pas rare qu'on obtienne des résultats très différents d'une méthode à l'autre pour un même ensemble de données. 
+
+Avec une méthode non hiérarchique, il est préférable de fournir des germes de départ « raisonnablement bon » (provenant d'une méthode hiérarchique par exemple) plutôt que de laisser l'algorithme les choisir au hasard.
+
+
+
+Dans notre exemple sur les voyages organisés, on a segmenté les voyageurs en trois groupes (indépendants, dépendants et sociables). Les auteurs de l'article (voir page 369 de l'article) ont comparé les trois groupes selon l'expérience de voyage, la taille de la communauté où ils habitent (avec des ANOVA), selon leur âge, leur revenu et leur éducation (avec des tests d'indépendance du khi-deux). Notez que ces tests sont réalisés sur des variables qui ne sont pas utilisées lors de la segmentation: ils sont invalides si les données sont corrélées avec celle utilisées pour la segmentation. La logique est qu'on choisit les groupes pour maximiser les distances inter-groupes, donc forcément les tests d'hypothèse auront tendance à trouver des différences de moyenne quand ces différences sont trompeuses.
+
+Le problème majeur avec l'analyse de regroupements est qu'il n'y a pas de façon claire de quantifier la performance de notre analyse. Lorsqu'on développe un modèle de prédiction (régression linéaire ou logistique par exemple), on peut estimer la performance de notre modèle d'une manière objective à l'aide de l'erreur quadratique de généralisation (régression linéaire) ou du taux de bonne classification (régression logistique). Ces quantités peuvent être estimées d'une manière objective en utilisant une méthode telle la validation croisée ou la division de l'échantillon. On ne peut faire de même avec l'analyse de regroupements car on n'a pas de variable réponse à prédire. Tout comme pour l'analyse factorielle, les connaissances à priori, le jugement, et les considérations pratiques font partie d'une analyse de regroupements.
+
+
