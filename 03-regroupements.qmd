@@ -9,6 +9,7 @@
 # automatically create a bib database for R packages
 library(knitr)
 library(kableExtra)
+library(hecmulti)
 set.seed(1014)
 
 knitr::opts_chunk$set(
@@ -72,6 +73,8 @@ Pour créer les regroupements, on utilisera $p$ variables explicatives $X_1, \ld
 ## Données
 
 
+Voici en vrac quelques exemples de bases de données sur lesquelles on pourrait effectuer une analyse de regroupements. 
+
 Les programmes de fidélisation font partie de la stratégie de commercialisation de plusieurs grandes chaînes (pharmacies, épiceries): en échange de rabais et d'offres promotionnelles, la clientèle fournit des informations sociodémographique (nom, adresse, date de naissance, etc.) et utilise un identifiant numérique, une carte ou une application pour inscrire chaque achat: ce faisant, le système peut traquer les habitudes de consommation.^[Il existe bien sûr d'autres méthodes de traque pour les personnes qui n'ont pas de compte client, notamment par le biais de numéros de carte de débit ou de crédit qui permettent de regrouper les transactions.] Créer des regroupements permet de mieux cerner les besoins et habitudes de segments de consommateurs et ainsi d'adapter l'offre promotionnelle. Les algorithmes utilisés pour l'analyse de regroupements peuvent également servir à la résolution d'entité, qui consiste à fusionner les profils de bases de données sans identifiant unique client.
 
 
@@ -98,7 +101,7 @@ Malheureusement, il n'est pas évident de prime abord de déterminer quelles var
 
 Si certaines variables définissent naturellement des groupes, par exemple l'âge des personnes, et fait qu'ils et elles ont des caractéristiques intrinsèquement différentes, il peut être utile de faire une segmentation indépendamment pour chacun de ces sous-groupes. 
 
-La base de données `dons` contient `r nrow(hecmulti::dons)` observations pour `r ncol(hecmulti::dons)` variables. Elle a été crée en regroupement les identifiants: de nombreuses variables explicatives sont dérivées des données brutes, notamment le temps entre dons, les statistiques descriptives (montant moyen, minimum maximum) pour les dons monétaires. Ces choix de variables sont loins d'être anodins et peuvent influencer la segmentation décrite dans ce chapitre. Une rapide exploration des données révèle que près de `r round(sum(is.na(dons$vdons))/nrow(dons), 2)` des employé(e)s n'ont pas donné à l'organisme. Une poignée de dons sont très élevés, mais la plupart des montants tourne autour de 5$, 10$, 20$, etc.
+La base de données `dons` contient `r nrow(hecmulti::dons)` observations pour `r ncol(hecmulti::dons)` variables. Elle a été crée en regroupement les identifiants: de nombreuses variables explicatives sont dérivées des données brutes, notamment le temps entre dons, les statistiques descriptives (montant moyen, minimum maximum) pour les dons monétaires. Ces choix de variables sont loins d'être anodins et peuvent influencer la segmentation décrite dans ce chapitre. Une rapide exploration des données révèle que près de `r round(100*sum(is.na(dons$vdons))/nrow(dons), 0)`% des employé(e)s n'ont pas donné à l'organisme. Une poignée de dons sont très élevés, mais la plupart des montants tourne autour de 5$, 10$, 20$, etc.
 
 
 ```{r}
@@ -107,14 +110,15 @@ La base de données `dons` contient `r nrow(hecmulti::dons)` observations pour `
 #| cache: true
 #| eval: true
 #| tbl-cap: "Statistiques descriptives des variables du jeu de données dons."
-  tibble::tibble(moyenne = apply(dons, 2, mean, na.rm = TRUE),
-              "écart-type" = apply(dons, 2, sd, na.rm = TRUE),
-               min = apply(dons, 2, min, na.rm = TRUE),
-               max = apply(dons, 2, max, na.rm = TRUE),
-               manquant = apply(dons, 2, function(x){sum(is.na(x))})) |>
-  knitr::kable(digits = 2,
-               booktabs = TRUE) |>
-  kableExtra::kable_styling(full_width = TRUE)
+data(dons, package = "hecmulti")
+tibble::tibble(moyenne = apply(dons, 2, mean, na.rm = TRUE),
+            "écart-type" = apply(dons, 2, sd, na.rm = TRUE),
+             min = apply(dons, 2, min, na.rm = TRUE),
+             max = apply(dons, 2, max, na.rm = TRUE),
+             manquant = apply(dons, 2, function(x){sum(is.na(x))})) |>
+knitr::kable(digits = 2,
+             booktabs = TRUE) |>
+kableExtra::kable_styling(full_width = TRUE)
 ```
 
 La grande proportion de données manquantes pose un problème immédiat pour la segmentation, puisque la plupart des procédures ne permettent pas de traiter ces dernières et éliminent d'office ces lignes. Ici, plusieurs valeurs manquantes (`NA`) peuvent être logiquement remplacées par des valeurs numériques: par exemple, la valeur cumulative des dons (`vdons`) d'une personne qui n'a jamais donné est nulle.^[Imputer par la moyenne ou utiliser une méthode plus sophistiqué serait illogique (et incorrect).] En revanche, le temps d'attente entre deux dons pour une personne qui a fait un don ou moins n'est pas bien défini.
@@ -161,13 +165,13 @@ Une **mesure de dissemblance** sert à quantifier la proximité de deux objets �
 
 Toute mesure de distance^[Une fonction de distance respecte en plus l'inégalité du triangle.] est une mesure de dissemblance. La mesure de dissemblance la plus utilisée en pratique est la distance euclidienne entre sujets, soit
 \begin{align*}
-d(\mathbf{X}_i, \mathbf{X}_j; l_2) = \left\{(X_{i1}-X_{j1})^2 + \cdots + (X_{ip}-X_{jp})^2\right}^{1/2}.
+d(\mathbf{X}_i, \mathbf{X}_j; l_2) = \left\{(X_{i1}-X_{j1})^2 + \cdots + (X_{ip}-X_{jp})^2\right\}^{1/2}.
 \end{align*}
 C'est tout simplement la longueur du segment qui relie les deux points dans l'espace. 
 
 Plus généralement, la distance de Minkowski ou distance $l_q$ entre les vecteurs ligne $\mathbf{X}_i$ et $\mathbf{X}_j$ est
 \begin{align*}
-d(\mathbf{X}_i, \mathbf{X}_j; l_q) = \left( \sum_{k=1}^p \left\{|X_{ik}-X_{jk}|^q \right)^{1/q},\qquad q > 0;
+d(\mathbf{X}_i, \mathbf{X}_j; l_q) = \left( \sum_{k=1}^p |X_{ik}-X_{jk}|^q \right)^{1/q},\qquad q > 0;
 \end{align*}
 la distance Euclidienne correspondant à $q=2$, et la distance de Manhattan à $q=1$^[La distance de Manhattan est la somme des valeurs absolues entre chaque composante. En deux dimensions, si on considère une ville comme New York dont les rues sont quadrillées, cela revient à marcher le long des rues alors que la distance Euclidienne traverse les édifices.] . Finalement, si $q=\infty$, la distance se réduit à $\max_{k=1}^p |X_{ik}-X_{jk}|$, soit le maximum des différences entre coordonnées des vecteurs d'observations.
 
@@ -225,50 +229,151 @@ L'analyse de regroupements cherche à créer une division de $n$ observations de
 Les méthodes de regroupement peuvent être regroupées grossièrement dans les catégories suivantes:
 
 1. méthodes basées sur la connectivité (regroupements hiérarchiques, AGNES et DIANA)
-2. méthodes basées sur centroïdes et médoïdes ($k$-moyennes, $k$-médoides, PAM, CLARA)
+2. méthodes basées sur les centroïdes et les médoïdes ($k$-moyennes, $k$-médoides  PAM, CLARA)
 3. mélanges de modèles (mélanges Gaussiens, etc.)
-4. méthodes basées sur la densité (DB-Scan)
+4. méthodes basées sur la densité (DBScan)
 5. méthodes spectrales
 
 Nous survolerons uniquement les caractéristiques des principales méthodes.
 
 ### K-moyennes
 
-L'algorithme des $K$-moyennes est un des plus couramment employé en raison de son faible coût. 
+L'algorithme des $K$-moyennes est un des plus couramment employé en raison de son faible coût.
 
-L'idée est la suivante: on assigne chaque observation à un de $K$ regroupements, et on calcule la distance à la moyenne coordonnée par coordonnée des observations du groupe. Ainsi, on cherche à minis
-Il n'est pas possible de déterminer l'allocation optimale de $n$ observations en $K$ groupes.
+L'idée est la suivante: on assigne chaque observation à un de $K$ regroupements et on calcule la distance entre cette dernière et un prototype $\boldsymbol{\mu}_k$ pour le regroupement $k$. La fonction objective que l'on cherche à minimiser est
+$$
+\min_{\boldsymbol{\mu}_1, \ldots, \boldsymbol{\mu}_K}\min_{\stackrel{r_{ik} \in \{0, 1\}}{r_{i1} + \cdots + r_{iK}=1}}\underset{\text{distance entre obs. $i$ et son prototype}}{\sum_{i=1}^n \sum_{k=1}^K r_{ik}d(\mathbf{X}_i,  \boldsymbol{\mu}_{k})}
+$$ {#eq-fobjKmoy}
+où $r_{ik}=1$ si l'observation $\mathbf{X}_i$ (soit la $i$e ligne de la base de données) est assignée au groupe $k$. Si on utilise la distance Euclidienne carrée, alors la fonction objective correspond à la somme du carré des erreurs et la solution $\widehat{\boldsymbol{\mu}}_k$ est le barycentre des $n_k$ observations du groupe $k$, soit
+\begin{align*}
+\widehat{\boldsymbol{\mu}}_k = \frac{\sum_{i} r_{ik} \mathbf{X}_i}{n_k}, \quad k = 1, \ldots, K;
+\end{align*}
+d'où l'appelation $K$-moyennes. Il n'est pas possible de déterminer l'allocation optimale de $n$ observations en $K$ groupes (problème NP complet), mais il est en revanche possible de trouver rapidement une solution approximative au problème.
 
-À partir d'un nombre prédéterminé de $K$ regroupements et de coordonnées de départ pour les prototypes, l'algorithme itère entre deux étapes:
+Pour ce faire, on sélectionne préalablement un nombre $K$ de regroupements et les coordonnées de départ pour les prototypes. L'algorithme itère entre deux étapes:
 
 1. **Assignation** (étape E): calculer la distance entre chaque observation et les prototypes; assigner chaque observation au prototype le plus près.
-2. **Mise à jour** (étape M): calculer les nouveaux prototypes, soit le barycentre (la moyenne variable par variable) des observations assignées aux regroupements.
+2. **Mise à jour** (étape M): calculer les nouveaux prototypes, soit le barycentre (la moyenne variable par variable) des observations assignées aux regroupements si on utilise la distance Euclidienne.
 
 En pratique, l'algorithme convergera rapidement vers une solution locale. Cette dernière est simplement une assignation pour laquelle, d'une itération à l'autre, aucune observation ne change de groupe.
-
-Dans la sortie des $K$-moyennes, chaque observation est associée à un seul regroupement: on peut représenter cette appartenance à l'aide d'un indicateur binaire $r_{ik}$, dénommé responsabilité, qui vaut un si l'observation $i$ appartient au regroupement $k$ ou zéro sinon. Cela nous permet de réécrire l'étape M come suit: on calcule le barycentre
-\begin{align*}
-\boldsymbol{\mu}_k = \frac{\sum_{i} r_{ik} \mathbf{X}_i}{\sum_{i} r_{ik}}, \quad k = 1, \ldots, K;
-\end{align*}
-le dénominateur $\sum_{i} r_{ik}$ est simplement le nombre d'observations du groupe $k$ à une étape donnée.
-
-L'algorithme présenté offre une forme de partitionnement dite rigide: chaque observation est assignée à un seul regroupement. Si cette appartenance unique peut être logique pour les points à proximité du barycentre, ceux situés à l'intersection des frontières qui définissent les différents regroupements pourraient légitimement faire partie d'un ou l'autre de ces derniers.
+La @fig-kmoy-animation montre une animation avec un jeu de données fictif et $K=3$ regroupements.
 
 
-- Les $K$-moyennes créent des regroupements globulaires d'apparence sphérique. Avec la distance Euclidienne, cela revient à faire une séparation linéaire de l'espace.
+Dans la sortie des $K$-moyennes, chaque observation est associée à un seul regroupement, encodée par la responsabilité $r_{ik}$. L'algorithme présenté offre une forme de partitionnement dite rigide: chaque observation est assignée à un seul regroupement puisque $r_{ik}$ est binaire. Si cette appartenance unique peut être logique pour les points à proximité du barycentre, ceux situés à l'intersection des frontières qui définissent les différents regroupements pourraient légitimement faire partie d'un ou l'autre de ces derniers.
+
+
+```{r}
+#| label: fig-kmoy-animation
+#| echo: false
+#| eval: true
+#| cache: true
+#| fig-cap: "Animation de l'algorithme des $K$-moyennes avec $K=3$ regroupements."
+#| out-width: '100%'
+#| fig-show: 'animate'
+#| fig-format: 'png'
+set.seed(1234)
+
+library(animation)
+clusters <- rbind(
+  TruncatedNormal::rtmvnorm(
+    n = rpois(n = 1, lambda = 100), 
+    mu = c(-1,0), 
+    sigma = cbind(c(2,-1),c(-1,1.2)),
+    lb = c(0,0)),
+  TruncatedNormal::rtmvnorm(n = rpois(n = 1, lambda = 225), 
+                   mu = c(7,4), 
+                   sigma = diag(rep(3, 2)), lb = c(0,0)),
+  cbind(runif(n = 10, min = 20, max = 20), 
+        runif(n = 10, min = 20, max = 20)),
+  0.5 + qgamma(p = copula::rCopula(n = 300, copula = copula::claytonCopula(param = 5)), shape = 8, scale = 1)
+  )
+colnames(clusters) <- c("variable 1", "variable 2")
+animation::ani.options(ani.dev = "png",
+            ani.type = "png")
+animation::kmeans.ani(
+  x = clusters,
+  centers = 3,
+  hints = c("Étape M: calcul du barycentre", "Étape E: mise à jour des étiquettes"),
+  pch = 20,
+  col = viridis::viridis(n = 3)
+)
+```
+
+Voici quelques forces et faiblesses de la méthode des $K$-moyennes
+
+- Les $K$-moyennes créent des regroupements globulaires d'apparence sphérique si on utilise la distance Euclidienne: cela revient à faire une séparation linéaire de l'espace.
 - Chaque observation est assignée à un seul des $K$ regroupements (assignation rigide).
-- L'algorithme manque de robustesse: comme toutes les observations sont assignées à un des $K$ regroupements, les valeurs aberrantes peuvent avoir une grande influence sur les barycentres et donc la qualité de la segmentation.
-- L'algorithme des $K$-moyennes a une complexité linéaire dans la dimension et dans le nombre de variables. C'est un avantage avec des mégadonnées et en haute dimension.
-- L'algorithme converge rapidement et on a des garanties que la solution est un maximum local. 
-- L'algorithme est sensible aux valeurs initiales des prototypes. On peut remédier à cette faiblesse en choisissant des valeurs de départ satisfaisantes (comme avec l'algorithme des $K$-moyennes ++ ou encore faire la segmentation plusieurs fois avec des valeurs initiales différentes pour ne retenir que la meilleure segmentation.
-- Comme les $K$-moyennes sont basés
+- Comme toutes les observations font partie des $K$ groupes, les valeurs aberrantes ne sont pas traitées à part.
+- La présence de valeurs aberrantes impacte le barycentre des observations du groupe. Comme ce dernier donne le prototype du groupe,  l'algorithme manque de robustesse.
+- L'algorithme des $K$-moyennes a une complexité linéaire dans la dimension et dans le nombre de variables. Ce faible coût de calcul est un avantage avec des mégadonnées et en haute dimension.
+- L'algorithme converge rapidement vers une solution et on a des garanties que la solution est un maximum local, puisque l'algorithme minimise les répartitions et les prototypes tour à tour.
+- L'algorithme est sensible aux valeurs initiales des prototypes.
 
-Les $K$-moyennes minimisent la somme du carré des erreurs, à savoir
+
+Le champ des applications des $K$-moyennes est parfois surprenant. Par exemple, [cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais](https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/) ou des [quartiers de Los Angeles](https://fivethirtyeight.com/features/the-6-political-neighborhoods-of-los-angeles/). Un autre exemple incongru est la compression d'images: la Figure @fig-decelles montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l'algorithme des $K$-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l'image.
+
+
+```{r fig-decelles}
+#| echo: false
+#| eval: true 
+#| out-width: '100%'
+#| fig-align: "center" 
+#| fig-cap: "Compression d'image avec l'algorithme des $K$-moyennes: image originale (en haut à gauche), compression avec trois (en haut à droite), quatre (en bas à gauche) et 10 (en bas à droite) couleurs."
+knitr::include_graphics("figures/kmoyennes_decelles.png")
+```
+
+#### Choix des hyperparamètres
+
+L'algorithme des $K$-moyennes comporte plusieurs paramètres, dit hyperparamètres, qui sont fixés par l'utilisateurs préalablement à la segmentation. Ces derniers incluent le nombre de groupes $K$, les valeurs initiales des prototypes et le choix de la mesure de distance.
+
+Toutes les distances $l_q$ peuvent être utilisées, mais le choix de la distance Euclidienne carrée est particulièrement commode et populaire^[La fonction objective s'apparente alors à la somme du carré des erreurs, et donc il y a une analogie à faire avec la vraisemblance d'un modèle Gaussien en dimension $p$ de covariance sphérique. Cela légitimise l'emploi de critères d'information pour le choix du nombre de regroupements.] entraîne une partition linéaire de l'espace, comme l'illustre la @fig-voronoikmoy. Sauf indication contraire, on supposera dans ce qui suit que la distance entre un point et un prototype est calculée avec la distance Euclidienne au carré.
+
+
+Quelquefois, on peut vouloir prédire les étiquettes de groupes de nouvelles observations. Sans réentraîner l'algorithme, on pourrait ainsi assigner de nouvelles observations au barycentre le plus près.
+
+```{r}
+#| label: fig-voronoikmoy
+#| echo: false
+#| eval: true
+#| fig-cap: "Partitions de Voronoï pour les barycentres obtenus dans la solution des $K$-moyennes."
+km1 <- kmeans(clusters, 
+              centers = 3, 
+              nstart = 10, 
+              iter.max = 25,
+              algorithm = "Lloyd")
+tesselation <- deldir::deldir(x = km1$centers[,1], 
+                              y = km1$centers[,2])
+# tesselation$rw <- c(0,20,0,20)
+tiles <- deldir::tile.list(tesselation)
+
+plot(clusters,
+     pch = 20,
+     xlab = "", 
+     ylab = "",
+     col = viridis::viridis(n = 3)[km1$cluster])
+plot(tiles, 
+     pch = 1, 
+     add = TRUE)
+```
+
+
+
+Comme mentionné précédemment, les regroupements obtenus peuvent varier fortement en fonction des valeurs de départ. Une segmentation sera supérieure à une autre si elle a une plus petite valeur de la fonction objective de l'@eq-fobjKmoy: les points seront moins dispersés autour de leurs prototypes. 
+
+ILLUSTRATION AVEC JEU DE DONNÉES ET MAUVAISES VALEURS DE DÉPART
+
+Pour réduire l'impact et s'assurer d'une segmentation de qualité, on peut prendre plusieurs valeurs de départ initiales différentes et faire l'analyse de regroupement en sélectionnant celle qui a la plus petite valeur de la fonction objective de l'@eq-fobjKmoy. 
+
+On peut également utiliser $K$-moyennes++, qui propose de choisir des barycentres éloignés les uns des autres (ce qui réduit typiquement le nombre d'itérations). Cette méthode d'initialisation sélectionne une observation au hasard et on l'assigne comme premier prototype, disons $\boldsymbol{\mu}_1$. Par la suite, on procède avec $k=2, \ldots, K$ aux étapes suivantes:
+
+1. calcul de la distance carrée minimale entre l'observation $\mathbf{X}_i$ et les prototypes précédemment choisis,
 \begin{align*}
-
+p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i, \boldsymbol{\mu}_{k-1}; l_2)^2)\}
 \end{align*}
+2. Choisir la valeur initiale du $k$e prototype au hasard parmi les observations avec une probabilité de $p_i/\sum_{j} p_j$ pour l'observation $\mathbf{X}_i$.
 
-Hyperparamètres: nombre de groupes $k$, initialisation, distance 
+À la fin, on obtiendra $K$ valeurs initiales qui serviront à l'initialisation. Ce faisant, on peut espérer ne pas avoir à faire plusieurs allocations aléatoires, puisque les valeurs de départ choisies sont raisonnablement éloignées les unes des autres.
+
 
 Fonctionnement de l'algorithme avec illustrations
 Frontières de séparation linéaires de l'espace
@@ -297,31 +402,26 @@ Une approche plus générale considère que $X_1, \ldots, X_p$ sont tirées d'un
 \end{align*}
 On suppose qu'on a $K$ groupes, chacun caractérisé par une densité de dimension $p$, soit $f_k(\boldsymbol{X}_i;\boldsymbol{\theta}_k)$ si $\boldsymbol{X}_i$ provient du groupe $k$ pour $k=1, \ldots, K$.
 
-On réécrit la vraisemblance en fonction de $\pi_k$, la probabilité qu'une observation tombe dans le groupe $k$,
+On réécrit la vraisemblance en fonction de $\pi_k$, la probabilité qu'une observation $\mathbf{X}$ tombe dans le groupe $k$,
 \begin{align*}
- L(\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_K; \pi_1, \ldots, \pi_K, \b{X})= \prod_{i=1}^n \sum_{k=1}^K \pi_k
+ L(\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_K; \pi_1, \ldots, \pi_K, \mathbf{X})= \prod_{i=1}^n \sum_{k=1}^K \pi_k
 f_{k}(\boldsymbol{X}_i,
 \boldsymbol{\theta}_{k}).
 \end{align*}
 Si on connaissait les poids du mélange $\boldsymbol{\pi}$ avec $\sum_{k=1}^K \pi_k = 1$ et $\pi_k \in (0,1)$, on peut simplement obtenir les estimation du maximum de vraisemblance pour le paramètre de moyenne et de variance. Comme les poids sont inconnus, on estime le modèle à l'aide de l'algorithme d'espérance-maximisation. Le paramètres retournés correspondent à un maximum local, et on peut également obtenir un estimé de la variabilité de ces paramètres. Ainsi, le mélange de modèle nous donne accès à la fois à l'incertitude des paramètres et la probabilité $\pi_k$ qu'une observation appartiennent au groupe $G_k$.
 
-Si $p$ est élevé, la structure de covariance non structurée possède trop de paramètres. On choisit plutôt une paramétrisation plus parsimonieuse qui impose des contraintes sur la forme des ellipsoïdes.
-\begin{align}
-\boldsymbol{\Sigma}_k =\lambda_k\boldsymbol{D}_k\boldsymbol{A}_k\boldsymbol{D}_k^\top   \label{eqvarcov}
-\end{align}
-avec $\boldsymbol{D}_k$ une matrice orthogonale
-de vecteurs propres,  $\boldsymbol{A}_k$ une matrice
-diagonale dont les éléments sont proportionnels aux valeurs propres  et $\lambda_k$ un scalaire. La matrice orthogonale $\boldsymbol{D}_k$ gouverne l'orientation de l'ellipsoïde, la matrice diagonale $\boldsymbol{A}_k$ sa forme et $\lambda_k$ son volume, lequel est proportionnel à $\lambda_k^p \det(A_k)$.
+Si $p$ est élevé, la structure de covariance non structurée possède trop de paramètres pour être utile. On limitera ce nombre en choisissant plutôt une paramétrisation plus parsimonieuse qui impose des contraintes sur la forme des ellipsoïdes, propres ou communs à tous les groupes.
 
 
-| Nom |$\boldsymbol{\Sigma}_k$ |   \textbf{volume}  |  \textbf{forme}  |  \textbf{orientation} |
-|:-----|:-----|:------:|:------:|:------:|
-| EII | $\lambda \boldsymbol{I}_p$  |    constant  |  sphérique  |  non-définie |
-| VII | $\lambda_k\boldsymbol{I}_p$  |    variable  | sphérique  |  non-définie |
-| EEE | $\lambda \boldsymbol{DAD}^\top$  |  constant  |  constante  |  constant |
-| EEV | $\lambda \boldsymbol{D}_k\boldsymbol{A}\boldsymbol{D}_k^\top$ | constant | constante  | variable |
-| EVV | $\lambda \boldsymbol{D}_k\boldsymbol{A}_k\boldsymbol{D}_k^\top$ | constant | variable  | variable |
-| VVV | $\lambda_k \boldsymbol{D}_k\boldsymbol{A}_k\boldsymbol{D}_k^\top$  |   variable  |  variable  | variable |
+
+| Nom |   volume  |  forme  |  orientation |
+|:-----|:------:|:------:|:------:|
+| EII |   constant  |  sphérique  |  non-définie |
+| VII |     variable  | sphérique  |  non-définie |
+| EEE |   constant  |  constante  |  constant |
+| EEV |  constant | constante  | variable |
+| EVV |  constant | variable  | variable |
+| VVV |   variable  |  variable  | variable |
 
 Le choix du nombre de composantes, de même que la forme du modèle, est basée sur la sélection bayésienne de modèles. On utilise une approximation basée sur le critère d'information bayésien, ou $\mathsf{BIC}$, en choisissant le nombre de composantes qui minimise le $\mathsf{BIC}$. 
 
@@ -371,31 +471,6 @@ dons |>
 
 L'algorithme de $K$-moyennes est un des plus populaires pour la segmentation en raison de son faible coût de calcul et de sa simplicité.
 
-```{r}
-#| label: fig-kmoy-animation
-#| echo: false
-#| eval: true
-#| cache: true
-#| fig-cap: "Animation de l'algorithme des $K$-moyennes avec $K=3$ regroupements."
-#| out-width: '100%'
-#| fig-format: 'png'
-
-#fig.cap = ifelse(knitr::opts_knit$get("rmarkdown.pandoc.to") == "html","Algorithme des $K$-moyennes avec trois groupes illustré en deux dimensions avec les composantes principales, étape par étape","Algorithme des $K$-moyennes avec trois groupes illustré en deux dimensions avec les composantes principales"), fig.show = 'animate'}
-set.seed(1234)
-
-library(animation)
-cluster_eig <- as.matrix(princomp(cluster)$scores[,1:2])
-colnames(cluster_eig) <- paste0("composante principale ", 1:2)
-animation::ani.options(ani.dev = "png",
-            ani.type = "png")
-animation::kmeans.ani(
-  x = cluster_eig,
-  centers = 3,
-  hints = c("calcul du barycentre", "mise à jour des étiquettes"),
-  pch = 1:3,
-  col = 2:4
-)
-```
 ### Algorithm DBSCAN
 
 ### Mélanges de modèles 
@@ -407,278 +482,3 @@ animation::kmeans.ani(
 ### Mesures d'adéquation
 
 ### Choix des hyperparamètres
-
-### Méthodes hiérarchiques
-
-Les **méthodes hiérarchiques** agglomératives assignent les individus aux groupes à l'aide d'un algorithme glouton en partant du cas à $n$ groupes où chaque sujet est un groupe à part entière. La distance entre chaque paire de groupe est calculée. Les deux groupes ayant la distance la plus petite sont regroupés pour ne laisser que $n-1$ groupes. La distance entre chaque paire de groupe est à nouveau calculée (pour les  groupes). Les deux groupes ayant la distance la plus petite sont regroupés pour ne former qu'un seul groupe et ainsi de suite. Le processus se continue ainsi jusqu'à ce que tous les sujets soient regroupés en un seul groupe.
-
-Avec une méthode hiérarchique, on n'a pas besoin de spécifier le nombre de groupes à priori. Cependant, une fois qu'un sujet est assigné à un groupe, il ne peut le quitter pour être réassigné à un autre groupe plus tard. Ce qui différencie les différentes méthodes hiérarchiques est la manière dont est calculée la distance entre deux groupes.
- 
-
-
-
-## Méthodes hiérarchiques
-
-Cette méthode débute avec $n$ groupes, un par sujet, et procède en regroupant des groupes formés au préalable d'une manière hiérarchique jusqu'à ce que tous les sujets ne forment qu'un seul groupe. Le nombre de groupe retenu pourra être sélectionné à l'aide de certains critères que nous verrons plus tard. 
-
-À une étape donnée, il faut choisir quels groupes seront combinés. Les deux groupes dont la distance est la plus faible seront combinés. Il faut donc être en mesure de calculer la distance entre deux groupes. Nous allons décrire la méthode de Ward, qui compte parmi les plus populaires. Nous reviendrons brièvement sur d'autres méthodes plus loin.
-
-### Méthode de Ward
-
-Cette méthode est basée sur un critère d'homogénéité global des groupes. Pour un groupe donné, cette homogénéité est mesurée par la somme des carrés des observations par rapport à la moyenne du groupe. L'homogénéité globale est alors la somme des homogénéités de tous les groupes.  Plus l'homogénéité globale est petite, plus les groupes sont homogènes. À une étape donnée, les deux groupes qui causent la plus petite hausse de l'homogénéité globale (la plus petite perte d'information) sont regroupés. La méthode de Ward donne des groupes compacts d'apparence sphérique.
-
-Plus précisément, supposons qu'à une étape du processus hiérarchique, nous avons $M$ groupes et que nous voulons passer à $M-1$ groupes. Pour un groupe $K$ (parmi $1, 2, \ldots, M$), définissons la somme des carrés des distances par rapport à la moyenne du groupe, $\mathsf{SCD}_k$. Plus $\mathsf{SCD}_k$ est petite, plus le groupe est compact et homogène.
-
-On peut calculer cette distance pour tous les $M$ groupes et définir l'**homogénéité globale** comme la somme de l'homogénéité de tous les groupes,
-\begin{align*}
-\mathsf{SCD}_G = \mathsf{SCD}_1 + \cdots + \mathsf{SCD}_M.
-\end{align*}
-Plus l'homogénéité globale $\mathsf{SCD}_G$  est petite, mieux c'est. Pour passer de $M$ à $M-1$ groupes, la méthode de Ward va regrouper les deux groupes qui feront que $\mathsf{SCD}_G$ sera la plus petite possible.
-
-On procède à une analyse simplifiée des données pour le voyage organisé avec deux variables et vingt observations afin d'être en mesure de visualiser l'algorithme de groupement. 
-
-```{r }
-#| label: fig-04-plottrueclust
-#| eval: false
-#| echo: false
-#| out-width: '90%'
-#| fig-align: "center"
-url <- "https://lbelzile.bitbucket.io/MATH60602/cluster1a.sas7bdat"
-cluster1a <- haven::read_sas(url)
-par(mar = c(4,4,1,2))
-with(cluster1a, plot(y = x1, x = x2, pch = 19, 
-     bty = "l", xlab = expression(x[2]), 
-     ylab = expression(x[1]), 
-     xlim = c(1,5.4)))
-with(cluster1a, text(x2, x1, 1:nrow(cluster1a), pos = 4))
-
-```
-
-
-```{r 'fig-wardAnimation', fig.cap = ifelse(knitr::opts_knit$get("rmarkdown.pandoc.to") == "html","Regroupements hiérarchiques sur le sous-ensemble des données, étape par étape","Regroupements hiérarchiques avec la méthode de Ward (solution à trois groupes)"),  animation.hook = "gifski", fig.show = 'animate'}
-#| eval: true
-#| echo: false
-#| cache: true
-#| fig-width: 8
-#| fig-height: 8
-#| out-width: '100%'
-#| fig-format: 'png'
-out_type <- knitr::opts_knit$get("rmarkdown.pandoc.to")
-suppressPackageStartupMessages(library(factoextra))
-# Téléchargement des données
-url <- "https://lbelzile.bitbucket.io/MATH60602/cluster1a.sas7bdat"
-cluster1a <- data.frame(haven::read_sas(url))
-clust <- hclust(dist(cluster1a), method = "ward.D2")
-if(out_type == 'html'){
-  for (i in 20:2){
-    print(
-      factoextra::fviz_cluster(
-        list(data = cluster1a, 
-             cluster = cutree(clust, k = i)),
-        choose.vars = c("x1", "x2"),
-        stand = FALSE,
-        main = "Regroupements selon méthode de Ward"
-      ) + labs(col = "regroupements",
-               x = expression(x[1]),
-               y = expression(x[2])) + 
-        theme_classic() +
-        theme(legend.position = 'none')
-    )
-  }
-} else{
-  factoextra::fviz_cluster(
-      list(data = cluster1a, 
-           cluster = cutree(clust, k = 3)),
-      choose.vars = c("x1", "x2"),
-      stand = FALSE,
-      main = "Regroupements selon méthode de Ward"
-    ) + labs(col = "regroupements",
-             x = expression(x[1]),
-             y = expression(x[2])) + 
-    theme_classic() +
-    theme(legend.position = 'none')
-}
-```
-
-La première analyse utilise la méthode de Ward. Les commandes **SAS** se trouvent dans `cluster1_simplifie.sas`; la présentation de la procédure et de la syntaxe est différée. L'historique de regroupement est décrit dans la sortie **SAS**. La première colonne donne le nombre de groupes. Au départ, les observations 16 et 19 sont regroupées, il y a maintenant 19 groupes. Ensuite, les observations 11 et 13 sont regroupées, il y a maintenant 18 groupes. Au moment de passer de 14 à 13 groupes, c'est le groupe formé à l'étape 16 qui est fusionné avec l'observation 2 et ainsi de suite. La colonne `Fréq` donne le nombre d'observations dans le groupe qui vient d'être formé.
-
-```{r fig-f4-e3}
-#| echo: false
-#| out-width: '100%'
-#| fig-align: "center"
-knitr::include_graphics("figures/04-clustering-e3.png")
-```
-
-Les quantités `sprsq` et `rsq` sont des statistiques qui peuvent servir de guide pour choisir le nombre de groupes. Le $\mathsf{RSQ}$ est une mesure similaire au $R^2$ régression linéaire qui mesure globalement à quel point les groupes sont homogènes.  Elle prend une valeur entre 0 et 1 où 0 et plus le $\mathsf{RSQ}$ est élevé, meilleur le regroupement.
-On définit le $\mathsf{RSQ}$ comme la proportion de la variabilité expliquée par les groupes. C'est une version standardisée de la somme des homogénéités, $\mathsf{SCD}_G$, 
-\begin{align*}
-\mathsf{RSQ} = 1-\frac{\mathsf{SCD}_G}{\mathsf{SCD}_T},
-\end{align*}
- où $\mathsf{SCD}_T$ est la somme des carrés des distances par rapport à la moyenne lorsque toutes les observations sont dans un même groupe. Le graphique @fig-f4-e4 montre l'évolution du $\mathsf{RSQ}$ en fonction du nombre de groupes. 
-
-```{r}
-#| label: fig-f4-e4
-#| echo: false
-#| out-width: '80%'
-#| fig-align: "center"
-#| fig-cap: "Critère du R carré en fonction du nombre de groupes."
-knitr::include_graphics("figures/04-clustering-e4.png")
-```
-
-L'idée est généralement de choisir un petit nombre de groupe avec un $\mathsf{RSQ}$ assez élevé. 
-Ici, on voit que le $\mathsf{RSQ}$ chute brutalement en passant de trois à deux groupes (il passe de 78.2\% de variabilité expliquée à 48.6\%). Ainsi, choisir trois groupes semble raisonnable.
-
-L'autre mesure, le $\mathsf{SPRSQ}$ ou $R$ carré semi-partiel, mesure la perte d'homogénéité résultant du fait que l'on vient de former un nouveau groupe. Comme on veut des groupes homogènes, on veut qu'elle soit petite. Plus précisément, supposons que les groupes $k_1$ et $k_2$ viennent d'être regroupés à une étape donnée. Soient $\mathsf{SCD}_{k_1}$ et $\mathsf{SCD}_{k_2}$ les homogénéités de ces deux groupes et $\mathsf{SCD}_{k}$ l'homogénéité du nouveau groupe formé en fusionnant les deux. 
-On définit la perte d'homogénéité (relative) en combinant ces deux groupes 
-\begin{align*}
-\mathsf{SPRSQ} = \frac{\mathsf{SCD}_k - \mathsf{SCD}_{k_1} - \mathsf{SCD}_{k_2}}{\mathsf{SCD}_T}
-\end{align*}
-On peut ainsi tracer une courbe pour le $\mathsf{SPRSQ}$ en fonction du nombre de groupes, comme dans le graphique @fig-f4-e5. 
-
-```{r }
-#| label: fig-f4-e5
-#| echo: false
-#| out-width: '80%'
-#| fig-align: "center" 
-#| fig-cap: "Courbe du $R^2$ semi-partiel en fonction du nombre de regroupements hiérarchiques."
-knitr::include_graphics("figures/04-clustering-e5.png")
-```
-
-La procédure **SAS** qui permet d'effectuer une analyse de regroupements hiérarchique est `cluster`. Le fichier `cluster2_complet.sas` explique les différentes options disponibles.
-
-```{sas 04-clust, eval= FALSE, echo= TRUE}
-proc cluster data=temp method=ward outtree=temp1 nonorm rsquare;
-var x1-x6;
-copy id cluster_vrai x1-x6;
-ods output stat.cluster.ClusterHistory=criteres;
-run;
-```
-
-
-On peut représenter graphique le R carré (Figure @fig-f4-e7), le R carré semi partiel (Figure @fig-f4-e8) en fonction du nombre de groupes. 
-
-```{r fig-f4-e7}
-#| echo: false
-#| out-width: '100%'
-#| fig-align: "center" 
-#| fig-cap: "R carré en fonction des regroupements hiérarchiques"
-knitr::include_graphics("figures/04-clustering-e8.png")
-```
-
-```{r fig-f4-e8} 
-#| echo: false
-#| out-width: '100%'
-#| fig-align: "center"
-#| fig-cap: "R carré semi-partiel en fonction des regroupements hiérarchiques"
-knitr::include_graphics("figures/04-clustering-e9.png")
-```
-
-
-Parfois, l'information est présentée sous forme de dendogramme, qui trace l'arbre et la fusion des groupes. On peut ainsi retracer l'historique de la procédure hiérarchique. Celui produit par **SAS** donne, à un facteur multiplicatif près, le $\mathsf{SPRSQ}$. Il n'y a donc pas de nouvelles informations ici. On voit que c'est lorsqu'on passe de trois à deux groupes, qu'il y a une bonne perte d'homogénéité. 
-
-En pratique, on ne peut jamais savoir si on a bel et bien regroupé ensemble les bons sujets. Mais ici, comme il s'agit de données artificielles qui ont été générées, nous connaissons la composition des vrais groupes. Il s'avère qu'il y en a effectivement trois. De plus, la solution à trois groupes obtenue avec la méthode de Ward a bien réussi à retrouver les groupes. Ceci est un exemple facile où les observations sont bien séparées: ce ne sera pas toujours aussi simple en pratique. 
-
-**Interprétation des groupes**: la méthode la plus simple consiste à inspecter les moyennes des variables de chaque groupe et de voir s'il en découle une interprétation raisonnable. La procédure `tree` permet d'extraire la solution avec un nombre spécifié de groupes et il est ensuite facile (avec la procédure `means`) d'obtenir ces moyennes (voir le fichier `cluster2_complet.sas`).
-
-
-```{r fig-f4-e11}
-#| echo: false
-#| out-width: '55%' 
-#| fig-align: "center"
-knitr::include_graphics("figures/04-clustering-e11.png")
-```
-
-```{r fig-f4-e12}
-#| echo: false
-#| out-width: '55%' 
-#| fig-align: "center"
-knitr::include_graphics("figures/04-clustering-e12.png")
-```
-
-```{r fig-f4-e13}
-#| echo: false
-#| out-width: '55%'
-#| fig-align: "center"
-knitr::include_graphics("figures/04-clustering-e13.png")
-```
-
-
-Le groupe 1 est le groupe où les sujets ont les valeurs, en moyenne, les plus faibles pour les six variables. Le groupe 2 est celui où les sujets ont les valeurs, en moyenne, les plus élevées pour les 6 variables sauf pour la variable $X_1$ (activité sociale). Le groupe 3 est celui où les sujets ont, en moyenne, la valeur la plus élevée de la variable $X_1$ et des valeurs moyennes inférieures au groupe 3 mais supérieures au groupe 2 pour les cinq autres variables. 
-
-Dans l'article, les auteurs ont baptisé les sujets du groupe 1, les « indépendants », ceux du groupe 2, les « dépendants » et ceux du groupe 3, les « sociables ». 
-Notez qu'on **ne peut pas** tester l'égalité des moyennes des variables pour les différents groupes avec une ANOVA; la sélection des groupes est faite à l'aide d'un algorithme glouton pour maximiser la distance entre les groupes, aussi cela invalide l'inférence. On peut aussi explorer les groupes en modélisant les effets des variables en ce qui a trait à l'appartenance aux groupes. Traditionnellement, l'analyse discriminante est utilisée à cette fin. Il est aussi possible d'utiliser un arbre de classification ou une autre méthode prévisionnelle, telle la régression multinomiale logistique. La variable identifiant le groupe d'appartenance obtenu avec l'analyse de regroupement sert alors de variable dépendante $Y$. Ce type d'analyse permet de creuser un peu plus pour essayer de comprendre la structure des groupes formés.
-
-
-## Calcul alternatif des distances pour le regroupement hiérarchique
-
-
-Nous avons utilisé la méthode de Ward afin de calculer la distance entre les groupes et procéder au passage de $n$  groupes à un groupe, avec l'approche hiérarchique. Supposons que nous avons choisi une mesure de dissemblance $d(\mathbf{X}_i, \mathbf{X}_j)$  quelconque (distance euclidienne par exemple) pour mesurer la distance entre deux sujets. Voici comment sont choisis les regroupements avec ces méthodes.
-
-- Méthode du plus proche voisin ou méthode de liaison simple (*nearest neighbor*, *single linkage*): utilise la distance minimale entre chaque paire de sujets (un pour chaque groupe) provenant des deux groupes. Cette méthode fonctionne bien si l'écart entre deux regroupements est suffisamment grand. À l'inverse, s'il y a des observations bruitées entre deux regroupements, la qualité des regroupements en sera affectée.
-- Méthode du voisin le plus éloigné ou méthode de liaison complète (*complete linkage*): utilise la distance maximale entre toutes les paires de sujets (un pour chaque groupe) provenant des deux groupes. Cette méthode est moins sensible au bruit et aux faibles écarts entre regroupements, mais a tendance à casser les regroupements globulaires.
-- Méthode de liaison moyenne (*average linkage*): utilise la moyenne des distances entre toutes les paires de sujets (un pour chaque groupe) provenant des deux groupes.
-- Méthode du barycentre (*centroid*): utilise la distance entre les représentants moyens de chaque groupe où le représentant moyen d'un groupe est le barycentre, soit la moyenne variable par variable, des sujets formant le groupe. 
-
-
-Le fichier `cluster3_voisin_eloigne.sas` contient les commandes pour utiliser la méthode du voisin le plus éloigné (avec l'option `method=complete`). Le graphe plus bas donne cette distance pour les deux groupes qui viennent d'être fusionnés. Il s'agit donc du maximum des distances entre chaque paire de sujets (un pour chaque groupe) provenant des deux groupes fusionnés.
-
-
-```{r fig-f4-e21}
-#| echo: false
-#| out-width: '100%'
-#| fig-align: "center"
-#| fig-cap: "Distance maximale entre groupes en fonction des regroupements hiérarchiques pour la méthode du voisin le plus éloigné."
-knitr::include_graphics("figures/04-clustering-e21.png")
-```
-
-
-Comme on veut que cette distance soit petite pour les groupes fusionnés, on pourrait être tenté d'arrêter à trois groupes ici sur la base de la Figure @fig-f4-e20. L'interprétation des groupes ne change pas comparativement aux analyses précédentes. La taille des groupes, (44, 71, 35), change un peu par rapport à la solution avec la méthode de Ward qui donnait des tailles de (43, 75, 32). 
-
-On peut comparer les performances des regroupements hiérarchiques selon la méthode de groupement. La [page web de scikit-learn developers](https://scikit-learn.org/stable/auto_examples/cluster/plot_linkage_comparison.html) montre la performance sur des exemples jouets, qui montre que selon les hypothèses et la structure, aucune ne performe mieux que les autres dans tous les exemples.
-
-```{r fig-f4-e20}
-#| echo: false
-#| out-width: '100%'
-#| fig-align: "center"
-#| fig-cap: "Comparaison des méthodes de groupement sur des données test"
-
-knitr::include_graphics("figures/04-clustering-e20.png")
-```
-
-
-```{r}
-#| label: dbscan
-library(dbscan)
-# Trois plus proches voisins
-eps <- quantile(dbscan::kNNdist(cluster, k = 3), 
-                probs = 0.9)
-regroup_dbscan <- 
-  dbscan::dbscan(x = cluster, 
-                 eps = eps, 
-                 minPts = 3)
-pairs(cluster, col = regroup_dbscan$cluster + 1L)
-
-# Regroupements spectraux
-clust <- FCPS::SpectralClustering(
-  Data = cluster,
-  ClusterNo = 3)
-pairs(cluster, col = clust$Cls + 1)
-
-```
-
-Encore une fois, l'interprétation des groupes ne change pas comparativement aux analyses précédentes. La taille des groupes, (45, 75, 30) change un peu par rapport à la solution avec la méthode de Ward qui donnait des tailles de (43, 75, 32). 
-
-
-Règle générale, les différentes étapes des méthodes agglomératives hiérarchiques nécessitent $\mathrm{O}(n^3)$ opérations, bien qu'une version plus parsimonieuse existe avec complexité $\mathrm{O}(n^2\ln n)$ ou $\mathrm{O}(n^2)$ pour les méthodes de liaison simple et complexe. La formule de Lance--Williams permet de mettre à jour récursivement les distances entre regroupements pour la plupart des méthodes considérées. Le coût élevé de la méthode de regroupement hiérarchique, qui dépend de la taille de l'échantillon, devient prohibitif avec des mégadonnées. Il nécessite aussi le calcul d'une mesure de dissemblance et l'évaluation de la qualité de l'agglomération, autre que graphique, n'est pas évidente. Ces méthodes sont largement discontinuées de nos jours par des alternatives modernes.
-
-Le champ des applications des $K$-moyennes est parfois surprenant. Par exemple, [cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais](https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/) ou des [quartiers de Los Angeles](https://fivethirtyeight.com/features/the-6-political-neighborhoods-of-los-angeles/). Un autre exemple incongru est la compression d'images: la Figure @fig-decelles montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l'algorithme des $K$-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l'image.
-
-
-```{r fig-decelles}
-#| echo: false
-#| eval: true 
-#| out-width: '100%'
-#| fig-align: "center" 
-#| fig-cap: "Compression d'image avec l'algorithme des $K$-moyennes: image originale (en haut à gauche), compression avec trois (en haut à droite), quatre (en bas à gauche) et 10 (en bas à droite) couleurs."
-knitr::include_graphics("figures/kmoyenne\mathbf{X}_decelles.png")
-```

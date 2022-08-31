@@ -107,6 +107,270 @@ g1 + g2
 
 
 
+### Méthodes hiérarchiques
+
+Les **méthodes hiérarchiques** agglomératives assignent les individus aux groupes à l'aide d'un algorithme glouton en partant du cas à $n$ groupes où chaque sujet est un groupe à part entière. La distance entre chaque paire de groupe est calculée. Les deux groupes ayant la distance la plus petite sont regroupés pour ne laisser que $n-1$ groupes. La distance entre chaque paire de groupe est à nouveau calculée (pour les  groupes). Les deux groupes ayant la distance la plus petite sont regroupés pour ne former qu'un seul groupe et ainsi de suite. Le processus se continue ainsi jusqu'à ce que tous les sujets soient regroupés en un seul groupe.
+
+Avec une méthode hiérarchique, on n'a pas besoin de spécifier le nombre de groupes à priori. Cependant, une fois qu'un sujet est assigné à un groupe, il ne peut le quitter pour être réassigné à un autre groupe plus tard. Ce qui différencie les différentes méthodes hiérarchiques est la manière dont est calculée la distance entre deux groupes.
+ 
+
+
+
+## Méthodes hiérarchiques
+
+Cette méthode débute avec $n$ groupes, un par sujet, et procède en regroupant des groupes formés au préalable d'une manière hiérarchique jusqu'à ce que tous les sujets ne forment qu'un seul groupe. Le nombre de groupe retenu pourra être sélectionné à l'aide de certains critères que nous verrons plus tard. 
+
+À une étape donnée, il faut choisir quels groupes seront combinés. Les deux groupes dont la distance est la plus faible seront combinés. Il faut donc être en mesure de calculer la distance entre deux groupes. Nous allons décrire la méthode de Ward, qui compte parmi les plus populaires. Nous reviendrons brièvement sur d'autres méthodes plus loin.
+
+### Méthode de Ward
+
+Cette méthode est basée sur un critère d'homogénéité global des groupes. Pour un groupe donné, cette homogénéité est mesurée par la somme des carrés des observations par rapport à la moyenne du groupe. L'homogénéité globale est alors la somme des homogénéités de tous les groupes.  Plus l'homogénéité globale est petite, plus les groupes sont homogènes. À une étape donnée, les deux groupes qui causent la plus petite hausse de l'homogénéité globale (la plus petite perte d'information) sont regroupés. La méthode de Ward donne des groupes compacts d'apparence sphérique.
+
+Plus précisément, supposons qu'à une étape du processus hiérarchique, nous avons $M$ groupes et que nous voulons passer à $M-1$ groupes. Pour un groupe $K$ (parmi $1, 2, \ldots, M$), définissons la somme des carrés des distances par rapport à la moyenne du groupe, $\mathsf{SCD}_k$. Plus $\mathsf{SCD}_k$ est petite, plus le groupe est compact et homogène.
+
+On peut calculer cette distance pour tous les $M$ groupes et définir l'**homogénéité globale** comme la somme de l'homogénéité de tous les groupes,
+\begin{align*}
+\mathsf{SCD}_G = \mathsf{SCD}_1 + \cdots + \mathsf{SCD}_M.
+\end{align*}
+Plus l'homogénéité globale $\mathsf{SCD}_G$  est petite, mieux c'est. Pour passer de $M$ à $M-1$ groupes, la méthode de Ward va regrouper les deux groupes qui feront que $\mathsf{SCD}_G$ sera la plus petite possible.
+
+On procède à une analyse simplifiée des données pour le voyage organisé avec deux variables et vingt observations afin d'être en mesure de visualiser l'algorithme de groupement. 
+
+```{r }
+#| label: fig-04-plottrueclust
+#| eval: false
+#| echo: false
+#| out-width: '90%'
+#| fig-align: "center"
+url <- "https://lbelzile.bitbucket.io/MATH60602/cluster1a.sas7bdat"
+cluster1a <- haven::read_sas(url)
+par(mar = c(4,4,1,2))
+with(cluster1a, plot(y = x1, x = x2, pch = 19, 
+     bty = "l", xlab = expression(x[2]), 
+     ylab = expression(x[1]), 
+     xlim = c(1,5.4)))
+with(cluster1a, text(x2, x1, 1:nrow(cluster1a), pos = 4))
+
+```
+
+
+```{r 'fig-wardAnimation', fig.cap = ifelse(knitr::opts_knit$get("rmarkdown.pandoc.to") == "html","Regroupements hiérarchiques sur le sous-ensemble des données, étape par étape","Regroupements hiérarchiques avec la méthode de Ward (solution à trois groupes)"),  animation.hook = "gifski", fig.show = 'animate'}
+#| eval: true
+#| echo: false
+#| cache: true
+#| fig-width: 8
+#| fig-height: 8
+#| out-width: '100%'
+#| fig-format: 'png'
+out_type <- knitr::opts_knit$get("rmarkdown.pandoc.to")
+suppressPackageStartupMessages(library(factoextra))
+# Téléchargement des données
+url <- "https://lbelzile.bitbucket.io/MATH60602/cluster1a.sas7bdat"
+cluster1a <- data.frame(haven::read_sas(url))
+clust <- hclust(dist(cluster1a), method = "ward.D2")
+if(out_type == 'html'){
+  for (i in 20:2){
+    print(
+      factoextra::fviz_cluster(
+        list(data = cluster1a, 
+             cluster = cutree(clust, k = i)),
+        choose.vars = c("x1", "x2"),
+        stand = FALSE,
+        main = "Regroupements selon méthode de Ward"
+      ) + labs(col = "regroupements",
+               x = expression(x[1]),
+               y = expression(x[2])) + 
+        theme_classic() +
+        theme(legend.position = 'none')
+    )
+  }
+} else{
+  factoextra::fviz_cluster(
+      list(data = cluster1a, 
+           cluster = cutree(clust, k = 3)),
+      choose.vars = c("x1", "x2"),
+      stand = FALSE,
+      main = "Regroupements selon méthode de Ward"
+    ) + labs(col = "regroupements",
+             x = expression(x[1]),
+             y = expression(x[2])) + 
+    theme_classic() +
+    theme(legend.position = 'none')
+}
+```
+
+La première analyse utilise la méthode de Ward. Les commandes **SAS** se trouvent dans `cluster1_simplifie.sas`; la présentation de la procédure et de la syntaxe est différée. L'historique de regroupement est décrit dans la sortie **SAS**. La première colonne donne le nombre de groupes. Au départ, les observations 16 et 19 sont regroupées, il y a maintenant 19 groupes. Ensuite, les observations 11 et 13 sont regroupées, il y a maintenant 18 groupes. Au moment de passer de 14 à 13 groupes, c'est le groupe formé à l'étape 16 qui est fusionné avec l'observation 2 et ainsi de suite. La colonne `Fréq` donne le nombre d'observations dans le groupe qui vient d'être formé.
+
+```{r fig-f4-e3}
+#| echo: false
+#| out-width: '100%'
+#| fig-align: "center"
+knitr::include_graphics("figures/04-clustering-e3.png")
+```
+
+Les quantités `sprsq` et `rsq` sont des statistiques qui peuvent servir de guide pour choisir le nombre de groupes. Le $\mathsf{RSQ}$ est une mesure similaire au $R^2$ régression linéaire qui mesure globalement à quel point les groupes sont homogènes.  Elle prend une valeur entre 0 et 1 où 0 et plus le $\mathsf{RSQ}$ est élevé, meilleur le regroupement.
+On définit le $\mathsf{RSQ}$ comme la proportion de la variabilité expliquée par les groupes. C'est une version standardisée de la somme des homogénéités, $\mathsf{SCD}_G$, 
+\begin{align*}
+\mathsf{RSQ} = 1-\frac{\mathsf{SCD}_G}{\mathsf{SCD}_T},
+\end{align*}
+ où $\mathsf{SCD}_T$ est la somme des carrés des distances par rapport à la moyenne lorsque toutes les observations sont dans un même groupe. Le graphique @fig-f4-e4 montre l'évolution du $\mathsf{RSQ}$ en fonction du nombre de groupes. 
+
+```{r}
+#| label: fig-f4-e4
+#| echo: false
+#| out-width: '80%'
+#| fig-align: "center"
+#| fig-cap: "Critère du R carré en fonction du nombre de groupes."
+knitr::include_graphics("figures/04-clustering-e4.png")
+```
+
+L'idée est généralement de choisir un petit nombre de groupe avec un $\mathsf{RSQ}$ assez élevé. 
+Ici, on voit que le $\mathsf{RSQ}$ chute brutalement en passant de trois à deux groupes (il passe de 78.2\% de variabilité expliquée à 48.6\%). Ainsi, choisir trois groupes semble raisonnable.
+
+L'autre mesure, le $\mathsf{SPRSQ}$ ou $R$ carré semi-partiel, mesure la perte d'homogénéité résultant du fait que l'on vient de former un nouveau groupe. Comme on veut des groupes homogènes, on veut qu'elle soit petite. Plus précisément, supposons que les groupes $k_1$ et $k_2$ viennent d'être regroupés à une étape donnée. Soient $\mathsf{SCD}_{k_1}$ et $\mathsf{SCD}_{k_2}$ les homogénéités de ces deux groupes et $\mathsf{SCD}_{k}$ l'homogénéité du nouveau groupe formé en fusionnant les deux. 
+On définit la perte d'homogénéité (relative) en combinant ces deux groupes 
+\begin{align*}
+\mathsf{SPRSQ} = \frac{\mathsf{SCD}_k - \mathsf{SCD}_{k_1} - \mathsf{SCD}_{k_2}}{\mathsf{SCD}_T}
+\end{align*}
+On peut ainsi tracer une courbe pour le $\mathsf{SPRSQ}$ en fonction du nombre de groupes, comme dans le graphique @fig-f4-e5. 
+
+```{r }
+#| label: fig-f4-e5
+#| echo: false
+#| out-width: '80%'
+#| fig-align: "center" 
+#| fig-cap: "Courbe du $R^2$ semi-partiel en fonction du nombre de regroupements hiérarchiques."
+knitr::include_graphics("figures/04-clustering-e5.png")
+```
+
+La procédure **SAS** qui permet d'effectuer une analyse de regroupements hiérarchique est `cluster`. Le fichier `cluster2_complet.sas` explique les différentes options disponibles.
+
+```{sas 04-clust, eval= FALSE, echo= TRUE}
+proc cluster data=temp method=ward outtree=temp1 nonorm rsquare;
+var x1-x6;
+copy id cluster_vrai x1-x6;
+ods output stat.cluster.ClusterHistory=criteres;
+run;
+```
+
+
+On peut représenter graphique le R carré (Figure @fig-f4-e7), le R carré semi partiel (Figure @fig-f4-e8) en fonction du nombre de groupes. 
+
+```{r fig-f4-e7}
+#| echo: false
+#| out-width: '100%'
+#| fig-align: "center" 
+#| fig-cap: "R carré en fonction des regroupements hiérarchiques"
+knitr::include_graphics("figures/04-clustering-e8.png")
+```
+
+```{r fig-f4-e8} 
+#| echo: false
+#| out-width: '100%'
+#| fig-align: "center"
+#| fig-cap: "R carré semi-partiel en fonction des regroupements hiérarchiques"
+knitr::include_graphics("figures/04-clustering-e9.png")
+```
+
+
+Parfois, l'information est présentée sous forme de dendogramme, qui trace l'arbre et la fusion des groupes. On peut ainsi retracer l'historique de la procédure hiérarchique. Celui produit par **SAS** donne, à un facteur multiplicatif près, le $\mathsf{SPRSQ}$. Il n'y a donc pas de nouvelles informations ici. On voit que c'est lorsqu'on passe de trois à deux groupes, qu'il y a une bonne perte d'homogénéité. 
+
+En pratique, on ne peut jamais savoir si on a bel et bien regroupé ensemble les bons sujets. Mais ici, comme il s'agit de données artificielles qui ont été générées, nous connaissons la composition des vrais groupes. Il s'avère qu'il y en a effectivement trois. De plus, la solution à trois groupes obtenue avec la méthode de Ward a bien réussi à retrouver les groupes. Ceci est un exemple facile où les observations sont bien séparées: ce ne sera pas toujours aussi simple en pratique. 
+
+**Interprétation des groupes**: la méthode la plus simple consiste à inspecter les moyennes des variables de chaque groupe et de voir s'il en découle une interprétation raisonnable. La procédure `tree` permet d'extraire la solution avec un nombre spécifié de groupes et il est ensuite facile (avec la procédure `means`) d'obtenir ces moyennes (voir le fichier `cluster2_complet.sas`).
+
+
+```{r fig-f4-e11}
+#| echo: false
+#| out-width: '55%' 
+#| fig-align: "center"
+knitr::include_graphics("figures/04-clustering-e11.png")
+```
+
+```{r fig-f4-e12}
+#| echo: false
+#| out-width: '55%' 
+#| fig-align: "center"
+knitr::include_graphics("figures/04-clustering-e12.png")
+```
+
+```{r fig-f4-e13}
+#| echo: false
+#| out-width: '55%'
+#| fig-align: "center"
+knitr::include_graphics("figures/04-clustering-e13.png")
+```
+
+
+Le groupe 1 est le groupe où les sujets ont les valeurs, en moyenne, les plus faibles pour les six variables. Le groupe 2 est celui où les sujets ont les valeurs, en moyenne, les plus élevées pour les 6 variables sauf pour la variable $X_1$ (activité sociale). Le groupe 3 est celui où les sujets ont, en moyenne, la valeur la plus élevée de la variable $X_1$ et des valeurs moyennes inférieures au groupe 3 mais supérieures au groupe 2 pour les cinq autres variables. 
+
+Dans l'article, les auteurs ont baptisé les sujets du groupe 1, les « indépendants », ceux du groupe 2, les « dépendants » et ceux du groupe 3, les « sociables ». 
+Notez qu'on **ne peut pas** tester l'égalité des moyennes des variables pour les différents groupes avec une ANOVA; la sélection des groupes est faite à l'aide d'un algorithme glouton pour maximiser la distance entre les groupes, aussi cela invalide l'inférence. On peut aussi explorer les groupes en modélisant les effets des variables en ce qui a trait à l'appartenance aux groupes. Traditionnellement, l'analyse discriminante est utilisée à cette fin. Il est aussi possible d'utiliser un arbre de classification ou une autre méthode prévisionnelle, telle la régression multinomiale logistique. La variable identifiant le groupe d'appartenance obtenu avec l'analyse de regroupement sert alors de variable dépendante $Y$. Ce type d'analyse permet de creuser un peu plus pour essayer de comprendre la structure des groupes formés.
+
+
+## Calcul alternatif des distances pour le regroupement hiérarchique
+
+
+Nous avons utilisé la méthode de Ward afin de calculer la distance entre les groupes et procéder au passage de $n$  groupes à un groupe, avec l'approche hiérarchique. Supposons que nous avons choisi une mesure de dissemblance $d(\mathbf{X}_i, \mathbf{X}_j)$  quelconque (distance euclidienne par exemple) pour mesurer la distance entre deux sujets. Voici comment sont choisis les regroupements avec ces méthodes.
+
+- Méthode du plus proche voisin ou méthode de liaison simple (*nearest neighbor*, *single linkage*): utilise la distance minimale entre chaque paire de sujets (un pour chaque groupe) provenant des deux groupes. Cette méthode fonctionne bien si l'écart entre deux regroupements est suffisamment grand. À l'inverse, s'il y a des observations bruitées entre deux regroupements, la qualité des regroupements en sera affectée.
+- Méthode du voisin le plus éloigné ou méthode de liaison complète (*complete linkage*): utilise la distance maximale entre toutes les paires de sujets (un pour chaque groupe) provenant des deux groupes. Cette méthode est moins sensible au bruit et aux faibles écarts entre regroupements, mais a tendance à casser les regroupements globulaires.
+- Méthode de liaison moyenne (*average linkage*): utilise la moyenne des distances entre toutes les paires de sujets (un pour chaque groupe) provenant des deux groupes.
+- Méthode du barycentre (*centroid*): utilise la distance entre les représentants moyens de chaque groupe où le représentant moyen d'un groupe est le barycentre, soit la moyenne variable par variable, des sujets formant le groupe. 
+
+
+Le fichier `cluster3_voisin_eloigne.sas` contient les commandes pour utiliser la méthode du voisin le plus éloigné (avec l'option `method=complete`). Le graphe plus bas donne cette distance pour les deux groupes qui viennent d'être fusionnés. Il s'agit donc du maximum des distances entre chaque paire de sujets (un pour chaque groupe) provenant des deux groupes fusionnés.
+
+
+```{r fig-f4-e21}
+#| echo: false
+#| out-width: '100%'
+#| fig-align: "center"
+#| fig-cap: "Distance maximale entre groupes en fonction des regroupements hiérarchiques pour la méthode du voisin le plus éloigné."
+knitr::include_graphics("figures/04-clustering-e21.png")
+```
+
+
+Comme on veut que cette distance soit petite pour les groupes fusionnés, on pourrait être tenté d'arrêter à trois groupes ici sur la base de la Figure @fig-f4-e20. L'interprétation des groupes ne change pas comparativement aux analyses précédentes. La taille des groupes, (44, 71, 35), change un peu par rapport à la solution avec la méthode de Ward qui donnait des tailles de (43, 75, 32). 
+
+On peut comparer les performances des regroupements hiérarchiques selon la méthode de groupement. La [page web de scikit-learn developers](https://scikit-learn.org/stable/auto_examples/cluster/plot_linkage_comparison.html) montre la performance sur des exemples jouets, qui montre que selon les hypothèses et la structure, aucune ne performe mieux que les autres dans tous les exemples.
+
+```{r fig-f4-e20}
+#| echo: false
+#| out-width: '100%'
+#| fig-align: "center"
+#| fig-cap: "Comparaison des méthodes de groupement sur des données test"
+
+knitr::include_graphics("figures/04-clustering-e20.png")
+```
+
+
+```{r}
+#| label: dbscan
+library(dbscan)
+# Trois plus proches voisins
+eps <- quantile(dbscan::kNNdist(cluster, k = 3), 
+                probs = 0.9)
+regroup_dbscan <- 
+  dbscan::dbscan(x = cluster, 
+                 eps = eps, 
+                 minPts = 3)
+pairs(cluster, col = regroup_dbscan$cluster + 1L)
+
+# Regroupements spectraux
+clust <- FCPS::SpectralClustering(
+  Data = cluster,
+  ClusterNo = 3)
+pairs(cluster, col = clust$Cls + 1)
+
+```
+
+Encore une fois, l'interprétation des groupes ne change pas comparativement aux analyses précédentes. La taille des groupes, (45, 75, 30) change un peu par rapport à la solution avec la méthode de Ward qui donnait des tailles de (43, 75, 32). 
+
+
+Règle générale, les différentes étapes des méthodes agglomératives hiérarchiques nécessitent $\mathrm{O}(n^3)$ opérations, bien qu'une version plus parsimonieuse existe avec complexité $\mathrm{O}(n^2\ln n)$ ou $\mathrm{O}(n^2)$ pour les méthodes de liaison simple et complexe. La formule de Lance--Williams permet de mettre à jour récursivement les distances entre regroupements pour la plupart des méthodes considérées. Le coût élevé de la méthode de regroupement hiérarchique, qui dépend de la taille de l'échantillon, devient prohibitif avec des mégadonnées. Il nécessite aussi le calcul d'une mesure de dissemblance et l'évaluation de la qualité de l'agglomération, autre que graphique, n'est pas évidente. Ces méthodes sont largement discontinuées de nos jours par des alternatives modernes.
+
+
 ## Considérations pratiques
 
 Il peut être intéressant de comparer les résultats provenant d'une même méthode avec des nombres différents de groupes et aussi comparer ceux provenant de plusieurs méthodes (voir plus loin pour la description de certaines autres méthodes). Le choix de la méthode et du nombre de groupe n'est pas facile et devrait être basé sur des considérations pratiques et d'interprétation (comme en analyse factorielle). Il n'est pas rare qu'on obtienne des résultats très différents d'une méthode à l'autre pour un même ensemble de données. 
@@ -120,3 +384,290 @@ Dans notre exemple sur les voyages organisés, on a segmenté les voyageurs en t
 Le problème majeur avec l'analyse de regroupements est qu'il n'y a pas de façon claire de quantifier la performance de notre analyse. Lorsqu'on développe un modèle de prédiction (régression linéaire ou logistique par exemple), on peut estimer la performance de notre modèle d'une manière objective à l'aide de l'erreur quadratique de généralisation (régression linéaire) ou du taux de bonne classification (régression logistique). Ces quantités peuvent être estimées d'une manière objective en utilisant une méthode telle la validation croisée ou la division de l'échantillon. On ne peut faire de même avec l'analyse de regroupements car on n'a pas de variable réponse à prédire. Tout comme pour l'analyse factorielle, les connaissances à priori, le jugement, et les considérations pratiques font partie d'une analyse de regroupements.
 
 
+
+
+# Function Definition ---------------------------------------------------------
+VoronoiPlotly <- function(fit,  # Fit object from K-Means
+                          ds,  # Data frame containing original data and clusters from K-Means
+                          n.sd.x = 3,  # Controls the width of the plot
+                          n.sd.y = 3,  # Controls the height of the plot
+                          print.ggplot = FALSE,  # Plots a diagnostic chart using ggplot2
+                          point.opacity = 0.8,  
+                          point.size = 7, 
+                          point.symbol = "circle",
+                          point.linewidth = 2,
+                          point.lineopacity = 0.5,
+                          plot_bgcolor = "#ffffff",
+                          paper_bgcolor = "#ffffff",
+                          center.size = 15,
+                          shapes.opacity = 0.5,
+                          shapes.linecolor = "#404040", 
+                          center.color = "#000000"){
+  
+  # Options
+  options(stringsAsFactors = F)
+  graphics.off()
+  
+  # Load libraries ------------------------------------------------------------
+  library(plotly)
+  library(deldir)
+  
+  # Create convenience data frames ----------------------------------------------
+  centers <- data.frame(fit$centers)
+  vor <- deldir(centers)
+  
+  # Calculate slopes
+  vor.df <- data.frame(vor$dirsgs, m = (vor$dirsgs$y2- vor$dirsgs$y1)/(vor$dirsgs$x2 - vor$dirsgs$x1))
+  
+  # Calculate constants
+  vor.df$c <- with(vor.df, ((y2 - m*x2) + (y1 - m*x1))/2)
+  
+  # Covnert to strings for better matching later on
+  vor.df.str <- data.frame(C1 = apply(vor.df[,1:2], 1, paste, collapse = ","),
+                           C2 = apply(vor.df[,3:4], 1, paste, collapse = ","))
+  
+  # Combine the x and y coordinates for each segment
+  coord.df <- rbind(as.matrix(vor.df[1:2]), as.matrix(vor.df[,3:4]))
+  
+  # Convert to string
+  coord.df.str <- apply(coord.df, 1, paste, collapse = ",")
+  
+  # Find unique strings
+  count <- sapply(coord.df.str, function(x){sum(coord.df.str == x)})
+  coord.df.str <- data.frame(str = coord.df.str, count = count)
+  coord.df.str <- subset(coord.df.str, count == 1)
+  
+  # Get outer boundary co-ordinates
+  outer.bound <- matrix(as.numeric(unlist(strsplit(coord.df.str$str, ","))), ncol = 2, byrow = T)
+  outer.bound <- data.frame(x = outer.bound[,1], y = outer.bound[,2])
+  
+  # Add respective slopes and constants
+  for(i in 1:nrow(outer.bound)){
+    str <- coord.df.str[i,1]
+    idx <- ifelse(is.na(match(str, vor.df.str$C1)), match(str, vor.df.str$C2), match(str, vor.df.str$C1))
+    
+    # Slope
+    outer.bound$m[i] <- vor.df$m[idx]
+    
+    # Constants
+    outer.bound$c[i] <- vor.df$c[idx]
+  }
+  
+  # Find enclosing rectangle boundaries -----------------------------------------
+  x.min <- mean(ds$x) - n.sd.x*sd(ds$x)
+  x.max <- mean(ds$x) + n.sd.x*sd(ds$x)
+  y.min <- mean(ds$y) - n.sd.y*sd(ds$y)
+  y.max <- mean(ds$y) + n.sd.y*sd(ds$y)
+  
+  # Create x-axsi and y-axis limits
+  xlim <- c(x.min, x.max)
+  ylim <- c(y.min, y.max)
+  
+  # Extend outer boundary points to above rectangle ------------------------------
+  for(i in 1:nrow(outer.bound)){
+    # Extract x-y coordinates
+    x <- outer.bound$x[i]
+    y <- outer.bound$y[i]
+    
+    # Get slope
+    m <- outer.bound$m[i]
+    
+    # Get slope
+    c <- outer.bound$c[i]
+    
+    # Extend to each edge of enclosing rectangle
+    ext.coord <- mat.or.vec(4,3)
+    
+    # Extend to left edge
+    ext.coord[1,1] <- x.min
+    ext.coord[1,2] <- m*x.min + c
+    ext.coord[1,3] <- sqrt((ext.coord[1,1] - x)^2 + (ext.coord[1,2] - y)^2)
+    
+    # Extend to right edge
+    ext.coord[2,1] <- x.max
+    ext.coord[2,2] <- m*x.max + c
+    ext.coord[2,3] <- sqrt((ext.coord[2,1] - x)^2 + (ext.coord[2,2] - y)^2)
+    
+    # Extend to top edge
+    ext.coord[3,2] <- y.max
+    ext.coord[3,1] <- (y.max - c)/m
+    ext.coord[3,3] <- sqrt((ext.coord[3,1] - x)^2 + (ext.coord[3,2] - y)^2)
+    
+    # Extend to bottom edge
+    ext.coord[4,2] <- y.min
+    ext.coord[4,1] <- (y.min - c)/m
+    ext.coord[4,3] <- sqrt((ext.coord[4,1] - x)^2 + (ext.coord[4,2] - y)^2)
+    
+    # Find the closest edge
+    idx <- which.min(ext.coord[,3])
+    
+    x <- ext.coord[idx,1]
+    y <- ext.coord[idx,2]
+    
+    # Insert into outer bound 
+    outer.bound$x.ext[i] <- x
+    outer.bound$y.ext[i] <- y
+  }
+  
+  # Convert to string for easier searcing later on
+  outer.bound.str <- apply(outer.bound[,5:6], 1, paste, collapse = ",")
+  
+  # Augment vor.df with extended outer bound coordinates -------------------------
+  for(i in 1:nrow(outer.bound)){
+    # Convert to string to help matching
+    str <- paste(outer.bound[i,1:2], collapse = ",")
+    
+    # Match with original vor.df
+    if(is.na(match(str, vor.df.str$C1))){
+      idx <- match(str, vor.df.str$C2)
+      vor.df[idx, 3:4] <- outer.bound[i, 5:6]
+    }else{
+      idx <- match(str, vor.df.str$C1)
+      vor.df[idx, 1:2] <- outer.bound[i, 5:6]
+    }
+  }
+  
+  # Plot Check ------------------------------------------------------------------
+  p.ggplot <- ggplot() +
+    geom_point(data = centers, aes(x, y), color= "red", size = 5) +
+    geom_point(data = ds, aes(x, y, color = cluster)) +
+    geom_segment(data = vor.df, aes(x = x1, y = y1, xend = x2, yend = y2)) +
+    geom_point(data = as.data.frame(fit$centers), aes(x, y)) +
+    geom_text(data = centers, aes(x,y, label = 1:nrow(centers)), size = 10) +
+    geom_point(data = outer.bound, aes(x.ext, y.ext), color = "blue", size = 5) + 
+    geom_point(data = outer.bound, aes(x, y), color = "red", size = 5) + 
+    geom_hline(yintercept = y.min) + 
+    geom_hline(yintercept = y.max) + 
+    geom_vline(xintercept = x.min) +
+    geom_vline(xintercept = x.max)
+  p.ggplot <- ggplotly(p.ggplot)
+  if(print.ggplot == T){print(p.ggplot)}
+  # -----------------------------------------------------------------------------
+  
+  # Function to calculate which side of line is point on ------------------------
+  sideFUNC <- function(x, y, x1, y1, x2, y2){
+    d <- (x - x1)*(y2-y1) - (y - y1)*(x2 - x1)
+    
+    return(round(d,2))
+  }
+  
+  # Figure out the path for each polygon ----------------------------------------
+  path <- list()
+  
+  # Loop thorough each centroid and find corrosponding edges
+  for(i in 1:nrow(centers)){
+    # Find each row where centeroid is available
+    mat <- subset(vor.df, ind1 == i | ind2 == i)
+    
+    # Find all unique coordinates associated with centroid
+    mat <- cbind(matrix(c(mat$x1, mat$x2), ncol = 1), matrix(c(mat$y1, mat$y2), ncol = 1))
+    mat <- unique(mat)
+    mat.str <- apply(mat, 1, paste, collapse = ",")
+    
+    # print(mat)
+    
+    # Find all outer boundary points asociated with centroid
+    # If an outer boundary point is found, there must be atleast two
+    idx <- outer.bound.str %in% mat.str
+    if(sum(idx) == 2){
+      # Only if two outer boundary points are found
+      # then need to modify matrix and add edge end points
+      
+      # Find the side where all other outer boundary points are
+      # Assuming all other boundary points are on the same side
+      # need only one point to find this out
+      p <- as.numeric(unlist(strsplit(outer.bound.str[!idx][1], split = ",")))
+      
+      # Line segment is defined by the two identified outer boundary points 
+      p1 <- as.numeric(unlist(strsplit(outer.bound.str[idx][1], split = ",")))
+      p2 <- as.numeric(unlist(strsplit(outer.bound.str[idx][2], split = ",")))
+      
+      # Find side
+      side <- sideFUNC(p[1], p[2], p1[1], p1[2], p2[1], p2[2])
+      
+      # Case when only two cluster and hence only one dividing segment
+      if(is.na(side)){
+        side <- sideFUNC(centers[i,1], centers[i,2], p1[1], p1[2], p2[1], p2[2])
+      }
+      
+      if(side != 0){
+        
+        # Find the enclosing rectangle"s endpoints that are on the opposite side
+        # Top - Left
+        side.check <- sideFUNC(x.min, y.max, p1[1], p1[2], p2[1], p2[2])
+        if(side.check != 0){if(sign(side.check) != sign(side)) {mat <- rbind(mat, c(x.min, y.max))}}
+        
+        # Bottom - Left
+        side.check <- sideFUNC(x.min, y.min, p1[1], p1[2], p2[1], p2[2])
+        if(side.check != 0){if(sign(side.check) != sign(side)) {mat <- rbind(mat, c(x.min, y.min))}}
+        
+        # Top - Right
+        side.check <- sideFUNC(x.max, y.max, p1[1], p1[2], p2[1], p2[2])
+        if(side.check != 0){if(sign(side.check) != sign(side)) {mat <- rbind(mat, c(x.max, y.max))}}
+        
+        # Bottom - Right
+        side.check <- sideFUNC(x.max, y.min, p1[1], p1[2], p2[1], p2[2])
+        if(side.check != 0){if(sign(side.check) != sign(side)) {mat <- rbind(mat, c(x.max, y.min))}}
+      }
+    }
+    
+    # print(mat)
+    # readline("Enter:")
+    
+    # Re-order the points to ensure it makes a convex polygon
+    mat <- mat[chull(mat),]
+    
+    #Paste together
+    path[[i]] <- paste0("M", paste0(mat[1,], collapse = ","))
+    
+    path[[i]] <- paste(path[[i]],
+                       paste(apply(matrix(mat[-1,], ncol = 2), 1, function(x){
+                         vec <- paste0(x, collapse = ",")
+                         vec <- paste0("L", vec)
+                       }), collapse = " "),
+                       "Z")
+  }
+  
+  # Finally plot using Plotly ---------------------------------------------------
+  # crate a "shapes" list for voronoi polygons to be passed to layout()
+  shapes <- list()
+  cols <- RColorBrewer::brewer.pal(nrow(centers), "Paired")
+  
+  # Loop through each path and add params like fill color, opacity etc
+  for(i in 1:length(path)){
+    shapes[[i]] <- list(type = "path",
+                        path = path[[i]],
+                        fillcolor = cols[i],
+                        opacity = shapes.opacity,
+                        line = list(color = shapes.linecolor))
+  }
+  
+  # Change colors for each cluster to allow manual spec
+  for(i in 1:nrow(centers)){
+    ds$color[ds$cluster == i] <- cols[i]
+  }
+  
+  # Create plot
+  # base layer
+  p <- plot_ly(ds, x = x, y = y , mode = "markers", name = "Clusters", opacity = point.opacity, 
+               hoverinfo = "x+y+text",
+               text = paste("Cluster:",cluster),
+               marker = list(symbol = point.symbol, color = color, size = point.size, 
+                             line = list(color = "#262626", width = point.linewidth, opacity = point.lineopacity)),
+               showlegend = F)
+  
+  # Add centroids
+  p <- add_trace(centers, x = x, y = y, mode = "markers", name = "Cluster Centers",
+                 hoverinfo = "none",
+                 marker = list(color = center.color, symbol = "cross", size = center.size))
+  
+  # Add polygons
+  p <- layout(title = "Voronoi polygons and K- Means clustering",
+              paper_bgcolor = paper_bgcolor,
+              plot_bgcolor = plot_bgcolor,
+              xaxis = list(range = xlim, zeroline = F),
+              yaxis = list(range = ylim, zeroline = F),
+              shapes = shapes)
+
+  print(p)
+}
