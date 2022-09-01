@@ -127,6 +127,20 @@ Si on essaie de créer manuellement des groupes, il apparaît logique de sépare
 
 Dans notre exemple, on pourrait aisément créer de nouvelles variables pour faire ressortir des informations jugées pertinentes. Est-ce qu'on s'intéresse au montant moyen des dons, soit `vdons/ndons`? Est-ce que la valeur des radiations nous intéresse, ou bien devrait-on plutôt considérer le pourcentage de la valeur promise réalisée? Pour rappel, les intrants de l'analyse de regroupement (soit le choix des variables) est laissé à la discrétion de l'analyste. 
 
+
+
+Le champ des applications de l'analyse de regroupements est parfois surprenant. Par exemple, [cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais](https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/) ou des [quartiers de Los Angeles](https://fivethirtyeight.com/features/the-6-political-neighborhoods-of-los-angeles/). Un autre exemple incongru est la compression d'images: la Figure @fig-decelles montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l'algorithme des $K$-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l'image.
+
+
+```{r fig-decelles}
+#| echo: false
+#| eval: true 
+#| out-width: '100%'
+#| fig-align: "center" 
+#| fig-cap: "Compression d'image avec l'algorithme des $K$-moyennes: image originale (en haut à gauche), compression avec trois (en haut à droite), quatre (en bas à gauche) et 10 (en bas à droite) couleurs."
+knitr::include_graphics("figures/kmoyennes_decelles.png")
+```
+
 ## Mesures de dissemblance et de similarité
 
 
@@ -310,18 +324,6 @@ Voici quelques forces et faiblesses de la méthode des $K$-moyennes
 - L'algorithme est sensible aux valeurs initiales des prototypes.
 
 
-Le champ des applications des $K$-moyennes est parfois surprenant. Par exemple, [cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais](https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/) ou des [quartiers de Los Angeles](https://fivethirtyeight.com/features/the-6-political-neighborhoods-of-los-angeles/). Un autre exemple incongru est la compression d'images: la Figure @fig-decelles montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l'algorithme des $K$-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l'image.
-
-
-```{r fig-decelles}
-#| echo: false
-#| eval: true 
-#| out-width: '100%'
-#| fig-align: "center" 
-#| fig-cap: "Compression d'image avec l'algorithme des $K$-moyennes: image originale (en haut à gauche), compression avec trois (en haut à droite), quatre (en bas à gauche) et 10 (en bas à droite) couleurs."
-knitr::include_graphics("figures/kmoyennes_decelles.png")
-```
-
 #### Choix des hyperparamètres
 
 L'algorithme des $K$-moyennes comporte plusieurs paramètres, dit hyperparamètres, qui sont fixés par l'utilisateurs préalablement à la segmentation. Ces derniers incluent le nombre de groupes $K$, les valeurs initiales des prototypes et le choix de la mesure de distance.
@@ -358,9 +360,52 @@ plot(tiles,
 
 
 
-Comme mentionné précédemment, les regroupements obtenus peuvent varier fortement en fonction des valeurs de départ. Une segmentation sera supérieure à une autre si elle a une plus petite valeur de la fonction objective de l'@eq-fobjKmoy: les points seront moins dispersés autour de leurs prototypes. 
+Comme mentionné précédemment, les regroupements obtenus peuvent varier fortement en fonction des valeurs de départ: la @fig-kmoyenne-mauvais montre trois regroupements visibles avec une segmentation qui fusionne deux groupes apparents (gauche), et une solution plus sensée à droite. Une segmentation sera supérieure à une autre si elle a une plus petite valeur de la fonction objective de l'@eq-fobjKmoy: les points seront moins dispersés autour de leurs prototypes. 
 
-ILLUSTRATION AVEC JEU DE DONNÉES ET MAUVAISES VALEURS DE DÉPART
+
+```{r}
+#| label: fig-kmoyenne-mauvais
+#| echo: false
+#| eval: true
+#| fig.cap: "Résultat d'une analyse de regroupement avec $K=3$ groupes avec une mauvaise initialisation principale (gauche) et une bonne initialisation (droite)."
+set.seed(1234)
+set1 <- mvtnorm::rmvnorm(n = 300, c(14,12), matrix(c(4,0.5,0.5,5),2))
+set2 <- mvtnorm::rmvnorm(n = 300, c(5.5,-1), matrix(c(1,0.5,0.5,6),2))
+set3 <- mvtnorm::rmvnorm(n = 300, c(0,0), matrix(c(2,0,0,2),2))
+
+DF <- tibble::as_tibble(rbind(set1, set2, set3))
+colnames(DF) <- c("X1", "X2")
+kmoy1 <- kmeans(x = DF, 
+       centers = rbind(c(5, 0), c(0,0), c(15,10)), 
+       iter.max = 25L, 
+       algorithm = "Lloyd")
+kmoy2 <- kmeans(x = DF, 
+       centers = rbind(c(0,2.5), c(12,12), c(20,20)), 
+       iter.max = 25L, 
+       algorithm = "Lloyd")
+
+DF$cluster1 <- factor(kmoy1$cluster)
+DF$cluster2 <- factor(kmoy2$cluster)
+g1 <- ggplot(data = DF,
+       mapping = aes(x = X1, 
+                     y = X2, 
+                     color = cluster1)) +
+  geom_point() + 
+  theme_minimal() + 
+  theme(legend.position = 'none') +
+  labs(x = "",
+       y = "")
+g2 <- ggplot(data = DF,
+       mapping = aes(x = X1, 
+                     y = X2, 
+                     color = cluster2)) +
+  geom_point() + theme_minimal() +
+  theme(legend.position = 'none') +
+  labs(x = "",
+       y = "")
+g2 + g1
+
+```
 
 Pour réduire l'impact et s'assurer d'une segmentation de qualité, on peut prendre plusieurs valeurs de départ initiales différentes et faire l'analyse de regroupement en sélectionnant celle qui a la plus petite valeur de la fonction objective de l'@eq-fobjKmoy. 
 
@@ -374,16 +419,25 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 
 À la fin, on obtiendra $K$ valeurs initiales qui serviront à l'initialisation. Ce faisant, on peut espérer ne pas avoir à faire plusieurs allocations aléatoires, puisque les valeurs de départ choisies sont raisonnablement éloignées les unes des autres.
 
+L'autre paramètre crucial des $K$-moyennes est le nombre de regroupements, $K$. Il est difficile de savoir combien de regroupements sélectionner apriori, puisque la visualisation en haute-dimension est difficile et on est souvent loin de la situation présentée dans la @fig-kmoyenne-mauvais. On pourrait envisager de rouler l'algorithme avec plusieurs valeurs de $K$ et de comparer les résultats, mais sur quelle base? La fonction objective de l'@eq-fobjKmoy représente la somme du carré des erreurs (SCE), soit la variabilité totale des observations des observations des différents groupes autour de leur barycentre. Cette mesure va méchaniquement diminuer à mesure que le nombre de regroupements augmente parce que le modèle aura plus d'opportunités pour réduire la variabilité inter-groupe. En revanche, si cette réduction est négligeable, on pourrait penser que l'ajout d'un groupe supplémentaire (qui implique plus de paramètres à estimer et plus de segments à interpréter) est faible.
 
-Fonctionnement de l'algorithme avec illustrations
-Frontières de séparation linéaires de l'espace
+On pourrait dans un premier temps tracer un diagramme de la somme du carré des erreurs en fonction de $K$ et cherche un point d'inflexion (coude) dans le graphique. Malheureusement, la valeur de la fonction objective diminue à mesure que l'on ajoute des groupes. Pour contrecarrer ce problème, on pourrait ajouter une pénalité à notre fonction objective. En effet, avec la distance Euclidienne carrée, il y a une analogie à faire avec un modèle de régression et on peut légitimement utiliser un critère d'information pour guider notre choix de $K$: le nombre de paramètres des $K$-moyennes est $Kp$, soit les valeurs des $K$ barycentres.
 
-Algorithme EM: minimum local
+Il faut garder en tête que, davantage qu'un critère mathématique, l'interprétabilité des regroupements est notre principale critère. Les critères d'information peuvent retourner trop ou pas assez de groupe: à titre d'exemple, le panneau de gauche de la @fig-coude-kmoy montre un coude à $K=2$, mais il y avait visiblement trois regroupements, dont deux rapprochés.
 
-Détail: initialisation rigide
+```{r}
+#| label: fig-coude-kmoy
+#| fig.cap = "Valeur de la fonction objective (somme du carré des erreurs) en fonction du nombre de regroupements $K$."
+#| eval: true
+#| echo: false
+nmax <- 8L
+groups <- data.frame(K = 1:nmax, SCE = sapply(1:nmax, function(k){sum(kmeans(DF[,1:2], centers = k, iter.max = 100L, nstart = 10)$withinss)}))
+ggplot(data = groups, 
+  aes(x = K, y = SCE)) +
+  geom_line() + labs(y = "", subtitle = "Somme du carré des erreurs")
 
-Initialisation aléatoire et $K$-moyennes ++
-Choix du nombre de groupements et profils
+```
+
 
 
 
@@ -468,17 +522,3 @@ dons |>
 
 
 ### Regroupements spectraux
-
-L'algorithme de $K$-moyennes est un des plus populaires pour la segmentation en raison de son faible coût de calcul et de sa simplicité.
-
-### Algorithm DBSCAN
-
-### Mélanges de modèles 
-
-### Regroupements spectraux
-
-## Mesure de la qualité des regroupements
-
-### Mesures d'adéquation
-
-### Choix des hyperparamètres
