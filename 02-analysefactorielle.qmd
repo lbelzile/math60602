@@ -434,17 +434,8 @@ L'avantage de cette approche est que l'on peut utiliser la même décomposition 
 #| label: acp-factor
 #| eval: false
 #| echo: true
-# Décomposition valeurs propres/vecteurs propres
-decompo <- eigen(cor(factor))
-# Extraire les valeurs propres
-valpropres <- decompo$values
-# Critère de Kaiser
-ckaiser <- sum(valpropres > 1)
-# Extraire les premiers vecteurs propres
-Gamma_est <- decompo$vectors[,seq_len(ckaiser)] %*%
-  diag(sqrt(valpropres[seq_len(ckaiser)]))
 # Solution (chargements) avec rotation varimax
-facto_cp <- varimax(Gamma_est)
+facto_cp <- hecmulti::factocp(factor, nfact = "kaiser", cor = TRUE)
 ```
 
 #### Estimation par maximum de vraisemblance
