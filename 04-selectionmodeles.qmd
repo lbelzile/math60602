@@ -677,7 +677,7 @@ g6 <- ggplot(data = dbm_sub,
                      bins = 30) + 
   labs(#fill = "achat",
        y = "densité",
-       x = "nombre d’achats différents depuis un an")  
+       x = "nombre d'achats différents depuis un an")  
 library(patchwork)
 (g1 + g2)/(g3 + g4) / (g5 + g6) +
   patchwork::plot_layout(guides = 'collect') & theme(legend.position = "bottom")
@@ -700,7 +700,7 @@ tibble::tibble(variable = c("x2","x6","x7","x8","x9","x10"),
                "écart-type" = apply(dbm_sub_c, 2, sd),
                min = apply(dbm_sub_c, 2, min),
                max = apply(dbm_sub_c, 2, max)) |>
-  knitr::kable(digits = 2, booktabs = TRUE) |>
+  knitr::kable(digits = 2, booktabs = TRUE, linesep = "") |>
   kableExtra::kable_styling(full_width = TRUE)
 ```
 
@@ -891,9 +891,9 @@ Les méthodes de sélection ascendante, descendante et séquentielle sont des al
 
 
 
-L'idée de la **sélection ascendante** est d'ajuster à chaque étape au modèle précédent la variable qui améliore le plus l'ajustement. Le modèle de départ est celui qui n'inclut que l'ordonnée à l'origine (aucune variable explicative). À chaque étape, on ajoute la variable qui améliore le plus le critère d'ajustement jusqu'à ce qu'aucune amélioration ne soit résultante. 
+L'idée de la **sélection ascendante** est d'ajouter à chaque étape au modèle précédent la variable qui améliore le plus l'ajustement. Le modèle de départ est celui qui n'inclut que l'ordonnée à l'origine (aucune variable explicative). À chaque étape, on ajoute la variable qui améliore le plus le critère d'ajustement jusqu'à ce qu'aucune amélioration ne soit résultante. 
 
-Un algorithme glouton résoud un problème d'optimisation étape par étape: après $k$ étapes, le modèle construit par la procédure n'est pas nécessairement le meilleur modèle (si on essayait toutes les combinaisons). Si on commence avec $p$ variables, on regarde $p$ choix à la première étape de la procédure ascendante, puis on choisit nue variable parmi les $p-1$ restantes à la deuxième étape, etc. La procédure exhaustive essaiera toutes les $\binom{p}{2}$ combinaisons possibles^[En pratique, il existe des algorithmes d'optimisation qui permettront de faire cette exploration de manière astucieuse sans ajuster les modèles sous-optimaux.]: puisque plus de modèles sont essayés, la solution finale est nécessairement meilleur pour l'échantillon d'apprentissage.
+Un algorithme glouton résoud un problème d'optimisation étape par étape: après $k$ étapes, le modèle construit par la procédure n'est pas nécessairement le meilleur modèle (si on essayait toutes les combinaisons). Si on commence avec $p$ variables, on regarde $p$ choix à la première étape de la procédure ascendante, puis on choisit nue variable parmi les $p-1$ restantes à la deuxième étape, etc. La procédure exhaustive essaiera toutes les $\binom{p}{2}$ combinaisons possibles^[En pratique, il existe des algorithmes d'optimisation qui permettront de faire cette exploration de manière astucieuse sans ajuster les modèles sous-optimaux.]: puisque plus de modèles sont essayés, la solution finale est nécessairement meilleure côté performance évaluée sur l'échantillon d'apprentissage.
 
 La **sélection descendante** est similaire, sauf qu'on part avec le modèle qui inclut toutes les variables explicatives. À chaque étape, on retire la variable qui contribue le moins à l'ajustement jusqu'à ce que le critère d'ajustement ne puisse plus être amélioré ou jusqu'à ce qu'on recouvre le modèle sans variables explicatives, selon le scénario. C'est l'inverse de la méthode ascendante: on va tester le retrait de chaque variable individuellement et retirer celle qui est la moins significative.
 
@@ -1498,13 +1498,6 @@ L'idée est alors la suivante :
 #| label: modelaverage
 #| eval: false
 #| echo: true
-data(dbm, package = "hecmulti")
-dbm_a <- dbm |>
-  dplyr::filter(test == 0,
-                !is.na(ymontant)) |>
-  dplyr::mutate(x3 = factor(x3),
-                x4 = factor(x4))
-
 # Moyenne de modèles
 moyenne_modeles <- function(
     data, 
