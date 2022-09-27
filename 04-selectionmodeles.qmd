@@ -305,17 +305,6 @@ Les critères $\mathsf{AIC}$ et $\mathsf{BIC}$ peuvent être utilisés comme out
 
 Le critère $\mathsf{BIC}$ est le seul de ces critères qui est convergent. Cela veut dire que si l'ensemble des modèles que l'on considère contient le vrai modèle, alors la probabilité que le critère $\mathsf{BIC}$ choisissent le bon modèle tend vers 1 lorsque $n$ tend vers l'infini. Il faut mettre cela en perspective : il est peu vraisemblable que $Y$ ait été généré exactement selon un modèle de régression linéaire, car le modèle de régression n'est qu'une approximation de la réalité. Certains auteurs trouvent que le $\mathsf{BIC}$ est quelquefois trop sévère (il choisit des modèles trop simples) pour les tailles d'échantillons finies. Dans certaines applications, cette parcimonie est utile, mais il n'est pas possible de savoir d'avance lequel de ces deux critères ($\mathsf{AIC}$ et $\mathsf{BIC}$) sera préférable pour un problème donné.
 
-<!--
-Avant de revenir à l'exemple, voici la description d'une modification du coefficient de détermination, le $R^2$ ajusté, qui permet (contrairement au $R^2$) de faire de la sélection de variables. En régression linéaire, le $R^2$ ajusté est
-\begin{align*}
-R^2_a=1-\frac{\mathsf{SCE}/(n-p)}{\mathsf{SCT}/(n-1)}.
-\end{align*}
-Lorsqu'on ajoute une variable, la somme du carré des erreurs ($\mathsf{SCE}$) diminue mais c'est aussi le cas de la quantité $(n-p)$. Ainsi, le $R^2$ ajusté peut soit augmenter, soit diminuer lorsqu'on ajoute une variable. On peut donc l'utiliser pour choisir le modèle. Plus $R^2_a$ est élevé, mieux c'est. Ce critère est moins sévère que le $\mathsf{AIC}$, Ainsi, en général, il va choisir un modèle avec le même nombre ou bien avec plus de paramètres que le $\mathsf{AIC}$. Pour résumer, on aura la situation suivante :
-\begin{align*}
-\#(\mathsf{BIC}) \leq \#(\mathsf{AIC}) \leq \#(R^2_a),
-\end{align*}
-où $\#$ représente le nombre de paramètres du modèle linéaire.
--->
 
 Il est facile d'obtenir le $\mathsf{AIC}$ et $\mathsf{BIC}$ avec les méthodes `AIC` et `BIC`. On illustre ceci avec le modèle cubique:
 
@@ -391,13 +380,10 @@ ggplot(data = EQM_graph,
 ```
 
 On voit dans le @tbl-polynome-ajustement que l'erreur quadratique moyenne des données d'apprentissage, $\widehat{\mathsf{EQM}}_a$, diminue toujours à mesure qu'on ajoute des variables (c'est-à-dire, qu'on augmente l'ordre du polynôme); ces valeurs sont représentées dans la @fig-plotEQMa. Les critères d'information, $\mathsf{AIC}$ et $\mathsf{BIC}$, ne sont pas sur la même échelle, mais le graphique de la @fig-polynome-ajustement illustre un comportement semblable à la vraie courbe de l'erreur quadratique moyenne théorique et suggèrent que le meilleur modèle est le modèle cubique ($k=3$), c'est-à-dire le vrai modèle.
-<!--
-Le $R^2$ ajusté quant à lui choisit le modèle d'ordre $4$ (qui est le deuxième meilleur selon le $\mathsf{EQM}$).
--->
 N'oubliez pas que ces critères sont calculés avec l'échantillon d'apprentissage ($n=100$), mais en pénalisant l'ajout de variables. On est ainsi en mesure de contrecarrer le problème provenant du fait qu'on ne peut pas utiliser directement le $\widehat{\mathsf{EQM}}_a$.
 
-Le $\mathsf{AIC}$ et le $\mathsf{BIC}$ sont des critères très utilisés et très généraux. Ils sont disponibles dès qu'on utilise la méthode du maximum de vraisemblance est utilisée comme méthode d'estimation. 
-<!-- Le $R^2$ ajusté a une portée plus limitée car il est spécialisé à la régression linéaire. -->
+Le $\mathsf{AIC}$ et le $\mathsf{BIC}$ sont des critères très utilisés et très généraux. Ils sont disponibles dès qu'on utilise la méthode du maximum de vraisemblance comme méthode d'estimation. 
+
 
 
 
@@ -745,9 +731,9 @@ Ainsi, la valeur 3 est celle de référence. Ces deux indicatrices sont suffisan
 Il est important de noter que, si le modèle qui inclut toutes les modalités (ordonnée à l'origine, `x31` et `x32`) possibles ne dépend pas de la catégorie de référence, ce ne sera plus le cas si on permet lors de la sélection de variables de ne conserver que certains niveaux de la variable catégorielle. Par exemple, si on inclut uniquement `x31` comme variable explicative, l'ordonnée à l'origine englobera toutes les autres valeurs de `x3`, à savoir $\{2, 3\}$.^[La fonction `MASS::stepAIC` ne segmente pas les variables catégorielles: tous les niveaux sont inclus à la fois. La fonction `leaps::regsubsets` va quant à elle créer des indicateurs binaires.]
 
 :::{.callout-tip}
-## Danger de surajustement
+## Danger de surajustement avec variables catégorielles
 
-La principale cause de mauvaise performance est le surajustement sélectif. Dans l'exemple que l'on considère avec la base de données marketing, la plupart des modalités des variables catégorielles semblent à première vues suffisantes pour estimer des coefficients. Si on s'intéresse par contre aux interactions, on se rendra rapidement compte qu'il y a trop peu de valeurs pour certaines combinaisons (par exemple, `x3*x5`) pour estimer de manière fiable l'effet combiné. Il suffit d'une valeurs aberrante pour fausser la sélection et donner une grande erreur quadratique moyenne de validation. 
+La principale cause de mauvaise performance est le surajustement sélectif. Dans l'exemple que l'on considère avec la base de données marketing, la plupart des modalités des variables catégorielles semblent à première vues suffisantes pour estimer des coefficients. Si on s'intéresse par contre aux interactions, on se rendra rapidement compte qu'il y a trop peu de valeurs pour certaines combinaisons (par exemple, `x3*x5`) pour estimer de manière fiable l'effet combiné. Si on a une valeur aberrante dans un groupe avec de faibles modalités, les indicateurs donneront systématiquement préférence à l'inclusion d'un terme pour l'accomoder (au détriment de la généralisation). Cela a pour effet de fausser la sélection et donner une grande erreur quadratique moyenne de validation. Si certaines modalités ont des effectifs trop petits, on peut envisager de les regrouper avec d'autres similaires.
 
 :::
 
