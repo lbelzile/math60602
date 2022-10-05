@@ -60,7 +60,7 @@ Exemples :
 - Est-ce qu'un client est satisfait du service après-vente?
 - Est-ce qu'un client va faire faillite ou non au cours des trois prochaines années.
 
-En général, on cherchera à expliquer le comportement d'une variable binaire $Y$ en utilisant un modèle basé sur p variables quelconques $\mathrm{X}_1, \ldots, \mathrm{X}_p$.
+En général, on cherchera à expliquer le comportement d'une variable binaire $Y$ en utilisant un modèle basé sur $p$ variables explicatives $\mathrm{X}_1, \ldots, \mathrm{X}_p$.
 
 Notre but sera de faire de l'inférence, de la prédiction, ou les deux à la fois, soit
 
@@ -377,7 +377,7 @@ curve(expit(-3.05+0.0749*x),
 
 Si une variable est modélisée à l'aide d'un seul paramètre (pas de terme quadratique et pas d'interaction avec d'autre covariables), une valeur positive du paramètre indique une association positive avec $p$ alors qu'une valeur négative indique le contraire. 
 
-Ainsi, le signe du paramètre donne le sens de l'association. Si le coefficient $\beta_j$ de la variable $\mathrm{X}_j$ est positif, alors plus la variable augmente, plus $\Pr(Y=1)$ augmente. Inversement, Si le coefficient $\beta_j$ est négatif, plus la variable augmente, plus $\Pr(Y=1)$ diminue. 
+Ainsi, le signe du paramètre donne le sens de l'association. Si le coefficient $\beta_j$ de la variable $\mathrm{X}_j$ est positif, alors plus la variable augmente, plus $\Pr(Y=1)$ augmente. Inversement, si le coefficient $\beta_j$ est négatif, plus la variable augmente, plus $\Pr(Y=1)$ diminue. 
 
 En régression linéaire, l'interprétation de coefficient $\beta_j$ est simple: lorsque la variable $\mathrm{X}_j$ augmente de un, la variable $Y$ augmente en moyenne de $\beta_j$, toute chose étant égale par ailleurs. Cette interprétation ne dépend pas de la valeur de $\mathrm{X}_j$. En régression logistique, comme le modèle est nonlinéaire en fonction de $\Pr(Y=1)$ (courbe sigmoide), l'augmentation ou la dimininution de $\Pr(Y=1\mid \mathbf{X})$ pour un changement d'une unité de $\mathrm{X}_j$ dépend de la valeur de cette dernière. C'est pourquoi il est parfois plus utile d'utiliser la cote pour interpréter globalement l'effet d'une variable.
 
@@ -513,7 +513,7 @@ N'oubliez pas la nuance suivante concernant l'interprétation d'un test lorsque 
 L'interprétation des variables catégorielles est analogue à celle faite en régression linéaire. On peut aussi interpréter individuellement les paramètres des indicatrices: pour $\mathrm{I}(\mathrm{X}_6=2)$, lorsque les autres variables demeurent fixes, les personnes ayant assisté entre six et 10 fois à un rodéo au cours de la dernière année voient leur cote multipliée par $\exp(`r sprintf(fmt = "%.3f", round(as.numeric(modele2$coefficients['x62']), 2))`)=`r sprintf(round(exp(as.numeric(modele2$coefficients['x62'])),3), fmt = "%.3f")`$ par rapport aux personnes ayant assisté plus de di fois. Ce paramètre est significativement différent de zéro car sa valeur-$p$ est négligeable; l'intervalle de confiance à 95\% pour le  rapport de cotes, basé sur la vraisemblance profilée, est [`r round(as.numeric(exp(ci2["x62",1])), 2)`; `r round(as.numeric(exp(ci2["x62",2])), 2)`] et la valeur 1 (qui correspond à un rapport de cote constant) n'est pas dans l'intervalle.  Ainsi, il y a une différence significative entre les gens qui ont assisté à 10 rodéos ou plus et les gens qui ont assisté à 5 rodéos ou moins, pour ce qui est de l'intérêt à acheter un produit recommandé par le PRCA.
 
 
-Si on désire comparer les deux modalités $\mathrm{X}_6=2$ et $\mathrm{X}_6=3$, il suffit de changer la modalité de référence de `x6` et d'exécuter le modèle à nouveau. Une alternative est de calculer le rapport (de rapport) de cotes pour ces deux modalités.
+Si on désire comparer les deux modalités $\mathrm{X}_6=2$ et $\mathrm{X}_6=3$, il suffit de changer la modalité de référence de `x6` et d'exécuter le modèle à nouveau. Une alternative est de calculer le rapport de cotes pour ces deux modalités.
 
 
 
