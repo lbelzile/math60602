@@ -1434,7 +1434,7 @@ cv_output <-
 plot(cv.output)
 
 # On réestime le modèle avec la pénalité
-lambopt <- cv_output$lambda.min
+lambopt <- cv_output$lambda.min # ou lambda.1se
 lasso_best <- 
   glmnet::glmnet(
     x = as.matrix(dbm_a[,1:10]),
@@ -1598,11 +1598,11 @@ Commençons par l'estimation de l'erreur quadratique moyenne (moyenne des carré
 
 : Estimation de l'erreur quadratique moyenne sur l'échantillon test avec les variables de base. Les meilleurs modèles selon les  critères d'informations découlent d'une recherche exhaustive de tous les sous-ensembles. {#tbl-02-gmse-base}
 
-| nombre de variables | $\mathsf{EQM}$ |méthode |
+| nombre de variables | $\mathsf{EQM}$    |  méthode                    |
 |:----:|:-----:|:-----|
-| `r npars_c[1]` | `r round(eqm_c[1], 2)` | toutes les variables |
+| `r npars_c[1]` | `r round(eqm_c[1], 2)` | toutes les variables        |
 | `r npars_c[2]` | `r round(eqm_c[2], 2)` | exhaustive - $\mathsf{AIC}$ |
-|  `r npars_c[3]` | `r round(eqm_c[3], 2)` | exhaustive - $\mathsf{BIC}$ |
+| `r npars_c[3]` | `r round(eqm_c[3], 2)` | exhaustive - $\mathsf{BIC}$ |
 
 
 
@@ -1613,8 +1613,8 @@ Commençons par l'estimation de l'erreur quadratique moyenne (moyenne des carré
 | nombre de variables | $\mathsf{EQM}$ | méthode |
 |:----:|:-----:|:-----|
 | `r npars_c[4]` | `r round(eqm_c[4], 2)` | toutes les variables |
-| `r npars_c[5]`| `r round(eqm_c[5], 2)` | séquentielle ascendante, choix selon $\mathsf{BIC}$ |
-| `r npars_c[6]` | `r round(eqm_c[6], 2)` | séquentielle ascendante, choix selon $\mathsf{AIC}$ |
+| `r npars_c[5]` | `r round(eqm_c[5], 2)` | séquentielle ascendante, choix selon $\mathsf{AIC}$ |
+| `r npars_c[6]` | `r round(eqm_c[6], 2)` | séquentielle ascendante, choix selon $\mathsf{BIC}$ |
 | `r npars_c[7]` | `r round(eqm_c[7], 2)` | séquentielle ascendante avec critère $\mathsf{AIC}$ |
 | `r npars_c[8]` | `r round(eqm_c[8], 2)` | séquentielle descendante avec critère $\mathsf{BIC}$ |
 | `r npars_c[9]` | `r round(eqm_c[9], 2)` | LASSO, validation croisée avec 10 groupes |
