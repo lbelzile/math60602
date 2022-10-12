@@ -699,10 +699,10 @@ perfo <- function(prob, resp, plot = FALSE){
    nechec <- length(resp) - nsucces
    n <- length(resp)
    predy <- ifelse(prob >= cut, 1, 0) 
-   c1 <- sum(predy & resp) # Y=1, Yhat=1
+   c1 <- sum(predy & resp)   # Y=1, Yhat=1
    c0 <- sum(!predy & !resp) # Y=0, Yhat=0
-   i1 <- sum(!predy & resp) # Y=1, Yhat=0
-   i0 <- sum(predy & !resp) # Y=0, Yhat=1
+   i1 <- sum(!predy & resp)  # Y=1, Yhat=0
+   i0 <- sum(predy & !resp)  # Y=0, Yhat=1
    c(c1 = c1, 
      c0 = c0, 
      i0 = i0,
@@ -925,7 +925,7 @@ knitr::kable(tab_lift,
   kableExtra::kable_styling(full_width = TRUE)
 ```
 
-Le @tbl-lift présente les 10 déciles. Si on classifiait comme acheteurs les 10\% qui ont la plus forte probabilité estimée d'achat, on détecterait 79 des 210 clients (37.6\%). En comparaison, on s'attend que 21 clients soient sélectionnés en moyenne si on prend un échantillon aléatoire de 100 personnes. Le ratio 79/21 (dernière colonne) est le _lift_ du modèle: il permet de détecter 3.,76 fois plus de succès que le hasard.
+Le @tbl-lift présente les 10 déciles. Si on classifiait comme acheteurs les 10\% qui ont la plus forte probabilité estimée d'achat, on détecterait 81 des 210 clients (37.6\%). En comparaison, on s'attend que 21 clients soient sélectionnés en moyenne si on prend un échantillon aléatoire de 100 personnes. Le ratio 81/21 (dernière colonne) est le _lift_ du modèle: il permet de détecter 3.86 fois plus de succès que le hasard.
 
 La @fig-lift présente le pourcentage d'observations bien classées parmi les variables (pourcentage des probabilités prédites qui correspondent à un succès parmi les $k$ plus susceptibles selon le modèle). La référence est la ligne diagonale, qui correspond à une détection aléatoire.
 
@@ -990,7 +990,7 @@ Supposons que le gain de classer une observation à $i$ ($i \in \{0,1\}$) lorsqu
 |------------|-------------|-------------:|----------:|
 |            | gain        | $Y=1$     | $Y=0$    |
 | prédiction | $\widehat{Y}=1$ | $c_{11}$    | $c_{10}$ |
-|            | $\widehat{Y}=0$ | $c_{01$    | $c_{00}$ |
+|            | $\widehat{Y}=0$ | $c_{01}$    | $c_{00}$ |
  
 En pratique, l'une de ces quatre quantités peut être fixée à un car seulement les poids relatifs (les ratios) des gains sont importants. Dans ce cas, le gain moyen est
 \begin{align*}
