@@ -222,9 +222,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#classification-et-prédiction" id="toc-classification-et-prédiction" class="nav-link" data-scroll-target="#classification-et-prédiction"><span class="toc-section-number">5.3</span>  Classification et prédiction</a>
   <ul class="collapse">
   <li><a href="#fonction-defficacité-du-récepteur" id="toc-fonction-defficacité-du-récepteur" class="nav-link" data-scroll-target="#fonction-defficacité-du-récepteur"><span class="toc-section-number">5.3.1</span>  Fonction d’efficacité du récepteur</a></li>
-  <li><a href="#courbe-lift" id="toc-courbe-lift" class="nav-link" data-scroll-target="#courbe-lift"><span class="toc-section-number">5.3.2</span>  Courbe lift</a></li>
-  <li><a href="#calibration-du-modèle-et-détection-du-surajustement" id="toc-calibration-du-modèle-et-détection-du-surajustement" class="nav-link" data-scroll-target="#calibration-du-modèle-et-détection-du-surajustement"><span class="toc-section-number">5.3.3</span>  Calibration du modèle et détection du surajustement</a></li>
-  <li><a href="#classification-avec-une-matrice-de-gain" id="toc-classification-avec-une-matrice-de-gain" class="nav-link" data-scroll-target="#classification-avec-une-matrice-de-gain"><span class="toc-section-number">5.3.4</span>  Classification avec une matrice de gain</a></li>
+  <li><a href="#classification-avec-une-matrice-de-gain" id="toc-classification-avec-une-matrice-de-gain" class="nav-link" data-scroll-target="#classification-avec-une-matrice-de-gain"><span class="toc-section-number">5.3.2</span>  Classification avec une matrice de gain</a></li>
+  <li><a href="#courbe-lift" id="toc-courbe-lift" class="nav-link" data-scroll-target="#courbe-lift"><span class="toc-section-number">5.3.3</span>  Courbe lift</a></li>
+  <li><a href="#calibration-du-modèle-et-détection-du-surajustement" id="toc-calibration-du-modèle-et-détection-du-surajustement" class="nav-link" data-scroll-target="#calibration-du-modèle-et-détection-du-surajustement"><span class="toc-section-number">5.3.4</span>  Calibration du modèle et détection du surajustement</a></li>
   <li><a href="#sélection-de-variables-en-régression-logistique" id="toc-sélection-de-variables-en-régression-logistique" class="nav-link" data-scroll-target="#sélection-de-variables-en-régression-logistique"><span class="toc-section-number">5.3.5</span>  Sélection de variables en régression logistique</a></li>
   <li><a href="#modèle-heckit" id="toc-modèle-heckit" class="nav-link" data-scroll-target="#modèle-heckit"><span class="toc-section-number">5.3.6</span>  Modèle Heckit</a></li>
   <li><a href="#description-du-modèle-heckit" id="toc-description-du-modèle-heckit" class="nav-link" data-scroll-target="#description-du-modèle-heckit">Description du modèle Heckit</a></li>
@@ -274,7 +274,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Est-ce qu’un client est satisfait du service après-vente?</li>
 <li>Est-ce qu’un client va faire faillite ou non au cours des trois prochaines années.</li>
 </ul>
-<p>En général, on cherchera à expliquer le comportement d’une variable binaire <span class="math inline">\(Y\)</span> en utilisant un modèle basé sur p variables quelconques <span class="math inline">\(\mathrm{X}_1, \ldots, \mathrm{X}_p\)</span>.</p>
+<p>En général, on cherchera à expliquer le comportement d’une variable binaire <span class="math inline">\(Y\)</span> en utilisant un modèle basé sur <span class="math inline">\(p\)</span> variables explicatives <span class="math inline">\(\mathrm{X}_1, \ldots, \mathrm{X}_p\)</span>.</p>
 <p>Notre but sera de faire de l’inférence, de la prédiction, ou les deux à la fois, soit</p>
 <ol type="1">
 <li><strong>Inférence</strong> : comprendre comment et dans quelles mesures les variables <span class="math inline">\(\mathbf{X}\)</span> influencent <span class="math inline">\(Y\)</span> (ou bien la probabilité que <span class="math inline">\(Y=1\)</span>).</li>
@@ -524,7 +524,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
 <section id="interprétation-du-paramètre" class="level3" data-number="5.2.5">
 <h3 data-number="5.2.5" class="anchored" data-anchor-id="interprétation-du-paramètre"><span class="header-section-number">5.2.5</span> Interprétation du paramètre</h3>
 <p>Si une variable est modélisée à l’aide d’un seul paramètre (pas de terme quadratique et pas d’interaction avec d’autre covariables), une valeur positive du paramètre indique une association positive avec <span class="math inline">\(p\)</span> alors qu’une valeur négative indique le contraire.</p>
-<p>Ainsi, le signe du paramètre donne le sens de l’association. Si le coefficient <span class="math inline">\(\beta_j\)</span> de la variable <span class="math inline">\(\mathrm{X}_j\)</span> est positif, alors plus la variable augmente, plus <span class="math inline">\(\Pr(Y=1)\)</span> augmente. Inversement, Si le coefficient <span class="math inline">\(\beta_j\)</span> est négatif, plus la variable augmente, plus <span class="math inline">\(\Pr(Y=1)\)</span> diminue.</p>
+<p>Ainsi, le signe du paramètre donne le sens de l’association. Si le coefficient <span class="math inline">\(\beta_j\)</span> de la variable <span class="math inline">\(\mathrm{X}_j\)</span> est positif, alors plus la variable augmente, plus <span class="math inline">\(\Pr(Y=1)\)</span> augmente. Inversement, si le coefficient <span class="math inline">\(\beta_j\)</span> est négatif, plus la variable augmente, plus <span class="math inline">\(\Pr(Y=1)\)</span> diminue.</p>
 <p>En régression linéaire, l’interprétation de coefficient <span class="math inline">\(\beta_j\)</span> est simple: lorsque la variable <span class="math inline">\(\mathrm{X}_j\)</span> augmente de un, la variable <span class="math inline">\(Y\)</span> augmente en moyenne de <span class="math inline">\(\beta_j\)</span>, toute chose étant égale par ailleurs. Cette interprétation ne dépend pas de la valeur de <span class="math inline">\(\mathrm{X}_j\)</span>. En régression logistique, comme le modèle est nonlinéaire en fonction de <span class="math inline">\(\Pr(Y=1)\)</span> (courbe sigmoide), l’augmentation ou la dimininution de <span class="math inline">\(\Pr(Y=1\mid \mathbf{X})\)</span> pour un changement d’une unité de <span class="math inline">\(\mathrm{X}_j\)</span> dépend de la valeur de cette dernière. C’est pourquoi il est parfois plus utile d’utiliser la cote pour interpréter globalement l’effet d’une variable.</p>
 <p>Dans notre exemple, on peut exprimer le modèle ajusté en termes de cote, <span class="math display">\[\begin{align*}
 \frac{\Pr(Y=1 \mid \mathrm{X}_5=x_5)}{\Pr(Y=0 \mid \mathrm{X}_5=x_5)} = \exp(-3.05)\exp(0.0749x_5).
@@ -1123,7 +1123,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
 <p>Prenons le coefficient associé à l’âge (<span class="math inline">\(\mathrm{X}_5\)</span>) comme exemple. Le paramètre estimé est <span class="math inline">\(\widehat{\beta}_{\texttt{age}}=0.109\)</span> et il est significativement différent de zéro. Ainsi, plus l’âge augmente, plus <span class="math inline">\(\Pr(Y=1\mid \mathbf{X})\)</span> augmente, toutes autres choses étant égales par ailleurs. Pour chaque augmentation d’un an de <span class="math inline">\(\mathrm{X}_5\)</span>, la cote est multipliée par <span class="math inline">\(\exp(0.109)=1.116\)</span>, lorsque les autres variables demeurent fixes.</p>
 <p>N’oubliez pas la nuance suivante concernant l’interprétation d’un test lorsque plusieurs variables explicatives font partie du modèle. Si un paramètre n’est pas significativement différent de zéro, cela ne veut pas dire qu’il n’y a pas de lien entre la variable correspondante et <span class="math inline">\(Y\)</span>. Cela veut seulement dire qu’il n’y a pas de lien significatif une fois que les autres variables sont dans le modèle.</p>
 <p>L’interprétation des variables catégorielles est analogue à celle faite en régression linéaire. On peut aussi interpréter individuellement les paramètres des indicatrices: pour <span class="math inline">\(\mathrm{I}(\mathrm{X}_6=2)\)</span>, lorsque les autres variables demeurent fixes, les personnes ayant assisté entre six et 10 fois à un rodéo au cours de la dernière année voient leur cote multipliée par <span class="math inline">\(\exp(-1.370)=0.255\)</span> par rapport aux personnes ayant assisté plus de di fois. Ce paramètre est significativement différent de zéro car sa valeur-<span class="math inline">\(p\)</span> est négligeable; l’intervalle de confiance à 95% pour le rapport de cotes, basé sur la vraisemblance profilée, est [0.13; 0.49] et la valeur 1 (qui correspond à un rapport de cote constant) n’est pas dans l’intervalle. Ainsi, il y a une différence significative entre les gens qui ont assisté à 10 rodéos ou plus et les gens qui ont assisté à 5 rodéos ou moins, pour ce qui est de l’intérêt à acheter un produit recommandé par le PRCA.</p>
-<p>Si on désire comparer les deux modalités <span class="math inline">\(\mathrm{X}_6=2\)</span> et <span class="math inline">\(\mathrm{X}_6=3\)</span>, il suffit de changer la modalité de référence de <code>x6</code> et d’exécuter le modèle à nouveau. Une alternative est de calculer le rapport (de rapport) de cotes pour ces deux modalités.</p>
+<p>Si on désire comparer les deux modalités <span class="math inline">\(\mathrm{X}_6=2\)</span> et <span class="math inline">\(\mathrm{X}_6=3\)</span>, il suffit de changer la modalité de référence de <code>x6</code> et d’exécuter le modèle à nouveau. Une alternative est de calculer le rapport de cotes pour ces deux modalités.</p>
 </section>
 <section id="test-du-rapport-de-vraisemblance" class="level3" data-number="5.2.6">
 <h3 data-number="5.2.6" class="anchored" data-anchor-id="test-du-rapport-de-vraisemblance"><span class="header-section-number">5.2.6</span> Test du rapport de vraisemblance</h3>
@@ -1175,9 +1175,9 @@ D = -2\{\ell(\widehat{\boldsymbol{\beta}}_0)-\ell(\widehat{\boldsymbol{\beta}})\
 <li>Si <span class="math inline">\(\widehat{p} \geq c\)</span>, on assigne cette observation à la catégorie un et <span class="math inline">\(\widehat{Y}=1\)</span>.</li>
 </ul>
 <p>Si on prend <span class="math inline">\(c=0.5\)</span> comme point de coupure, cela revient à assigner l’observation à la classe (catégorie) la plus probable, un choix fort raisonnable. Nous verrons dans une section suivante que, lorsque les conséquences de faussement classifier une observation (succès, mais échec prédit et vice-versa) ne sont pas les mêmes, il peut être avantageux d’utiliser un autre point de coupure.</p>
-<p>Dans un cadre de prédiction, il nous faudra un critère pour juger de la qualité de l’ajustement du modèle. Rappelez-vous que pour une réponse continue, nous avons utilisé l’erreur moyenne quadratique, <span class="math inline">\(\mathsf{EQM} = \mathsf{E}\{(Y-\widehat{Y})^2\}\)</span>, où <span class="math inline">\(\widehat{Y} = \mathsf{E}(Y \mid \mathbf{X})\)</span>, pour juger de la performance d’un modèle. Comme la réponse <span class="math inline">\(Y\)</span> est binaire ici, nous allons utiliser des critères différents.</p>
+<p>Dans un cadre de prédiction, il nous faudra un critère pour juger de la qualité de l’ajustement du modèle. Rappelez-vous que pour une réponse continue, nous avons utilisé l’erreur quadratique moyenne, <span class="math inline">\(\mathsf{EQM} = \mathsf{E}\{(Y-\widehat{Y})^2\}\)</span>, où <span class="math inline">\(\widehat{Y} = \mathsf{E}(Y \mid \mathbf{X})\)</span>, pour juger de la performance d’un modèle. Comme la réponse <span class="math inline">\(Y\)</span> est binaire ici, nous allons utiliser des critères différents.</p>
 <p>Voyons d’abord un premier critère pour juger de la qualité d’un modèle de prédiction. Soit <span class="math inline">\(Y\)</span> la vraie valeur de la réponse binaire et <span class="math inline">\(\widehat{Y}\)</span> (soit 0 ou 1) la valeur de <span class="math inline">\(Y\)</span> prédite par un modèle pour une observation choisie au hasard dans la population. Un premier critère pour juger de la performance d’un modèle est le <strong>taux de mauvaise classification</strong>, un estimé de la probabilité de mal classifier une observation choisie au hasard dans la population, <span class="math inline">\(\Pr(Y \neq\widehat{Y})\)</span>. Plus <span class="math inline">\(\Pr(Y \neq\widehat{Y})\)</span> est petite, meilleure est la capacité prédictive du modèle.</p>
-<p>Tout comme l’erreur moyenne quadratique, on ne peut qu’estimer <span class="math inline">\(\Pr(Y \neq\widehat{Y})\)</span>. Pour les raisons vues au chapitre précédent, l’estimer en calculant le taux de mauvaise classification des observations ayant servi à l’ajustement du modèle sans aucune correction n’est pas une bonne approche. Les approches couvertes dans le dernier chapitre pour l’estimation de l’erreur moyenne quadratique, telles la validation-croisée et la division de l’échantillon, peuvent être utilisées pour estimer le taux de mauvaise classification <span class="math inline">\(\Pr(Y \neq \widehat{Y})\)</span>.</p>
+<p>Tout comme l’erreur quadratique moyenne, on ne peut qu’estimer <span class="math inline">\(\Pr(Y \neq\widehat{Y})\)</span>. Pour les raisons vues au chapitre précédent, l’estimer en calculant le taux de mauvaise classification des observations ayant servi à l’ajustement du modèle sans aucune correction n’est pas une bonne approche. Les approches couvertes dans le dernier chapitre pour l’estimation de l’erreur quadratique moyenne, telles la validation-croisée et la division de l’échantillon, peuvent être utilisées pour estimer le taux de mauvaise classification <span class="math inline">\(\Pr(Y \neq \widehat{Y})\)</span>.</p>
 <p>Cette utilisation d’un modèle de régression logistique sera illustrée avec l’exemple que nous avons traité au chapitre précédent: notre objectif final est de construire un modèle avec les 1000 clients de l’échantillon d’apprentissage et cibler ensuite lesquels des 100 000 clients restants seront choisis pour recevoir le catalogue. Les variables cibles sont:</p>
 <ul>
 <li><code>yachat</code>: variable binaire égale à un si le client a acheté quelque chose dans le catalogue et zéro sinon.</li>
@@ -1222,7 +1222,7 @@ D = -2\{\ell(\widehat{\boldsymbol{\beta}}_0)-\ell(\widehat{\boldsymbol{\beta}})\
 <span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">resp =</span> classif)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Le modèle utilise seulement les 10 variables de base. Des prévisions pour les clients restants seront exportées dans le fichier. La méthode <code>predict</code> permet d’obtenir les prédictions des probabilités et la fonction maison <code>hecmulti::perfo_logistique</code> retourne un tableau de classification. Tel que nous l’avons vu au chapitre précédent, il y a 210 clients qui ont acheté quelque chose parmi les 1000.</p>
-<div class="cell" data-hash="05-reglogistique_cache/html/fig-classification0_6ab76039b8b1a38d824e5778da292ae1">
+<div class="cell" data-hash="05-reglogistique_cache/html/fig-classification0_7dee79cc05ceb6c75bae5c02f92d06f6">
 <div class="cell-output-display">
 <div id="fig-classification0" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -1913,22 +1913,203 @@ D = -2\{\ell(\widehat{\boldsymbol{\beta}}_0)-\ell(\widehat{\boldsymbol{\beta}})\
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># roc$aire</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="courbe-lift" class="level3" data-number="5.3.2">
-<h3 data-number="5.3.2" class="anchored" data-anchor-id="courbe-lift"><span class="header-section-number">5.3.2</span> Courbe lift</h3>
+<section id="classification-avec-une-matrice-de-gain" class="level3" data-number="5.3.2">
+<h3 data-number="5.3.2" class="anchored" data-anchor-id="classification-avec-une-matrice-de-gain"><span class="header-section-number">5.3.2</span> Classification avec une matrice de gain</h3>
+<p>Utiliser le taux de mauvaise classification <span class="math inline">\(\Pr(Y \neq \widehat{Y})\)</span>, comme critère de performance, revient au même que d’utiliser le taux de bonne classification <span class="math inline">\(\Pr(Y=\widehat{Y})\)</span>, car <span class="math inline">\(\Pr(Y \neq \widehat{Y}) = 1-\Pr(Y=\widehat{Y})\)</span>. On veut un modèle avec un haut taux de bonne classification (ou un faible taux de mauvaise classification).</p>
+<p>Lorsqu’on utilise <span class="math inline">\(\Pr(Y \neq \widehat{Y})\)</span> comme critère pour juger de la qualité d’un modèle prévisionnel, on fait l’hypothèse que le gain associé à bien classifier une observation dans la catégorie 0 lorsqu’elle est réellement dans la catégorie 0 est le même que celui associé à classifier une observation dans la catégorie 1 lorsqu’elle est réellement dans la catégorie 1: cela correspond à la matrice de gain.</p>
+<div id="tbl-03-gain1" class="anchored">
+<table class="table">
+<caption>Tableau&nbsp;5.6: Matrice de gain correspondant au taux de bonne classification</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th></th>
+<th style="text-align: right;">observation</th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>gain</td>
+<td style="text-align: right;"><span class="math inline">\(Y=1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(Y=0\)</span></td>
+</tr>
+<tr class="even">
+<td>prédiction</td>
+<td><span class="math inline">\(\widehat{Y}=1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0\)</span></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td><span class="math inline">\(\widehat{Y}=0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(1\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Le gain vaut 1 lorsque la prévision est bonne (les deux cas sur la diagonale) et 0 lorsque le modèle se trompe (les deux autres cas). L’unité de mesure du gain n’est pas importante pour l’instant. Le gain total est</p>
+<p><span class="math display">\[\begin{align*}
+\text{gain} &amp;= 1 \Pr(\widehat{Y}=1, Y=1) + 1 \Pr(\widehat{Y}=0, Y=0)
+\\ &amp;\quad + 0 \Pr(\widehat{Y}=1, Y=0)  + 0 \Pr(\widehat{Y}=0, Y=1)
+\\&amp; = \Pr(Y = \widehat{Y}).
+\end{align*}\]</span> Maximiser le gain total revient donc à maximiser le taux de bonne classification.</p>
+<p>Dans certaines situations, les gains (ou la perte si le gain est négatif) associés aux bonnes décisions et aux erreurs ne sont pas équivalents.</p>
+<p>Supposons que le gain de classer une observation à <span class="math inline">\(i\)</span> (<span class="math inline">\(i \in \{0,1\}\)</span>) lorsqu’elle vaut <span class="math inline">\(j\)</span> (<span class="math inline">\(j \in \{0,1\}\)</span>) en réalité est de <span class="math inline">\(c_{ij}\)</span>. La matrice de gain est alors</p>
+<div id="tbl-03-gain2" class="anchored">
+<table class="table">
+<caption>Tableau&nbsp;5.7: Matrice de gain pondérée en fonction d’un coût</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th></th>
+<th style="text-align: right;">observation</th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>gain</td>
+<td style="text-align: right;"><span class="math inline">\(Y=1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(Y=0\)</span></td>
+</tr>
+<tr class="even">
+<td>prédiction</td>
+<td><span class="math inline">\(\widehat{Y}=1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(c_{11}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(c_{10}\)</span></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td><span class="math inline">\(\widehat{Y}=0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(c_{01}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(c_{00}\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>En pratique, l’une de ces quatre quantités peut être fixée à 1 car seulement les poids relatifs (les ratios) des gains sont importants. Dans ce cas, le gain moyen est <span class="math display">\[\begin{align*}
+\text{gain} &amp;= c_{11} \Pr(\widehat{Y}=1, Y=1) + c_{00}\Pr(\widehat{Y}=0, Y=0)
+\\ &amp;\quad + c_{10} \Pr(\widehat{Y}=1, Y=0)  + c_{01} \Pr(\widehat{Y}=0, Y=1)
+\end{align*}\]</span></p>
+<p>Le meilleur modèle est alors celui qui maximise le gain moyen.</p>
+<p>Nous allons encore une fois seulement utiliser les 10 variables de base. Mais nous allons intégrer des revenus et coûts afin de trouver le meilleur point de coupure. Rappelez-vous que le coût de l’envoi d’un catalogue est de 10$. Le tableau des variables descriptives qui suit montre que, pour les 210 clients qui ont acheté quelque chose, le revenu moyen est de 67.29$ (moyenne de la variable <code>ymontant</code>).</p>
+<div class="cell" data-hash="05-reglogistique_cache/html/tbl-dbm-ymontant-apprentissage_02c1c782eee7e953a0bfab8d5b165ae2">
+<div class="cell-output-display">
+<div id="tbl-dbm-ymontant-apprentissage" class="anchored">
+
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;5.8:  Statistiques descriptives des montants d’achats pour la base de données marketing (échantillon d’apprentissage). </caption>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> n </th>
+   <th style="text-align:right;"> moyenne </th>
+   <th style="text-align:right;"> écart-type </th>
+   <th style="text-align:right;"> minimum </th>
+   <th style="text-align:right;"> maximum </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 210 </td>
+   <td style="text-align:right;"> 67.29 </td>
+   <td style="text-align:right;"> 13.24 </td>
+   <td style="text-align:right;"> 25 </td>
+   <td style="text-align:right;"> 109 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Nous allons travailler en termes de revenu net. Nous pouvons donc spécifier la matrice de gain du <a href="#tbl-03-gain3">Tableau&nbsp;<span>5.9</span></a> pour notre problème. Si on n’envoie pas de catalogue, notre gain est nul. Si on envoie le catalogue à un client qui n’achète pas, on perd 10$ (le coût de l’envoi). En revanche, notre revenu net est de 57$ (revenu moyen moins coût de l’envoi).</p>
+<div id="tbl-03-gain3" class="anchored">
+<table class="table">
+<caption>Tableau&nbsp;5.9: Matrice de gain pour l’envoi de catalogue</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th></th>
+<th style="text-align: right;">observation</th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>gain</td>
+<td style="text-align: right;"><span class="math inline">\(Y=1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(Y=0\)</span></td>
+</tr>
+<tr class="even">
+<td>prédiction</td>
+<td><span class="math inline">\(\widehat{Y}=1\)</span></td>
+<td style="text-align: right;">57</td>
+<td style="text-align: right;">-10</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td><span class="math inline">\(\widehat{Y}=0\)</span></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>On peut calculer la performance du modèle et le gain moyen en faisant varier le point de coupure. Pour avoir une mesure fidèle, on utilise la validation croisée à <span class="math inline">\(K=10\)</span> groupes (la mesure affichée correspondant à la moyenne de 10 réplications)</p>
+<div class="cell" data-hash="05-reglogistique_cache/html/fig-coupure-pondere_07cf50ae18bc31683b510b0252910d41">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(dbm, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>donnees <span class="ot">&lt;-</span> dbm <span class="sc">|&gt;</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(test <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>formule <span class="ot">=</span> <span class="fu">formula</span>(yachat <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                    x4 <span class="sc">+</span> x5 <span class="sc">+</span> x6 <span class="sc">+</span> x7 <span class="sc">+</span> </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                    x8 <span class="sc">+</span> x9 <span class="sc">+</span> x10)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>modele <span class="ot">&lt;-</span> <span class="fu">glm</span>(formule, </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">family =</span> binomial, </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> donnees)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>coupe <span class="ot">&lt;-</span> hecmulti<span class="sc">::</span><span class="fu">select_pcoupe</span>(</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">modele =</span> modele, </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">c00 =</span> <span class="dv">0</span>, </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">c01 =</span> <span class="dv">0</span>, </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">c10 =</span> <span class="sc">-</span><span class="dv">10</span>, </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">c11 =</span> <span class="dv">57</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>coupe</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Point de coupure optimal: 0.13 </code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-coupure-pondere" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="05-reglogistique_files/figure-html/fig-coupure-pondere-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5.6: Estimation du gain moyen en fonction du point de coupure pour l’exemple de base de données marketing.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La fonction <code>select_pcoupe</code> donne l’estimation du gain moyen (<code>gain</code>) pour différents points de coupures (<code>pcoupe</code>). Cette estimation provient d’une validation-croisée avec <span class="math inline">\(K\)</span> groupes (<code>ncv</code>) dans la fonction), répétée <code>nrep</code> fois. On a effectué ici la validation croisée avec 10 groupes et fait la moyenne des 10 répétitions afin d’avoir plus de précision.</p>
+<p>On voit dans la <a href="#fig-coupure-pondere">Figure&nbsp;<span>5.6</span></a> que le meilleur point de coupure, celui qui maximise le gain est 0.13. Avec ce point de coupure, et selon le <a href="#tbl-classification-loocv">Tableau&nbsp;<span>5.4</span></a>, on estime que le taux de bonne classification est de 70.3 et que la sensibilité est de 90.95. Ainsi, on estime qu’on va détecter environ 91% des clients qui achètent.</p>
+<p>Comme il est très coûteux de rater un client qui aurait acheté quelque chose, il est préférable d’envoyer le catalogue à plus de clients, quitte à ce que plusieurs d’entre eux n’achètent rien. Bien que le point de coupure de 0.5 donne un meilleur taux de bonne classification, il correspond à un gain moyen plus faible car on rate trop de clients qui achètent (la sensibilité est de seulement 47.62%). Travailler avec la matrice de gain permet de trouver le point de coupure optimal en incorporant des notions de coûts et profits.</p>
+</section>
+<section id="courbe-lift" class="level3" data-number="5.3.3">
+<h3 data-number="5.3.3" class="anchored" data-anchor-id="courbe-lift"><span class="header-section-number">5.3.3</span> Courbe lift</h3>
 <p>Un autre type de graphe qui est souvent utilisé dans des contextes de gestion est la courbe lift (sic) (en anglais, <em>lift chart</em>). Cette courbe est obtenue en ordonnant les probabilités de succès estimées par le modèle, <span class="math inline">\(\widehat{p}\)</span>, en ordre croissant et en regardant quelle pourcentage de ces derniers seraient bien classifiés (le nombre de vrais positifs sur le nombre de succès).</p>
 <div class="cell" data-hash="05-reglogistique_cache/html/fig-courbe-lift_6c8ecbe666cab087d5efffb408a062e3">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>tab_lift <span class="ot">&lt;-</span> hecmulti<span class="sc">::</span><span class="fu">courbe_lift</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">prob =</span> <span class="dv">1</span><span class="sc">-</span>predprob,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">resp =</span> classif, </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>tab_lift</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>tab_lift <span class="ot">&lt;-</span> hecmulti<span class="sc">::</span><span class="fu">courbe_lift</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">prob =</span> <span class="dv">1</span><span class="sc">-</span>predprob,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">resp =</span> classif, </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>tab_lift</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-hash="05-reglogistique_cache/html/fig-lift_534347124c1ba54a958837bf4fc98de5">
 <div class="cell-output-display">
 <div id="fig-lift" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="05-reglogistique_files/figure-html/fig-lift-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;5.6: Courbe lift</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5.7: Courbe lift</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -1937,7 +2118,7 @@ D = -2\{\ell(\widehat{\boldsymbol{\beta}}_0)-\ell(\widehat{\boldsymbol{\beta}})\
 <div class="cell-output-display">
 <div id="tbl-lift" class="anchored">
 
-<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;5.6:  Tableau du lift (déciles). </caption>
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;5.10:  Tableau du lift (déciles). </caption>
  <thead>
   <tr>
    <th style="text-align:left;">   </th>
@@ -2017,12 +2198,12 @@ D = -2\{\ell(\widehat{\boldsymbol{\beta}}_0)-\ell(\widehat{\boldsymbol{\beta}})\
 </div>
 </div>
 </div>
-<p>Le <a href="#tbl-lift">Tableau&nbsp;<span>5.6</span></a> présente les 10 déciles. Si on classifiait comme acheteurs les 10% qui ont la plus forte probabilité estimée d’achat, on détecterait 79 des 210 clients (37.6%). En comparaison, on s’attend que 21 clients soient sélectionnés en moyenne si on prend un échantillon aléatoire de 100 personnes. Le ratio 79/21 (dernière colonne) est le <em>lift</em> du modèle: il permet de détecter 3.,76 fois plus de succès que le hasard.</p>
-<p>La <a href="#fig-lift">Figure&nbsp;<span>5.6</span></a> présente le pourcentage d’observations bien classées parmi les variables (pourcentage des probabilités prédites qui correspondent à un succès parmi les <span class="math inline">\(k\)</span> plus susceptibles selon le modèle). La référence est la ligne diagonale, qui correspond à une détection aléatoire.</p>
+<p>Le <a href="#tbl-lift">Tableau&nbsp;<span>5.10</span></a> présente les 10 déciles. Si on classifiait comme acheteurs les 10% qui ont la plus forte probabilité estimée d’achat, on détecterait 81 des 210 clients (37.6%). En comparaison, on s’attend que 21 clients soient sélectionnés en moyenne si on prend un échantillon aléatoire de 100 personnes. Le ratio 81/21 (dernière colonne) est le <em>lift</em> du modèle: il permet de détecter 3.86 fois plus de succès que le hasard.</p>
+<p>La <a href="#fig-lift">Figure&nbsp;<span>5.7</span></a> présente le pourcentage d’observations bien classées parmi les variables (pourcentage des probabilités prédites qui correspondent à un succès parmi les <span class="math inline">\(k\)</span> plus susceptibles selon le modèle). La référence est la ligne diagonale, qui correspond à une détection aléatoire.</p>
 </section>
-<section id="calibration-du-modèle-et-détection-du-surajustement" class="level3" data-number="5.3.3">
-<h3 data-number="5.3.3" class="anchored" data-anchor-id="calibration-du-modèle-et-détection-du-surajustement"><span class="header-section-number">5.3.3</span> Calibration du modèle et détection du surajustement</h3>
-<p>Il peut être intéressant de vérifier la <strong>calibration</strong> de notre modèle, et une statistique simple proposée par <a href="https://doi.org/10.1002/sim.4780050506">Spiegelhalter (1986)</a> peut être utile à cette fin. Pour une variable binaire <span class="math inline">\(Y \in \{0,1\}\)</span>, l’erreur moyenne quadratique s’écrit <span class="math display">\[\begin{align*}
+<section id="calibration-du-modèle-et-détection-du-surajustement" class="level3" data-number="5.3.4">
+<h3 data-number="5.3.4" class="anchored" data-anchor-id="calibration-du-modèle-et-détection-du-surajustement"><span class="header-section-number">5.3.4</span> Calibration du modèle et détection du surajustement</h3>
+<p>Il peut être intéressant de vérifier la <strong>calibration</strong> de notre modèle, et une statistique simple proposée par <a href="https://doi.org/10.1002/sim.4780050506">Spiegelhalter (1986)</a> peut être utile à cette fin. Pour une variable binaire <span class="math inline">\(Y \in \{0,1\}\)</span>, l’erreur quadratique moyenne s’écrit <span class="math display">\[\begin{align*}
 \overline{B} &amp;= \frac{1}{n} \sum_{i=1}^n (Y_i-p_i)^2
 =\frac{1}{n} \sum_{i=1}^n(Y_i-p_i)(1-2p_i) + \frac{1}{n} \sum_{i=1}^n p_i(1-p_i).
 \end{align*}\]</span> Le premier terme représente le manque de calibration du modèle, tandis que le deuxième correspond à la séparation entre variables. Si notre modèle était parfaitement calibré, alors <span class="math inline">\(\mathsf{E}_0(Y_i)=p_i\)</span> et <span class="math inline">\(\mathsf{Va}_0(Y_i) = p_i(1-p_i)\)</span>. On peut utiliser ce fait pour construire une statistique de test de la forme <span class="math inline">\(Z = \{\overline{B} - \mathsf{E}_0(\overline{B})\}/\sqrt{\mathsf{Va}_0(\overline{B})}\)</span>, où <span class="math display">\[\begin{align*}
@@ -2033,187 +2214,6 @@ D = -2\{\ell(\widehat{\boldsymbol{\beta}}_0)-\ell(\widehat{\boldsymbol{\beta}})\
 
 </div>
 <p>Sous l’hypothèse nulle de calibration parfaite, <span class="math inline">\(Z \sim \mathsf{No}(0,1)\)</span> en grand échantillon. Pour le modèle simple avec toutes les covariables, la valeur-<span class="math inline">\(p\)</span> approximative calculée avec les probabilités de succès obtenues par validation-croisée et les données de l’échantillon d’apprentissage est 0.22 et il n’y a pas de preuve ici que le modèle est mal calibré. Cette technique est utile pour vérifier s’il n’y a pas de surajustement (auquel cas le modèle tend à retourner des probabilités très près de 0/1, mais qui ne correspondent pas à la réalité).</p>
-</section>
-<section id="classification-avec-une-matrice-de-gain" class="level3" data-number="5.3.4">
-<h3 data-number="5.3.4" class="anchored" data-anchor-id="classification-avec-une-matrice-de-gain"><span class="header-section-number">5.3.4</span> Classification avec une matrice de gain</h3>
-<p>Utiliser le taux de mauvaise classification <span class="math inline">\(\Pr(Y \neq \widehat{Y})\)</span>, comme critère de performance, revient au même que d’utiliser le taux de bonne classification <span class="math inline">\(\Pr(Y=\widehat{Y})\)</span>, car <span class="math inline">\(\Pr(Y \neq \widehat{Y}) = 1-\Pr(Y=\widehat{Y})\)</span>. On veut un modèle avec un haut taux de bonne classification (ou un faible taux de mauvaise classification).</p>
-<p>Lorsqu’on utilise <span class="math inline">\(\Pr(Y \neq \widehat{Y})\)</span> comme critère pour juger de la qualité d’un modèle prévisionnel, on fait l’hypothèse que le gain associé à bien classifier une observation dans la catégorie 0 lorsqu’elle est réellement dans la catégorie 0 est le même que celui associé à classifier une observation dans la catégorie 1 lorsqu’elle est réellement dans la catégorie 1: cela correspond à la matrice de gain.</p>
-<div id="tbl-03-gain1" class="anchored">
-<table class="table">
-<caption>Tableau&nbsp;5.7: Matrice de gain correspondant au taux de bonne classification</caption>
-<thead>
-<tr class="header">
-<th></th>
-<th></th>
-<th style="text-align: right;">observation</th>
-<th style="text-align: right;"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td></td>
-<td>gain</td>
-<td style="text-align: right;"><span class="math inline">\(Y=1\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(Y=0\)</span></td>
-</tr>
-<tr class="even">
-<td>prédiction</td>
-<td><span class="math inline">\(\widehat{Y}=1\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(1\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(0\)</span></td>
-</tr>
-<tr class="odd">
-<td></td>
-<td><span class="math inline">\(\widehat{Y}=0\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(0\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(1\)</span></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>Le gain vaut 1 lorsque la prévision est bonne (les deux cas sur la diagonale) et 0 lorsque le modèle se trompe (les deux autres cas). L’unité de mesure du gain n’est pas importante pour l’instant. Le gain total est</p>
-<p><span class="math display">\[\begin{align*}
-\text{gain} &amp;= 1 \Pr(\widehat{Y}=1, Y=1) + 1 \Pr(\widehat{Y}=0, Y=0)
-\\ &amp;\quad + 0 \Pr(\widehat{Y}=1, Y=0)  + 0 \Pr(\widehat{Y}=0, Y=1)
-\\&amp; = \Pr(Y = \widehat{Y}).
-\end{align*}\]</span> Maximiser le gain total revient donc à maximiser le taux de bonne classification.</p>
-<p>Dans certaines situations, les gains (ou la perte si le gain est négatif) associés aux bonnes décisions et aux erreurs ne sont pas équivalents. Par exemple, un des types d’erreurs peut être plus grave que l’autre. Il peut alors être souhaitable d’en tenir compte dans le choix du modèle de classification.</p>
-<p>Supposons que le gain de classer une observation à <span class="math inline">\(i\)</span> (<span class="math inline">\(i \in \{0,1\}\)</span>) lorsqu’elle vaut <span class="math inline">\(j\)</span> (<span class="math inline">\(j \in \{0,1\}\)</span>) en réalité est de <span class="math inline">\(c_{ij}\)</span>. La matrice de gain est alors</p>
-<div id="tbl-03-gain2" class="anchored">
-<table class="table">
-<caption>Tableau&nbsp;5.8: Matrice de gain pondérée en fonction d’un coût</caption>
-<thead>
-<tr class="header">
-<th></th>
-<th></th>
-<th style="text-align: right;">observation</th>
-<th style="text-align: right;"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td></td>
-<td>gain</td>
-<td style="text-align: right;"><span class="math inline">\(Y=1\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(Y=0\)</span></td>
-</tr>
-<tr class="even">
-<td>prédiction</td>
-<td><span class="math inline">\(\widehat{Y}=1\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(c_{11}\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(c_{10}\)</span></td>
-</tr>
-<tr class="odd">
-<td></td>
-<td><span class="math inline">\(\widehat{Y}=0\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(c_{01\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(c_{00}\)</span></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>En pratique, l’une de ces quatre quantités peut être fixée à un car seulement les poids relatifs (les ratios) des gains sont importants. Dans ce cas, le gain moyen est <span class="math display">\[\begin{align*}
-\text{gain} &amp;= c_{11} \Pr(\widehat{Y}=1, Y=1) + c_{00}\Pr(\widehat{Y}=0, Y=0)
-\\ &amp;\quad + c_{10} \Pr(\widehat{Y}=1, Y=0)  + c_{01} \Pr(\widehat{Y}=0, Y=1)
-\end{align*}\]</span></p>
-<p>Le meilleur modèle est alors celui qui maximise le gain moyen.</p>
-<p>Nous allons encore une fois seulement utiliser les 10 variables de base. Mais nous allons intégrer des revenus et coûts afin de trouver le meilleur point de coupure. Rappelez-vous que le coût de l’envoi d’un catalogue est de 10$. Le tableau des variables descriptives qui suit montre que, pour les 210 clients qui ont acheté quelque chose, le revenu moyen est de 67.29$ (moyenne de la variable <code>ymontant</code>).</p>
-<div class="cell" data-hash="05-reglogistique_cache/html/tbl-dbm-ymontant-apprentissage_02c1c782eee7e953a0bfab8d5b165ae2">
-<div class="cell-output-display">
-<div id="tbl-dbm-ymontant-apprentissage" class="anchored">
-
-<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;5.9:  Statistiques descriptives des montants d’achats pour la base de données marketing (échantillon d’apprentissage). </caption>
- <thead>
-  <tr>
-   <th style="text-align:right;"> n </th>
-   <th style="text-align:right;"> moyenne </th>
-   <th style="text-align:right;"> écart-type </th>
-   <th style="text-align:right;"> minimum </th>
-   <th style="text-align:right;"> maximum </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:right;"> 210 </td>
-   <td style="text-align:right;"> 67.29 </td>
-   <td style="text-align:right;"> 13.24 </td>
-   <td style="text-align:right;"> 25 </td>
-   <td style="text-align:right;"> 109 </td>
-  </tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
-<p>Nous allons travailler en termes de revenu net. Nous pouvons donc spécifier la matrice de gain du <a href="#tbl-03-gain3">Tableau&nbsp;<span>5.10</span></a> pour notre problème. Si on n’envoit pas de catalogue, notre gain est nul. Si on envoie le catalogue à un client qui n’achète pas, on perd 10$ (le coût de l’envoi). En revanche, notre revenu net est de 57$ (revenu moyen moins coût de l’envoi).</p>
-<div id="tbl-03-gain3" class="anchored">
-<table class="table">
-<caption>Tableau&nbsp;5.10: Matrice de gain pour l’envoi de catalogue</caption>
-<thead>
-<tr class="header">
-<th></th>
-<th></th>
-<th style="text-align: right;">observation</th>
-<th style="text-align: right;"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td></td>
-<td>gain</td>
-<td style="text-align: right;"><span class="math inline">\(Y=1\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(Y=0\)</span></td>
-</tr>
-<tr class="even">
-<td>prédiction</td>
-<td><span class="math inline">\(\widehat{Y}=1\)</span></td>
-<td style="text-align: right;">57</td>
-<td style="text-align: right;">$-$10</td>
-</tr>
-<tr class="odd">
-<td></td>
-<td><span class="math inline">\(\widehat{Y}=0\)</span></td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>On peut calculer la performance du modèle et le gain moyen en faisant varier le point de coupure. Pour avoir une mesure fidèle, on utilise la validation croisée à <span class="math inline">\(K=10\)</span> groupes (la mesure affichée correspondant à la moyenne de 10 réplications)</p>
-<div class="cell" data-hash="05-reglogistique_cache/html/fig-coupure-pondere_07cf50ae18bc31683b510b0252910d41">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(dbm, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>donnees <span class="ot">&lt;-</span> dbm <span class="sc">|&gt;</span> </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(test <span class="sc">==</span> <span class="dv">0</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>formule <span class="ot">=</span> <span class="fu">formula</span>(yachat <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                    x4 <span class="sc">+</span> x5 <span class="sc">+</span> x6 <span class="sc">+</span> x7 <span class="sc">+</span> </span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                    x8 <span class="sc">+</span> x9 <span class="sc">+</span> x10)</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>modele <span class="ot">&lt;-</span> <span class="fu">glm</span>(formule, </span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">family =</span> binomial, </span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> donnees)</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>coupe <span class="ot">&lt;-</span> hecmulti<span class="sc">::</span><span class="fu">select_pcoupe</span>(</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">modele =</span> modele, </span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">c00 =</span> <span class="dv">0</span>, </span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">c01 =</span> <span class="dv">0</span>, </span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">c10 =</span> <span class="sc">-</span><span class="dv">10</span>, </span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">c11 =</span> <span class="dv">57</span>,</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>coupe</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Point de coupure optimal: 0.13 </code></pre>
-</div>
-<div class="cell-output-display">
-<div id="fig-coupure-pondere" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="05-reglogistique_files/figure-html/fig-coupure-pondere-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;5.7: Estimation du gain moyen en fonction du point de coupure pour l’exemple de base de données marketing.</figcaption><p></p>
-</figure>
-</div>
-</div>
-</div>
-<p>La fonction <code>select_pcoupe</code> donne l’estimation du gain moyen (<code>gain</code>) pour différents points de coupures (<code>pcoupe</code>). Cette estimation provient d’une validation-croisée avec <span class="math inline">\(K\)</span> groupes (<code>ncv</code>) dans la fonction), répétée <code>nrep</code> fois. On a effectué ici la validation croisée avec 10 groupes et fait la moyenne des 10 répétitions afin d’avoir plus de précision.</p>
-<p>On voit dans la <a href="#fig-coupure-pondere">Figure&nbsp;<span>5.7</span></a> que le meilleur point de coupure, celui qui maximise le gain est 0.13. Avec ce point de coupure, et selon le <a href="#tbl-classification-loocv">Tableau&nbsp;<span>5.4</span></a>, on estime que le taux de bonne classification est de 70.3 et que la sensibilité est de 90.95. Ainsi, on estime qu’on va détecter environ 91% des clients qui achètent.</p>
-<p>Comme il est très coûteux de rater un client qui aurait acheté quelque chose, il est préférable d’envoyer le catalogue à plus de clients, quitte à ce que plusieurs d’entre eux n’achètent rien. Bien que le point de coupure de 0.5 donne un meilleur taux de bonne classification, il correspond à un gain moyen plus faible car on rate trop de clients qui achètent (la sensibilité est de seulement 47.62%). Travailler avec la matrice de gain permet de trouver le point de coupure optimal en incorporant des notions de coûts et profits.</p>
 <p>Ici, nous avons ajusté un seul modèle, celui contenant uniquement les 10 variables de base et nous nous sommes attardés au choix du point de coupure pour l’assignation aux classes. Il est possible qu’un autre modèle, contenant par exemple des termes d’interactions, des termes quadratiques ou d’autres transformations des variables, soit supérieur à celui-ci. Le choix du modèle de prévision se fait donc souvent en deux étapes:</p>
 <ol type="1">
 <li>choisir les variables explicatives</li>
@@ -2250,7 +2250,7 @@ D = -2\{\ell(\widehat{\boldsymbol{\beta}}_0)-\ell(\widehat{\boldsymbol{\beta}})\
 <li>Si le client est ciblé pour l’envoi d’un catalogue par le modèle et qu’il achète quelque chose, le revenu est de (<code>ymontant</code><span class="math inline">\(-10\)</span>)$, c’est-à-dire, le montant qu’il dépense moins le <span class="math inline">\(10\)</span>$ du coût de l’envoi.</li>
 </ul>
 <p>Pour une stratégie donnée, chaque individu n’appartient qu’à une seule des catégories. Le revenu net de la stratégie est la somme des revenus pour les 100 000 clients. Parmi ces derniers, 23 179 auraient acheté si on leur avait envoyé le catalogue et ces clients auraient généré des revenus de 1 601 212$. Si on enlève le coût des envois (100 000 X 10$ = 1 000 000$), on obtient que la stratégie de référence permet un revenu net de 601 212$.</p>
-<p>Dans ce cas, nous allons estimer la probabilité d’achat avec un modèle de régression logistique. Nous allons ensuite trouver le meilleur point de coupure, avec une matrice de gain adéquatement choisie, afin d’avoir une règle d’assignation optimale. Nous avons déterminé des modèles potentiels à la section précédente. De plus, nous avons déjà vu comment trouver le meilleur point de coupure en spécifiant une matrice de gain, afin de maximiser le gain moyen à partir de la matrice de gain du <a href="#tbl-03-gain3">Tableau&nbsp;<span>5.10</span></a>. Nous allons donc trouver le meilleur point de coupure pour quelques-uns des modèles choisis à la section précédente, pour ensuite évaluer le revenu net de ces modèles.</p>
+<p>Dans ce cas, nous allons estimer la probabilité d’achat avec un modèle de régression logistique. Nous allons ensuite trouver le meilleur point de coupure, avec une matrice de gain adéquatement choisie, afin d’avoir une règle d’assignation optimale. Nous avons déterminé des modèles potentiels à la section précédente. De plus, nous avons déjà vu comment trouver le meilleur point de coupure en spécifiant une matrice de gain, afin de maximiser le gain moyen à partir de la matrice de gain du <a href="#tbl-03-gain3">Tableau&nbsp;<span>5.9</span></a>. Nous allons donc trouver le meilleur point de coupure pour quelques-uns des modèles choisis à la section précédente, pour ensuite évaluer le revenu net de ces modèles.</p>
 <p>Il faut encore une fois bien comprendre qu’en pratique, on ne pourrait pas faire cette comparaison, car on ne sait pas d’avance si les clients futurs vont acheter ou non. Mais dans cet exemple, les variables <code>yachat</code> et <code>ymontant</code> sont fournies pour ces 100 000 clients afin qu’on puisse voir ce qui se serait passé avec les différentes stratégies.</p>
 <p>La stratégie de référence est celle qui consiste à envoyer le catalogue aux 100 000 clients sans les sélectionner. Le tableau qui suit montre des statistiques pour les variables <code>ymontant</code> et <code>yachat</code> pour les 100 000 clients à scorer. Le <a href="#tbl-03-summarylog">Tableau&nbsp;<span>5.11</span></a> résume la performance des différentes stratégies basées exclusivement sur le modèle logistique.</p>
 <p>En résumé, la procédure numérique à réaliser est la suivante:</p>

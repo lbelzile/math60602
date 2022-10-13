@@ -405,17 +405,6 @@ R^2=\{\mathsf{cor}(\boldsymbol{y}, \widehat{\boldsymbol{y}})\}^2 = 1-\frac{\math
 <p>Ces critères pénalisent l’ajout de variables afin de se prémunir contre le surajustement. De plus, le <span class="math inline">\(\mathsf{BIC}\)</span> pénalise plus que le <span class="math inline">\(\mathsf{AIC}\)</span>. Par conséquent, le critère <span class="math inline">\(\mathsf{BIC}\)</span> va choisir des modèles contenant soit le même nombre, soit moins de paramètres que le <span class="math inline">\(\mathsf{AIC}\)</span>.</p>
 <p>Les critères <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span> peuvent être utilisés comme outils de sélection de variables en régression linéaire mais aussi beaucoup plus généralement avec d’autres méthodes basées sur la vraisemblance (analyse factorielle, régression logistique, etc.) En fait, n’importe quel modèle dont les estimateurs proviennent de la méthode du maximum de vraisemblance produira ces quantités. Nous donnerons des formules générales pour le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span> dans le chapitre sur la régression logistique.</p>
 <p>Le critère <span class="math inline">\(\mathsf{BIC}\)</span> est le seul de ces critères qui est convergent. Cela veut dire que si l’ensemble des modèles que l’on considère contient le vrai modèle, alors la probabilité que le critère <span class="math inline">\(\mathsf{BIC}\)</span> choisissent le bon modèle tend vers 1 lorsque <span class="math inline">\(n\)</span> tend vers l’infini. Il faut mettre cela en perspective : il est peu vraisemblable que <span class="math inline">\(Y\)</span> ait été généré exactement selon un modèle de régression linéaire, car le modèle de régression n’est qu’une approximation de la réalité. Certains auteurs trouvent que le <span class="math inline">\(\mathsf{BIC}\)</span> est quelquefois trop sévère (il choisit des modèles trop simples) pour les tailles d’échantillons finies. Dans certaines applications, cette parcimonie est utile, mais il n’est pas possible de savoir d’avance lequel de ces deux critères (<span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span>) sera préférable pour un problème donné.</p>
-<!--
-Avant de revenir à l'exemple, voici la description d'une modification du coefficient de détermination, le $R^2$ ajusté, qui permet (contrairement au $R^2$) de faire de la sélection de variables. En régression linéaire, le $R^2$ ajusté est
-\begin{align*}
-R^2_a=1-\frac{\mathsf{SCE}/(n-p)}{\mathsf{SCT}/(n-1)}.
-\end{align*}
-Lorsqu'on ajoute une variable, la somme du carré des erreurs ($\mathsf{SCE}$) diminue mais c'est aussi le cas de la quantité $(n-p)$. Ainsi, le $R^2$ ajusté peut soit augmenter, soit diminuer lorsqu'on ajoute une variable. On peut donc l'utiliser pour choisir le modèle. Plus $R^2_a$ est élevé, mieux c'est. Ce critère est moins sévère que le $\mathsf{AIC}$, Ainsi, en général, il va choisir un modèle avec le même nombre ou bien avec plus de paramètres que le $\mathsf{AIC}$. Pour résumer, on aura la situation suivante :
-\begin{align*}
-\#(\mathsf{BIC}) \leq \#(\mathsf{AIC}) \leq \#(R^2_a),
-\end{align*}
-où $\#$ représente le nombre de paramètres du modèle linéaire.
--->
 <p>Il est facile d’obtenir le <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span> avec les méthodes <code>AIC</code> et <code>BIC</code>. On illustre ceci avec le modèle cubique:</p>
 <div class="cell" data-hash="04-selectionmodeles_cache/html/modelecubique_8ba850355f4fdfb1dbddf82160119167">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(polynome, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
@@ -578,10 +567,8 @@ F-statistic: 95.96 on 3 and 96 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </div>
-<p>On voit dans le <a href="#tbl-polynome-ajustement">Tableau&nbsp;<span>4.1</span></a> que l’erreur quadratique moyenne des données d’apprentissage, <span class="math inline">\(\widehat{\mathsf{EQM}}_a\)</span>, diminue toujours à mesure qu’on ajoute des variables (c’est-à-dire, qu’on augmente l’ordre du polynôme); ces valeurs sont représentées dans la <a href="#fig-plotEQMa">Figure&nbsp;<span>4.2</span></a>. Les critères d’information, <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span>, ne sont pas sur la même échelle, mais le graphique de la <a href="#fig-polynome-ajustement">Figure&nbsp;<span>4.3</span></a> illustre un comportement semblable à la vraie courbe de l’erreur quadratique moyenne théorique et suggèrent que le meilleur modèle est le modèle cubique (<span class="math inline">\(k=3\)</span>), c’est-à-dire le vrai modèle. <!--
-Le $R^2$ ajusté quant à lui choisit le modèle d'ordre $4$ (qui est le deuxième meilleur selon le $\mathsf{EQM}$).
---> N’oubliez pas que ces critères sont calculés avec l’échantillon d’apprentissage (<span class="math inline">\(n=100\)</span>), mais en pénalisant l’ajout de variables. On est ainsi en mesure de contrecarrer le problème provenant du fait qu’on ne peut pas utiliser directement le <span class="math inline">\(\widehat{\mathsf{EQM}}_a\)</span>.</p>
-<p>Le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span> sont des critères très utilisés et très généraux. Ils sont disponibles dès qu’on utilise la méthode du maximum de vraisemblance est utilisée comme méthode d’estimation. <!-- Le $R^2$ ajusté a une portée plus limitée car il est spécialisé à la régression linéaire. --></p>
+<p>On voit dans le <a href="#tbl-polynome-ajustement">Tableau&nbsp;<span>4.1</span></a> que l’erreur quadratique moyenne des données d’apprentissage, <span class="math inline">\(\widehat{\mathsf{EQM}}_a\)</span>, diminue toujours à mesure qu’on ajoute des variables (c’est-à-dire, qu’on augmente l’ordre du polynôme); ces valeurs sont représentées dans la <a href="#fig-plotEQMa">Figure&nbsp;<span>4.2</span></a>. Les critères d’information, <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span>, ne sont pas sur la même échelle, mais le graphique de la <a href="#fig-polynome-ajustement">Figure&nbsp;<span>4.3</span></a> illustre un comportement semblable à la vraie courbe de l’erreur quadratique moyenne théorique et suggèrent que le meilleur modèle est le modèle cubique (<span class="math inline">\(k=3\)</span>), c’est-à-dire le vrai modèle. N’oubliez pas que ces critères sont calculés avec l’échantillon d’apprentissage (<span class="math inline">\(n=100\)</span>), mais en pénalisant l’ajout de variables. On est ainsi en mesure de contrecarrer le problème provenant du fait qu’on ne peut pas utiliser directement le <span class="math inline">\(\widehat{\mathsf{EQM}}_a\)</span>.</p>
+<p>Le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span> sont des critères très utilisés et très généraux. Ils sont disponibles dès qu’on utilise la méthode du maximum de vraisemblance comme méthode d’estimation.</p>
 </section>
 <section id="validation-externe" class="level3" data-number="4.3.5">
 <h3 data-number="4.3.5" class="anchored" data-anchor-id="validation-externe"><span class="header-section-number">4.3.5</span> Validation externe</h3>
@@ -840,7 +827,7 @@ Le $R^2$ ajusté quant à lui choisit le modèle d'ordre $4$ (qui est le deuxiè
 </div>
 </div>
 </div>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/fig-histogrammes-eda-dbm_c1685cc5a2ef4ec5bc4b4c9115ca2b14">
+<div class="cell" data-hash="04-selectionmodeles_cache/html/fig-histogrammes-eda-dbm_7e68f92cba37ca1e4c4b7042a2f6121b">
 <div class="cell-output-display">
 <div id="fig-histogrammes-eda-dbm" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -851,7 +838,7 @@ Le $R^2$ ajusté quant à lui choisit le modèle d'ordre $4$ (qui est le deuxiè
 </div>
 </div>
 <p>Il y a 46.6% de femmes parmi les 1000 clients de l’échantillon. De plus, 39.7% ont un revenu de moins de 35 000$, 33.7% sont entre 35 000$ et 75 000$ et 26.6% ont plus de 75 000$. 42.5% de ces clients qui ont un conjoint.</p>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/tbl-statdescript-dbm_a048b57699f488cbbf69caa344380575">
+<div class="cell" data-hash="04-selectionmodeles_cache/html/tbl-statdescript-dbm_31ae8b9fad196b6e3f7d06840ea54d72">
 <div class="cell-output-display">
 <div id="tbl-statdescript-dbm" class="anchored">
 
@@ -978,11 +965,11 @@ Le $R^2$ ajusté quant à lui choisit le modèle d'ordre $4$ (qui est le deuxiè
 <i class="callout-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
-Danger de surajustement
+Danger de surajustement avec variables catégorielles
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>La principale cause de mauvaise performance est le surajustement sélectif. Dans l’exemple que l’on considère avec la base de données marketing, la plupart des modalités des variables catégorielles semblent à première vues suffisantes pour estimer des coefficients. Si on s’intéresse par contre aux interactions, on se rendra rapidement compte qu’il y a trop peu de valeurs pour certaines combinaisons (par exemple, <code>x3*x5</code>) pour estimer de manière fiable l’effet combiné. Il suffit d’une valeurs aberrante pour fausser la sélection et donner une grande erreur quadratique moyenne de validation.</p>
+<p>La principale cause de mauvaise performance est le surajustement sélectif. Dans l’exemple que l’on considère avec la base de données marketing, la plupart des modalités des variables catégorielles semblent à première vues suffisantes pour estimer des coefficients. Si on s’intéresse par contre aux interactions, on se rendra rapidement compte qu’il y a trop peu de valeurs pour certaines combinaisons (par exemple, <code>x3*x5</code>) pour estimer de manière fiable l’effet combiné. Si on a une valeur aberrante dans un groupe avec de faibles modalités, les indicateurs donneront systématiquement préférence à l’inclusion d’un terme pour l’accomoder (au détriment de la généralisation). Cela a pour effet de fausser la sélection et donner une grande erreur quadratique moyenne de validation. Si certaines modalités ont des effectifs trop petits, on peut envisager de les regrouper avec d’autres similaires.</p>
 </div>
 </div>
 </section>
@@ -1168,8 +1155,8 @@ Danger de surajustement
 <section id="méthodes-séquentielles-de-sélection" class="level3" data-number="4.5.2">
 <h3 data-number="4.5.2" class="anchored" data-anchor-id="méthodes-séquentielles-de-sélection"><span class="header-section-number">4.5.2</span> Méthodes séquentielles de sélection</h3>
 <p>Les méthodes de sélection ascendante, descendante et séquentielle sont des algorithmes gloutons. Elles ont été développées à une époque où la puissance de calcul était bien moindre, et où il était impossible de faire une recherche exhaustive des sous-modèles. La procédure <code>leaps::regsubsets</code> permet une sélection de modèle avec une approche séquentielle, ascendante ou descendante en choisissant le meilleur modèle (côté ajustement) avec <span class="math inline">\(k\)</span> variables <span class="math inline">\((k=1, \ldots, k_{\text{max}})\)</span>. La procédure <code>MASS::stepAIC</code> permet de faire cette sélection en utilisant un critère d’information.</p>
-<p>L’idée de la <strong>sélection ascendante</strong> est d’ajuster à chaque étape au modèle précédent la variable qui améliore le plus l’ajustement. Le modèle de départ est celui qui n’inclut que l’ordonnée à l’origine (aucune variable explicative). À chaque étape, on ajoute la variable qui améliore le plus le critère d’ajustement jusqu’à ce qu’aucune amélioration ne soit résultante.</p>
-<p>Un algorithme glouton résoud un problème d’optimisation étape par étape: après <span class="math inline">\(k\)</span> étapes, le modèle construit par la procédure n’est pas nécessairement le meilleur modèle (si on essayait toutes les combinaisons). Si on commence avec <span class="math inline">\(p\)</span> variables, on regarde <span class="math inline">\(p\)</span> choix à la première étape de la procédure ascendante, puis on choisit nue variable parmi les <span class="math inline">\(p-1\)</span> restantes à la deuxième étape, etc. La procédure exhaustive essaiera toutes les <span class="math inline">\(\binom{p}{2}\)</span> combinaisons possibles<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>: puisque plus de modèles sont essayés, la solution finale est nécessairement meilleur pour l’échantillon d’apprentissage.</p>
+<p>L’idée de la <strong>sélection ascendante</strong> est d’ajouter à chaque étape au modèle précédent la variable qui améliore le plus l’ajustement. Le modèle de départ est celui qui n’inclut que l’ordonnée à l’origine (aucune variable explicative). À chaque étape, on ajoute la variable qui améliore le plus le critère d’ajustement jusqu’à ce qu’aucune amélioration ne soit résultante.</p>
+<p>Un algorithme glouton résoud un problème d’optimisation étape par étape: après <span class="math inline">\(k\)</span> étapes, le modèle construit par la procédure n’est pas nécessairement le meilleur modèle (si on essayait toutes les combinaisons). Si on commence avec <span class="math inline">\(p\)</span> variables, on regarde <span class="math inline">\(p\)</span> choix à la première étape de la procédure ascendante, puis on choisit nue variable parmi les <span class="math inline">\(p-1\)</span> restantes à la deuxième étape, etc. La procédure exhaustive essaiera toutes les <span class="math inline">\(\binom{p}{2}\)</span> combinaisons possibles<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>: puisque plus de modèles sont essayés, la solution finale est nécessairement meilleure côté performance évaluée sur l’échantillon d’apprentissage.</p>
 <p>La <strong>sélection descendante</strong> est similaire, sauf qu’on part avec le modèle qui inclut toutes les variables explicatives. À chaque étape, on retire la variable qui contribue le moins à l’ajustement jusqu’à ce que le critère d’ajustement ne puisse plus être amélioré ou jusqu’à ce qu’on recouvre le modèle sans variables explicatives, selon le scénario. C’est l’inverse de la méthode ascendante: on va tester le retrait de chaque variable individuellement et retirer celle qui est la moins significative.</p>
 <p>La <strong>méthode de sélection séquentielle</strong> est un hybride entre les méthodes de sélection ascendantes et descendante. On débute la recherche à partir du modèle ne contenant que l’ordonnée à l’origine. À chaque étape, on fait une étape ascendante suivie de une (ou plusieurs) étapes descendantes. On continue ainsi tant que le modèle retourné par l’algorithme n’est pas identique à celui de l’étape précédente (dépendant de notre critère). Le dernier modèle est celui retenu.</p>
 <p>Avec la méthode séquentielle, une fois qu’on entre une variable (étape ascendante), on fait autant d’étapes descendante afin de retirer toutes les variables qui satisfont le critère de sortie (il peut ne pas y en avoir). Une fois cela effectué, on refait une étape ascendante pour voir si on peut ajouter une nouvelle variable.</p>
@@ -1252,36 +1239,37 @@ q_1(\lambda) = \lambda \sum_{j=1}^p |\beta_j|.
 </div>
 </div>
 <p>Plusieurs variantes existent dans la littérature qui généralisent le modèle à des contextes plus compliqués. Le choix des variables à inclure dans la sélection dépend du choix de la pénalité <span class="math inline">\(\lambda\)</span>, qui est règle générale estimée par validation croisée à cinq ou 10 groupes.</p>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/lasso_296738311257398e098ea86489283fcd">
+<div class="cell" data-hash="04-selectionmodeles_cache/html/lasso_b5aecd327638a1dabb9b773856e00b2e">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sélection par LASSO</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Paramètre de pénalité déterminé par </span></span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># validation croisée à partir d'un vecteur</span></span>
 <span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># de valeurs candidates</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>lambda_seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.1</span>,<span class="dv">2</span>, <span class="at">by =</span> <span class="fl">0.01</span>)</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>cv_output <span class="ot">&lt;-</span> </span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  glmnet<span class="sc">::</span><span class="fu">cv.glmnet</span>(<span class="at">x =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]), </span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> dbm_a<span class="sc">$</span>ymontant, </span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="dv">1</span>, </span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">lambda =</span> lambda_seq)</span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cv.output)</span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="co"># On réestime le modèle avec la pénalité</span></span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>lambopt <span class="ot">&lt;-</span> cv_output<span class="sc">$</span>lambda.min</span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>lasso_best <span class="ot">&lt;-</span> </span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  glmnet<span class="sc">::</span><span class="fu">glmnet</span>(</span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]),</span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> dbm_a<span class="sc">$</span>ymontant,</span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="dv">1</span>, </span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda =</span> lambopt)</span>
-<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Prédictions et calcul de l'EQM</span></span>
-<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="co"># On pourrait remplacer `newx` par </span></span>
-<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a><span class="co"># d'autres données (validation externe)</span></span>
-<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(lasso_best, </span>
-<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>                <span class="at">s =</span> lambopt, </span>
-<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>                <span class="at">newx =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="sc">-</span><span class="dv">1</span>]))</span>
-<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>eqm_lasso <span class="ot">&lt;-</span> <span class="fu">mean</span>((pred <span class="sc">-</span> dbm_a<span class="sc">$</span>ymontant)<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>lambda_seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="fl">0.1</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">to =</span> <span class="dv">10</span>, </span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">by =</span> <span class="fl">0.01</span>)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>cv_output <span class="ot">&lt;-</span> </span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  glmnet<span class="sc">::</span><span class="fu">cv.glmnet</span>(<span class="at">x =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]), </span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> dbm_a<span class="sc">$</span>ymontant, </span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="dv">1</span>, </span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">lambda =</span> lambda_seq)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cv.output)</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="co"># On réestime le modèle avec la pénalité</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>lambopt <span class="ot">&lt;-</span> cv_output<span class="sc">$</span>lambda.min <span class="co"># ou lambda.1se</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>lasso_best <span class="ot">&lt;-</span> </span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>  glmnet<span class="sc">::</span><span class="fu">glmnet</span>(</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]),</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> dbm_a<span class="sc">$</span>ymontant,</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="dv">1</span>, </span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda =</span> lambopt)</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Prédictions et calcul de l'EQM</span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a><span class="co"># On pourrait remplacer `newx` par </span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a><span class="co"># d'autres données (validation externe)</span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(lasso_best, </span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>                <span class="at">s =</span> lambopt, </span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>                <span class="at">newx =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="sc">-</span><span class="dv">1</span>]))</span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>eqm_lasso <span class="ot">&lt;-</span> <span class="fu">mean</span>((pred <span class="sc">-</span> dbm_a<span class="sc">$</span>ymontant)<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Le graphique de la <a href="#fig-lassopath">Figure&nbsp;<span>4.9</span></a> montre l’évolution de l’erreur quadratique moyenne estimée en fonction du logarithme naturel de la pénalité (axe des abscisses). Comme plusieurs pénalités sont dans la marge d’erreurs, on choisit le première modèle à un erreur-type de la valeur minimale</p>
 <div class="cell" data-hash="04-selectionmodeles_cache/html/fig-lassopath_0df6bf99d1830728156d867ef423d76d">
@@ -1307,111 +1295,104 @@ q_1(\lambda) = \lambda \sum_{j=1}^p |\beta_j|.
 <li>Faire une sélection de variables pour chaque échantillon.</li>
 <li>Faire la moyenne des paramètres de ces modèles.</li>
 </ol>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/modelaverage_b1cdb6cbe7a7e38c32f31f5a7ad1184a">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(dbm, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>dbm_a <span class="ot">&lt;-</span> dbm <span class="sc">|&gt;</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(test <span class="sc">==</span> <span class="dv">0</span>,</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>                <span class="sc">!</span><span class="fu">is.na</span>(ymontant)) <span class="sc">|&gt;</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">x3 =</span> <span class="fu">factor</span>(x3),</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">x4 =</span> <span class="fu">factor</span>(x4))</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Moyenne de modèles</span></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>moyenne_modeles <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    data, </span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    form, </span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">aic =</span> <span class="cn">FALSE</span>, </span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">B =</span> 100L,</span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">ks =</span> <span class="dv">2</span>){</span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>  B <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(B)</span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">is.logical</span>(aic),</span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>            <span class="fu">length</span>(aic) <span class="sc">==</span> 1L,</span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>            <span class="fu">inherits</span>(form, <span class="st">"formula"</span>),</span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>            B <span class="sc">&gt;</span> <span class="dv">1</span>,</span>
-<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>            ks <span class="sc">&gt;=</span> <span class="dv">0</span>,</span>
-<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>            <span class="fu">inherits</span>(data, <span class="st">"data.frame"</span>))</span>
-<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data)</span>
-<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Faire une expansion pour obtenir colonnes</span></span>
-<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>  matmod <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(form, <span class="at">data =</span> data)</span>
-<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Nombre de variables explicatives</span></span>
-<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">ncol</span>(matmod) <span class="sc">-</span> 1L</span>
-<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Formule du modèle complet</span></span>
-<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>  fmod <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="fu">paste0</span>(<span class="st">"y ~"</span>, <span class="fu">paste0</span>(<span class="st">"x"</span>, <span class="fu">seq_len</span>(p), <span class="at">collapse =</span> <span class="st">"+"</span>)))</span>
-<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sauvegarder les noms</span></span>
-<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>  noms <span class="ot">&lt;-</span> <span class="fu">colnames</span>(matmod)</span>
-<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>  xnoms <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"x"</span>, <span class="fu">seq_len</span>(p))</span>
-<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extraire le nom de la variable réponse</span></span>
-<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>  nom_reponse <span class="ot">&lt;-</span> <span class="fu">all.vars</span>(form)[<span class="fu">attr</span>(<span class="fu">terms</span>(form), <span class="st">"response"</span>)]</span>
-<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Créer une base de données avec la réponse</span></span>
-<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>  <span class="co"># moins l'ordonnée à l'origine</span></span>
-<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>  matmod <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">cbind</span>(</span>
-<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">get</span>(nom_reponse, data), </span>
-<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a>    matmod[,<span class="sc">-</span><span class="dv">1</span>]))</span>
-<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(matmod) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"y"</span>, xnoms)</span>
-<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Contenant pour params/ nb de sélections</span></span>
-<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a>  params <span class="ot">&lt;-</span> nselect <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, p <span class="sc">+</span> <span class="dv">1</span>)</span>
-<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(params) <span class="ot">&lt;-</span> </span>
-<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(nselect) <span class="ot">&lt;-</span> </span>
-<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">"(Intercept)"</span>, xnoms)</span>
-<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Boucle</span></span>
-<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(b <span class="cf">in</span> <span class="fu">seq_len</span>(B)){</span>
-<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Procédure de sélection avec AIC ou BIC</span></span>
-<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a>  modselect <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">stepAIC</span>(</span>
-<span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Valeurs de départ</span></span>
-<span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> <span class="fu">lm</span>(<span class="at">formula =</span> y <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb22-52"><a href="#cb22-52" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Rééchantillonner données (avec remplacement)</span></span>
-<span id="cb22-53"><a href="#cb22-53" aria-hidden="true" tabindex="-1"></a>       <span class="at">data =</span> matmod[<span class="fu">sample.int</span>(<span class="at">n =</span> N, </span>
-<span id="cb22-54"><a href="#cb22-54" aria-hidden="true" tabindex="-1"></a>                             <span class="at">size =</span> N, </span>
-<span id="cb22-55"><a href="#cb22-55" aria-hidden="true" tabindex="-1"></a>                             <span class="at">replace =</span> <span class="cn">TRUE</span>),]),</span>
-<span id="cb22-56"><a href="#cb22-56" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Modèle maximal additif considéré</span></span>
-<span id="cb22-57"><a href="#cb22-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">scope =</span> fmod, </span>
-<span id="cb22-58"><a href="#cb22-58" aria-hidden="true" tabindex="-1"></a>    <span class="co"># pénalité pour critère d'information</span></span>
-<span id="cb22-59"><a href="#cb22-59" aria-hidden="true" tabindex="-1"></a>    <span class="co"># k = ifelse(aic, 2, log(N)), </span></span>
-<span id="cb22-60"><a href="#cb22-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">direction =</span> <span class="st">"both"</span>, </span>
-<span id="cb22-61"><a href="#cb22-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">trace =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb22-62"><a href="#cb22-62" aria-hidden="true" tabindex="-1"></a>   <span class="at">keep =</span> <span class="cf">function</span>(mod, AIC, ...){ </span>
-<span id="cb22-63"><a href="#cb22-63" aria-hidden="true" tabindex="-1"></a>      <span class="co"># autres sorties des modèles à conserver</span></span>
-<span id="cb22-64"><a href="#cb22-64" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list</span>(<span class="at">IC =</span> <span class="fu">AIC</span>(mod, <span class="at">k =</span> <span class="fu">ifelse</span>(aic, <span class="dv">2</span>, <span class="fu">log</span>(N))),</span>
-<span id="cb22-65"><a href="#cb22-65" aria-hidden="true" tabindex="-1"></a>           <span class="at">coef =</span> <span class="fu">coef</span>(mod))},</span>
-<span id="cb22-66"><a href="#cb22-66" aria-hidden="true" tabindex="-1"></a>   <span class="at">k =</span> ks)</span>
-<span id="cb22-67"><a href="#cb22-67" aria-hidden="true" tabindex="-1"></a>  min_IC <span class="ot">&lt;-</span> <span class="fu">which.min</span>(<span class="fu">unlist</span>(modselect<span class="sc">$</span>keep[<span class="st">'IC'</span>,]))</span>
-<span id="cb22-68"><a href="#cb22-68" aria-hidden="true" tabindex="-1"></a>  coefsv <span class="ot">&lt;-</span> modselect<span class="sc">$</span>keep[<span class="dv">2</span>,min_IC]<span class="sc">$</span>coef</span>
-<span id="cb22-69"><a href="#cb22-69" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Trouver quelles colonnes représentent</span></span>
-<span id="cb22-70"><a href="#cb22-70" aria-hidden="true" tabindex="-1"></a>  <span class="co">#  un coefficient non-nul</span></span>
-<span id="cb22-71"><a href="#cb22-71" aria-hidden="true" tabindex="-1"></a>  colind <span class="ot">&lt;-</span> <span class="fu">match</span>(<span class="fu">names</span>(coefsv),</span>
-<span id="cb22-72"><a href="#cb22-72" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">names</span>(params))</span>
-<span id="cb22-73"><a href="#cb22-73" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Incrémenter paramètres non-nuls</span></span>
-<span id="cb22-74"><a href="#cb22-74" aria-hidden="true" tabindex="-1"></a>  params[colind] <span class="ot">&lt;-</span> params[colind] <span class="sc">+</span></span>
-<span id="cb22-75"><a href="#cb22-75" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.numeric</span>(coefsv)</span>
-<span id="cb22-76"><a href="#cb22-76" aria-hidden="true" tabindex="-1"></a>  nselect[colind] <span class="ot">&lt;-</span> nselect[colind] <span class="sc">+</span> 1L</span>
-<span id="cb22-77"><a href="#cb22-77" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb22-78"><a href="#cb22-78" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb22-79"><a href="#cb22-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(nselect) <span class="ot">&lt;-</span> noms</span>
-<span id="cb22-80"><a href="#cb22-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(params) <span class="ot">&lt;-</span> noms</span>
-<span id="cb22-81"><a href="#cb22-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">coefs =</span> params <span class="sc">/</span> B,</span>
-<span id="cb22-82"><a href="#cb22-82" aria-hidden="true" tabindex="-1"></a>              <span class="at">nselect =</span> nselect[<span class="sc">-</span><span class="dv">1</span>] <span class="sc">/</span> B))</span>
-<span id="cb22-83"><a href="#cb22-83" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb22-84"><a href="#cb22-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-85"><a href="#cb22-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-86"><a href="#cb22-86" aria-hidden="true" tabindex="-1"></a><span class="co"># Moyenne de modèles</span></span>
-<span id="cb22-87"><a href="#cb22-87" aria-hidden="true" tabindex="-1"></a><span class="co">#  procédure séquentielle ascendante (AIC) </span></span>
-<span id="cb22-88"><a href="#cb22-88" aria-hidden="true" tabindex="-1"></a><span class="co">#  sélection de modèle selon BIC</span></span>
-<span id="cb22-89"><a href="#cb22-89" aria-hidden="true" tabindex="-1"></a>mmodeles <span class="ot">&lt;-</span> </span>
-<span id="cb22-90"><a href="#cb22-90" aria-hidden="true" tabindex="-1"></a>  <span class="fu">moyenne_modeles</span>(</span>
-<span id="cb22-91"><a href="#cb22-91" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> dbm_a, </span>
-<span id="cb22-92"><a href="#cb22-92" aria-hidden="true" tabindex="-1"></a>    <span class="at">form =</span> formule,</span>
-<span id="cb22-93"><a href="#cb22-93" aria-hidden="true" tabindex="-1"></a>    <span class="at">B =</span> 10L,</span>
-<span id="cb22-94"><a href="#cb22-94" aria-hidden="true" tabindex="-1"></a>    <span class="at">aic =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb22-95"><a href="#cb22-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-96"><a href="#cb22-96" aria-hidden="true" tabindex="-1"></a><span class="co"># Proportion des variables </span></span>
-<span id="cb22-97"><a href="#cb22-97" aria-hidden="true" tabindex="-1"></a><span class="co"># sélectionnées dans plus d'un modèle</span></span>
-<span id="cb22-98"><a href="#cb22-98" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(mmodeles<span class="sc">$</span>nselect <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
-<span id="cb22-99"><a href="#cb22-99" aria-hidden="true" tabindex="-1"></a><span class="co"># Nombre moyen de coefficients</span></span>
-<span id="cb22-100"><a href="#cb22-100" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(mmodeles<span class="sc">$</span>nselect)</span>
-<span id="cb22-101"><a href="#cb22-101" aria-hidden="true" tabindex="-1"></a><span class="co"># variables retenues plus de 20% du temps</span></span>
-<span id="cb22-102"><a href="#cb22-102" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(<span class="fu">which</span>(mmodeles<span class="sc">$</span>nselect <span class="sc">&gt;</span> <span class="fl">0.2</span>))</span>
-<span id="cb22-103"><a href="#cb22-103" aria-hidden="true" tabindex="-1"></a><span class="co"># moyenne des coefficients</span></span>
-<span id="cb22-104"><a href="#cb22-104" aria-hidden="true" tabindex="-1"></a>mmodeles<span class="sc">$</span>coefs</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/modelaverage_881e6320af6814069deb05ed20933ea6">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Moyenne de modèles</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>moyenne_modeles <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    data, </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    form, </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">aic =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">B =</span> 100L,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">ks =</span> <span class="dv">2</span>){</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  B <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(B)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">is.logical</span>(aic),</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>            <span class="fu">length</span>(aic) <span class="sc">==</span> 1L,</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>            <span class="fu">inherits</span>(form, <span class="st">"formula"</span>),</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>            B <span class="sc">&gt;</span> <span class="dv">1</span>,</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>            ks <span class="sc">&gt;=</span> <span class="dv">0</span>,</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>            <span class="fu">inherits</span>(data, <span class="st">"data.frame"</span>))</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data)</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Faire une expansion pour obtenir colonnes</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>  matmod <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(form, <span class="at">data =</span> data)</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Nombre de variables explicatives</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">ncol</span>(matmod) <span class="sc">-</span> 1L</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Formule du modèle complet</span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>  fmod <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="fu">paste0</span>(<span class="st">"y ~"</span>, <span class="fu">paste0</span>(<span class="st">"x"</span>, <span class="fu">seq_len</span>(p), <span class="at">collapse =</span> <span class="st">"+"</span>)))</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sauvegarder les noms</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>  noms <span class="ot">&lt;-</span> <span class="fu">colnames</span>(matmod)</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>  xnoms <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"x"</span>, <span class="fu">seq_len</span>(p))</span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extraire le nom de la variable réponse</span></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>  nom_reponse <span class="ot">&lt;-</span> <span class="fu">all.vars</span>(form)[<span class="fu">attr</span>(<span class="fu">terms</span>(form), <span class="st">"response"</span>)]</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Créer une base de données avec la réponse</span></span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># moins l'ordonnée à l'origine</span></span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>  matmod <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">cbind</span>(</span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">get</span>(nom_reponse, data), </span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>    matmod[,<span class="sc">-</span><span class="dv">1</span>]))</span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(matmod) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"y"</span>, xnoms)</span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Contenant pour params/ nb de sélections</span></span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>  params <span class="ot">&lt;-</span> nselect <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, p <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(params) <span class="ot">&lt;-</span> </span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(nselect) <span class="ot">&lt;-</span> </span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">"(Intercept)"</span>, xnoms)</span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Boucle</span></span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(b <span class="cf">in</span> <span class="fu">seq_len</span>(B)){</span>
+<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Procédure de sélection avec AIC ou BIC</span></span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>  modselect <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">stepAIC</span>(</span>
+<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Valeurs de départ</span></span>
+<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> <span class="fu">lm</span>(<span class="at">formula =</span> y <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Rééchantillonner données (avec remplacement)</span></span>
+<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a>       <span class="at">data =</span> matmod[<span class="fu">sample.int</span>(<span class="at">n =</span> N, </span>
+<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a>                             <span class="at">size =</span> N, </span>
+<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a>                             <span class="at">replace =</span> <span class="cn">TRUE</span>),]),</span>
+<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Modèle maximal additif considéré</span></span>
+<span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">scope =</span> fmod, </span>
+<span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a>    <span class="co"># pénalité pour critère d'information</span></span>
+<span id="cb22-52"><a href="#cb22-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># k = ifelse(aic, 2, log(N)), </span></span>
+<span id="cb22-53"><a href="#cb22-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">direction =</span> <span class="st">"both"</span>, </span>
+<span id="cb22-54"><a href="#cb22-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">trace =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb22-55"><a href="#cb22-55" aria-hidden="true" tabindex="-1"></a>   <span class="at">keep =</span> <span class="cf">function</span>(mod, AIC, ...){ </span>
+<span id="cb22-56"><a href="#cb22-56" aria-hidden="true" tabindex="-1"></a>      <span class="co"># autres sorties des modèles à conserver</span></span>
+<span id="cb22-57"><a href="#cb22-57" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list</span>(<span class="at">IC =</span> <span class="fu">AIC</span>(mod, <span class="at">k =</span> <span class="fu">ifelse</span>(aic, <span class="dv">2</span>, <span class="fu">log</span>(N))),</span>
+<span id="cb22-58"><a href="#cb22-58" aria-hidden="true" tabindex="-1"></a>           <span class="at">coef =</span> <span class="fu">coef</span>(mod))},</span>
+<span id="cb22-59"><a href="#cb22-59" aria-hidden="true" tabindex="-1"></a>   <span class="at">k =</span> ks)</span>
+<span id="cb22-60"><a href="#cb22-60" aria-hidden="true" tabindex="-1"></a>  min_IC <span class="ot">&lt;-</span> <span class="fu">which.min</span>(<span class="fu">unlist</span>(modselect<span class="sc">$</span>keep[<span class="st">'IC'</span>,]))</span>
+<span id="cb22-61"><a href="#cb22-61" aria-hidden="true" tabindex="-1"></a>  coefsv <span class="ot">&lt;-</span> modselect<span class="sc">$</span>keep[<span class="dv">2</span>,min_IC]<span class="sc">$</span>coef</span>
+<span id="cb22-62"><a href="#cb22-62" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Trouver quelles colonnes représentent</span></span>
+<span id="cb22-63"><a href="#cb22-63" aria-hidden="true" tabindex="-1"></a>  <span class="co">#  un coefficient non-nul</span></span>
+<span id="cb22-64"><a href="#cb22-64" aria-hidden="true" tabindex="-1"></a>  colind <span class="ot">&lt;-</span> <span class="fu">match</span>(<span class="fu">names</span>(coefsv),</span>
+<span id="cb22-65"><a href="#cb22-65" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">names</span>(params))</span>
+<span id="cb22-66"><a href="#cb22-66" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Incrémenter paramètres non-nuls</span></span>
+<span id="cb22-67"><a href="#cb22-67" aria-hidden="true" tabindex="-1"></a>  params[colind] <span class="ot">&lt;-</span> params[colind] <span class="sc">+</span></span>
+<span id="cb22-68"><a href="#cb22-68" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.numeric</span>(coefsv)</span>
+<span id="cb22-69"><a href="#cb22-69" aria-hidden="true" tabindex="-1"></a>  nselect[colind] <span class="ot">&lt;-</span> nselect[colind] <span class="sc">+</span> 1L</span>
+<span id="cb22-70"><a href="#cb22-70" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb22-71"><a href="#cb22-71" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb22-72"><a href="#cb22-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(nselect) <span class="ot">&lt;-</span> noms</span>
+<span id="cb22-73"><a href="#cb22-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(params) <span class="ot">&lt;-</span> noms</span>
+<span id="cb22-74"><a href="#cb22-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">coefs =</span> params <span class="sc">/</span> B,</span>
+<span id="cb22-75"><a href="#cb22-75" aria-hidden="true" tabindex="-1"></a>              <span class="at">nselect =</span> nselect[<span class="sc">-</span><span class="dv">1</span>] <span class="sc">/</span> B))</span>
+<span id="cb22-76"><a href="#cb22-76" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb22-77"><a href="#cb22-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-78"><a href="#cb22-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-79"><a href="#cb22-79" aria-hidden="true" tabindex="-1"></a><span class="co"># Moyenne de modèles</span></span>
+<span id="cb22-80"><a href="#cb22-80" aria-hidden="true" tabindex="-1"></a><span class="co">#  procédure séquentielle ascendante (AIC) </span></span>
+<span id="cb22-81"><a href="#cb22-81" aria-hidden="true" tabindex="-1"></a><span class="co">#  sélection de modèle selon BIC</span></span>
+<span id="cb22-82"><a href="#cb22-82" aria-hidden="true" tabindex="-1"></a>mmodeles <span class="ot">&lt;-</span> </span>
+<span id="cb22-83"><a href="#cb22-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">moyenne_modeles</span>(</span>
+<span id="cb22-84"><a href="#cb22-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> dbm_a, </span>
+<span id="cb22-85"><a href="#cb22-85" aria-hidden="true" tabindex="-1"></a>    <span class="at">form =</span> formule,</span>
+<span id="cb22-86"><a href="#cb22-86" aria-hidden="true" tabindex="-1"></a>    <span class="at">B =</span> 10L,</span>
+<span id="cb22-87"><a href="#cb22-87" aria-hidden="true" tabindex="-1"></a>    <span class="at">aic =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb22-88"><a href="#cb22-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-89"><a href="#cb22-89" aria-hidden="true" tabindex="-1"></a><span class="co"># Proportion des variables </span></span>
+<span id="cb22-90"><a href="#cb22-90" aria-hidden="true" tabindex="-1"></a><span class="co"># sélectionnées dans plus d'un modèle</span></span>
+<span id="cb22-91"><a href="#cb22-91" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(mmodeles<span class="sc">$</span>nselect <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb22-92"><a href="#cb22-92" aria-hidden="true" tabindex="-1"></a><span class="co"># Nombre moyen de coefficients</span></span>
+<span id="cb22-93"><a href="#cb22-93" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(mmodeles<span class="sc">$</span>nselect)</span>
+<span id="cb22-94"><a href="#cb22-94" aria-hidden="true" tabindex="-1"></a><span class="co"># variables retenues plus de 20% du temps</span></span>
+<span id="cb22-95"><a href="#cb22-95" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(<span class="fu">which</span>(mmodeles<span class="sc">$</span>nselect <span class="sc">&gt;</span> <span class="fl">0.2</span>))</span>
+<span id="cb22-96"><a href="#cb22-96" aria-hidden="true" tabindex="-1"></a><span class="co"># moyenne des coefficients</span></span>
+<span id="cb22-97"><a href="#cb22-97" aria-hidden="true" tabindex="-1"></a>mmodeles<span class="sc">$</span>coefs</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Chaque modèle est construit à l’aide d’un échantillon aléatoire avec remise. Utilisez <code>set.seed</code> pour fixer le générateur de nombre aléatoire et permettre la reproductibilité</p>
 <p>Toutes les méthodes employées jusqu’à maintenant utilise une méthode de pénalisation pour déterminer le meilleur modèle. Une alternative avec serait de répéter la sélection en utilisant directement l’erreur quadratique moyenne estimée à l’aide de la validation croisée comme critère de sélection: pour cela, il faudrait ajuster l’ensemble des modèles candidats retournés par une procédure exhaustive ou séquentielle.</p>
@@ -1424,6 +1405,11 @@ q_1(\lambda) = \lambda \sum_{j=1}^p |\beta_j|.
 <div id="tbl-02-gmse-base" class="anchored">
 <table class="table">
 <caption>Tableau&nbsp;4.7: Estimation de l’erreur quadratique moyenne sur l’échantillon test avec les variables de base. Les meilleurs modèles selon les critères d’informations découlent d’une recherche exhaustive de tous les sous-ensembles.</caption>
+<colgroup>
+<col style="width: 31%">
+<col style="width: 36%">
+<col style="width: 31%">
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: center;">nombre de variables</th>
@@ -1469,12 +1455,12 @@ q_1(\lambda) = \lambda \sum_{j=1}^p |\beta_j|.
 <tr class="even">
 <td style="text-align: center;">21</td>
 <td style="text-align: center;">12</td>
-<td style="text-align: left;">séquentielle ascendante, choix selon <span class="math inline">\(\mathsf{BIC}\)</span></td>
+<td style="text-align: left;">séquentielle ascendante, choix selon <span class="math inline">\(\mathsf{AIC}\)</span></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">15</td>
 <td style="text-align: center;">12.31</td>
-<td style="text-align: left;">séquentielle ascendante, choix selon <span class="math inline">\(\mathsf{AIC}\)</span></td>
+<td style="text-align: left;">séquentielle ascendante, choix selon <span class="math inline">\(\mathsf{BIC}\)</span></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">23</td>

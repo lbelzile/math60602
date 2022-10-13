@@ -590,14 +590,14 @@ Si on prend $c=0.5$ comme point de coupure, cela revient à assigner l'observati
 
 
 Dans un cadre de prédiction, il nous faudra un critère pour juger de la qualité de l'ajustement du modèle.
-Rappelez-vous que pour une réponse continue, nous avons utilisé l'erreur moyenne quadratique,
+Rappelez-vous que pour une réponse continue, nous avons utilisé l'erreur quadratique moyenne,
 $\mathsf{EQM} = \mathsf{E}\{(Y-\widehat{Y})^2\}$, où $\widehat{Y} = \mathsf{E}(Y \mid \mathbf{X})$, 
 pour juger de la performance d'un modèle. Comme la réponse $Y$ est binaire ici, nous allons utiliser des critères différents.
 
 Voyons d'abord un premier critère pour juger de la qualité d'un modèle de prédiction. Soit $Y$ la vraie valeur de la réponse binaire et $\widehat{Y}$ (soit 0 ou 1) la valeur de $Y$ prédite par un modèle pour une observation choisie au hasard dans la population. Un premier critère pour juger de la performance d'un modèle est le **taux de mauvaise classification**, un estimé de la probabilité de mal classifier une observation choisie au hasard dans la population, $\Pr(Y \neq\widehat{Y})$. Plus $\Pr(Y \neq\widehat{Y})$ est petite, meilleure est la capacité prédictive du modèle.
 
 
-Tout comme l'erreur moyenne quadratique, on ne peut qu'estimer $\Pr(Y \neq\widehat{Y})$. Pour les raisons vues au chapitre précédent, l'estimer en calculant le taux de mauvaise classification des observations ayant servi à l'ajustement du modèle sans aucune correction n'est pas une bonne approche. Les approches couvertes dans le dernier chapitre pour l'estimation de l'erreur moyenne quadratique, telles la validation-croisée et la
+Tout comme l'erreur quadratique moyenne, on ne peut qu'estimer $\Pr(Y \neq\widehat{Y})$. Pour les raisons vues au chapitre précédent, l'estimer en calculant le taux de mauvaise classification des observations ayant servi à l'ajustement du modèle sans aucune correction n'est pas une bonne approche. Les approches couvertes dans le dernier chapitre pour l'estimation de l'erreur quadratique moyenne, telles la validation-croisée et la
 division de l'échantillon, peuvent être utilisées pour estimer le taux de mauvaise classification $\Pr(Y \neq \widehat{Y})$.
 
 
@@ -865,6 +865,116 @@ print(roc)
 # roc$aire
 ```
 
+### Classification avec une matrice de gain
+
+Utiliser le taux de mauvaise classification $\Pr(Y \neq \widehat{Y})$, comme critère de performance, revient au même que d'utiliser le taux de bonne classification $\Pr(Y=\widehat{Y})$, car $\Pr(Y \neq \widehat{Y}) = 1-\Pr(Y=\widehat{Y})$. On veut un modèle avec un haut taux de bonne classification (ou un faible taux de mauvaise classification).
+
+Lorsqu'on utilise $\Pr(Y \neq \widehat{Y})$ comme critère pour juger de la qualité d'un modèle prévisionnel, on fait l'hypothèse que le gain associé à bien classifier une observation dans la catégorie 0 lorsqu'elle est réellement dans la catégorie 0 est le même que celui associé à classifier une observation dans la catégorie 1 lorsqu'elle est réellement dans la catégorie 1: cela correspond à la matrice de gain.
+
+
+: Matrice de gain correspondant au taux de bonne classification {#tbl-03-gain1} 
+
+|            |             | observation |       |
+|------------|-------------|-------------:|-------:|
+|            | gain        | $Y=1$       | $Y=0$ |
+| prédiction | $\widehat{Y}=1$ | $1$           | $0$     |
+|            | $\widehat{Y}=0$ | $0$           | $1$     |
+ 
+ 
+Le gain vaut 1 lorsque la prévision est bonne (les deux cas sur la diagonale) et 0 lorsque le modèle se trompe (les deux autres cas). L'unité de mesure du gain n'est pas importante pour l'instant. Le gain total est 
+
+\begin{align*}
+\text{gain} &= 1 \Pr(\widehat{Y}=1, Y=1) + 1 \Pr(\widehat{Y}=0, Y=0)
+\\ &\quad + 0 \Pr(\widehat{Y}=1, Y=0)  + 0 \Pr(\widehat{Y}=0, Y=1)
+\\& = \Pr(Y = \widehat{Y}).
+\end{align*}
+Maximiser le gain total revient donc à maximiser le taux de bonne classification.
+
+Dans certaines situations, les gains (ou la perte si le gain est négatif) associés aux bonnes décisions et aux erreurs ne sont pas équivalents. 
+
+Supposons que le gain de classer une observation à $i$ ($i \in \{0,1\}$) lorsqu'elle vaut $j$ ($j \in \{0,1\}$) en réalité est de $c_{ij}$. La matrice de gain est alors
+
+: Matrice de gain pondérée en fonction d'un coût {#tbl-03-gain2}
+
+|            |             | observation |          |
+|------------|-------------|-------------:|----------:|
+|            | gain        | $Y=1$     | $Y=0$    |
+| prédiction | $\widehat{Y}=1$ | $c_{11}$    | $c_{10}$ |
+|            | $\widehat{Y}=0$ | $c_{01}$    | $c_{00}$ |
+ 
+En pratique, l'une de ces quatre quantités peut être fixée à 1 car seulement les poids relatifs (les ratios) des gains sont importants. Dans ce cas, le gain moyen est
+\begin{align*}
+\text{gain} &= c_{11} \Pr(\widehat{Y}=1, Y=1) + c_{00}\Pr(\widehat{Y}=0, Y=0) 
+\\ &\quad + c_{10} \Pr(\widehat{Y}=1, Y=0)  + c_{01} \Pr(\widehat{Y}=0, Y=1)
+\end{align*}
+
+Le meilleur modèle est alors celui qui maximise le gain moyen. 
+
+
+Nous allons encore une fois seulement utiliser les 10 variables de base. Mais nous allons intégrer des revenus et coûts afin de trouver le meilleur point de coupure. Rappelez-vous que le coût de l'envoi d'un catalogue est de 10\$. Le tableau des variables descriptives qui suit montre que, pour les 210 clients qui ont acheté quelque chose, le revenu moyen est de 67.29\$ (moyenne de la variable `ymontant`).
+
+
+```{r}
+#| label: tbl-dbm-ymontant-apprentissage
+#| echo: false
+#| eval: true
+#| tbl-cap: "Statistiques descriptives des montants d'achats pour la base de données marketing (échantillon d'apprentissage)."
+data(dbm, package = "hecmulti")
+dbm |>
+  dplyr::filter(test == 0,
+                  !is.na(ymontant))  |>
+  dplyr::summarize("n" = length(ymontant), 
+            "moyenne" = round(mean(ymontant),2), 
+            "écart-type" =round(sd(ymontant),2), 
+            "minimum" = min(ymontant), 
+            "maximum" = max(ymontant)) |>
+knitr::kable(booktabs = TRUE) |>
+    kableExtra::kable_styling(full_width = TRUE)
+```
+
+
+Nous allons travailler en termes de revenu net. Nous pouvons donc spécifier la matrice de gain du  @tbl-03-gain3 pour notre problème. Si on n'envoie pas de catalogue, notre gain est nul. Si on envoie le catalogue à un client qui n'achète pas, on perd 10\$ (le coût de l'envoi). En revanche, notre revenu net est de 57\$ (revenu moyen moins coût de l'envoi).
+
+: Matrice de gain pour l'envoi de catalogue {#tbl-03-gain3}
+
+|            |             | observation |       |
+|------------|-------------|-------------:|-------:|
+|            | gain        | $Y=1$       | $Y=0$ |
+| prédiction | $\widehat{Y}=1$ | 57          | -10 |
+|            | $\widehat{Y}=0$ | 0           | 0     |
+
+On peut calculer la performance du modèle et le gain moyen en faisant varier le point de coupure. Pour avoir une mesure fidèle, on utilise la validation croisée à $K=10$ groupes (la mesure affichée correspondant à la moyenne de 10 réplications)
+
+```{r}
+#| label: fig-coupure-pondere
+#| eval: true
+#| echo: true
+#| fig-cap: "Estimation du gain moyen en fonction du point de coupure pour l'exemple de base de données marketing."
+data(dbm, package = "hecmulti")
+donnees <- dbm |> 
+  dplyr::filter(test == 0)
+formule = formula(yachat ~ x1 + x2 + x3 +
+                    x4 + x5 + x6 + x7 + 
+                    x8 + x9 + x10)
+modele <- glm(formule, 
+              family = binomial, 
+              data = donnees)
+coupe <- hecmulti::select_pcoupe(
+  modele = modele, 
+  c00 = 0, 
+  c01 = 0, 
+  c10 = -10, 
+  c11 = 57,
+  plot = TRUE)
+coupe
+```
+
+La fonction `select_pcoupe` donne l'estimation du gain moyen (`gain`) pour différents points de coupures (`pcoupe`). Cette estimation provient d'une validation-croisée avec $K$ groupes (`ncv`) dans la fonction), répétée `nrep` fois. On a effectué ici la validation croisée avec 10 groupes et fait la moyenne des 10 répétitions afin d'avoir plus de précision. 
+
+On voit dans la @fig-coupure-pondere que le meilleur point de coupure, celui qui maximise le gain est `r coupe$optim`. Avec ce point de coupure, et selon le @tbl-classification-loocv, on estime que le taux de bonne classification est de `r round(perfo1$table[24,"pcorrect"], 2)` et que la sensibilité est de `r round(perfo1$table[24,"sensi"], 2)`. Ainsi, on estime qu'on va détecter environ `r round(perfo1$table[24,"sensi"],0)`\% des clients qui achètent. 
+
+
+Comme il est très coûteux de rater un client qui aurait acheté quelque chose, il est préférable d'envoyer le catalogue à plus de clients, quitte à ce que plusieurs d'entre eux n'achètent rien. Bien que le point de coupure de 0.5 donne un meilleur taux de bonne classification, il correspond à un gain moyen plus faible car on rate trop de clients qui achètent (la sensibilité est de seulement `r round(perfo1$table[100,"sensi"], 2)`\%). Travailler avec la matrice de gain permet de trouver le point de coupure optimal en incorporant des notions de coûts et profits.
 
 
 ### Courbe lift
@@ -931,7 +1041,7 @@ La @fig-lift présente le pourcentage d'observations bien classées parmi les va
 
 ### Calibration du modèle et détection du surajustement
 
-Il peut être intéressant de vérifier la **calibration** de notre modèle, et une statistique simple proposée par [Spiegelhalter (1986)]( https://doi.org/10.1002/sim.4780050506) peut être utile à cette fin. Pour une variable binaire $Y \in \{0,1\}$, l'erreur moyenne quadratique s'écrit
+Il peut être intéressant de vérifier la **calibration** de notre modèle, et une statistique simple proposée par [Spiegelhalter (1986)]( https://doi.org/10.1002/sim.4780050506) peut être utile à cette fin. Pour une variable binaire $Y \in \{0,1\}$, l'erreur quadratique moyenne s'écrit
 \begin{align*}
 \overline{B} &= \frac{1}{n} \sum_{i=1}^n (Y_i-p_i)^2 
 =\frac{1}{n} \sum_{i=1}^n(Y_i-p_i)(1-2p_i) + \frac{1}{n} \sum_{i=1}^n p_i(1-p_i).
@@ -955,116 +1065,6 @@ Va_Bs <- mean(p*(1-p)*(1-2*p)^2)/length(Y)
 Sous l'hypothèse nulle de calibration parfaite, $Z \sim \mathsf{No}(0,1)$ en grand échantillon. Pour le modèle simple avec toutes les covariables, la valeur-$p$ approximative calculée avec les probabilités de succès obtenues par validation-croisée et les données de l'échantillon d'apprentissage est `r round(2*(1-pnorm(abs((Bs-E_Bs)/sqrt(Va_Bs)))), 2)` et il n'y a pas de preuve ici que le modèle est mal calibré. Cette technique est utile pour vérifier s'il n'y a pas de surajustement (auquel cas le modèle tend à retourner des probabilités très près de 0/1, mais qui ne correspondent pas à la réalité).
 
 
-### Classification avec une matrice de gain
-
-Utiliser le taux de mauvaise classification $\Pr(Y \neq \widehat{Y})$, comme critère de performance, revient au même que d'utiliser le taux de bonne classification $\Pr(Y=\widehat{Y})$, car $\Pr(Y \neq \widehat{Y}) = 1-\Pr(Y=\widehat{Y})$. On veut un modèle avec un haut taux de bonne classification (ou un faible taux de mauvaise classification).
-
-Lorsqu'on utilise $\Pr(Y \neq \widehat{Y})$ comme critère pour juger de la qualité d'un modèle prévisionnel, on fait l'hypothèse que le gain associé à bien classifier une observation dans la catégorie 0 lorsqu'elle est réellement dans la catégorie 0 est le même que celui associé à classifier une observation dans la catégorie 1 lorsqu'elle est réellement dans la catégorie 1: cela correspond à la matrice de gain.
-
-
-: Matrice de gain correspondant au taux de bonne classification {#tbl-03-gain1} 
-
-|            |             | observation |       |
-|------------|-------------|-------------:|-------:|
-|            | gain        | $Y=1$       | $Y=0$ |
-| prédiction | $\widehat{Y}=1$ | $1$           | $0$     |
-|            | $\widehat{Y}=0$ | $0$           | $1$     |
- 
- 
-Le gain vaut 1 lorsque la prévision est bonne (les deux cas sur la diagonale) et 0 lorsque le modèle se trompe (les deux autres cas). L'unité de mesure du gain n'est pas importante pour l'instant. Le gain total est 
-
-\begin{align*}
-\text{gain} &= 1 \Pr(\widehat{Y}=1, Y=1) + 1 \Pr(\widehat{Y}=0, Y=0)
-\\ &\quad + 0 \Pr(\widehat{Y}=1, Y=0)  + 0 \Pr(\widehat{Y}=0, Y=1)
-\\& = \Pr(Y = \widehat{Y}).
-\end{align*}
-Maximiser le gain total revient donc à maximiser le taux de bonne classification.
-
-Dans certaines situations, les gains (ou la perte si le gain est négatif) associés aux bonnes décisions et aux erreurs ne sont pas équivalents. Par exemple, un des types d'erreurs peut être plus grave que l'autre.  Il peut alors être souhaitable d'en tenir compte dans le choix du modèle de classification. 
-
-Supposons que le gain de classer une observation à $i$ ($i \in \{0,1\}$) lorsqu'elle vaut $j$ ($j \in \{0,1\}$) en réalité est de $c_{ij}$. La matrice de gain est alors
-
-: Matrice de gain pondérée en fonction d'un coût {#tbl-03-gain2}
-
-|            |             | observation |          |
-|------------|-------------|-------------:|----------:|
-|            | gain        | $Y=1$     | $Y=0$    |
-| prédiction | $\widehat{Y}=1$ | $c_{11}$    | $c_{10}$ |
-|            | $\widehat{Y}=0$ | $c_{01}$    | $c_{00}$ |
- 
-En pratique, l'une de ces quatre quantités peut être fixée à un car seulement les poids relatifs (les ratios) des gains sont importants. Dans ce cas, le gain moyen est
-\begin{align*}
-\text{gain} &= c_{11} \Pr(\widehat{Y}=1, Y=1) + c_{00}\Pr(\widehat{Y}=0, Y=0) 
-\\ &\quad + c_{10} \Pr(\widehat{Y}=1, Y=0)  + c_{01} \Pr(\widehat{Y}=0, Y=1)
-\end{align*}
-
-Le meilleur modèle est alors celui qui maximise le gain moyen. 
-
-
-Nous allons encore une fois seulement utiliser les 10 variables de base. Mais nous allons intégrer des revenus et coûts afin de trouver le meilleur point de coupure. Rappelez-vous que le coût de l'envoi d'un catalogue est de 10\$. Le tableau des variables descriptives qui suit montre que, pour les 210 clients qui ont acheté quelque chose, le revenu moyen est de 67.29\$ (moyenne de la variable `ymontant`).
-
-
-```{r}
-#| label: tbl-dbm-ymontant-apprentissage
-#| echo: false
-#| eval: true
-#| tbl-cap: "Statistiques descriptives des montants d'achats pour la base de données marketing (échantillon d'apprentissage)."
-data(dbm, package = "hecmulti")
-dbm |>
-  dplyr::filter(test == 0,
-                  !is.na(ymontant))  |>
-  dplyr::summarize("n" = length(ymontant), 
-            "moyenne" = round(mean(ymontant),2), 
-            "écart-type" =round(sd(ymontant),2), 
-            "minimum" = min(ymontant), 
-            "maximum" = max(ymontant)) |>
-knitr::kable(booktabs = TRUE) |>
-    kableExtra::kable_styling(full_width = TRUE)
-```
-
-
-Nous allons travailler en termes de revenu net. Nous pouvons donc spécifier la matrice de gain du  @tbl-03-gain3 pour notre problème. Si on n'envoit pas de catalogue, notre gain est nul. Si on envoie le catalogue à un client qui n'achète pas, on perd 10\$ (le coût de l'envoi). En revanche, notre revenu net est de 57\$ (revenu moyen moins coût de l'envoi).
-
-: Matrice de gain pour l'envoi de catalogue {#tbl-03-gain3}
-
-|            |             | observation |       |
-|------------|-------------|-------------:|-------:|
-|            | gain        | $Y=1$       | $Y=0$ |
-| prédiction | $\widehat{Y}=1$ | 57          | $-$10 |
-|            | $\widehat{Y}=0$ | 0           | 0     |
-
-On peut calculer la performance du modèle et le gain moyen en faisant varier le point de coupure. Pour avoir une mesure fidèle, on utilise la validation croisée à $K=10$ groupes (la mesure affichée correspondant à la moyenne de 10 réplications)
-
-```{r}
-#| label: fig-coupure-pondere
-#| eval: true
-#| echo: true
-#| fig-cap: "Estimation du gain moyen en fonction du point de coupure pour l'exemple de base de données marketing."
-data(dbm, package = "hecmulti")
-donnees <- dbm |> 
-  dplyr::filter(test == 0)
-formule = formula(yachat ~ x1 + x2 + x3 +
-                    x4 + x5 + x6 + x7 + 
-                    x8 + x9 + x10)
-modele <- glm(formule, 
-              family = binomial, 
-              data = donnees)
-coupe <- hecmulti::select_pcoupe(
-  modele = modele, 
-  c00 = 0, 
-  c01 = 0, 
-  c10 = -10, 
-  c11 = 57,
-  plot = TRUE)
-coupe
-```
-
-La fonction `select_pcoupe` donne l'estimation du gain moyen (`gain`) pour différents points de coupures (`pcoupe`). Cette estimation provient d'une validation-croisée avec $K$ groupes (`ncv`) dans la fonction), répétée `nrep` fois. On a effectué ici la validation croisée avec 10 groupes et fait la moyenne des 10 répétitions afin d'avoir plus de précision. 
-
-On voit dans la @fig-coupure-pondere que le meilleur point de coupure, celui qui maximise le gain est `r coupe$optim`. Avec ce point de coupure, et selon le @tbl-classification-loocv, on estime que le taux de bonne classification est de `r round(perfo1$table[24,"pcorrect"], 2)` et que la sensibilité est de `r round(perfo1$table[24,"sensi"], 2)`. Ainsi, on estime qu'on va détecter environ `r round(perfo1$table[24,"sensi"],0)`\% des clients qui achètent. 
-
-
-Comme il est très coûteux de rater un client qui aurait acheté quelque chose, il est préférable d'envoyer le catalogue à plus de clients, quitte à ce que plusieurs d'entre eux n'achètent rien. Bien que le point de coupure de 0.5 donne un meilleur taux de bonne classification, il correspond à un gain moyen plus faible car on rate trop de clients qui achètent (la sensibilité est de seulement `r round(perfo1$table[100,"sensi"], 2)`\%). Travailler avec la matrice de gain permet de trouver le point de coupure optimal en incorporant des notions de coûts et profits.
 
 Ici, nous avons ajusté un seul modèle, celui contenant uniquement les 10 variables de base et nous nous sommes attardés au choix du point de coupure pour l'assignation aux classes. Il est possible qu'un autre modèle, contenant par exemple des termes d'interactions, des termes quadratiques ou d'autres transformations des variables, soit supérieur à celui-ci. Le choix du modèle de prévision se fait donc souvent en deux étapes:
 
