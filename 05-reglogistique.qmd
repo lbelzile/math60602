@@ -1497,25 +1497,23 @@ Dans les deux premiers exemples, la variable réponse $Y$ est nominale (elle n'a
 
 ### Régression logistique multinomiale
 
-Afin de simplifier la notation, on suppose qu'il y a une seule variable explicative $X$ à disposition et que la variable $Y$  représente trois catégories, une parmi 0, 1 et 2. 
-
 En régression logistique, $Y$ est une variable binaire qui vaut soit 0, soit 1 et la probabilité de succès est
 \begin{align*}
-\ln\left(\frac{p_i}{1-p_i}\right) &= \beta_0 + \beta_1 \mathrm{X}_{i},\\p_i &= \Pr(Y_i=1 \mid \mathrm{X}_i) = \textrm{expit}(\beta_0 + \beta_1\mathrm{X}_i).
+\ln\left(\frac{p_i}{1-p_i}\right) &= \beta_0 + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p\mathrm{X}_{ip},\\p_i &= \Pr(Y_i=1 \mid \mathrm{X}_i) = \textrm{expit}(\eta_i).
 \end{align*}
 Dans ce modèle logistique, $\ln(p_i)-\ln(1-p_i) = \ln\{\Pr(Y_i=1 \mid \mathrm{X}_i)\} -  \ln\{\Pr(Y_i=0 \mid \mathrm{X}_i)\}$ peut être vu comme étant le logit de la catégorie 1 en utilisant 0 comme catégorie de référence. 
-Le modèle logistique multinomial procède de même en fixant une catégorie de référence et en modélisant le logit de chacune des autres catégories par rapport à la catégorie de référence. Avec $K+1$ catégories et en choisissant la catégorie 0 comme référence, le modèle devient
+Le modèle logistique multinomial procède de même en fixant une catégorie de référence et en modélisant le logit de chacune des autres catégories par rapport à la catégorie de référence. Avec $K$ catégories ($k = 1, \ldots, K$) et en choisissant la catégorie 1 comme référence, le modèle devient
 \begin{align*}
- \ln\left(\frac{p_{i1}}{p_{i0}}\right) = \beta_{01} + \beta_{11} \mathrm{X}_i, \, \ldots, \, \ln\left(\frac{p_{iK}}{p_{i0}}\right) = \beta_{0K} + \beta_{1K} \mathrm{X}_i,
+ \ln\left(\frac{p_{ij}}{p_{i1}}\right) = \eta_{ij} = \beta_{0j} + \beta_{1j} \mathrm{X}_{i1} + \cdots + \beta_{pj}\mathrm{X}_{ip}, \quad (j=2, \ldots, K)
 \end{align*}
-où $p_{ik} = \Pr(Y_i=k \mid \mathrm{X}_i)$ $(k=0, \ldots, K)$. Comme en régression logistique, on peut facilement exprimer ce modèle en termes des différentes probabilités,
+où $p_{ik} = \Pr(Y_i=k \mid \mathrm{X}_i)$ $(k=1, \ldots, K)$. Comme en régression logistique, on peut facilement exprimer ce modèle en termes des différentes probabilités,
 \begin{align*}
- p_{i0} &= \Pr(Y_i=0 \mid \mathrm{X}_i) = \frac{1}{1+ \sum_{j=1}^K\exp(\beta_{0j}+\beta_{1j}\mathrm{X}_i)}\\
- p_{ik} &= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\beta_{0k}+\beta_{1k}\mathrm{X}_i)}{1+ \sum_{j=1}^K\exp(\beta_{0k}+\beta_{1k}\mathrm{X}_i)}, \qquad k =1, \ldots, K.
+ p_{i1} &= \Pr(Y_i=1 \mid \mathrm{X}_i) = \frac{1}{1+ \sum_{j=2}^K\exp(\eta_{ij})}\\
+ p_{ik} &= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\eta_{ik})}{1+ \sum_{j=2}^K\exp(\eta_{ij})}, \qquad k=2, \ldots, K.
 \end{align*}
-On voit facilement que la somme des probabilités égale 1, c'est-à-dire $p_{i0} + \cdots + p_{iK} = 1$. En fait, le modèle logit multinomial ne fait que combiner plusieurs logit dans un seul modèle. L'interprétation des paramètres se fait comme en régression logistique sauf qu'il faut y aller équation par équation.
+On voit facilement que la somme des probabilités égale 1, c'est-à-dire $p_{i1} + \cdots + p_{iK} = 1$, ce qui fait que connaître la probabilité de $K-1$ des catégories nous permet de déduire la dernière. En fait, le modèle logit multinomial ne fait que combiner plusieurs logit dans un seul modèle. L'interprétation des paramètres se fait comme en régression logistique sauf qu'il faut y aller équation par équation.
 
-Cet exemple traite du taux de participation lors des élections américaines et des facteurs expliquant qu'un électeur ou une électrice se prévaut de son droit de vote, ainsi que la fréquence de participation. Les [données](https://github.com/fivethirtyeight/data/tree/master/non-voters) sont tirées d'un sondage Ipsos réalisé pour le site de nouvelles *FiveThirtyEight*. Les données sont accompagnées de pondérations provenant du recensement permettant de corriger la représentativité du sondage et de refléter l'électorat américain dans sa globalité.
+L'exemple qui suit traite du taux de participation lors des élections américaines et des facteurs expliquant qu'un électeur ou une électrice se prévaut de son droit de vote, ainsi que la fréquence de participation. Les [données](https://github.com/fivethirtyeight/data/tree/master/non-voters) sont tirées d'un sondage Ipsos réalisé pour le site de nouvelles *FiveThirtyEight*. Les données sont accompagnées de pondérations provenant du recensement permettant de corriger la représentativité du sondage et de refléter l'électorat américain dans sa globalité.
 
 La base de données `vote` contient 5837 observations obtenues par voie de sondage. Nous allons modéliser l'intention de vote, `catvote` à l'aide d'une régression logistique multinomiale.
 
@@ -1628,9 +1626,29 @@ ggplot(aes(fill = catvote,
 (g1 + g2) / (g3 +g4) / (g5 + g6) + plot_layout(guides = "collect") & theme(legend.position = "bottom")
 ```
 
-La plupart des découvertes de notre analyse exploratoire graphique ne sont pas surprenantes. On voit que les personnes plus fortunées, plus éduquées, plus âgées et celles qui s'associent à un parti politique principal (Républicains et Démocrates), votent davantage. L'écart selon l'âge est particulièrement édifiant, avec près de 50% des jeunes qui n'ont pas participé. Il faut gader en tête que le revenu, l'âge et le niveau d'éducation sont fortement associés et que les personnes plus jeunes ont eu moins d'occasions de voter (ce qui pourrait expliquer la plus grande propension pour les catégories de vote).
+On voit que les personnes plus fortunées, plus éduquées, plus âgées et celles qui s'associent à un parti politique principal (Républicains et Démocrates), votent davantage. L'écart selon l'âge est particulièrement édifiant, avec près de 50% des jeunes qui n'ont pas participé. Il faut garder en tête que le revenu, l'âge et le niveau d'éducation sont fortement associés et que les personnes plus jeunes ont eu moins d'occasions de voter (ce qui pourrait expliquer la plus grande propension pour les catégories de vote).
 
-Pour le modèle logit multinomial, nous allons prendre `toujours` comme catégorie de référence pour la variable réponse `catvote`. Notez qu'il est d'usage et préférable, pour réduire le risque de problèmes numériques et accélérer l'optimisation, de centrer et réduire les variables explicatives.
+
+Une étude plus attentive révèle que la distribution conditionnelle de ceux qui votent toujours est bimodale. La @fig-vote-age montre clairement que les très jeunes et les personnes âgées en font partie. Ainsi, le modèle est potentiellement mal spécifié car le vrai effet de l'âge n'est visiblement pas linéaire au niveau du log de la cote. Cela dit, les primovotant(e)s n'ont souvent eu qu'une seule occasion de voter, ce qui peut expliquer le comportement sur le graphique et l'absence de réponses pour sporadiquement. Pour éviter cet artefact, on considère les personnes de plus de 30 ans uniquement.
+
+
+```{r}
+#| label: fig-vote-age
+#| eval: true
+#| echo: false
+#| fig-cap: "Fréquence de vote selon l'âge."
+ggplot(data = vote, 
+       aes(x = age, fill = catvote)) +
+  geom_density(alpha = 0.2) + 
+  labs(fill = "vote", 
+       x = "âge (années)", 
+       y = "densité") + 
+  theme(legend.position = "bottom") +
+  theme_minimal()
+```
+
+
+Pour le modèle logit multinomial, nous allons prendre `rarement/jamais` comme catégorie de référence pour la variable réponse `catvote`. Notez qu'il est d'usage et préférable, pour réduire le risque de problèmes numériques et accélérer l'optimisation, de centrer et réduire les variables explicatives.
 
 ```{r}
 #| label: mullogit
@@ -1639,8 +1657,9 @@ Pour le modèle logit multinomial, nous allons prendre `toujours` comme catégor
 data(vote, package = "hecmulti")
 # Modèle multinomial
 multi1 <- nnet::multinom(
-  catvote ~ scale(age, scale = FALSE), 
+  catvote ~ scale(age, scale = FALSE), # centrer
   data = vote, 
+  subset = age > 30,
   weights = poids,
   Hess = TRUE,
   trace = FALSE) 
@@ -1648,13 +1667,14 @@ multi1 <- nnet::multinom(
 summary(multi1)
 # Estimations des coefficients
 coef(multi1)
-# Intervalles de confiance pour les estimations
+# Intervalles de confiance (Wald)
 confint(multi1)
 # Critères d'information
-AIC(multi1); BIC(multi1)
-# Prédiction du modèle, soit probabilité de chaque scénario
+AIC(multi1)
+BIC(multi1)
+# Prédictions: probabilité de chaque scénario
 predict(multi1, type = "probs")
-# Autrement, la classe la plus susceptible
+# Prédictions: classe la plus susceptible
 predict(multi1, type = "class")
 ```
 
@@ -1670,6 +1690,7 @@ data(vote, package = "hecmulti")
 multi1 <- nnet::multinom(
   catvote ~ scale(age, scale = FALSE), 
   data = vote, 
+  subset = age > 30,
   Hess = TRUE,
   weights = poids,
   trace = FALSE)
@@ -1697,41 +1718,26 @@ coefm1 <- sprintf(
   fmt = "%.3f")
 
 coefm1p11 <- sprintf(coef(multi1)[1,1],  fmt = "%.3f")
-coefm1p12 <- sprintf(coef(multi1)[2,2],  fmt = "%.3f")
+coefm1p12 <- sprintf(coef(multi1)[1,2],  fmt = "%.3f")
 coefm1p21 <- sprintf(coef(multi1)[2,1],  fmt = "%.3f")
 coefm1p22 <- sprintf(coef(multi1)[2,2],  fmt = "%.3f")
 ```
 
 Comme il y a trois catégories pour la variable dépendante, il y a deux équations pour le modèle ajusté. En regardant les coefficients dans le @tbl-multinom-coefs, on obtient:
 \begin{align*}
-\ln \left\{\frac{\Pr(\texttt{catvote}_{1i}=\texttt{rarement/jamais} \mid \texttt{age}_i)}{\Pr(\texttt{catvote}_{1i} = \texttt{toujours} \mid \texttt{age}_i)} \right\} &=
+\ln \left\{\frac{\Pr(\texttt{catvote}_{1i}= \texttt{sporadiquement}\mid \texttt{age}_i)}{\Pr(\texttt{catvote}_{1i} = \texttt{rarement/jamais} \mid \texttt{age}_i)} \right\} &=
 `r coefm1p11` + 
 `r coefm1p12` \texttt{age}_i, \\ 
-\ln \left\{\frac{\Pr(\texttt{catvote}_{1i}=\texttt{sporadiquement} \mid \texttt{age}_i)}{\Pr(\texttt{catvote}_{1i}= \texttt{toujours} \mid \texttt{age}_i)} \right\} &= 
+\ln \left\{\frac{\Pr(\texttt{catvote}_{1i}= \texttt{toujours}\mid \texttt{age}_i)}{\Pr(\texttt{catvote}_{1i}= \texttt{rarement/jamais}  \mid \texttt{age}_i)} \right\} &= 
 `r coefm1p21` + `r coefm1p22`\texttt{age}_i. 
 \end{align*}
 
-Plus l'âge du répondant augmente, plus la probabilité que la personne votre toujours augmente. Ainsi, la cote moyenne pour rarement/jamais versus la référence toujours est multipliée par 
-$`r expcoefm1`=\exp(`r coefm1`)$.
+Plus l'âge du répondant augmente, plus la probabilité que la personne votre toujours augmente. Ainsi, la cote moyenne pour toujours versus la référence rarement/jamais est multipliée par 
+$`r expcoefm1`=\exp(`r coefm1`)$ pour chaque année de plus.
 
-Ce résultat est logique, mais attention! une étude plus attentive révèle que la distribution conditionnelle de ceux qui votent toujours est bimodale. La @fig-vote-age montre clairement que les très jeunes et les personnes âgées en font partie. Ainsi, le modèle est potentiellement mal spécifié car le vrai effet de l'âge n'est visiblement pas linéaire au niveau du log de la cote.
+Ce résultat est logique, mais attention!
 
 Pour faire plus simple, on a employé une seule variable explicative, mais la taille de la base de données nous permettrait de mettre plusieurs autres effets.
-
-```{r}
-#| label: fig-vote-age
-#| eval: true
-#| echo: false
-#| fig-cap: "Fréquence de vote selon l'âge."
-ggplot(data = vote, 
-       aes(x = age, fill = catvote)) +
-  geom_density(alpha = 0.2) + 
-  labs(fill = "vote", 
-       x = "âge (années)", 
-       y = "densité") + 
-  theme(legend.position = "bottom") +
-  theme_minimal()
-```
 
 
 On peut comparer les modèles emboîtés à l'aide de tests de rapport de vraisemblance.
@@ -1746,6 +1752,7 @@ On peut comparer les modèles emboîtés à l'aide de tests de rapport de vraise
 multi0 <- nnet::multinom(catvote ~ 1,
                          weights = poids,
                          data = vote,
+                         subset = age > 30,
                          trace = FALSE)
 # Test de rapport de vraisemblance
 anova(multi0, multi1)
@@ -1759,6 +1766,7 @@ anova(multi0, multi1)
 multi0 <- nnet::multinom(catvote ~ 1,
                          weights = poids,
                          data = vote,
+                         subset = age > 30,
                          trace = FALSE)
 tab <- anova(multi0, multi1)[,-4]
 tab$Model <- c("cst","age")
@@ -1784,30 +1792,30 @@ Cette valeur est donnée dans la dernière colonne du tableau. De plus, cet effe
 
 Si les modalités de la réponse sont ordinales, la régression logistique multinomiale est toujours appropriée. Il peut néanmoins être préférable d'utiliser un modèle qui utilise l'ordre des modalités pour obtenir un modèle plus facile à interpréter et plus parcimonieux. Le modèle de régression logistique cumulative à cotes proportionnelles est un simplification sous l'hypothèse que les cotes sont proportionnelles.
 
-Supposons que la variable $Y$ est ordinale et peut prendre les $K+1$ valeurs ordonnées de la plus petite à la plus grande selon les catégories de $Y$ ($0, 1, 2, \ldots, K$). Supposons que l'on dispose de $p$ variables explicatives $\mathrm{X}_1, \ldots, \mathrm{X}_p$.
+Supposons que les $K$ modalités de la variable **ordinale** $Y$ sont en ordre croissant ($1 \leq \cdots \leq  K$) et que l'on dispose de $p$ variables explicatives $\mathrm{X}_1, \ldots, \mathrm{X}_p$ pour chaque observation.
 
-Soit $p_{ik}=\Pr(Y_i=k \mid \mathrm{X}_{i1}, \ldots, \mathrm{X}_{ip})$ ($k=0, 1, \ldots, K$) la probabilité que $Y_{ik}$ prenne la valeur $k$. On dénote 
+Soit $p_{ik}=\Pr(Y_i=k \mid \mathrm{X}_{i1}, \ldots, \mathrm{X}_{ip})$ ($k=1, \ldots, K$) la probabilité que $Y_{ik}$ prenne la valeur $k$. On dénote 
 \begin{align*}
-S_{ij}=\sum_{k=j}^K p_{ik}= \Pr(Y_{i} > j - 1 \mid \mathrm{X}_{i1}, \ldots, \mathrm{X}_{ip}), \qquad j=1, \ldots, K.
+S_{ij}=\sum_{k=j}^K p_{ik}= \Pr(Y_{i} > j - 1 \mid \mathrm{X}_{i1}, \ldots, \mathrm{X}_{ip}), \qquad j=2, \ldots, K.
 \end{align*}
-La quantité $S_{ij}$ est la probabilité que $Y_i$ soit plus grand ou égal à $j$; $S_{i0}$ est égal à 1 et $S_{iK} = \Pr(Y_i=K \mid \mathrm{X}_{i1}, \ldots, \mathrm{X}_{ip})=p_{iK}$.
+La quantité $S_{ij}$ est la probabilité que $Y_i$ soit plus grand ou égal à $j$; $S_{i1}$ est égal à 1 et $S_{iK} = \Pr(Y_i=K \mid \mathrm{X}_{i1}, \ldots, \mathrm{X}_{ip})=p_{iK}$.
 
 Le modèle logistique cumulé spécifie que 
 \begin{align*}
-\ln \left( \frac{S_{ij}}{1-S_{ij}}\right) = \beta_{0j} + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p \mathrm{X}_{ip}, \qquad \qquad  j=1, \ldots, K.
+\ln \left( \frac{S_{ij}}{1-S_{ij}}\right) = \beta_{0j} + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p \mathrm{X}_{ip}, \qquad \qquad  j=2, \ldots, K.
 \end{align*}
 
-Il y a donc $K$ équations logistiques. Les paramètres quantifiant les effets des variables explicatives, $\beta_1, \ldots, \beta_p$ sont les mêmes pour chacune des log-cotes, mais il y a une ordonnée à l'origine différente par logarithme de rapport de cote. Par conséquent, pour modéliser une variable ordinale $Y$ ayant $K+1$ valeurs possibles avec $p$ variables explicatives, le modèle cumulatif logistique utilise $p + K$ paramètres. Le modèle logit multinomial, qui peut également être utilisé pour les données ordinales, utilise $K \cdot(p+1)$ paramètres. Le modèle multinomial ordonné est donc plus parcimonieux et, pour autant qu'il soit approprié, mènera à des estimations des paramètres plus précises qu'avec le modèle de régression logistique multinomiale. Les deux modèles sont identiques au modèle de régression logistique si la variable ordinale a deux modalités.
+Il y a donc $K-1$ équations logistiques. Les paramètres quantifiant les effets des variables explicatives, $\beta_1, \ldots, \beta_p$ sont les mêmes pour chacune des log-cotes, mais il y a une ordonnée à l'origine différente par logarithme de rapport de cote. Par conséquent, pour modéliser une variable ordinale $Y$ ayant $K$ valeurs possibles et avec $p$ variables explicatives, le modèle cumulatif logistique utilise $p + K - 1$ paramètres. Le modèle logit multinomial, qui peut également être utilisé pour les données ordinales, utilise $(K-1) \cdot(p+1)$ paramètres. Le modèle logistique cumulatif à cotes proportionnelles est donc plus parcimonieux et, pour autant qu'il soit approprié, mènera à des estimations des paramètres plus précises qu'avec le modèle de régression logistique multinomiale. Les deux modèles sont identiques au modèle de régression logistique si la variable ordinale a uniquement deux modalités.
 
 
 La cote $S_{ij}/(1-S_{ij})$ mesure à quel point il est plus probable que $Y_i$ prenne une valeur plus grande ou égale à $j$ par rapport à une valeur plus petite que $j$, viz.
 \begin{align*}
 \frac{S_{ij}}{1-S_{ij}} = \exp( \beta_{0j} + \beta_1\mathrm{X}_{i1} + \cdots + \beta_p \mathrm{X}_{ip}).
 \end{align*}
-Dans cet exemple, aucune fonction autre qu'additive en $X$, ni aucune interaction n'est présente. Si le paramètre $\beta_j$ est positif, cela indique que plus $\mathrm{X}_j$ prend une valeur élevée, plus la variable $Y$ a tendance à prendre aussi une valeur élevée. Inversement, si le paramètre $\beta_j$ est négatif, cela indique que plus $\mathrm{X}_j$ prend une valeur élevée, plus la variable $Y$ a tendance à prendre une valeur basse. Plus précisément, pour chaque augmentation d'une unité de $\mathrm{X}_j$, la cote $S_k/(1-S_k)$ est multipliée par $\exp(\beta_j)$, peu importe la valeur de $Y$. Ainsi, la cote d'être dans une catégorie plus élevée, par rapport à une catégorie moins élevée, est multipliée par $\exp(\beta_j)$. En terme de probabilités cumulées d'excéder $k$,
+Dans cet exemple, nous n'avons aucune transformation des variables explicatives, ni aucune  interaction dans le modèle; l'interprétation des paramètres est donc simplifiée. Si le paramètre $\beta_j$ est positif, cela indique que plus $\mathrm{X}_j$ prend une valeur élevée, plus la variable $Y$ a tendance à prendre aussi une valeur élevée. Inversement, si le paramètre $\beta_j$ est négatif, cela indique que plus $\mathrm{X}_j$ prend une valeur élevée, plus la variable $Y$ a tendance à prendre une valeur basse. Plus précisément, pour chaque augmentation d'une unité de $\mathrm{X}_j$, la cote $S_k$ versus $(1-S_k)$ est multipliée par $\exp(\beta_j)$, peu importe la valeur de $Y$. En terme de probabilités cumulées d'excéder $k$,
 \begin{align*}
 S_{ik} &= \Pr(Y_i \geq k \mid \mathrm{X}_{i1}, \ldots, \mathrm{X}_{ip}) 
-\\& = \textrm{expit}(\beta_{0k} + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p \mathrm{X}_{ip}), \qquad j =1, \ldots, K.
+\\& = \textrm{expit}(\beta_{0k} + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p \mathrm{X}_{ip}), \qquad j =2, \ldots, K.
 \end{align*}
 En utilisant ces expressions, on peut obtenir la probabilité de chaque catégorie,
 \begin{align*}
@@ -1828,13 +1836,15 @@ with(vote, is.ordered(catvote))
 multi2a <- MASS::polr(
   catvote ~ sexe, 
   data = vote, 
+  subset = age > 30,
   weights = poids,
   method = "logistic", 
   Hess = TRUE)
 
 multi2b <- nnet::multinom(
   catvote ~ sexe, 
-  data = vote, 
+  data = vote,
+  subset = age > 30, 
   weights = poids,
   Hess = TRUE,
   trace = FALSE)
@@ -1863,8 +1873,8 @@ exp(c(coef(multi2a), confint(multi2a)))
 # On peut obtenir les intervalles de Wald 
 # avec confint.default
 
-# Test du rapport de vraisemblance
-# Adéquation (comparaison avec modèle saturé)
+# Test d'adéquation 
+# (rapport de vraisemblance, comparaison avec modèle saturé)
 pchisq(q = deviance(multi2a),
        df = df.residual(multi2a),
        lower.tail = FALSE)
@@ -1881,12 +1891,14 @@ pchisq(q = deviance(multi2a),
 #| warning: false
 multi2a <- MASS::polr(catvote ~ sexe, 
                       data = vote,
+                      subset = age > 30,
                       weights = poids,
                       method = "logistic", 
                       Hess = TRUE)
 # multi2b <- nnet::multinom(
 #   catvote ~ affiliation, 
 #   data = vote,
+#   subset = age > 30,
 #   weights = poids,
 #   Hess = TRUE,
 #   trace = FALSE)
@@ -1914,7 +1926,7 @@ Une très petite valeur-$p$ (rejet de $\mathscr{H}_0$) pour ce test serait une i
 
 ```{r}
 #| label: fig-predmultinom
-#| fig-cap: "Probabilités prédites pour chaque modalités selon le modèle de régression multinomiale logistique et le modèle de régression ordinales à cotes proportionnelles selon l'âge."
+#| fig-cap: "Probabilités prédites pour chaque modalité selon le modèle de régression multinomiale logistique et le modèle de régression ordinales à cotes proportionnelles selon l'âge."
 #| cache: true
 #| eval: true
 #| echo: false
@@ -1922,14 +1934,16 @@ Une très petite valeur-$p$ (rejet de $\mathscr{H}_0$) pour ce test serait une i
 library(MASS)
 multi3a <- MASS::polr(
   catvote ~ scale(age, scale = FALSE), 
-  data = vote, 
+  data = vote,
+  subset = age > 30, 
   weights = poids,
   method = "logistic", 
   Hess = TRUE)
 
 multi3b <- nnet::multinom(
   catvote ~ scale(age, scale = FALSE), 
-  data = vote, 
+  data = vote,
+  subset = age > 30, 
   weights = poids,
   Hess = TRUE,
   trace = FALSE)
@@ -1974,8 +1988,8 @@ ggplot2::ggplot(
 
 Même si le modèle est inadéquat, on peut interpréter les coefficients. Ici, l'effet estimé d'être un homme plutôt qu'une femme (`sexe`) est $`r sprintf(round(as.numeric(coef(multi2a)),3), fmt = "%.3f")`$ et ce paramètre est significativement différent de zéro (valeur-$p$ de $`r pval_lrt_multi2a_drop1`$).
 
-Ainsi, les hommes sont moins susceptibles de voter fréquemment que les femmes. Plus précisément, la cote d'être dans une catégorie plus élevée de `catvote`, par rapport à une catégorie plus basse, est multipliée par `r sprintf(round(exp(as.numeric(coef(multi2a))),3), fmt = "%.3f")`, une diminution de 10% (et donc la probabilité d'être dans une catégorie plus élevée est plus faible).
+Ainsi, les hommes sont moins susceptibles de voter fréquemment que les femmes. Plus précisément, la cote d'être dans une catégorie plus élevée de `catvote`, par rapport à une catégorie plus basse, est multipliée par `r sprintf(round(exp(as.numeric(coef(multi2a))),3), fmt = "%.3f")`, une diminution de `r round(100*(1-exp(as.numeric(coef(multi2a)))), 0)`% (et donc la probabilité d'être dans une catégorie plus élevée est plus faible).
 
-On a précédemment utilisé un test du rapport de vraisemblance pour valider l'hypothèse des cotes proportionnelles: il n'y avait aucune indication que la simplification n'était pas adéquate. Ce n'est pas le cas pour le modèle qui ne contient que la variable `age`: la @fig-predmultinom montre les différences de probabilités ajustées pour les deux modèles pour l'âge seulement.
+On a précédemment utilisé un test du rapport de vraisemblance pour valider l'hypothèse des cotes proportionnelles: il n'y avait aucune indication que la simplification n'était pas adéquate. Ce n'est pas le cas pour le modèle qui ne contient que la variable `age` ou plusieurs variables explicatives: la @fig-predmultinom montre les différences de probabilités ajustées pour les deux modèles qui incluent uniquement l'âge comme variable explicative.
 
-On peut également vérifier si le modèle est adéquat pour décrire les données en comparant le modèle pour les données ordinales avec un modèle saturé (qui contient autant de paramètres que d'observations/niveaux): la valeur-$p$, infime, indique que le modèle plus complexe, soit le modèle saturé, est préférable. Cela nous indique que le modèle n'est pas adéquat et a un piètre pouvoir explicatif.
+On peut également vérifier si le modèle est adéquat pour décrire les données en comparant le modèle pour les données ordinales avec un modèle saturé (qui contient autant de paramètres que d'observations/niveaux): la valeur-$p$, infime, indique que le modèle plus complexe, soit le modèle saturé, est préférable. Cela nous indique que le modèle a un piètre pouvoir explicatif.
