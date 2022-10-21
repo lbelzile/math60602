@@ -1075,10 +1075,7 @@ Nous avons déjà vu des méthodes de sélections de variables au chapitre préc
 
 ### Sélection de variables en régression logistique
 
-Les principes généraux, concernant la sélection de variables et de modèles, que nous avons vus au chapitre précédent sont toujours valides. Les critères $\mathsf{AIC}$ et $\mathsf{BIC}$ sont toujours disponibles puisqu'on estime le modèle par maximum de vraisemblance et les techniques générales de division de l'échantillon et de validation-croisée sont toujours valides. La principale différence est le coût d'estimation numérique des différents modèles.
-
-
-Parce qu'il n'y a pas de solution explicite pour les estimateurs du maximum de vraisemblance du modèle logistique, ajuster chacun de ces modèles est coûteux.
+Les principes généraux, concernant la sélection de variables et de modèles, que nous avons vus au chapitre précédent sont toujours valides. Les critères $\mathsf{AIC}$ et $\mathsf{BIC}$ sont toujours disponibles puisqu'on estime le modèle par maximum de vraisemblance et les techniques générales de division de l'échantillon et de validation-croisée sont toujours valides. La principale différence est le coût d'estimation numérique des différents modèles: parce qu'il n'y a pas de solution explicite pour les estimateurs du maximum de vraisemblance du modèle logistique, ajuster chacun de ces modèles est coûteux.
 
 À la section précédente, nous avons inclus les 10 variables de base dans notre exemple d'envoi ciblé. Nous allons ici faire une recherche de type exhaustive parmi ces variables. La fonction `glmbb` du paquet éponyme fait une recherche à l'aide de l'algorithme  de recherche arborescente dite par méthode de séparation et d’évaluation, qui ne nécessite pas de tester tous les modèles emboîtés. La sortie inclut les modèles qui sont à distance au plus `cutoff` du modèle optimal en ordre décroissant du critère d'information, avec une pondération associée qui peut servir comme succédané au mélange de modèle. La fonction permet de choisir entre les critères $\mathsf{AIC}$ et $\mathsf{BIC}$ et inclut toutes les modalités des variables explicatives pour les facteurs. 
 
@@ -1349,9 +1346,9 @@ classif <- rbind(
    c(table(lasso_pred, valid$yachat)))
 colnames(classif) <- c("VN","FN","FP","VP")
 datf[,4] <- sprintf("%.4g",
-                    c(100,
+                    c(1,
                       classif[,"VP"]/(classif[,"VP"] + classif[,"FN"])))
-datf[,5] <- sprintf("%.3g",c(23.2,(classif[,"VP"] + classif[,"VN"])/rowSums(classif)))
+datf[,5] <- sprintf("%.3g",c(0.232,(classif[,"VP"] + classif[,"VN"])/rowSums(classif)))
 datf[,6] <- c(601212, 
               base_perfo, 
               complet_perfo,
@@ -1367,10 +1364,10 @@ knitr::kable(datf, col.names = colnames,
              align =  paste0(c("l",rep("r", 5)),collapse = ""),
              escape = FALSE )   |>
   kableExtra::kable_styling(full_width = TRUE)
-
+options(scipen = 100)
 ```
 
-Nous avons vu plus tôt, qu'avec les 10 variables de base, le meilleur point de coupure est de 0.12. En utilisant cette stratégie sur les 100 000 clients, le revenu net aurait été de $`r base_perfo`$ dollars. C'est une énorme amélioration, de plus de 56%, par rapport à la stratégie de référence qui consiste à envoyer le catalogue à tout le monde (revenu net de 601 212\$). Si on inclut tous les termes quadratiques et les termes les interactions d'ordre deux (104 variables en tout), le revenu net est inférieur avec une valeur de `complet_perfo`\$. Ici, le modèle est trop complexe et surajusté.  Si on fait une sélection de variables (quasi méthodes sont présentées), suivie de la détermination du meilleur point de coupure, on fait alors toujours mieux qu'avec le modèle incluant les 10 variables de base seulement. L'approche la plus rentable parmi celles essayées aurait généré un profit de `r max(datf[,6])` avec `r datf[which.max(datf[,6]),2]` variables explicatives: il s'agit d'un gain de `r round(100*(as.integer(max(datf[,6]))/as.integer(datf[2,6])-1),1)`% par rapport au modèle avec les 10 variables de base.
+Nous avons vu plus tôt, qu'avec les 10 variables de base, le meilleur point de coupure est de 0.11. En utilisant cette stratégie sur les 100 000 clients, le revenu net aurait été de $`r base_perfo`$ dollars. C'est une énorme amélioration, de plus de 56%, par rapport à la stratégie de référence qui consiste à envoyer le catalogue à tout le monde (revenu net de 601 212\$). Si on inclut tous les termes quadratiques et les termes les interactions d'ordre deux (104 variables en tout), le revenu net est inférieur avec une valeur de `r complet_perfo`\$. Ici, le modèle est trop complexe et surajusté.  Si on fait une sélection de variables (quasi méthodes sont présentées), suivie de la détermination du meilleur point de coupure, on fait alors toujours mieux qu'avec le modèle incluant les 10 variables de base seulement. L'approche la plus rentable parmi celles essayées aurait généré un profit de `r max(datf[,6])` avec `r datf[which.max(datf[,6]),2]` variables explicatives: il s'agit d'un gain de `r round(100*(as.integer(max(datf[,6]))/as.integer(datf[2,6])-1),1)`% par rapport au modèle avec les 10 variables de base.
 
 ### Modèle Heckit
 
