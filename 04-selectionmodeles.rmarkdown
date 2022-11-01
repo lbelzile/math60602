@@ -1,0 +1,1743 @@
+# Sélection de variables et de modèles {#selection-modele}
+
+
+
+
+```{r}
+#| label: setup-section4
+#| include: false
+#| message: false
+#| warning: false
+# automatically create a bib database for R packages
+library(knitr)
+library(kableExtra)
+set.seed(1014)
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  cache = TRUE,
+  out.width = "100%",
+  fig.align = 'center',
+  fig.width = 8.5,
+  fig.asp = 0.618,  # 1 / phi
+  fig.show = "hold"
+)
+options(knitr.table.format = function() {
+  if (knitr::is_latex_output())
+    "latex" else "html"
+})
+
+options(dplyr.print_min = 6, dplyr.print_max = 6)
+options(knitr.graphics.auto_pdf = TRUE)
+options(scipen = 1, digits = 3)
+library(viridis)
+library(ggplot2, warn.conflicts = FALSE, quietly = TRUE)
+library(poorman, quietly = TRUE, warn.conflicts = FALSE)
+library(patchwork)
+
+safe_colorblind_palette <- MetBrewer::met.brewer("Hiroshige",10)
+
+options(ggplot2.continuous.colour="viridis")
+options(ggplot2.continuous.fill = "viridis")
+scale_colour_discrete <- scale_color_manual(MetBrewer::met.brewer("Hiroshige",10))
+scale_fill_discrete <- scale_fill_manual(MetBrewer::met.brewer("Hiroshige",10))
+theme_set(theme_classic())
+```
+
+
+
+## Introduction
+
+Ce chapitre présente des principes, outils et méthodes très généraux pour choisir un « bon » modèle. Nous allons principalement utiliser la régression linéaire pour illustrer les méthodes en supposant que tout le monde connaît ce modèle de base. Les méthodes présentées sont en revanche très générales et peuvent être appliquées avec n'importe quel autre modèle (régression logistique, arbres de classification et régression, réseaux de neurones, analyse de survie, etc.)
+
+
+L'expression « sélection de variables » fait référence à la situation où l'on cherche à sélectionner un sous-ensemble de variables à inclure dans notre modèle à partir d'un ensemble de variables $X_1, \ldots, X_p$. Le terme variable ici inclut autant des variables distinctes que des transformations d'une ou plusieurs variables.
+
+Par exemple, supposons que les variables $\texttt{age}$, $\texttt{sexe}$ et $\texttt{revenu}$ soient trois variables explicatives disponibles. Nous pourrions alors considérer choisir entre ces trois variables. Mais aussi, nous pourrions considérer inclure $\texttt{age}^2$, $\texttt{age}^3$, $\log(\texttt{age})$, etc. Nous pourrions aussi considérer des termes d'interactions entre les variables, comme $\texttt{age} \cdot \texttt{revenu}$ ou $\texttt{age}\cdot\texttt{revenu}\cdot\texttt{sexe}$. Le problème est alors de trouver un bon sous-ensemble de variables parmi toutes celles considérées.
+
+L'expression « sélection de modèle » est un peu plus générale. D'une part, elle inclut la sélection de variables car, pour une famille de modèles spécifiques (régression linéaire par exemple), choisir un sous-ensemble de variables revient à choisir un modèle. D'autre part, elle fait référence à la situation où l'on cherche à trouver le meilleur modèle parmi des modèles de natures différentes. Par exemple, on pourrait choisir entre une régression linéaire, un arbre de régression, une forêt aléatoire, un réseau de neurones, etc.
+
+
+## Sélection de variables et de modèles selon les buts de l'étude
+
+
+Nous disposons d'une variable réponse $Y$ et d'un ensemble de variables explicatives $X_1, \ldots, X_p$. L'attitude à adopter dépend des buts de l'étude.
+
+- **1e situation**: On veut développer un modèle pour faire des prédictions sans qu'il soit important de tester formellement les effets des paramètres individuels.
+
+Dans ce cas, on désire seulement que notre modèle soit performant pour prédire des valeurs futures de $Y$. On peut alors baser notre choix de variable (et de modèle) en utilisant des outils qui nous guiderons quant aux performances prédictives futures du modèle (voir $\mathsf{AIC}$, $\mathsf{BIC}$ et validation croisée plus loin). On pourra enlever ou rajouter des variables et des transformations de variables au besoin afin d'améliorer les performances prédictives. Les méthodes que nous allons voir concernent essentiellement ce contexte.
+
+- **2e situation**: On veut développer un modèle pour estimer les effets de certaines variables sur notre $Y$ et tester des hypothèses de recherche spécifiques concernant certaines variables.
+
+Dans ce cas, il est préférable de spécifier le modèle dès le départ selon des considérations scientifiques et de s'en tenir à lui. Faire une sélection de variables dans ce cas est dangereux car on ne peut pas utiliser directement les valeurs-_p_ des tests d'hypothèses (ou les intervalles de confiance sur les paramètres) concernant les paramètres du modèle final car elles ne tiennent pas compte de la variabilité due au processus de sélection de variables.
+
+Une bonne planification de l'étude est alors cruciale afin de collecter les bonnes variables, de spécifier le ou les bons modèles, et de s'assurer d'avoir suffisamment d'observations pour ajuster le ou les modèles désirés.
+
+Si procéder à une sélection de variables est quand même nécessaire dans ce contexte, il est quand même possible de le faire en divisant l'échantillon en deux. La sélection de variables pourrait être alors effectuée avec le premier échantillon. Une fois qu'un modèle est retenu, on pourrait alors réajuster ce modèle avec le deuxième échantillon (sans faire de sélection de variables cette fois-ci). L'inférence sur les paramètres (valeurs-_p_, etc.) sera alors valide. Le désavantage ici qu'il faut avoir une très grande taille d'échantillon au départ afin d'être en mesure de le diviser en deux.
+
+## Estimation de la performance
+
+
+Il est préférable d'avoir un modèle un peu trop complexe qu'un modèle trop simple. Plaçons-nous dans le contexte de la régression linéaire et supposons que le vrai modèle est inclus dans le modèle qui a été ajusté. Il y a donc des variables en trop dans le modèle qui a été ajusté: ce dernier est dit surspécifié.
+
+Par exemple, supposons que le vrai modèle est $Y=\beta_0+\beta_1X_1+\varepsilon$ mais que c'est le modèle $Y=\beta_0+\beta_1X_1+\beta_2X_2+\varepsilon$ qui a été ajusté. Dans ce cas, règle générale, les estimateurs des paramètres et les prédictions provenant du modèle sont sans biais. Mais leurs variances estimées seront un peu plus élevées car on estime des paramètres pour des variables superflues.
+
+Supposons à l'inverse qu'il manque des variables dans le modèle ajusté et que le modèle ajusté est sous-spécifié. Par exemple, supposons que le vrai modèle est $Y=\beta_0+\beta_1X_1+\beta_2X_2+\varepsilon$, mais que c'est le modèle $Y=\beta_0+\beta_1X_1+\varepsilon$ qui est ajusté. Dans ce cas, généralement, les estimateurs des paramètres et les prédictions sont biaisés.
+
+
+
+
+```{r}
+#| label: specification-modele
+#| cache: true
+#| eval: true
+#| echo: true
+# Simuler des observations d'un modèle linéaire
+n <- 200L
+# Variables explicatives bidons
+X1 <- rpois(n = n, lambda = 3)
+X2 <- rbinom(n = n, size = 1, prob = c(0.7, 0.3))
+# Modèle de régression X*beta + aléas
+y_a <- 20 + 2*X1 + 5*X2 + rnorm(n)
+y_b <- 20 + 2*X1 + rnorm(n)
+# Ajuster un modèle linéaire
+# lm(réponse ~ variables explicatives)
+mod_1a <- lm(y_a ~ X1) # sous-spécifié
+mod_2a <- lm(y_a ~ X1 + X2) # correct
+
+mod_1b <- lm(y_b ~ X1) # correct
+mod_2b <- lm(y_b ~ X1 + X2) # surspécifié
+
+# Comparer l'estimation des coefficients
+#  aux vraies valeurs
+# Vérifier si ces dernières se trouvent
+#  dans l'intervalle de confiance
+coef(mod_1a) #coefficients
+confint(mod_1a) #intervalles de confiance
+coef(mod_2a)
+confint(mod_2a)
+```
+
+
+
+
+Ainsi, il est généralement préférable d'avoir un modèle légèrement surspécifié qu'un modèle sous-spécifié. Plus généralement, il est préférable d'avoir un peu trop de variables dans le modèle que de prendre le risque d'omettre une ou plusieurs variables importantes. Il faut faire attention et ne pas tomber dans l'excès et avoir un modèle trop complexe (avec trop de variables inutiles) car il pourrait souffrir de surajustement (_over-fitting_). Les exemples qui suivent illustreront ce fait.
+
+### Surajustement 
+
+Cette section traite de l'optimisme de l'évaluation d'un modèle (*trop beau pour être vrai*) lorsqu'on utilise les mêmes données qui ont servies à l'ajuster pour évaluer sa performance. Un principe fondamental lorsque vient le temps d'évaluer la performance prédictive d'un modèle est le suivant : si on utilise les mêmes observations pour évaluer la performance d'un modèle que celles qui ont servi à l'ajuster (à estimer le modèle et ses paramètres), on va surestimer sa performance. Autrement dit, notre estimation de l'erreur que fera le modèle pour prédire des observations futures sera biaisée à la baisse. Ainsi, il aura l'air meilleur que ce qu'il est en réalité. C'est comme si on demandait à un cinéaste d'évaluer son dernier film. Comme c'est son film, il n'aura généralement pas un regard objectif. C'est pourquoi on aura tendance à se fier à l'opinion d'un critique.
+
+On cherchera donc à utiliser des outils et méthodes qui nous donneront l'heure juste (une évaluation objective) quant à la performance prédictive d'un modèle.
+
+
+
+### Principes généraux
+
+Les idées présentées ici seront illustrées à l'aide de la régression linéaire. Par contre, elles sont valides dans à peu près n'importe quel contexte de modélisation.
+
+Plaçons-nous d'abord dans un contexte plus général que celui de la régression linéaire. Supposons que l'on dispose de $n$ observations indépendantes sur ($Y, X_1, \ldots, X_p$) et que l'on a ajusté un modèle $\widehat{f}(X_1, \ldots, X_p)$, avec ces données, pour prédire une variable continue $Y$.
+
+Ce modèle peut être un modèle de régression linéaire,
+\begin{align*}
+\widehat{f}(X_1, \ldots, X_p) = \widehat{\beta}_0 + \widehat{\beta}_1X_1 + \cdots + \widehat{\beta}_pX_p
+\end{align*}
+mais il pourrait aussi avoir été construit selon d'autres méthodes (réseau de neurones, arbre de régression, forêt aléatoire, etc.) Une manière de quantifier la performance prédictive du modèle est l'erreur quadratique moyenne (_mean squared error_),
+\begin{align*}
+\mathsf{EQM}=\mathsf{E}\left[\left\{(Y-\widehat{f}(X_1, \ldots, X_p)\right\}^2\right]
+\end{align*}
+lorsque ($Y, X_1, \ldots, X_p$) est choisi au hasard dans la population. Cette quantité mesure l'erreur théorique (la différence au carré entre la vraie valeur de $Y$ et la valeur prédite par le modèle) que fait le modèle en moyenne pour l'ensemble de la population. Plus cette quantité est petite, meilleur est le modèle. Le problème est que l'on ne peut pas la calculer car on n'a pas accès à toute la population. Tout au plus peut-on essayer de l'estimer ou bien d'estimer une fonction qui, sans l'estimer directement, classifiera les modèles dans le même ordre qu'elle.
+
+Une première idée est d'estimer l'erreur quadratique moyenne  de l'échantillon d'apprentissage (_training mean squared error_),
+\begin{align*}
+\widehat{\mathsf{EQM}}_a= \frac{1}{n}\sum_{i=1}^n \left\{Y_i-\widehat{f}(X_{i1}, \ldots, X_{ip})\right\}^2.
+\end{align*}
+
+
+Malheureusement, selon le principe fondamental de la section précédente, cette quantité n'est pas un bon estimateur de l'$\mathsf{EQM}$. En effet, comme on utilise les mêmes observations que celles qui ont estimé le modèle, l'$\widehat{\mathsf{EQM}}_a$ aura tendance à toujours diminuer lorsqu'on augmente la complexité du modèle (par exemple, lorsqu'on augmente le nombre de paramètres). L'$\widehat{\mathsf{EQM}}_a$ tend à surestimer la qualité du modèle en sous-estimant l'$\mathsf{EQM}$ et le modèle a l'air meilleur qu'il ne l'est en réalité.
+
+
+### Présentation de l'exemple
+
+Cet exemple simple sur le choix d'un modèle polynomial en régression linéaire servira à illustrer le fait qu'on ne peut utiliser directement les mêmes données qui ont servi à ajuster un modèle pour évaluer sa performance. 
+
+Nous disposons de 100 observations sur une variable cible $Y$ et d'une seule variable explicative $X$ dans la base de données `selection1_train`. Nous voulons considérer des modèles polynomiaux (en $X$) afin d'en trouver un bon pour prédire $Y$. Un modèle polynomial est un modèle de la forme $Y=\beta_0 + \beta_1X+\cdots+\beta_kX^k+\varepsilon$. Le cas $k=1$ correspond à un modèle linéaire simple, $k=2$ à un modèle cubique, $k=3$ à un modèle cubique, etc. Notre but est de  déterminer l'ordre ($k$) du polynôme qui nous donnera un bon modèle. Voici d'abord le graphe de ces 100 observations de l'échantillon d'apprentissage.
+
+
+
+```{r}
+#| label: fig-donneestest
+#| eval: true
+#| echo: false
+#| fig-align: 'center'
+#| out-width: '100%'
+#| fig-cap: "Nuage de points de 100 observations simulées d'un modèle polynomial de degré inconnu."
+file <- "https://lbelzile.bitbucket.io/MATH60602/selection1_train.sas7bdat"
+train <- haven::read_sas(data_file = file)
+file <- "https://lbelzile.bitbucket.io/MATH60602/selection1_test.sas7bdat"
+test <- haven::read_sas(data_file = file)
+library(ggplot2)
+print(ggplot(data = train, mapping = aes(x=x,y=y)) +
+        geom_point())
+```
+
+
+
+Ces données ont été obtenues par simulation et le vrai modèle sous-jacent (celui qui a généré les données) est le modèle cubique, c'est-à-dire le modèle d'ordre $k=3$.
+
+
+
+J'ai ajusté tour à tour à tour les modèles polynomiaux jusqu'à l'ordre 10, avec l'échantillon d'apprentissage de taille 100. C'est-à-dire, le modèle linéaire avec un polynôme d'ordre $k=1$ (linéaire), $k=2$ (quadratique), etc., jusqu'à $k=10$. J'ai ensuite obtenu la valeur de l'erreur quadratique moyenne d'apprentissage pour chacun de ces modèles. En pratique, on ne pourrait pas calculer l'erreur quadratique moyenne de généralization puisqu'on ne connaît pas le vrai modèle. J'ai fait une approximation de cette dernière en simulant 100 000 observations du vrai modèle (`selection1_test`), en obtenant la prédiction pour chacune de ces 100 000 observations en utilisant le modèle d'ordre $k$ ajusté sur les données d'apprentissage et en calculant l'erreur quadratique moyenne par la suite. 
+
+
+
+
+```{r}
+#| label: EQMa_comput
+#| eval: true
+#| echo: false
+#| cache: true
+#| message: false
+lmkfold <- function(formula, data, k, ...){
+  accu <- 0
+  k <- as.integer(k)
+  n <- nrow(data)
+  gp <- sample.int(n, n, replace = FALSE)
+  folds <- split(gp, cut(seq_along(gp), k, labels = FALSE))
+  for(i in 1 :k){
+   g <- as.integer(unlist(folds[i]))
+   fitlm <- lm(formula, data[-g,])
+   accu <- accu + sum((data[g, all.vars(formula)[1]] -predict(fitlm, newdata=data[g,]))^2)
+  }
+return(accu/n)
+}
+
+EQM <- matrix(0, nrow = 10, ncol = 7)
+EQMcv <- matrix(0, nrow = 10, ncol = 100)
+suppressPackageStartupMessages(library(caret))
+library(ggplot2)
+for(i in 1 :10){
+  set.seed(i*1000)
+  # Créer le modèle avec une chaîne de caractère pour le polynôme
+  meanmod <- as.formula(paste0("y~", paste0("I(x^",1 :i,")", collapse= "+")))
+  mod <-  lm(meanmod, data = train)
+  # Calculer l'erreur moyenne dans les deux échantillons
+  EQM[i,1 :2] <- c(mean(resid(mod)^2), #apprentissage
+               mean((test$y - predict(mod, newdata = test))^2)) #échantillon test
+  EQM[i,3] <- summary(mod)$r.squared
+  EQM[i,4] <- summary(mod)$adj.r.squared
+  EQM[i,5] <- AIC(mod)
+  EQM[i,6] <- BIC(mod)
+# validation croisée avec 10 groupes
+  EQMcv[i,] <-  replicate(n = 100L,
+                    train(form = meanmod, data = train, method = "lm",
+                trControl = trainControl(method = "cv",
+                                         number = 10))$results$RMSE^2)
+  # EQM[i,7] <- lmkfold(formula = meanmod, data = train, k = 10)
+}
+  EQM[,7] <- rowMeans(EQMcv)
+
+
+EQMdat <- data.frame(ordre = rep(1 :10, length.out = 20),
+           EQM = c(EQM[,1 :2]),
+           echantillon = factor(c(rep("apprentissage",10), rep("théorique", 10)))
+)
+```
+
+```{r}
+#| label: fig-plotEQMa
+#| eval: true
+#| echo: false
+#| fig-align: 'center'
+#| fig-width: 6
+#| fig-height: 4
+#| cache: true
+#| out-width: '100%'
+#| fig-cap: "erreur quadratique moyenne d'apprentissage ($\\widehat{\\mathsf{EQM}}_a$) et erreur quadratique moyenne théorique ($\\mathsf{EQM}$) en fonction de l'ordre ($k$) du polynôme ajusté."
+ggplot(data = EQMdat, aes(x=ordre, y=EQM, color=echantillon)) +
+  geom_line() +
+  geom_point(aes(shape=echantillon, color=echantillon)) +
+  labs(x = "ordre du polynôme",
+       y = "erreur quadratique moyenne") +
+  theme(legend.position="bottom",
+        legend.title=element_blank()) +
+  scale_color_manual(values = MetBrewer::met.brewer("Hiroshige",
+                                           n =  2)) +
+  scale_x_continuous(breaks = 0:10,
+                     labels = as.character(0:10))
+```
+
+
+
+On voit clairement dans la @fig-plotEQMa que l'$\widehat{\mathsf{EQM}}_a$ diminue en fonction de l'ordre sur l'échantillon d'apprentissage: plus le modèle est complexe, plus l'erreur observée sur l'échantillon d'apprentissage est petite. La courbe $\mathsf{EQM}$ donne l'heure juste, car il s'agit d'une estimation de la performance réelle des modèles sur de nouvelles données. On voit que le meilleur modèle est donc le modèle cubique ($k=3$),  ce qui n'est pas surprenant puisqu'il s'agit du modèle que utilisé pour générer les données. On peut aussi remarquer d'autres éléments intéressants. Premièrement, on obtient un bon gain en performance ($\mathsf{EQM}$) en passant de l'ordre $2$ à l'ordre $3$. Ensuite, la perte de performance en passant de l'ordre $3$ à $4$, et ensuite à des ordres supérieurs n'est pas si sévère, même si elle est présente. Cela illustre empiriquement qu'il est préférable d'avoir un modèle un peu trop complexe que d'avoir un modèle trop simple. Il serait beaucoup plus grave pour la performance de choisir le modèle avec $k=2$ que celui avec $k=4$.
+
+En pratique par contre, on n'a pas accès à la population : les 100 000 observations qui ont servi à estimer l'$\mathsf{EQM}$ théorique ne seront pas disponible. Si on a seulement l'échantillon d'apprentissage, soit 100 observations dans notre exemple, comment faire alors pour choisir le bon modèle? C'est ce que nous verrons à partir de la section suivante.
+
+Mais avant cela, nous allons discuter un peu plus en détail au sujet de la régression linéaire et d'une mesure très connue, le coefficient de détermination ($R^2$). Supposons que l'on a ajusté un modèle de régression linéaire
+\begin{align*}
+\widehat{f}(X_1, \ldots, X_p) = \widehat{Y}=\widehat{\beta}_0 + \widehat{\beta}_1X_1+ \cdots + \widehat{\beta}_p X_p.
+\end{align*}
+La somme du carré des erreurs ($\mathsf{SCE}$) pour notre échantillon est
+\begin{align*}
+\mathsf{SCE}=\sum_{i=1}^n (Y_i - \widehat{\beta}_0 - \widehat{\beta}_1X_1 - \cdots - \widehat{\beta}_p X_p)^2 = \sum_{i=1}^n (Y_i-\widehat{Y}_i)^2.
+ \end{align*}
+On peut démontrer que si on ajoute une variable quelconque au modèle, la valeur de la somme du carré des erreurs va nécessairement baisser. Il est facile de se convaincre de cela. En régression linéaire, les estimations sont obtenues par la méthode des moindres carrés qui consiste justement à minimiser la $\mathsf{SCE}$. Ainsi, en ajoutant une variable $X_{p+1}$ au modèle, la $\mathsf{SCE}$ ne peut que baisser car, dans le pire des cas, le paramètre de la nouvelle variable sera $\widehat{\beta}_{p+1}=0$ et on retombera sur le modèle sans cette variable. C'est pourquoi, la quantité $\widehat{\mathsf{EQM}}_a=\mathsf{SCE}/n$ ne peut être utilisée comme outil de sélection de modèles en régression linéaire.
+
+Nous venons d'ailleurs d'illustrer cela avec notre exemple sur les modèles polynomiaux. En effet, augmenter l'ordre du polynôme de $1$ revient à ajouter une variable. Le coefficient de détermination ($R^2$) est souvent utilisé, à tort, comme mesure de qualité du modèle. Il peut s'interpréter comme étant la proportion de la variance de $Y$ qui est expliquée par le modèle.
+
+Le coefficient de détermination est
+\begin{align*}
+R^2=\{\mathsf{cor}(\boldsymbol{y}, \widehat{\boldsymbol{y}})\}^2 = 1-\frac{\mathsf{SCE}}{\mathsf{SCT}},
+\end{align*}
+où $\mathsf{SCT}=\sum_{i=1}^n (Y_i-\overline{Y})^2$ est la somme des carrés totale calculée en centrant les observations. La somme des carrés totale, $\mathsf{SCT}$, ne varie pas en fonction du modèle.
+Ainsi, on voit que le $R^2$ va méchaniquement augmenter lorsqu'on ajoute une variable au modèle (car la $\mathsf{SCE}$ diminue). C'est pourquoi on ne peut pas l'utiliser comme outil de sélection de variables.
+
+Le problème principal que nous avons identifié jusqu'à présent afin d'être en mesure de bien estimer la performance d'un modèle est le suivant : si on utilise les mêmes observations pour évaluer la performance d'un modèle que celles qui ont servi à l'ajuster, on va surestimer sa performance.
+
+Il existe deux grandes approches pour contourner ce problème lorsque le but est de faire de la sélection de variables ou de modèle :
+
+- utiliser les données de l'échantillon d'apprentissage (en échantillon) et pénaliser la mesure d'ajustement (ici $\widehat{\mathsf{EQM}}_a$) pour tenir compte de la complexité du modèle (par exemple, à l'aide de critères d'informations).
+- tenter d'estimer l'$\mathsf{EQM}$ directement sur d'autres données (hors échantillon) en utilisant des méthodes de rééchantillonnage, notamment la validation croisée ou la validation externe (division de l'échantillon).
+
+### Pénalisation et critères d'information
+
+Plaçons-nous dans le contexte de la régression linéaire pour l'instant.
+Nous avons déjà utilisé les critères $\mathsf{AIC}$ et $\mathsf{BIC}$ en analyse factorielle. Il s'agit de mesures qui découlent d'une méthode d'estimation des paramètres, la méthode du maximum de vraisemblance.
+
+Il s'avère que les estimateurs des paramètres obtenus par la méthode des moindres carrés en régression linéaire sont équivalents à ceux provenant de la méthode du maximum de vraisemblance si on suppose la normalité des termes d'erreurs du modèle. Ainsi, dans ce cas, nous avons accès aux $\mathsf{AIC}$ et $\mathsf{BIC}$, deux critères d'information définis pour les modèles dont la fonction objective est la vraisemblance (qui mesure la probabilité des observations sous le modèle postulé suivant une loi choisie par l'utilisateur). La fonction de vraisemblance $\mathcal{L}$ et la log-vraisemblance $\ell$ mesurent l'adéquation du modèle.
+
+Supposons que nous avons ajusté un modèle avec $p$ paramètres en tout (**incluant** l'ordonnée à l'origine). En régression linéaire, le critère d'information d'Akaike, $\mathsf{AIC}$, est
+\begin{align*}
+\mathsf{AIC} &=-2 \ell(\widehat{\boldsymbol{\beta}}, \widehat{\sigma}^2) +2p = n \ln (\mathsf{EQM}) + 2p + \text{constante},
+\end{align*}
+tandis que le  critère d'information bayésien de Schwartz, $\mathsf{BIC}$, est défini par
+\begin{align*}
+\mathsf{BIC} &=-2 \ell(\widehat{\boldsymbol{\beta}}, \widehat{\sigma}^2) + p\ln(n)=n \ln (\mathsf{EQM}) + p\ln(n) + \text{constante}.
+\end{align*}
+Plus la valeur du $\mathsf{AIC}$ (ou du $\mathsf{BIC}$) est petite, meilleur est l'adéquation. Que se passe-t-il lorsqu'on ajoute un paramètre à un modèle? D'une part, la somme du carré des erreurs va méchaniquement diminuer tout comme l'erreur quadratique moyenne  $\textsf{EQM} = \textsf{SCE}/n$, donc la quantité $n \ln (\mathsf{EQM})$ va diminuer. D'autre part, la valeur de $p$ augmente de $1$. Ainsi, le $\mathsf{AIC}$ peut soit augmenter, soit diminuer, lorsqu'on ajoute un paramètre; idem pour le $\mathsf{BIC}$. Par exemple, le $\mathsf{AIC}$ va diminuer seulement si la baisse de la somme du carré des erreurs est suffisante pour compenser le fait que le terme $2p$ augmente à $2 (p+1)$.
+
+Ces critères pénalisent l'ajout de variables afin de se prémunir contre le surajustement. De plus, le $\mathsf{BIC}$ pénalise plus que le $\mathsf{AIC}$. Par conséquent, le critère $\mathsf{BIC}$ va choisir des modèles contenant soit le même nombre, soit moins de paramètres que le $\mathsf{AIC}$.
+
+Les critères $\mathsf{AIC}$ et $\mathsf{BIC}$ peuvent être utilisés comme outils de sélection de variables en régression linéaire mais aussi beaucoup plus généralement avec d'autres méthodes basées sur la vraisemblance (analyse factorielle, régression logistique, etc.) En fait, n'importe quel modèle dont les estimateurs proviennent de la méthode du maximum de vraisemblance produira ces quantités. Nous donnerons des formules générales pour le $\mathsf{AIC}$ et le $\mathsf{BIC}$ dans le chapitre sur la régression logistique.
+
+Le critère $\mathsf{BIC}$ est le seul de ces critères qui est convergent. Cela veut dire que si l'ensemble des modèles que l'on considère contient le vrai modèle, alors la probabilité que le critère $\mathsf{BIC}$ choisissent le bon modèle tend vers 1 lorsque $n$ tend vers l'infini. Il faut mettre cela en perspective : il est peu vraisemblable que $Y$ ait été généré exactement selon un modèle de régression linéaire, car le modèle de régression n'est qu'une approximation de la réalité. Certains auteurs trouvent que le $\mathsf{BIC}$ est quelquefois trop sévère (il choisit des modèles trop simples) pour les tailles d'échantillons finies. Dans certaines applications, cette parcimonie est utile, mais il n'est pas possible de savoir d'avance lequel de ces deux critères ($\mathsf{AIC}$ et $\mathsf{BIC}$) sera préférable pour un problème donné.
+
+
+Il est facile d'obtenir le $\mathsf{AIC}$ et $\mathsf{BIC}$ avec les méthodes `AIC` et `BIC`. On illustre ceci avec le modèle cubique:
+
+
+
+```{r}
+#| label: modelecubique
+#| eval: true
+#| echo: true
+data(polynome, package = "hecmulti")
+# Ajuster un polynôme de degré trois (modèle cubique)
+mod_cub <- lm(y ~ poly(x, 3),
+              data = polynome)
+summary(mod_cub) # Tableau résumé des coefficients
+AIC(mod_cub)
+BIC(mod_cub)
+```
+
+
+
+Le @tbl-polynome-ajustement résume ces quantités pour tous les modèles de l'ordre 1 à l'ordre 10.
+
+
+
+```{r}
+#| label: tbl-polynome-ajustement
+#| tbl-cap: "Mesures de la qualité de l'ajustement d'un modèle polynomial aux données en fonction de l'ordre du polynôme."
+#| echo: false
+#| eval: true
+knitr::kable(x = as.data.frame(cbind(EQM[,c(2,1,3,5:6)], rowMeans(EQMcv))),
+             digits = 2,
+             row.names = TRUE,
+            col.names = c("\\(\\mathsf{EQM}\\)",
+                          "\\(\\widehat{\\mathsf{EQM}}_a\\)",
+                          "\\(R^2\\)",
+                          # "\\(R^2_a\\)",
+                          "\\(\\mathsf{AIC}\\)",
+                          "\\(\\mathsf{BIC}\\)",
+                          "\\(\\mathsf{VC}_{10}\\)"),
+            escape = FALSE,
+             booktabs = TRUE) |>
+    kableExtra::kable_styling(full_width = TRUE)
+  
+```
+
+```{r}
+#| label: fig-polynome-ajustement
+#| eval: true
+#| echo: false
+#| out-width: '100%'
+#| fig-cap: "Critères d'information en fonction de l'ordre du polynôme."
+EQM_sub <- EQM[,c(1,2,5,6)]
+colnames(EQM_sub) <- c("echantillon",
+                       "validation", 
+                       "AIC",
+                       "BIC")
+EQM_graph <- data.frame(ordre = 1:10, EQM_sub[,3:4]) |>
+  tidyr::pivot_longer(cols = -1,
+                      names_to = "methode",
+                      values_to = "eqm") # |>
+  # dplyr::mutate(methode = forcats::lvls_reorder(
+  #   factor(methode), idx = c(3L,4L,1L,2L)))
+ggplot(data = EQM_graph, 
+       aes(x = ordre, 
+           y = eqm, 
+           color = methode)) +
+  geom_line() +
+  geom_point(aes(shape=methode, color=methode)) +
+  labs(x = "ordre du polynôme",
+       y = "critère d'information") +
+  theme(legend.position="bottom",
+        legend.title=element_blank()) +
+  scale_color_manual(values=MetBrewer::met.brewer("Hiroshige", 2)) +
+  scale_x_continuous(breaks = 0:10,
+                     labels = as.character(0:10))
+
+```
+
+
+
+On voit dans le @tbl-polynome-ajustement que l'erreur quadratique moyenne des données d'apprentissage, $\widehat{\mathsf{EQM}}_a$, diminue toujours à mesure qu'on ajoute des variables (c'est-à-dire, qu'on augmente l'ordre du polynôme); ces valeurs sont représentées dans la @fig-plotEQMa. Les critères d'information, $\mathsf{AIC}$ et $\mathsf{BIC}$, ne sont pas sur la même échelle, mais le graphique de la @fig-polynome-ajustement illustre un comportement semblable à la vraie courbe de l'erreur quadratique moyenne théorique et suggèrent que le meilleur modèle est le modèle cubique ($k=3$), c'est-à-dire le vrai modèle.
+N'oubliez pas que ces critères sont calculés avec l'échantillon d'apprentissage ($n=100$), mais en pénalisant l'ajout de variables. On est ainsi en mesure de contrecarrer le problème provenant du fait qu'on ne peut pas utiliser directement le $\widehat{\mathsf{EQM}}_a$.
+
+Le $\mathsf{AIC}$ et le $\mathsf{BIC}$ sont des critères très utilisés et très généraux. Ils sont disponibles dès qu'on utilise la méthode du maximum de vraisemblance comme méthode d'estimation. 
+
+
+
+
+
+### Validation externe
+
+
+La deuxième grande approche après celle consistant à pénaliser le $\widehat{\mathsf{EQM}}_a$ consiste à tenter d'estimer le $\mathsf{EQM}$ directement sans utiliser deux fois les mêmes données. Nous allons voir deux telles méthodes ici, la validation externe (division de l'échantillon) et la validation croisée (_cross-validation_).
+
+Ces deux méthodes s'attaquent directement au problème qu'on ne peut utiliser (sans ajustement) les mêmes données qui ont servi à estimer les paramètres d'un modèle pour estimer sa performance. Pour ce faire, l'échantillon de départ est divisé en deux, ou plusieurs parties, qui vont jouer des rôles différents.
+
+
+L'idée de la validation externe est simple. Nous avons un échantillon de taille $n$ que nous pouvons diviser au hasard en deux parties de tailles respectives $n_1$ et $n_2$ ($n_1+n_2=n$), soit
+
+- un échantillon d'apprentissage (_training_) de taille $n_1$ et
+- un échantillon de validation (_test_) de taille $n_2$.
+
+L'échantillon d'apprentissage servira à estimer les paramètres du modèle. L'échantillon de validation servira à estimer la performance prédictive (par exemple estimer l'$\mathsf{EQM}$) du modèle. Comme cet échantillon n'a pas servi à estimer le modèle lui-même, il est formé de « nouvelles » observations qui permettent d'évaluer d'une manière réaliste la performance du modèle. Comme il s'agit de nouvelles observations, on n'a pas à pénaliser la complexité du modèle et on peut directement utiliser le critère de performance choisi, par exemple, l'erreur quadratique moyenne, c'est-à-dire, la moyenne des erreurs au carré pour l'échantillon de validation. Cette quantité est une estimation valable de l'$\mathsf{EQM}$ de ce modèle. On peut faire la même chose pour tous les modèles en compétition et choisir celui qui a la meilleure performance sur l'échantillon de validation.
+
+Cette approche possède plusieurs avantages. Elle est facile à implanter. Elle est encore plus générale que les critères $\mathsf{AIC}$ et $\mathsf{BIC}$. En effet, ces critères découlent de la méthode d'estimation du maximum de vraisemblance. Plusieurs autres types de modèles ne sont pas estimés par la méthode du maximum de vraisemblance (par exemple, les arbres, les forêts aléatoires, les réseaux de neurones, etc.) La performance de ces modèles peut toujours être estimée en divisant l'échantillon. Cette méthode peut donc servir à comparer des modèles de familles différentes. Par exemple, choisit-on un modèle de régression linéaire, une forêt aléatoire ou bien un réseau de neurones?
+
+Cette approche possède tout de même un désavantage. Elle nécessite une grande taille d'échantillon au départ. En effet, comme on divise l'échantillon, on doit en avoir assez pour bien estimer les paramètres du modèle (l'échantillon d'apprentissage) et assez pour bien estimer sa performance (l'échantillon de validation).
+
+La méthode consistant à diviser l'échantillon en deux (apprentissage et validation) afin de sélectionner un modèle est valide. Par contre, si on veut une estimation sans biais de la performance du modèle choisi (celui qui est le meilleur sur l'échantillon de validation), on ne peut pas utiliser directement la valeur observée de l'erreur de ce modèle sur l'échantillon de validation car elle risque de sous-évaluer l'erreur. En effet, supposons qu'on a 10 échantillons et qu'on ajuste 10 fois le même modèle séparément sur les 10 échantillons. Nous aurons alors 10 estimations différentes de l'erreur du modèle. Il est alors évident que de choisir la plus petite d'entre elles sous-estimerait la vraie erreur du modèle. C'est un peu ce qui se passe lorsqu'on choisit le modèle qui minimise l'erreur sur l'échantillon de validation. Le modèle lui-même est un bon choix, mais l'estimation de son erreur risque d'être sous-évaluée.
+
+Une manière d'avoir une estimation de l'erreur du modèle retenu consiste à diviser l'échantillon de départ en trois (plutôt que deux). Aux échantillons d'apprentissage et de validation, s'ajoute un échantillon « test ». Cet échantillon est laissé de côté durant tout le processus de sélection du modèle qui est effectué avec les deux premiers échantillons tel qu'expliqué plus haut. Une fois un modèle retenu (par exemple celui qui minimise l'erreur sur l'échantillon de validation), on peut alors évaluer sa performance sur l'échantillon test qui n'a pas encore été utilisé jusque là. L'estimation de l'erreur du modèle retenu sera ainsi valide. Il est évident que pour procéder ainsi, on doit avoir une très grande taille d'échantillon au départ.
+
+### Validation croisée
+
+Si la taille d'échantillon n'est pas suffisante pour diviser l'échantillon en deux et procéder comme nous venons de l'expliquer, la validation croisée est une bonne alternative. Cette méthode permet d'imiter le processus de division de l'échantillon.
+
+Voici les étapes à suivre pour faire une validation croisée à $K$ groupes (_$K$-fold cross-validation_) :
+
+1. Diviser l'échantillon au hasard en $K$ parties $P_1, P_2, \ldots, P_K$ contenant toutes à peu près le même nombre d'observations.
+2. Pour $j = 1$ à $K$,
+    i. Enlever la partie $j$.
+    ii. Estimer les paramètres du modèle en utilisant les observations des $K-1$ autres parties combinées.
+    iii. Calculer la mesure de performance (par exemple la somme du carré des erreurs) de ce modèle pour le groupe $P_j$.
+3. Combiner les $K$ estimations de performance pour obtenir une mesure de performance finale.^[Le fait d'utiliser $K \neq n$ mène à une estimation biaisée de la quantité d'intérêt et ce biais peut être important si $n$ est petit; un ajustement simple est possible pour réduire ce dernier est présenté dans Davison et Hinkley (1997), *Bootstrap Methods and their Application*, Cambridge University Press à l'équation 6.48.]
+
+Pour l'erreur quadratique moyenne, cette dernière étape revient à additionner la somme du carré des erreurs avant de diviser par la taille de l'échantillon totale.
+
+
+
+```{r}
+#| label: fig-validationcroiseeillust
+#| eval: true
+#| echo: false
+#| fig-cap: "Illustration de la validation croisée: on scinde l'échantillon d'apprentissage en cinq groupes (abcisse) et à chaque étape, une portion différente des données est mise de côté et ne sert que pour la validation."
+#| out-width: '100%'
+
+col <- rep(1, 25)
+col[(0:4)*5+1:5] <- 2
+df <- data.frame(
+  x = rep(1:5, 5),
+  y = rep(1:5, each = 5),
+  identification = factor(col, labels = c("apprentissage","validation"))
+)
+ggplot(df, aes(x, y)) +
+  geom_tile(aes(fill = identification), colour = "white", lwd = 2) +
+  ylab("étape") +
+  xlab("division") +
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        panel.background = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank()) +
+  scale_color_manual(values=MetBrewer::met.brewer("Hiroshige", 2)) +
+  scale_fill_manual(values=MetBrewer::met.brewer("Hiroshige", 2)) +
+  scale_y_continuous(
+    breaks = 1:5,
+    minor_breaks = NULL,
+    expand = c(0,0),
+    labels = 5:1)
+
+```
+
+
+
+On recommande habituellement de prendre $K=\min\{n^{1/2}, 10\}$ groupes (le choix de cinq ou 10 groupes sont ceux qui revient le plus souvent en pratique). Si on prend $K=10$ groupes, alors chaque modèle est estimé avec 90% des données et on prédit ensuite le 10% restant. Comme on passe en boucle les 10 parties, chaque observation est prédite une et une seule fois à la fin. Il est important de souligner que les groupes sont formés de façon aléatoire et donc que l'estimé que l'on obtient peut être très variable, surtout si la taille de l'échantillon d'apprentissage est petite. Il arrive également que le modèle ajusté sur un groupe ne puisse pas être utilisé pour prédire les observations mises de côté, notamment si des variables catégorielles sont présentes mais qu'une modalité n'est présente que dans un des groupes; ce problème se présente en pratique si certaines classes ont peu d'observations. Un échantillonnage stratifié permet de pallier à cette lacune et de s'assurer d'une répartition plus homogène des variables catégorielles.
+
+
+
+```{r}
+#| label: validation-croisée
+#| eval: false
+#| echo: true
+# Validation croisée avec k groupes
+lmkfold <- function(formula, data, k, ...){
+   # Créer un accumulateur pour le calcul de l'EQM
+   accu <- 0
+   k <- as.integer(k) # nombre de groupes
+   n <- nrow(data) # nombre d'observations
+   # Permuter les indices des observatoins
+   gp <- sample.int(n, n, replace = FALSE)
+   # Créer une liste de k éléments avec les nos d'observations
+   folds <- split(gp, cut(seq_along(gp), k, labels = FALSE))
+   for(i in seq_len(k)){
+      # Extraire les indices des observations de la portion validation
+      g <- as.integer(unlist(folds[i]))
+      # Ajuster le modèles à toutes les données, moins celles de la portion validation
+      fitlm <- lm(formula, data = data[-g,])
+      # ajouter l'erreur quadratique du pli de validation
+      accu <- accu + sum((data[g, all.vars(formula)[1]] -predict(fitlm, newdata=data[g,]))^2)
+   }
+   # Diviser par la taille de l'échantillon 
+   # pour obtenir la moyenne
+   return(accu/n)
+}
+
+# Le paquet 'caret' a une fonction 
+# pour faire la validation croisée
+cv_caret <- 
+  caret::train(form = formula, 
+             data = data, 
+             method = "lm",
+             trControl = caret::trainControl(
+               method = "cv",
+               number = 10))
+eqm_cv <- cv_caret$results$RMSE^2
+```
+
+
+
+Le cas particulier $K=n$ (en anglais _leave-one-out cross validation_, ou $\mathsf{LOOCV}$) consiste à enlever une seule observation, à estimer le modèle avec les $n-1$ autres et à valider à l'aide de l'observation laissée de côté: on répète cette procédure pour chaque observation. Pour les modèles linéaires, il existe des formules explicites qui nous permettent d'éviter d'ajuster $n$ régressions par moindre carrés. Cette forme de validation croisée tend à être trop optimiste.
+
+
+Revenons à notre exemple où une seule variable explicative est disponible et où l'on cherche à déterminer un bon modèle polynomial. La dernière colonne de @tbl-polynome-ajustement,  $\mathsf{VC}_{10}$, donne les moyennes de 100 réplications de estimations de l'$\mathsf{EQM}$ obtenues avec la validation croisée à 10 groupes.  Notez que si vous exécutez le programme, vous n'obtiendrez pas les mêmes valeurs car il y a un élément aléatoire dans ce processus. 
+
+
+
+Le modèle cubique (ordre 3) est aussi choisi par la validation croisée, en moyenne (comme il l'était par le $\mathsf{AIC}$ et le $\mathsf{BIC}$). Le graphe qui suit trace les valeurs de l'estimation par validation croisée (courbe de validation croisée) et aussi le $\mathsf{EQM}$. On voit que l'estimation par validation croisée suit assez bien la forme du $\mathsf{EQM}$ (qu'il est supposé estimer). Les boîtes à moustache permettent d'apprécier la variabilité des estimés de l'erreur quadratique moyenne telles qu'estimée par validation croisée avec 10 groupes.
+
+
+
+```{r}
+#| label: fig-plotcv
+#| echo: false
+#| out-width: '100%'
+#| fig-width: 6
+#| fig-height: 4
+#| fig-align: 'center'
+#| cache: true
+#| fig-cap: "Boîtes-à-moustaches des 100 réplications des valeurs de l'erreur quadratique moyenne estimées par validation croisée à 10 plis pour chaque ordre du polynôme."
+EQMdat <- data.frame(ordre = rep(1:10, length.out = 20),
+           EQM = c(EQM[,2], rowMeans(EQMcv)),
+           echantillon = factor(c(rep("théorique",10), rep("validation croisée", 10)))
+)
+ggplot(data = EQMdat, aes(x=ordre, y=EQM)) +
+  geom_boxplot(data = data.frame(EQM = c(t(EQMcv)),
+                                 ordre = rep(1:10, each=100)),
+               aes(group=ordre),
+               show.legend = FALSE,
+               outlier.shape=NA) +
+  #geom_line(aes(color=color=echantillon)) +
+  geom_point(aes(shape=echantillon, color=echantillon)) +
+  labs( x = "ordre du polynôme",
+     y = "erreur quadratique moyenne") +
+  theme(legend.position="bottom",
+        legend.title=element_blank()) +
+  scale_color_manual(values=c("#E69F00", "#56B4E9")) +
+  scale_x_continuous(breaks = 0:10,
+                     labels = as.character(0:10))
+
+```
+
+
+
+## Présentation des données
+
+Nous allons présenter un exemple classique de commercialisation de bases de données qui nous servira à illustrer la sélection de modèles, la régression logistique et la gestion de données manquantes. Le but est de cibler les clients pour l'envoi d'un catalogue.
+
+Le contexte est le suivant : une entreprise possède une grande base de données client. Elle désire envoyer un catalogue à ses clients mais souhaite maximiser les revenus d'une telle initiative. Il est évidemment possible d'envoyer le catalogue à tous les clients mais ce n'est possiblement pas optimal. La stratégie envisagée est la suivante :
+
+1. Envoyer le catalogue à un échantillon de clients et attendre les réponses. Le coût de l'envoi d'un catalogue est de 10\$.
+2. Construire un modèle avec cet échantillon afin de décider à quels clients (parmi les autres) le catalogue devrait être envoyé, afin de maximiser les revenus.
+
+Plus précisément, on s'intéresse aux clients de 18 ans et plus qui ont au moins un an d'historique avec l'entreprise et qui ont effectué au moins un achat au cours de la dernière année.  Dans un premier lieu, on a envoyé le catalogue à un échantillon de 1000 clients. Un modèle sera construit avec ces 1000 clients afin de cibler lesquels des clients restants seront choisis pour recevoir le catalogue.
+
+Pour les 1000 clients de l'échantillon d'apprentissage, les deux variables cibles suivantes sont disponibles :
+
+- `yachat`, une variable binaire qui indique si le client a acheté quelque chose dans le catalogue égale à 1 si oui et 0 sinon.
+- `ymontant`, le montant de l'achat si le client a acheté quelque chose.
+
+Les 10 variables suivantes sont disponibles pour tous les clients et serviront de variables explicatives pour les deux variables cibles. Il s'agit de :
+
+- `x1`: sexe de l'individu, soit homme (0) ou femme (1);
+- `x2`: l'âge (en année);
+- `x3`: variable catégorielle indiquant le revenu, soit moins de 35 000\$ (1), entre 35 000\$ et 75 000\$ (2) ou plus de 75 000$ (3);
+- `x4`: variable catégorielle indiquant la région où habite le client (de 1 à 5);
+- `x5`: couple : la personne est elle en couple (0=non, 1=oui);
+- `x6`: nombre d'année depuis que le client est avec la compagnie;
+- `x7`: nombre de semaines depuis le dernier achat;
+- `x8`: montant (en dollars) du dernier achat;
+- `x9`: montant total (en dollars) dépensé depuis un an;
+- `x10`: nombre d'achats différents depuis un an.
+
+Les données se trouvent dans le fichier `dbm`. Voici d'abord des statistiques descriptives pour l'échantillon d'apprentissage.
+
+
+
+```{r}
+#| label: loaddbm
+#| eval: true
+#| echo: true
+data(dbm, package = "hecmulti")
+str(dbm)
+```
+
+```{r}
+#| label: tbl-contingence-dbm
+#| tbl-cap: "Tableaux de fréquence pour les variables catégorielles de la base de données marketing."
+#| eval: true
+#| echo: false
+#| warning: false
+dbm_sub <- dbm |>
+  dplyr::filter(test == 0) |>
+  dplyr::select(!test)
+knitr::kables(list(
+knitr::kable(table(dbm_sub$x1), 
+             booktabs = TRUE, 
+             col.names = c("sexe", "décompte")),
+knitr::kable(table(dbm_sub$x3), booktabs = TRUE, 
+             col.names = c("revenu", "décompte")),
+knitr::kable(table(dbm_sub$x5), booktabs = TRUE, 
+             col.names = c("couple", "décompte")),
+knitr::kable(table(dbm_sub$x4), booktabs = TRUE, 
+             col.names = c("région", "décompte")))) |>
+       kableExtra::kable_styling(full_width = TRUE)
+
+```
+
+```{r}
+#| label: fig-histogrammes-eda-dbm
+#| echo: false
+#| eval: true
+#| fig-cap: "Histogrammes des variables continues de la base de données `dbm` pour les 1000 clients par intention d'achat."
+#| warning: false
+#| out-width: '100%'
+g1 <- ggplot(data = dbm_sub,
+             aes(x = x2)) +
+      geom_histogram(alpha = 0.5, 
+                     aes(y = ..density..),
+                     bins = 30) + 
+  labs(#fill = "achat",
+       y = "densité",
+       x = "âge")
+g2 <- ggplot(data = dbm_sub,
+             aes(#fill = factor(yachat),
+                 x = x8 
+                 )) +
+      geom_histogram(alpha = 0.5, 
+                     aes(y = ..density..),
+                     bins = 30) + 
+  labs(#fill = "achat",
+       y = "densité",
+       x = "montant du dernier achat (en dollar)")
+g3 <- ggplot(data = dbm_sub,
+             aes(#fill = factor(yachat),
+                 x = x9)) +
+      geom_histogram(alpha = 0.5, 
+                     aes(y = ..density..),
+                     bins = 30) + 
+  labs(#fill = "achat",
+       y = "densité",
+       x = "montant total dépensé depuis un an (en dollars)")
+g4 <- ggplot(data = dbm_sub,
+             aes(#fill = factor(yachat),
+                 x = x7 )) +
+      geom_histogram(alpha = 0.5, 
+                     aes(y = ..density..),
+                     bins = 30) + 
+  labs(#fill = "achat",
+       y = "densité",
+       x = "nombre de semaines depuis le dernier achat")
+g5 <- ggplot(data = dbm_sub,
+             aes(#fill = factor(yachat),
+                 x = x6)) +
+      geom_histogram(alpha = 0.5, 
+                     aes(y = ..density..),
+                     bins = 30) + 
+  labs(#fill = "achat",
+       y = "densité",
+       x = "ancienneté comme client")  
+g6 <- ggplot(data = dbm_sub,
+             aes(#fill = factor(yachat),
+                 x = x10 
+                 )) +
+      geom_histogram(alpha = 0.5, 
+                     aes(y = ..density..),
+                     bins = 30) + 
+  labs(#fill = "achat",
+       y = "densité",
+       x = "nombre d'achats différents depuis un an")  
+library(patchwork)
+(g1 + g2)/(g3 + g4) / (g5 + g6) +
+  patchwork::plot_layout(guides = 'collect') & theme(legend.position = "bottom")
+
+```             
+
+
+
+Il y a 46.6% de femmes parmi les 1000 clients de l'échantillon. De plus, 39.7% ont un revenu de moins de 35 000\$, 33.7% sont entre 35 000\$ et 75 000\$ et 26.6% ont plus de 75 000\$. 42.5% de ces clients qui ont un conjoint.
+
+
+
+```{r}
+#| label: tbl-statdescript-dbm
+#| tbl-cap: "Statistiques descriptives des variables numériques de la base de données marketing."
+#| echo: false
+#| eval: true
+#| warning: false
+dbm_sub_c <- dbm_sub |>
+    dplyr::select(x2, x6, x7, x8, x9, x10)
+tibble::tibble(variable = c("x2","x6","x7","x8","x9","x10"),
+               description = c("âge", "nombre d’année comme client","nombre de semaines depuis le dernier achat","montant du dernier achat","montant total dépensé sur un an","nombre d'achats différents sur un an"),
+                               moyenne = apply(dbm_sub_c, 2, mean),
+               "écart-type" = apply(dbm_sub_c, 2, sd),
+               min = apply(dbm_sub_c, 2, min),
+               max = apply(dbm_sub_c, 2, max)) |>
+  knitr::kable(digits = 2, booktabs = TRUE, linesep = "") |>
+  kableExtra::kable_styling(full_width = TRUE)
+```
+
+
+
+Le nombre d'achats différents depuis un an par ces clients varie entre 1 et 14. Un peu plus de la moitié (51.4%) ont fait cinq achats ou moins. Parmi les 1000 clients de l'échantillon d'apprentissage, 210 ont acheté quelque chose dans le catalogue. La variable yachat sera l'une des variables que nous allons chercher à modéliser en vue d'obtenir des prédictions.
+
+
+L'âge des 1000 clients de l'échantillon d'apprentissage varie entre 20 et 70 avec une moyenne de 37.1 ans. En moyenne, ces clients ont acheté pour 229.30\$ depuis un an. Le dernier achat de ces clients remonte, en moyenne, à 10 semaines. 
+
+Dans cette section, nous modéliserons le montant d'achat, `ymontant`. Seuls 210 clients ont acheté quelque chose dans le catalogue et les statistiques rapportées correspondent seulement à ces derniers, car la variable `ymontant` est manquante si le client n'a rien acheté dans le catalogue. On pourrait également remplacer ces valeurs par des zéros et les modéliser, mais nous aborderons cet aspect ultérieurement. Les clients qui ont acheté quelque chose ont dépensé en moyenne 67.3\$, et au minimum 25\$. La @fig-histogrammes-eda-dbm présente les histogrammes de quelques unes de ces variables.
+
+Il y a plusieurs façons d'utiliser l'échantillon d'apprentissage afin de mieux cibler les clients à qui envoyer le catalogue et maximiser les revenus.  En voici quelques unes.
+
+a) On pourrait développer un modèle afin d'estimer la probabilité qu'un client achète quelque chose si on lui envoie un catalogue. Plus précisément, on peut développer un modèle pour $\Pr(\texttt{yachat}=1)$. Comme la variable `yachat` est binaire, un modèle possible est la régression logistique, que nous décrirons au chapitre suivant. Ainsi, en appliquant le modèle aux 100 000 clients restant, on pourra cibler les clients susceptibles d'acheter (ceux avec une probabilité élevée).
+b) Une autre façon serait de tenter de prévoir le montant d'argent dépensé. Nous venons de voir la distribution de la variable `ymontant`. Il y a deux situations, ceux qui ont acheté et ceux qui n'ont pas achetés.  En conditionnant sur le fait d'avoir acheté quelque chose, il est possible de décomposer le problème de la manière suivante :
+
+\begin{align*}
+\mathsf{E}(\texttt{ymontant}) &= \mathsf{E}(\texttt{ymontant} \mid \texttt{yachat}=1) \mathsf{P}(\texttt{yachat}=1) \\& \quad + 
+\mathsf{E}(\texttt{ymontant} \mid \texttt{yachat}=0) \mathsf{P}(\texttt{yachat}=0) \\
+ &= \mathsf{E}(\texttt{ymontant} \mid \texttt{yachat}=1) \mathsf{P}(\texttt{yachat}=1),
+\end{align*}
+puisque le terme $\mathsf{E}(\texttt{ymontant} \mid \texttt{yachat}=0)$ est zéro: les gens qui n'ont pas acheté n'ont rien dépensé.
+
+On peut donc estimer $\mathsf{E}(\texttt{ymontant} \mid \texttt{yachat}=1)$ et $\mathsf{P}(\texttt{yachat}=1)$, pour ensuite les combiner et avoir une estimation de $\mathsf{E}(\texttt{ymontant})$. Le développement du modèle pour $\mathsf{E}(\texttt{ymontant} \mid \texttt{yachat}=1)$ peut se faire avec la régression linéaire, en utilisant seulement les clients qui ont acheté dans l'échantillon d'apprentissage, car $\texttt{ymontant}$ est une variable continue dans ce cas. Le développement du modèle pour $\mathsf{P}(\texttt{yachat}=1)$ peut se faire avec la régression logistique, tel que mentionné plus haut, en utilisant tous les 1000 clients de l'échantillon d'apprentissage. En fait, nous verrons plus loin qu'il est possible d'estimer conjointement les deux modèles avec un modèle Tobit. En appliquant le modèle aux 100 000 clients restants, on pourra cibler les clients qui risquent de dépenser un assez grand montant.
+
+Comme nous n'avons pas encore vu la régression logistique, nous allons nous limiter à illustrer les méthodes qui restent à voir dans ce chapitre avec la régression linéaire en cherchant à développer un modèle pour $\mathsf{E}(\texttt{ymontant} \mid \texttt{yachat}=1)$, le montant d'argent dépensé par les clients qui ont acheté quelque chose.
+
+La base de donnée contient deux variables explicatives catégorielles. Il s'agit de revenu (`x3`) et région (`x4`). Il faut coder d'une manière appropriée afin de pouvoir les incorporer dans les modèles. La manière habituelle est de créer des variables indicatrices (binaires) qui indiquent si la variable prend ou non une valeur particulière dans **R** est de transformer la variable en facteur (`factor`). En général, si une variable catégorielle possède $K$ valeurs possibles, il est suffisant de créer $K-1$ indicatrices, en laissant une modalité comme référence. Par exemple, pour `x3`, nous allons créer deux variables,
+
+- `x31`: variable binaire égale à 1 si `x3` égale 1 et 0 sinon,
+- `x32`: variable binaire égale à 1 si `x3` égale 2 et 0 sinon.
+
+Ainsi, la valeur 3 est celle de référence. Ces deux indicatrices sont suffisantes pour récupérer toute l'information comme le démontre le @tbl-02-dummy.
+
+: Valeur des indicateurs en fonction du niveau de la variable catégorielle {#tbl-02-dummy}
+
+| `x3` | `x31` | `x32` |
+|:----:|:-----:|:-----:|
+|   1  |   1   |   0   |
+|   2  |   0   |   1   |
+|   3  |   0   |   0   |
+
+Il est important de noter que, si le modèle qui inclut toutes les modalités (ordonnée à l'origine, `x31` et `x32`) possibles ne dépend pas de la catégorie de référence, ce ne sera plus le cas si on permet lors de la sélection de variables de ne conserver que certains niveaux de la variable catégorielle. Par exemple, si on inclut uniquement `x31` comme variable explicative, l'ordonnée à l'origine englobera toutes les autres valeurs de `x3`, à savoir $\{2, 3\}$.^[La fonction `MASS::stepAIC` ne segmente pas les variables catégorielles: tous les niveaux sont inclus à la fois. La fonction `leaps::regsubsets` va quant à elle créer des indicateurs binaires.]
+
+:::{.callout-tip}
+## Danger de surajustement avec variables catégorielles
+
+La principale cause de mauvaise performance est le surajustement sélectif. Dans l'exemple que l'on considère avec la base de données marketing, la plupart des modalités des variables catégorielles semblent à première vues suffisantes pour estimer des coefficients. Si on s'intéresse par contre aux interactions, on se rendra rapidement compte qu'il y a trop peu de valeurs pour certaines combinaisons (par exemple, `x3*x5`) pour estimer de manière fiable l'effet combiné. Si on a une valeur aberrante dans un groupe avec de faibles modalités, les indicateurs donneront systématiquement préférence à l'inclusion d'un terme pour l'accomoder (au détriment de la généralisation). Cela a pour effet de fausser la sélection et donner une grande erreur quadratique moyenne de validation. Si certaines modalités ont des effectifs trop petits, on peut envisager de les regrouper avec d'autres similaires.
+
+:::
+
+## Sélection de variables
+
+### Recherche exhaustive (meilleurs sous-ensembles)
+
+Lorsque nous voulons comparer un petit nombre de modèles, il est relativement aisé d'obtenir les critères ($\mathsf{AIC}$, $\mathsf{BIC}$ ou autre) pour tous les modèles et de choisir le meilleur. C'était le cas dans l'exemple du choix de l'ordre du polynôme où il y avait seulement 10 modèles en compétitions.
+Mais lorsqu'il y a plusieurs variables en jeu, le nombre de modèles potentiel augmente très rapidement.
+
+En fait, supposons qu'on a $p$ variables distinctes disponibles. Avant même de considérer les transformations des variables et les interactions entre elles, il y a déjà trop de modèles possibles. En effet, chaque variable est soit incluse ou pas (deux possibilités) et donc il y a $2^p=2\times 2 \times \cdots \times 2$ ($p$ fois) modèles en tout à considérer. Ce nombre augmente très rapidement comme en témoigne le @tbl-02-table3.
+
+
+
+```{r}
+#| label: tbl-02-table3
+#| echo: false
+#| eval: true
+#| tbl-cap: "Nombres de modèles en fonction du nombre de paramètres."
+#| warning: false
+p <- c(5,10,15,20,25,30)
+npar <- 2^p
+options(scipen=100)
+knitr::kable(x = data.frame(p = p, npar = npar),
+             digits = 0,
+             col.names = c("\\(p\\)",
+                          "nombre de paramètres"),
+            escape = FALSE,
+             booktabs = TRUE) |>
+    kableExtra::kable_styling(full_width = TRUE)
+```
+
+
+
+Ainsi, si le nombre de variables est restreint, il est possible de comparer tous les modèles potentiels et de choisir le meilleur (selon un critère). II existe même des algorithmes très efficaces qui permettent de trouver le meilleur modèle sans devoir examiner tous les modèles possibles. Le nombre de variables qu'il est possible d'avoir dépend de la puissance de calcul et augmente d'année en année.  Par contre, dans plusieurs applications, il ne sera pas possible de comparer tous les modèles et il faudra effectuer une recherche limitée. Faire une recherche exhaustive parmi tous les modèles possibles s'appelle sélection de tous les sous-ensembles (_best subsets_).
+
+
+On veut trouver un bon modèle pour prévoir la valeur de `ymontant` des clients qui ont acheté quelque chose. On a vu qu'il y a 210 clients qui ont acheté dans l'échantillon d'apprentissage. Nous allons chercher à développer un « bon » modèle avec ces 210 clients. Dans ce premier exemple, nous allons seulement utiliser les 10 variables explicatives de base (14 variables avec les indicatrices). 
+
+
+Pour un nombre de variables fixé, le meilleur modèle selon le $R^2$ est aussi le meilleur selon les critères d'information $\mathsf{AIC}$ et $\mathsf{BIC}$, pour ce nombre fixé de variables. Pour vous convaincre de cette affirmation, fixons le nombre de variables et restreignons-nous seulement aux modèles avec ce nombre de variables. Comme $R^2=1 - \mathsf{SCE}/\mathsf{SCT}$ et que $\mathsf{SCT}$ est une constante indépendante du modèle, le modèle avec le plus grand coefficient de détermination, $R^2$, est aussi celui avec la plus petite somme du carré des erreurs ($\mathsf{SCE}$). Comme $\mathsf{AIC}=n \ln (\mathsf{EQM}) + 2p$, ce sera aussi celui avec le plus petit $\mathsf{AIC}$ car la pénalité $2p$ est la même si on fixe le nombre de variables; la même remarque est valide pour le $\mathsf{BIC}$.
+
+Ainsi, pour trouver le meilleur modèle globalement (sans fixer le nombre de variables), il suffit de trouver le modèle à $k$ variables explicatives ayant le coefficient de détermination le plus élevé pour tous les nombres de variables fixés et d'ensuite de trouver celui qui minimise le $\mathsf{AIC}$ (ou le $\mathsf{BIC}$) parmi ces modèles. Ainsi, le modèle linéaire simple qui a le plus grand $R^2$ est celui qui inclut l'indicateur de couple (`x5`). Le meilleur modèle (selon le $R^2$) parmi tous les modèles avec deux variables est celui avec `x5` et `x6`.
+
+
+
+```{r}
+#| label: tbl-leaps-simple
+#| echo: false
+#| eval: true
+#| out-width: '90%'
+#| fig-align: "center"
+#| message: false
+#| tbl-cap: "Modèle parmi les candidats ayant la plus grande valeur de coefficient de détermination selon le nombre de régresseurs, avec valeurs des critères d'informations."
+data(dbm, package = "hecmulti")
+dbm$x3 <- relevel(factor(dbm$x3), ref = 3)
+dbm$x4 <- relevel(factor(dbm$x4), ref = 5)
+# str(dbm)
+# (...)^2 crée toutes les interactions d'ordre deux
+# I(x^2) permet de créer les termes quadratiques
+formule <- formula(ymontant ~ (x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10)^2 + I(x2^2) + I(x6^2) + I(x7^2) + I(x8^2) + I(x9^2) + I(x10^2))
+dbm_apprentissage <- 
+  as.data.frame(cbind(ymontant = dbm$ymontant[!is.na(dbm$ymontant) & dbm$test == 0], 
+                      model.matrix(object = formule, 
+                                   data = dbm[dbm$test == 0L,])[,-1]))
+dbm_validation <- 
+  as.data.frame(cbind(ymontant = dbm$ymontant[!is.na(dbm$ymontant) & dbm$test == 1L], 
+                      model.matrix(object = formule, 
+                                   data = dbm[dbm$test == 1L,])[,-1]))
+
+# La procédure fonctionne avec des variables catégorielles 
+# (et donc pourrait garder/enlever un facteur à plusieurs niveaux)
+exhaustive <- leaps::regsubsets(ymontant ~ 
+                                  x1+x2+x31+x32+x41+x42+x43+
+                                  x44+x5+x6+x7+x8+x9+x10, 
+                                nvmax = 13L, 
+                                nbest = 1L,
+                                data = dbm_apprentissage)
+resume_recherche <- summary(exhaustive)
+knitr::kable(data.frame(variables =  apply(resume_recherche$which, 1, function(x){paste(colnames(resume_recherche$which)[x][-1], collapse = " ")}),
+           BIC = resume_recherche$bic,
+           AIC = resume_recherche$bic - rowSums(resume_recherche$which)*(log(nrow(dbm_apprentissage))-2)
+), digits = c(0,2,2),
+booktabs = TRUE)|>
+    kableExtra::kable_styling(full_width = TRUE)
+```
+
+
+
+Un algorithme par séparation et évaluation permet d'effectuer cette recherche de manière efficace sans essayer tous les candidats pour ces sous-ensembles. Dans l'exemple, on voit que le modèle avec les variables `x1` `x2` `x31` `x44` `x5` `x6` `x7` `x8` `x9` et `x10` est celui qui minimise le $\mathsf{AIC}$ globalement ($\mathsf{AIC}$ de `r min(resume_recherche$bic - rowSums(resume_recherche$which)*(log(nrow(dbm_apprentissage))-2))`). Le modèle choisi par le $\mathsf{BIC}$ contient seulement sept variables explicatives (plutôt que 10), soit `x1` `x31` `x5` `x6` `x7` `x8` `x10`.
+
+
+
+```{r}
+#| echo: true
+#| eval: false
+#| cache: true
+data(dbm, package = "hecmulti")
+dbm_a <- dbm |>
+  dplyr::filter(test == 0,
+                !is.na(ymontant))
+# Conserver données d'entraînement (test == 0)
+# des personnes qui ont acheté ymontant > 0
+   
+rec_ex <- leaps::regsubsets(
+  x = ymontant ~ x1+x2+x3+x4+x5+x6+x7+x8+x9+x10, 
+  nvmax = 13L,
+  method = "exhaustive",
+  data = dbm_a)
+resume_rec_ex <- summary(rec_ex,
+                         matrix.logical = TRUE)
+# Trouver le modèle avec le plus petit BIC
+min_BIC <- which.min(resume_rec_ex$bic)
+# Nom des variables dans le modèle retenu
+rec_ex$xnames[resume_rec_ex$which[min_BIC,]]
+# Coefficients
+# coef(rec_ex, id = min_BIC)
+```
+
+
+
+Nous avons seulement inclus les variables de base pour ce premier essai. Il est possible qu'ajouter des variables supplémentaires améliore la performance du modèle. Pour cet exemple, nous allons considérer les variables suivantes^[Pourquoi prendre ces variables en particulier? Si on suppose que la vrai moyenne de la variable réponse `ymontant` centrée et réduite est une fonction lisse inconnue et qu'on utilise les bonnes variables explicatives centrées, le modèle ajusté précédemment capture l'approximation de degré 1 (série de Taylor) de la vraie fonction de moyenne, tandis que le modèle avec termes quadratiques (incluant les interactions) représente l'approximation de degré 2.]:
+
+- les variables continues au carré, comme $\texttt{age}^2$.
+- toutes les interactions d'ordre deux entre les variables de base, comme $\texttt{sexe}\cdot\texttt{age}$.
+
+ Aux variables de base (10 variables explicatives, mais 14 avec les indicatrices pour les variables catégorielles), s'ajoutent ainsi 90 autres variables. Il y a donc 104 variables explicatives potentielles si on inclut les interactions et les termes quadratiques. Notez qu'il y a des interactions entre chacune des variables indicatrices et chacune des autres variables, mais il ne sert à rien de calculer une interaction entre deux indicatrices d'une même variable (car une telle variable est zéro pour tous les individus). De même, il ne sert à rien de calculer le carré d'une variable binaire codée $\{0, 1\}$.
+
+Dans la mesure où on aura un ratio d'environ un paramètre pour deux observations,Le modèle à 104 variables servira uniquement à illustrer le surajustement. Pensez à la taille de votre échantillon comme à un budget et aux paramètres comme à un nombre d'items: plus vous achetez d'items, moins votre budget est élevé pour chacun et leur qualité en pâtira.  Réalistement, un modèle avec plus d'une vingtaine de variables ici serait difficilement estimable de manière fiable et l'inclusion d'interactions et de termes quadratiques sert surtout à augmenter la flexibilité et les possibilités lors de la sélection de variables.
+
+
+
+```{r}
+#| label: modele-complet
+#| eval: false
+#| echo: true
+#| cache: true
+# (...)^2 crée toutes les interactions d'ordre deux
+# I(x^2) permet de créer les termes quadratiques
+formule <- 
+  formula(ymontant ~ 
+          (x1 + x2 + x3 + x4 + x5 + 
+             x6 + x7 + x8 + x9 + x10)^2 + 
+            I(x2^2) + I(x6^2) + I(x7^2) +
+            I(x8^2) + I(x9^2) + I(x10^2))
+mod_complet <- lm(formule, data = dbm_a)
+```
+
+
+
+Lancer une sélection exhaustive de tous les sous-modèles avec 104 variables risque de prendre un temps énorme. Que faire alors? Il y a plusieurs possibilités. Nous pourrions faire une recherche limitée avec les méthodes que nous allons voir à partir de la section suivante. Nous pourrions aussi combiner les deux approches. Supposons que notre ordinateur permet de faire une recherche exhaustive de tous les sous-modèles avec 40 variables. Nous pourrions alors commencer avec une recherche limitée pour trouver un sous-ensemble de 40 « bonnes » variables et faire une recherche exhaustive, mais en se restraignant à ces 40 variables.
+
+
+### Méthodes séquentielles de sélection
+
+Les méthodes de sélection ascendante, descendante et séquentielle sont des algorithmes gloutons. Elles ont été développées à une époque où la puissance de calcul était bien moindre, et où il était impossible de faire une recherche exhaustive des sous-modèles. La procédure `leaps::regsubsets` permet une sélection de modèle avec une approche séquentielle, ascendante ou descendante en choisissant le meilleur modèle (côté ajustement) avec $k$ variables $(k=1, \ldots, k_{\text{max}})$. La procédure `MASS::stepAIC` permet de faire cette sélection en utilisant un critère d'information. 
+
+
+
+L'idée de la **sélection ascendante** est d'ajouter à chaque étape au modèle précédent la variable qui améliore le plus l'ajustement. Le modèle de départ est celui qui n'inclut que l'ordonnée à l'origine (aucune variable explicative). À chaque étape, on ajoute la variable qui améliore le plus le critère d'ajustement jusqu'à ce qu'aucune amélioration ne soit résultante. 
+
+Un algorithme glouton résoud un problème d'optimisation étape par étape: après $k$ étapes, le modèle construit par la procédure n'est pas nécessairement le meilleur modèle (si on essayait toutes les combinaisons). Si on commence avec $p$ variables, on regarde $p$ choix à la première étape de la procédure ascendante, puis on choisit nue variable parmi les $p-1$ restantes à la deuxième étape, etc. La procédure exhaustive essaiera toutes les $\binom{p}{2}$ combinaisons possibles^[En pratique, il existe des algorithmes d'optimisation qui permettront de faire cette exploration de manière astucieuse sans ajuster les modèles sous-optimaux.]: puisque plus de modèles sont essayés, la solution finale est nécessairement meilleure côté performance évaluée sur l'échantillon d'apprentissage.
+
+La **sélection descendante** est similaire, sauf qu'on part avec le modèle qui inclut toutes les variables explicatives. À chaque étape, on retire la variable qui contribue le moins à l'ajustement jusqu'à ce que le critère d'ajustement ne puisse plus être amélioré ou jusqu'à ce qu'on recouvre le modèle sans variables explicatives, selon le scénario. C'est l'inverse de la méthode ascendante: on va tester le retrait de chaque variable individuellement et retirer celle qui est la moins significative.
+
+La **méthode de sélection séquentielle** est un hybride entre les méthodes de sélection ascendantes et descendante. On débute la recherche à partir du modèle ne contenant que l'ordonnée à l'origine. À chaque étape, on fait une étape ascendante suivie de une (ou plusieurs) étapes descendantes. On continue ainsi tant que le modèle retourné par l'algorithme n'est pas identique à celui de l'étape précédente (dépendant de notre critère). Le dernier modèle est celui retenu.
+
+Avec la méthode séquentielle, une fois qu'on entre une variable (étape ascendante), on fait autant d'étapes descendante afin de retirer toutes les variables qui satisfont le critère de sortie (il peut ne pas y en avoir). Une fois cela effectué, on refait une étape ascendante pour voir si on peut ajouter une nouvelle variable.
+
+Avec la méthode ascendante, une fois qu'une variable est dans le modèle, elle y reste. Avec la méthode descendante, une fois qu'une variable est sortie du modèle, elle ne peut plus y entrer. Avec la méthode séquentielle, une variable peut entrer dans le modèle et sortir plus tard dans le processus. Par conséquent, parmi les trois, la méthode séquentielle est généralement préférable aux méthodes ascendante et descendante, car elle inspecte potentiellement un plus grand nombre de modèles.
+
+
+
+
+
+```{r}
+#| label: modele-sequentiel
+#| eval: false
+#| echo: true
+#| cache: true
+# Cette procédure séquentielle retourne
+# la liste de modèles de 1 variables à
+# nvmax variables.
+rec_seq <- 
+  leaps::regsubsets(
+    x = formule, 
+    data = dbm_a,
+    method = "seqrep", 
+    nvmax = length(coef(mod_complet)))
+which.min(summary(rec_seq)$bic)
+
+# Alternative avec procédure séquentielle
+# qui utilise le critère AIC pour déterminer 
+# l'inclusion ou l'exclusion de variables
+# 
+# Procédure plus longue à rouler
+# (car les modèles linéaires sont ajustés)
+# 
+# On ajoute ou retire la variable qui
+# améliore le plus le critère de sélection
+# à chaque étape.
+seq_AIC <- MASS::stepAIC(
+  lm(ymontant ~ 1, data = dbm_a), 
+  # modèle initial sans variables explicative
+    scope = formule, # modèle maximal possible
+    direction = "both", #séquentielle
+    trace = FALSE, # ne pas imprimer le suivi
+    keep = function(mod, AIC, ...){ 
+      # autres sorties des modèles à conserver
+      list(bic = BIC(mod), 
+           coef = coef(mod))},
+    k = 2) #
+# Remplacer k=2 par k = log(nrow(dbm_a)) pour BIC
+
+# L'historique des étapes est disponible via
+# seq_AIC$anova
+```
+
+
+
+La procédure exhaustive est préférable aux méthodes séquentielles si le nombre de variables n'est pas trop élevé. S'il y a trop de variables, rien ne nous empêche de combiner plusieurs méthodes: on pourrait par exemple faire une procédure descendante pour ne conserver que 40 variables. En utilisant seulement ce sous-ensemble de variables, on choisit le meilleur modèle selon le $\mathsf{AIC}$ ou le $\mathsf{BIC}$ en faisant une recherche exhaustive de tous les sous-modèles. On pourrait également faire une recherche séquentielle avec le $\mathsf{AIC}$ et choisir le modèle parmi l'historique avec le plus petit $\mathsf{BIC}$.
+
+
+
+```{r}
+#| label: performodeles
+#| cache: true
+#| eval: true
+#| echo: false
+data(dbm, package = "hecmulti")
+dbm_a <- dbm |>
+  dplyr::filter(test == 0,
+                !is.na(ymontant)) |>
+  dplyr::mutate(x3 = factor(x3),
+                x4 = factor(x4))
+eqm_c <- rep(0, 10)
+npars_c <- rep(0L, 10)
+dbm_v <- dbm |>
+  dplyr::filter(test == 1,
+                !is.na(ymontant)) |>
+  dplyr::mutate(x3 = factor(x3),
+                x4 = factor(x4))
+# cv_caret <- 
+#   caret::train(form = formula, 
+#              data = data, 
+#              method = "lm",
+#              trControl = caret::trainControl(
+#                method = "cv",
+#                number = 10))
+rec_ex <- leaps::regsubsets(
+  x = ymontant ~ x1+x2+x3+x4+x5+x6+x7+x8+x9+x10, 
+  nvmax = 14L,
+  method = "exhaustive",
+  data = dbm_a)
+resume_rec_ex <- summary(rec_ex,
+                         matrix.logical = TRUE)
+# Trouver le modèle avec le plus petit BIC
+min_BIC <- which.min(resume_rec_ex$bic)
+min_AIC <- which.min(resume_rec_ex$cp)
+npars_c[1:3] <- with(resume_rec_ex, 
+             c(
+  sum(which[nrow(which),]),
+  sum(which[min_AIC,]),
+  sum(which[min_BIC,])))
+
+eval_EQM_valid <- function(
+    model, 
+    select, 
+    formula, 
+    data, 
+    newdata){
+  stopifnot(inherits(model, "regsubsets"),
+            inherits(formula, "formula"),
+            is.vector(select),
+            inherits(data, "data.frame"),
+            inherits(newdata, "data.frame"),
+            isTRUE(ncol(data) == ncol(newdata)),
+            isTRUE(all(colnames(data) == colnames(newdata))))
+  select <- as.integer(select)
+  # Extraire matrice du modèle, plus variable réponse
+  frame <- model.frame(formula, data = data)
+  response_name <- all.vars(formula)[attr(terms(formula), "response")]
+  reponse <- get(pos = data, x = response_name)
+  resume <- summary(model, matrix.logical = TRUE)
+  var_names <- colnames(resume$which)
+  model_matrix <- as.data.frame(
+    model.matrix(formula, data = data))
+  valid_matrix <- as.data.frame(
+    model.matrix(formula, data = newdata))
+  valid_resp <- model.response(
+    model.frame(formula, data = newdata))
+  # Check formula is correct
+  stopifnot(all(colnames(model_matrix) == var_names),
+            var_names[1] == "(Intercept)")
+  model_matrix$reponse <- reponse
+  eqm <- rep(0, length(select))
+  for(i in seq_along(select)){
+    vlist <- which(resume$which[select[i],])[-1]
+    new_formula <- paste0("reponse~",
+                             paste(var_names[vlist], 
+                                   collapse = "+"))
+    linmod <- lm(new_formula, 
+                 data = model_matrix)
+    pred <- predict(linmod, 
+                    newdata = valid_matrix)
+    eqm[i] <- mean(x = (valid_resp - pred)^2, na.rm = TRUE)
+  }
+  return(eqm)
+}
+eqm_c[3:1] <- eval_EQM_valid(
+  model = rec_ex, 
+  select = c(min_BIC, 
+             min_AIC, 
+             nrow(resume_rec_ex$which)), 
+  formula = formula(ymontant ~ x1+x2+x3+x4+x5+x6+x7+x8+x9+x10), 
+  data = dbm_a, 
+  newdata = dbm_v)
+
+# Modèle complet (degré 2, incluant interactions)
+
+formule <- 
+  formula(ymontant ~ 
+          (x1 + x2 + x3 + x4 + x5 + 
+             x6 + x7 + x8 + x9 + x10)^2 + 
+            I(x2^2) + I(x6^2) + I(x7^2) +
+            I(x8^2) + I(x9^2) + I(x10^2))
+mod_complet <- lm(formule, data = dbm_a)
+npars_c[4] <- length(coef(mod_complet)) - 1L
+eqm_c[4] <- mean((predict(mod_complet, newdata = dbm_v) -
+                    dbm_v$ymontant)^2)
+rec_seq <- 
+  leaps::regsubsets(
+    x = formule, 
+    data = dbm_a,
+    method = "seqrep", 
+    nvmax = length(coef(mod_complet)))
+resume_rec_seq <- summary(rec_seq)
+min_BIC <- which.min(resume_rec_seq$bic)
+min_AIC <- which.min(resume_rec_seq$cp)
+
+npars_c[5] <- sum(resume_rec_seq$which[min_AIC,]) - 1L
+npars_c[6] <- sum(resume_rec_seq$which[min_BIC,]) - 1L
+
+eqm_seq <- eval_EQM_valid(
+  model = rec_seq, 
+  select = 1:40, 
+  formula = formule, 
+  data = dbm_a, 
+  newdata = dbm_v)
+eqm_c[5] <- eqm_seq[min_BIC]
+eqm_c[6] <- eqm_seq[min_AIC]
+dbm_af <- data.frame(
+  cbind(ymontant = dbm_a$ymontant,
+        model.matrix(mod_complet)[,-1]))
+dbm_vf <- data.frame(
+  cbind(ymontant = dbm_v$ymontant,
+        model.matrix(formule, data = dbm_v)[,-1]))
+colnames(dbm_vf)[-1] <- paste0("x", seq_len(ncol(dbm_af) - 1L))
+colnames(dbm_af) <- colnames(dbm_vf)
+  
+fmod <- formula(paste0("ymontant ~",  paste0(colnames(dbm_af)[-1], collapse = "+")))
+seq_AIC <- MASS::stepAIC(
+  lm(ymontant ~ 1,
+     data = dbm_af), 
+  # modèle initial sans variables explicative
+     scope = fmod, # modèle maximal possible
+    direction = "both", #séquentielle
+    trace = FALSE, # ne pas imprimer le suivi
+    keep = function(mod, AIC, ...){ 
+      # autres sorties des modèles à conserver
+      list(
+           aic = AIC(mod, k = 2),
+           bic = AIC(mod, k = log(nobs(mod))), 
+           coef = coef(mod))},
+    k = 2)
+
+seq_BIC <- MASS::stepAIC(
+  lm(ymontant ~ .,
+     data = dbm_af), 
+  # modèle initial sans variables explicative
+     scope = formula(ymontant ~ 1),
+    direction = "both", #séquentielle
+    trace = FALSE, # ne pas imprimer le suivi
+    keep = function(mod, AIC, ...){ 
+      # autres sorties des modèles à conserver
+      list(AIC = AIC(mod, k = 2),
+           BIC = AIC(mod, k = log(nobs(mod))),
+           coef = coef(mod))},
+    k = log(nrow(dbm_a)))
+eqm_c[7] <- mean((predict(seq_AIC, newdata = dbm_vf) -
+        dbm_v$ymontant)^2)
+npars_c[7] <- length(seq_AIC$coefficients) - 1L
+eqm_c[8] <- mean((predict(seq_BIC, newdata = dbm_vf) -
+        dbm_v$ymontant)^2)
+npars_c[8] <- length(seq_BIC$coefficients) - 1L
+# Paramètre de pénalité déterminé par 
+# validation croisée à partir d'un vecteur
+# de valeurs candidates
+lambda_seq <- c(seq(0.01, 0.3, by = 0.01),
+                seq(0.31, 2, by = 0.01))
+
+cv_output <- 
+  glmnet::cv.glmnet(x = as.matrix(model.matrix(mod_complet)), 
+            y = dbm_a$ymontant, 
+            alpha = 1, 
+            lambda = lambda_seq)
+
+# On réestime le modèle avec la pénalité
+lambopt <- cv_output$lambda.min
+lasso_best <- glmnet::glmnet(x = as.matrix(dbm_af[,-1]), 
+                     y = dbm_a$ymontant,
+                     alpha = 1, 
+                     lambda = lambopt)
+# Prédictions et calcul de l'EQM
+# On pourrait remplacer `newx` par 
+# d'autres données (validation externe)
+pred <- predict(lasso_best, 
+                s = lambopt, 
+                newx = as.matrix(dbm_vf)[,-1])
+eqm_c[9] <- mean((pred - dbm_vf$ymontant)^2)
+npars_c[9] <- sum(coef(lasso_best)>0)
+
+# Moyenne de modèles
+moyennemodeles <- function(
+    data, 
+    form, 
+    aic = FALSE, 
+    B = 100L,
+    ks = 2){
+  B <- as.integer(B)
+  stopifnot(is.logical(aic),
+            length(aic) == 1L,
+            inherits(form, "formula"),
+            B > 1,
+            ks >= 0,
+            inherits(data, "data.frame"))
+  N <- nrow(data)
+  # Faire une expansion pour obtenir colonnes
+  matmod <- model.matrix(form, data = data)
+  # Nombre de variables explicatives
+  p <- ncol(matmod) - 1L
+  # Formule du modèle complet
+  fmod <- formula(paste0("y ~", paste0("x", seq_len(p), collapse = "+")))
+  # Sauvegarder les noms
+  noms <- colnames(matmod)
+  xnoms <- paste0("x", seq_len(p))
+  # Extraire le nom de la variable réponse
+  nom_reponse <- all.vars(form)[attr(terms(form), "response")]
+  # Créer une base de données avec la réponse
+  # moins l'ordonnée à l'origine
+  matmod <- data.frame(cbind(
+    y = get(nom_reponse, data), 
+    matmod[,-1]))
+  colnames(matmod) <- c("y", xnoms)
+    # Contenant pour params/ nb de sélections
+  params <- nselect <- rep(0, p + 1)
+  names(params) <- 
+    names(nselect) <- 
+    c("(Intercept)", xnoms)
+
+  # Boucle
+  for(b in seq_len(B)){
+    # Procédure de sélection avec AIC ou BIC
+  modselect <- MASS::stepAIC(
+    # Valeurs de départ
+    object = lm(formula = y ~ 1,
+   # Rééchantillonner données (avec remplacement)
+       data = matmod[sample.int(n = N, 
+                             size = N, 
+                             replace = TRUE),]),
+    # Modèle maximal additif considéré
+    scope = fmod, 
+    # pénalité pour critère d'information
+    # k = ifelse(aic, 2, log(N)), 
+    direction = "both", 
+    trace = FALSE,
+   keep = function(mod, AIC, ...){ 
+      # autres sorties des modèles à conserver
+      list(IC = AIC(mod, k = ifelse(aic, 2, log(N))),
+           coef = coef(mod))},
+   k = ks)
+  min_IC <- which.min(unlist(modselect$keep['IC',]))
+  coefsv <- modselect$keep[2,min_IC]$coef
+  # Trouver quelles colonnes représentent
+  #  un coefficient non-nul
+  colind <- match(names(coefsv),
+                  names(params))
+  # Incrémenter paramètres non-nuls
+  params[colind] <- params[colind] +
+    as.numeric(coefsv)
+  nselect[colind] <- nselect[colind] + 1L
+  }
+  
+  names(nselect) <- noms
+  names(params) <- noms
+  return(list(coefs = params / B,
+              nselect = nselect[-1] / B))
+}
+
+# Définir contenant
+mmodeles <- 
+  moyennemodeles(
+    data = dbm_af, 
+    form = fmod,
+    B = 10L,
+    aic = FALSE)
+eqm_c[10] <- mean((as.matrix(dbm_vf[,-1]) %*% mmodeles$coefs[-1] + mmodeles$coefs[1] - 
+                       dbm_vf$ymontant)^2)
+npars_c[10] <- sum(mmodeles$nselect)
+
+```
+
+```{r}
+#| label: fig-perfo-sequentiel
+#| echo: false
+#| eval: true
+#| out-width: '100%'
+#| warning: false
+#| message: false
+#| cache: true
+#| fig-cap: "Critères d'information et estimation de l'erreur quadratique moyenne de validation externe et de validation croisée (10 groupes) pour les 40 premiers modèles de la procédure descendante, selon le nombre de termes inclus dans la régression linéaire. Les traitillés verticaux indiquent le nombre de terme du modèle avec la meilleure valeur du critère pour chaque méthode."
+set.seed(1234)
+rec_seq_de <- 
+  leaps::regsubsets(
+    x = fmod, 
+    data = dbm_af,
+    method = "backward", 
+    nvmax = length(coef(mod_complet)))
+srec_seq_de <- summary(rec_seq_de, 
+                       matrix.logical = TRUE)
+valid_ext <- 
+  valid_croi <- rep(0, nrow(srec_seq_de$which))
+for(i in seq_along(valid_ext)){
+  wvars <- which(srec_seq_de$which[i,])
+  linmod <- lm(ymontant ~ ., 
+                   data = dbm_af[,wvars])
+  valid_ext[i] <- mean((predict(linmod, newdata = dbm_vf) - dbm_vf$ymontant)^2)
+  cv_caret <- 
+  caret::train(form = ymontant ~ ., 
+             data = dbm_af[,wvars], 
+             method = "lm",
+             trControl = caret::trainControl(
+               method = "cv",
+               number = 10))
+valid_croi[i] <- cv_caret$results$RMSE^2
+}
+  
+k <- rowSums(srec_seq_de$which)
+bic_seq <- srec_seq_de$bic
+aic_seq <- srec_seq_de$bic - 
+  (log(nrow(dbm_af)) - 2)*k
+
+transfo <- function(x){
+  as.numeric((x - mean(bic_seq))/sd(bic_seq)*sd(valid_ext) + mean(valid_ext))
+}
+itransfo <- function(x){
+  as.numeric((x - mean(valid_ext))/sd(valid_ext)*sd(bic_seq) + mean(bic_seq))
+}
+pos <- data.frame(methode = 
+                    c("externe", 
+                      "validation croisée", 
+                      "AIC", 
+                      "BIC"),
+                  min = c(which.min(valid_ext) + 1L,
+                    which.min(valid_croi) + 1L,
+                    which.min(aic_seq) + 1L,
+                    which.min(bic_seq) + 1L))
+df_g <- data.frame(
+   k = k, 
+   methode = factor(
+     rep(c("externe",
+         "validation croisée",
+         "AIC", 
+         "BIC"), 
+       each = length(k))),
+   valeur = c(valid_ext,
+              valid_croi,
+              transfo(aic_seq),
+              transfo(bic_seq)))
+ggplot(data = df_g,
+       mapping = aes(x = k, 
+                     y = valeur, 
+                     color = methode,
+                     linetype = methode)) +
+  geom_vline(data = pos,
+             aes(color = methode,
+                 xintercept = min),
+             alpha = 0.5, 
+             linetype = 3,
+             show.legend = FALSE) +
+  geom_line() +
+  scale_x_continuous(
+    breaks = seq(from = 5L, 
+                 to = 40L, 
+                 by =  5L),
+    limits = c(0,44), 
+    expand = c(0,0),
+    name = "nombre de termes") +
+  scale_y_continuous(name = "erreur quadratique moyenne", 
+    sec.axis = sec_axis(trans = itransfo,
+                        name = "critères d'information",)) +
+  labs(color = "méthode",
+       linetype = "méthode") +
+  theme_classic() +
+  theme(legend.position = "bottom") 
+## Base R plots 
+# plot(k, aic_seq, type = 'l', xlim = c(1,40))
+# lines(k, bic_seq, col = 2)
+# 
+# plot(k, valid_ext, type = "l", xlim = c(1,40),
+#      ylim = c(0,10))
+# lines(k, valid_croi, col = 2)
+# lines(k, transfo(aic_seq), col = 3)
+# lines(k, transfo(bic_seq), col = 4)
+```
+
+
+
+On peut voir sur la @fig-perfo-sequentiel l'historique des valeurs de AIC et BIC à mesure qu'on augmente le nombre de variables dans le modèle obtenu par une procédure séquentielle: les mêmes variables sont enlevées à chaque étape, mais la valeur optimale du critère est différente pour la sélection finale.
+Sur l'axe des abscisses, j'ai ajouté l'erreur quadratique moyenne de l'échantillon de validation pour les clients avec `ymontant` positif. Cet exemple n'est pas réaliste puisqu'on regarde la solution, mais il permet de nous comparer et de voir à quel point ici le critère d'information bayésien suit la même tendance que l'erreur quadratique moyenne de validation. L'erreur quadratique moyenne obtenue par validation croisée est trop optimiste (mais aléatoire!), comme le AIC. Pour éviter le surentraînement dans une région où le critère est quasi constant, on peut utiliser la règle d'une erreur-type. Puisque on a plusieurs réplications, on peut estimer ce dernier avec la validation croisée en même temps que l'EQM et choisir le modèle le plus simple à distance une erreur-type du modèle avec la plus petite erreur de validation croisée.
+
+
+### Méthodes de régression avec régularisation
+
+Une façon d'éviter le surajustement est d'ajouter une pénalité sur les coefficients: ce faisant, on introduit un biais dans nos estimés, mais dans l'espoir de réduire leur variabilité et ainsi d'obtenir une meilleur erreur quadratique moyenne.
+
+
+L'avantage des moindres carrés est que les valeurs ajustées et les prédictions ne changent pas si on fait une transformation affine (de type $Z = aX+b$).
+Peu importe le choix d'unité (par exemple, exprimer une distance en centimètres plutôt qu'en mètres, ou la température en Farenheit plutôt qu'en Celcius), on obtient le  même ajustement. En revanche, une fois qu'on introduit un terme de pénalité, notre solution dépendra de l'unité de mesure, d'où l'importance d'utiliser les données centrées et réduites pour que la solution reste la même.
+
+
+Les estimateurs des moindres carrés ordinaires pour la régression linéaire représentent la combinaison qui minimise la somme du carré des erreurs,
+\begin{align*}
+\mathsf{SCE} = \sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^pX_{ij}\beta_{j}\right)^2.
+\end{align*}
+On peut ajouter à cette fonction objective $\mathsf{SCE}$ un terme additionnel de pénalité qui va contraindre les paramètres à ne pas être trop grand. On considère une pénalité additionnelle pour la valeur absolue des coefficients, 
+\begin{align*}
+q_1(\lambda) = \lambda \sum_{j=1}^p |\beta_j|.
+\end{align*}
+Pour chaque valeur de $\lambda$ donnée, on obtiendra une solution différente pour les estimés car on minimisera désormais $\mathsf{SCE} + q_1(\lambda)$. On ne pénalise pas l'ordonnée à l'origine $\beta_0$, parce que ce coefficient sert à recentrer les observations et a une signification particulière: si on standardise les données, de manière à ce que leur moyenne empirique soit zéro et leur écart-type un, alors $\widehat{\beta}_0 = \overline{y}$.
+
+
+La pénalité $q_1(\lambda)$ a un rôle particulier parce qu'elle a deux effets: elle réduit la taille des paramètres, mais elle force également certains paramètres très proches de zéro à être exactement égaux à zéro, ce qui fait que la régression pénalité agit également comme outil de sélection de variables. Des algorithmes efficaces permettent de trouver la solution du problème d'optimisation
+\begin{align*}
+\min_{\boldsymbol{\beta}} \{\mathsf{SCE} + q_1(\lambda)\} = \min_{\boldsymbol{\beta}}  \left\{\sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^pX_{ij}\beta_{j}\right)^2 +
+\lambda \sum_{j=1}^p |\beta_j|\right\}
+\end{align*}
+laquelle est appelée LASSO. La  @fig-lassopenalty montre la fonction objective dans le cas où on a deux paramètres, $\beta_1$ et $\beta_2$. La solution des moindres carrés ordinaires, qui minimisent l'erreur quadratique moyenne, est au centre des ellipses de contour et correspond à la solution du modèle avec $\lambda=0$. À mesure que l'on augmente la pénalité $\lambda$, les coefficients rétrécissent vers $(0, 0)$. On peut interpréter la pénalité $l_1$ comme une contraire budgétaire: les coefficients estimés pour une valeur de $\lambda$ donnée sont ceux qui minimisent la somme du carré des erreurs, mais doivent être à l'intérieur d'un budget alloué (losange). La forme de la région fait en sorte que la solution, qui se trouve sur la bordure du losange, intervient dans un coin avec certaines coordonnées nulles.
+
+
+
+
+```{r}
+#| label: fig-lassopenalty
+#| cache: true
+#| fig-cap: "Courbes de contour du critère de l'erreur quadratique moyenne (ellipses) et fonction de pénalité (losanges) pour différentes valeurs de $\\lambda$. Les points dénotent des solutions différentes et intersectent les contours du losange."
+#| eval: true
+#| echo: false
+set.seed(1234)
+n <- 100L
+X <- scale(cbind(rpois(n, 2), runif(n)))
+y <- scale(X[,1] + 0.5*X[,2] + rnorm(n, sd = 0.4))
+fit <- lm(y ~ X - 1)
+points <- data.frame(x = c(0, fit$coefficients[1]), y = c(0, fit$coefficients[2]), z = c("(0,0)", "SCE"))
+
+beta1 <- seq(-0.5, 1.5, length.out = 101)
+beta2 <- seq(-0.5, 1.5, length.out = 101)
+df <- expand.grid(beta1 = beta1, beta2 = beta2)
+
+b <- as.matrix(df)
+df$sse <- rep(t(y) %*% y, length(beta1)*length(beta2)) - 2 * b %*% t(X) %*% y + diag(b %*% t(X) %*% X %*% t(b))
+
+diamond <- function(side_length, center) {
+  base <- matrix(c(1, 0, 0, 1, -1, 0, 0, -1), nrow = 2) * sqrt(2) / 2
+  trans <- (base * side_length) + center
+  as.data.frame(t(trans))
+}
+
+a <- glmnet::glmnet(x = X, y = y, lambda = seq(0, 1, by = 0.05))
+
+ggplot(df) + theme_classic() +
+  stat_contour(aes(beta1, beta2, z = sse),
+               breaks = round(quantile(df$sse, seq(0, 0.5, 0.05)), 0),
+               size = 0.5, color = "grey", alpha = 0.8
+  ) +
+  scale_x_continuous(limits = c(-0.5, 1.5)) +
+  scale_y_continuous(limits = c(-0.5, 1.5)) +
+  geom_polygon(data = diamond(0.1, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(0.2, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(0.3, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(0.4, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(0.5, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(0.6, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(0.7, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(0.8, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(0.9, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(1, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(1.1, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  geom_polygon(data = diamond(1.2, c(0, 0)), mapping = aes(x = V1, y = V2), fill = "cadetblue", alpha = 0.1) +
+  labs(x = expression(beta[1]), y = expression(beta[2])) +
+  geom_point(data = data.frame(t(as.matrix(a$beta))), aes(x = V1, y = V2))
+
+
+```
+
+
+
+Plusieurs variantes existent dans la littérature qui généralisent le modèle à des contextes plus compliqués. Le choix des variables à inclure dans la sélection dépend du choix de la pénalité $\lambda$, qui est règle générale estimée par validation croisée à cinq ou 10 groupes.
+
+
+
+```{r}
+#| label: lasso
+#| eval: false
+#| echo: true
+# Sélection par LASSO
+library(glmnet)
+# Paramètre de pénalité déterminé par 
+# validation croisée à partir d'un vecteur
+# de valeurs candidates
+lambda_seq <- seq(from = 0.1,
+                  to = 10, 
+                  by = 0.01)
+cv_output <- 
+  glmnet::cv.glmnet(x = as.matrix(dbm_a[,1:10]), 
+            y = dbm_a$ymontant, 
+            alpha = 1, 
+            lambda = lambda_seq)
+plot(cv.output)
+
+# On réestime le modèle avec la pénalité
+lambopt <- cv_output$lambda.min # ou lambda.1se
+lasso_best <- 
+  glmnet::glmnet(
+    x = as.matrix(dbm_a[,1:10]),
+    y = dbm_a$ymontant,
+    alpha = 1, 
+    lambda = lambopt)
+# Prédictions et calcul de l'EQM
+# On pourrait remplacer `newx` par 
+# d'autres données (validation externe)
+pred <- predict(lasso_best, 
+                s = lambopt, 
+                newx = as.matrix(dbm_a[,-1]))
+eqm_lasso <- mean((pred - dbm_a$ymontant)^2)
+```
+
+
+
+Le graphique de la @fig-lassopath montre l'évolution de l'erreur quadratique moyenne estimée en fonction du logarithme naturel de la pénalité (axe des abscisses). Comme plusieurs pénalités sont dans la marge d'erreurs, on choisit le première modèle à un erreur-type de la valeur minimale
+
+
+
+```{r}
+#| label: fig-lassopath
+#| echo: false
+#| eval: true
+#| fig-cap: "Estimation de l'erreur quadratique moyenne (validation croisée à 10 groupes) pour les modèles avec pénalité LASSO en fonction de la pénalité (échelle log)."
+#| out-width: '100%'
+plot(cv_output, 
+     ylab = 'erreur quadratique moyenne', 
+     xlab= expression(log(lambda)))
+```
+
+
+
+### Moyenne de modèles
+
+Il est souvent préférable de combiner plusieurs modèles plutôt que d'en choisir un seul. La technique des forêts aléatoires (_random forests_) est une des meilleures techniques de prédiction disponibles de nos jours. Elle est basée sur cette idée, en combinant plusieurs arbres de classification (ou de régression) individuels. C'est une des techniques de base en exploitation de données.
+
+Ici, nous allons voir comment cette idée peut être appliquée à notre contexte. Toutes les méthodes que nous avons vues jusqu'à maintenant font une sélection « rigide » de variables, dans le sens que chaque variable est soit sélectionnée pour faire partie du modèle, soit elle ne l'est pas. C'est donc tout ou rien pour chaque variable. Il y a beaucoup de variabilité associée à une telle forme de sélection. Une variable peut avoir été très près d'être choisie, mais elle ne l'a pas été et est éliminée complètement. Construire plusieurs modèles et en faire la moyenne permet d'adoucir le processus de sélection car une variable peut alors être partiellement sélectionnée.
+
+Supposons qu'on dispose de deux échantillons et qu'on fasse une sélection de variables séparément pour les deux échantillons, avec l'une des approches que nous avons vues jusqu'à maintenant. Il est alors très probable qu'on ne va pas avoir exactement les mêmes variables sélectionnées pour les deux échantillons. Supposons ensuite qu'on fasse la moyenne des coefficients pour les deux modèles. Si une variable, disons $X_1$, a été choisie les deux fois, alors la moyenne des deux coefficients devrait estimer en quelque sorte un effet global pour cette variable. Si une autre variable, disons $X_2$, n'a pas été choisie du tout pour les deux échantillons, alors la moyenne de ses deux coefficients est nulle. Mais si une variable, disons, $X_3$, a été choisie pour seulement l'un des deux échantillons, alors la moyenne de ses deux coefficients est la moitié du coefficient pour le modèle dans lequel elle a été choisie (car l'autre est zéro). Ainsi, cette variable est donc représentée par une « moitié » d'effet dans la moyenne des modèles. Donc au lieu d'être totalement là ou totalement absente, elle est présente en fonction de sa probabilité d'être sélectionnée. Ceci diminue de beaucoup la variabilité engendrée par une sélection « rigide » de variables et permet souvent de produire un modèle fort raisonnable.
+
+Le problème est que l'on n'a pas plusieurs échantillons mais un seul. Une solution possible est de générer nous-mêmes des échantillons différents à partir de l‘échantillon original. Cela peut être fait avec l'autoamorçage (_bootstrap_). Un échantillon d'autoamorçage est tout simplement un échantillon choisi au hasard et **avec remise** dans l'échantillon original.  Ainsi, une même observation peut être sélectionnée plus d'une fois tandis qu'une autre peut ne pas être sélectionnée du tout.
+
+L'idée est alors la suivante :
+
+1) Générer plusieurs échantillons par autoamorçage nonparamétrique à partir de l‘échantillon original.
+2) Faire une sélection de variables pour chaque échantillon.
+3) Faire la moyenne des paramètres de ces modèles.
+
+
+
+
+```{r}
+#| label: modelaverage
+#| eval: false
+#| echo: true
+# Moyenne de modèles
+moyenne_modeles <- function(
+    data, 
+    form, 
+    aic = FALSE, 
+    B = 100L,
+    ks = 2){
+  B <- as.integer(B)
+  stopifnot(is.logical(aic),
+            length(aic) == 1L,
+            inherits(form, "formula"),
+            B > 1,
+            ks >= 0,
+            inherits(data, "data.frame"))
+  N <- nrow(data)
+  # Faire une expansion pour obtenir colonnes
+  matmod <- model.matrix(form, data = data)
+  # Nombre de variables explicatives
+  p <- ncol(matmod) - 1L
+  # Formule du modèle complet
+  fmod <- formula(paste0("y ~", paste0("x", seq_len(p), collapse = "+")))
+  # Sauvegarder les noms
+  noms <- colnames(matmod)
+  xnoms <- paste0("x", seq_len(p))
+  # Extraire le nom de la variable réponse
+  nom_reponse <- all.vars(form)[attr(terms(form), "response")]
+  # Créer une base de données avec la réponse
+  # moins l'ordonnée à l'origine
+  matmod <- data.frame(cbind(
+    y = get(nom_reponse, data), 
+    matmod[,-1]))
+  colnames(matmod) <- c("y", xnoms)
+    # Contenant pour params/ nb de sélections
+  params <- nselect <- rep(0, p + 1)
+  names(params) <- 
+    names(nselect) <- 
+    c("(Intercept)", xnoms)
+
+  # Boucle
+  for(b in seq_len(B)){
+    # Procédure de sélection avec AIC ou BIC
+  modselect <- MASS::stepAIC(
+    # Valeurs de départ
+    object = lm(formula = y ~ 1,
+   # Rééchantillonner données (avec remplacement)
+       data = matmod[sample.int(n = N, 
+                             size = N, 
+                             replace = TRUE),]),
+    # Modèle maximal additif considéré
+    scope = fmod, 
+    # pénalité pour critère d'information
+    # k = ifelse(aic, 2, log(N)), 
+    direction = "both", 
+    trace = FALSE,
+   keep = function(mod, AIC, ...){ 
+      # autres sorties des modèles à conserver
+      list(IC = AIC(mod, k = ifelse(aic, 2, log(N))),
+           coef = coef(mod))},
+   k = ks)
+  min_IC <- which.min(unlist(modselect$keep['IC',]))
+  coefsv <- modselect$keep[2,min_IC]$coef
+  # Trouver quelles colonnes représentent
+  #  un coefficient non-nul
+  colind <- match(names(coefsv),
+                  names(params))
+  # Incrémenter paramètres non-nuls
+  params[colind] <- params[colind] +
+    as.numeric(coefsv)
+  nselect[colind] <- nselect[colind] + 1L
+  }
+  
+  names(nselect) <- noms
+  names(params) <- noms
+  return(list(coefs = params / B,
+              nselect = nselect[-1] / B))
+}
+
+
+# Moyenne de modèles
+#  procédure séquentielle ascendante (AIC) 
+#  sélection de modèle selon BIC
+mmodeles <- 
+  moyenne_modeles(
+    data = dbm_a, 
+    form = formule,
+    B = 10L,
+    aic = FALSE)
+
+# Proportion des variables 
+# sélectionnées dans plus d'un modèle
+sum(mmodeles$nselect > 0)
+# Nombre moyen de coefficients
+sum(mmodeles$nselect)
+# variables retenues plus de 20% du temps
+names(which(mmodeles$nselect > 0.2))
+# moyenne des coefficients
+mmodeles$coefs
+```
+
+
+
+Chaque modèle est construit à l'aide d'un échantillon aléatoire avec remise. Utilisez `set.seed` pour fixer le générateur de nombre aléatoire et permettre la reproductibilité
+
+Toutes les méthodes employées jusqu'à maintenant utilise une méthode de pénalisation pour déterminer le meilleur modèle. Une alternative avec serait de répéter la sélection en utilisant directement l'erreur quadratique moyenne estimée à l'aide de la validation croisée comme critère de sélection: pour cela, il faudrait ajuster l'ensemble des modèles candidats retournés par une procédure exhaustive ou séquentielle.
+
+
+
+## Évaluation de la performance
+
+La direction de la compagnie a décidé de passer outre vos recommandations et d'envoyer le catalogue aux 100 000 clients restants; nous pouvons donc faire un post-mortem afin de voir ce que chaque modèle aurait donné comme profit, comparativement à la stratégie de référence.
+Les 100 000 autres clients serviront d'échantillon de validation pour évaluer la performance des modèles et, plus précisément, afin d'évaluer les revenus (ou d'autres mesures de performance) si ces modèles avaient été utilisés. L'échantillon de validation nous donnera donc l'heure juste quant aux mérites des différentes approches que nous allons comparer. En pratique, nous ne pourrions pas faire cela car la valeur de la variable cible ne serait pas connue pour ces clients et nous utiliserions plutôt les modèles pour obtenir des prédictions pour déterminer quels clients cibler avec l'envoi. Parmi, les 100 000 clients restants, il y en a 23 179 qui auraient acheté quelque chose si on leur avait envoyé le catalogue. Ces 23 179 observations vont nous servir pour estimer l'erreur quadratique moyenne (théorique) des modèles retenus par nos critères.
+
+Commençons par l'estimation de l'erreur quadratique moyenne (moyenne des carrés des erreurs) pour les deux modèles retenus par le $\mathsf{AIC}$ et le $\mathsf{BIC}$ avec les variables de base. Le @tbl-02-gmse-base contient aussi l'estimation de l'erreur quadratique moyenne si on utilise toutes les variables (14 en incluant les indicatrices) sans faire de sélection. On voit que le modèle choisi par le $\mathsf{BIC}$ est le meilleur des trois. Ces deux méthodes font mieux que le modèle qui inclut toutes les variables sans faire de sélection, mais nous verrons que leur performance est exécrable: les variables de base ne permettent pas de capturer les effets présents dans les données et ce manque de flexibilité coûte cher.
+
+: Estimation de l'erreur quadratique moyenne sur l'échantillon test avec les variables de base. Les meilleurs modèles selon les  critères d'informations découlent d'une recherche exhaustive de tous les sous-ensembles. {#tbl-02-gmse-base}
+
+| nombre de variables | $\mathsf{EQM}$    |  méthode                    |
+|:----:|:-----:|:-----|
+| `r npars_c[1]` | `r round(eqm_c[1], 2)` | toutes les variables        |
+| `r npars_c[2]` | `r round(eqm_c[2], 2)` | exhaustive - $\mathsf{AIC}$ |
+| `r npars_c[3]` | `r round(eqm_c[3], 2)` | exhaustive - $\mathsf{BIC}$ |
+
+
+
+
+
+
+
+| nombre de variables | $\mathsf{EQM}$ | méthode |
+|:----:|:-----:|:-----|
+| `r npars_c[4]` | `r round(eqm_c[4], 2)` | toutes les variables |
+| `r npars_c[5]` | `r round(eqm_c[5], 2)` | séquentielle ascendante, choix selon $\mathsf{AIC}$ |
+| `r npars_c[6]` | `r round(eqm_c[6], 2)` | séquentielle ascendante, choix selon $\mathsf{BIC}$ |
+| `r npars_c[7]` | `r round(eqm_c[7], 2)` | séquentielle ascendante avec critère $\mathsf{AIC}$ |
+| `r npars_c[8]` | `r round(eqm_c[8], 2)` | séquentielle descendante avec critère $\mathsf{BIC}$ |
+| `r npars_c[9]` | `r round(eqm_c[9], 2)` | LASSO, validation croisée avec 10 groupes |
+
+
+: Comparaison des méthodes selon l'erreur quadratique moyenne avec les variables de base, les interactions et les termes quadratiques. {#tbl-02-modelcomparaisonfull}
+
+Le @tbl-02-modelcomparaisonfull présente la performance de toutes les méthodes avec les autres variables. On voit d'abord qu'utiliser toutes les 104 variables sans faire de sélection fait mieux ($\mathsf{EQM}$ de `r round(eqm_c[4],2)`) que les modèles précédents basés sur les 10 variables originales. Mais faire une sélection permet une amélioration très importante de la performance ($\mathsf{EQM}$ jusqu'à `r round(min(eqm_c), 2)` dans l'exemple). Utiliser les 104 variables mène à du surajustement (_over-fitting_).
+
+Les méthodes séquentielles avec un critère d'information (qui pénalisent davantage que les tests d'hypothèse classique) mènent à des modèles plus parcimonieux qui ont une erreur quadratique moyenne de validation plus faible. Le LASSO performe très bien dans ce cas de figure. Les coefficients sont tous rétrécis vers zéro (donc le nombre de coefficients non-nuls n'est pas évocateur), ce qui engendre du biais et peut affecter négativement la performance si le rapport signal-bruit est élevé.
+
+Il faut bien comprendre qu'il ne s'agit que d'un seul exemple: il ne faut surtout pas conclure que la méthode séquentielle sera toujours la meilleure. En fait, il est impossible de prévoir quelle méthode donnera les meilleurs résultats.
+
+Il y aurait plusieurs autres approches/combinaisons qui pourraient être testées. Le but de ce chapitre était simplement de présenter les principes de base en sélection de modèles et de variables ainsi que certaines approches pratiques. Il y a d'autres approches intéressantes, tels le filet élastique. Ces méthodes sont dans la même mouvance moderne que celle qui consiste à faire la moyenne de plusieurs modèles, en performant à la fois une sélection de variables et en permettant d'avoir des parties d'effet par le rétrécissement (_shrinkage_). De récents développements théoriques permettent aussi de corriger les valeurs-_p_ pour faire de l'inférence post-sélection avec le LASSO.
+
+
+
+::: {.callout-note}
+
+## En résumé
+
+- En présence de nombreuses variables explicatives, choisir un modèle **prédictif** est compliqué: le nombre de modèles possibles augmente rapidement avec le nombre de prédicteurs, $p$.
+- Si un modèle est mal spécifié (variables importantes manquantes), alors les estimations sont biaisées. Si le modèle est surspécifié, les coefficients correspondants aux variables superflues incluses sont en moyenne nuls, mais contribuent à l'augmentation de la variance (compromis *biais/variance*).
+- La taille du modèle ($p$, le nombre de variables explicatives) est restreinte par le nombre d'observations disponibles, $n$. 
+    - En général, il faut s'assurer d'avoir suffisamment d'observations pour estimer de manière fiable les coefficients (le rapport $n/p$ donne le budget moyen par paramètre).
+    - Porter une attention particulière aux variables binaires et aux interactions avec ces dernières: si les effectifs de certaines modalités sont faibles, il y a possible de surajustement.
+- Le principal critère pour juger de la qualité d'un modèle linéaire est l'erreur quadratique moyenne.
+    - L'estimation de l'erreur quadratique moyenne obtenue à partir de l'échantillon d'apprentissage (qui sert à estimer les paramètres) est trompeuse et mène au surajustement:
+    - plus le modèle est compliqué, plus cette erreur décroît.
+    - cette performance n'est pas répétée sur de nouvelles données.
+- Critères de sélection: Plusieurs stratégies existent pour pallier à cet excès d'optimisme
+    - validation externe: diviser le jeu de données aléatoirement au préalable en deux ou trois. Nécessite une grande base de données, potentiellement sous-optimal. 
+    - validation croisée: diviser aléatoirement le jeu de données en plis et varier les échantillons d'apprentissage en conservant un pli en réserve à chaque fois comme validation. Plus coûteux en calcul (il faut réajuster plusieurs fois les modèles), applicable avec des petites bases de données. 
+    - pénalisation a posteriori: ajouter une pénalité fonction du nombre de paramètres qui compense pour l'augmentation constante de l'ajustement (par ex., critères d'information).
+    - rétrécissement des coefficients: inclure dans la fonction objective qui est maximisée une pénalité qui contraint les paramètres et les force à demeurer petit. Cela introduit du biais pour réduire la variance. 
+    - Une pénalité particulière (LASSO) contraint certains paramètres à être exactement nuls, ce qui correspond implicitement à une sélection de variables.
+- En pratique, on cherche à essayer plusieurs modèle pour trouver un choix optimal de variables. 
+    - Une recherche exhaustive garantie le survol du plus grand nombre de modèles possibles, mais est coûteuse et limitée à moins de 50 variables.
+    - Les algorithmes gloutons de recherche séquentielle sont sous-optimaux, mais rapides
+- On applique le critère de sélection sur la liste de modèles candidats pour retenir celui qui donne la meilleure performance.
+- Pour éviter une sélection rigide, on peut perturber les données et répéter la procédure pour calculer une moyenne de modèles. Cette approche est très coûteuse en calcul.
+:::
+

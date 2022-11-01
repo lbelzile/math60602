@@ -1,12 +1,11 @@
 # Analyse de regroupements {#analyse-regroupements}
 
-
 ```{r}
 #| label: setup-section3
 #| include: false
 #| message: false
 #| warning: false
-# automatically create a bib database for R packages
+#| eval: true
 library(knitr)
 library(kableExtra)
 library(hecmulti)
@@ -48,9 +47,10 @@ theme_set(theme_classic())
 
 Si la publicité ciblée personnalisée a pris de l'essort ces derniers années en commercialisation, la segmentation de consommateurs reste une partie prenante essentielle de toute campagne de publicité ou de développement de produits.
 
-L'analyse de regroupement est une technique d'**analyse descriptive** qui sert à combiner des sujets en groupes de telle sorte que les individus d'un même groupe soient le plus semblables possible  et que les groupes soient le plus différent possible les uns des autres, avec des valeurs aberrantes clairement identifiées. Cette similarité est définie selon des caractéristiques provenant de variables explicatives. Le résultat de l'analyse de regroupement sera une étiquette associée à chaque observation l'assignant à un regroupement ou l'identifiant comme aberrance, nous permettant ainsi de caractériser (par le biais de statistiques descriptives) les différents **segments** obtenus.
+L'analyse de regroupement est une technique d'**analyse descriptive** qui sert à combiner des sujets en groupes de telle sorte que les individus d'un même groupe soient le plus semblables possible  et que les groupes soient le plus différent possible les uns des autres, avec des valeurs aberrantes clairement identifiées. Cette similarité est définie selon des caractéristiques provenant de variables explicatives. Le résultat de l'analyse de regroupement sera une étiquette associée à chaque observation l'assignant à un regroupement ou l'identifiant comme aberrance, nous permettant ainsi de caractériser par le biais de statistiques descriptives les différents **segments** obtenus.
 
-Il y a une certaine analogie avec l'analyse factorielle. En analyse factorielle, on cherche à déterminer s'il y a des groupes de **variables** corrélées entre elles et à les regrouper pour réduire le nombre de variables. En analyse de regroupements, on cherche plutôt à créer des groupes de **sujets** similaires. Les deux méthodes servent pour l'analyse exploratoire.
+
+Il y a une certaine analogie avec l'analyse factorielle. En analyse factorielle, on cherche à déterminer s'il y a des groupes de **variables** corrélées entre elles et à les regrouper pour réduire le nombre de variables. En analyse de regroupements, on cherche plutôt à créer des groupes d'**observations** similaires. Les deux méthodes servent pour l'analyse exploratoire ou descriptive.
 
 Pour créer les regroupements, on utilisera $p$ variables explicatives $X_1, \ldots, X_p$ pour chacune des $n$ observations, où $X_{ij}$ dénotera la valeur de la $j$e variable explicative pour le $i$e sujet.
 
@@ -80,6 +80,7 @@ Les programmes de fidélisation font partie de la stratégie de commercialisatio
 
 Un autre exemple d'application de l'analyse de regroupements est la segmentation de la clientèle de transport en commun. Dans la région métropolitaine de Montréal, l'[Agence régionale de transport métropolitain](https://www.artm.quebec/) recueille des informations sur les passages et  transactions par le biais des cartes à puce Opus (achat de passes mensuelles ou de billets unitaires, lieu de l'achat, etc.) ainsi que les passages (heure, type de véhicule, emplacement approximatif pour les services d'autobus ou station de métro). En créant des regroupements, une agence de transport peut ainsi ajuster son offre et proposer des abonnements ou des produits qui reflètent les besoins de sa clientèle. Un exemple extrême de traquage de compagnie de transport est [*Nederlandse Spoorwegen* (NS)](https://www.ns.nl/en/): toute personne qui veut voyager en train sur les chemins de fers néerlandais doit acheter une carte à puce et la charger, en plus de composter son billet au départ et à l'arrivée de son voyage. Cette approche, qui peut sembler intrusive, permet néanmoins de mesurer précisément la demande sur les lignes en fonction du moment de la journée et de l'associer à chaque client.
 
+
 Dans ce chapitre, nous utiliserons des données simulées inspirées de campagnes de financement d'organismes de charité. Ces dernières font souvent du démarchage publicitaire auprès de donateurs ou envoient par publipostage des demandes de dons à toutes les adresses postales. Ces efforts ont un coût important: nous essaierons de créer des catégories de donateurs afin de mieux cibler les donateurs et donatrices et le moment adéquat pour ce démarchage.
 
 Souvent, les bases de données marketing sont souvent de nature longitudinale: chaque ligne correspond à une transaction, mais plusieurs d'entre elles peuvent être le fait d'une même personne/compte. Une fois l'analyse exploratoire des données complétée, on procédera à l'aggrégation des observations par compte client, puisque la segmentation doit être effectuée à cette échelle. C'est également à ce stade qu'on pourra créer de nouvelles variables explicatives à partir de l'information présente dans la base de données: par exemple, on pourrait considérer la fréquence moyenne d'achat, le montant moyen par transaction, le mode du moment de la journée, la variabilité de cette fréquentation, le pourcentage des ventes provenant d'articles en solde, la variabilité du montant du panier, etc. Cette liste, non exhaustive, illustre l'étape cruciale de l'extraction de l'information utilisée dans l'analyse statistique: il faut être conscients que la qualité de la segmentation dépend du choix de variables employées.
@@ -89,20 +90,17 @@ Souvent, les bases de données marketing sont souvent de nature longitudinale: c
 
 L'analyste est libre de choisir quelles variables seront incluses dans le modèle. Le choix des variables est important: en général on veut créer des groupes d'individus qui sont homogènes par rapport à certains aspects de leur comportement ou de leur situation. On ne doit alors inclure que les variables pertinentes à cet aspect. Inclure de nombreuses variables pour lesquelles il y a une forte similitude entre individus contribue à diluer les différences.
 
-Par exemple, si le but de l'analyse est de segmenter nos clients selon leurs habitudes de consommation (genre de boutiques fréquenté, fréquence, etc.), on n'inclura pas des variables démographiques qui feraient ressortir les différences de genre, d'âge, de revenu, etc.. En fait, souvent l'analyse de regroupements servira justement à créer des groupes qui seront comparés par rapport à d'autres variables qui n'ont pas été utilisées pour créer les groupes. 
+Par exemple, si le but de l'analyse est de segmenter nos clients selon leurs habitudes de consommation (genre de boutiques fréquenté, fréquence, etc.), on n'inclura pas des variables démographiques qui feraient ressortir les différences de genre, d'âge, de revenu, etc. En fait, souvent l'analyse de regroupements servira justement à créer des groupes qui seront comparés par rapport à d'autres variables qui n'ont pas été utilisées pour créer les groupes. 
 
-La compréhension de la base de données est cruciale pour comprendre le comportement. Si on essaie de faire une segmentation du comportement d'utilisateurs et utilisatrices de transports en commun à partir d'informations auxiliaires comme le temps de passage, le nombre de correspondance et la fréquence d'utilisation, il peut être utile de créer de nouvelles variables (par exemple, une variable indicatrice qui indique si la personne voyage durant les heures de traffic entre 7h30 et 9h et 16h à 18h, le nombre hebdomadaire moyen de jours ouvrables pendant lesquels elle se déplac, etc). L'inclusion des ces variables auxiliaires peut augmenter la qualité de la segmentation.
+La compréhension de la base de données est cruciale pour comprendre le comportement. Si on essaie de faire une segmentation du comportement d'utilisateurs et utilisatrices de transports en commun à partir d'informations auxiliaires comme le temps de passage, le nombre de correspondance et la fréquence d'utilisation, il peut être utile de créer de nouvelles variables (par exemple, une variable indicatrice qui indique si la personne voyage durant les heures de traffic entre 7h30 et 9h et 16h à 18h, le nombre hebdomadaire moyen de jours ouvrables pendant lesquels elle se déplace, etc). L'inclusion des ces variables auxiliaires peut augmenter la qualité de la segmentation.
 
 Pour voir si certaines variables sont inutiles, il peut être utile de comparer les représentants des groupes (par exemple, le barycentre ou une observation lambda du groupe) pour voir si les moyennes ou caractéristiques diffèrent. Si ce n'est pas le cas, on pourrait envisager de recommencer la procédure en enlevant cette variable.
 
-Si on a un nombre important de variables explicatives à disposition, il est parfois utile de réduire préalablement la dimension (par exemple, en effectuant une analyse en composantes principales) et à ne retenir que les premières composantes pour faciliter la tâche. Cette approche n'est pas la panacée: quelquefois, cette réduction de la dimension masque les différences entre groupe et mène à une segmentation inférieure à l'utilisation des variables originales.
+Si on a un nombre important de variables explicatives à disposition, il est parfois utile de réduire préalablement la dimension (par exemple, en effectuant une analyse en composantes principales) et à ne retenir que les premières composantes pour faciliter la tâche. Cette approche n'est pas la panacée: quelquefois, cette réduction de la dimension masque les différences entre groupes et mène à une segmentation inférieure à l'utilisation des variables originales.
 
 Malheureusement, il n'est pas évident de prime abord de déterminer quelles variables inclure dans la base de données pas plus qu'il n'est facile de juger de la qualité d'une segmentation ou du nombre de regroupements à effectuer. Les choix individuels auront un impact certain sur les regroupements obtenus: on recommande d'essayer plusieurs alternatives et de vérifier graphiquement ou à l'aide de critères d'ajustement si les regroupements obtenus sont homogènes et compacts.
 
 Si certaines variables définissent naturellement des groupes, par exemple l'âge des personnes, et fait qu'ils et elles ont des caractéristiques intrinsèquement différentes, il peut être utile de faire une segmentation indépendamment pour chacun de ces sous-groupes. 
-
-La base de données `dons` contient `r nrow(hecmulti::dons)` observations pour `r ncol(hecmulti::dons)` variables. Elle a été crée en regroupement les identifiants: de nombreuses variables explicatives sont dérivées des données brutes, notamment le temps entre dons, les statistiques descriptives (montant moyen, minimum maximum) pour les dons monétaires. Ces choix de variables sont loins d'être anodins et peuvent influencer la segmentation décrite dans ce chapitre. Une rapide exploration des données révèle que près de `r round(100*sum(is.na(dons$vdons))/nrow(dons), 0)`% des employé(e)s n'ont pas donné à l'organisme. Une poignée de dons sont très élevés, mais la plupart des montants tourne autour de 5$, 10$, 20$, etc.
-
 
 ```{r}
 #| label: tbl-statdescriptdons
@@ -111,7 +109,8 @@ La base de données `dons` contient `r nrow(hecmulti::dons)` observations pour `
 #| eval: true
 #| tbl-cap: "Statistiques descriptives des variables du jeu de données dons."
 data(dons, package = "hecmulti")
-tibble::tibble(moyenne = apply(dons, 2, mean, na.rm = TRUE),
+tibble::tibble(variable = colnames(dons),
+               moyenne = apply(dons, 2, mean, na.rm = TRUE),
             "écart-type" = apply(dons, 2, sd, na.rm = TRUE),
              min = apply(dons, 2, min, na.rm = TRUE),
              max = apply(dons, 2, max, na.rm = TRUE),
@@ -121,12 +120,15 @@ knitr::kable(digits = 2,
 kableExtra::kable_styling(full_width = TRUE)
 ```
 
-La grande proportion de données manquantes pose un problème immédiat pour la segmentation, puisque la plupart des procédures ne permettent pas de traiter ces dernières et éliminent d'office ces lignes. Ici, plusieurs valeurs manquantes (`NA`) peuvent être logiquement remplacées par des valeurs numériques: par exemple, la valeur cumulative des dons (`vdons`) d'une personne qui n'a jamais donné est nulle.^[Imputer par la moyenne ou utiliser une méthode plus sophistiqué serait illogique (et incorrect).] En revanche, le temps d'attente entre deux dons pour une personne qui a fait un don ou moins n'est pas bien défini.
+
+La base de données `dons` contient `r nrow(hecmulti::dons)` observations pour `r ncol(hecmulti::dons)` variables. Elle a été crée en regroupement les identifiants: de nombreuses variables explicatives sont dérivées des données brutes, notamment le temps entre dons, les statistiques descriptives (montant moyen, minimum maximum) pour les dons monétaires. Ces choix de variables sont loins d'être anodins et peuvent influencer la segmentation décrite dans ce chapitre. Une rapide exploration des données révèle que près de `r round(100*sum(is.na(hecmulti::dons$vdons))/nrow(hecmulti::dons), 0)`% des employé(e)s n'ont pas donné à l'organisme. Une poignée de dons sont très élevés, mais la plupart des montants tourne autour de 5\$, 10\$, 20\$, etc.
+
+
+La grande proportion de données manquantes pose un problème immédiat pour la segmentation, puisque la plupart des procédures ne permettent pas de traiter ces dernières et éliminent d'office les observations correspondantes de la base des données. Ici, plusieurs valeurs manquantes (`NA`) peuvent être logiquement remplacées par des valeurs numériques: par exemple, la valeur cumulative des dons (`vdons`) d'une personne qui n'a jamais donné est nulle.^[Imputer par la moyenne ou utiliser une méthode plus sophistiqué serait illogique (et incorrect).] En revanche, le temps d'attente entre deux dons pour une personne qui a fait un don ou moins n'est pas bien défini.
 
 Si on essaie de créer manuellement des groupes, il apparaît logique de séparer en trois segments initiaux la base de données: les personnes qui n'ont jamais donné à l'organisme de charité mais dont les caractéristiques sont connues, les personnes qui ont fait un seul don et celles qui ont fait des dons multiples. Un algorithme ferait de toute façon vraisemblablement ressortir cette information, mais nous empêcherait d'exploiter pleinement l'ensemble des variables explicatives et de ses dérivées. On pourra effectuer la segmentation séparément sur chaque groupe avec en intrant des variables explicatives différentes.
 
-Dans notre exemple, on pourrait aisément créer de nouvelles variables pour faire ressortir des informations jugées pertinentes. Est-ce qu'on s'intéresse au montant moyen des dons, soit `vdons/ndons`? Est-ce que la valeur des radiations nous intéresse, ou bien devrait-on plutôt considérer le pourcentage de la valeur promise réalisée? Pour rappel, les intrants de l'analyse de regroupement (soit le choix des variables) est laissé à la discrétion de l'analyste. 
-
+Les intrants de l'analyse de regroupement (soit le choix des variables) est laissé à la discrétion de l'analyste. Dans notre exemple, on pourrait aisément créer de nouvelles variables pour faire ressortir des informations jugées pertinentes. Est-ce qu'on s'intéresse au montant moyen des dons, soit `vdons/ndons`? Est-ce que la valeur des radiations nous intéresse, ou bien devrait-on plutôt considérer le pourcentage de la valeur promise réalisée? 
 
 
 Le champ des applications de l'analyse de regroupements est parfois surprenant. Par exemple, [cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais](https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/) ou des [quartiers de Los Angeles](https://fivethirtyeight.com/features/the-6-political-neighborhoods-of-los-angeles/). Un autre exemple incongru est la compression d'images: la Figure @fig-decelles montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l'algorithme des $K$-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l'image.
@@ -165,14 +167,13 @@ dat <- data.frame(dat)
 colnames(dat) <- c("x1", "x2")
 ggplot(data = dat, aes(x = x1, y = x2)) + 
   geom_point() + 
-  labs(x = expression(X[1]),
-       y = expression(X[2])) + 
+  labs(x = "variable 1",
+       y = "variable 2") + 
   theme_minimal()
-
 ```
 
 
-Une **mesure de dissemblance** sert à quantifier la proximité de deux objets à partir de leurs coordoonnées. Elle mesure la distance entre deux vecteurs d'observations $\mathbf{X}_i$ et $\mathbf{X}_j$ en se basant sur les $p$ variables explicatives $X_1, \ldots, X_p$. Plus la dissemblance est petite, plus les sujets $\mathbf{X}_i$ et $\mathbf{X}j$ sont similaires. Même s'il y a des exceptions, la plupart des mesures de dissemblances $d$ ont les propriétés mathématiques suivantes:
+Une **mesure de dissemblance** sert à quantifier la proximité de deux objets à partir de leurs coordoonnées. Elle mesure la distance entre deux vecteurs d'observations $\mathbf{X}_i$ et $\mathbf{X}_j$ en se basant sur les $p$ variables explicatives $X_1, \ldots, X_p$. Plus la dissemblance est petite, plus les sujets $\mathbf{X}_i$ et $\mathbf{X}_j$ sont similaires. Même s'il y a des exceptions, la plupart des mesures de dissemblances $d$ ont les propriétés mathématiques suivantes:
 
 1) $d(\mathbf{X}_i, \mathbf{X}_j) \geq 0$ (positivité), avec égalité (distance nulle) si et seulement si $\mathbf{X}_i=\mathbf{X}_j$ (mêmes caractéristiques pour toutes les variables explicatives);
 2) $d(\mathbf{X}_i, \mathbf{X}_j)=d(\mathbf{X}_j, \mathbf{X}_i)$ (symmétrie);
@@ -181,18 +182,18 @@ Toute mesure de distance^[Une fonction de distance respecte en plus l'inégalit�
 \begin{align*}
 d(\mathbf{X}_i, \mathbf{X}_j; l_2) = \left\{(X_{i1}-X_{j1})^2 + \cdots + (X_{ip}-X_{jp})^2\right\}^{1/2}.
 \end{align*}
-C'est tout simplement la longueur du segment qui relie les deux points dans l'espace. 
+C'est tout simplement la longueur Euclidienne du segment qui relie deux points dans l'espace $p$ dimensionnel. 
 
 Plus généralement, la distance de Minkowski ou distance $l_q$ entre les vecteurs ligne $\mathbf{X}_i$ et $\mathbf{X}_j$ est
 \begin{align*}
 d(\mathbf{X}_i, \mathbf{X}_j; l_q) = \left( \sum_{k=1}^p |X_{ik}-X_{jk}|^q \right)^{1/q},\qquad q > 0;
 \end{align*}
-la distance Euclidienne correspondant à $q=2$, et la distance de Manhattan à $q=1$^[La distance de Manhattan est la somme des valeurs absolues entre chaque composante. En deux dimensions, si on considère une ville comme New York dont les rues sont quadrillées, cela revient à marcher le long des rues alors que la distance Euclidienne traverse les édifices.] . Finalement, si $q=\infty$, la distance se réduit à $\max_{k=1}^p |X_{ik}-X_{jk}|$, soit le maximum des différences entre coordonnées des vecteurs d'observations.
+la distance Euclidienne correspondant à $q=2$, et la distance de Manhattan à $q=1$.^[La distance de Manhattan est la somme des valeurs absolues entre chaque composante. En deux dimensions, si on considère une ville comme New York dont les rues sont quadrillées, cela revient à marcher le long des rues alors que la distance Euclidienne traverse les édifices.] Finalement, si $q=\infty$, la distance se réduit à $\max_{k=1}^p |X_{ik}-X_{jk}|$, soit le maximum des différences entre coordonnées des vecteurs d'observations.
 
 
 Il existe un très grand nombre d'autres mesures de dissemblance pour variables quantitatives, ordinales, nominales et binaires. Si les variables sont toutes binaires, la mesure d'appariement simple (*simple matching*), qui mesure la proportion des variables pour lesquelles les deux sujets ont des valeurs différentes, est une mesure de dissemblance adéquate.
 
-Dans le cas de jeux de données avec des variables mixes, une option populaire est la distance de Gower [@Gower:1971]. Cette dernière compare deux individus selon leurs caractéristiques et est construite à partir de similarité, avec $(1-\mathbf{S})^{1/2}$ comme dissimilarité. La similarité entre deux individus est définie comme
+Dans le cas de jeux de données avec des variables mixes, une option populaire est la distance de Gower [@Gower:1971]. Cette dernière compare deux individus selon leurs caractéristiques et est construite à partir de similarité, avec $\mathbf{D} = (\mathbf{I}_n-\mathbf{S})^{1/2}$ comme matrice de dissimilarité des $n$ observations. La similarité entre deux individus est définie comme
 \begin{align*}
 S_{ij} = \frac{\sum_{k=1}^p s_{ijk} \delta_{ijk}}{\sum_{k=1}^p \delta_{ijk}}
 \end{align*}
@@ -206,14 +207,22 @@ On distingue trois type de variables dans la distance de Gowers:
 
 La dissemblance résultante pour les types mixtes vaut 1 quand toutes les variables sont similaires/égales et zéro si elles sont complètement différentes/maximalement distantes.
 
-On peut traiter les variables ordinales comme continues ou les traiter comme des variables nominales avec la mesure d'appariement simple; ce faisant, on n'utilise pas l'ordre entre les modalités.
+On peut traiter les variables ordinales soit comme des variables continues, soit comme des variables nominales avec la mesure d'appariement simple; ce faisant, on n'utilise pas l'ordre entre les modalités.
 
-Dans plusieurs cas, on se trouvera en présence de valeurs manquantes dans le jeu de données. Cela peut arriver pour plusieurs raisons valables (aucun candidature ne représente un partir dans une circonscription donnée lors d'une élection, l'information est manquante, une femme ne peut avoir de cancer de la prostate, etc.) Il faut bien penser à vérifier si l'algorithme de votre choix peut gérer ces valeurs manquantes. Sinon, ces dernières devront être imputées ou vous devrez faire sans les variables explicatives correspondantes.
+Certains algorithmes utilisent directement une matrice de similarité $\mathbf{S}$ qui encode plutôt l'information à propos des points avoisinants. Parmi les exemples communs sont les graphes de voisinage $\epsilon$: toute paire d'observation à distance au plus $\epsilon$ se voit assigner un, zéro sinon. La matrice de similarité peut dans ce cas être assimilée à un graphe où chaque observation est un noeud et deux points sont connectés si leur distance est au plus $\epsilon$. 
+
+De la même manière, on pourrait considérer uniquement les $k$ plus proches voisins et mettre $S_{ij}=1$ si l'observation $\mathbf{X}_j$ est un des $k$ plus proches voisins d'observation $\mathbf{X}_i$. Puisque la relation n'est pas nécessairement réciproque (le point $i$ n'est pas nécessairement un des $k$ plus proches voisins de $\mathbf{X}_j$), on pourrait choisir de mettre $S_{ij}=S_{ji}=1$ si les deux sont dans les plus proches voisins, ou un seul des deux, afin d'obtenir une matrice symmétrique.
 
 
-Il existe d'autres façons de définir la similarité entre observations. Par exemple, si on considère la dissemblance Euclidienne, on pourrait créer une matrice de similarité $\mathbf{S}$ $n \times n$ où les entrées indiquent si les observations sont à distance $\varepsilon$ les unes des autres (si oui, en assignant $1$ et autrement $0$) ou encore avec $1$ pour les $m$ plus proches voisins et $0$ autrement. Cette approche sera utilisée lors de la présentation des regroupement spectraux.
 
-Les définitions des distances révèlent que chaque variable explicative a le même poids. En revanche, plus une variable a une grande variance, plus elle aura de l'influence sur le calcul de la distance, ce qui peut être bon ou mauvais selon la structure des groupes. Règle générale, il est préférable d'éviter qu'une variable domine dans la segmentation. La standardisation des variables et les transformations préalables effectuées sur les variables (log, arcsin, etc.) impacteront le résultat. On peut standardiser au préalable les variables avant de faire l'analyse. Par défaut, les variables continues seront centrées et réduites, ou standardisées, afin d'avoir une moyenne de zéro et une variance de un (`scale`). On peut ensuite faire les analyses comme précédemment. Si on a des valeurs aberrantes, cela peut impacter le calcul des moyennes et variances; d'autres estimateurs de localisation et d'échelles plus robustes, par exemple la médiane et la déviation absolue par rapport à la médiane (`mad`) peuvent alors être plus adéquats pour diminuer l'impact des valeurs aberrantes même si le coût de calcul associé est plus conséquent. Notez qu'il est illogique de standardiser les variables binaires et catégorielles.
+Dans plusieurs cas, on se trouvera en présence de valeurs manquantes dans le jeu de données. Cela peut arriver pour plusieurs raisons valables (aucun candidature ne représente un partir dans une circonscription donnée pour un parti lors d'une élection, l'information est manquante, une femme ne peut avoir de cancer de la prostate, etc.) Il faut bien penser à vérifier si l'algorithme de votre choix peut gérer ces valeurs manquantes. Sinon, ces dernières devront être imputées préalablement à l'analyse de regroupements ou vous devrez faire sans les variables explicatives correspondantes.
+
+
+Il existe d'autres façons de définir la similarité entre observations. Par exemple, si on considère la dissemblance Euclidienne, on pourrait créer une matrice de similarité $\mathbf{S}$ $n \times n$ où les entrées indiquent si les observations sont à distance $\varepsilon$ les unes des autres (si oui, en assignant $1$ et autrement $0$) ou encore avec un $1$ pour les $m$ plus proches voisins et $0$ autrement. Cette approche sera utilisée lors de la présentation des regroupement spectraux.
+
+Les définitions des distances révèlent que chaque variable explicative a le même poids. En revanche, plus une variable a une grande variance, plus elle aura de l'influence sur le calcul de la distance, ce qui peut être bon ou mauvais selon la structure des groupes. Règle générale, il est préférable d'éviter qu'une variable domine dans la segmentation. La standardisation des variables et les transformations préalables effectuées sur les variables (log, arcsin, etc.) impacteront le résultat. 
+
+On peut standardiser au préalable les variables avant de faire l'analyse. Par défaut, les variables continues seront centrées et réduites, ou standardisées, afin d'avoir une moyenne de zéro et une variance de un (`scale`). On peut ensuite faire les analyses comme précédemment. Si on a des valeurs aberrantes, cela peut impacter le calcul des moyennes et variances; d'autres estimateurs de localisation et d'échelles plus robustes, par exemple la médiane et la déviation absolue par rapport à la médiane (`mad`) peuvent alors être plus adéquats pour diminuer l'impact des valeurs aberrantes même si le coût de calcul associé est plus conséquent. Notez qu'il est illogique de standardiser les variables binaires et catégorielles.
 
 ```{r}
 #| label: standardisation
@@ -224,10 +233,10 @@ data(cluster, package = "hecmulti")
 # (soustraire moyenne, diviser par écart-type)
 cluster_std <- scale(cluster)
 # Standardisation robuste
-cluster_std_rob <- apply(cluster, 
-                         MARGIN = 2, 
-                         function(x){
-                           (x - median(x))/mad(x)})
+cluster_std_rob <- apply(
+  cluster, 
+  MARGIN = 2, 
+  FUN = function(x){(x - median(x))/mad(x)})
 # apply permet d'appliquer une fonction
 # par ligne, colonne ou cellule
 # MARGIN = 2 indique colonne 
@@ -236,9 +245,9 @@ cluster_std_rob <- apply(cluster,
 
 ## Algorithmes pour la segmentation
 
-L'analyse de regroupements est une branche de l'apprentissage non-supervisé: contrairement à la classification, il n'existe pas de vraies étiquettes sur lesquelles se baser pour déterminer la qualité d'une segmentation. Des critères graphiques, des mesures d'homogénéité peuvent néanmoins déterminer à quel points les segments créés sont distincts les uns des autres.
+L'analyse de regroupements est une branche de l'apprentissage non-supervisé: contrairement à la classification, il n'existe pas de vraies étiquettes sur lesquelles se baser pour déterminer la qualité d'une segmentation. Des critères graphiques et des mesures d'homogénéité peuvent néanmoins déterminer à quel points les segments créés sont distincts les uns des autres.
 
-L'analyse de regroupements cherche à créer une division de $n$ observations de $p$ variables en $k$ regroupements. Il existe un grand nombre d'algorithmes qui permettent de partitionner les données en regroupements à partir d'un jeu de données ou d'une matrice de dissemblance ou de similarité. Les sections suivantes survoleront différents algorithmes en s'attardant à l'heuristique de l'implémentation, aux différentes étapes de la procédure, aux hyperparamètres qui influencent le résultat (par ex., le nombre de groupes, la distance minimale entre regroupements, la forme des regroupements, les éléments représentatifs) qui détermine la sortie ainsi que les forces et faiblesses des algorithmes. À l'ère des mégadonnées, la complexité d'un algorithme de regroupements, une mesure du nombre d'opérations nécessaires pour effectuer le calcul, impactera le choix possible: l'algorithme de regroupements hiérarchiques (agglomératif ou divisif), de même que l'algorithme de partition autour des médoïdes (PAM) sont à proscrire dans ces scénarios. Outre l'algorithme, il y a des coûts associés au calcul de la matrice de dissemblance entre chacune des paires des $n$ observations: cette opération nécessite $\mathrm{O}(n^2p)$ flops pour le calcul et $\mathrm{O}(n^2)$ entrées de stockage.
+L'analyse de regroupements cherche à créer une division de $n$ observations de $p$ variables en $k$ regroupements. Il existe un grand nombre d'algorithmes qui permettent de partitionner les données en regroupements à partir d'un jeu de données ou d'une matrice de dissemblance ou de similarité. Les sections suivantes survoleront différents algorithmes en s'attardant à l'heuristique de l'implémentation, aux différentes étapes de la procédure, aux hyperparamètres qui influencent le résultat (par ex., le nombre de groupes, la distance minimale entre regroupements, la forme des regroupements, les éléments représentatifs) qui détermine la sortie ainsi que les forces et faiblesses des algorithmes. À l'ère des mégadonnées, la complexité d'un algorithme de regroupements, une mesure du nombre d'opérations nécessaires pour effectuer le calcul, impactera le choix possible: l'algorithme de regroupements hiérarchiques (agglomératif ou divisif), de même que l'algorithme de partition autour des médoïdes (PAM) sont à proscrire dans ces scénarios. Outre l'algorithme, il y a des coûts associés au calcul de la matrice de dissemblance entre chacune des paires des $n$ observations: cette opération nécessite $\mathrm{O}(n^2p)$ flops pour le calcul et $\mathrm{O}(n^2)$ entrées de stockage. Dans le cas de matrice creuses avec beaucoup de zéros, le coût de stockage et le coût pour réaliser des opérations matricielle (décomposition en valeurs propres et vecteurs propres) peut être réduit à l'aide d'algorithmes dédiés.
 
 Les méthodes de regroupement peuvent être regroupées grossièrement dans les catégories suivantes:
 
@@ -248,17 +257,17 @@ Les méthodes de regroupement peuvent être regroupées grossièrement dans les 
 4. méthodes basées sur la densité (DBScan)
 5. méthodes spectrales
 
+Dans certaines méthodes paramétriques (catégories 1 à 3), le nombre de groupes est fixé apriori et est un paramètre du modèle. Les méthodes nonparamétriques déterminent plutôt ce nombre automatiquement, mais spécifient un paramètre qui indique le degré de lissage
+
 Nous survolerons uniquement les caractéristiques des principales méthodes.
 
-### K-moyennes
+### $K$-moyennes
 
-L'algorithme des $K$-moyennes est un des plus couramment employé en raison de son faible coût.
-
-L'idée est la suivante: on assigne chaque observation à un de $K$ regroupements et on calcule la distance entre cette dernière et un prototype $\boldsymbol{\mu}_k$ pour le regroupement $k$. La fonction objective que l'on cherche à minimiser est
+L'algorithme des $K$-moyennes est un des plus couramment employé en raison de son faible coût. L'idée est la suivante: on assigne chaque observation à un de $K$ regroupements et on calcule la distance entre cette dernière et un prototype $\boldsymbol{\mu}_k$ pour le regroupement $k$. La fonction objective que l'on cherche à minimiser est
 $$
 \min_{\boldsymbol{\mu}_1, \ldots, \boldsymbol{\mu}_K}\min_{\stackrel{r_{ik} \in \{0, 1\}}{r_{i1} + \cdots + r_{iK}=1}}\underset{\text{distance entre obs. $i$ et son prototype}}{\sum_{i=1}^n \sum_{k=1}^K r_{ik}d(\mathbf{X}_i,  \boldsymbol{\mu}_{k})}
 $$ {#eq-fobjKmoy}
-où $r_{ik}=1$ si l'observation $\mathbf{X}_i$ (soit la $i$e ligne de la base de données) est assignée au groupe $k$. Si on utilise la distance Euclidienne carrée, alors la fonction objective correspond à la somme du carré des erreurs et la solution $\widehat{\boldsymbol{\mu}}_k$ est le barycentre des $n_k$ observations du groupe $k$, soit
+où $r_{ik}=1$ si l'observation $\mathbf{X}_i$ (soit la $i$e ligne de la base de données) est assignée au groupe $k$. Si on utilise la distance Euclidienne carrée, alors la fonction objective correspond à la somme du carré des erreurs, on cherche à minimiser l'erreur quadratique moyenne et la solution $\widehat{\boldsymbol{\mu}}_k$ est le barycentre des $n_k$ observations du groupe $k$, soit
 \begin{align*}
 \widehat{\boldsymbol{\mu}}_k = \frac{\sum_{i} r_{ik} \mathbf{X}_i}{n_k}, \quad k = 1, \ldots, K;
 \end{align*}
@@ -273,7 +282,7 @@ En pratique, l'algorithme convergera rapidement vers une solution locale. Cette 
 La @fig-kmoy-animation montre une animation avec un jeu de données fictif et $K=3$ regroupements.
 
 
-Dans la sortie des $K$-moyennes, chaque observation est associée à un seul regroupement, encodée par la responsabilité $r_{ik}$. L'algorithme présenté offre une forme de partitionnement dite rigide: chaque observation est assignée à un seul regroupement puisque $r_{ik}$ est binaire. Si cette appartenance unique peut être logique pour les points à proximité du barycentre, ceux situés à l'intersection des frontières qui définissent les différents regroupements pourraient légitimement faire partie d'un ou l'autre de ces derniers.
+L'algorithme des $K$-moyennes présenté offre une forme de partitionnement dite rigide: chaque observation est assignée à un seul regroupement. Si cette appartenance unique peut être logique pour les points à proximité du barycentre, ceux situés à l'intersection des frontières qui définissent les différents regroupements pourraient légitimement faire partie d'un ou l'autre de ces derniers. On pourrait plutôt assigner un poids représentant la probabilité d'être dans un des $K$ regroupements, appelé responsabilité et dénotée $r_{ik}$. Avec une assignation rigide, $r_{ik}=1$ si l'observation $i$ est dans le regroupement $k$ et zéro sinon.
 
 
 ```{r}
@@ -313,31 +322,38 @@ animation::kmeans.ani(
 )
 ```
 
+
+Quelquefois, on peut vouloir prédire les étiquettes de groupes de nouvelles observations. Sans réentraîner l'algorithme, on pourrait ainsi assigner de nouvelles observations au barycentre le plus près.
+
 Voici quelques forces et faiblesses de la méthode des $K$-moyennes
 
-- Les $K$-moyennes créent des regroupements globulaires d'apparence sphérique si on utilise la distance Euclidienne: cela revient à faire une séparation linéaire de l'espace.
+- Les $K$-moyennes créent des regroupements globulaires d'apparence sphérique si on utilise la distance Euclidienne: cela revient à faire une séparation linéaire de l'espace (voir @fig-voronoikmoy). 
 - Chaque observation est assignée à un seul des $K$ regroupements (assignation rigide).
-- Comme toutes les observations font partie des $K$ groupes, les valeurs aberrantes ne sont pas traitées à part.
-- La présence de valeurs aberrantes impacte le barycentre des observations du groupe. Comme ce dernier donne le prototype du groupe,  l'algorithme manque de robustesse.
-- L'algorithme des $K$-moyennes a une complexité linéaire dans la dimension et dans le nombre de variables. Ce faible coût de calcul est un avantage avec des mégadonnées et en haute dimension.
+- Comme toutes les observations font partie des $K$ groupes, les valeurs aberrantes ne sont pas traitées à part. Or, la présence de valeurs aberrantes impacte le barycentre des observations du groupe. Comme ce dernier donne le prototype du groupe, l'algorithme manque de robustesse.
+- L'algorithme des $K$-moyennes a une complexité **linéaire** dans la dimension et dans le nombre de variables. Ce faible coût de calcul est un avantage avec des mégadonnées ($n$ grand) et en haute dimension $p$ grand).
 - L'algorithme converge rapidement vers une solution et on a des garanties que la solution est un maximum local, puisque l'algorithme minimise les répartitions et les prototypes tour à tour.
-- L'algorithme est sensible aux valeurs initiales des prototypes.
+- L'algorithme est sensible aux valeurs initiales des prototypes et retourne des solutions différentes selon ces dernières.
 
 
 #### Choix des hyperparamètres
 
-L'algorithme des $K$-moyennes comporte plusieurs paramètres, dit hyperparamètres, qui sont fixés par l'utilisateurs préalablement à la segmentation. Ces derniers incluent le nombre de groupes $K$, les valeurs initiales des prototypes et le choix de la mesure de distance.
+L'algorithme des $K$-moyennes comporte plusieurs paramètres, dit hyperparamètres, qui sont fixés par l'utilisateurs préalablement à la segmentation. Ces derniers incluent 
 
-Toutes les distances $l_q$ peuvent être utilisées, mais le choix de la distance Euclidienne carrée est particulièrement commode et populaire^[La fonction objective s'apparente alors à la somme du carré des erreurs, et donc il y a une analogie à faire avec la vraisemblance d'un modèle Gaussien en dimension $p$ de covariance sphérique. Cela légitimise l'emploi de critères d'information pour le choix du nombre de regroupements.] entraîne une partition linéaire de l'espace, comme l'illustre la @fig-voronoikmoy. Sauf indication contraire, on supposera dans ce qui suit que la distance entre un point et un prototype est calculée avec la distance Euclidienne au carré.
+1. les valeurs initiales des prototypes
+2. le nombre de groupes $K$ 
+3. le choix de la mesure de distance.
+
+#### Mesure de distance
+
+Toutes les distances $l_q$ peuvent être utilisées, mais le choix de la distance Euclidienne carrée est particulièrement commode et populaire^[La fonction objective s'apparente alors à la somme du carré des erreurs, et donc il y a une analogie à faire avec la vraisemblance d'un modèle Gaussien en dimension $p$ de covariance sphérique. Cela légitimise l'emploi de critères d'information pour le choix du nombre de regroupements.] entraîne une partition linéaire de l'espace, comme l'illustre la @fig-voronoikmoy. La solution du problème d'optimisation est explicite, ce qui accélère les calculs (les prototypes correspondent au barycentre). Sauf indication contraire, on supposera dans ce qui suit que la distance entre un point et un prototype est calculée avec la distance Euclidienne au carré.
 
 
-Quelquefois, on peut vouloir prédire les étiquettes de groupes de nouvelles observations. Sans réentraîner l'algorithme, on pourrait ainsi assigner de nouvelles observations au barycentre le plus près.
 
 ```{r}
 #| label: fig-voronoikmoy
 #| echo: false
 #| eval: true
-#| fig-cap: "Partitions de Voronoï pour les barycentres obtenus dans la solution des $K$-moyennes."
+#| fig-cap: "Partitions de Voronoï pour les barycentres (cercles) obtenus dans la solution des $K$-moyennes. La ligne de démarcation qui sépare les groupes est linéaire."
 km1 <- kmeans(clusters, 
               centers = 3, 
               nstart = 10, 
@@ -372,9 +388,10 @@ set.seed(1234)
 set1 <- mvtnorm::rmvnorm(n = 300, c(14,12), matrix(c(4,0.5,0.5,5),2))
 set2 <- mvtnorm::rmvnorm(n = 300, c(5.5,-1), matrix(c(1,0.5,0.5,6),2))
 set3 <- mvtnorm::rmvnorm(n = 300, c(0,0), matrix(c(2,0,0,2),2))
+db <- rbind(set1, set2, set3)
+colnames(db) <- c("X1", "X2")
+DF <- tibble::as_tibble(db)
 
-DF <- tibble::as_tibble(rbind(set1, set2, set3))
-colnames(DF) <- c("X1", "X2")
 kmoy1 <- kmeans(x = DF, 
        centers = rbind(c(5, 0), c(0,0), c(15,10)), 
        iter.max = 25L, 
@@ -399,17 +416,14 @@ g2 <- ggplot(data = DF,
        mapping = aes(x = X1, 
                      y = X2, 
                      color = cluster2)) +
-  geom_point() + theme_minimal() +
+  geom_point() + theme_classic() +
   theme(legend.position = 'none') +
   labs(x = "",
        y = "")
 g2 + g1
-
 ```
 
-Pour réduire l'impact et s'assurer d'une segmentation de qualité, on peut prendre plusieurs valeurs de départ initiales différentes et faire l'analyse de regroupement en sélectionnant celle qui a la plus petite valeur de la fonction objective de l'@eq-fobjKmoy. 
-
-On peut également utiliser $K$-moyennes++, qui propose de choisir des barycentres éloignés les uns des autres (ce qui réduit typiquement le nombre d'itérations). Cette méthode d'initialisation sélectionne une observation au hasard et on l'assigne comme premier prototype, disons $\boldsymbol{\mu}_1$. Par la suite, on procède avec $k=2, \ldots, K$ aux étapes suivantes:
+On peut également utiliser $K$-moyennes $++$, une variante algorithmique qui propose de choisir des barycentres éloignés les uns des autres (ce qui réduit typiquement le nombre d'itérations). Cette méthode d'initialisation sélectionne une observation au hasard et on l'assigne comme premier prototype, disons $\boldsymbol{\mu}_1$. Par la suite, on procède avec $k=2, \ldots, K$ aux étapes suivantes:
 
 1. calcul de la distance carrée minimale entre l'observation $\mathbf{X}_i$ et les prototypes précédemment choisis,
 \begin{align*}
@@ -419,106 +433,411 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 
 À la fin, on obtiendra $K$ valeurs initiales qui serviront à l'initialisation. Ce faisant, on peut espérer ne pas avoir à faire plusieurs allocations aléatoires, puisque les valeurs de départ choisies sont raisonnablement éloignées les unes des autres.
 
-L'autre paramètre crucial des $K$-moyennes est le nombre de regroupements, $K$. Il est difficile de savoir combien de regroupements sélectionner apriori, puisque la visualisation en haute-dimension est difficile et on est souvent loin de la situation présentée dans la @fig-kmoyenne-mauvais. On pourrait envisager de rouler l'algorithme avec plusieurs valeurs de $K$ et de comparer les résultats, mais sur quelle base? La fonction objective de l'@eq-fobjKmoy représente la somme du carré des erreurs (SCE), soit la variabilité totale des observations des observations des différents groupes autour de leur barycentre. Cette mesure va méchaniquement diminuer à mesure que le nombre de regroupements augmente parce que le modèle aura plus d'opportunités pour réduire la variabilité inter-groupe. En revanche, si cette réduction est négligeable, on pourrait penser que l'ajout d'un groupe supplémentaire (qui implique plus de paramètres à estimer et plus de segments à interpréter) est faible.
 
-On pourrait dans un premier temps tracer un diagramme de la somme du carré des erreurs en fonction de $K$ et cherche un point d'inflexion (coude) dans le graphique. Malheureusement, la valeur de la fonction objective diminue à mesure que l'on ajoute des groupes. Pour contrecarrer ce problème, on pourrait ajouter une pénalité à notre fonction objective. En effet, avec la distance Euclidienne carrée, il y a une analogie à faire avec un modèle de régression et on peut légitimement utiliser un critère d'information pour guider notre choix de $K$: le nombre de paramètres des $K$-moyennes est $Kp$, soit les valeurs des $K$ barycentres.
+L'autre paramètre crucial des $K$-moyennes est le nombre de regroupements, $K$. Il est difficile de savoir combien de regroupements sélectionner apriori, puisque la visualisation en haute dimension est difficile et on est souvent loin de la situation présentée dans la @fig-kmoyenne-mauvais. On pourrait envisager de rouler l'algorithme avec plusieurs valeurs de $K$ et de comparer les résultats, mais sur quelle base? La fonction objective de l'@eq-fobjKmoy représente la somme du carré des erreurs (SCE), soit la variabilité totale des observations des observations des différents groupes autour de leur barycentre. Cette mesure va méchaniquement diminuer à mesure que le nombre de regroupements augmente parce que le modèle aura plus d'opportunités pour réduire la variabilité inter-groupe. En revanche, si cette réduction est négligeable, on pourrait penser que l'ajout d'un groupe supplémentaire (qui implique plus de paramètres à estimer et plus de segments à interpréter) est faible.
 
-Il faut garder en tête que, davantage qu'un critère mathématique, l'interprétabilité des regroupements est notre principale critère. Les critères d'information peuvent retourner trop ou pas assez de groupe: à titre d'exemple, le panneau de gauche de la @fig-coude-kmoy montre un coude à $K=2$, mais il y avait visiblement trois regroupements, dont deux rapprochés.
+On pourrait dans un premier temps tracer un diagramme de la somme du carré des erreurs en fonction de $K$ et cherche un point d'inflexion (coude) dans le graphique. Malheureusement, la valeur de la fonction objective diminue à mesure que l'on ajoute des groupes. Pour contrecarrer ce problème, on pourrait ajouter une pénalité à notre fonction objective. En effet, avec la distance Euclidienne carrée, il y a une analogie à faire avec un modèle de régression et on peut légitimement utiliser un critère d'information pour guider notre choix de $K$: le nombre de paramètres des $K$ moyennes est $Kp$, soit les valeurs des coordonnées des $K$ barycentres.
+
+Il faut garder en tête que, davantage qu'un critère mathématique, l'interprétabilité des regroupements est notre principale critère. Les critères d'information peuvent retourner trop ou pas assez de groupe: à titre d'exemple, le panneau de gauche de la @fig-coudekmoy montre un coude à $K=2$, mais il y avait visiblement trois regroupements, dont deux rapprochés.
+
 
 ```{r}
-#| label: fig-coude-kmoy
-#| fig.cap = "Valeur de la fonction objective (somme du carré des erreurs) en fonction du nombre de regroupements $K$."
+#| label: fig-coudekmoy
+#| fig-cap: "Valeur de la fonction objective (somme du carré des erreurs) en fonction du nombre de regroupements $K$."
 #| eval: true
 #| echo: false
 nmax <- 8L
-groups <- data.frame(K = 1:nmax, SCE = sapply(1:nmax, function(k){sum(kmeans(DF[,1:2], centers = k, iter.max = 100L, nstart = 10)$withinss)}))
+groups <- data.frame(K = 1:nmax, SCE = sapply(1:nmax, function(k){
+  sum(kmeans(DF[,1:2], 
+             centers = k, 
+             iter.max = 100L, 
+             nstart = 10)$withinss)}))
 ggplot(data = groups, 
-  aes(x = K, y = SCE)) +
-  geom_line() + labs(y = "", subtitle = "Somme du carré des erreurs")
+  aes(x = K, 
+      y = 0.5* SCE)) +
+  geom_line() + 
+  labs(y = "", 
+       subtitle = "Somme du carré des erreurs.") +
+  theme_classic()
+```
 
+### $K$-médoides
+
+L'algorithme des $K$-moyennes spécifie que le barycentre des regroupements est le prototype. On pourrait également choisir pour ce dernier une des observations du groupe. Cette approche dite des médoïdes est plus coûteuse en calcul, mais permet d'avoir une observation réellement observée et est un peu moins sensible aux extrêmes et aux aberrances, bien que ce fait soit disputé.
+
+L'algorithme de partition autour des médoïdes (PAM) procède comme suit:
+
+1. Initialisation: sélectionner $K$ des $n$ observations comme médoïdes initiaux.
+2. Assigner chaque observation au médoïde le plus près.
+3. Calculer la dissimilarité totale entre chaque médoïde et les observations de son groupe.
+4. Pour chaque médoïde $(k=1, \ldots, K$): considérer tous les $n-K$ observations à tour de rôle et permuter le médoïde avec l'observation. Calculer la distance totale et sélectionner l'observation qui diminue le plus la distance totale.
+4. Répéter les étapes 2 à 4 jusqu'à ce que les médoïdes ne changent plus.
+
+Puisque qu'on considère chaque observation comme candidat à devenir un médoïde à chaque étape, le coût de calcul est prohibitif.
+
+L'algorithme CLARA, décrit dans @Kaufman.Rousseeuw:1990, réduit le coût de calcul et de stockage en divisant l'échantillon en sous-échantillons de taille approximativement égale et en utilisant l'algorithme PAM sur chacun.
+
+
+
+La qualité des regroupements est obtenue en utilisant la moyenne des distances entre les regroupements et leurs médoïdes. On peut également tracer un graphique des silhouettes: pour chaque observation, on calcule la moyenne des dissimilarités entre l'observation et celles de chaque regroupement. On spécifie ensuite la distance minimale entre l'observation $\mathbf{X}_i$ et son regroupement, disons $a_i$, et la distance minimale pour les autres regroupements $b_i$. La valeur de la silhouette est simplement $s_i=(b_i-a_i)/\max\{a_i, b_i\}$. Il est possible que la silhouette $s_i$ soit négative: cela indique généralement des observations mal regroupées. De bons regroupements seront obtenus si la silhouette est élevée: on s'attend, si les groupes sont très éloignées les uns des autres, à avoir des profils plus uniformes et une silhouette moyenne plus élevée.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-silhouette
+#| fig-cap: "Profil des silhouettes pour deux regroupements d'un jeu de données: la segmentation de droite est supérieure parce que les regroupements sont plus homogènes et mieux équilibrés."
+par(mfrow=c(1,2))
+library(cluster)
+cols <- MetBrewer::MetPalettes$Hiroshige[[1]][c(10,5,1)]
+#Même résultat avec hclust
+m1 <- cluster::agnes(x=iris[,1:4],
+                     metric = "canberra", 
+                     method = "single")
+s1 <- silhouette(cutree(m1, k = 3), dist(iris[,1:4]))
+plot(s1, 
+     main="", 
+     sub = paste0("moyenne des silhouettes: ", round(mean(s1[,3]),2)), 
+     xlab = "silhouette", 
+     col = cols) 
+abline(v=mean(s1[,3]))
+kpam <- pam(iris[,1:4], k=3)
+s.pam <- silhouette(kpam)
+plot(s.pam, 
+     main="", 
+     sub = paste0("moyenne des silhouettes: ", round(mean(s.pam[,3]),2)), 
+     xlab = "silhouette", 
+     col = cols)
+abline(v = mean(s.pam[,3]))
 ```
 
 
+Voici quelques avantages et inconvénients des $K$-médoides.
+
+- les prototypes sont des observations de l'échantillon.
+- la fonction objective est moins impactée par les extrêmes.
+- le coût de calcul est prohibitif avec des mégadonnées.
 
 
+### Mélange de modèles
 
-## Mélange de modèles
+L'algorithme des $K$-moyennes fait une allocation rigide: chaque observation est assignée à un seul regroupement, ignorant de ce fait l'incertitude rattachée à l'étiquetage des observations. Les frontières de la région, obtenue en calculant l'intersection des courbes sphériques de regroupement, sont linéaires.
 
-L'algorithme des $K$-moyennes fait une allocation rigide: chaque observation est assignée à un seul regroupement, ignorant de ce fait l'incertitude rattachée à l'étiquetage des observations.
-Les frontières de la région, obtenue en calculant l'intersection des courbes sphériques de regroupement, sont linéaires.
-
-Peut-être plus problématique, la distance euclidienne non pondérée impose des regroupement sphériques de taille semblable: la qualité des regroupements des $K$ moyennes est donc mauvaise si les regroupements ne sont pas sphériques ou globulaires, ou sont de concentration inégale.
+Peut-être plus problématique, la distance Euclidienne non pondérée impose des regroupements convexes et sphériques de taille semblable: la qualité des regroupements des $K$ moyennes est donc mauvaise si les regroupements ne sont pas sphériques ou globulaires, ou sont de concentrations inégales.
 
 
-Une approche plus générale considère que $X_1, \ldots, X_p$ sont tirées d'un mélange à $K$ composantes de lois aléatoires spécifiées. Généralement, on spécifie une loi normale multidimensionnelle pour le $k$e groupe $G$,
+Une approche plus générale considère que $X_1, \ldots, X_p$ sont tirées d'un mélange à $K$ composantes de lois spécifiées. Généralement, on choisit une loi normale multidimensionnelle pour le $k$e groupe $G$,
 \begin{align*}
 \boldsymbol{X} \mid G=k \sim \mathsf{No}_p(\boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k)
 \end{align*}
 On suppose qu'on a $K$ groupes, chacun caractérisé par une densité de dimension $p$, soit $f_k(\boldsymbol{X}_i;\boldsymbol{\theta}_k)$ si $\boldsymbol{X}_i$ provient du groupe $k$ pour $k=1, \ldots, K$.
 
-On réécrit la vraisemblance en fonction de $\pi_k$, la probabilité qu'une observation $\mathbf{X}$ tombe dans le groupe $k$,
+
+On réécrit la vraisemblance en fonction de $\pi_k$, la probabilité qu'une observation $\mathbf{X}_i$ tombe dans le groupe $k$,
 \begin{align*}
- L(\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_K; \pi_1, \ldots, \pi_K, \mathbf{X})= \prod_{i=1}^n \sum_{k=1}^K \pi_k
+ L_i(\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_K; \pi_1, \ldots, \pi_K, \mathbf{X}_i)= \sum_{k=1}^K\pi_k
 f_{k}(\boldsymbol{X}_i,
 \boldsymbol{\theta}_{k}).
 \end{align*}
-Si on connaissait les poids du mélange $\boldsymbol{\pi}$ avec $\sum_{k=1}^K \pi_k = 1$ et $\pi_k \in (0,1)$, on peut simplement obtenir les estimation du maximum de vraisemblance pour le paramètre de moyenne et de variance. Comme les poids sont inconnus, on estime le modèle à l'aide de l'algorithme d'espérance-maximisation. Le paramètres retournés correspondent à un maximum local, et on peut également obtenir un estimé de la variabilité de ces paramètres. Ainsi, le mélange de modèle nous donne accès à la fois à l'incertitude des paramètres et la probabilité $\pi_k$ qu'une observation appartiennent au groupe $G_k$.
-
-Si $p$ est élevé, la structure de covariance non structurée possède trop de paramètres pour être utile. On limitera ce nombre en choisissant plutôt une paramétrisation plus parsimonieuse qui impose des contraintes sur la forme des ellipsoïdes, propres ou communs à tous les groupes.
 
 
+Si on savait de quelle composante l'observation originait, on pourrait simplement obtenir les estimation du maximum de vraisemblance pour les paramètres de moyenne et de variance. Inversement, si on avait les valeurs des paramètres, on pourrait déterminer de quel composante l'observation est la plus susceptible de parvenir à l'aide des poids. Le modèle est estimé à l'aide de l'algorithme d'espérance-maximisation, qui itère entre l'estimation des probabilités, et celles des autres composantes. Le paramètres retournés correspondent à un maximum local, et on peut également obtenir un estimé de la variabilité de ces paramètres. Ainsi, le mélange de modèle nous donne accès à la fois à l'incertitude des paramètres et à la probabilité $\pi_k$ qu'une observation appartiennent au groupe $G_k$.
 
-| Nom |   volume  |  forme  |  orientation |
-|:-----|:------:|:------:|:------:|
-| EII |   constant  |  sphérique  |  non-définie |
-| VII |     variable  | sphérique  |  non-définie |
-| EEE |   constant  |  constante  |  constant |
-| EEV |  constant | constante  | variable |
-| EVV |  constant | variable  | variable |
-| VVV |   variable  |  variable  | variable |
+La loi multinormale est caractérisée par une moyenne (qui peut servir de prototype) et par une matrice de covariance $\boldsymbol{\Sigma}_k$. Si on paramétrise cette dernière, on peut obtenir plus de flexiblité selon que les variances soient différentes d'une variable à l'autre, ou que les variables soient corrélées. On peut également spécifier que certains éléments (structure de corrélation, variances) de $\boldsymbol{\Sigma}_k$ sont communes à tous les regroupements. En laissant les paramètres varier, on peut capturer l'effet de regroupements de tailles et de densité différente au prix de plus de paramètres et d'un plus petit nombre d'observations pour estimer chacun d'entre eux.
 
-Le choix du nombre de composantes, de même que la forme du modèle, est basée sur la sélection bayésienne de modèles. On utilise une approximation basée sur le critère d'information bayésien, ou $\mathsf{BIC}$, en choisissant le nombre de composantes qui minimise le $\mathsf{BIC}$. 
+Si $p$ est élevé, la structure de covariance non structurée possède trop de paramètres pour être utile. On limitera ce nombre en choisissant plutôt une paramétrisation plus parsimonieuse qui impose des contraintes sur la forme des ellipsoïdes, propres ou communes à tous les groupes.
 
+La matrice de covariance dans `mclust` est paramétrisée en fonction de $\lambda$, qui contrôle le volume, une matrice diagonale $\mathbf{A}$ qui contrôle les variances de chaque observation et $\mathbf{D}$ une matrice orthogonale qui permet de créer de la corrélation entre observations. Un index $k$ spécifie que cette composante varie d'un regroupement à l'autre.
 
-- Avantage: plus flexible que $K$-moyennes
-- Avantage: composante uniforme permet de gérer aberrance
-- Désavantage: algorithme EM mène à un minimum local
-- Désavantage: coût de calcul élevé, dépend de la dimension du problème (complexité en $p$)
-
-Mélanges de modèles Gaussiens
-
-Hyperparamètres: nombre de groupes $K$, forme des ellipsoïdes
-
-Partition autour de médoïdes
-
-Algorithmes PAM et CLARA
-
-
-
-
-
-## Analyse exploratoire graphique
-
-Comme c'est le cas avec n'importe quelle analyse statistique, il est utile d'explorer les données graphiquement. On peut parfois réussir à visualiser les groupes d'observations, ce qui nous permettra une fois l'analyse de regroupement complétée de vérifier la qualité de cette dernière. 
-
-On pourrait produire un nuage de points pour chaque paire de variables mais cette idée est problématique pour deux raisons: il y aura beaucoup de graphes si le nombre de variables est grand et on examine seulement les relations bivariées.
-
-On peut utiliser les outils du chapitre précédent et réduire le nombre de variables en considérant plutôt les composantes principales. Dans notre exemple, on va seulement s'en servir comme outil graphique pour une analyse de regroupements en réduisant la dimension afin de permettre la visualisation des regroupements obtenus. Ces dernières pourraient aussi servir de variables pour l'analyse de regroupement: une fois les étiquettes obtenues, il suffirait de calculer les statistiques descriptives sur les variables originales. 
-
+Les trois lettres de l'identifiant pour volume/forme/orientation déterminent si cette composante est égale (`E`), si elle varie d'un regroupement à l'autre (`V`) ou si elle est indéterminée (`I`). Par exemple, `EII` spécifie une matrice de covariance où chaque composante a variance $\lambda$ et où les composantes sont indépendantes. Voir `mclust.options("emModelNames")` et la documentation dans le Tableau 3 de @mclust5.
 
 ```{r}
-#| label: fig-eboulis-cluster
+#| label: fig-modeles
+#| fig-cap: "Forme des ellipsoïdes pour le mélange de modèle selon la forme de la structure de covariance. Image extraite de @mclust5 (Figure 2) partagée sous licence [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)."
+#| eval: true
 #| echo: false
-#| out-width: '100%'
-#| fig-align: "center"
-#| fig-cap: "Diagramme d'éboulis de la matrice de corrélation des données `dons` pour les donateurs multiples."
-data(dons, package = "hecmulti")
-dons |>
-  dplyr::filter(ndons > 1) |>
-  cor(use = "pairwise.complete.obs") |>
-  eigen() |>
-  hecmulti::eboulis()
+knitr::include_graphics("figures/mclust5-parametrization.png")
 ```
 
 
+Voici quelques avantages et inconvénients des mélanges de modèles Gaussiens
+
+- cette approche est plus flexible que les $K$-moyennes.
+- l'ajout d'une composante uniforme permet de gérer les aberrances (pas supporté par `mclust`).
+- l'algorithme EM garantie la convergence à un minimum local (comme pour les $K$-moyennes)
+- on n'obtient une assignation probabiliste plutôt que rigide
+- le coût de calcul est élevé et dépend de la dimension du problème (complexité en $p$)
+
+
+#### Hyperparamètres
+
+Pour le mélange de modèle, on doit fixer apriori le nombre de groupes $K$, la forme des ellipsoïdes et les valeurs pour l'initialisation. Les mêmes considérations pratiques qu'avec les $K$-moyennes s'appliquent, bien qu'ici l'utilisation des critères d'information permette plus légitimement de choisir le nombre de regroupements. 
+
+La forme des ellipsoïdes est un compromis entre simplicité (d'estimation) et nombre de paramètres: un modèle plus flexible sera plus difficile à estimer et nécessitera plus de temps de calcul et un plus grand nombre d'échantillon. En petite dimension, il peut être utile d'effectuer une visualisation préalable pour déterminer quel type de modèle serait suffisant. Règle générale, il faut aussi considérer le nombre de paramètres à estimer (qui dépend de $p$) et le nombre d'observations par regroupement. Comme tous les modèles sont estimés avec la méthode du maximum de vraisemblance, on peut toujours ajuster tous les types de structures de covariance pour un nombre de regroupements $K$ donné et retourner les critères d'information (BIC) pour sélectionner le meilleur mélange de modèles. La fonction `mclustBIC` du paquet `mclust` permet de calculer ces modèles et la méthode `summary` retourne les trois meilleurs modèles selon le critère d'information.
+
+
+### Méthodes basées sur la densité
+
+L'algorithme DBSCAN (*density-based spatial clustering of applications with noise)*) est une méthode de partitionnement basée sur la densité des points. L'idée de base de l'algorithme est de tracer une boule de rayon $\epsilon$ autour de chaque observation et de voir si elle inclut d'autres observations. L'algorithme contient deux hyperparamètres: le rayon $\epsilon$ et $M$, le  nombre minimal de points pour former un regroupement.
+L'algorithme classe les observations en trois catégories: aberrance, point central et point frontière. 
+
+- Un point central est une observation qui possède $M-1$ voisins à distance $\epsilon$.
+- Un point frontière est un point qui est distant de moins de $\epsilon$ d'un point central, sans en être un. 
+- Un point isolé est une observation qui n'est pas rattachée à aucun regroupement. 
+
+
+L'algorithme répète les étapes suivantes jusqu'à ce que chaque observation ait été visitée.
+
+1. Choisir un point aléatoirement parmi ceux qui n'ont pas été visités.
+2. Si le point n'est pas étiqueté, calculer le nombre de points voisins qui se trouvent dans un rayon $\epsilon$: s'il y a moins de $M$ observations, provisoirement étiqueter l'observation comme point isolé, sinon comme point central.
+3. Si l'observation est un point central avec $M-1$ voisins ou plus, créer un regroupement.
+4. Étiqueter chaque point à distance $\epsilon$ créé et l'ajouter au regroupement, ainsi que tout point à distance $\epsilon$ de ces voisins.
+
+[Ce site web] offre une visualisation interactive des différentes étapes de  l'algorithme et de comparer la performance de DBSCAN selon le type de regroupements.
+
+
+<!--
+Avec une mesure de dissemblance, on peut créer une matrice qui pour chaque paire de points indique si l'observation est à distance au plus $\epsilon$: cela permet de créer un graphe où chaque observation est un noeud et où il y a une arête entre deux noeuds si la distance entre les deux observations est inférieure à $\epsilon$.
+-->
+
+Puisque chaque point est visité à tour de rôle et comparé aux autres pour trouver les plus proches voisins, la complexité brute est $\mathrm{O}(n^2)$ mais une implémentation efficace permet de réduire ce coût à $\mathrm{O}(n\ln n)$ avec un coût pour l'allocation de la mémoire linéaire de $\mathrm{O}(n)$.
+
+Voici quelques caractéristiques de DBSCAN:
+
+- le traitement des aberrances est automatique et l'algorithme est robuste.
+- le nombre de regroupements n'a pas à être spécifié apriori. 
+- la forme des regroupements est arbitraire, peut être non convexe et de taille différente.
+- la complexité de l'algorithme est d'au mieux $\mathrm{O}(n\ln n)$.
+- les hyperparamètres ont une interprétation physique, mais leur choix n'est pas aisé
+- DBSCAN ne permet pas de traiter le cas où la densité des regroupements change et risque de fusionner des regroupements s'il y a une série d'observations qui permet de relier deux regroupements.
+- comme la plupart des algorithmes, le voisinage des points devient épars quand $p$ augmente en raison du fléau de la dimension.
+
+
+```{r}
+#| label: fig-dbscan1
+#| fig-cap: "Illustration de la classification des points avec DBSCAN: toutes les observations sont assignées à un regroupement, moins une aberrance."
+#| echo: false
+#| eval: true
+#| fig-width: 6
+#| fig-height: 6
+set.seed(60602)
+fdat <- data.frame(x = rnorm(10), 
+                   y = rnorm(10)) + 10
+ddist <- as.matrix(dist(fdat))
+nneigh <- apply(ddist, 1, function(x){sum(x < 1.5)-1})
+fdat$type <- factor(dplyr::case_when(
+  nneigh == 0 ~ "aberrance",
+  nneigh < 5 ~ "frontière",
+  nneigh >= 5 ~ "central"
+))
+g1 <- ggplot(fdat,
+       aes(x = x, y = y)) +
+  geom_point() + 
+  #geom_point(size = 70,
+   #          shape = 1)
+ggforce::geom_circle(
+  aes(x0 = x, y0 = y, 
+      r = 1.5, color = type)) + 
+  scale_x_continuous(limits = c(5, 13),
+                     expand = c(0,0)) +
+  scale_y_continuous(limits = c(5, 13),
+                     expand = c(0,0)) +
+  labs(x = "", y = "") + 
+  theme_classic() +
+  theme(legend.position = "bottom")
+g1
+```
+
+```{r}
+#| eval: false
+#| echo: false
+plot(igraph::graph_from_adjacency_matrix(
+  adjmatrix = ddist < 1.5,
+  mode = 'undirected', 
+  diag = FALSE))
+```
+
+#### Choix des hyperparamètres
+
+
+Les deux paramètres, $M$ et $\epsilon$, sont positivement corrélés: si on augmente le nombre minimal de point $M$ par regroupement, il faudra également augmenter le rayon $\epsilon$ pour éviter d'avoir un nombre trop élevé de points isolés étiquetés comme points isolés ou comme aberrances.
+
+Pour spécifier le nombre minimal d'observations voisines $M$ pour créer un point central, il faut aussi considérer la dimension $p$ des variables explicatives: la recommandation est de requérir au moins $p+1$ points dans le voisinage. Le choix du rayon peut être plus difficile à déterminer: . Une option est de fixer le nombre de plus proches voisins $M$ et de considérer la distance entre chaque observation et ses plus proches voisins: au sein d'un regroupement, on s'attend à ce que cette distance soit petite. Cela permettra également de déterminer un seuil acceptable pour $\epsilon$ pour éviter que trop d'observations soient isolées. 
+
+
+La fonction `kNNdistplot` du paquet `dbscan` permet de tracer un graphique de la distance moyenne des $k$ plus proches voisins pour chaque observation: en prenant $k=M-1$, on peut calculer la distance entre le $k$ plus proche voisin de chaque observation et ordonner ces distances. La recommandation est de choisir $\epsilon$ en prenant une distance avant le coude qui détermine
+
+```{r}
+#| label: fig-dbscan2
+#| fig-cap: "Graphique des distances entre chaque observation et son troisième plus proche voisin (gauche), en fonction du pourcentage d'observations à moins de cette distance et regroupements obtenus avec DBSCAN avec $M=10$ et $\\epsilon=1.1$ (droite)."
+#| echo: false
+#| eval: true
+knndist <- dbscan::kNNdist(
+  DF[,1:2],
+  k = 9)
+g1 <- ggplot(data.frame(
+   pourcentage = (1:length(knndist))/length(knndist),
+   dist = sort(knndist)),
+  aes(x = pourcentage, y = dist)) +
+    geom_line() +
+  geom_hline(yintercept = 1.1,
+             linetype = 2, 
+             alpha = 0.2) +
+  labs(subtitle = "Distance entre les trois plus proches voisins",
+       y = "",
+       x = "pourcentage des observations") +
+  scale_x_continuous(labels = scales::percent) +
+  theme_classic()
+clust <- dbscan::dbscan(DF[,1:2],
+                minPts = 10, 
+                eps = 1.1)
+g2 <- ggplot(
+  data = data.frame(
+    x = DF$X1,
+    y =  DF$X2,
+    groupe = factor(clust$cluster)),
+  mapping = aes(
+    x = x,
+    y = y, 
+    color = groupe)) +
+  geom_point() +
+  labs(x = "variable 1",
+       y = "variable 2") + 
+  theme_classic() +
+  theme(legend.position = "bottom")
+g1 + g2
+```
+
+Une variante de l'algorithme DBSCAN, intitulée OPTICS, est plus coûteuse mais permet de gérer le cas de regroupements de densités variables.
+
+
 ### Regroupements spectraux
+
+Un des principaux problèmes avec les méthodes basées sur les centroïdes et les mélanges de modèles est qu'elle retourne des regroupements convexes. 
+
+Une autre méthode basée sur la dissemblance est celle des regroupements spectraux. L'idée est de construire une matrice de similarité et de considérer le graphe résultant. Cette technique est très coûteuse en calcul et donc réservée à un petit nombre d'observations.
+
+
+On peut considérer une matrice de similarité $\mathbf{S}$ comme base à notre analyse de regroupement. 
+
+
+Notre matrice de similarité représente un graphe, un arrangement où chaque observation est un point (noeud) et ce dernier est connecté à une autre si l'entrée correspondante dans la matrice de similarité est non-nulle. On peut ainsi étudier la connectivité du graphe.
+
+
+L'idée de l'algorithme des regroupements spectraux est qu'on peut découvrir à partir de ce graphe les composantes connectées: si le graphe a $D$ composantes connectées (regroupements), alors la Laplacienne a $D$ valeurs propres nulles. En pratique, les valeurs propres seront plutôt presque nulles; en choisissant un seuil $\epsilon>0$ presque nul, on pourra déterminer le nombre de composantes: il peut être nécessaire d'ordonner les valeurs propres et de chercher pour un point d'inflection. On sélectionnera alors uniquement les $D$ vecteurs propres associés, une étape de réduction de la dimension.
+
+
+1. Construire une matrice de similarité $\mathbf{S}$
+2. Calculer la somme des lignes de $\mathbf{S}$ et créer une matrice diagonale $\mathbf{R}$ à partir du vecteur résultant. Obtenir le Laplacien standardisé $\mathbf{L} = \mathbf{I}_n -\mathbf{R}^{-1/2}\mathbf{S}\mathbf{R}^{-1/2}$.
+3. Calculer la décomposition en valeurs propres et vecteurs propres de $\mathbf{L}$.^[Avec un algorithme adéquat qui exploite la structure si la matrice de similarité est creuse.]
+5. Déterminer le nombre de valeurs propres sous un seul $\epsilon >0$.
+6. Conserver les vecteurs propres du Laplacien associées aux petites valeurs propres inférieures au seuil $\varepsilon$.
+
+Une fois cette étape de réduction de la dimension complétée, on peut simplement utiliser la nouvelle base de données résultante et calculer les $K$-moyennes. 
+
+
+```{r}
+#| label: fig-spectclustgraphe
+#| eval: true
+#| echo: false
+#| fig-cap: "Matrice de similarité pour le mélange de données, ordonnées. On distingue clairement les trois regroupements."
+#| fig-width: 5
+#| fig-height: 5
+W <- sClust::compute.similarity.ZP(scale(DF[,1:2]))
+image(W, 
+      yaxt = 'n', 
+      xaxt ='n', 
+      ylim = c(1,0),
+      col = gray.colors(100, 
+                        start = 1, 
+                        end = 0)
+      )
+```
+
+
+Voici quelques avantages et inconvénients de la méthode spectrale
+
+- le choix de la matrice de similarité (fonction du noyau, etc.) offre énormément de flexibilité et permet de capturer des effets nonlinéaires.
+- le coût du calcul est plus élevé et on transforme la matrice $n \times p$ en matrice $n \times n$ avant de la réduire en matrice $n \times D$: cette étape préliminaire nécessite le stockage d'une matrice carrée $n \times n$ et la décomposition en valeurs propres et vecteurs propres.
+
+
+Si la méthode des $K$-moyennes est populaire pour regrouper les observations avec leurs nouvelles coordonnées en raison du faible temps de calcul, tout algorithme pourrait être employé.
+
+Le paquet `sClust` sur **R** offre une implémentation avec plusieurs algorithmes subséquents. Le paquet `kernlab` et sa fonction `specc` permettent l'emploi de plusieurs types de noyaux.
+
+### Regroupements hiérarchiques
+
+Historiquement très utilisés dans les années 70, les méthodes de regroupement hiérarchique offrent une méthode déterministe de regroupement à partir d'une matrice de dissimilarité.
+
+L'algorithme pour la procédure agglomérative procède comme suit:
+
+1. Initialisation: chaque observation forme son propre groupe.
+2. les deux groupes les plus rapprochés sont fusionnés; la distance entre le nouveau groupe et les autres regroupements est recalculée.
+3. on répète l'étape 2 jusqu'à obtenir un seul regroupement.
+
+La procédure divisive procède de la même façon, mais en partant d'un seul ensemble et en subdivisant ce dernier jusqu'à ce qu'il y ait autant d'observations que de groupes. Cette dernière est préférable si on veut isoler de grands regroupements, mais est rarement employée.
+
+
+Il y a plusieurs façons de calculer la distance entre deux groupes d'observations. Selon notre définition, nous obtiendrons des regroupements différents. Les méthodes les plus populaires incluent
+
+- liaison simple (plus proches voisins)
+- liaison complète (voisins les plus éloignés)
+- liaison moyenne: utilise la moyenne des distances entre toutes les paires de sujets (un pour chaque groupe) provenant des deux groupes.
+- méthode de Ward: calcul de l'homogénéité globale
+
+La méthode de Ward n'est pas définie en terme de distance entre représentants de groupes, mais plutôt en terme de mesure d'homogénéité. Supposons qu’à une étape du processus hiérarchique, nous avons  $M$  groupes et que nous voulons passer à $M-1$. Pour chaque groupe $k$, nous pouvons calculer la somme des carrés des distances par rapport à la moyenne du groupe, disons $\mathsf{SCD}_k$: plus cette distance est petite, plus le groupe est compact et homogène. On calcule ensuite l'homogénéité globale en faisant la somme de l’homogénéité de tous les groupes, soit $\mathrm{H}^{(M)} = \mathsf{SCD}_1 + \cdots + $\mathsf{SCD}_M$. La méthode de Ward va regrouper les deux groupes qui feront augmenter le moins possible l'homogenéité.
+
+La méthode de liaison simple est la moins coûteuse du lot et elle fonctionne bien si l’écart entre deux regroupements est suffisamment grand. À l’inverse, s’il y a des observations bruitées entre deux regroupements, la qualité des regroupements en sera affectée. La méthode de liaison complète est moins sensible au bruit et aux faibles écarts entre regroupements, mais a tendance à casser les regroupements globulaires. Puisque le critère d'homogénéité de Ward ressemble à celui des $K$-moyennes, la sortie aura tendance à bien regrouper les amas globulaires.
+
+On peut comparer les performances des regroupements hiérarchiques selon la méthode de groupement. La page web de [scikit-learn developers](https://scikit-learn.org/stable/auto_examples/cluster/plot_linkage_comparison.html) montre la performance sur des exemples jouets très artificiels, qui montre que selon la structure des données, l'impact de la fonction de liaison. Ici, aucun approche hiérarchique ne performe mieux que les autres dans tous les exemples.
+
+```{r}
+#| label: fig-animation-ward
+#| eval: true
+#| echo: false
+#| out-width: '70%'
+#| fig-cap: "Animation du regroupement hiérarchique (procédure agglomérative) avec la distance de Ward."
+knitr::include_graphics("figures/ward_animation.gif")
+```
+
+La @fig-animation-ward montre les différentes étapes de l'algorithme avec les regroupements étapes par étape, jusqu'à ce qu'on obtienne deux groupes. À l'étape 1, les observations (14, 19) sont regroupées, puis (2, 15), (10, 17). Ce n'est qu'à l'étape 7 qu'on ajoute une observation à un regroupement de deux existants.
+
+#### Sélection des hyperparamètres
+
+Outre le choix de la fonction de liaison qui déterminera la distance entre les regroupements à chaque étape, on devra choisir le nombre de regroupements.
+
+On peut représenter le modèle à l'aide d'un arbre, où les feuilles indiquent les regroupements à chaque étape jusqu'à la racine à la dernière étape. On appelle **dendrogramme**. La distance entre chaque embranchement est déterminée par notre critère: cela nous permet de sélectionner un nombre de regroupements $K$ après inspection du dendrogramme et d'extraire la solution en élaguer l'arbre à cette profondeur.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-dendrogramme
+#| fig-cap: "Dendrogramme pour l'exemple de regroupement hiérarchique avec la méthode de Ward et 20 observations."
+library(ggdendro)
+model <- hclust(dist(hecmulti::regroupements1[1:20,]),
+                method = "ward.D2")
+dhc <- as.dendrogram(model)
+# Rectangular lines
+ddata <- dendro_data(dhc, type = "rectangle")
+p <- ggplot(segment(ddata)) + 
+  geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) + 
+  coord_flip() + 
+  scale_y_reverse(expand = c(0.2, 0))
+p
+
+```
+
+La hauteur du dendrogramme donne la valeur du critère associé à la mesure de regroupement: on peut sélectionne le nombre de regroupements $K$ en sélectionnant une étape où la qualité de l'ajustement diminue drastiquement. Pour le critère de Ward qui utilise l'homogénéité, on peut créer un critère $R^2$ en calculant $R^2_{(M)} = 1-\mathrm{H}_{(M)}/\mathrm{H}_{(1)}$, où $\mathrm{H}_{(1)}$ est simplement la somme du carré des distances distances par rapport à la moyenne lorsque toutes les observations sont dans un même groupe. Le R-carré semi-partiel, qui mesure la perte d'homogénéité d'une étape à l'autre, renormalisée par $\mathrm{H}_{(1)}$, permet également de mesurer  la perte d’homogénéité (relative) en combinant ces deux groupes. On peut faire un graphique de ces deux critères en fonction du nombre de regroupements et chercher un point d'inflection (un coude) à partir duquel la perte d'homogénéité est moindre ou encore le $R^2$ augmente plus lentement.
+
+La fonction `stat::hclust` permet de faire des regroupements agglomératifs (`agnes`), mais `fastcluster` propose une version avec une empreinte mémoire inférieure. Le paquet `cluster` offre de son côté l'algorithme divisif (`diana`)
+
+
+
+
+Voici quelques particularités des méthodes de regroupement hiérarchique.
+
+- la solution du regroupement hiérarchique est toujours la même
+- l'assignation d'une observation à un regroupement est finale
+- les aberrances ne sont pas traitées et sont souvent assignées dans des regroupements à part
+- les méthodes d'arborescence sont faciles à expliquer
+- le nombre de groupes n'a pas à être spécifié apriori
+- le coût de calcul est prohibitif, avec une complexité quadratique de $\mathrm{O}(n^2)$ pour la méthode de liaison simple et autrement $\mathrm{O}(n^3)$ pour la plupart des autres fonctions de liaison.

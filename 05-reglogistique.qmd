@@ -255,7 +255,7 @@ Les critères d'information sont des fonctions de la log-vraisemblance, mais inc
 
 Ces définitions sont utilisables dans plusieurs situations lorsque le modèle est ajusté par la méthode du maximum de vraisemblance. Tout comme en régression linéaire et en analyse factorielle, ces deux critères pourront être utilisés pour faire de la sélection de modèles si on calcule les estimateurs du maximum de vraisemblance.
 
-### Exemple du _Professional Rodeo Cowboys Association_ {#cowboy}
+### Exemple du _Professional Rodeo Cowboys Association_ {#sec-cowboy}
 
 L'exemple suivant est inspiré de l'article
 
@@ -1127,6 +1127,8 @@ En résumé, la procédure numérique à réaliser est la suivante:
 - Pour obtenir la performance finale, on obtient les prédictions pour les 100 000 clients de l'échantillon de validation et on classifie pour prédire la classe de `yachat` pour les données de validation à l'aide du point de coupure optimal choisi.
 - On calcule ensuite le revenu en soustrayant 10$ pour chaque envoi et en additionnant les montants d'achats des personnes qui ont reçu le catalogue.
 
+Quelques commentaires sur des raccourcis syntaxiques propres à **R**: dans une formule, spécifier `~.` indique que l'on ajoute au modèle de régression toutes les variables explicatives de la base de données, moins la variable réponse. On peut aussi utiliser `.^2` ou de manière équivalent `.*.` pour spécifier tous ces termes, ainsi que leurs interactions. Si on veut ajouter un terme quadratique pour une variable `x`, il faudra spécifier la transformation à l'intérieur de `I()`, par exemple `I(x^2)`.
+
 ```{r}
 #| label: selection-variable-logistique-dbm
 #| eval: true
@@ -1145,8 +1147,8 @@ valid <- dbm[dbm$test == 1,] |>
 appr <- dbm[dbm$test == 0, ] |>
   dplyr::select(! c(ymontant, test))
 # Formule du modèle avec toutes les interactions 
-# d'ordre 2 et les termes quadratiques
-formule <- formula(yachat ~ .*. + 
+# d'ordre 2 (.^2) et les termes quadratiques I(x^2)
+formule <- formula(yachat ~ .^2 + 
                      I(x2^2) + I(x6^2) + 
                      I(x7^2) + I(x8^2) + 
                      I(x9^2) + I(x10^2))
@@ -1367,7 +1369,7 @@ knitr::kable(datf, col.names = colnames,
 options(scipen = 100)
 ```
 
-Nous avons vu plus tôt, qu'avec les 10 variables de base, le meilleur point de coupure est de 0.11. En utilisant cette stratégie sur les 100 000 clients, le revenu net aurait été de $`r base_perfo`$ dollars. C'est une énorme amélioration, de plus de 56%, par rapport à la stratégie de référence qui consiste à envoyer le catalogue à tout le monde (revenu net de 601 212\$). Si on inclut tous les termes quadratiques et les termes les interactions d'ordre deux (104 variables en tout), le revenu net est inférieur avec une valeur de `r complet_perfo`\$. Ici, le modèle est trop complexe et surajusté.  Si on fait une sélection de variables (quasi méthodes sont présentées), suivie de la détermination du meilleur point de coupure, on fait alors toujours mieux qu'avec le modèle incluant les 10 variables de base seulement. L'approche la plus rentable parmi celles essayées aurait généré un profit de `r max(datf[,6])` avec `r datf[which.max(datf[,6]),2]` variables explicatives: il s'agit d'un gain de `r round(100*(as.integer(max(datf[,6]))/as.integer(datf[2,6])-1),1)`% par rapport au modèle avec les 10 variables de base.
+Nous avons vu plus tôt, qu'avec les 10 variables de base, le meilleur point de coupure est de 0.11. En utilisant cette stratégie sur les 100 000 clients, le revenu net aurait été de `r sprintf(as.character(base_perfo))` dollars. C'est une énorme amélioration, de plus de 56%, par rapport à la stratégie de référence qui consiste à envoyer le catalogue à tout le monde (revenu net de 601 212\$). Si on inclut tous les termes quadratiques et les termes les interactions d'ordre deux (104 variables en tout), le revenu net est inférieur avec une valeur de `r sprintf(as.character(complet_perfo))`\$. Ici, le modèle est trop complexe et surajusté.  Si on fait une sélection de variables (quasi méthodes sont présentées), suivie de la détermination du meilleur point de coupure, on fait alors toujours mieux qu'avec le modèle incluant les 10 variables de base seulement. L'approche la plus rentable parmi celles essayées aurait généré un profit de `r sprintf(as.character(max(datf[,6])))` avec `r datf[which.max(datf[,6]),2]` variables explicatives: il s'agit d'un gain de `r round(100*(as.integer(max(datf[,6]))/as.integer(datf[2,6])-1),1)`% par rapport au modèle avec les 10 variables de base.
 
 ### Modèle Heckit
 
@@ -1632,7 +1634,7 @@ ggplot(aes(fill = catvote,
 On voit que les personnes plus fortunées, plus éduquées, plus âgées et celles qui s'associent à un parti politique principal (Républicains et Démocrates), votent davantage. L'écart selon l'âge est particulièrement édifiant, avec près de 50% des jeunes qui n'ont pas participé. Il faut garder en tête que le revenu, l'âge et le niveau d'éducation sont fortement associés et que les personnes plus jeunes ont eu moins d'occasions de voter (ce qui pourrait expliquer la plus grande propension pour les catégories de vote).
 
 
-Une étude plus attentive révèle que la distribution conditionnelle de ceux qui votent toujours est bimodale. La @fig-vote-age montre clairement que les très jeunes et les personnes âgées en font partie. Ainsi, le modèle est potentiellement mal spécifié car le vrai effet de l'âge n'est visiblement pas linéaire au niveau du log de la cote. Cela dit, les primovotant(e)s n'ont souvent eu qu'une seule occasion de voter, ce qui peut expliquer le comportement sur le graphique et l'absence de réponses pour sporadiquement. Pour éviter cet artefact, on considère les personnes de plus de 30 ans uniquement.
+Une étude plus attentive révèle que la distribution conditionnelle de ceux qui votent toujours est bimodale. La @fig-vote-age montre clairement que les très jeunes et les personnes âgées en font partie. Ainsi, le modèle est potentiellement mal spécifié car le vrai effet de l'âge n'est visiblement pas linéaire au niveau du log de la cote. Cela dit, les primovotant(e)s n'ont souvent eu qu'une seule occasion de voter, ce qui peut expliquer le comportement sur le graphique et l'absence de réponses pour occasionnellement. Pour éviter cet artefact, on considère les personnes de plus de 30 ans uniquement.
 
 
 ```{r}
@@ -1710,7 +1712,7 @@ knitr::kable(tab1,
   kableExtra::kable_styling(full_width = TRUE)
 knitr::kable(tab2, 
                 digits = 3, 
-                caption = "catégorie sporadiquement vs toujours", 
+                caption = "catégorie occasionnellement vs toujours", 
                 booktabs = TRUE) |>
   kableExtra::kable_styling(full_width = TRUE)
 expcoefm1 <- sprintf(
@@ -1728,7 +1730,7 @@ coefm1p22 <- sprintf(coef(multi1)[2,2],  fmt = "%.3f")
 
 Comme il y a trois catégories pour la variable dépendante, il y a deux équations pour le modèle ajusté. En regardant les coefficients dans le @tbl-multinom-coefs, on obtient:
 \begin{align*}
-\ln \left\{\frac{\Pr(\texttt{catvote}_{1i}= \texttt{sporadiquement}\mid \texttt{age}_i)}{\Pr(\texttt{catvote}_{1i} = \texttt{rarement/jamais} \mid \texttt{age}_i)} \right\} &=
+\ln \left\{\frac{\Pr(\texttt{catvote}_{1i}= \texttt{occasionnellement}\mid \texttt{age}_i)}{\Pr(\texttt{catvote}_{1i} = \texttt{rarement/jamais} \mid \texttt{age}_i)} \right\} &=
 `r coefm1p11` + 
 `r coefm1p12` \texttt{age}_i, \\ 
 \ln \left\{\frac{\Pr(\texttt{catvote}_{1i}= \texttt{toujours}\mid \texttt{age}_i)}{\Pr(\texttt{catvote}_{1i}= \texttt{rarement/jamais}  \mid \texttt{age}_i)} \right\} &= 
@@ -1784,12 +1786,11 @@ knitr::kable(tab, digits = 2,
 
 Cette valeur est donnée dans la dernière colonne du tableau. De plus, cet effet est significatif car la valeur-$p$ est inférieure à $10^{-4}$.
 
- Pour une comparaison directe entre les deux autres catégories, `rarement/jamais` et `sporadiquement`, il suffit de changer la catégorie de référence.
+ Pour une comparaison directe entre les deux autres catégories, `rarement/jamais` et `occasionnellement`, il suffit de changer la catégorie de référence.
 
 ### Régression logistique cumulative à cotes proportionnelles
 
-
-Si les modalités de la réponse sont ordinales, la régression logistique multinomiale est toujours appropriée. Il peut néanmoins être préférable d'utiliser un modèle qui utilise l'ordre des modalités pour obtenir un modèle plus facile à interpréter et plus parcimonieux. Le modèle de régression logistique cumulative à cotes proportionnelles est un simplification sous l'hypothèse que les cotes sont proportionnelles.
+Si les modalités de la réponse sont ordinales, la régression logistique multinomiale est toujours appropriée. Il peut néanmoins être préférable d'utiliser un modèle qui utilise l'ordre des modalités pour obtenir un modèle plus facile à interpréter et plus parcimonieux. Le modèle de régression logistique cumulative à cotes proportionnelles [@McCullagh:1980] est une simplification du modèle multinomial sous l'hypothèse que les rapports de cotes sont les mêmes peut importe la catégorie.
 
 Supposons que les $K$ modalités de la variable **ordinale** $Y$ sont en ordre croissant ($1 \leq \cdots \leq  K$) et que l'on dispose de $p$ variables explicatives $\mathrm{X}_1, \ldots, \mathrm{X}_p$ pour chaque observation.
 
@@ -1905,7 +1906,7 @@ rapp <- summary(multi2a)
 coefs <- rapp$coefficients
 options(knitr.kable.NA = '')
 tabcoef <- tibble::as_tibble(coefs[,1:2])
-tabcoef <- cbind("effet" = c("sexe [homme]","cst [rarement/jamais|sporadiquement]","cst [sporadiquement|toujours]"), tabcoef)
+tabcoef <- cbind("effet" = c("sexe [homme]","cst [rarement/jamais|occasionnellement]","cst [occasionnellement|toujours]"), tabcoef)
 kableExtra::kbl(tabcoef,
 	        longtable = FALSE, 
 	        booktabs = TRUE,
@@ -1966,11 +1967,11 @@ df <- data.frame(
   modele = factor(rep(c("multinomial", "ordinal"), 
                        each = 3*nobs)),
   reponse = factor(c(rep(c("rarement/jamais",
-                    "sporadiquement",
+                    "occasionnellement",
                     "toujours"), 
                   each = nobs),
                   rep(c("rarement/jamais",
-                    "sporadiquement",
+                    "occasionnellement",
                     "toujours"), 
                   each = nobs))),
   pred = c(pred1, pred2))
@@ -1992,6 +1993,6 @@ ggplot2::ggplot(
   ggplot2::theme(legend.position = "bottom") 
 ```
 
-On a précédemment utilisé un test du rapport de vraisemblance pour valider l'hypothèse des cotes proportionnelles: il n'y avait aucune indication que la simplification n'était pas adéquate. Ce n'est pas le cas pour le modèle qui ne contient que la variable `age` ou plusieurs variables explicatives: la @fig-predmultinom montre les différences de probabilités ajustées pour les deux modèles qui incluent uniquement l'âge comme variable explicative.
+On a précédemment utilisé un test du rapport de vraisemblance pour valider l'hypothèse des cotes proportionnelles: il n'y avait aucune indication que la simplification n'était pas adéquate. Ce n'est pas le cas pour le modèle qui ne contient que la variable `age` ou plusieurs variables explicatives: la @fig-predmultinom montre les différences de probabilités ajustées pour les deux modèles qui incluent uniquement l'âge comme variable explicative. Règle générale, on n'ajustera jamais un modèle avec une seule des variables: un test du rapport de vraisemblance indique que **toutes** les variables explicatives sont utiles pour expliquer le comportement.
 
 On peut également vérifier si le modèle est adéquat pour décrire les données en comparant le modèle pour les données ordinales avec un modèle saturé (qui contient autant de paramètres que d'observations/niveaux): la valeur-$p$, infime, indique que le modèle plus complexe, soit le modèle saturé, est préférable. Cela nous indique que le modèle a un piètre pouvoir explicatif.
