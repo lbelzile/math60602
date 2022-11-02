@@ -196,14 +196,11 @@ knitr::kable(km_subtab,
 #| fig-align: "center"
 #| fig-cap: "Estimation de Kaplan--Meier de la fonction de survie pour les données d'abonnement avec intervalles de confiance ponctuels à 95%."
 ggsurv <- survminer::ggsurvplot(kapm, palette = 1)
-ggsurv$plot + 
-  ggplot2::theme(legend.position = "none") + 
-  ggplot2::labs(x = "temps", 
-       y = "survie")
-# par(bty = "l")
-# plot(kapm, 
-#      ylab = "fonction de survie", 
-#      xlab = "temps") 
+ggsurv$plot + # objet de class 'ggplot'
+  theme(legend.position = "none") + 
+  labs(x = "temps", 
+       subtitle = "Fonction de survie",
+       y = "")
 ```
 
 On peut également utiliser la fonction `quantile` pour obtenir une estimation des quartiles et un intervalle de confiance On utilise généralement le temps de survie médian (au lieu de la moyenne) dans ce type d'étude. Ici, l'estimé du temps de survie médian est de 114 semaines: on estime que la moitié des clients vont avoir une durée d'abonnement supérieure à 114 semaines. De même, la moitié des clients vont avoir une durée d'abonnement inférieure à 114 semaines. Un intervalle de confiance de niveau 95% pour ce temps médian est [$110; 119$].
@@ -213,7 +210,7 @@ Un estimé de la moyenne et de l'écart-type est donné, mais ce dernier est bia
 
 Le graphique de la fonction de survie permet de lire le temps de survie pour une probabilité donnée. Les bandes donnent un intervalle de confiance ponctuel de niveau 95% pour chaque temps donné.
 
-Une information pertinente de la sortie est nombre de données censurées: parmi les 500 observations, il y a 334 clients qui ont terminé leur abonnement et 166 qui sont censurées (le client est toujours abonné et le temps est donc une borne inférieure de la durée d'abonnement). Les données censurées contiennent moins d'information que les temps observés de défaillance puisqu'on sait uniquement la borne inférieure de la plage possible des valeurs pour le vrai temps de défaillance.
+Une information pertinente de la sortie est le nombre de données censurées: parmi les 500 observations, il y a 334 clients qui ont terminé leur abonnement et 166 qui sont censurées (le client est toujours abonné et le temps est donc une borne inférieure de la durée d'abonnement). Les données censurées contiennent moins d'information que les temps observés de défaillance puisqu'on sait uniquement la borne inférieure de la plage possible des valeurs pour le vrai temps de défaillance.
 
 
 ### Calcul de l'estimateur de Kaplan--Meier
@@ -239,7 +236,7 @@ Testons l'hypothèse que la courbe de survie des clients masculins est la même 
 #| label: test-lograng
 #| eval: true
 #| echo: true
-##valeur-p du test asymptotique
+## valeur-p du test asymptotique
 survdiff(formula = Surv(temps, censure) ~ sexe, 
          data = survie1)
 # valeur-p exact par simulation
@@ -260,7 +257,7 @@ On retrouve dans la sortie les estimés de la fonction de survie, de même que l
 
 Si on utilise les méthodes (`print`, `summary`, `plot`, `quantile`), on obtiendra les résultats pour chaque strate (ou niveaux de la variable catégorielle). Par exemple, il y a 309 hommes et 191 femmes et l'estimation du temps de survie médian est de 110 semaines pour les hommes et de 123 semaines pour les femmes. 
 
-La fonction `survdiff` avec la formule retourne le résultat du test asymptotique du log-rang pour l'hypothèse d'égalité des fonctions de survie. La valeurs-$p$ du test est inférieure à $10^{-4}$: on rejette donc $\mathscr{H}_0$ pour conclure qu'il y a donc une différence significative entre les deux courbes de survie.
+La fonction `survdiff` avec la formule retourne le résultat du test asymptotique du log-rang pour l'hypothèse d'égalité des fonctions de survie. La valeur-$p$ du test est inférieure à $10^{-4}$: on rejette donc $\mathscr{H}_0$ pour conclure qu'il y a donc une différence significative entre les deux courbes de survie.
 
 
 Les courbes de survie selon le sexe sont représentées dans la @fig-survie-comparaison-courbes. On voit que la courbe des femmes est systématiquement au-dessus de celle des hommes. Les femmes ont donc tendance à rester abonnées plus longtemps que les hommes, et cette différence est significative. 
@@ -300,7 +297,7 @@ survdiffgraph$plot +
 
 Il est également possible de tester l'égalité des courbes de survie avec plus de deux groupes. Par exemple, s'il y a $k$ groupes, l'hypothèse nulle est alors $\mathscr{H}_0: S_1(t)=S_2(t)=\cdots = S_k(t)$ pour tout $t$, versus l'alternative qu'au moins deux des fonctions ont une valeur différente pour au moins une valeur de $t$; la loi nulle asymptotique du test est alors $\chi^2_{k-1}$. 
 
-L'estimateur de Kaplan--Meier ne permet pas l'inclusion de variables explicatives à proprement parler: si on peut veut les différences au niveau de la survie selon les modalités d'une variable explicative catégorielle, on divise pour ce faire l'échantillon en sous-groupes et on utilise l'estimateur de Kaplan--Meier pour chacune des modalités en gardant en tête que cela réduit la taille de l'échantillon disponible et que l'estimation résultante est possiblement trop variable pour être utile. 
+L'estimateur de Kaplan--Meier ne permet pas l'inclusion de variables explicatives à proprement parler: si on peut veut les différences au niveau de la survie selon les modalités d'une variable explicative catégorielle, on divise pour ce faire l'échantillon en sous-groupes et on utilise l'estimateur de Kaplan--Meier pour chacune des modalités en gardant en tête que cela réduit la taille de l'échantillon disponible et que l'estimation résultante est possiblement trop incertaine pour être utile. 
 
 
 
@@ -358,17 +355,19 @@ Débutons avec un exemple simple en utilisant les données d'abonnement: on ajus
 cox1 <- coxph(Surv(temps, censure) ~ sexe, 
               data = survie1,
               ties = "exact")
+# Coefficients, tests et IC 95% de Wald
 summary(cox1)
+# Test du rapport de vraisemblance
 car::Anova(cox1, type = 3)
 ```
 
-La sortie inclut notamment des tests de significativité globale basés sur la vraisemblance comparant le modèle sans variable explicative avec celui ajusté (rapport de vraisemblance, score et Wald). Ces trois statistiques ciblent la même hypothèse, aussi on peut ne s'attarder qu'au test du rapport de vraisemblance, qui est plus fiable et généralement plus puissant. Le tableau des coefficients donne les estimations $\widehat{\beta}$, le rapport de risque $\exp(\widehat{\beta})$ pour `sexe=1` versus `sexe=0` et le rapport de risque pour `sexe=0` versus `sexe=1`, soit $\exp(-\widehat{\beta})$. Les statistiques de test et la valeur-$p$ associée sont basées sur la statistique de Wald, soit $\widehat{\beta}/\mathsf{se}(\widehat{\beta})$, tandis que les intervalles de confiance à 95% pour le rapport de risque sont basés sur la vraisemblance profilée: un rapport de risque de 1 signifie que le risque n'est pas affecté par la variable explicative, et un intervalle de confiance 95% signifie que le test du rapport de vraisemblance correspondant pour l'hypothèse nulle $\beta=0$ ou $\exp(\beta)=1$ ne mène pas au rejet de l'hypothèse que la variable n'impacte pas le risque. Comme à l'accoutumée, on préfère les intervalles de confiance (qui correspondent au rapport de vraisemblance profilée) plutôt que la statistique de Wald pour l'inférence, puisque cette dernière dépend de la paramétrisation du modèle et l'approximation est mauvaise si la loi du paramètre est fortement asymmétrique.
+La sortie inclut notamment des tests de significativité globale basés sur la vraisemblance comparant le modèle sans variable explicative avec celui ajusté (rapport de vraisemblance, score et Wald). Ces trois statistiques ciblent la même hypothèse, aussi on peut ne s'attarder qu'au test du rapport de vraisemblance, qui est plus fiable et généralement plus puissant. Le tableau des coefficients donne les estimations $\widehat{\beta}$. Le rapport de risque pour `sexe=1` versus `sexe=0` est $\exp(\widehat{\beta})$, tandis qu<on obtiendrait le rapport de risque pour `sexe=0` versus `sexe=1`, soit $\exp(-\widehat{\beta})$. Les statistiques de test et la valeur-$p$ associée sont basées sur la statistique de Wald, soit $\widehat{\beta}/\mathsf{se}(\widehat{\beta})$, tandis que les intervalles de confiance à 95% pour le rapport de risque sont des intervalles de Wald de la forme $\exp\{\widehat{\beta} \pm 1.96 \cdot \mathsf{se}(\widehat{\beta})\} pour le rapport de risque. Un rapport de risque de 1 signifie que le risque n'est pas affecté par la variable explicative. Ici, le test correspondant à l'hypothèse nulle $\beta=0$ ne mène pas au rejet de l'hypothèse qui veut que la variable n'impacte pas le risque. On pourrait obtenir les intervalle
 
 ```{r}
 #| label: tbl-cox1 
 #| eval: true
 #| echo: false
-#| tbl-cap: "Rapport de risques et intervalles de confiance basés sur la vraisemblance profilée à niveau 95%."
+#| tbl-cap: "Rapport de risques et intervalles de confiance de Wald à niveau 95%."
 #| cache: true
 data(survie1, package = "hecmulti")
 cox1 <- coxph(Surv(temps, censure) ~ sexe, 
@@ -393,7 +392,7 @@ Il y a une seule variable explicative, le sexe de l'individu. L'estimation du pa
 \end{align*}
 Par conséquent, le risque qu'une femme interrompe son abonnement est 0.628 fois celui d'un homme. Une femme est donc moins à risque de quitter qu'un homme. Nous avions déjà vu cela à la section précédente lorsque nous avions comparé les courbes de survie des hommes et des femmes. Il est important de se rappeler qu'avec ce modèle, l'effet d'une variable est le même dans le temps (peu importe la valeur de $t$). Donc, une femme est moins à risque de quitter qu'un homme à tout moment, d'après ce modèle. Inversement, le ratio du risque d'un homme par rapport à une femme est $\exp(-\hat{\beta}_{\texttt{sexe}}) = 1/0.628=1.59$. Ainsi, à tout moment, un homme a un risque d'interrompre son abonnement qui est 59% plus élevé que celui d'une femme.
 
-Comme il y a un seul paramètre ici, les tests basés sur la vraisemblance pour $\mathscr{H}_0: \boldsymbol{\beta}=\boldsymbol{0}$ reviennent à tester l'effet de la variable sexe. Le test de Wald est le même que celui du tableau des coefficients. Dans le cas particulier où il y a une seule variable explicative catégorielle comme ici, le test du score est équivalent au test du log-rang que nous avons vu à la section précédente (à une petite différence près lorsqu'il y a des ex aequo dans les temps de survie). 
+Comme il y a un seul paramètre ici, les tests basés sur la vraisemblance pour $\mathscr{H}_0: \boldsymbol{\beta}=\boldsymbol{0}$ reviennent à tester l'effet de la variable sexe. Le test de Wald est le même que celui du tableau des coefficients. Dans le cas particulier où il y a une seule variable explicative catégorielle comme ici, le test du score est équivalent au test du log-rang que nous avons vu à la section précédente à une petite différence près lorsqu'il y a des doublons (ex aequo) dans les temps de survie. 
 
 On pourrait également utiliser une variable explicative continue plutôt qu'une variable binaire; le principe est le même.
 
@@ -432,7 +431,7 @@ car::Anova(cox3,
 #| eval: true
 #| echo: false
 #| cache: true
-#| tbl-cap: "Rapport de risque et intervalles de confiance à niveau 95% basés sur la vraisemblance profilés pour le modèle de Cox de base avec toutes les variables explicatives."
+#| tbl-cap: "Rapport de risque et intervalles de confiance à niveau 95% de Wald pour le modèle de Cox de base avec toutes les variables explicatives."
 cox3 <- coxph(Surv(temps, censure) ~ 
                 age + sexe + region + service, 
               data = survie1, 
@@ -479,7 +478,7 @@ Toutes autres choses étant égales, chaque augmentation de l'âge d'un an fait 
 
 Pour la variable service, l'interprétation se fait par rapport à la catégorie de référence, qui est la catégorie $\texttt{0}$ (abonné à aucun autre service). Ainsi, si le client est abonné à un autre service, son risque de quitter est `r round(as.numeric(exp(coef(cox3))),3)[7]` fois celui d'un client qui n'est pas abonné à un autre service (toutes autres choses étant égales). Si le client est abonné à deux autres services, son risque de quitter est encore plus petit comparativement à un client qui n'est pas abonné à un autre service (rapport de risque de `r round(as.numeric(exp(coef(cox3))),3)[8]`) Finalement, si le client est abonné à trois autres services, son risque de quiter est encore plus petit (rapport de risque de `r round(as.numeric(exp(coef(cox3))),3)[9]`). Les paramètres de ces trois variables sont tous significatifs. Ainsi, les clients qui sont abonnés à un, deux ou trois services ont un risque de quitter qui est significativement plus faible que celui d'un client qui n'est pas abonné à un autre service. Le tableau d'analyse de déviance (effets de type 3) donne les statistiques du rapport de vraisemblance pour tester globalement la significativité d'une variable explicative modélisée avec plusieurs indicatrices. Pour la variable $\texttt{service}$, le test présenté teste l'hypothèse nulle $\mathscr{H}_0: \beta_{\texttt{service}_1}=\beta_{\texttt{service}_2}=\beta_{\texttt{service}_3}=0$ contre l'alternative qu'un moins un de ces trois paramètres est non-nul. Le test est largement significatif (statistique du rapport de vraisemblance valant `r round(as.numeric(tab2[4,2]), 2)` avec une valeur-$p$ inférieure à $10^{-4}$). L'effet de la variable $\texttt{service}$ est donc globalement significatif. Afin de comparer les autres modalités entre elles, par exemple afin de voir si le risque de quitter est différent entre un client qui a deux services et un autre qui a trois services, il suffit de changer la catégorie de référence à la commande `class` et de réajuster le modèle.
 
-Finalement, la variable $\texttt{region}$ n'est pas globalement significative (statistique du rapport de vraisemblance de `r round(as.numeric(tab2[3,2]),2)` avec une valeur-$p$ de `r tab2[3,4]`)) basée sur une loi $\chi^2_4$.
+Finalement, la variable $\texttt{region}$ n'est pas globalement significative (statistique du rapport de vraisemblance de `r round(as.numeric(tab2[3,2]),2)` avec une valeur-$p$ de `r tab2[3,4]` basée sur la loi asymptotique $\chi^2_4$).
 
 ### Estimation de la fonction de survie pour des valeurs particulières des variables explicatives
 
@@ -555,7 +554,7 @@ graphics.off()
 #| eval: true
 #| echo: false
 #| cache: true
-#| tbl-cap: "Postulat de risques proportionnels: test du score de Grampsch et Therneau (1994) pour les coefficients constants dans le temps et valeur-p asymptotique basée sur la loi null khi-deux." 
+#| tbl-cap: "Postulat de risques proportionnels: test du score de Grampsch et Therneau (1994) pour les coefficients constants dans le temps et valeur-p asymptotique basée sur la loi nulle khi-deux." 
 tab3 <- as.data.frame(cox.zph(cox3)$table)
 tab3$p <- format.pval(tab3$p, digits = 2, eps = 1e-4)
 tab3 <- cbind(effet = tolower(rownames(tab3)), tab3)
@@ -569,7 +568,7 @@ knitr::kable(tab3,
 ```
 
 
-Dans la @fig-coxph-hypothese, on voit que le coefficient pour service augmente au fil du temps pour tous les groupes. On pourrait capturer cette interaction ou stratifier pour calculer le risque selon le nombre de services, au risque d'avoir trop peu d'observations pour estimer de manière fiable le risque de base. C'est explicable par le fait que les personnes avec plus de services tendent à avoir plus une survie plus longue.
+Dans la @fig-coxph-hypothese, on voit que le coefficient pour service augmente au fil du temps pour tous les groupes. On pourrait capturer cette interaction ou stratifier pour calculer le risque selon le nombre de services, au risque d'avoir trop peu d'observations pour estimer de manière fiable le risque de base. C'est explicable par le fait que les personnes avec plus de services tendent à avoir une survie plus longue.
 
 ```{r}
 #| label: coxph-hypothese
