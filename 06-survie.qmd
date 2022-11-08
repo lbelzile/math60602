@@ -531,7 +531,152 @@ Les quatre fonctions de la @fig-courbes-survie correspondent aux profils pour le
 
 ### Postulat de risques proportionnels
 
-Le modèle de Cox fait l'hypothèse que la fonction de risque de base est identique peut importe la valeur des variables catégorielles. Si ce n'est pas le cas, alors les résultats du modèle ne sont pas nécessairement fiables.
+Le modèle de Cox fait l'hypothèse que la fonction de risque de base est identique peut importe la valeur des variables catégorielles. La @fig-risquepropfig illustre à quoi ce postulat correspond dans un cas simple où il y a uniquement une variable binaire explicative.
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-risquepropfig
+#| out-width: '90%'
+#| fig-width: 9
+#| fig-height: 6
+#| fig-cap: "Courbes de risques proportionnelles (panneau supérieur) et non proportionnelles (panneau inférieur) avec rapport de risque et fonctions de survie correspondantes."
+hazard <- function(x){
+  1/53*(3*pexp(x, rate = 1/300) + 25*dnorm(x, 10, 5) +
+    3*pgamma(x, shape = 5, scale = 5) +
+    2*pgamma(x, shape = 6, scale = 5) + 
+    20*pexp(x, rate = 1/400))
+}
+
+hazard2 <- function(x){
+  (40*pexp(x, rate = 1/300) + 25*dnorm(x, 10, 5) -
+     20*pgamma(x, shape = 5, scale = 5) +
+     40*pgamma(x, shape = 1, scale = 5) - 
+     20*pexp(x, rate = 1/400))/20
+}
+
+temps <- seq(0, 60, length.out = 1001)
+survrisque <- data.frame(
+  temps = temps,
+  risque1 = hazard(temps),
+  risque2 = hazard2(temps)
+)
+survie1 <- function(temps,cst = 1){
+  sapply(temps, function(ti){
+    exp(-cst*integrate(hazard, lower = 0, upper = ti)$value)
+  })
+}
+
+survie2 <- function(temps,cst = 1){
+  sapply(temps, function(ti){
+    exp(-cst*integrate(hazard2, lower = 0, upper = ti)$value)
+  })
+}
+
+fsurvie1 <- data.frame(
+  temps = temps,
+  survie1a = survie1(temps, cst = 1),
+  survie1b = survie1(temps, cst = 2)
+)
+temps2 <- seq(0, 12, length.out = 1001)
+
+fsurvie2 <- data.frame(
+  temps = temps2,
+  survie2a = survie1(temps2, cst = 12),
+  survie2b = survie2(temps2)
+)
+
+library(ggplot2)
+
+g1 <- ggplot(data = survrisque,
+       aes(x = temps)) +
+  geom_line(aes(y = risque1),
+                color = 1) +
+  geom_line(aes(y = 2*risque1),
+                color = 2) +
+  scale_y_continuous(limits = c(0, 0.5),
+                     expand = c(0, 0)) +
+  labs(x = "temps",
+       y = "",
+       subtitle = "fonctions de risque proportionnelles") +
+  theme_classic()
+
+g2 <- ggplot(data = survrisque,
+             aes(x = temps)) +
+  geom_hline(yintercept = .5) +
+  scale_y_continuous(limits = c(0, 2),
+                     expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 60),
+                     expand = c(0, 0)) +
+  labs(x = "temps",
+       y = "",
+       subtitle = "rapport de risque") +
+  theme_classic()
+
+
+g3 <- ggplot(data = fsurvie1,
+             aes(x = temps)) +
+  geom_line(aes(y = survie1a)) +
+  geom_line(aes(y = survie1b), col = 2)  +
+  scale_y_continuous(limits = c(0, 1),
+                     expand = c(0,0)) +
+  scale_x_continuous(expand = c(0,0),
+                     limits = c(0, 61)) + 
+  labs(x = "temps",
+       y = "",
+       subtitle = "survie") +
+  theme_classic()
+
+
+g4 <- ggplot(data = survrisque,
+             aes(x = temps)) +
+  geom_line(aes(y = risque2),
+            color = 1) +
+  geom_line(aes(y = 12*risque1),
+            color = 2) +
+  scale_y_continuous(limits = c(0, 2),
+                     expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 60),
+                     expand = c(0, 0)) +
+  labs(x = "temps",
+       y = "",
+       subtitle = "fonctions de risque non-proportionnelles") +
+  theme_classic()
+
+g5 <- ggplot(data = survrisque,
+             aes(x = temps)) +
+  geom_line(aes(y = risque2/risque1)) +
+  scale_y_continuous(limits = c(0, 60),
+                     expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 60),
+                     expand = c(0, 0)) +
+  labs(x = "temps",
+       y = "",
+       subtitle = "rapport de risque") +
+  theme_classic()
+
+g6 <- ggplot(data = fsurvie2,
+             aes(x = temps)) +
+  geom_line(aes(y = survie2a), col = 2) +
+  geom_line(aes(y = survie2b)) +
+  scale_y_continuous(limits = c(0, 1),
+                     expand = c(0,0)) +
+  scale_x_continuous(expand = c(0,0),
+                     limits = c(0, 12)) + 
+  labs(x = "temps",
+       y = "",
+       subtitle = "survie") +
+  theme_classic()
+
+library(patchwork)
+
+(g1 + g2 + g3) / (g4 + g5 + g6)
+
+```
+
+
+Si ce n'est pas le cas, alors les résultats du modèle ne sont pas nécessairement fiables.
 
 Comme pour un modèle de régression, il est possible de créer des résidus du modèles et de faire des graphiques diagnostics pour potentiellement infirmer le postulat de risques proportionnels [@Grambsch.Therneau:1994]. Si l'hypothèse tient la route, alors il ne devrait pas y avoir de tendance temporelle dans les résidus.
 
@@ -641,7 +786,7 @@ cox4 <- coxph(Surv(time = debut,
               data = survie3)
 ```
 
-L'interprétation se fait comme précédemment; on a omis l'option `ties = "exact"` parce que cette option est trop gourmande en calcul. Puisque c'est la valeur d'une variable qui varie dans le temps et non pas son effet, on a l'interprétation usuelle. Par exemple, le rapport de risque de quitter pour un client qui a un autre service est `r round(exp(coef(cox4))['service1'], 3)` fois celui d'un client qui n'a aucun autre service (référence). Le fait d'avoir deux ou trois services diminue encore plus le risque de quitter (ratios de risque de `r round(exp(coef(cox4))['service2'], 3)` et `r round(exp(coef(cox4))['service3'], 3)`, respectivement). 
+L'interprétation se fait comme précédemment; on a omis l'option `ties = "exact"` parce que cette option est trop gourmande en calcul. Puisque c'est la valeur d'une variable qui varie dans le temps et non pas son effet, on a l'interprétation usuelle. Par exemple, le risque de quitter pour un client qui a un autre service est `r round(exp(coef(cox4))['service1'], 3)` fois celui d'un client qui n'a aucun autre service (référence). Le fait d'avoir deux ou trois services diminue encore plus le risque de quitter (rapports de risque de `r round(exp(coef(cox4))['service2'], 3)` et `r round(exp(coef(cox4))['service3'], 3)`, respectivement). 
 
 ### Modèle à risques compétitifs
 
@@ -695,7 +840,7 @@ summary(cox5)
 #| label: tbl-cox-risquecompetA
 #| echo: false
 #| eval: true
-#| tbl-cap: "Rapport de risque et intervalles de confiance à niveau 95% basés sur la vraisemblance profilés pour le modèle à risques compétitifs (probabilité de quitter pour compétiteur A)."
+#| tbl-cap: "Rapport de risque et intervalles de confiance à niveau 95% pour le modèle à risques compétitifs (probabilité de quitter pour compétiteur A)."
 #| cache: true
 data(survie4, package = "hecmulti")
 cox5 <- survival::coxph(Surv(time = temps, 
@@ -760,7 +905,7 @@ summary(cox6)
 #| label: tbl-cox-np
 #| echo: false
 #| eval: true
-#| tbl-cap: "Rapport de risque et intervalles de confiance à niveau 95% basés sur la vraisemblance profilés pour le modèle à risques non proportionnels (interaction linéaire entre temps et âge)."
+#| tbl-cap: "Rapport de risque et intervalles de confiance à niveau 95% pour le modèle à risques non proportionnels (interaction linéaire entre temps et âge)."
 #| cache: true
 cox6 <- survival::coxph(
     Surv(temps, censure) ~ 
@@ -787,14 +932,14 @@ L'interaction employée ici n'est pas la seule fonction du temps qu'on pourrait 
 
 ### Stratification
 
-Une autre manière de modéliser la non-proportionnalité est par la stratification. Il est important de comprendre qu'on ne pourra pas estimer l'effet de la variable de stratification. On devrait donc seulement utiliser une variable qui ne nous intéresse pas en soi, mais qui peut avoir un effet sur le temps de survie. 
+Une manière de modéliser la non-proportionnalité est par la stratification. Il est important de comprendre qu'on ne pourra pas estimer l'effet de la variable de stratification comme d'ordinaire en étudiant le coefficient $\beta$ associé. 
 
-Encore une fois, pour simplifier, supposons que nous avons deux variables $X$ et $Z$; cette dernière est binaire et prend les valeurs $0$ et $1$. On s'intéresse à l'effet de la variable $X$ mais pas à celui de la variable $Z$; néanmoins, on croit que $Z$ impacte le temps de survie et que, de ce fait, le postulat de proportionnalité de la fonction de risque n'est pas validé. Le modèle de Cox avec stratification (pour la variable $Z$) est \begin{align*}
-h(t; x, z) = h_z(t) \exp(\beta x),
+Supposons que nous avons une variable explicative catégorielle $Z=1, \ldots, K$ pour lequel le postulat de risque proportionnels n'est pas valide. On s'intéresse à l'effet des variables $\mathbf{X}$. Typiquement, on ne s'intéresse pas directement à l'effet de la variable $Z$. Le modèle de Cox avec stratification (pour la variable $Z$) est \begin{align*}
+h(t; \mathbf{x}, z=k) = h_k(t) \exp(\boldsymbol{\beta} \mathbf{x}),
 \end{align*}
-où $h_0(t)$ est la fonction de risque de base quand $Z=0$ et $h_1(t)$ est la fonction de risque de base lorsque $Z=1$. L'effet de la variable $X$ est supposé être le même peut importe la valeur de $Z$, mais la fonction de risque de base peut différer. Le rapport de risque pour $Z=1$ versus $Z=0$ est $h_1(t)/h_0(t)$; cette quantité dépend du temps $t$. L'effet de la variable  est donc variable dans le temps (et non pas constant). Ce modèle permet donc de modéliser la non-proportionnalité pour la variable $Z$. Si on stratifie par rapport à une variable, il ne faut pas l'inclure dans le modèle en plus car elle est déjà modélisée via la stratification. Notez que les paramètres $\boldsymbol{\beta}$ seront estimés à l'aide des données de toutes les strates.
+où $h_k(t)$ est la fonction de risque de base quand $Z=k$ ($k=1, \ldots, K$). L'effet des autres variables explicatives $\mathbf{X}$ est supposé être le même peut importe la valeur de $Z$, mais la fonction de risque de base peut différer. Le rapport de risque pour $Z=k$ versus $Z=j$ est $h_k(t)/h_j(t)$; cette quantité dépend du temps $t$, mais pas des autres caractéristiques mesurées par $\mathbf{X}$. L'effet de la variable  est donc variable dans le temps (et non pas constant). Ce modèle permet donc de modéliser la non-proportionnalité pour la variable $Z$. Si on stratifie par rapport à une variable, il ne faut pas l'inclure dans le modèle en plus car elle est déjà modélisée via la stratification. Notez que les paramètres $\boldsymbol{\beta}$ seront estimés à l'aide des données de toutes les strates, mais les fonctions de risque $h_k(t)$ seront obtenues à l'aide des sous-échantillons correspondant aux valeurs de $Z$.
 
-L'avantage de la stratification est que cette méthode permet de modéliser n'importe quel changement dans l'effet d'une variable dans le temps sans devoir spécifier un type de changement particulier, comme lorsqu'on doit choisir la forme de l'interaction. Par contre, on perd la possibilité de tester l'effet de la variable de stratification on réduit la taille de l'échantillon pour l'estimation de la fonction de risque de base. On devrait donc utiliser la stratification seulement avec des variables pour lesquelles nous n'avons pas besoin d'estimer l'effet (variables secondaires ou de contrôles). On peut néanmoins résumer l'information pour cette variable en calculant une statistique descriptive, par exemple les différences de survie à des temps donnés.
+L'avantage de la stratification est que cette méthode permet de modéliser n'importe quel changement dans l'effet d'une variable dans le temps sans devoir spécifier un type de changement particulier, comme lorsqu'on doit choisir la forme de l'interaction. Par contre, on perd la possibilité de tester l'effet de la variable de stratification on réduit la taille de l'échantillon pour l'estimation de la fonction de risque de base. On devrait principalement utiliser la stratification seulement avec des variables pour lesquelles nous n'avons pas besoin d'estimer l'effet (variables secondaires ou de contrôles).
 
 ```{r}
 #| label: cox-stratification
@@ -802,23 +947,22 @@ L'avantage de la stratification est que cette méthode permet de modéliser n'im
 #| echo: true
 # Stratification par service
 cox7 <- coxph(Surv(temps, 1-censure) ~ 
-                age + sexe + strata(region) + service, 
-              data = survie1,
-              ties = "exact")
+                age + sexe + strata(service), 
+              data = survie1)
 # Décompte par région
-with(survie1, table(region))
+with(survie1, table(service)
 # Coefficients
 summary(cox7)
 ```
 
 ```{r}
 #| label: tbl-cox-stratif
-#| tbl-cap: "Rapport de risques et intervalles de confiances à niveau 95% basés sur la vraisemblance profilée pour un modèle de Cox stratifié par région."
+#| tbl-cap: "Rapport de risques et intervalles de confiances à niveau 95% pour le modèle de Cox stratifié par service."
 #| eval: true
 #| echo: false
 #| cache: true
 cox7 <- coxph(Surv(temps, 1-censure) ~ 
-                age + sexe + service + strata(region), 
+                age + sexe + strata(service), 
               data = survie1,
               ties = "exact")
 tab7 <- broom::tidy(cox7, 
@@ -834,4 +978,4 @@ knitr::kable(tab7,
   kableExtra::kable_styling(full_width = TRUE)
 ```
 
-On voit à la lecture de la sortie dans le @tbl-cox-stratif qu'il n'y a pas de paramètres pour la variable `region`. Les paramètres des autres variables s'interprètent comme d'habitude.
+On voit à la lecture de la sortie dans le @tbl-cox-stratif qu'il n'y a plus de paramètres pour la variable `service`. Les paramètres des autres variables s'interprètent comme d'habitude. On peut néanmoins résumer l'information pour `service` en calculant une statistique descriptive, par exemple les différences de survie à des temps donnés.
