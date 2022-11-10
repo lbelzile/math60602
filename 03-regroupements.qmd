@@ -131,7 +131,7 @@ Si on essaie de créer manuellement des groupes, il apparaît logique de sépare
 Les intrants de l'analyse de regroupement (soit le choix des variables) est laissé à la discrétion de l'analyste. Dans notre exemple, on pourrait aisément créer de nouvelles variables pour faire ressortir des informations jugées pertinentes. Est-ce qu'on s'intéresse au montant moyen des dons, soit `vdons/ndons`? Est-ce que la valeur des radiations nous intéresse, ou bien devrait-on plutôt considérer le pourcentage de la valeur promise réalisée? 
 
 
-Le champ des applications de l'analyse de regroupements est parfois surprenant. Par exemple, [cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais](https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/) ou des [quartiers de Los Angeles](https://fivethirtyeight.com/features/the-6-political-neighborhoods-of-los-angeles/). Un autre exemple incongru est la compression d'images: la Figure @fig-decelles montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l'algorithme des $K$-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l'image.
+Le champ des applications de l'analyse de regroupements est parfois surprenant. Par exemple, [cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais](https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/) ou des [quartiers de Los Angeles](https://fivethirtyeight.com/features/the-6-political-neighborhoods-of-los-angeles/). Un autre exemple incongru est la compression d'images: la @fig-decelles montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l'algorithme des $K$-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l'image.
 
 
 ```{r fig-decelles}
@@ -145,8 +145,8 @@ knitr::include_graphics("figures/kmoyennes_decelles.png")
 
 ## Mesures de dissemblance et de similarité
 
-
-Les algorithmes de segmentation comparent les observations entre elles selon une mesure de similitude: ainsi, la matrice de données est réduite à une mesure de distance entre observations (soit les lignes de la base de données). Comment mesurer si deux observations appartiennent à un même regroupement et sont similaires? Idéalement, on aimerait avoir une situation comme dans la @fig-regroupements-bidons où les regroupements sont clairement visibles. On aimerait que la similarité entre observations d'un même groupe, ou intra-groupe, soit élevée et que la similarité entre groupe soit faible. Les regroupements devraient être éloignés les uns des autres, tandis que les observations au sein de ces regroupements devraient être proches. Dans la plupart des cas, il y aura des observations isolées qui n'appartiennent pas nécessairement logiquement à l'un ou l'autre des groupes: on appelle parfois ces observations aberrances.
+ Comment mesurer si deux observations appartiennent à un même regroupement et sont similaires?
+ Idéalement, on aimerait avoir une situation comme dans la @fig-regroupements-bidons où les regroupements sont clairement visibles. On aimerait que la similarité entre observations d'un même groupe, ou intra-groupe, soit élevée et que la similarité entre groupe soit faible. Les regroupements devraient être éloignés les uns des autres, tandis que les observations au sein de ces regroupements devraient être proches. Dans la plupart des cas, il y aura des observations isolées qui n'appartiennent pas nécessairement logiquement à l'un ou l'autre des groupes: on appelle parfois ces observations aberrances.
 
 ```{r}
 #| label: fig-regroupements-bidons
@@ -172,8 +172,7 @@ ggplot(data = dat, aes(x = x1, y = x2)) +
   theme_minimal()
 ```
 
-
-Une **mesure de dissemblance** sert à quantifier la proximité de deux objets à partir de leurs coordoonnées. Elle mesure la distance entre deux vecteurs d'observations $\mathbf{X}_i$ et $\mathbf{X}_j$ en se basant sur les $p$ variables explicatives $X_1, \ldots, X_p$. Plus la dissemblance est petite, plus les sujets $\mathbf{X}_i$ et $\mathbf{X}_j$ sont similaires. Même s'il y a des exceptions, la plupart des mesures de dissemblances $d$ ont les propriétés mathématiques suivantes:
+Les algorithmes de segmentation comparent les observations entre elles: souvent, la matrice de données est réduite à une mesure de distance entre observations (soit les lignes de la base de données). Une **mesure de dissemblance** sert à quantifier la proximité de deux objets à partir de leurs coordoonnées. Elle mesure la distance entre deux vecteurs lignes d'observations $\mathbf{X}_i$ et $\mathbf{X}_j$ en se basant sur les $p$ variables explicatives. Plus la dissemblance est petite, plus les sujets $\mathbf{X}_i$ et $\mathbf{X}_j$ sont similaires. La plupart des mesures de dissemblances $d$ ont les propriétés mathématiques suivantes:
 
 1) $d(\mathbf{X}_i, \mathbf{X}_j) \geq 0$ (positivité), avec égalité (distance nulle) si et seulement si $\mathbf{X}_i=\mathbf{X}_j$ (mêmes caractéristiques pour toutes les variables explicatives);
 2) $d(\mathbf{X}_i, \mathbf{X}_j)=d(\mathbf{X}_j, \mathbf{X}_i)$ (symmétrie);
