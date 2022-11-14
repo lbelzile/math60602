@@ -173,6 +173,9 @@ ggplot(data = dat, aes(x = x1, y = x2)) +
   theme_minimal()
 ```
 
+
+### Mesures de dissemblance
+
 Les algorithmes de segmentation comparent les observations entre elles: souvent, la matrice de données est réduite à une mesure de distance entre observations (soit les lignes de la base de données). Une **mesure de dissemblance** sert à quantifier la proximité de deux objets à partir de leurs coordoonnées. Elle mesure la distance entre deux vecteurs lignes d'observations $\mathbf{X}_i$ et $\mathbf{X}_j$ en se basant sur les $p$ variables explicatives. Plus la dissemblance est petite, plus les sujets $\mathbf{X}_i$ et $\mathbf{X}_j$ sont similaires. La plupart des mesures de dissemblances $d$ ont les propriétés mathématiques suivantes:
 
 1) $d(\mathbf{X}_i, \mathbf{X}_j) \geq 0$ (positivité), avec égalité (distance nulle) si et seulement si $\mathbf{X}_i=\mathbf{X}_j$ (mêmes caractéristiques pour toutes les variables explicatives);
@@ -182,7 +185,7 @@ Toute mesure de distance^[Une fonction de distance respecte en plus l'inégalit�
 \begin{align*}
 d(\mathbf{X}_i, \mathbf{X}_j; l_2) = \left\{(X_{i1}-X_{j1})^2 + \cdots + (X_{ip}-X_{jp})^2\right\}^{1/2}.
 \end{align*}
-C'est tout simplement la longueur Euclidienne du segment qui relie deux points dans l'espace $p$ dimensionnel. 
+C'est tout simplement la longueurdu segment qui relie deux points dans l'espace $p$ dimensionnel. 
 
 Plus généralement, la distance de Minkowski ou distance $l_q$ entre les vecteurs ligne $\mathbf{X}_i$ et $\mathbf{X}_j$ est
 \begin{align*}
@@ -205,20 +208,25 @@ On distingue trois type de variables dans la distance de Gowers:
 - $s_{ijk}=1$ les variables qualitatives ont la même modalité et $s_{ijk}=0$ sinon
 - $s_{ijk} = 1-|X_{ik}-X_{jk}|/R_k$ pour une variable continue, où $R_k$ est l'étendue de la variable $R_k=\max_{i} X_{ik} - \min_i X_{ik}$ dans l'échantillon. 
 
-La dissemblance résultante pour les types mixtes vaut 1 quand toutes les variables sont similaires/égales et zéro si elles sont complètement différentes/maximalement distantes.
+La dissemblance résultante pour les types mixtes vaut zéro quand toutes les variables sont similaires/égales et un si elles sont complètement différentes/maximalement distantes.
 
 On peut traiter les variables ordinales soit comme des variables continues, soit comme des variables nominales avec la mesure d'appariement simple; ce faisant, on n'utilise pas l'ordre entre les modalités.
 
-Certains algorithmes utilisent directement une matrice de similarité $\mathbf{S}$ qui encode plutôt l'information à propos des points avoisinants. Parmi les exemples communs sont les graphes de voisinage $\epsilon$: toute paire d'observation à distance au plus $\epsilon$ se voit assigner un, zéro sinon. La matrice de similarité peut dans ce cas être assimilée à un graphe où chaque observation est un noeud et deux points sont connectés si leur distance est au plus $\epsilon$. 
+### Mesures de similarité
+
+Certains algorithmes utilisent directement une matrice de similarité $\mathbf{S}$ qui encode plutôt l'information à propos des points avoisinants. 
+Cette approche sera utilisée lors de la présentation des regroupement spectraux.
+
+Parmi les exemples communs sont les graphes de voisinage $\epsilon$: toute paire d'observation à distance au plus $\epsilon$ se voit assigner un, zéro sinon. La matrice de similarité peut dans ce cas être assimilée à un graphe où chaque observation est un noeud et deux points sont connectés si leur distance est au plus $\epsilon$. 
 
 De la même manière, on pourrait considérer uniquement les $k$ plus proches voisins et mettre $S_{ij}=1$ si l'observation $\mathbf{X}_j$ est un des $k$ plus proches voisins d'observation $\mathbf{X}_i$. Puisque la relation n'est pas nécessairement réciproque (le point $i$ n'est pas nécessairement un des $k$ plus proches voisins de $\mathbf{X}_j$), on pourrait choisir de mettre $S_{ij}=S_{ji}=1$ si les deux sont dans les plus proches voisins, ou un seul des deux, afin d'obtenir une matrice symmétrique.
 
 
+### Dissemblance et valeurs manquantes
 
-Dans plusieurs cas, on se trouvera en présence de valeurs manquantes dans le jeu de données. Cela peut arriver pour plusieurs raisons valables (aucun candidature ne représente un partir dans une circonscription donnée pour un parti lors d'une élection, l'information est manquante, une femme ne peut avoir de cancer de la prostate, etc.) Il faut bien penser à vérifier si l'algorithme de votre choix peut gérer ces valeurs manquantes. Sinon, ces dernières devront être imputées préalablement à l'analyse de regroupements ou vous devrez faire sans les variables explicatives correspondantes.
+Dans plusieurs cas, on se trouvera en présence de valeurs manquantes dans le jeu de données. Cela peut arriver pour plusieurs raisons valables (aucune candidature ne représente un partir dans une circonscription donnée pour un parti lors d'une élection, l'information est manquante, une femme ne peut avoir de cancer de la prostate, etc.) Il faut bien penser à vérifier si l'algorithme de votre choix peut gérer ces valeurs manquantes. Sinon, ces dernières devront être imputées préalablement à l'analyse de regroupements ou vous devrez faire sans les variables explicatives correspondantes.
 
 
-Il existe d'autres façons de définir la similarité entre observations. Par exemple, si on considère la dissemblance Euclidienne, on pourrait créer une matrice de similarité $\mathbf{S}$ $n \times n$ où les entrées indiquent si les observations sont à distance $\varepsilon$ les unes des autres (si oui, en assignant $1$ et autrement $0$) ou encore avec un $1$ pour les $m$ plus proches voisins et $0$ autrement. Cette approche sera utilisée lors de la présentation des regroupement spectraux.
 
 Les définitions des distances révèlent que chaque variable explicative a le même poids. En revanche, plus une variable a une grande variance, plus elle aura de l'influence sur le calcul de la distance, ce qui peut être bon ou mauvais selon la structure des groupes. Règle générale, il est préférable d'éviter qu'une variable domine dans la segmentation. La standardisation des variables et les transformations préalables effectuées sur les variables (log, arcsin, etc.) impacteront le résultat. 
 
@@ -265,7 +273,7 @@ Nous survolerons uniquement les caractéristiques des principales méthodes.
 
 L'algorithme des $K$-moyennes est un des plus couramment employé en raison de son faible coût. L'idée est la suivante: on assigne chaque observation à un de $K$ regroupements et on calcule la distance entre cette dernière et un prototype $\boldsymbol{\mu}_k$ pour le regroupement $k$. La fonction objective que l'on cherche à minimiser est
 $$
-\min_{\boldsymbol{\mu}_1, \ldots, \boldsymbol{\mu}_K}\min_{\stackrel{r_{ik} \in \{0, 1\}}{r_{i1} + \cdots + r_{iK}=1}}\underset{\text{distance entre obs. $i$ et son prototype}}{\sum_{i=1}^n \sum_{k=1}^K r_{ik}d(\mathbf{X}_i,  \boldsymbol{\mu}_{k})}
+\min_{\boldsymbol{\mu}_1, \ldots, \boldsymbol{\mu}_K}\min_{\stackrel{r_{ik} \in \{0, 1\}}{r_{i1} + \cdots + r_{iK}=1}}\underset{\text{distance entre obs. $i$ et le prototype le plus près}}{\sum_{i=1}^n \sum_{k=1}^K r_{ik}d(\mathbf{X}_i,  \boldsymbol{\mu}_{k})}
 $$ {#eq-fobjKmoy}
 où $r_{ik}=1$ si l'observation $\mathbf{X}_i$ (soit la $i$e ligne de la base de données) est assignée au groupe $k$. Si on utilise la distance Euclidienne carrée, alors la fonction objective correspond à la somme du carré des erreurs, on cherche à minimiser l'erreur quadratique moyenne et la solution $\widehat{\boldsymbol{\mu}}_k$ est le barycentre des $n_k$ observations du groupe $k$, soit
 \begin{align*}
@@ -416,7 +424,7 @@ g2 <- ggplot(data = DF,
        mapping = aes(x = X1, 
                      y = X2, 
                      color = cluster2)) +
-  geom_point() + theme_classic() +
+  geom_point() + theme_minimal() +
   theme(legend.position = 'none') +
   labs(x = "",
        y = "")
@@ -729,7 +737,7 @@ L'idée de l'algorithme des regroupements spectraux est qu'on peut découvrir à
 1. Construire une matrice de similarité $\mathbf{S}$
 2. Calculer la somme des lignes de $\mathbf{S}$ et créer une matrice diagonale $\mathbf{R}$ à partir du vecteur résultant. Obtenir le Laplacien standardisé $\mathbf{L} = \mathbf{I}_n -\mathbf{R}^{-1/2}\mathbf{S}\mathbf{R}^{-1/2}$.
 3. Calculer la décomposition en valeurs propres et vecteurs propres de $\mathbf{L}$.^[Avec un algorithme adéquat qui exploite la structure si la matrice de similarité est creuse.]
-5. Déterminer le nombre de valeurs propres sous un seul $\epsilon >0$.
+5. Déterminer le nombre de valeurs propres sous un seuil $\epsilon > 0$.
 6. Conserver les vecteurs propres du Laplacien associées aux petites valeurs propres inférieures au seuil $\varepsilon$.
 
 Une fois cette étape de réduction de la dimension complétée, on peut simplement utiliser la nouvelle base de données résultante et calculer les $K$-moyennes. 
@@ -747,6 +755,7 @@ image(W,
       yaxt = 'n', 
       xaxt ='n', 
       ylim = c(1,0),
+      xlim = c(0,1),
       col = gray.colors(100, 
                         start = 1, 
                         end = 0)
