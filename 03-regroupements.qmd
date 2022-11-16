@@ -81,7 +81,6 @@ Les programmes de fidélisation font partie de la stratégie de commercialisatio
 Un autre exemple d'application de l'analyse de regroupements est la segmentation de la clientèle de transport en commun. Dans la région métropolitaine de Montréal, l'[Agence régionale de transport métropolitain](https://www.artm.quebec/) recueille des informations sur les passages et  transactions par le biais des cartes à puce Opus (achat de passes mensuelles ou de billets unitaires, lieu de l'achat, etc.) ainsi que les passages (heure, type de véhicule, emplacement approximatif pour les services d'autobus ou station de métro). En créant des regroupements, une agence de transport peut ainsi ajuster son offre et proposer des abonnements ou des produits qui reflètent les besoins de sa clientèle. Un exemple extrême de traquage de compagnie de transport est [*Nederlandse Spoorwegen* (NS)](https://www.ns.nl/en/): toute personne qui veut voyager en train sur les chemins de fers néerlandais doit acheter une carte à puce et la charger, en plus de composter son billet au départ et à l'arrivée de son voyage. Cette approche, qui peut sembler intrusive, permet néanmoins de mesurer précisément la demande sur les lignes en fonction du moment de la journée et de l'associer à chaque client.
 
 
-Dans ce chapitre, nous utiliserons des données simulées inspirées de campagnes de financement d'organismes de charité. Ces dernières font souvent du démarchage publicitaire auprès de donateurs ou envoient par publipostage des demandes de dons à toutes les adresses postales. Ces efforts ont un coût important: nous essaierons de créer des catégories de donateurs afin de mieux cibler les donateurs et donatrices et le moment adéquat pour ce démarchage.
 
 Souvent, les bases de données marketing sont souvent de nature longitudinale: chaque ligne correspond à une transaction, mais plusieurs d'entre elles peuvent être le fait d'une même personne/compte. Une fois l'analyse exploratoire des données complétée, on procédera à l'aggrégation des observations par compte client, puisque la segmentation doit être effectuée à cette échelle. C'est également à ce stade qu'on pourra créer de nouvelles variables explicatives à partir de l'information présente dans la base de données: par exemple, on pourrait considérer la fréquence moyenne d'achat, le montant moyen par transaction, le mode du moment de la journée, la variabilité de cette fréquentation, le pourcentage des ventes provenant d'articles en solde, la variabilité du montant du panier, etc. Cette liste, non exhaustive, illustre l'étape cruciale de l'extraction de l'information utilisée dans l'analyse statistique: il faut être conscients que la qualité de la segmentation dépend du choix de variables employées.
 
@@ -102,6 +101,13 @@ Malheureusement, il n'est pas évident de prime abord de déterminer quelles var
 
 Si certaines variables définissent naturellement des groupes, par exemple l'âge des personnes, et fait qu'ils et elles ont des caractéristiques intrinsèquement différentes, il peut être utile de faire une segmentation indépendamment pour chacun de ces sous-groupes. 
 
+
+
+Dans ce chapitre, nous utiliserons des données simulées inspirées de campagnes de financement d'organismes de charité. Ces dernières font souvent du démarchage publicitaire auprès de donateurs ou envoient par publipostage des demandes de dons à toutes les adresses postales. Ces efforts ont un coût important: nous essaierons de créer des catégories de donateurs afin de mieux cibler les donateurs et donatrices et le moment adéquat pour ce démarchage. Plusieurs grandes compagnies sont associées à ces organismes et les parrainent: notre base de données contiendra le profil de toutes ces personnes, qu'elles fassent un don ou pas.
+
+La base de données `dons` contient `r nrow(hecmulti::dons)` observations pour `r ncol(hecmulti::dons)` variables: le @tbl-statdescriptdons fournit les statistiques descriptives. Elle a été crée en regroupement les identifiants: de nombreuses variables explicatives sont dérivées des données brutes, notamment le temps entre dons, les statistiques descriptives (montant moyen, minimum maximum) pour les dons monétaires. Ces choix de variables sont loins d'être anodins et peuvent influencer la segmentation décrite dans ce chapitre. Une rapide exploration des données révèle que près de `r round(100*sum(is.na(hecmulti::dons$vdons))/nrow(hecmulti::dons), 0)`% des employé(e)s n'ont pas donné à l'organisme. Une poignée de dons sont très élevés, mais la plupart des montants tourne autour de 5\$, 10\$, 20\$, etc.
+
+
 ```{r}
 #| label: tbl-statdescriptdons
 #| echo: false
@@ -119,9 +125,6 @@ knitr::kable(digits = 2,
              booktabs = TRUE) |>
 kableExtra::kable_styling(full_width = TRUE)
 ```
-
-
-La base de données `dons` contient `r nrow(hecmulti::dons)` observations pour `r ncol(hecmulti::dons)` variables. Elle a été crée en regroupement les identifiants: de nombreuses variables explicatives sont dérivées des données brutes, notamment le temps entre dons, les statistiques descriptives (montant moyen, minimum maximum) pour les dons monétaires. Ces choix de variables sont loins d'être anodins et peuvent influencer la segmentation décrite dans ce chapitre. Une rapide exploration des données révèle que près de `r round(100*sum(is.na(hecmulti::dons$vdons))/nrow(hecmulti::dons), 0)`% des employé(e)s n'ont pas donné à l'organisme. Une poignée de dons sont très élevés, mais la plupart des montants tourne autour de 5\$, 10\$, 20\$, etc.
 
 
 La grande proportion de données manquantes pose un problème immédiat pour la segmentation, puisque la plupart des procédures ne permettent pas de traiter ces dernières et éliminent d'office les observations correspondantes de la base des données. Ici, plusieurs valeurs manquantes (`NA`) peuvent être logiquement remplacées par des valeurs numériques: par exemple, la valeur cumulative des dons (`vdons`) d'une personne qui n'a jamais donné est nulle.^[Imputer par la moyenne ou utiliser une méthode plus sophistiqué serait illogique (et incorrect).] En revanche, le temps d'attente entre deux dons pour une personne qui a fait un don ou moins n'est pas bien défini.
@@ -241,6 +244,7 @@ cluster_std_rob <- apply(
 # par ligne, colonne ou cellule
 # MARGIN = 2 indique colonne 
 # (on centre chaque colonne tour à tour)
+mad = moyenne de |obs - mediane|
 ```
 
 ## Algorithmes pour la segmentation
@@ -257,7 +261,7 @@ Les méthodes de regroupement peuvent être regroupées grossièrement dans les 
 4. méthodes basées sur la densité (DBScan)
 5. méthodes spectrales
 
-Dans certaines méthodes paramétriques (catégories 1 à 3), le nombre de groupes est fixé apriori et est un paramètre du modèle. Les méthodes nonparamétriques déterminent plutôt ce nombre automatiquement, mais spécifient un paramètre qui indique le degré de lissage
+Dans certaines méthodes paramétriques (catégories 1 à 3), le nombre de groupes est fixé apriori et est un hyperparamètre du modèle. Les méthodes nonparamétriques déterminent plutôt ce nombre automatiquement, mais spécifient un paramètre qui indique le degré de lissage
 
 Nous survolerons uniquement les caractéristiques des principales méthodes.
 
@@ -267,22 +271,22 @@ L'algorithme des $K$-moyennes est un des plus couramment employé en raison de s
 $$
 \min_{\boldsymbol{\mu}_1, \ldots, \boldsymbol{\mu}_K}\min_{\stackrel{r_{ik} \in \{0, 1\}}{r_{i1} + \cdots + r_{iK}=1}}\underset{\text{distance entre obs. $i$ et son prototype}}{\sum_{i=1}^n \sum_{k=1}^K r_{ik}d(\mathbf{X}_i,  \boldsymbol{\mu}_{k})}
 $$ {#eq-fobjKmoy}
-où $r_{ik}=1$ si l'observation $\mathbf{X}_i$ (soit la $i$e ligne de la base de données) est assignée au groupe $k$. Si on utilise la distance Euclidienne carrée, alors la fonction objective correspond à la somme du carré des erreurs, on cherche à minimiser l'erreur quadratique moyenne et la solution $\widehat{\boldsymbol{\mu}}_k$ est le barycentre des $n_k$ observations du groupe $k$, soit
+où $r_{ik}=1$ si l'observation $\mathbf{X}_i$ (soit la $i$e ligne de la base de données) est assignée au groupe $k$. Si on utilise la distance Euclidienne carrée, alors la fonction objective correspond à la somme du carré des erreurs au sein de chaque regroupement et on cherche à minimiser l'erreur quadratique moyenne. Les coordonnées optimales $\widehat{\boldsymbol{\mu}}_k$ pour le prototype si on connaît les étiquettes de groupes  sont celles du barycentre des $n_k$ observations du groupe $k$, soit
 \begin{align*}
 \widehat{\boldsymbol{\mu}}_k = \frac{\sum_{i} r_{ik} \mathbf{X}_i}{n_k}, \quad k = 1, \ldots, K;
 \end{align*}
-d'où l'appelation $K$-moyennes. Il n'est pas possible de déterminer l'allocation optimale de $n$ observations en $K$ groupes (problème NP complet), mais il est en revanche possible de trouver rapidement une solution approximative au problème.
+d'où l'appelation $K$-moyennes. Si on utilise plutôt la distance de Manhattan ($l_1$), alors la solution est la médiane coordonnée par coordonnées des observations du groupe. Il n'est pas possible de déterminer l'allocation optimale de $n$ observations en $K$ groupes (problème NP complet), mais il est en revanche possible de trouver rapidement une solution approximative au problème.
 
 Pour ce faire, on sélectionne préalablement un nombre $K$ de regroupements et les coordonnées de départ pour les prototypes. L'algorithme itère entre deux étapes:
 
 1. **Assignation** (étape E): calculer la distance entre chaque observation et les prototypes; assigner chaque observation au prototype le plus près.
-2. **Mise à jour** (étape M): calculer les nouveaux prototypes, soit le barycentre (la moyenne variable par variable) des observations assignées aux regroupements si on utilise la distance Euclidienne.
+2. **Mise à jour** (étape M): estimer les coordoonnées des nouveaux prototypes; si on utilise la distance Euclidienne, cela revient à calculer le barycentre (la moyenne variable par variable) des observations assignées aux regroupements.
 
 En pratique, l'algorithme convergera rapidement vers une solution locale. Cette dernière est simplement une assignation pour laquelle, d'une itération à l'autre, aucune observation ne change de groupe.
 La @fig-kmoy-animation montre une animation avec un jeu de données fictif et $K=3$ regroupements.
 
 
-L'algorithme des $K$-moyennes présenté offre une forme de partitionnement dite rigide: chaque observation est assignée à un seul regroupement. Si cette appartenance unique peut être logique pour les points à proximité du barycentre, ceux situés à l'intersection des frontières qui définissent les différents regroupements pourraient légitimement faire partie d'un ou l'autre de ces derniers. On pourrait plutôt assigner un poids représentant la probabilité d'être dans un des $K$ regroupements, appelé responsabilité et dénotée $r_{ik}$. Avec une assignation rigide, $r_{ik}=1$ si l'observation $i$ est dans le regroupement $k$ et zéro sinon.
+L'algorithme des $K$-moyennes présenté offre une forme de partitionnement dite rigide: chaque observation est assignée à un seul regroupement. Si cette appartenance unique peut être logique pour les points à proximité du barycentre, ceux situés à l'intersection des frontières qui définissent les différents regroupements pourraient parfois légitimement faire partie d'un ou l'autre de ces derniers. On pourrait plutôt assigner un poids représentant la probabilité d'être dans un des $K$ regroupements, appelé responsabilité et dénotée $r_{ik}$. Avec une assignation rigide, $r_{ik}=1$ si l'observation $i$ est dans le regroupement $k$ et $r_{ik}=0$ sinon.
 
 
 ```{r}
@@ -330,7 +334,7 @@ Voici quelques forces et faiblesses de la méthode des $K$-moyennes
 - Les $K$-moyennes créent des regroupements globulaires d'apparence sphérique si on utilise la distance Euclidienne: cela revient à faire une séparation linéaire de l'espace (voir @fig-voronoikmoy). 
 - Chaque observation est assignée à un seul des $K$ regroupements (assignation rigide).
 - Comme toutes les observations font partie des $K$ groupes, les valeurs aberrantes ne sont pas traitées à part. Or, la présence de valeurs aberrantes impacte le barycentre des observations du groupe. Comme ce dernier donne le prototype du groupe, l'algorithme manque de robustesse.
-- L'algorithme des $K$-moyennes a une complexité **linéaire** dans la dimension et dans le nombre de variables. Ce faible coût de calcul est un avantage avec des mégadonnées ($n$ grand) et en haute dimension $p$ grand).
+- L'algorithme des $K$-moyennes a une complexité **linéaire** dans la dimension et dans le nombre de variables, soit $\mathsf{O}(np)$. Ce faible coût de calcul est un avantage avec des mégadonnées ($n$ grand) et en haute dimension $p$ grand).
 - L'algorithme converge rapidement vers une solution et on a des garanties que la solution est un maximum local, puisque l'algorithme minimise les répartitions et les prototypes tour à tour.
 - L'algorithme est sensible aux valeurs initiales des prototypes et retourne des solutions différentes selon ces dernières.
 
@@ -345,7 +349,7 @@ L'algorithme des $K$-moyennes comporte plusieurs paramètres, dit hyperparamètr
 
 #### Mesure de distance
 
-Toutes les distances $l_q$ peuvent être utilisées, mais le choix de la distance Euclidienne carrée est particulièrement commode et populaire^[La fonction objective s'apparente alors à la somme du carré des erreurs, et donc il y a une analogie à faire avec la vraisemblance d'un modèle Gaussien en dimension $p$ de covariance sphérique. Cela légitimise l'emploi de critères d'information pour le choix du nombre de regroupements.] entraîne une partition linéaire de l'espace, comme l'illustre la @fig-voronoikmoy. La solution du problème d'optimisation est explicite, ce qui accélère les calculs (les prototypes correspondent au barycentre). Sauf indication contraire, on supposera dans ce qui suit que la distance entre un point et un prototype est calculée avec la distance Euclidienne au carré.
+Toutes les distances $l_q$ peuvent être utilisées, mais le choix de la distance Euclidienne carrée est particulièrement commode et populaire^[La fonction objective s'apparente alors à la somme du carré des erreurs, et donc il y a une analogie à faire avec la vraisemblance d'un modèle Gaussien en dimension $p$ de covariance sphérique. Cela légitimise l'emploi de critères d'information pour le choix du nombre de regroupements.] entraîne une partition linéaire de l'espace, comme l'illustre la @fig-voronoikmoy. La solution du problème d'optimisation est explicite, ce qui accélère les calculs (les prototypes correspondent aux barycentres). Sauf indication contraire, on supposera dans ce qui suit que la distance entre un point et un prototype est calculée avec la distance Euclidienne au carré.
 
 
 
@@ -461,6 +465,13 @@ ggplot(data = groups,
   theme_classic()
 ```
 
+
+#### Application en **R**
+
+Dans **R**, la fonction `kmeans` dans le paquet de base `stat` permet de faire l'analyse de regroupement. Elle ne prend pas en charge les valeurs manquantes. La fonction a plusieurs arguments, dont les coordonnées initiales des prototypes (`center`; cet argument peut également être un entier qui dicte le nombre de groupes), le nombre maximum d'itération de l'algorithme EM (`iter.max) et le nombre de fois qu'on redémarre l'algorithme avec des valeurs aléatoires (`nstart`).
+
+
+
 ### $K$-médoides
 
 L'algorithme des $K$-moyennes spécifie que le barycentre des regroupements est le prototype. On pourrait également choisir pour ce dernier une des observations du groupe. Cette approche dite des médoïdes est plus coûteuse en calcul, mais permet d'avoir une observation réellement observée et est un peu moins sensible aux extrêmes et aux aberrances, bien que ce fait soit disputé.
@@ -475,7 +486,7 @@ L'algorithme de partition autour des médoïdes (PAM) procède comme suit:
 
 Puisque qu'on considère chaque observation comme candidat à devenir un médoïde à chaque étape, le coût de calcul est prohibitif.
 
-L'algorithme CLARA, décrit dans @Kaufman.Rousseeuw:1990, réduit le coût de calcul et de stockage en divisant l'échantillon en sous-échantillons de taille approximativement égale et en utilisant l'algorithme PAM sur chacun.
+L'algorithme CLARA, décrit dans @Kaufman.Rousseeuw:1990, réduit le coût de calcul et de stockage en divisant l'échantillon en $S$ sous-échantillons de taille approximativement égale (par défaut 5) et en utilisant l'algorithme PAM sur chacun. Une fois les médoïdes obtenus, le reste de toutes les observations de l'échantillon sont assignées au regroupement du médoïde le plus près. La qualité de la segmentation est  pour chacune des $S$ segmentations est calculée en obtenant la distance moyenne entre les médoïdes et les observations; on retourne la solution qui a la plus petite distance moyenne.
 
 
 
@@ -564,7 +575,7 @@ Voici quelques avantages et inconvénients des mélanges de modèles Gaussiens
 - cette approche est plus flexible que les $K$-moyennes.
 - l'ajout d'une composante uniforme permet de gérer les aberrances (pas supporté par `mclust`).
 - l'algorithme EM garantie la convergence à un minimum local (comme pour les $K$-moyennes)
-- on n'obtient une assignation probabiliste plutôt que rigide
+- on obtient une assignation probabiliste plutôt que rigide
 - le coût de calcul est élevé et dépend de la dimension du problème (complexité en $p$)
 
 
@@ -784,9 +795,12 @@ Il y a plusieurs façons de calculer la distance entre deux groupes d'observatio
 - liaison moyenne: utilise la moyenne des distances entre toutes les paires de sujets (un pour chaque groupe) provenant des deux groupes.
 - méthode de Ward: calcul de l'homogénéité globale
 
-La méthode de Ward n'est pas définie en terme de distance entre représentants de groupes, mais plutôt en terme de mesure d'homogénéité. Supposons qu’à une étape du processus hiérarchique, nous avons  $M$  groupes et que nous voulons passer à $M-1$. Pour chaque groupe $k$, nous pouvons calculer la somme des carrés des distances par rapport à la moyenne du groupe, disons $\mathsf{SCD}_k$: plus cette distance est petite, plus le groupe est compact et homogène. On calcule ensuite l'homogénéité globale en faisant la somme de l’homogénéité de tous les groupes, soit $\mathrm{H}^{(M)} = \mathsf{SCD}_1 + \cdots + $\mathsf{SCD}_M$. La méthode de Ward va regrouper les deux groupes qui feront augmenter le moins possible l'homogenéité.
+La méthode de Ward n'est pas définie en terme de distance entre représentants de groupes, mais plutôt en terme de mesure d'homogénéité au sein des groupes. Supposons qu’à une étape du processus hiérarchique, nous avons  $M$  groupes et que nous voulons passer à $M-1$. Pour chaque groupe $k$, nous pouvons calculer la somme des carrés des distances par rapport à la moyenne du groupe, disons $\mathsf{SCD}_k$: plus cette distance est petite, plus le groupe est compact et homogène. On calcule ensuite l'homogénéité globale en faisant la somme de l’homogénéité de tous les groupes, soit $\mathrm{H}^{(M)} = \mathsf{SCD}_1 + \cdots + \mathsf{SCD}_M$. La méthode de Ward va regrouper les deux groupes qui feront augmenter le moins possible l'homogénéité.
 
-La méthode de liaison simple est la moins coûteuse du lot et elle fonctionne bien si l’écart entre deux regroupements est suffisamment grand. À l’inverse, s’il y a des observations bruitées entre deux regroupements, la qualité des regroupements en sera affectée. La méthode de liaison complète est moins sensible au bruit et aux faibles écarts entre regroupements, mais a tendance à casser les regroupements globulaires. Puisque le critère d'homogénéité de Ward ressemble à celui des $K$-moyennes, la sortie aura tendance à bien regrouper les amas globulaires.
+En général, les algorithmes de regroupement hiérarchiques stockent une matrice de dissemblance $n \times n$, et donc un coût de stockage quadratique et un coût de calcul $\Omega(n^2)$ avec $\mathrm{O}(n^3)$. Il faut réaliser que ce coût de calcul est **prohibitif** en haute dimension. Certains algorithmique efficaces pour la méthode de liaison simple permettent un temps de calcul quadratique sans calcul de toutes les distances, à coût $\mathrm{O}(n)$. Si la méthode de liaison simple est la moins coûteuse du lot, elle n'est pas aussi populaire car elle fonctionne bien si l’écart entre deux regroupements est suffisamment grand. S’il y a du bruit entre deux regroupements, la qualité des regroupements en sera affectée. La méthode de liaison complète est moins sensible au bruit et aux faibles écarts entre regroupements, mais a tendance à casser les regroupements globulaires. Puisque le critère d'homogénéité de Ward ressemble à celui des $K$-moyennes, la sortie aura tendance à bien regrouper les amas globulaires.
+
+
+Généralement, le résultat de la procédure agglomérative avec la méthode de liaison simple inclura quelques valeurs isolées et un seul grand regroupement. Une alternative récente [@Gagolewski:2016], appelée Genie, modifie la fonction objective de la méthode de liaison simple en retenant son efficacité de calcul. Plutôt que de simplement trouver la paire de regroupements à distance minimale, cette fusion n'est appliquée que si une mesure d'inéquité est inférieur à un seuil spécifié par l'utilisateur. Si les regroupements sont fortement inéquitables, la fusion survient entre les regroupements dont un de la taille minimale courante.  L'implémentation **R** [@Gagolewski:2021] dans le paquet `genieclust` est nettement plus rapide que les autres alternatives et ne nécessite pas de calculer la matrice de dissimilarité.
 
 On peut comparer les performances des regroupements hiérarchiques selon la méthode de groupement. La page web de [scikit-learn developers](https://scikit-learn.org/stable/auto_examples/cluster/plot_linkage_comparison.html) montre la performance sur des exemples jouets très artificiels, qui montre que selon la structure des données, l'impact de la fonction de liaison. Ici, aucun approche hiérarchique ne performe mieux que les autres dans tous les exemples.
 
@@ -827,18 +841,19 @@ p
 
 ```
 
-La hauteur du dendrogramme donne la valeur du critère associé à la mesure de regroupement: on peut sélectionne le nombre de regroupements $K$ en sélectionnant une étape où la qualité de l'ajustement diminue drastiquement. Pour le critère de Ward qui utilise l'homogénéité, on peut créer un critère $R^2$ en calculant $R^2_{(M)} = 1-\mathrm{H}_{(M)}/\mathrm{H}_{(1)}$, où $\mathrm{H}_{(1)}$ est simplement la somme du carré des distances distances par rapport à la moyenne lorsque toutes les observations sont dans un même groupe. Le R-carré semi-partiel, qui mesure la perte d'homogénéité d'une étape à l'autre, renormalisée par $\mathrm{H}_{(1)}$, permet également de mesurer  la perte d’homogénéité (relative) en combinant ces deux groupes. On peut faire un graphique de ces deux critères en fonction du nombre de regroupements et chercher un point d'inflection (un coude) à partir duquel la perte d'homogénéité est moindre ou encore le $R^2$ augmente plus lentement.
+La hauteur du dendrogramme donne la valeur du critère associé à la mesure de regroupement: on peut sélectionne le nombre de regroupements $K$ en sélectionnant une étape où la qualité de l'ajustement diminue drastiquement. Pour le critère de Ward qui utilise l'homogénéité, on peut créer le pourcentage de variance expliquée, $R^2$ en calculant $R^2_{(M)} = 1-\mathrm{H}_{(M)}/\mathrm{H}_{(1)}$, où $\mathrm{H}_{(1)}$ est simplement la somme du carré des distances distances par rapport à la moyenne lorsque toutes les observations sont dans un même groupe. Le R-carré semi-partiel, qui mesure la perte d'homogénéité d'une étape à l'autre, renormalisée par $\mathrm{H}_{(1)}$, permet également de mesurer  la perte d’homogénéité (relative) en combinant ces deux groupes. On peut faire un graphique de ces deux critères en fonction du nombre de regroupements et chercher un point d'inflection (un coude) à partir duquel la perte d'homogénéité est moindre ou encore le $R^2$ augmente plus lentement.
 
-La fonction `stat::hclust` permet de faire des regroupements agglomératifs (`agnes`), mais `fastcluster` propose une version avec une empreinte mémoire inférieure. Le paquet `cluster` offre de son côté l'algorithme divisif (`diana`)
-
-
+La fonction `stat::hclust` permet de faire des regroupements agglomératifs (`agnes`), mais `fastcluster` propose une version avec une empreinte mémoire inférieure. Le paquet `cluster` offre de son côté l'algorithme divisif (`diana`).
 
 
 Voici quelques particularités des méthodes de regroupement hiérarchique.
 
-- la solution du regroupement hiérarchique est toujours la même
+- la solution du regroupement hiérarchique est toujours la même (déterministe)
 - l'assignation d'une observation à un regroupement est finale
 - les aberrances ne sont pas traitées et sont souvent assignées dans des regroupements à part
 - les méthodes d'arborescence sont faciles à expliquer
-- le nombre de groupes n'a pas à être spécifié apriori
+- le nombre de groupes n'a pas à être spécifié apriori (une seule estimation)
 - le coût de calcul est prohibitif, avec une complexité quadratique de $\mathrm{O}(n^2)$ pour la méthode de liaison simple et autrement $\mathrm{O}(n^3)$ pour la plupart des autres fonctions de liaison.
+
+
+
