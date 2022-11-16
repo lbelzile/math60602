@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.1.163">
+<meta name="generator" content="quarto-1.2.11">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -235,7 +235,12 @@ div.csl-indent {
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="toc-section-number">7.1</span>  Introduction</a></li>
   <li><a href="#données" id="toc-données" class="nav-link" data-scroll-target="#données"><span class="toc-section-number">7.2</span>  Données</a></li>
   <li><a href="#choix-des-variables" id="toc-choix-des-variables" class="nav-link" data-scroll-target="#choix-des-variables"><span class="toc-section-number">7.3</span>  Choix des variables</a></li>
-  <li><a href="#mesures-de-dissemblance-et-de-similarité" id="toc-mesures-de-dissemblance-et-de-similarité" class="nav-link" data-scroll-target="#mesures-de-dissemblance-et-de-similarité"><span class="toc-section-number">7.4</span>  Mesures de dissemblance et de similarité</a></li>
+  <li><a href="#mesures-de-dissemblance-et-de-similarité" id="toc-mesures-de-dissemblance-et-de-similarité" class="nav-link" data-scroll-target="#mesures-de-dissemblance-et-de-similarité"><span class="toc-section-number">7.4</span>  Mesures de dissemblance et de similarité</a>
+  <ul class="collapse">
+  <li><a href="#mesures-de-dissemblance" id="toc-mesures-de-dissemblance" class="nav-link" data-scroll-target="#mesures-de-dissemblance"><span class="toc-section-number">7.4.1</span>  Mesures de dissemblance</a></li>
+  <li><a href="#mesures-de-similarité" id="toc-mesures-de-similarité" class="nav-link" data-scroll-target="#mesures-de-similarité"><span class="toc-section-number">7.4.2</span>  Mesures de similarité</a></li>
+  <li><a href="#dissemblance-et-valeurs-manquantes" id="toc-dissemblance-et-valeurs-manquantes" class="nav-link" data-scroll-target="#dissemblance-et-valeurs-manquantes"><span class="toc-section-number">7.4.3</span>  Dissemblance et valeurs manquantes</a></li>
+  </ul></li>
   <li><a href="#algorithmes-pour-la-segmentation" id="toc-algorithmes-pour-la-segmentation" class="nav-link" data-scroll-target="#algorithmes-pour-la-segmentation"><span class="toc-section-number">7.5</span>  Algorithmes pour la segmentation</a>
   <ul class="collapse">
   <li><a href="#k-moyennes" id="toc-k-moyennes" class="nav-link" data-scroll-target="#k-moyennes"><span class="toc-section-number">7.5.1</span>  <span class="math inline">\(K\)</span>-moyennes</a></li>
@@ -499,6 +504,8 @@ div.csl-indent {
 </div>
 </div>
 </div>
+<section id="mesures-de-dissemblance" class="level3" data-number="7.4.1">
+<h3 data-number="7.4.1" class="anchored" data-anchor-id="mesures-de-dissemblance"><span class="header-section-number">7.4.1</span> Mesures de dissemblance</h3>
 <p>Les algorithmes de segmentation comparent les observations entre elles: souvent, la matrice de données est réduite à une mesure de distance entre observations (soit les lignes de la base de données). Une <strong>mesure de dissemblance</strong> sert à quantifier la proximité de deux objets à partir de leurs coordoonnées. Elle mesure la distance entre deux vecteurs lignes d’observations <span class="math inline">\(\mathbf{X}_i\)</span> et <span class="math inline">\(\mathbf{X}_j\)</span> en se basant sur les <span class="math inline">\(p\)</span> variables explicatives. Plus la dissemblance est petite, plus les sujets <span class="math inline">\(\mathbf{X}_i\)</span> et <span class="math inline">\(\mathbf{X}_j\)</span> sont similaires. La plupart des mesures de dissemblances <span class="math inline">\(d\)</span> ont les propriétés mathématiques suivantes:</p>
 <ol type="1">
 <li><span class="math inline">\(d(\mathbf{X}_i, \mathbf{X}_j) \geq 0\)</span> (positivité), avec égalité (distance nulle) si et seulement si <span class="math inline">\(\mathbf{X}_i=\mathbf{X}_j\)</span> (mêmes caractéristiques pour toutes les variables explicatives);</li>
@@ -506,7 +513,7 @@ div.csl-indent {
 </ol>
 <p>Toute mesure de distance<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> est une mesure de dissemblance. La mesure de dissemblance la plus utilisée en pratique est la distance euclidienne entre sujets, soit <span class="math display">\[\begin{align*}
 d(\mathbf{X}_i, \mathbf{X}_j; l_2) = \left\{(X_{i1}-X_{j1})^2 + \cdots + (X_{ip}-X_{jp})^2\right\}^{1/2}.
-\end{align*}\]</span> C’est tout simplement la longueur Euclidienne du segment qui relie deux points dans l’espace <span class="math inline">\(p\)</span> dimensionnel.</p>
+\end{align*}\]</span> C’est tout simplement la longueurdu segment qui relie deux points dans l’espace <span class="math inline">\(p\)</span> dimensionnel.</p>
 <p>Plus généralement, la distance de Minkowski ou distance <span class="math inline">\(l_q\)</span> entre les vecteurs ligne <span class="math inline">\(\mathbf{X}_i\)</span> et <span class="math inline">\(\mathbf{X}_j\)</span> est <span class="math display">\[\begin{align*}
 d(\mathbf{X}_i, \mathbf{X}_j; l_q) = \left( \sum_{k=1}^p |X_{ik}-X_{jk}|^q \right)^{1/q},\qquad q &gt; 0;
 \end{align*}\]</span> la distance Euclidienne correspondant à <span class="math inline">\(q=2\)</span>, et la distance de Manhattan à <span class="math inline">\(q=1\)</span>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> Finalement, si <span class="math inline">\(q=\infty\)</span>, la distance se réduit à <span class="math inline">\(\max_{k=1}^p |X_{ik}-X_{jk}|\)</span>, soit le maximum des différences entre coordonnées des vecteurs d’observations.</p>
@@ -520,12 +527,18 @@ S_{ij} = \frac{\sum_{k=1}^p s_{ijk} \delta_{ijk}}{\sum_{k=1}^p \delta_{ijk}}
 <li><span class="math inline">\(s_{ijk}=1\)</span> les variables qualitatives ont la même modalité et <span class="math inline">\(s_{ijk}=0\)</span> sinon</li>
 <li><span class="math inline">\(s_{ijk} = 1-|X_{ik}-X_{jk}|/R_k\)</span> pour une variable continue, où <span class="math inline">\(R_k\)</span> est l’étendue de la variable <span class="math inline">\(R_k=\max_{i} X_{ik} - \min_i X_{ik}\)</span> dans l’échantillon.</li>
 </ul>
-<p>La dissemblance résultante pour les types mixtes vaut 1 quand toutes les variables sont similaires/égales et zéro si elles sont complètement différentes/maximalement distantes.</p>
+<p>La dissemblance résultante pour les types mixtes vaut zéro quand toutes les variables sont similaires/égales et un si elles sont complètement différentes/maximalement distantes.</p>
 <p>On peut traiter les variables ordinales soit comme des variables continues, soit comme des variables nominales avec la mesure d’appariement simple; ce faisant, on n’utilise pas l’ordre entre les modalités.</p>
-<p>Certains algorithmes utilisent directement une matrice de similarité <span class="math inline">\(\mathbf{S}\)</span> qui encode plutôt l’information à propos des points avoisinants. Parmi les exemples communs sont les graphes de voisinage <span class="math inline">\(\epsilon\)</span>: toute paire d’observation à distance au plus <span class="math inline">\(\epsilon\)</span> se voit assigner un, zéro sinon. La matrice de similarité peut dans ce cas être assimilée à un graphe où chaque observation est un noeud et deux points sont connectés si leur distance est au plus <span class="math inline">\(\epsilon\)</span>.</p>
+</section>
+<section id="mesures-de-similarité" class="level3" data-number="7.4.2">
+<h3 data-number="7.4.2" class="anchored" data-anchor-id="mesures-de-similarité"><span class="header-section-number">7.4.2</span> Mesures de similarité</h3>
+<p>Certains algorithmes utilisent directement une matrice de similarité <span class="math inline">\(\mathbf{S}\)</span> qui encode plutôt l’information à propos des points avoisinants. Cette approche sera utilisée lors de la présentation des regroupement spectraux.</p>
+<p>Parmi les exemples communs sont les graphes de voisinage <span class="math inline">\(\epsilon\)</span>: toute paire d’observation à distance au plus <span class="math inline">\(\epsilon\)</span> se voit assigner un, zéro sinon. La matrice de similarité peut dans ce cas être assimilée à un graphe où chaque observation est un noeud et deux points sont connectés si leur distance est au plus <span class="math inline">\(\epsilon\)</span>.</p>
 <p>De la même manière, on pourrait considérer uniquement les <span class="math inline">\(k\)</span> plus proches voisins et mettre <span class="math inline">\(S_{ij}=1\)</span> si l’observation <span class="math inline">\(\mathbf{X}_j\)</span> est un des <span class="math inline">\(k\)</span> plus proches voisins d’observation <span class="math inline">\(\mathbf{X}_i\)</span>. Puisque la relation n’est pas nécessairement réciproque (le point <span class="math inline">\(i\)</span> n’est pas nécessairement un des <span class="math inline">\(k\)</span> plus proches voisins de <span class="math inline">\(\mathbf{X}_j\)</span>), on pourrait choisir de mettre <span class="math inline">\(S_{ij}=S_{ji}=1\)</span> si les deux sont dans les plus proches voisins, ou un seul des deux, afin d’obtenir une matrice symmétrique.</p>
-<p>Dans plusieurs cas, on se trouvera en présence de valeurs manquantes dans le jeu de données. Cela peut arriver pour plusieurs raisons valables (aucun candidature ne représente un partir dans une circonscription donnée pour un parti lors d’une élection, l’information est manquante, une femme ne peut avoir de cancer de la prostate, etc.) Il faut bien penser à vérifier si l’algorithme de votre choix peut gérer ces valeurs manquantes. Sinon, ces dernières devront être imputées préalablement à l’analyse de regroupements ou vous devrez faire sans les variables explicatives correspondantes.</p>
-<p>Il existe d’autres façons de définir la similarité entre observations. Par exemple, si on considère la dissemblance Euclidienne, on pourrait créer une matrice de similarité <span class="math inline">\(\mathbf{S}\)</span> <span class="math inline">\(n \times n\)</span> où les entrées indiquent si les observations sont à distance <span class="math inline">\(\varepsilon\)</span> les unes des autres (si oui, en assignant <span class="math inline">\(1\)</span> et autrement <span class="math inline">\(0\)</span>) ou encore avec un <span class="math inline">\(1\)</span> pour les <span class="math inline">\(m\)</span> plus proches voisins et <span class="math inline">\(0\)</span> autrement. Cette approche sera utilisée lors de la présentation des regroupement spectraux.</p>
+</section>
+<section id="dissemblance-et-valeurs-manquantes" class="level3" data-number="7.4.3">
+<h3 data-number="7.4.3" class="anchored" data-anchor-id="dissemblance-et-valeurs-manquantes"><span class="header-section-number">7.4.3</span> Dissemblance et valeurs manquantes</h3>
+<p>Dans plusieurs cas, on se trouvera en présence de valeurs manquantes dans le jeu de données. Cela peut arriver pour plusieurs raisons valables (aucune candidature ne représente un partir dans une circonscription donnée pour un parti lors d’une élection, l’information est manquante, une femme ne peut avoir de cancer de la prostate, etc.) Il faut bien penser à vérifier si l’algorithme de votre choix peut gérer ces valeurs manquantes. Sinon, ces dernières devront être imputées préalablement à l’analyse de regroupements ou vous devrez faire sans les variables explicatives correspondantes.</p>
 <p>Les définitions des distances révèlent que chaque variable explicative a le même poids. En revanche, plus une variable a une grande variance, plus elle aura de l’influence sur le calcul de la distance, ce qui peut être bon ou mauvais selon la structure des groupes. Règle générale, il est préférable d’éviter qu’une variable domine dans la segmentation. La standardisation des variables et les transformations préalables effectuées sur les variables (log, arcsin, etc.) impacteront le résultat.</p>
 <p>On peut standardiser au préalable les variables avant de faire l’analyse. Par défaut, les variables continues seront centrées et réduites, ou standardisées, afin d’avoir une moyenne de zéro et une variance de un (<code>scale</code>). On peut ensuite faire les analyses comme précédemment. Si on a des valeurs aberrantes, cela peut impacter le calcul des moyennes et variances; d’autres estimateurs de localisation et d’échelles plus robustes, par exemple la médiane et la déviation absolue par rapport à la médiane (<code>mad</code>) peuvent alors être plus adéquats pour diminuer l’impact des valeurs aberrantes même si le coût de calcul associé est plus conséquent. Notez qu’il est illogique de standardiser les variables binaires et catégorielles.</p>
 <div class="cell" data-layout-align="center" data-hash="03-regroupements_cache/html/standardisation_dbef23caa835363855d420bc3c78603f">
@@ -544,6 +557,7 @@ S_{ij} = \frac{\sum_{k=1}^p s_{ijk} \delta_{ijk}}{\sum_{k=1}^p \delta_{ijk}}
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># (on centre chaque colonne tour à tour)</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
+</section>
 <section id="algorithmes-pour-la-segmentation" class="level2" data-number="7.5">
 <h2 data-number="7.5" class="anchored" data-anchor-id="algorithmes-pour-la-segmentation"><span class="header-section-number">7.5</span> Algorithmes pour la segmentation</h2>
 <p>L’analyse de regroupements est une branche de l’apprentissage non-supervisé: contrairement à la classification, il n’existe pas de vraies étiquettes sur lesquelles se baser pour déterminer la qualité d’une segmentation. Des critères graphiques et des mesures d’homogénéité peuvent néanmoins déterminer à quel points les segments créés sont distincts les uns des autres.</p>
@@ -561,7 +575,7 @@ S_{ij} = \frac{\sum_{k=1}^p s_{ijk} \delta_{ijk}}{\sum_{k=1}^p \delta_{ijk}}
 <section id="k-moyennes" class="level3" data-number="7.5.1">
 <h3 data-number="7.5.1" class="anchored" data-anchor-id="k-moyennes"><span class="header-section-number">7.5.1</span> <span class="math inline">\(K\)</span>-moyennes</h3>
 <p>L’algorithme des <span class="math inline">\(K\)</span>-moyennes est un des plus couramment employé en raison de son faible coût. L’idée est la suivante: on assigne chaque observation à un de <span class="math inline">\(K\)</span> regroupements et on calcule la distance entre cette dernière et un prototype <span class="math inline">\(\boldsymbol{\mu}_k\)</span> pour le regroupement <span class="math inline">\(k\)</span>. La fonction objective que l’on cherche à minimiser est <span id="eq-fobjKmoy"><span class="math display">\[
-\min_{\boldsymbol{\mu}_1, \ldots, \boldsymbol{\mu}_K}\min_{\stackrel{r_{ik} \in \{0, 1\}}{r_{i1} + \cdots + r_{iK}=1}}\underset{\text{distance entre obs. $i$ et son prototype}}{\sum_{i=1}^n \sum_{k=1}^K r_{ik}d(\mathbf{X}_i,  \boldsymbol{\mu}_{k})}
+\min_{\boldsymbol{\mu}_1, \ldots, \boldsymbol{\mu}_K}\min_{\stackrel{r_{ik} \in \{0, 1\}}{r_{i1} + \cdots + r_{iK}=1}}\underset{\text{distance entre obs. $i$ et le prototype le plus près}}{\sum_{i=1}^n \sum_{k=1}^K r_{ik}d(\mathbf{X}_i,  \boldsymbol{\mu}_{k})}
 \tag{7.1}\]</span></span> où <span class="math inline">\(r_{ik}=1\)</span> si l’observation <span class="math inline">\(\mathbf{X}_i\)</span> (soit la <span class="math inline">\(i\)</span>e ligne de la base de données) est assignée au groupe <span class="math inline">\(k\)</span>. Si on utilise la distance Euclidienne carrée, alors la fonction objective correspond à la somme du carré des erreurs, on cherche à minimiser l’erreur quadratique moyenne et la solution <span class="math inline">\(\widehat{\boldsymbol{\mu}}_k\)</span> est le barycentre des <span class="math inline">\(n_k\)</span> observations du groupe <span class="math inline">\(k\)</span>, soit <span class="math display">\[\begin{align*}
 \widehat{\boldsymbol{\mu}}_k = \frac{\sum_{i} r_{ik} \mathbf{X}_i}{n_k}, \quad k = 1, \ldots, K;
 \end{align*}\]</span> d’où l’appelation <span class="math inline">\(K\)</span>-moyennes. Il n’est pas possible de déterminer l’allocation optimale de <span class="math inline">\(n\)</span> observations en <span class="math inline">\(K\)</span> groupes (problème NP complet), mais il est en revanche possible de trouver rapidement une solution approximative au problème.</p>
@@ -615,7 +629,7 @@ S_{ij} = \frac{\sum_{k=1}^p s_{ijk} \delta_{ijk}}{\sum_{k=1}^p \delta_{ijk}}
 </div>
 </div>
 <p>Comme mentionné précédemment, les regroupements obtenus peuvent varier fortement en fonction des valeurs de départ: la <a href="#fig-kmoyenne-mauvais">Figure&nbsp;<span>7.5</span></a> montre trois regroupements visibles avec une segmentation qui fusionne deux groupes apparents (gauche), et une solution plus sensée à droite. Une segmentation sera supérieure à une autre si elle a une plus petite valeur de la fonction objective de l’<a href="#eq-fobjKmoy">Équation&nbsp;<span>7.1</span></a>: les points seront moins dispersés autour de leurs prototypes.</p>
-<div class="cell" data-layout-align="center" data-hash="03-regroupements_cache/html/fig-kmoyenne-mauvais_c015b94168a17bcd94b80ce7de164f2b">
+<div class="cell" data-layout-align="center" data-hash="03-regroupements_cache/html/fig-kmoyenne-mauvais_8ac4da5d7e2547bdef71973ede7e061a">
 <div class="cell-output-display">
 <div id="fig-kmoyenne-mauvais" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -792,11 +806,11 @@ Avec une mesure de dissemblance, on peut créer une matrice qui pour chaque pair
 <li>Construire une matrice de similarité <span class="math inline">\(\mathbf{S}\)</span></li>
 <li>Calculer la somme des lignes de <span class="math inline">\(\mathbf{S}\)</span> et créer une matrice diagonale <span class="math inline">\(\mathbf{R}\)</span> à partir du vecteur résultant. Obtenir le Laplacien standardisé <span class="math inline">\(\mathbf{L} = \mathbf{I}_n -\mathbf{R}^{-1/2}\mathbf{S}\mathbf{R}^{-1/2}\)</span>.</li>
 <li>Calculer la décomposition en valeurs propres et vecteurs propres de <span class="math inline">\(\mathbf{L}\)</span>.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></li>
-<li>Déterminer le nombre de valeurs propres sous un seul <span class="math inline">\(\epsilon &gt;0\)</span>.</li>
+<li>Déterminer le nombre de valeurs propres sous un seuil <span class="math inline">\(\epsilon &gt; 0\)</span>.</li>
 <li>Conserver les vecteurs propres du Laplacien associées aux petites valeurs propres inférieures au seuil <span class="math inline">\(\varepsilon\)</span>.</li>
 </ol>
 <p>Une fois cette étape de réduction de la dimension complétée, on peut simplement utiliser la nouvelle base de données résultante et calculer les <span class="math inline">\(K\)</span>-moyennes.</p>
-<div class="cell" data-layout-align="center" data-hash="03-regroupements_cache/html/fig-spectclustgraphe_512d0e037879a1ef113584ad6d3d5b34">
+<div class="cell" data-layout-align="center" data-hash="03-regroupements_cache/html/fig-spectclustgraphe_287cee5f0373ab6e8362ebc46327727e">
 <div class="cell-output-display">
 <div id="fig-spectclustgraphe" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
