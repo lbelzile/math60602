@@ -1222,7 +1222,7 @@ D = -2\{\ell(\widehat{\boldsymbol{\beta}}_0)-\ell(\widehat{\boldsymbol{\beta}})\
 </ul>
 <p>Dans le chapitre précédent, nous avons cherché à développer un modèle pour prévoir <code>ymontant</code>, le montant dépensé, étant donné que le client achète quelque chose. Cette fois-ci, nous allons travailler avec la variable <code>yachat</code>, qui est binaire, à l’aide de la régression logistique.</p>
 <p>Afin d’introduire différentes notions, nous allons, dans un premier temps, utiliser les 10 variables de base. À partir de la section suivante, nous chercherons à optimiser le modèle en considérant les interactions d’ordre deux.</p>
-<div class="cell" data-hash="05-reglogistique_cache/html/score_9bed0073591973da5b187b0d2ab96e67">
+<div class="cell" data-hash="05-reglogistique_cache/html/score_51992de933875485192a9bb0cddb7116">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(dbm, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>formule <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="st">"yachat ~ x1 + x2 + x3 +</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="st">                x4 + x5 + x6 + x7 + x8 + x9 + x10"</span>)</span>
@@ -1230,23 +1230,21 @@ D = -2\{\ell(\widehat{\boldsymbol{\beta}}_0)-\ell(\widehat{\boldsymbol{\beta}})\
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(test <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">yachat =</span> <span class="fu">factor</span>(yachat))</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">202209</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>cv_glm <span class="ot">&lt;-</span> </span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  caret<span class="sc">::</span><span class="fu">train</span>(<span class="at">form =</span> formule,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> dbm_class,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>             <span class="at">method =</span> <span class="st">"glm"</span>,</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>),</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">trControl =</span> caret<span class="sc">::</span><span class="fu">trainControl</span>(</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">method =</span> <span class="st">"cv"</span>,</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>               <span class="at">number =</span> <span class="dv">10</span>))</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>predprob <span class="ot">&lt;-</span> <span class="fu">predict</span>(cv_glm, <span class="at">type =</span> <span class="st">"prob"</span>)[,<span class="dv">1</span>]</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>classif <span class="ot">&lt;-</span> <span class="fu">with</span>(dbm, yachat[test <span class="sc">==</span> <span class="dv">0</span>])</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Tableau de la performance</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>hecmulti<span class="sc">::</span><span class="fu">perfo_logistique</span>(</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">prob =</span> predprob,</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">resp =</span> classif)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>predprob <span class="ot">&lt;-</span> hecmulti<span class="sc">::</span><span class="fu">predvc</span>(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">modele =</span> <span class="fu">glm</span>(<span class="at">formula =</span> formule, </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> dbm_class, </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">family =</span> binomial),</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">K =</span> <span class="dv">10</span>, <span class="co">#nombre de plis</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrep =</span> <span class="dv">1</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>classif <span class="ot">&lt;-</span> <span class="fu">with</span>(dbm, yachat[test <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Tableau de la performance</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>hecmulti<span class="sc">::</span><span class="fu">perfo_logistique</span>(</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">prob =</span> predprob,</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">resp =</span> classif)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Le modèle utilise seulement les 10 variables de base. Des prévisions pour les clients restants seront exportées dans le fichier. La méthode <code>predict</code> permet d’obtenir les prédictions des probabilités et la fonction maison <code>hecmulti::perfo_logistique</code> retourne un tableau de classification. Tel que nous l’avons vu au chapitre précédent, il y a 210 clients qui ont acheté quelque chose parmi les 1000.</p>
-<div class="cell" data-hash="05-reglogistique_cache/html/fig-classification0_7dee79cc05ceb6c75bae5c02f92d06f6">
+<div class="cell" data-hash="05-reglogistique_cache/html/fig-classification0_d158374277f2b1d2211ffb158d20ecfc">
 <div class="cell-output-display">
 <div id="fig-classification0" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -2121,14 +2119,14 @@ D = -2\{\ell(\widehat{\boldsymbol{\beta}}_0)-\ell(\widehat{\boldsymbol{\beta}})\
 <section id="courbe-lift" class="level3" data-number="5.3.3">
 <h3 data-number="5.3.3" class="anchored" data-anchor-id="courbe-lift"><span class="header-section-number">5.3.3</span> Courbe lift</h3>
 <p>Un autre type de graphe qui est souvent utilisé dans des contextes de gestion est la courbe lift (sic) (en anglais, <em>lift chart</em>). Cette courbe est obtenue en ordonnant les probabilités de succès estimées par le modèle, <span class="math inline">\(\widehat{p}\)</span>, en ordre croissant et en regardant quelle pourcentage de ces derniers seraient bien classifiés (le nombre de vrais positifs sur le nombre de succès).</p>
-<div class="cell" data-hash="05-reglogistique_cache/html/fig-courbe-lift_6c8ecbe666cab087d5efffb408a062e3">
+<div class="cell" data-hash="05-reglogistique_cache/html/fig-courbe-lift_473e024fddb03d8e45b4ece2a8e55fde">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>tab_lift <span class="ot">&lt;-</span> hecmulti<span class="sc">::</span><span class="fu">courbe_lift</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">prob =</span> <span class="dv">1</span><span class="sc">-</span>predprob,</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">resp =</span> classif, </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">prob =</span> predprob, <span class="co"># probabilité de succès (Y=1)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">resp =</span> classif, <span class="co"># variable binaire réponse 0/1</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>tab_lift</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-hash="05-reglogistique_cache/html/fig-lift_534347124c1ba54a958837bf4fc98de5">
+<div class="cell" data-hash="05-reglogistique_cache/html/fig-lift_276a4f7fa868c8c3d0c2e6ee89e8144f">
 <div class="cell-output-display">
 <div id="fig-lift" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">

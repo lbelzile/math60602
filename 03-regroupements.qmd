@@ -6,6 +6,7 @@
 #| message: false
 #| warning: false
 #| eval: true
+#| cache: false
 library(knitr)
 library(kableExtra)
 library(hecmulti)
@@ -30,8 +31,8 @@ options(knitr.graphics.auto_pdf = TRUE)
 options(scipen = 1, digits = 3)
 library(viridis)
 library(ggplot2, warn.conflicts = FALSE, quietly = TRUE)
-library(poorman, quietly = TRUE, warn.conflicts = FALSE)
-
+# library(poorman, quietly = TRUE, warn.conflicts = FALSE)
+library(dplyr, quietly = TRUE, warn.conflicts = FALSE)
 
 safe_colorblind_palette <- MetBrewer::met.brewer("Hiroshige",10)
 
@@ -134,6 +135,27 @@ Si on essaie de créer manuellement des groupes, il apparaît logique de sépare
 Les intrants de l'analyse de regroupement (soit le choix des variables) est laissé à la discrétion de l'analyste. Dans notre exemple, on pourrait aisément créer de nouvelles variables pour faire ressortir des informations jugées pertinentes. Est-ce qu'on s'intéresse au montant moyen des dons, soit `vdons/ndons`? Est-ce que la valeur des radiations nous intéresse, ou bien devrait-on plutôt considérer le pourcentage de la valeur promise réalisée? 
 
 
+On considère ci-dessous l'ensemble des personnes qui ont fait plusieurs dons. On modifie certaines variables explicatives pour réduire la corrélation entre variables et obtenir des variables plus évocatrices: le montant moyen de dons, le nombre de refus relatif à l'ancienneté du donateur ou de la donatrice et finalement la valeur de la promesse moyenne, si applicable (zéro sinon). Plusieurs variables (délais minimum et maximum entre dons, valeurs minimum, radiations, etc.) sont également abandonnées pour simplifier l'exposition et pour éviter qu'elles ne ressortent indûment. On voit également que plusieurs valeurs de radiations sont manquantes: cette variables est éliminée d'office.
+
+```{r}
+#| eval: true
+#| echo: true
+donsmult <- dons |>
+  filter(ndons > 1L) |>
+  mutate(mtdons = vdons/ndons,
+         snrefus = nrefus/anciennete*mean(anciennete),
+         mpromesse = case_when(
+           npromesse > 0 ~ vpromesse/npromesse,
+           TRUE ~ 0)) |>
+  select(!c(
+    vradiations, # valeurs manquantes
+    nindecis, vdons, ddonsmax,
+    ddonsmin, vdonsmin, npromesse,
+    vpromesse, nrefus, nradiations)) |>
+  relocate(mtdons)
+```
+
+
 Le champ des applications de l'analyse de regroupements est parfois surprenant. Par exemple, [cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais](https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/) ou des [quartiers de Los Angeles](https://fivethirtyeight.com/features/the-6-political-neighborhoods-of-los-angeles/). Un autre exemple incongru est la compression d'images: la @fig-decelles montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l'algorithme des $K$-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l'image.
 
 
@@ -220,6 +242,8 @@ On peut traiter les variables ordinales soit comme des variables continues, soit
 Certains algorithmes utilisent directement une matrice de similarité $\mathbf{S}$ qui encode plutôt l'information à propos des points avoisinants. 
 Cette approche sera utilisée lors de la présentation des regroupement spectraux.
 
+On peut transformer une matrice de dissemblance en matrice de similarité (et vice-versa, comme pour la distance de Gower). Il y a néanmoins des matrices et choix de mesures qui ont la particularité de donner des matrices de similarité creuses (c'est-à-dire, qui comporte beaucoup de zéros). Il y a également une relation entre matrices de similarité et graphes (chaque observation est un noeud et on trace une arête entre deux observations si la similarité est non-nulle).
+
 Parmi les exemples communs sont les graphes de voisinage $\epsilon$: toute paire d'observation à distance au plus $\epsilon$ se voit assigner un, zéro sinon. La matrice de similarité peut dans ce cas être assimilée à un graphe où chaque observation est un noeud et deux points sont connectés si leur distance est au plus $\epsilon$. 
 
 De la même manière, on pourrait considérer uniquement les $k$ plus proches voisins et mettre $S_{ij}=1$ si l'observation $\mathbf{X}_j$ est un des $k$ plus proches voisins d'observation $\mathbf{X}_i$. Puisque la relation n'est pas nécessairement réciproque (le point $i$ n'est pas nécessairement un des $k$ plus proches voisins de $\mathbf{X}_j$), on pourrait choisir de mettre $S_{ij}=S_{ji}=1$ si les deux sont dans les plus proches voisins, ou un seul des deux, afin d'obtenir une matrice symmétrique.
@@ -237,29 +261,29 @@ On peut standardiser au préalable les variables avant de faire l'analyse. Par d
 
 ```{r}
 #| label: standardisation
-#| eval: false
+#| eval: true
 #| echo: true
-data(cluster, package = "hecmulti")
 # Standardisation usuelle 
 # (soustraire moyenne, diviser par écart-type)
-cluster_std <- scale(cluster)
+donsmult_std <- scale(donsmult)
 # Standardisation robuste
-cluster_std_rob <- apply(
-  cluster, 
+donsmult_std_rob <- apply(
+  donsmult, 
   MARGIN = 2, 
   FUN = function(x){(x - median(x))/mad(x)})
 # apply permet d'appliquer une fonction
 # par ligne, colonne ou cellule
 # MARGIN = 2 indique colonne 
 # (on centre chaque colonne tour à tour)
-mad = moyenne de |obs - mediane|
+# Déviation absolue par rapport à la médiane
+# mad = moyenne de |obs - mediane|
 ```
 
 ## Algorithmes pour la segmentation
 
 L'analyse de regroupements est une branche de l'apprentissage non-supervisé: contrairement à la classification, il n'existe pas de vraies étiquettes sur lesquelles se baser pour déterminer la qualité d'une segmentation. Des critères graphiques et des mesures d'homogénéité peuvent néanmoins déterminer à quel points les segments créés sont distincts les uns des autres.
 
-L'analyse de regroupements cherche à créer une division de $n$ observations de $p$ variables en $k$ regroupements. Il existe un grand nombre d'algorithmes qui permettent de partitionner les données en regroupements à partir d'un jeu de données ou d'une matrice de dissemblance ou de similarité. Les sections suivantes survoleront différents algorithmes en s'attardant à l'heuristique de l'implémentation, aux différentes étapes de la procédure, aux hyperparamètres qui influencent le résultat (par ex., le nombre de groupes, la distance minimale entre regroupements, la forme des regroupements, les éléments représentatifs) qui détermine la sortie ainsi que les forces et faiblesses des algorithmes. À l'ère des mégadonnées, la complexité d'un algorithme de regroupements, une mesure du nombre d'opérations nécessaires pour effectuer le calcul, impactera le choix possible: l'algorithme de regroupements hiérarchiques (agglomératif ou divisif), de même que l'algorithme de partition autour des médoïdes (PAM) sont à proscrire dans ces scénarios. Outre l'algorithme, il y a des coûts associés au calcul de la matrice de dissemblance entre chacune des paires des $n$ observations: cette opération nécessite $\mathrm{O}(n^2p)$ flops pour le calcul et $\mathrm{O}(n^2)$ entrées de stockage. Dans le cas de matrice creuses avec beaucoup de zéros, le coût de stockage et le coût pour réaliser des opérations matricielle (décomposition en valeurs propres et vecteurs propres) peut être réduit à l'aide d'algorithmes dédiés.
+L'analyse de regroupements cherche à créer une division de $n$ observations de $p$ variables en $k$ regroupements. Il existe un grand nombre d'algorithmes qui permettent de partitionner les données en regroupements à partir d'un jeu de données ou d'une matrice de dissemblance ou de similarité. Les sections suivantes survoleront différents algorithmes en s'attardant à l'heuristique de l'implémentation, aux différentes étapes de la procédure, aux hyperparamètres qui influencent le résultat (par ex., le nombre de groupes, la distance minimale entre regroupements, la forme des regroupements, les éléments représentatifs) qui détermine la sortie ainsi que les forces et faiblesses des algorithmes. À l'ère des mégadonnées, la complexité d'un algorithme de regroupements, une mesure du nombre d'opérations nécessaires pour effectuer le calcul, impactera le choix possible: l'algorithme de regroupements hiérarchiques (agglomératif ou divisif), de même que l'algorithme de partition autour des médoïdes (PAM) sont à proscrire dans ces scénarios. Outre l'algorithme, il y a des coûts associés au calcul de la matrice de dissemblance entre chacune des paires des $n$ observations: cette opération nécessite $\mathrm{O}(n^2p)$ flops pour le calcul et $\mathrm{O}(n^2)$ entrées de stockage.^[Soit 740MB d'espace dans la mémoire vive pour stocker la moitié de la matrice de dissemblance 13617 par 13617 (la matrice étant symmétrique).] Dans le cas de matrice creuses avec beaucoup de zéros, le coût de stockage et le coût pour réaliser des opérations matricielle (décomposition en valeurs propres et vecteurs propres) peut être réduit à l'aide d'algorithmes dédiés.
 
 Les méthodes de regroupement peuvent être regroupées grossièrement dans les catégories suivantes:
 
@@ -339,15 +363,103 @@ Quelquefois, on peut vouloir prédire les étiquettes de groupes de nouvelles ob
 
 Voici quelques forces et faiblesses de la méthode des $K$-moyennes
 
+- L'algorithme des $K$-moyennes a une complexité **linéaire** dans la dimension et dans le nombre de variables, soit $\mathsf{O}(np)$. Ce faible coût de calcul est un avantage avec des mégadonnées ($n$ grand) et en haute dimension $p$ grand).
+- L'algorithme converge rapidement vers une solution et on a des garanties que la solution est un maximum local, puisque l'algorithme minimise les répartitions et les prototypes tour à tour.
 - Les $K$-moyennes créent des regroupements globulaires d'apparence sphérique si on utilise la distance Euclidienne: cela revient à faire une séparation linéaire de l'espace (voir @fig-voronoikmoy). 
 - Chaque observation est assignée à un seul des $K$ regroupements (assignation rigide).
 - Comme toutes les observations font partie des $K$ groupes, les valeurs aberrantes ne sont pas traitées à part. Or, la présence de valeurs aberrantes impacte le barycentre des observations du groupe. Comme ce dernier donne le prototype du groupe, l'algorithme manque de robustesse.
-- L'algorithme des $K$-moyennes a une complexité **linéaire** dans la dimension et dans le nombre de variables, soit $\mathsf{O}(np)$. Ce faible coût de calcul est un avantage avec des mégadonnées ($n$ grand) et en haute dimension $p$ grand).
-- L'algorithme converge rapidement vers une solution et on a des garanties que la solution est un maximum local, puisque l'algorithme minimise les répartitions et les prototypes tour à tour.
 - L'algorithme est sensible aux valeurs initiales des prototypes et retourne des solutions différentes selon ces dernières.
 
 
-#### Choix des hyperparamètres
+
+```{r kmoyperfo, echo = FALSE, cache = TRUE, message = FALSE, fig.cap = "Performance de l'algorithme des $K$-moyennes en fonction de différents scénarios: (haut, à gauche) nombre incorrect de classe et données normales de même variance, bien séparées, (haut, à droite) données avec excès de zéro, un cas où les $K$-moyennes ignorent la topologie des regroupements, et ne segmente pas adéquatement les regroupements connectés (bas, à gauche) données elliptiques de même variance, mais fortement corrélées. Comme le critère minimise la distance intra-groupe sans pondération, les points regroupés appartiennent à différentes classes et (bas, à droite) données sphériques de variances différentes. L'algorithme des $K$-moyennes réussit une bonne segmentation si les groupements sont compacts et bien séparés."}
+set.seed(1234)
+#https://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_assumptions.html
+# Figure 9.1 in Bishop
+library(dplyr)
+library(ggplot2)
+x1 <- rbind(mvtnorm::rmvnorm(n=200, mean = c(-10,-5), sigma = diag(2)),
+            mvtnorm::rmvnorm(n=200, mean = c(-2.5,0), sigma = diag(2)),
+            mvtnorm::rmvnorm(n=200, mean = c(2.5,0), sigma = diag(2)))
+x2 <- rbind(mvtnorm::rmvnorm(n=200, mean = c(-3,3), sigma = cbind(c(1,1.1), c(1.1,1.5))),
+            mvtnorm::rmvnorm(n=200, mean = c(-2,0.5), sigma = cbind(c(1,1.1), c(1.1,1.5))),
+            mvtnorm::rmvnorm(n=200, mean = c(1,1), sigma = cbind(c(1,1.1), c(1.1,1.5))))
+set.seed(1234)
+x3 <- rbind(mvtnorm::rmvnorm(n=200, mean = c(-3,2.5), sigma = diag(rep(3,2L))),
+            mvtnorm::rmvnorm(n=200, mean = c(-3,-1.5), sigma = diag(rep(0.25,2L))),
+            mvtnorm::rmvnorm(n=200, mean = c(1.5,4), sigma = diag(rep(0.5,2L))))
+df1 <- data.frame(x = x1[,1], 
+                  y = x1[,2], 
+                  class = rep(1:3, each = 200), 
+                  cluster = kmeans(x = x1, nstart = 10L, centers = 2L)$cluster)
+g1 <- ggplot(data = df1, aes(x = x, y = y, col = factor(cluster))) +
+  geom_point(show.legend = FALSE) + 
+  scale_color_manual(values=viridis::viridis(3)) + 
+  theme_minimal() + 
+  theme(
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    axis.text.y=element_blank(),
+    axis.ticks.y=element_blank(),
+)
+df2 <- data.frame(x = x2[,1], 
+                  y = x2[,2], 
+                  class = rep(1:3, each = 200), 
+                  cluster = kmeans(x = x2[,1:2], nstart = 10L, centers = 3L)$cluster)
+g2 <- ggplot(data = df2, aes(x=x,y=y, col = factor(cluster))) +
+  geom_point(show.legend = FALSE) + 
+  scale_color_manual(values=viridis::viridis(3)) + 
+  theme_minimal() + 
+  theme(
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    axis.text.y=element_blank(),
+    axis.ticks.y=element_blank(),
+)
+df3 <- data.frame(x = x3[,1], 
+                  y = x3[,2],
+                  cluster = kmeans(x = x3, nstart = 10L, centers = 3L)$cluster)
+g3 <- ggplot(data = df3, aes(x = x, y = y, col = factor(cluster))) +
+  geom_point(show.legend = FALSE) + 
+  scale_color_manual(values=viridis::viridis(3)) + 
+  theme_minimal() + 
+  theme(
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    axis.text.y=element_blank(),
+    axis.ticks.y=element_blank(),
+)
+x4 <- rbind(cbind(rnorm(125) + 2.5, rep(0, 125)),
+            cbind(rnorm(200) + 2.5, 1+ rexp(200, rate = 0.25) ))#mlbench::mlbench.spirals(200,1,0.025)$x
+#https://smorbieu.gitlab.io/k-means-is-not-all-about-sunshines-and-rainbows/
+# df4 <- {
+#     generateUniformData <- function(cluster, minX, maxX) {
+#         x = runif(500, min = minX, max = maxX)
+#         y = runif(500, min = -4, max = 9)
+#         data.frame(x, y) %>% mutate(class=cluster)
+#     }
+# 
+# generateUniformData(1, -4, 1) %>% bind_rows(generateUniformData(2, 3, 9)) %>%
+#   mutate(class = factor(class))
+# }
+df4 <- data.frame(x = x4[,2], 
+                  y = x4[,1], 
+                  cluster = kmeans(x = x4, nstart = 10L, centers = 2)$cluster)
+g4 <- ggplot(data = df4, aes(x = x, y = y, col = factor(cluster))) +
+  geom_point(show.legend = FALSE) + 
+  scale_color_manual(values=viridis::viridis(2)) + 
+  theme_minimal() + 
+  theme(
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    axis.text.y=element_blank(),
+    axis.ticks.y=element_blank(),
+)
+library(patchwork)
+(g1 + g4) / (g2 + g3)
+```
+
+#### Choix des hyperparamètres  {-}
 
 L'algorithme des $K$-moyennes comporte plusieurs paramètres, dit hyperparamètres, qui sont fixés par l'utilisateurs préalablement à la segmentation. Ces derniers incluent 
 
@@ -355,38 +467,8 @@ L'algorithme des $K$-moyennes comporte plusieurs paramètres, dit hyperparamètr
 2. le nombre de groupes $K$ 
 3. le choix de la mesure de distance.
 
-#### Mesure de distance
 
-Toutes les distances $l_q$ peuvent être utilisées, mais le choix de la distance Euclidienne carrée est particulièrement commode et populaire^[La fonction objective s'apparente alors à la somme du carré des erreurs, et donc il y a une analogie à faire avec la vraisemblance d'un modèle Gaussien en dimension $p$ de covariance sphérique. Cela légitimise l'emploi de critères d'information pour le choix du nombre de regroupements.] entraîne une partition linéaire de l'espace, comme l'illustre la @fig-voronoikmoy. La solution du problème d'optimisation est explicite, ce qui accélère les calculs (les prototypes correspondent aux barycentres). Sauf indication contraire, on supposera dans ce qui suit que la distance entre un point et un prototype est calculée avec la distance Euclidienne au carré.
-
-
-
-```{r}
-#| label: fig-voronoikmoy
-#| echo: false
-#| eval: true
-#| fig-cap: "Partitions de Voronoï pour les barycentres (cercles) obtenus dans la solution des $K$-moyennes. La ligne de démarcation qui sépare les groupes est linéaire."
-km1 <- kmeans(clusters, 
-              centers = 3, 
-              nstart = 10, 
-              iter.max = 25,
-              algorithm = "Lloyd")
-tesselation <- deldir::deldir(x = km1$centers[,1], 
-                              y = km1$centers[,2])
-# tesselation$rw <- c(0,20,0,20)
-tiles <- deldir::tile.list(tesselation)
-
-plot(clusters,
-     pch = 20,
-     xlab = "", 
-     ylab = "",
-     col = viridis::viridis(n = 3)[km1$cluster])
-plot(tiles, 
-     pch = 1, 
-     add = TRUE)
-```
-
-
+#### Valeurs initiales des prototypes  {-}
 
 Comme mentionné précédemment, les regroupements obtenus peuvent varier fortement en fonction des valeurs de départ: la @fig-kmoyenne-mauvais montre trois regroupements visibles avec une segmentation qui fusionne deux groupes apparents (gauche), et une solution plus sensée à droite. Une segmentation sera supérieure à une autre si elle a une plus petite valeur de la fonction objective de l'@eq-fobjKmoy: les points seront moins dispersés autour de leurs prototypes. 
 
@@ -435,27 +517,46 @@ g2 <- ggplot(data = DF,
 g2 + g1
 ```
 
-On peut également utiliser $K$-moyennes $++$, une variante algorithmique qui propose de choisir des barycentres éloignés les uns des autres (ce qui réduit typiquement le nombre d'itérations). Cette méthode d'initialisation sélectionne une observation au hasard et on l'assigne comme premier prototype, disons $\boldsymbol{\mu}_1$. Par la suite, on procède avec $k=2, \ldots, K$ aux étapes suivantes:
+La solution la plus simple est de choisir aléatoirement des coordonnées initiales pour les prototypes et de répéter la segmentation plusieurs fois, en choisissant à la fin celle qui a la plus petite valeur du critère objectif.
+
+On peut également choisir des valeurs suffisamment éloignées: l'algorithme des $K$-moyennes${}^{++}$ est une variante algorithmique qui propose de choisir des barycentres éloignés les uns des autres (ce qui réduit typiquement le nombre d'itérations). Cette méthode d'initialisation sélectionne une observation au hasard et on l'assigne comme premier prototype, disons $\boldsymbol{\mu}_1$. Par la suite, on procède avec $k=2, \ldots, K$ aux étapes suivantes:
 
 1. calcul de la distance carrée minimale entre l'observation $\mathbf{X}_i$ et les prototypes précédemment choisis,
 \begin{align*}
 p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i, \boldsymbol{\mu}_{k-1}; l_2)^2)\}
 \end{align*}
-2. Choisir la valeur initiale du $k$e prototype au hasard parmi les observations avec une probabilité de $p_i/\sum_{j} p_j$ pour l'observation $\mathbf{X}_i$.
+2. Choisir la valeur initiale du $k^{\text{e}}$ prototype au hasard parmi les observations avec une probabilité de $p_i/\sum_{j} p_j$ pour l'observation $\mathbf{X}_i$.
 
 À la fin, on obtiendra $K$ valeurs initiales qui serviront à l'initialisation. Ce faisant, on peut espérer ne pas avoir à faire plusieurs allocations aléatoires, puisque les valeurs de départ choisies sont raisonnablement éloignées les unes des autres.
 
+#### Nombre de regroupements  {-}
 
-L'autre paramètre crucial des $K$-moyennes est le nombre de regroupements, $K$. Il est difficile de savoir combien de regroupements sélectionner apriori, puisque la visualisation en haute dimension est difficile et on est souvent loin de la situation présentée dans la @fig-kmoyenne-mauvais. On pourrait envisager de rouler l'algorithme avec plusieurs valeurs de $K$ et de comparer les résultats, mais sur quelle base? La fonction objective de l'@eq-fobjKmoy représente la somme du carré des erreurs (SCE), soit la variabilité totale des observations des observations des différents groupes autour de leur barycentre. Cette mesure va méchaniquement diminuer à mesure que le nombre de regroupements augmente parce que le modèle aura plus d'opportunités pour réduire la variabilité inter-groupe. En revanche, si cette réduction est négligeable, on pourrait penser que l'ajout d'un groupe supplémentaire (qui implique plus de paramètres à estimer et plus de segments à interpréter) est faible.
+L'autre paramètre crucial des $K$-moyennes est le nombre de regroupements, $K$. Il est difficile de savoir combien de regroupements sélectionner apriori, puisque la visualisation en haute dimension est difficile et on est souvent loin de la situation présentée dans la @fig-kmoyenne-mauvais. On pourrait envisager de rouler l'algorithme avec plusieurs valeurs de $K$ et de comparer les résultats, mais sur quelle base? 
 
-On pourrait dans un premier temps tracer un diagramme de la somme du carré des erreurs en fonction de $K$ et cherche un point d'inflexion (coude) dans le graphique. Malheureusement, la valeur de la fonction objective diminue à mesure que l'on ajoute des groupes. Pour contrecarrer ce problème, on pourrait ajouter une pénalité à notre fonction objective. En effet, avec la distance Euclidienne carrée, il y a une analogie à faire avec un modèle de régression et on peut légitimement utiliser un critère d'information pour guider notre choix de $K$: le nombre de paramètres des $K$ moyennes est $Kp$, soit les valeurs des coordonnées des $K$ barycentres.
 
-Il faut garder en tête que, davantage qu'un critère mathématique, l'interprétabilité des regroupements est notre principale critère. Les critères d'information peuvent retourner trop ou pas assez de groupe: à titre d'exemple, le panneau de gauche de la @fig-coudekmoy montre un coude à $K=2$, mais il y avait visiblement trois regroupements, dont deux rapprochés.
+La fonction objective de l'@eq-fobjKmoy avec la distance Euclidienne représente la somme du carré des distances (SCD) entres les observations d'un groupe et leur barycentre, soit la variabilité totale des observations des $K$ différents groupes autour de leur barycentre,
+\begin{align*}
+\mathsf{SCD}_K = \mathsf{SCD}_{1,K} + \cdots + \mathsf{SCD}_{K,K}
+\end{align*}
+où la somme du carré des distances des observations du groupe $k$ (pour lesquelles $r_{.k}=1$)
+\begin{align*}
+\mathsf{SCD}_{k,K} &= \underset{\mbox{distance $l_2$ entre obs. du groupe $k$ et barycentre $k$}}{\sum_{i=1}^n r_{ik}\|\mathbf{X}_i -  \boldsymbol{\mu}_{k}\|_2}.
+\end{align*}
+La somme des carrés totales correspond à la somme du carré des distances au barycentre avec un seul regroupement, $\mathsf{SCT} = \mathsf{SCD}_{1}$.
+
+La valeur optimale de la somme du carré des distances mesure va mécaniquement diminuer à mesure que le nombre de regroupements augmente parce que le modèle aura plus d'opportunités pour réduire la variabilité intra-groupe, donc $\mathsf{SCD}_1 > \mathsf{SCD}_2 \cdots$. En pratique, cela peut ne pas être le cas si le minimum local est sous-optimal. Si la réduction de la somme du carré des distances est négligeable, on pourrait penser que la valeur ajoutée d'un groupe supplémentaire (qui implique plus de paramètres à estimer et plus de segments à interpréter) est faible.
+
+On peut calculer un coefficient de détermination, qui mesure pourcentage de variance expliquée, soit $R^2_K = 1-\mathsf{SCD}_K/\mathsf{SCT}$. De la même manière, on s'attend à une diminution du critère et on pourrait calculer le $R^2$ semi-partiel $(\mathsf{SCD}_{k} - \mathsf{SCD}_{k-1})/\mathsf{SCT}$ pour $k \geq 2$.^[Ces critères servent également pour les regroupement hiérarchiques avec le critère de Ward.]
+
+
+On pourrait aussi tracer un diagramme de la somme du carré des distances en fonction de $K$ en ajoutant une pénalité à notre fonction objective. En effet, avec la distance Euclidienne carrée, il y a une analogie à faire avec un modèle de régression et on peut légitimement utiliser un critère d'information pour guider notre choix de $K$: le nombre de paramètres est $Kp$, soit les valeurs des $p$ coordonnées des $K$ barycentres. On utilisera donc un critère d'information de type BIC.
+
+Il est possible que ces critères donne beaucoup plus de regroupements que ce que l'analyste est prêt(e) à envisager. Il faut garder en tête que, davantage qu'un critère mathématique, l'interprétabilité des regroupements est notre principale critère. Les critères d'information peuvent retourner trop ou pas assez de groupe: à titre d'exemple, le panneau de gauche de la @fig-coudekmoy montre la somme du carré des distances pour la @fig-kmoyenne-mauvais; on voit un coude à $K=2$, mais il y avait visiblement trois regroupements, dont deux rapprochés.
 
 
 ```{r}
 #| label: fig-coudekmoy
-#| fig-cap: "Valeur de la fonction objective (somme du carré des erreurs) en fonction du nombre de regroupements $K$."
+#| fig-cap: "Valeur de la fonction objective (somme du carré des distances) en fonction du nombre de regroupements $K$."
 #| eval: true
 #| echo: false
 nmax <- 8L
@@ -469,15 +570,211 @@ ggplot(data = groups,
       y = 0.5* SCE)) +
   geom_line() + 
   labs(y = "", 
-       subtitle = "Somme du carré des erreurs.") +
+       subtitle = "Somme du carré des distances.") +
   theme_classic()
 ```
 
 
+#### Mesure de distance {-}
+
+Toutes les distances $l_q$ peuvent être utilisées, mais le choix de la distance Euclidienne carrée est particulièrement commode et populaire^[La fonction objective s'apparente alors à la somme du carré des erreurs, et donc il y a une analogie à faire avec la vraisemblance d'un modèle Gaussien en dimension $p$ de covariance sphérique. Cela légitimise l'emploi de critères d'information pour le choix du nombre de regroupements.] entraîne une partition linéaire de l'espace, comme l'illustre la @fig-voronoikmoy. La solution du problème d'optimisation est explicite, ce qui accélère les calculs (les prototypes correspondent aux barycentres). Sauf indication contraire, on supposera dans ce qui suit que la distance entre un point et un prototype est calculée avec la distance Euclidienne au carré.
+
+
+
+```{r}
+#| label: fig-voronoikmoy
+#| echo: false
+#| eval: true
+#| fig-cap: "Partitions de Voronoï pour les barycentres (cercles) obtenus dans la solution des $K$-moyennes. La ligne de démarcation qui sépare les groupes est linéaire."
+set.seed(1234)
+km1 <- kmeans(clusters, 
+              centers = 3, 
+              nstart = 10, 
+              iter.max = 30,
+              algorithm = "Lloyd")
+tesselation <- deldir::deldir(x = km1$centers[,1], 
+                              y = km1$centers[,2])
+# tesselation$rw <- c(0,20,0,20)
+tiles <- deldir::tile.list(tesselation)
+
+plot(clusters,
+     pch = 20,
+     xlab = "", 
+     ylab = "",
+     col = viridis::viridis(n = 3)[km1$cluster])
+plot(tiles, 
+     pch = 1, 
+     add = TRUE)
+```
+
+
+
+
 #### Application en **R**
 
-Dans **R**, la fonction `kmeans` dans le paquet de base `stat` permet de faire l'analyse de regroupement. Elle ne prend pas en charge les valeurs manquantes. La fonction a plusieurs arguments, dont les coordonnées initiales des prototypes (`center`; cet argument peut également être un entier qui dicte le nombre de groupes), le nombre maximum d'itération de l'algorithme EM (`iter.max) et le nombre de fois qu'on redémarre l'algorithme avec des valeurs aléatoires (`nstart`).
+Dans **R**, la fonction `kmeans` dans le paquet de base `stat` permet de faire l'analyse de regroupement. Elle ne prend pas en charge les valeurs manquantes. La fonction a plusieurs arguments, dont les coordonnées initiales des prototypes (`center`; cet argument peut également être un entier qui dicte le nombre de groupes), le nombre maximum d'itération de l'algorithme EM (`iter.max`) et le nombre de fois qu'on redémarre l'algorithme avec des valeurs aléatoires (`nstart`).
 
+
+On va estimer le modèle en faisant varier le nombre de
+regroupements avec pour chaque valeur de $K$ 10 ensembles de valeurs de départ aléatoires.
+
+```{r}
+#| eval: true
+#| echo: true
+set.seed(60602)
+kmoy <- list()
+ngmax <- 10L
+for(i in seq_len(ngmax)){
+ kmoy[[i]] <- kmeans(donsmult_std,
+                     centers = i,
+                     nstart = 10)
+}
+```
+
+Il suffit ensuite de choisir le nombre de regroupements voulus. Rappelez-vous que le résultat des k-moyennes
+ est aléatoire (parce que les valeurs initiales des prototypes le sont) et les étiquettes peuvent être permutées d'une fois à l'autre même si les regroupements sont les identiques.
+ 
+À des fins d'illustration, regardons la solution avec $K=5$ regroupements. On pourrait également utiliser l'algorithme $K$-moyennes${}^{++}$ avec `kcca` du paquet `flexclust`. Le code ci-dessous montre comment modifier la fonction de distance.
+
+
+```{r}
+#| eval: false
+#| echo: true
+set.seed(60602)
+kmed5 <- flexclust::kcca(
+  x = donsmult_std,
+  k = 5,
+  family = flexclust::kccaFamily("kmedians"),
+  control = list(initcent = "kmeanspp"))
+# Vérifier répartition
+kmed5@clusinfo
+# Coordonnées des K-médianes (standardisées)
+t(t(kmed5@centers)*dm_std + dm_moy)
+# Étiquettes
+kmed5@cluster
+```
+
+
+Il est toujours utile de regarder la taille des regroupements pour voir si on ne se trouve pas avec des regroupements fortements débalancés.
+
+```{r}
+#| eval: true
+#| echo: true
+kmoy5 <- kmoy[[5]]
+# Regarder la répartition
+kmoy5$size
+```
+
+On peut étudier les coordonnées des prototypes (par exemple, avec `kmoy5$centers`), mais ici les données standardisées ne sont pas directement interprétables. On procède plutôt au calcul des statistiques descriptives des profils rapportées dans le @tbl-kmoy5resume.
+
+```{r}
+#| eval: false
+#| echo: true
+donsmult |>
+  group_by(groupe = kmoy5$cluster) |>
+  summarise_all(mean)
+```
+
+
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: tbl-kmoy5resume
+#| tbl-cap: "Moyenne des variables explicatives par segment (segmentation avec $K$-moyennes et cinq regroupements)."
+kmoy5_tab <- donsmult |>
+  dplyr::group_by(groupe = kmoy5$cluster) |>
+  dplyr::summarise_all(mean) |> 
+  t() |>
+  as.data.frame()
+kmoy5_tab[] = lapply(kmoy5_tab, 
+                     function(x){sprintf("%.2f", x)})
+rownames(kmoy5_tab)[1] <- "décompte"
+kmoy5_tab[1,] <- as.character(table(kmoy5$cluster))
+knitr::kable(kmoy5_tab, 
+             align = "r", 
+             row.names = TRUE, 
+             col.names = 1:5) |>
+      kableExtra::kable_styling()
+```
+
+Les regroupements obtenus sont interprétables:
+
+- Groupe 1: Petits donateurs, faible nombre de dons. N'ont pas donné depuis longtemps. Refus fréquents et délai entre dons élevés
+- Groupe 2: Grands donateurs fidèles: plus petit groupe. Ces personnes ont fait plusieurs dons, leur valeur maximale est élevée. N'ont pas donné récemment.
+- Groupe 3: Petits donateurs récidivistes. Dons plus élevés que la moyenne mais beaucoup de dons de faible valeur et peu fréquents.
+- Groupe 4: Petits nouveaux. Moins d'ancienneté, dons fréquents et refus fréquents relativement à l'ancienneté.
+- Groupe 5: Petits donateurs inactifs. Plutôt anciens, plusieurs refus.
+
+On peut représenter graphiquement les regroupements obtenus sur les premières composantes principales avec les deux mesures de dissemblance.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-acpkmoy5
+#| fig-cap: "Nuage de points des deux premières composantes principales des observations de dons multiples avec les étiquettes des regroupements obtenus selon la méthodes des $K$-moyennes et $K$-médianes avec $K=5$ regroupements."
+set.seed(60602)
+acp <- princomp(donsmult_std)
+kmed5 <- flexclust::kcca(
+  x = donsmult_std,
+  k = 5,
+  family = flexclust::kccaFamily("kmedians"),
+  control = list(initcent = "kmeanspp"))
+df <- data.frame(x = acp$scores[,1],
+           y = acp$scores[,2],
+           emoy = factor(kmoy[[5]]$cluster),
+           emed = factor(kmed5@cluster))
+g1 <- ggplot(data = df,
+             aes(x = x, y = y, col = emoy)) +
+  geom_point(alpha = 0.5) +
+  labs(x = "composante principale 1",
+       y = "composante principale 2",
+       subtitle = "k-moyennes") +
+  theme(legend.position = "none")
+g2 <- ggplot(data = df,
+             aes(x = x, y = y, col = emed)) +
+  geom_point(alpha = 0.5) +
+  labs(x = "composante principale 1",
+       y = "composante principale 2",
+       subtitle = "k-médianes") +
+  theme(legend.position = "none")
+g1 + g2
+```
+
+Avec les $K$-médianes, les personnes qui ont fait des dons plus élevés sont fusionnés avec d'autres personnes qui ont fait des dons moins élevés et les groupes sont plus de taille comparable. Selon l'objectif des regroupements, cela peut être avantageux, mais cibler les donateurs les plus généreux semble plus logique dans le contexte.
+
+On peut étudier l'impact de l'augmentation du nombre de groupes à l'aide de différents critères. Le premier est la somme des carrés des distances intra-groupes.
+
+```{r}
+#| eval: true
+#| echo: true
+#| label: fig-homogeneite
+#| fig-cap: "Graphiques de l'homogénéité ($R$ carré et $R$ carré semi-partiel)."
+scd <- sapply(kmoy, function(x){x$tot.withinss})
+# Graphiques
+homogene <- homogeneite(scd)
+bic_kmoy <- sapply(kmoy, BIC)
+```
+
+On peut aussi observer directement la diminution de la somme du carré des erreurs en incluant une pénalité. Ici, tous les critères pointent vers un nombre de regroupements plus élevé que 10, mais ce peut être trop.
+
+```{r}
+#| label: fig-bickmoy
+#| fig-cap: "Coefficient BIC pour les $K$-moyennes en fonction du nombre de regroupements."
+#| eval: true
+#| echo: false
+bic_kmoy <- sapply(kmoy, BIC)
+ggplot(data = data.frame(bic = bic_kmoy,
+                         ng = seq_along(kmoy)),
+       mapping = aes(x = ng, y = bic)) +
+  geom_line() +
+  scale_x_continuous(breaks = seq_along(kmoy)) +
+  labs(x = "nombre de regroupements",
+       y = "",
+       subtitle = "Critère BIC (somme du carré des distances)") +
+  theme_classic()
+```
 
 
 ### $K$-médoides
@@ -498,7 +795,9 @@ L'algorithme CLARA, décrit dans @Kaufman.Rousseeuw:1990, réduit le coût de ca
 
 
 
-La qualité des regroupements est obtenue en utilisant la moyenne des distances entre les regroupements et leurs médoïdes. On peut également tracer un graphique des silhouettes: pour chaque observation, on calcule la moyenne des dissimilarités entre l'observation et celles de chaque regroupement. On spécifie ensuite la distance minimale entre l'observation $\mathbf{X}_i$ et son regroupement, disons $a_i$, et la distance minimale pour les autres regroupements $b_i$. La valeur de la silhouette est simplement $s_i=(b_i-a_i)/\max\{a_i, b_i\}$. Il est possible que la silhouette $s_i$ soit négative: cela indique généralement des observations mal regroupées. De bons regroupements seront obtenus si la silhouette est élevée: on s'attend, si les groupes sont très éloignées les uns des autres, à avoir des profils plus uniformes et une silhouette moyenne plus élevée.
+La qualité des regroupements est obtenue en utilisant la moyenne des distances entre les regroupements et leurs médoïdes. On peut également tracer un graphique des silhouettes: pour chaque observation, on calcule la moyenne des dissimilarités entre l'observation $\mathrm{X}_i$ et celles de chaque regroupement, disons $a_i$. On calcule de la même manière la distance moyenne netre $\mathrm{X}_i$ et chaque autre regroupement et on retient le minimum de ces distances, $b_i$. 
+
+La valeur de la silhouette est simplement $s_i=(b_i-a_i)/\max\{a_i, b_i\}$. Il est possible que la silhouette $s_i$ soit négative: cela indique généralement des observations mal regroupées. De bons regroupements seront obtenus si la silhouette est élevée: on s'attend, si les groupes sont très éloignées les uns des autres, à avoir des profils plus uniformes et une silhouette moyenne plus élevée.
 
 ```{r}
 #| eval: true
@@ -536,6 +835,46 @@ Voici quelques avantages et inconvénients des $K$-médoides.
 - la fonction objective est moins impactée par les extrêmes.
 - le coût de calcul est prohibitif avec des mégadonnées.
 
+On estime avec nos données de dons multiples les regroupements. Étant donné la taille conséquente de la base de données, il est préférable d'utiliser l'algorithme CLARA (*Clustering large applications*).
+
+```{r}
+#| eval: true
+#| echo: true
+kmedoide <- list()
+set.seed(60602)
+for(k in seq_len(ngmax)){
+  # Algorithme quadratique en sampsize
+kmedoide[[k]] <- cluster::clara(x = donsmult_std,
+               k = k,
+               sampsize = 500,
+               metric = "euclidean", # distance,
+               #cluster.only = TRUE, # ne conserver que étiquettes
+               rngR = TRUE, # germe aléatoire depuis R
+               pamLike = TRUE, # même algorithme que PAM
+               samples = 10) #nombre de répétitions
+}
+```
+
+Comme les $K$-moyennes, on fera plusieurs essais pour trouver de bonnes valeurs de départ. On peut tracer le profil des silhouettes (@fig-clarasilhouette)
+
+```{r}
+#| label: fig-clarasilhouette
+#| eval: true
+#| echo: true
+#| fig-cap: "Silhouettes pour les données de dons multiples avec l'algorithme CLARA pour $K=4$ regroupements."
+plot(factoextra::fviz_silhouette(kmedoide[[4]]))
+```
+
+Puisque les prototypes (médoïdes) sont des observations, on peut simplement extraire leur identifiant. La sortie inclut plusieurs éléments dont la taille des regroupements, la valeur du critère PAM, etc.
+
+```{r}
+#| eval: false
+#| echo: true
+medoides_orig <- donsmult[kmedoide[[4]]$i.med,]
+medoides_orig
+# Taille des regroupements
+kmedoide[[4]]$clusinfo
+```
 
 ### Mélange de modèles
 
@@ -581,10 +920,10 @@ knitr::include_graphics("figures/mclust5-parametrization.png")
 Voici quelques avantages et inconvénients des mélanges de modèles Gaussiens
 
 - cette approche est plus flexible que les $K$-moyennes.
-- l'ajout d'une composante uniforme permet de gérer les aberrances (pas supporté par `mclust`).
+- l'ajout d'une composante uniforme permet de gérer les aberrances (supporté par `mclust`).
 - l'algorithme EM garantie la convergence à un minimum local (comme pour les $K$-moyennes)
-- on obtient une assignation probabiliste plutôt que rigide
-- le coût de calcul est élevé et dépend de la dimension du problème (complexité en $p$)
+- on obtient une assignation probabiliste plutôt que rigide, également pour la classification
+- le coût de calcul est plus élevé que les $K$-moyennes - le nombre de paramètre des matrices de covariance augmente rapidement avec la dimension $p$
 
 
 #### Hyperparamètres
@@ -593,6 +932,60 @@ Pour le mélange de modèle, on doit fixer apriori le nombre de groupes $K$, la 
 
 La forme des ellipsoïdes est un compromis entre simplicité (d'estimation) et nombre de paramètres: un modèle plus flexible sera plus difficile à estimer et nécessitera plus de temps de calcul et un plus grand nombre d'échantillon. En petite dimension, il peut être utile d'effectuer une visualisation préalable pour déterminer quel type de modèle serait suffisant. Règle générale, il faut aussi considérer le nombre de paramètres à estimer (qui dépend de $p$) et le nombre d'observations par regroupement. Comme tous les modèles sont estimés avec la méthode du maximum de vraisemblance, on peut toujours ajuster tous les types de structures de covariance pour un nombre de regroupements $K$ donné et retourner les critères d'information (BIC) pour sélectionner le meilleur mélange de modèles. La fonction `mclustBIC` du paquet `mclust` permet de calculer ces modèles et la méthode `summary` retourne les trois meilleurs modèles selon le critère d'information.
 
+
+#### Paquet `mclust`
+
+La stratégie de base du paquet `mclust` [@mclust5] est d'ajuster des mélanges de modèles gaussiens avec plusieurs structures de covariance en faisant varier le nombre de regroupements. Le modèle sélectionné parmi tous les candidats est celui qui a la plus petite valeur du critère BIC: ce dernier dépend de la qualité de  l'ajustement et la pénalité prend en compte le nombre de paramètres de covariance, en plus des moyennes. Il est possible d'ajouter une composantes pour le bruit, de manière à éviter que les valeurs aberrantes impactent négativement la segmentation.
+
+Une fois le modèle obtenu, plusieurs fonctionalités sont disponibles pour représenter graphiquement les ellipses des modèle pour chaque paire de variable, les nuages de points des paires de variables avec différents symboles et couleurs pour les regroupements, etc.
+
+```{r}
+#| cache: true
+#| eval: true
+#| echo: true
+## Mélanges de modèles gaussiens
+set.seed(60602)
+mmg <- mclust::Mclust(data = donsmult_std,
+       G = 1:10,
+       # Ajouter composante uniforme
+       #  pour bruit (aberrances)
+       initialization = list(noise = TRUE))
+# Résumé de la segmentation
+summary(mmg)
+```
+
+On peut obtenir les étiquettes (avec `0` pour le bruit) avec `mmg$classification`. Le graphique du critère d'information Bayésien (BIC) montre le négatif: on cherche donc la structure de covariance et le nombre qui maximise $-\mathsf{BIC}$.
+
+```{r}
+#| eval: true
+#| cache: true
+#| echo: true
+#| label: fig-mclustbic
+#| fig-cap: "Valeur du négatif du critère d'information Bayésien pour les mélanges de modèles gaussiens selon le nombre de regroupements et la structure de covariance."
+plot(mmg, what = "BIC")
+```
+
+Avec notre grande base de données, le modèle identifie neuf regroupements et un volume variable. On peut utiliser des techniques de réduction de la dimension pour obtenir une représentation graphique.
+
+```{r}
+#| eval: true
+#| echo: true
+#| label: fig-classifreducmclust
+#| out-width: '90%'
+#| fig-width: 10
+#| fig-height: 5
+#| cache: true
+#| error: true
+#| message: false
+#| fig-cap: "Projection des observations, colorées par regroupement (gauche) et structure des regroupements avec ellipsoides de confiance (droite)."
+# Matrice des nuage de points (paires de variables)
+# plot(mmg, what = "classification")
+# Réduction de la dimension
+reduc_dim_mmg <- mclust::MclustDR(mmg)
+par(mfrow = c(1,2)) # graphiques côte-à-côte
+plot(reduc_dim_mmg, what = "contour")
+plot(reduc_dim_mmg, what = "scatterplot")
+```
 
 ### Méthodes basées sur la densité
 
@@ -863,6 +1256,8 @@ Voici quelques particularités des méthodes de regroupement hiérarchique.
 - les méthodes d'arborescence sont faciles à expliquer
 - le nombre de groupes n'a pas à être spécifié apriori (une seule estimation)
 - le coût de calcul est prohibitif, avec une complexité quadratique de $\mathrm{O}(n^2)$ pour la méthode de liaison simple et autrement $\mathrm{O}(n^3)$ pour la plupart des autres fonctions de liaison.
+
+
 
 
 

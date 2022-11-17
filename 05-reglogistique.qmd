@@ -636,15 +636,13 @@ dbm_class <- dbm |>
   dplyr::filter(test == 0) |>
   dplyr::mutate(yachat = factor(yachat))
 set.seed(202209)
-cv_glm <- 
-  caret::train(form = formule,
-             data = dbm_class,
-             method = "glm",
-             family = binomial(link = "logit"),
-             trControl = caret::trainControl(
-               method = "cv",
-               number = 10))
-predprob <- predict(cv_glm, type = "prob")[,1]
+predprob <- hecmulti::predvc(
+  modele = glm(formula = formule, 
+               data = dbm_class, 
+               family = binomial),
+  K = 10, #nombre de plis
+  nrep = 1,
+  type = "response")
 classif <- with(dbm, yachat[test == 0])
 # Tableau de la performance
 hecmulti::perfo_logistique(
@@ -988,8 +986,8 @@ est la courbe lift (sic) (en anglais, _lift chart_). Cette courbe est obtenue en
 #| eval: false
 #| echo: true
 tab_lift <- hecmulti::courbe_lift(
-  prob = 1-predprob,
-  resp = classif, 
+  prob = predprob, # probabilité de succès (Y=1)
+  resp = classif, # variable binaire réponse 0/1
   plot = TRUE)
 tab_lift
 ```
@@ -1004,22 +1002,17 @@ tab_lift
 data(dbm, package = "hecmulti")
 formule <- formula("yachat ~ x1 + x2 + x3 +
                 x4 + x5 + x6 + x7 + x8 + x9 + x10")
-dbm_class <- dbm |>
-  dplyr::filter(test == 0) |>
-  dplyr::mutate(yachat = factor(yachat))
 set.seed(202209)
-cv_glm <- 
-  caret::train(form = formule,
-             data = dbm_class,
-             method = "glm",
-             family = binomial(link = "logit"),
-             trControl = caret::trainControl(
-               method = "cv",
-               number = 10))
-predprob <- predict(cv_glm, type = "prob")[,1]
+predprob <- hecmulti::predvc(
+  modele = glm(formula = formule,
+               data = dbm[dbm$test == 0,],
+               family = binomial),
+   K = 10, #nombre de plis
+   nrep = 1,
+   type = "response")
 classif <- with(dbm, yachat[test == 0])
 tab_lift <- hecmulti::courbe_lift(
-  prob = 1-predprob,
+  prob = predprob,
   resp = classif, 
   plot = TRUE)
 ```
