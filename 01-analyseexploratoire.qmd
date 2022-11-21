@@ -145,7 +145,7 @@ Puisque qu'on groupe les observations en classe pour tracer l'histogramme, il es
 renfe |>
   subset(tarif == "Promo") |>
   ggplot(aes(x = prix)) + 
-    geom_histogram(aes(y = ..density..), 
+    geom_histogram(aes(y = after_stat(density)), 
                    bins = 30) +
     geom_rug(sides = "b") + 
     labs(x = "prix de billets au tarif Promo (en euros)", 
@@ -267,7 +267,7 @@ renfe |>
 #| out-width: '100%'
 ggplot(data = renfe, 
        mapping = aes(x = prix, 
-                     y=..density.., 
+                     y=after_stat(density), 
                      fill = tarif)) +
     geom_histogram(binwidth = 5) +
     labs(x = "prix (en euros)", 

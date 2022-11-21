@@ -334,13 +334,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>Puisque les variables continues peuvent prendre autant de valeurs distinctes qu’il y a d’observations, on ne peut simplement compter le nombre d’occurrence par valeur unique. On regroupera plutôt dans un certain nombre d’intervalle, en discrétisant l’ensemble des valeurs en classes pour obtenir un histogramme. Le nombre de classes dépendra du nombre d’observations si on veut que l’estimation ne soit pas impactée par le faible nombre d’observations par classe: règle générale, le nombre de classes ne devrait pas dépasser <span class="math inline">\(\sqrt{n}\)</span>, où <span class="math inline">\(n\)</span> est le nombre d’observations de l’échantillon. On obtiendra la fréquence de chaque classe, mais si on normalise l’histogramme (de façon à ce que l’aire sous les bandes verticales égale un), on obtient une approximation discrète de la fonction de densité. Faire varier le nombre de classes permet parfois de faire apparaître des caractéristiques de la variable (notamment la multimodalité, l’asymmétrie et les arrondis).</p>
 <p>Puisque qu’on groupe les observations en classe pour tracer l’histogramme, il est difficile de voir l’étendue des valeurs que prenne la variable: on peut rajouter des traits sous l’histogramme pour représenter les valeurs uniques prises par la variable, tandis que la hauteur de l’histogramme nous renseigne sur leur fréquence relative.</p>
-<div class="cell" data-hash="01-analyseexploratoire_cache/html/fig-histrenfe_28e6062e97b78d9d2580e118c1efc3eb">
+<div class="cell" data-hash="01-analyseexploratoire_cache/html/fig-histrenfe_22762cd9100aec5c90976871231b1dc4">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>renfe <span class="sc">|&gt;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">subset</span>(tarif <span class="sc">==</span> <span class="st">"Promo"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> prix)) <span class="sc">+</span> </span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> ..density..), </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), </span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">bins =</span> <span class="dv">30</span>) <span class="sc">+</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_rug</span>(<span class="at">sides =</span> <span class="st">"b"</span>) <span class="sc">+</span> </span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"prix de billets au tarif Promo (en euros)"</span>, </span>
@@ -464,12 +464,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-<div class="cell" data-hash="01-analyseexploratoire_cache/html/fig-renfe-aed7_99607d2e895df319d1898b4256b8356a">
+<div class="cell" data-hash="01-analyseexploratoire_cache/html/fig-renfe-aed7_a3181baf4f4df23aa73cd9726b6c1b2b">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> renfe, </span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> prix, </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">y=</span>..density.., </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">y=</span><span class="fu">after_stat</span>(density), </span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">fill =</span> tarif)) <span class="sc">+</span></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"prix (en euros)"</span>, </span>
