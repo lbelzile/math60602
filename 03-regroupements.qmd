@@ -347,8 +347,10 @@ clusters <- rbind(
   0.5 + qgamma(p = copula::rCopula(n = 300, copula = copula::claytonCopula(param = 5)), shape = 8, scale = 1)
   )
 colnames(clusters) <- c("variable 1", "variable 2")
-animation::ani.options(ani.dev = "png",
-            ani.type = "png")
+animation::ani.options(
+   ani.dev = "png",
+   ani.type = "png",
+   interval = 3)
 animation::kmeans.ani(
   x = clusters,
   centers = 3,
@@ -601,7 +603,7 @@ plot(clusters,
      pch = 20,
      xlab = "", 
      ylab = "",
-     col = viridis::viridis(n = 3)[km1$cluster])
+     col = viridis::viridis(n = 3)[c(1,3,2)][km1$cluster])
 plot(tiles, 
      pch = 1, 
      add = TRUE)
@@ -634,7 +636,7 @@ for(i in seq_len(ngmax)){
 Il suffit ensuite de choisir le nombre de regroupements voulus. Rappelez-vous que le résultat des k-moyennes
  est aléatoire (parce que les valeurs initiales des prototypes le sont) et les étiquettes peuvent être permutées d'une fois à l'autre même si les regroupements sont les identiques.
  
-À des fins d'illustration, regardons la solution avec $K=5$ regroupements. On pourrait également utiliser l'algorithme $K$-moyennes${}^{++}$ avec `kcca` du paquet `flexclust`. Le code ci-dessous montre comment modifier la fonction de distance.
+À des fins d'illustration, regardons la solution avec $K=5$ regroupements. On pourrait également utiliser l'algorithme $K$-moyennes${}^{++}$ avec `kcca` du paquet `flexclust`. Le code ci-dessous montre le résultat avec la distance de Manhattan ($K$-médianes)
 
 
 ```{r}
@@ -923,7 +925,8 @@ Voici quelques avantages et inconvénients des mélanges de modèles Gaussiens
 - l'ajout d'une composante uniforme permet de gérer les aberrances (supporté par `mclust`).
 - l'algorithme EM garantie la convergence à un minimum local (comme pour les $K$-moyennes)
 - on obtient une assignation probabiliste plutôt que rigide, également pour la classification
-- le coût de calcul est plus élevé que les $K$-moyennes - le nombre de paramètre des matrices de covariance augmente rapidement avec la dimension $p$
+- le coût de calcul est plus élevé que les $K$-moyennes 
+- le nombre de paramètre des matrices de covariance augmente rapidement avec la dimension $p$
 
 
 #### Hyperparamètres
@@ -1076,7 +1079,7 @@ Les deux paramètres, $M$ et $\epsilon$, sont positivement corrélés: si on aug
 Pour spécifier le nombre minimal d'observations voisines $M$ pour créer un point central, il faut aussi considérer la dimension $p$ des variables explicatives: la recommandation est de requérir au moins $p+1$ points dans le voisinage. Le choix du rayon peut être plus difficile à déterminer: . Une option est de fixer le nombre de plus proches voisins $M$ et de considérer la distance entre chaque observation et ses plus proches voisins: au sein d'un regroupement, on s'attend à ce que cette distance soit petite. Cela permettra également de déterminer un seuil acceptable pour $\epsilon$ pour éviter que trop d'observations soient isolées. 
 
 
-La fonction `kNNdistplot` du paquet `dbscan` permet de tracer un graphique de la distance moyenne des $k$ plus proches voisins pour chaque observation: en prenant $k=M-1$, on peut calculer la distance entre le $k$ plus proche voisin de chaque observation et ordonner ces distances. La recommandation est de choisir $\epsilon$ en prenant une distance avant le coude qui détermine
+La fonction `kNNdistplot` du paquet `dbscan` permet de tracer un graphique de la distance moyenne des $k$ plus proches voisins pour chaque observation: en prenant $k=M-1$, on peut calculer la distance entre le $k$ plus proche voisin de chaque observation et ordonner ces distances. La recommandation est de choisir $\epsilon$ en prenant une distance où la plupart des observations ne sont pas voisines (critère du coude).
 
 ```{r}
 #| label: fig-dbscan2
