@@ -385,7 +385,7 @@ h(t) = - \frac{\mathrm{d} \ln\{S(t)\}}{\mathrm{d} t}, \qquad \qquad S(t) = \exp 
 <p>L’estimateur nonparamétrique le plus couramment utilisé pour l’estimation de la fonction de survie en présense de censure à droite est l’estimateur de Kaplan–Meier. De plus, cette méthode est nonparamétrique en ce sens qu’on ne suppose aucun modèle et qu’on suppose uniquement que la censure est non-informative.</p>
 <p>Si l’échantillon ne contient aucune observation censurée (on a des temps exacts pour tous les sujets), l’estimateur de Kaplan–Meier de la fonction de survie à un temps <span class="math inline">\(t\)</span> donné est alors simplement la proportion des observations dans l’échantillon qui possède un temps de survie supérieur à <span class="math inline">\(t\)</span>. Par convention, on considère qu’une observation censurée à droite faisait partie de l’ensemble d’observations à risque au temps de censure observé.</p>
 <p>On considère l’exemple des temps d’abonnement pour illustrer le concept. L’estimation de la fonction de survie selon la méthode Kaplan–Meier est obtenue grâce aux commandes suivantes:</p>
-<div class="cell" data-hash="06-survie_cache/html/survie1_a8c07111e11bdd562b255cc160e12d3d">
+<div class="cell" data-hash="06-survie_cache/html/survie1_426bb61cbfd7682d1aaa33ab199ce8d7">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(survie1, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimateur de Kaplan-Meier</span></span>
@@ -394,14 +394,13 @@ h(t) = - \frac{\mathrm{d} \ln\{S(t)\}}{\mathrm{d} t}, \qquad \qquad S(t) = \exp 
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># "0" pour censuré à droite, "1" pour événement</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>kapm <span class="ot">&lt;-</span> </span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">survfit</span>(<span class="fu">Surv</span>(temps, censure) <span class="sc">~</span> <span class="dv">1</span>, </span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">type =</span> <span class="st">"kaplan-meier"</span>, </span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">conf.type =</span> <span class="st">"log"</span>, </span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> survie1)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(kapm)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(kapm)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(kapm, </span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"fonction de survie"</span>, </span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"temps"</span>) </span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">conf.type =</span> <span class="st">"log"</span>, </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> survie1)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(kapm)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(kapm)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(kapm, </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"fonction de survie"</span>, </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"temps"</span>) </span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>La fonction résumé (<code>summary</code>) renvoit l’estimation de la fonction de survie pour chaque temps d’échec (événement): l’estimateur est indéfini à ces valeurs. Le <a href="#tbl-survie1-tableau">Tableau&nbsp;<span>6.1</span></a> offre une sortie (tronquée) du résumé, modifié pour mieux illustrer les changements. L’estimation de la probabilité que le temps d’abonnement soit supérieur à 30 semaines est <span class="math inline">\(\widehat{S}(30)=0.986\)</span>.</p>
 <div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-survie1-tableau_ef80f22590a4082a3b14df2e0d73e61b">
