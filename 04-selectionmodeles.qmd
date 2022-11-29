@@ -3,7 +3,9 @@
 
 ```{r}
 #| label: setup-section4
-#| include: false
+#| eval: true
+#| echo: false
+#| results: "hide"
 #| message: false
 #| warning: false
 # automatically create a bib database for R packages
@@ -165,7 +167,6 @@ file <- "https://lbelzile.bitbucket.io/MATH60602/selection1_train.sas7bdat"
 train <- haven::read_sas(data_file = file)
 file <- "https://lbelzile.bitbucket.io/MATH60602/selection1_test.sas7bdat"
 test <- haven::read_sas(data_file = file)
-library(ggplot2)
 print(ggplot(data = train, mapping = aes(x=x,y=y)) +
         geom_point())
 ```
@@ -200,7 +201,6 @@ return(accu/n)
 EQM <- matrix(0, nrow = 10, ncol = 7)
 EQMcv <- matrix(0, nrow = 10, ncol = 100)
 suppressPackageStartupMessages(library(caret))
-library(ggplot2)
 for(i in 1 :10){
   set.seed(i*1000)
   # Créer le modèle avec une chaîne de caractère pour le polynôme

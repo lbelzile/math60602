@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.1.163">
+<meta name="generator" content="quarto-1.2.11">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -260,6 +260,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
+<div class="cell" data-hash="04-selectionmodeles_cache/html/setup-section4_b3b72ea8ee264e8c48259e766fcc37d1">
+
+</div>
 <section id="introduction" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">4.1</span> Introduction</h2>
 <p>Ce chapitre présente des principes, outils et méthodes très généraux pour choisir un « bon » modèle. Nous allons principalement utiliser la régression linéaire pour illustrer les méthodes en supposant que tout le monde connaît ce modèle de base. Les méthodes présentées sont en revanche très générales et peuvent être appliquées avec n’importe quel autre modèle (régression logistique, arbres de classification et régression, réseaux de neurones, analyse de survie, etc.)</p>
@@ -286,7 +289,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Il est préférable d’avoir un modèle un peu trop complexe qu’un modèle trop simple. Plaçons-nous dans le contexte de la régression linéaire et supposons que le vrai modèle est inclus dans le modèle qui a été ajusté. Il y a donc des variables en trop dans le modèle qui a été ajusté: ce dernier est dit surspécifié.</p>
 <p>Par exemple, supposons que le vrai modèle est <span class="math inline">\(Y=\beta_0+\beta_1X_1+\varepsilon\)</span> mais que c’est le modèle <span class="math inline">\(Y=\beta_0+\beta_1X_1+\beta_2X_2+\varepsilon\)</span> qui a été ajusté. Dans ce cas, règle générale, les estimateurs des paramètres et les prédictions provenant du modèle sont sans biais. Mais leurs variances estimées seront un peu plus élevées car on estime des paramètres pour des variables superflues.</p>
 <p>Supposons à l’inverse qu’il manque des variables dans le modèle ajusté et que le modèle ajusté est sous-spécifié. Par exemple, supposons que le vrai modèle est <span class="math inline">\(Y=\beta_0+\beta_1X_1+\beta_2X_2+\varepsilon\)</span>, mais que c’est le modèle <span class="math inline">\(Y=\beta_0+\beta_1X_1+\varepsilon\)</span> qui est ajusté. Dans ce cas, généralement, les estimateurs des paramètres et les prédictions sont biaisés.</p>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/specification-modele_dcb7da61406be0c4f5865dab1d180b76">
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/specification-modele_d19cb817a19e1044fb5ab5584db58e68">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simuler des observations d'un modèle linéaire</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> 200L</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Variables explicatives bidons</span></span>
@@ -307,29 +310,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">#  aux vraies valeurs</span></span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Vérifier si ces dernières se trouvent</span></span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">#  dans l'intervalle de confiance</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(mod_1a) <span class="co">#coefficients</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(Intercept)          X1 
-  22.617487    2.003719 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(mod_1a) <span class="co">#intervalles de confiance</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                2.5 %    97.5 %
-(Intercept) 21.872043 23.362931
-X1           1.801284  2.206154</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(mod_2a)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(Intercept)          X1          X2 
-  19.984337    2.027571    5.014782 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(mod_2a)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                2.5 %    97.5 %
-(Intercept) 19.664527 20.304148
-X1           1.950967  2.104175
-X2           4.727644  5.301919</code></pre>
-</div>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(mod_1a) <span class="co">#coefficients</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="do">## (Intercept)          X1 </span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="do">##        22.6         2.0</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(mod_1a) <span class="co">#intervalles de confiance</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="do">##             2.5 % 97.5 %</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="do">## (Intercept)  21.9  23.36</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="do">## X1            1.8   2.21</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(mod_2a)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="do">## (Intercept)          X1          X2 </span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="do">##       19.98        2.03        5.01</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(mod_2a)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="do">##             2.5 % 97.5 %</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="do">## (Intercept) 19.66   20.3</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="do">## X1           1.95    2.1</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="do">## X2           4.73    5.3</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Ainsi, il est généralement préférable d’avoir un modèle légèrement surspécifié qu’un modèle sous-spécifié. Plus généralement, il est préférable d’avoir un peu trop de variables dans le modèle que de prendre le risque d’omettre une ou plusieurs variables importantes. Il faut faire attention et ne pas tomber dans l’excès et avoir un modèle trop complexe (avec trop de variables inutiles) car il pourrait souffrir de surajustement (<em>over-fitting</em>). Les exemples qui suivent illustreront ce fait.</p>
 <section id="surajustement" class="level3" data-number="4.3.1">
@@ -355,7 +350,7 @@ X2           4.727644  5.301919</code></pre>
 <h3 data-number="4.3.3" class="anchored" data-anchor-id="présentation-de-lexemple"><span class="header-section-number">4.3.3</span> Présentation de l’exemple</h3>
 <p>Cet exemple simple sur le choix d’un modèle polynomial en régression linéaire servira à illustrer le fait qu’on ne peut utiliser directement les mêmes données qui ont servi à ajuster un modèle pour évaluer sa performance.</p>
 <p>Nous disposons de 100 observations sur une variable cible <span class="math inline">\(Y\)</span> et d’une seule variable explicative <span class="math inline">\(X\)</span> dans la base de données <code>selection1_train</code>. Nous voulons considérer des modèles polynomiaux (en <span class="math inline">\(X\)</span>) afin d’en trouver un bon pour prédire <span class="math inline">\(Y\)</span>. Un modèle polynomial est un modèle de la forme <span class="math inline">\(Y=\beta_0 + \beta_1X+\cdots+\beta_kX^k+\varepsilon\)</span>. Le cas <span class="math inline">\(k=1\)</span> correspond à un modèle linéaire simple, <span class="math inline">\(k=2\)</span> à un modèle cubique, <span class="math inline">\(k=3\)</span> à un modèle cubique, etc. Notre but est de déterminer l’ordre (<span class="math inline">\(k\)</span>) du polynôme qui nous donnera un bon modèle. Voici d’abord le graphe de ces 100 observations de l’échantillon d’apprentissage.</p>
-<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/fig-donneestest_54fc45539020a15b22f2df6bbe2ee419">
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/fig-donneestest_e7da16c68353ee58023d30750e9dd21e">
 <div class="cell-output-display">
 <div id="fig-donneestest" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -367,10 +362,10 @@ X2           4.727644  5.301919</code></pre>
 </div>
 <p>Ces données ont été obtenues par simulation et le vrai modèle sous-jacent (celui qui a généré les données) est le modèle cubique, c’est-à-dire le modèle d’ordre <span class="math inline">\(k=3\)</span>.</p>
 <p>J’ai ajusté tour à tour à tour les modèles polynomiaux jusqu’à l’ordre 10, avec l’échantillon d’apprentissage de taille 100. C’est-à-dire, le modèle linéaire avec un polynôme d’ordre <span class="math inline">\(k=1\)</span> (linéaire), <span class="math inline">\(k=2\)</span> (quadratique), etc., jusqu’à <span class="math inline">\(k=10\)</span>. J’ai ensuite obtenu la valeur de l’erreur quadratique moyenne d’apprentissage pour chacun de ces modèles. En pratique, on ne pourrait pas calculer l’erreur quadratique moyenne de généralization puisqu’on ne connaît pas le vrai modèle. J’ai fait une approximation de cette dernière en simulant 100 000 observations du vrai modèle (<code>selection1_test</code>), en obtenant la prédiction pour chacune de ces 100 000 observations en utilisant le modèle d’ordre <span class="math inline">\(k\)</span> ajusté sur les données d’apprentissage et en calculant l’erreur quadratique moyenne par la suite.</p>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/EQMa_comput_1db4ada55bac904caf9f477e5e6285e9">
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/EQMa_comput_4a6219f3b223c57ac549ee74b7d4451f">
 
 </div>
-<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/fig-plotEQMa_9495407e178704a4cafaa8d7264717cf">
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/fig-plotEQMa_8c5c3ada22bca4c63ea8decfdd2f7fcb">
 <div class="cell-output-display">
 <div id="fig-plotEQMa" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -411,45 +406,39 @@ R^2=\{\mathsf{cor}(\boldsymbol{y}, \widehat{\boldsymbol{y}})\}^2 = 1-\frac{\math
 <p>Les critères <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span> peuvent être utilisés comme outils de sélection de variables en régression linéaire mais aussi beaucoup plus généralement avec d’autres méthodes basées sur la vraisemblance (analyse factorielle, régression logistique, etc.) En fait, n’importe quel modèle dont les estimateurs proviennent de la méthode du maximum de vraisemblance produira ces quantités. Nous donnerons des formules générales pour le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span> dans le chapitre sur la régression logistique.</p>
 <p>Le critère <span class="math inline">\(\mathsf{BIC}\)</span> est le seul de ces critères qui est convergent. Cela veut dire que si l’ensemble des modèles que l’on considère contient le vrai modèle, alors la probabilité que le critère <span class="math inline">\(\mathsf{BIC}\)</span> choisissent le bon modèle tend vers 1 lorsque <span class="math inline">\(n\)</span> tend vers l’infini. Il faut mettre cela en perspective : il est peu vraisemblable que <span class="math inline">\(Y\)</span> ait été généré exactement selon un modèle de régression linéaire, car le modèle de régression n’est qu’une approximation de la réalité. Certains auteurs trouvent que le <span class="math inline">\(\mathsf{BIC}\)</span> est quelquefois trop sévère (il choisit des modèles trop simples) pour les tailles d’échantillons finies. Dans certaines applications, cette parcimonie est utile, mais il n’est pas possible de savoir d’avance lequel de ces deux critères (<span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span>) sera préférable pour un problème donné.</p>
 <p>Il est facile d’obtenir le <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span> avec les méthodes <code>AIC</code> et <code>BIC</code>. On illustre ceci avec le modèle cubique:</p>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/modelecubique_8ba850355f4fdfb1dbddf82160119167">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(polynome, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajuster un polynôme de degré trois (modèle cubique)</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>mod_cub <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="dv">3</span>),</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> polynome)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_cub) <span class="co"># Tableau résumé des coefficients</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = y ~ poly(x, 3), data = polynome)
-
-Residuals:
-     Min       1Q   Median       3Q      Max 
--111.908  -34.114    2.079   36.688  142.481 
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)   -9.772      5.224  -1.871  0.06446 .  
-poly(x, 3)1  824.808     52.242  15.788  &lt; 2e-16 ***
-poly(x, 3)2 -281.951     52.242  -5.397 4.88e-07 ***
-poly(x, 3)3  160.993     52.242   3.082  0.00269 ** 
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 52.24 on 96 degrees of freedom
-Multiple R-squared:  0.7499,    Adjusted R-squared:  0.7421 
-F-statistic: 95.96 on 3 and 96 DF,  p-value: &lt; 2.2e-16</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(mod_cub)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1080.882</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(mod_cub)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1093.908</code></pre>
-</div>
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/modelecubique_a186b747fcd22a0683e509e4b16c29d5">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(polynome, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajuster un polynôme de degré trois (modèle cubique)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>mod_cub <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="dv">3</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> polynome)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_cub) <span class="co"># Tableau résumé des coefficients</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Call:</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="do">## lm(formula = y ~ poly(x, 3), data = polynome)</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="do">## Residuals:</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="do">##     Min      1Q  Median      3Q     Max </span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="do">## -111.91  -34.11    2.08   36.69  142.48 </span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="do">## Coefficients:</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="do">##             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="do">## (Intercept)    -9.77       5.22   -1.87   0.0645 .  </span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="do">## poly(x, 3)1   824.81      52.24   15.79  &lt; 2e-16 ***</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="do">## poly(x, 3)2  -281.95      52.24   -5.40  4.9e-07 ***</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="do">## poly(x, 3)3   160.99      52.24    3.08   0.0027 ** </span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="do">## ---</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="do">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="do">## Residual standard error: 52.2 on 96 degrees of freedom</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="do">## Multiple R-squared:  0.75,   Adjusted R-squared:  0.742 </span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="do">## F-statistic:   96 on 3 and 96 DF,  p-value: &lt;2e-16</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(mod_cub)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 1081</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(mod_cub)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] 1094</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Le <a href="#tbl-polynome-ajustement">Tableau&nbsp;<span>4.1</span></a> résume ces quantités pour tous les modèles de l’ordre 1 à l’ordre 10.</p>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/tbl-polynome-ajustement_2b15d4a139235613510673f387a92419">
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/tbl-polynome-ajustement_3c0e9af097c0f0e24cbb2fe1608055c3">
 <div class="cell-output-display">
 <div id="tbl-polynome-ajustement" class="anchored">
 
@@ -468,93 +457,93 @@ F-statistic: 95.96 on 3 and 96 DF,  p-value: &lt; 2.2e-16</code></pre>
 <tbody>
   <tr>
    <td style="text-align:left;"> 1 </td>
-   <td style="text-align:right;"> 3191.29 </td>
-   <td style="text-align:right;"> 3674.20 </td>
+   <td style="text-align:right;"> 3191 </td>
+   <td style="text-align:right;"> 3674 </td>
    <td style="text-align:right;"> 0.65 </td>
-   <td style="text-align:right;"> 1110.70 </td>
-   <td style="text-align:right;"> 1118.51 </td>
-   <td style="text-align:right;"> 3675.37 </td>
+   <td style="text-align:right;"> 1111 </td>
+   <td style="text-align:right;"> 1119 </td>
+   <td style="text-align:right;"> 3675 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 2 </td>
-   <td style="text-align:right;"> 3132.67 </td>
-   <td style="text-align:right;"> 2879.24 </td>
+   <td style="text-align:right;"> 3133 </td>
+   <td style="text-align:right;"> 2879 </td>
    <td style="text-align:right;"> 0.73 </td>
-   <td style="text-align:right;"> 1088.32 </td>
-   <td style="text-align:right;"> 1098.74 </td>
-   <td style="text-align:right;"> 2897.94 </td>
+   <td style="text-align:right;"> 1088 </td>
+   <td style="text-align:right;"> 1099 </td>
+   <td style="text-align:right;"> 2898 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 3 </td>
-   <td style="text-align:right;"> 2697.40 </td>
-   <td style="text-align:right;"> 2620.05 </td>
+   <td style="text-align:right;"> 2697 </td>
+   <td style="text-align:right;"> 2620 </td>
    <td style="text-align:right;"> 0.75 </td>
-   <td style="text-align:right;"> 1080.88 </td>
-   <td style="text-align:right;"> 1093.91 </td>
-   <td style="text-align:right;"> 2675.51 </td>
+   <td style="text-align:right;"> 1081 </td>
+   <td style="text-align:right;"> 1094 </td>
+   <td style="text-align:right;"> 2676 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 4 </td>
-   <td style="text-align:right;"> 2766.68 </td>
-   <td style="text-align:right;"> 2581.70 </td>
+   <td style="text-align:right;"> 2767 </td>
+   <td style="text-align:right;"> 2582 </td>
    <td style="text-align:right;"> 0.75 </td>
-   <td style="text-align:right;"> 1081.41 </td>
-   <td style="text-align:right;"> 1097.04 </td>
-   <td style="text-align:right;"> 2666.16 </td>
+   <td style="text-align:right;"> 1081 </td>
+   <td style="text-align:right;"> 1097 </td>
+   <td style="text-align:right;"> 2666 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 5 </td>
-   <td style="text-align:right;"> 2771.05 </td>
-   <td style="text-align:right;"> 2580.86 </td>
+   <td style="text-align:right;"> 2771 </td>
+   <td style="text-align:right;"> 2581 </td>
    <td style="text-align:right;"> 0.75 </td>
-   <td style="text-align:right;"> 1083.38 </td>
-   <td style="text-align:right;"> 1101.61 </td>
-   <td style="text-align:right;"> 2711.11 </td>
+   <td style="text-align:right;"> 1083 </td>
+   <td style="text-align:right;"> 1102 </td>
+   <td style="text-align:right;"> 2711 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 6 </td>
-   <td style="text-align:right;"> 2779.66 </td>
-   <td style="text-align:right;"> 2577.60 </td>
+   <td style="text-align:right;"> 2780 </td>
+   <td style="text-align:right;"> 2578 </td>
    <td style="text-align:right;"> 0.75 </td>
-   <td style="text-align:right;"> 1085.25 </td>
-   <td style="text-align:right;"> 1106.09 </td>
-   <td style="text-align:right;"> 2757.13 </td>
+   <td style="text-align:right;"> 1085 </td>
+   <td style="text-align:right;"> 1106 </td>
+   <td style="text-align:right;"> 2757 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 7 </td>
-   <td style="text-align:right;"> 2780.21 </td>
-   <td style="text-align:right;"> 2577.49 </td>
+   <td style="text-align:right;"> 2780 </td>
+   <td style="text-align:right;"> 2577 </td>
    <td style="text-align:right;"> 0.75 </td>
-   <td style="text-align:right;"> 1087.24 </td>
-   <td style="text-align:right;"> 1110.69 </td>
-   <td style="text-align:right;"> 2787.95 </td>
+   <td style="text-align:right;"> 1087 </td>
+   <td style="text-align:right;"> 1111 </td>
+   <td style="text-align:right;"> 2788 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 8 </td>
-   <td style="text-align:right;"> 2797.35 </td>
-   <td style="text-align:right;"> 2531.00 </td>
+   <td style="text-align:right;"> 2797 </td>
+   <td style="text-align:right;"> 2531 </td>
    <td style="text-align:right;"> 0.76 </td>
-   <td style="text-align:right;"> 1087.42 </td>
-   <td style="text-align:right;"> 1113.48 </td>
-   <td style="text-align:right;"> 2845.78 </td>
+   <td style="text-align:right;"> 1087 </td>
+   <td style="text-align:right;"> 1113 </td>
+   <td style="text-align:right;"> 2846 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 9 </td>
-   <td style="text-align:right;"> 2811.07 </td>
-   <td style="text-align:right;"> 2527.85 </td>
+   <td style="text-align:right;"> 2811 </td>
+   <td style="text-align:right;"> 2528 </td>
    <td style="text-align:right;"> 0.76 </td>
-   <td style="text-align:right;"> 1089.30 </td>
-   <td style="text-align:right;"> 1117.96 </td>
-   <td style="text-align:right;"> 2895.61 </td>
+   <td style="text-align:right;"> 1089 </td>
+   <td style="text-align:right;"> 1118 </td>
+   <td style="text-align:right;"> 2896 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 10 </td>
-   <td style="text-align:right;"> 2848.81 </td>
-   <td style="text-align:right;"> 2519.14 </td>
+   <td style="text-align:right;"> 2849 </td>
+   <td style="text-align:right;"> 2519 </td>
    <td style="text-align:right;"> 0.76 </td>
-   <td style="text-align:right;"> 1090.95 </td>
-   <td style="text-align:right;"> 1122.22 </td>
-   <td style="text-align:right;"> 2976.04 </td>
+   <td style="text-align:right;"> 1091 </td>
+   <td style="text-align:right;"> 1122 </td>
+   <td style="text-align:right;"> 2976 </td>
   </tr>
 </tbody>
 </table>
@@ -562,7 +551,7 @@ F-statistic: 95.96 on 3 and 96 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </div>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/fig-polynome-ajustement_de342c643dc245024ad9e9702659509e">
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/fig-polynome-ajustement_24603a1a94d47a8b6f4ee94d4c2e69e9">
 <div class="cell-output-display">
 <div id="fig-polynome-ajustement" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -605,7 +594,9 @@ F-statistic: 95.96 on 3 and 96 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Combiner les <span class="math inline">\(K\)</span> estimations de performance pour obtenir une mesure de performance finale.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></li>
 </ol>
 <p>Pour l’erreur quadratique moyenne, cette dernière étape revient à additionner la somme du carré des erreurs avant de diviser par la taille de l’échantillon totale.</p>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/fig-validationcroiseeillust_96ed3f50957c2e8cebaa728e07da97a7">
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/fig-validationcroiseeillust_270f757410ad71c01a01452a3b8c6f33">
+<pre><code>## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+## ℹ Please use `linewidth` instead.</code></pre>
 <div class="cell-output-display">
 <div id="fig-validationcroiseeillust" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -616,45 +607,45 @@ F-statistic: 95.96 on 3 and 96 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <p>On recommande habituellement de prendre <span class="math inline">\(K=\min\{n^{1/2}, 10\}\)</span> groupes (le choix de cinq ou 10 groupes sont ceux qui revient le plus souvent en pratique). Si on prend <span class="math inline">\(K=10\)</span> groupes, alors chaque modèle est estimé avec 90% des données et on prédit ensuite le 10% restant. Comme on passe en boucle les 10 parties, chaque observation est prédite une et une seule fois à la fin. Il est important de souligner que les groupes sont formés de façon aléatoire et donc que l’estimé que l’on obtient peut être très variable, surtout si la taille de l’échantillon d’apprentissage est petite. Il arrive également que le modèle ajusté sur un groupe ne puisse pas être utilisé pour prédire les observations mises de côté, notamment si des variables catégorielles sont présentes mais qu’une modalité n’est présente que dans un des groupes; ce problème se présente en pratique si certaines classes ont peu d’observations. Un échantillonnage stratifié permet de pallier à cette lacune et de s’assurer d’une répartition plus homogène des variables catégorielles.</p>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/validation-croisée_00db63a9e96a2f57e765938e0e8e10e3">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Validation croisée avec k groupes</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>lmkfold <span class="ot">&lt;-</span> <span class="cf">function</span>(formula, data, k, ...){</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Créer un accumulateur pour le calcul de l'EQM</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>   accu <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>   k <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(k) <span class="co"># nombre de groupes</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>   n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data) <span class="co"># nombre d'observations</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Permuter les indices des observatoins</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>   gp <span class="ot">&lt;-</span> <span class="fu">sample.int</span>(n, n, <span class="at">replace =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Créer une liste de k éléments avec les nos d'observations</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>   folds <span class="ot">&lt;-</span> <span class="fu">split</span>(gp, <span class="fu">cut</span>(<span class="fu">seq_along</span>(gp), k, <span class="at">labels =</span> <span class="cn">FALSE</span>))</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>   <span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_len</span>(k)){</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Extraire les indices des observations de la portion validation</span></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>      g <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">unlist</span>(folds[i]))</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Ajuster le modèles à toutes les données, moins celles de la portion validation</span></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>      fitlm <span class="ot">&lt;-</span> <span class="fu">lm</span>(formula, <span class="at">data =</span> data[<span class="sc">-</span>g,])</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>      <span class="co"># ajouter l'erreur quadratique du pli de validation</span></span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>      accu <span class="ot">&lt;-</span> accu <span class="sc">+</span> <span class="fu">sum</span>((data[g, <span class="fu">all.vars</span>(formula)[<span class="dv">1</span>]] <span class="sc">-</span><span class="fu">predict</span>(fitlm, <span class="at">newdata=</span>data[g,]))<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>   }</span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Diviser par la taille de l'échantillon </span></span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>   <span class="co"># pour obtenir la moyenne</span></span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>   <span class="fu">return</span>(accu<span class="sc">/</span>n)</span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Le paquet 'caret' a une fonction </span></span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="co"># pour faire la validation croisée</span></span>
-<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>cv_caret <span class="ot">&lt;-</span> </span>
-<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>  caret<span class="sc">::</span><span class="fu">train</span>(<span class="at">form =</span> formula, </span>
-<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> data, </span>
-<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>             <span class="at">method =</span> <span class="st">"lm"</span>,</span>
-<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>             <span class="at">trControl =</span> caret<span class="sc">::</span><span class="fu">trainControl</span>(</span>
-<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>               <span class="at">method =</span> <span class="st">"cv"</span>,</span>
-<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>               <span class="at">number =</span> <span class="dv">10</span>))</span>
-<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>eqm_cv <span class="ot">&lt;-</span> cv_caret<span class="sc">$</span>results<span class="sc">$</span>RMSE<span class="sc">^</span><span class="dv">2</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/validation-croisée_b4b838de312bb2ca447c0f68e1e8b4e7">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Validation croisée avec k groupes</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>lmkfold <span class="ot">&lt;-</span> <span class="cf">function</span>(formula, data, k, ...){</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Créer un accumulateur pour le calcul de l'EQM</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>   accu <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>   k <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(k) <span class="co"># nombre de groupes</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>   n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data) <span class="co"># nombre d'observations</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Permuter les indices des observatoins</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>   gp <span class="ot">&lt;-</span> <span class="fu">sample.int</span>(n, n, <span class="at">replace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Créer une liste de k éléments avec les nos d'observations</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>   folds <span class="ot">&lt;-</span> <span class="fu">split</span>(gp, <span class="fu">cut</span>(<span class="fu">seq_along</span>(gp), k, <span class="at">labels =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>   <span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_len</span>(k)){</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Extraire les indices des observations de la portion validation</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      g <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">unlist</span>(folds[i]))</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Ajuster le modèles à toutes les données, moins celles de la portion validation</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>      fitlm <span class="ot">&lt;-</span> <span class="fu">lm</span>(formula, <span class="at">data =</span> data[<span class="sc">-</span>g,])</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      <span class="co"># ajouter l'erreur quadratique du pli de validation</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>      accu <span class="ot">&lt;-</span> accu <span class="sc">+</span> <span class="fu">sum</span>((data[g, <span class="fu">all.vars</span>(formula)[<span class="dv">1</span>]] <span class="sc">-</span><span class="fu">predict</span>(fitlm, <span class="at">newdata=</span>data[g,]))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>   }</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Diviser par la taille de l'échantillon </span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>   <span class="co"># pour obtenir la moyenne</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>   <span class="fu">return</span>(accu<span class="sc">/</span>n)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Le paquet 'caret' a une fonction </span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co"># pour faire la validation croisée</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>cv_caret <span class="ot">&lt;-</span> </span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  caret<span class="sc">::</span><span class="fu">train</span>(<span class="at">form =</span> formula, </span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> data, </span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>             <span class="at">method =</span> <span class="st">"lm"</span>,</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>             <span class="at">trControl =</span> caret<span class="sc">::</span><span class="fu">trainControl</span>(</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>               <span class="at">method =</span> <span class="st">"cv"</span>,</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>               <span class="at">number =</span> <span class="dv">10</span>))</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>eqm_cv <span class="ot">&lt;-</span> cv_caret<span class="sc">$</span>results<span class="sc">$</span>RMSE<span class="sc">^</span><span class="dv">2</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Le cas particulier <span class="math inline">\(K=n\)</span> (en anglais <em>leave-one-out cross validation</em>, ou <span class="math inline">\(\mathsf{LOOCV}\)</span>) consiste à enlever une seule observation, à estimer le modèle avec les <span class="math inline">\(n-1\)</span> autres et à valider à l’aide de l’observation laissée de côté: on répète cette procédure pour chaque observation. Pour les modèles linéaires, il existe des formules explicites qui nous permettent d’éviter d’ajuster <span class="math inline">\(n\)</span> régressions par moindre carrés. Cette forme de validation croisée tend à être trop optimiste.</p>
 <p>Revenons à notre exemple où une seule variable explicative est disponible et où l’on cherche à déterminer un bon modèle polynomial. La dernière colonne de <a href="#tbl-polynome-ajustement">Tableau&nbsp;<span>4.1</span></a>, <span class="math inline">\(\mathsf{VC}_{10}\)</span>, donne les moyennes de 100 réplications de estimations de l’<span class="math inline">\(\mathsf{EQM}\)</span> obtenues avec la validation croisée à 10 groupes. Notez que si vous exécutez le programme, vous n’obtiendrez pas les mêmes valeurs car il y a un élément aléatoire dans ce processus.</p>
 <p>Le modèle cubique (ordre 3) est aussi choisi par la validation croisée, en moyenne (comme il l’était par le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span>). Le graphe qui suit trace les valeurs de l’estimation par validation croisée (courbe de validation croisée) et aussi le <span class="math inline">\(\mathsf{EQM}\)</span>. On voit que l’estimation par validation croisée suit assez bien la forme du <span class="math inline">\(\mathsf{EQM}\)</span> (qu’il est supposé estimer). Les boîtes à moustache permettent d’apprécier la variabilité des estimés de l’erreur quadratique moyenne telles qu’estimée par validation croisée avec 10 groupes.</p>
-<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/fig-plotcv_240ce5a9007e646eb9039c40d8ddd0bf">
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/fig-plotcv_4fc06ed1544c5d45b3ce812cb5432d8e">
 <div class="cell-output-display">
 <div id="fig-plotcv" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -694,27 +685,25 @@ F-statistic: 95.96 on 3 and 96 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li><code>x10</code>: nombre d’achats différents depuis un an.</li>
 </ul>
 <p>Les données se trouvent dans le fichier <code>dbm</code>. Voici d’abord des statistiques descriptives pour l’échantillon d’apprentissage.</p>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/loaddbm_4b6f8bc50393d92f18b1c4872a0b71dd">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(dbm, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dbm)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>tibble [101,000 × 13] (S3: tbl_df/tbl/data.frame)
- $ x1      : int [1:101000] 1 1 0 0 1 1 0 0 0 1 ...
- $ x2      : num [1:101000] 42 59 52 32 38 63 35 32 26 32 ...
- $ x3      : Factor w/ 3 levels "1","2","3": 1 2 3 1 2 2 2 1 3 1 ...
- $ x4      : Factor w/ 5 levels "1","2","3","4",..: 3 3 5 1 5 5 1 3 1 5 ...
- $ x5      : int [1:101000] 1 1 1 0 0 1 1 0 0 0 ...
- $ x6      : num [1:101000] 8.6 8.6 1.4 10.7 9.1 9.4 10.6 4.8 4 10.3 ...
- $ x7      : num [1:101000] 8 9 9 42 5 1 6 5 48 9 ...
- $ x8      : num [1:101000] 49 70 120 31 30 28 59 70 73 55 ...
- $ x9      : num [1:101000] 159 123 434 110 55 102 593 298 83 90 ...
- $ x10     : num [1:101000] 5 5 8 3 3 8 10 6 2 3 ...
- $ yachat  : int [1:101000] 0 0 0 0 0 0 0 1 1 1 ...
- $ ymontant: num [1:101000] NA NA NA NA NA NA NA 52 79 77 ...
- $ test    : Factor w/ 2 levels "0","1": 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/loaddbm_3f0b76aa333468ed96b4d0811847cba7">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(dbm, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dbm)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="do">## tibble [101,000 × 13] (S3: tbl_df/tbl/data.frame)</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="do">##  $ x1      : int [1:101000] 1 1 0 0 1 1 0 0 0 1 ...</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="do">##  $ x2      : num [1:101000] 42 59 52 32 38 63 35 32 26 32 ...</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="do">##  $ x3      : Factor w/ 3 levels "1","2","3": 1 2 3 1 2 2 2 1 3 1 ...</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="do">##  $ x4      : Factor w/ 5 levels "1","2","3","4",..: 3 3 5 1 5 5 1 3 1 5 ...</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="do">##  $ x5      : int [1:101000] 1 1 1 0 0 1 1 0 0 0 ...</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="do">##  $ x6      : num [1:101000] 8.6 8.6 1.4 10.7 9.1 9.4 10.6 4.8 4 10.3 ...</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="do">##  $ x7      : num [1:101000] 8 9 9 42 5 1 6 5 48 9 ...</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="do">##  $ x8      : num [1:101000] 49 70 120 31 30 28 59 70 73 55 ...</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="do">##  $ x9      : num [1:101000] 159 123 434 110 55 102 593 298 83 90 ...</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="do">##  $ x10     : num [1:101000] 5 5 8 3 3 8 10 6 2 3 ...</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="do">##  $ yachat  : int [1:101000] 0 0 0 0 0 0 0 1 1 1 ...</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="do">##  $ ymontant: num [1:101000] NA NA NA NA NA NA NA 52 79 77 ...</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="do">##  $ test    : Factor w/ 2 levels "0","1": 1 1 1 1 1 1 1 1 1 1 ...</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/tbl-contingence-dbm_79c65823c39b5b6f32ac7a4d87f813cd">
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/tbl-contingence-dbm_ce6860a540ec64b72978799df915b0db">
 <div class="cell-output-display">
 <div id="tbl-contingence-dbm" class="anchored">
 
@@ -832,7 +821,7 @@ F-statistic: 95.96 on 3 and 96 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </div>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/fig-histogrammes-eda-dbm_3bb0cf500ec434d5b47022ee0b005b98">
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/fig-histogrammes-eda-dbm_6f91fc68f042df2d4576ec5a41780890">
 <div class="cell-output-display">
 <div id="fig-histogrammes-eda-dbm" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -843,7 +832,7 @@ F-statistic: 95.96 on 3 and 96 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <p>Il y a 46.6% de femmes parmi les 1000 clients de l’échantillon. De plus, 39.7% ont un revenu de moins de 35 000$, 33.7% sont entre 35 000$ et 75 000$ et 26.6% ont plus de 75 000$. 42.5% de ces clients qui ont un conjoint.</p>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/tbl-statdescript-dbm_31ae8b9fad196b6e3f7d06840ea54d72">
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/tbl-statdescript-dbm_e472b6487529f0c0e3a971e5f7c0814f">
 <div class="cell-output-display">
 <div id="tbl-statdescript-dbm" class="anchored">
 
@@ -984,7 +973,7 @@ Danger de surajustement avec variables catégorielles
 <h3 data-number="4.5.1" class="anchored" data-anchor-id="recherche-exhaustive-meilleurs-sous-ensembles"><span class="header-section-number">4.5.1</span> Recherche exhaustive (meilleurs sous-ensembles)</h3>
 <p>Lorsque nous voulons comparer un petit nombre de modèles, il est relativement aisé d’obtenir les critères (<span class="math inline">\(\mathsf{AIC}\)</span>, <span class="math inline">\(\mathsf{BIC}\)</span> ou autre) pour tous les modèles et de choisir le meilleur. C’était le cas dans l’exemple du choix de l’ordre du polynôme où il y avait seulement 10 modèles en compétitions. Mais lorsqu’il y a plusieurs variables en jeu, le nombre de modèles potentiel augmente très rapidement.</p>
 <p>En fait, supposons qu’on a <span class="math inline">\(p\)</span> variables distinctes disponibles. Avant même de considérer les transformations des variables et les interactions entre elles, il y a déjà trop de modèles possibles. En effet, chaque variable est soit incluse ou pas (deux possibilités) et donc il y a <span class="math inline">\(2^p=2\times 2 \times \cdots \times 2\)</span> (<span class="math inline">\(p\)</span> fois) modèles en tout à considérer. Ce nombre augmente très rapidement comme en témoigne le <a href="#tbl-02-table3">Tableau&nbsp;<span>4.5</span></a>.</p>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/tbl-02-table3_92bb390202793ae41440a2cd4f38f8a7">
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/tbl-02-table3_2e2d7eed167455d05f9d029d8d2f008a">
 <div class="cell-output-display">
 <div id="tbl-02-table3" class="anchored">
 
@@ -1030,7 +1019,7 @@ Danger de surajustement avec variables catégorielles
 <p>On veut trouver un bon modèle pour prévoir la valeur de <code>ymontant</code> des clients qui ont acheté quelque chose. On a vu qu’il y a 210 clients qui ont acheté dans l’échantillon d’apprentissage. Nous allons chercher à développer un « bon » modèle avec ces 210 clients. Dans ce premier exemple, nous allons seulement utiliser les 10 variables explicatives de base (14 variables avec les indicatrices).</p>
 <p>Pour un nombre de variables fixé, le meilleur modèle selon le <span class="math inline">\(R^2\)</span> est aussi le meilleur selon les critères d’information <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span>, pour ce nombre fixé de variables. Pour vous convaincre de cette affirmation, fixons le nombre de variables et restreignons-nous seulement aux modèles avec ce nombre de variables. Comme <span class="math inline">\(R^2=1 - \mathsf{SCE}/\mathsf{SCT}\)</span> et que <span class="math inline">\(\mathsf{SCT}\)</span> est une constante indépendante du modèle, le modèle avec le plus grand coefficient de détermination, <span class="math inline">\(R^2\)</span>, est aussi celui avec la plus petite somme du carré des erreurs (<span class="math inline">\(\mathsf{SCE}\)</span>). Comme <span class="math inline">\(\mathsf{AIC}=n \ln (\mathsf{EQM}) + 2p\)</span>, ce sera aussi celui avec le plus petit <span class="math inline">\(\mathsf{AIC}\)</span> car la pénalité <span class="math inline">\(2p\)</span> est la même si on fixe le nombre de variables; la même remarque est valide pour le <span class="math inline">\(\mathsf{BIC}\)</span>.</p>
 <p>Ainsi, pour trouver le meilleur modèle globalement (sans fixer le nombre de variables), il suffit de trouver le modèle à <span class="math inline">\(k\)</span> variables explicatives ayant le coefficient de détermination le plus élevé pour tous les nombres de variables fixés et d’ensuite de trouver celui qui minimise le <span class="math inline">\(\mathsf{AIC}\)</span> (ou le <span class="math inline">\(\mathsf{BIC}\)</span>) parmi ces modèles. Ainsi, le modèle linéaire simple qui a le plus grand <span class="math inline">\(R^2\)</span> est celui qui inclut l’indicateur de couple (<code>x5</code>). Le meilleur modèle (selon le <span class="math inline">\(R^2\)</span>) parmi tous les modèles avec deux variables est celui avec <code>x5</code> et <code>x6</code>.</p>
-<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/tbl-leaps-simple_f91ed21fb7aa6f2c2f07251f4dad5776">
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/tbl-leaps-simple_5d448a12302c3217869493f6e947e464">
 <div class="cell-output-display">
 <div id="tbl-leaps-simple" class="anchored">
 
@@ -1045,68 +1034,68 @@ Danger de surajustement avec variables catégorielles
 <tbody>
   <tr>
    <td style="text-align:left;"> x5 </td>
-   <td style="text-align:right;"> -95.96 </td>
-   <td style="text-align:right;"> -102.65 </td>
+   <td style="text-align:right;"> -96 </td>
+   <td style="text-align:right;"> -103 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> x5 x6 </td>
-   <td style="text-align:right;"> -196.41 </td>
-   <td style="text-align:right;"> -206.45 </td>
+   <td style="text-align:right;"> -196 </td>
+   <td style="text-align:right;"> -206 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> x31 x5 x6 </td>
-   <td style="text-align:right;"> -311.09 </td>
-   <td style="text-align:right;"> -324.48 </td>
+   <td style="text-align:right;"> -311 </td>
+   <td style="text-align:right;"> -324 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> x31 x5 x6 x10 </td>
-   <td style="text-align:right;"> -351.05 </td>
-   <td style="text-align:right;"> -367.79 </td>
+   <td style="text-align:right;"> -351 </td>
+   <td style="text-align:right;"> -368 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> x1 x31 x5 x6 x10 </td>
-   <td style="text-align:right;"> -369.33 </td>
-   <td style="text-align:right;"> -389.41 </td>
+   <td style="text-align:right;"> -369 </td>
+   <td style="text-align:right;"> -389 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> x1 x31 x5 x6 x7 x10 </td>
-   <td style="text-align:right;"> -387.09 </td>
-   <td style="text-align:right;"> -410.52 </td>
+   <td style="text-align:right;"> -387 </td>
+   <td style="text-align:right;"> -411 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> x1 x31 x5 x6 x7 x8 x10 </td>
-   <td style="text-align:right;"> -392.18 </td>
-   <td style="text-align:right;"> -418.95 </td>
+   <td style="text-align:right;"> -392 </td>
+   <td style="text-align:right;"> -419 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> x1 x31 x44 x5 x6 x7 x8 x10 </td>
-   <td style="text-align:right;"> -390.68 </td>
-   <td style="text-align:right;"> -420.80 </td>
+   <td style="text-align:right;"> -391 </td>
+   <td style="text-align:right;"> -421 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> x1 x2 x31 x44 x5 x6 x7 x8 x10 </td>
-   <td style="text-align:right;"> -390.05 </td>
-   <td style="text-align:right;"> -423.53 </td>
+   <td style="text-align:right;"> -390 </td>
+   <td style="text-align:right;"> -424 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> x1 x2 x31 x44 x5 x6 x7 x8 x9 x10 </td>
-   <td style="text-align:right;"> -386.94 </td>
-   <td style="text-align:right;"> -423.75 </td>
+   <td style="text-align:right;"> -387 </td>
+   <td style="text-align:right;"> -424 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> x1 x2 x31 x43 x44 x5 x6 x7 x8 x9 x10 </td>
-   <td style="text-align:right;"> -382.86 </td>
-   <td style="text-align:right;"> -423.03 </td>
+   <td style="text-align:right;"> -383 </td>
+   <td style="text-align:right;"> -423 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> x1 x2 x31 x41 x42 x43 x44 x5 x6 x7 x8 x10 </td>
-   <td style="text-align:right;"> -378.39 </td>
-   <td style="text-align:right;"> -421.91 </td>
+   <td style="text-align:right;"> -378 </td>
+   <td style="text-align:right;"> -422 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> x1 x2 x31 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10 </td>
-   <td style="text-align:right;"> -374.76 </td>
-   <td style="text-align:right;"> -421.62 </td>
+   <td style="text-align:right;"> -375 </td>
+   <td style="text-align:right;"> -422 </td>
   </tr>
 </tbody>
 </table>
@@ -1114,28 +1103,28 @@ Danger de surajustement avec variables catégorielles
 </div>
 </div>
 </div>
-<p>Un algorithme par séparation et évaluation permet d’effectuer cette recherche de manière efficace sans essayer tous les candidats pour ces sous-ensembles. Dans l’exemple, on voit que le modèle avec les variables <code>x1</code> <code>x2</code> <code>x31</code> <code>x44</code> <code>x5</code> <code>x6</code> <code>x7</code> <code>x8</code> <code>x9</code> et <code>x10</code> est celui qui minimise le <span class="math inline">\(\mathsf{AIC}\)</span> globalement (<span class="math inline">\(\mathsf{AIC}\)</span> de -423.7539583). Le modèle choisi par le <span class="math inline">\(\mathsf{BIC}\)</span> contient seulement sept variables explicatives (plutôt que 10), soit <code>x1</code> <code>x31</code> <code>x5</code> <code>x6</code> <code>x7</code> <code>x8</code> <code>x10</code>.</p>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/unnamed-chunk-18_3b459c232de437ed9df6f04bbf56c0c6">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(dbm, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>dbm_a <span class="ot">&lt;-</span> dbm <span class="sc">|&gt;</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(test <span class="sc">==</span> <span class="dv">0</span>,</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                <span class="sc">!</span><span class="fu">is.na</span>(ymontant))</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Conserver données d'entraînement (test == 0)</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># des personnes qui ont acheté ymontant &gt; 0</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>   </span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>rec_ex <span class="ot">&lt;-</span> leaps<span class="sc">::</span><span class="fu">regsubsets</span>(</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> ymontant <span class="sc">~</span> x1<span class="sc">+</span>x2<span class="sc">+</span>x3<span class="sc">+</span>x4<span class="sc">+</span>x5<span class="sc">+</span>x6<span class="sc">+</span>x7<span class="sc">+</span>x8<span class="sc">+</span>x9<span class="sc">+</span>x10, </span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">nvmax =</span> 13L,</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"exhaustive"</span>,</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dbm_a)</span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>resume_rec_ex <span class="ot">&lt;-</span> <span class="fu">summary</span>(rec_ex,</span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>                         <span class="at">matrix.logical =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Trouver le modèle avec le plus petit BIC</span></span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>min_BIC <span class="ot">&lt;-</span> <span class="fu">which.min</span>(resume_rec_ex<span class="sc">$</span>bic)</span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Nom des variables dans le modèle retenu</span></span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>rec_ex<span class="sc">$</span>xnames[resume_rec_ex<span class="sc">$</span>which[min_BIC,]]</span>
-<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Coefficients</span></span>
-<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a><span class="co"># coef(rec_ex, id = min_BIC)</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Un algorithme par séparation et évaluation permet d’effectuer cette recherche de manière efficace sans essayer tous les candidats pour ces sous-ensembles. Dans l’exemple, on voit que le modèle avec les variables <code>x1</code> <code>x2</code> <code>x31</code> <code>x44</code> <code>x5</code> <code>x6</code> <code>x7</code> <code>x8</code> <code>x9</code> et <code>x10</code> est celui qui minimise le <span class="math inline">\(\mathsf{AIC}\)</span> globalement (<span class="math inline">\(\mathsf{AIC}\)</span> de -423.754). Le modèle choisi par le <span class="math inline">\(\mathsf{BIC}\)</span> contient seulement sept variables explicatives (plutôt que 10), soit <code>x1</code> <code>x31</code> <code>x5</code> <code>x6</code> <code>x7</code> <code>x8</code> <code>x10</code>.</p>
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/unnamed-chunk-18_1e3d4dc9a67d1269c9a10c96e4a318f9">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(dbm, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>dbm_a <span class="ot">&lt;-</span> dbm <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(test <span class="sc">==</span> <span class="dv">0</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                <span class="sc">!</span><span class="fu">is.na</span>(ymontant))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Conserver données d'entraînement (test == 0)</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># des personnes qui ont acheté ymontant &gt; 0</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>rec_ex <span class="ot">&lt;-</span> leaps<span class="sc">::</span><span class="fu">regsubsets</span>(</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> ymontant <span class="sc">~</span> x1<span class="sc">+</span>x2<span class="sc">+</span>x3<span class="sc">+</span>x4<span class="sc">+</span>x5<span class="sc">+</span>x6<span class="sc">+</span>x7<span class="sc">+</span>x8<span class="sc">+</span>x9<span class="sc">+</span>x10, </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">nvmax =</span> 13L,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"exhaustive"</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dbm_a)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>resume_rec_ex <span class="ot">&lt;-</span> <span class="fu">summary</span>(rec_ex,</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>                         <span class="at">matrix.logical =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Trouver le modèle avec le plus petit BIC</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>min_BIC <span class="ot">&lt;-</span> <span class="fu">which.min</span>(resume_rec_ex<span class="sc">$</span>bic)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Nom des variables dans le modèle retenu</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>rec_ex<span class="sc">$</span>xnames[resume_rec_ex<span class="sc">$</span>which[min_BIC,]]</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Coefficients</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co"># coef(rec_ex, id = min_BIC)</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Nous avons seulement inclus les variables de base pour ce premier essai. Il est possible qu’ajouter des variables supplémentaires améliore la performance du modèle. Pour cet exemple, nous allons considérer les variables suivantes<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>:</p>
 <ul>
@@ -1144,16 +1133,16 @@ Danger de surajustement avec variables catégorielles
 </ul>
 <p>Aux variables de base (10 variables explicatives, mais 14 avec les indicatrices pour les variables catégorielles), s’ajoutent ainsi 90 autres variables. Il y a donc 104 variables explicatives potentielles si on inclut les interactions et les termes quadratiques. Notez qu’il y a des interactions entre chacune des variables indicatrices et chacune des autres variables, mais il ne sert à rien de calculer une interaction entre deux indicatrices d’une même variable (car une telle variable est zéro pour tous les individus). De même, il ne sert à rien de calculer le carré d’une variable binaire codée <span class="math inline">\(\{0, 1\}\)</span>.</p>
 <p>Dans la mesure où on aura un ratio d’environ un paramètre pour deux observations,Le modèle à 104 variables servira uniquement à illustrer le surajustement. Pensez à la taille de votre échantillon comme à un budget et aux paramètres comme à un nombre d’items: plus vous achetez d’items, moins votre budget est élevé pour chacun et leur qualité en pâtira. Réalistement, un modèle avec plus d’une vingtaine de variables ici serait difficilement estimable de manière fiable et l’inclusion d’interactions et de termes quadratiques sert surtout à augmenter la flexibilité et les possibilités lors de la sélection de variables.</p>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/modele-complet_cd8788ee4bc3b7c4de81def8f017d8b3">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (...)^2 crée toutes les interactions d'ordre deux</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># I(x^2) permet de créer les termes quadratiques</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>formule <span class="ot">&lt;-</span> </span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formula</span>(ymontant <span class="sc">~</span> </span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>          (x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x4 <span class="sc">+</span> x5 <span class="sc">+</span> </span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>             x6 <span class="sc">+</span> x7 <span class="sc">+</span> x8 <span class="sc">+</span> x9 <span class="sc">+</span> x10)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> </span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>            <span class="fu">I</span>(x2<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x6<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x7<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>            <span class="fu">I</span>(x8<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x9<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x10<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>mod_complet <span class="ot">&lt;-</span> <span class="fu">lm</span>(formule, <span class="at">data =</span> dbm_a)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/modele-complet_162eb42899e0ce995598572ba77c0d73">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (...)^2 crée toutes les interactions d'ordre deux</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># I(x^2) permet de créer les termes quadratiques</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>formule <span class="ot">&lt;-</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formula</span>(ymontant <span class="sc">~</span> </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>          (x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x4 <span class="sc">+</span> x5 <span class="sc">+</span> </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>             x6 <span class="sc">+</span> x7 <span class="sc">+</span> x8 <span class="sc">+</span> x9 <span class="sc">+</span> x10)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>            <span class="fu">I</span>(x2<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x6<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x7<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>            <span class="fu">I</span>(x8<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x9<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x10<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>mod_complet <span class="ot">&lt;-</span> <span class="fu">lm</span>(formule, <span class="at">data =</span> dbm_a)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Lancer une sélection exhaustive de tous les sous-modèles avec 104 variables risque de prendre un temps énorme. Que faire alors? Il y a plusieurs possibilités. Nous pourrions faire une recherche limitée avec les méthodes que nous allons voir à partir de la section suivante. Nous pourrions aussi combiner les deux approches. Supposons que notre ordinateur permet de faire une recherche exhaustive de tous les sous-modèles avec 40 variables. Nous pourrions alors commencer avec une recherche limitée pour trouver un sous-ensemble de 40 « bonnes » variables et faire une recherche exhaustive, mais en se restraignant à ces 40 variables.</p>
 </section>
@@ -1166,49 +1155,49 @@ Danger de surajustement avec variables catégorielles
 <p>La <strong>méthode de sélection séquentielle</strong> est un hybride entre les méthodes de sélection ascendantes et descendante. On débute la recherche à partir du modèle ne contenant que l’ordonnée à l’origine. À chaque étape, on fait une étape ascendante suivie de une (ou plusieurs) étapes descendantes. On continue ainsi tant que le modèle retourné par l’algorithme n’est pas identique à celui de l’étape précédente (dépendant de notre critère). Le dernier modèle est celui retenu.</p>
 <p>Avec la méthode séquentielle, une fois qu’on entre une variable (étape ascendante), on fait autant d’étapes descendante afin de retirer toutes les variables qui satisfont le critère de sortie (il peut ne pas y en avoir). Une fois cela effectué, on refait une étape ascendante pour voir si on peut ajouter une nouvelle variable.</p>
 <p>Avec la méthode ascendante, une fois qu’une variable est dans le modèle, elle y reste. Avec la méthode descendante, une fois qu’une variable est sortie du modèle, elle ne peut plus y entrer. Avec la méthode séquentielle, une variable peut entrer dans le modèle et sortir plus tard dans le processus. Par conséquent, parmi les trois, la méthode séquentielle est généralement préférable aux méthodes ascendante et descendante, car elle inspecte potentiellement un plus grand nombre de modèles.</p>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/modele-sequentiel_261d18a21b51055b696df56f4bc70789">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cette procédure séquentielle retourne</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># la liste de modèles de 1 variables à</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># nvmax variables.</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>rec_seq <span class="ot">&lt;-</span> </span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  leaps<span class="sc">::</span><span class="fu">regsubsets</span>(</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> formule, </span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> dbm_a,</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"seqrep"</span>, </span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">nvmax =</span> <span class="fu">length</span>(<span class="fu">coef</span>(mod_complet)))</span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="fu">which.min</span>(<span class="fu">summary</span>(rec_seq)<span class="sc">$</span>bic)</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Alternative avec procédure séquentielle</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="co"># qui utilise le critère AIC pour déterminer </span></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="co"># l'inclusion ou l'exclusion de variables</span></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Procédure plus longue à rouler</span></span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="co"># (car les modèles linéaires sont ajustés)</span></span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="co"># On ajoute ou retire la variable qui</span></span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a><span class="co"># améliore le plus le critère de sélection</span></span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a><span class="co"># à chaque étape.</span></span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>seq_AIC <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">stepAIC</span>(</span>
-<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(ymontant <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> dbm_a), </span>
-<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># modèle initial sans variables explicative</span></span>
-<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">scope =</span> formule, <span class="co"># modèle maximal possible</span></span>
-<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">direction =</span> <span class="st">"both"</span>, <span class="co">#séquentielle</span></span>
-<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">trace =</span> <span class="cn">FALSE</span>, <span class="co"># ne pas imprimer le suivi</span></span>
-<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">keep =</span> <span class="cf">function</span>(mod, AIC, ...){ </span>
-<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>      <span class="co"># autres sorties des modèles à conserver</span></span>
-<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list</span>(<span class="at">bic =</span> <span class="fu">BIC</span>(mod), </span>
-<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>           <span class="at">coef =</span> <span class="fu">coef</span>(mod))},</span>
-<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">k =</span> <span class="dv">2</span>) <span class="co">#</span></span>
-<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Remplacer k=2 par k = log(nrow(dbm_a)) pour BIC</span></span>
-<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a><span class="co"># L'historique des étapes est disponible via</span></span>
-<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a><span class="co"># seq_AIC$anova</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/modele-sequentiel_4dd72f6eb88c67416f7a45e46a73238e">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cette procédure séquentielle retourne</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># la liste de modèles de 1 variables à</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># nvmax variables.</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>rec_seq <span class="ot">&lt;-</span> </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  leaps<span class="sc">::</span><span class="fu">regsubsets</span>(</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> formule, </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> dbm_a,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"seqrep"</span>, </span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">nvmax =</span> <span class="fu">length</span>(<span class="fu">coef</span>(mod_complet)))</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu">which.min</span>(<span class="fu">summary</span>(rec_seq)<span class="sc">$</span>bic)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Alternative avec procédure séquentielle</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># qui utilise le critère AIC pour déterminer </span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># l'inclusion ou l'exclusion de variables</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Procédure plus longue à rouler</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># (car les modèles linéaires sont ajustés)</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># On ajoute ou retire la variable qui</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co"># améliore le plus le critère de sélection</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co"># à chaque étape.</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>seq_AIC <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">stepAIC</span>(</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(ymontant <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> dbm_a), </span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># modèle initial sans variables explicative</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">scope =</span> formule, <span class="co"># modèle maximal possible</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">direction =</span> <span class="st">"both"</span>, <span class="co">#séquentielle</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">trace =</span> <span class="cn">FALSE</span>, <span class="co"># ne pas imprimer le suivi</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">keep =</span> <span class="cf">function</span>(mod, AIC, ...){ </span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>      <span class="co"># autres sorties des modèles à conserver</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list</span>(<span class="at">bic =</span> <span class="fu">BIC</span>(mod), </span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>           <span class="at">coef =</span> <span class="fu">coef</span>(mod))},</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">k =</span> <span class="dv">2</span>) <span class="co">#</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Remplacer k=2 par k = log(nrow(dbm_a)) pour BIC</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="co"># L'historique des étapes est disponible via</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a><span class="co"># seq_AIC$anova</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>La procédure exhaustive est préférable aux méthodes séquentielles si le nombre de variables n’est pas trop élevé. S’il y a trop de variables, rien ne nous empêche de combiner plusieurs méthodes: on pourrait par exemple faire une procédure descendante pour ne conserver que 40 variables. En utilisant seulement ce sous-ensemble de variables, on choisit le meilleur modèle selon le <span class="math inline">\(\mathsf{AIC}\)</span> ou le <span class="math inline">\(\mathsf{BIC}\)</span> en faisant une recherche exhaustive de tous les sous-modèles. On pourrait également faire une recherche séquentielle avec le <span class="math inline">\(\mathsf{AIC}\)</span> et choisir le modèle parmi l’historique avec le plus petit <span class="math inline">\(\mathsf{BIC}\)</span>.</p>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/performodeles_49954b648c32fb8628614384b69a6452">
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/performodeles_e3675a32d6e14cb3379a81db5b2b1b67">
 
 </div>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/fig-perfo-sequentiel_3dc5ab96204e769e647ff0dccb29e581">
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/fig-perfo-sequentiel_e37822859d2d34b7d3fdf7a3fc22134c">
 <div class="cell-output-display">
 <div id="fig-perfo-sequentiel" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -1233,51 +1222,51 @@ q_1(\lambda) = \lambda \sum_{j=1}^p |\beta_j|.
 \min_{\boldsymbol{\beta}} \{\mathsf{SCE} + q_1(\lambda)\} = \min_{\boldsymbol{\beta}}  \left\{\sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^pX_{ij}\beta_{j}\right)^2 +
 \lambda \sum_{j=1}^p |\beta_j|\right\}
 \end{align*}\]</span> laquelle est appelée LASSO. La <a href="#fig-lassopenalty">Figure&nbsp;<span>4.8</span></a> montre la fonction objective dans le cas où on a deux paramètres, <span class="math inline">\(\beta_1\)</span> et <span class="math inline">\(\beta_2\)</span>. La solution des moindres carrés ordinaires, qui minimisent l’erreur quadratique moyenne, est au centre des ellipses de contour et correspond à la solution du modèle avec <span class="math inline">\(\lambda=0\)</span>. À mesure que l’on augmente la pénalité <span class="math inline">\(\lambda\)</span>, les coefficients rétrécissent vers <span class="math inline">\((0, 0)\)</span>. On peut interpréter la pénalité <span class="math inline">\(l_1\)</span> comme une contraire budgétaire: les coefficients estimés pour une valeur de <span class="math inline">\(\lambda\)</span> donnée sont ceux qui minimisent la somme du carré des erreurs, mais doivent être à l’intérieur d’un budget alloué (losange). La forme de la région fait en sorte que la solution, qui se trouve sur la bordure du losange, intervient dans un coin avec certaines coordonnées nulles.</p>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/fig-lassopenalty_a9741682d3d1ecd64b22e3578a121214">
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/fig-lassopenalty_acb7e49706d3b43cdd85ad6aacf35eca">
 <div class="cell-output-display">
 <div id="fig-lassopenalty" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="04-selectionmodeles_files/figure-html/fig-lassopenalty-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="04-selectionmodeles_files/figure-html/fig-lassopenalty-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;4.8: Courbes de contour du critère de l’erreur quadratique moyenne (ellipses) et fonction de pénalité (losanges) pour différentes valeurs de <span class="math inline">\(\lambda\)</span>. Les points dénotent des solutions différentes et intersectent les contours du losange.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <p>Plusieurs variantes existent dans la littérature qui généralisent le modèle à des contextes plus compliqués. Le choix des variables à inclure dans la sélection dépend du choix de la pénalité <span class="math inline">\(\lambda\)</span>, qui est règle générale estimée par validation croisée à cinq ou 10 groupes.</p>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/lasso_b5aecd327638a1dabb9b773856e00b2e">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sélection par LASSO</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Paramètre de pénalité déterminé par </span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># validation croisée à partir d'un vecteur</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># de valeurs candidates</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>lambda_seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="fl">0.1</span>,</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">to =</span> <span class="dv">10</span>, </span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">by =</span> <span class="fl">0.01</span>)</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>cv_output <span class="ot">&lt;-</span> </span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  glmnet<span class="sc">::</span><span class="fu">cv.glmnet</span>(<span class="at">x =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]), </span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> dbm_a<span class="sc">$</span>ymontant, </span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="dv">1</span>, </span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">lambda =</span> lambda_seq)</span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cv.output)</span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="co"># On réestime le modèle avec la pénalité</span></span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>lambopt <span class="ot">&lt;-</span> cv_output<span class="sc">$</span>lambda.min <span class="co"># ou lambda.1se</span></span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>lasso_best <span class="ot">&lt;-</span> </span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>  glmnet<span class="sc">::</span><span class="fu">glmnet</span>(</span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]),</span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> dbm_a<span class="sc">$</span>ymontant,</span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="dv">1</span>, </span>
-<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda =</span> lambopt)</span>
-<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Prédictions et calcul de l'EQM</span></span>
-<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a><span class="co"># On pourrait remplacer `newx` par </span></span>
-<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a><span class="co"># d'autres données (validation externe)</span></span>
-<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(lasso_best, </span>
-<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>                <span class="at">s =</span> lambopt, </span>
-<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>                <span class="at">newx =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="sc">-</span><span class="dv">1</span>]))</span>
-<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>eqm_lasso <span class="ot">&lt;-</span> <span class="fu">mean</span>((pred <span class="sc">-</span> dbm_a<span class="sc">$</span>ymontant)<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/lasso_59ea14b75651fa11080c75dd3af585b0">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sélection par LASSO</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Paramètre de pénalité déterminé par </span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># validation croisée à partir d'un vecteur</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># de valeurs candidates</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>lambda_seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="fl">0.1</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">to =</span> <span class="dv">10</span>, </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">by =</span> <span class="fl">0.01</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>cv_output <span class="ot">&lt;-</span> </span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  glmnet<span class="sc">::</span><span class="fu">cv.glmnet</span>(<span class="at">x =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]), </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> dbm_a<span class="sc">$</span>ymontant, </span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="dv">1</span>, </span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">lambda =</span> lambda_seq)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cv.output)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co"># On réestime le modèle avec la pénalité</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>lambopt <span class="ot">&lt;-</span> cv_output<span class="sc">$</span>lambda.min <span class="co"># ou lambda.1se</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>lasso_best <span class="ot">&lt;-</span> </span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  glmnet<span class="sc">::</span><span class="fu">glmnet</span>(</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]),</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> dbm_a<span class="sc">$</span>ymontant,</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="dv">1</span>, </span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda =</span> lambopt)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Prédictions et calcul de l'EQM</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co"># On pourrait remplacer `newx` par </span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co"># d'autres données (validation externe)</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(lasso_best, </span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>                <span class="at">s =</span> lambopt, </span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>                <span class="at">newx =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="sc">-</span><span class="dv">1</span>]))</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>eqm_lasso <span class="ot">&lt;-</span> <span class="fu">mean</span>((pred <span class="sc">-</span> dbm_a<span class="sc">$</span>ymontant)<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Le graphique de la <a href="#fig-lassopath">Figure&nbsp;<span>4.9</span></a> montre l’évolution de l’erreur quadratique moyenne estimée en fonction du logarithme naturel de la pénalité (axe des abscisses). Comme plusieurs pénalités sont dans la marge d’erreurs, on choisit le première modèle à un erreur-type de la valeur minimale</p>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/fig-lassopath_0df6bf99d1830728156d867ef423d76d">
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/fig-lassopath_c79281820e66c2de71664884897f67da">
 <div class="cell-output-display">
 <div id="fig-lassopath" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -1300,104 +1289,104 @@ q_1(\lambda) = \lambda \sum_{j=1}^p |\beta_j|.
 <li>Faire une sélection de variables pour chaque échantillon.</li>
 <li>Faire la moyenne des paramètres de ces modèles.</li>
 </ol>
-<div class="cell" data-hash="04-selectionmodeles_cache/html/modelaverage_881e6320af6814069deb05ed20933ea6">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Moyenne de modèles</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>moyenne_modeles <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    data, </span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    form, </span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">aic =</span> <span class="cn">FALSE</span>, </span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">B =</span> 100L,</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">ks =</span> <span class="dv">2</span>){</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  B <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(B)</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">is.logical</span>(aic),</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>            <span class="fu">length</span>(aic) <span class="sc">==</span> 1L,</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>            <span class="fu">inherits</span>(form, <span class="st">"formula"</span>),</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>            B <span class="sc">&gt;</span> <span class="dv">1</span>,</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>            ks <span class="sc">&gt;=</span> <span class="dv">0</span>,</span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>            <span class="fu">inherits</span>(data, <span class="st">"data.frame"</span>))</span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data)</span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Faire une expansion pour obtenir colonnes</span></span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>  matmod <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(form, <span class="at">data =</span> data)</span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Nombre de variables explicatives</span></span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">ncol</span>(matmod) <span class="sc">-</span> 1L</span>
-<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Formule du modèle complet</span></span>
-<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>  fmod <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="fu">paste0</span>(<span class="st">"y ~"</span>, <span class="fu">paste0</span>(<span class="st">"x"</span>, <span class="fu">seq_len</span>(p), <span class="at">collapse =</span> <span class="st">"+"</span>)))</span>
-<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sauvegarder les noms</span></span>
-<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>  noms <span class="ot">&lt;-</span> <span class="fu">colnames</span>(matmod)</span>
-<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>  xnoms <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"x"</span>, <span class="fu">seq_len</span>(p))</span>
-<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extraire le nom de la variable réponse</span></span>
-<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>  nom_reponse <span class="ot">&lt;-</span> <span class="fu">all.vars</span>(form)[<span class="fu">attr</span>(<span class="fu">terms</span>(form), <span class="st">"response"</span>)]</span>
-<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Créer une base de données avec la réponse</span></span>
-<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># moins l'ordonnée à l'origine</span></span>
-<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>  matmod <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">cbind</span>(</span>
-<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">get</span>(nom_reponse, data), </span>
-<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>    matmod[,<span class="sc">-</span><span class="dv">1</span>]))</span>
-<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(matmod) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"y"</span>, xnoms)</span>
-<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Contenant pour params/ nb de sélections</span></span>
-<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>  params <span class="ot">&lt;-</span> nselect <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, p <span class="sc">+</span> <span class="dv">1</span>)</span>
-<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(params) <span class="ot">&lt;-</span> </span>
-<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(nselect) <span class="ot">&lt;-</span> </span>
-<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">"(Intercept)"</span>, xnoms)</span>
-<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Boucle</span></span>
-<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(b <span class="cf">in</span> <span class="fu">seq_len</span>(B)){</span>
-<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Procédure de sélection avec AIC ou BIC</span></span>
-<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>  modselect <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">stepAIC</span>(</span>
-<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Valeurs de départ</span></span>
-<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> <span class="fu">lm</span>(<span class="at">formula =</span> y <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Rééchantillonner données (avec remplacement)</span></span>
-<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a>       <span class="at">data =</span> matmod[<span class="fu">sample.int</span>(<span class="at">n =</span> N, </span>
-<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a>                             <span class="at">size =</span> N, </span>
-<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a>                             <span class="at">replace =</span> <span class="cn">TRUE</span>),]),</span>
-<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Modèle maximal additif considéré</span></span>
-<span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">scope =</span> fmod, </span>
-<span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a>    <span class="co"># pénalité pour critère d'information</span></span>
-<span id="cb22-52"><a href="#cb22-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># k = ifelse(aic, 2, log(N)), </span></span>
-<span id="cb22-53"><a href="#cb22-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">direction =</span> <span class="st">"both"</span>, </span>
-<span id="cb22-54"><a href="#cb22-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">trace =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb22-55"><a href="#cb22-55" aria-hidden="true" tabindex="-1"></a>   <span class="at">keep =</span> <span class="cf">function</span>(mod, AIC, ...){ </span>
-<span id="cb22-56"><a href="#cb22-56" aria-hidden="true" tabindex="-1"></a>      <span class="co"># autres sorties des modèles à conserver</span></span>
-<span id="cb22-57"><a href="#cb22-57" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list</span>(<span class="at">IC =</span> <span class="fu">AIC</span>(mod, <span class="at">k =</span> <span class="fu">ifelse</span>(aic, <span class="dv">2</span>, <span class="fu">log</span>(N))),</span>
-<span id="cb22-58"><a href="#cb22-58" aria-hidden="true" tabindex="-1"></a>           <span class="at">coef =</span> <span class="fu">coef</span>(mod))},</span>
-<span id="cb22-59"><a href="#cb22-59" aria-hidden="true" tabindex="-1"></a>   <span class="at">k =</span> ks)</span>
-<span id="cb22-60"><a href="#cb22-60" aria-hidden="true" tabindex="-1"></a>  min_IC <span class="ot">&lt;-</span> <span class="fu">which.min</span>(<span class="fu">unlist</span>(modselect<span class="sc">$</span>keep[<span class="st">'IC'</span>,]))</span>
-<span id="cb22-61"><a href="#cb22-61" aria-hidden="true" tabindex="-1"></a>  coefsv <span class="ot">&lt;-</span> modselect<span class="sc">$</span>keep[<span class="dv">2</span>,min_IC]<span class="sc">$</span>coef</span>
-<span id="cb22-62"><a href="#cb22-62" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Trouver quelles colonnes représentent</span></span>
-<span id="cb22-63"><a href="#cb22-63" aria-hidden="true" tabindex="-1"></a>  <span class="co">#  un coefficient non-nul</span></span>
-<span id="cb22-64"><a href="#cb22-64" aria-hidden="true" tabindex="-1"></a>  colind <span class="ot">&lt;-</span> <span class="fu">match</span>(<span class="fu">names</span>(coefsv),</span>
-<span id="cb22-65"><a href="#cb22-65" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">names</span>(params))</span>
-<span id="cb22-66"><a href="#cb22-66" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Incrémenter paramètres non-nuls</span></span>
-<span id="cb22-67"><a href="#cb22-67" aria-hidden="true" tabindex="-1"></a>  params[colind] <span class="ot">&lt;-</span> params[colind] <span class="sc">+</span></span>
-<span id="cb22-68"><a href="#cb22-68" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.numeric</span>(coefsv)</span>
-<span id="cb22-69"><a href="#cb22-69" aria-hidden="true" tabindex="-1"></a>  nselect[colind] <span class="ot">&lt;-</span> nselect[colind] <span class="sc">+</span> 1L</span>
-<span id="cb22-70"><a href="#cb22-70" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb22-71"><a href="#cb22-71" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb22-72"><a href="#cb22-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(nselect) <span class="ot">&lt;-</span> noms</span>
-<span id="cb22-73"><a href="#cb22-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(params) <span class="ot">&lt;-</span> noms</span>
-<span id="cb22-74"><a href="#cb22-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">coefs =</span> params <span class="sc">/</span> B,</span>
-<span id="cb22-75"><a href="#cb22-75" aria-hidden="true" tabindex="-1"></a>              <span class="at">nselect =</span> nselect[<span class="sc">-</span><span class="dv">1</span>] <span class="sc">/</span> B))</span>
-<span id="cb22-76"><a href="#cb22-76" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb22-77"><a href="#cb22-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-78"><a href="#cb22-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-79"><a href="#cb22-79" aria-hidden="true" tabindex="-1"></a><span class="co"># Moyenne de modèles</span></span>
-<span id="cb22-80"><a href="#cb22-80" aria-hidden="true" tabindex="-1"></a><span class="co">#  procédure séquentielle ascendante (AIC) </span></span>
-<span id="cb22-81"><a href="#cb22-81" aria-hidden="true" tabindex="-1"></a><span class="co">#  sélection de modèle selon BIC</span></span>
-<span id="cb22-82"><a href="#cb22-82" aria-hidden="true" tabindex="-1"></a>mmodeles <span class="ot">&lt;-</span> </span>
-<span id="cb22-83"><a href="#cb22-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">moyenne_modeles</span>(</span>
-<span id="cb22-84"><a href="#cb22-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> dbm_a, </span>
-<span id="cb22-85"><a href="#cb22-85" aria-hidden="true" tabindex="-1"></a>    <span class="at">form =</span> formule,</span>
-<span id="cb22-86"><a href="#cb22-86" aria-hidden="true" tabindex="-1"></a>    <span class="at">B =</span> 10L,</span>
-<span id="cb22-87"><a href="#cb22-87" aria-hidden="true" tabindex="-1"></a>    <span class="at">aic =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb22-88"><a href="#cb22-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-89"><a href="#cb22-89" aria-hidden="true" tabindex="-1"></a><span class="co"># Proportion des variables </span></span>
-<span id="cb22-90"><a href="#cb22-90" aria-hidden="true" tabindex="-1"></a><span class="co"># sélectionnées dans plus d'un modèle</span></span>
-<span id="cb22-91"><a href="#cb22-91" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(mmodeles<span class="sc">$</span>nselect <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
-<span id="cb22-92"><a href="#cb22-92" aria-hidden="true" tabindex="-1"></a><span class="co"># Nombre moyen de coefficients</span></span>
-<span id="cb22-93"><a href="#cb22-93" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(mmodeles<span class="sc">$</span>nselect)</span>
-<span id="cb22-94"><a href="#cb22-94" aria-hidden="true" tabindex="-1"></a><span class="co"># variables retenues plus de 20% du temps</span></span>
-<span id="cb22-95"><a href="#cb22-95" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(<span class="fu">which</span>(mmodeles<span class="sc">$</span>nselect <span class="sc">&gt;</span> <span class="fl">0.2</span>))</span>
-<span id="cb22-96"><a href="#cb22-96" aria-hidden="true" tabindex="-1"></a><span class="co"># moyenne des coefficients</span></span>
-<span id="cb22-97"><a href="#cb22-97" aria-hidden="true" tabindex="-1"></a>mmodeles<span class="sc">$</span>coefs</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/modelaverage_01307959e7e5183bad9716e3201dc727">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Moyenne de modèles</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>moyenne_modeles <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    data, </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    form, </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">aic =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">B =</span> 100L,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">ks =</span> <span class="dv">2</span>){</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  B <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(B)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">is.logical</span>(aic),</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>            <span class="fu">length</span>(aic) <span class="sc">==</span> 1L,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>            <span class="fu">inherits</span>(form, <span class="st">"formula"</span>),</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>            B <span class="sc">&gt;</span> <span class="dv">1</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>            ks <span class="sc">&gt;=</span> <span class="dv">0</span>,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>            <span class="fu">inherits</span>(data, <span class="st">"data.frame"</span>))</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Faire une expansion pour obtenir colonnes</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  matmod <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(form, <span class="at">data =</span> data)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Nombre de variables explicatives</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">ncol</span>(matmod) <span class="sc">-</span> 1L</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Formule du modèle complet</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  fmod <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="fu">paste0</span>(<span class="st">"y ~"</span>, <span class="fu">paste0</span>(<span class="st">"x"</span>, <span class="fu">seq_len</span>(p), <span class="at">collapse =</span> <span class="st">"+"</span>)))</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sauvegarder les noms</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  noms <span class="ot">&lt;-</span> <span class="fu">colnames</span>(matmod)</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  xnoms <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"x"</span>, <span class="fu">seq_len</span>(p))</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extraire le nom de la variable réponse</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>  nom_reponse <span class="ot">&lt;-</span> <span class="fu">all.vars</span>(form)[<span class="fu">attr</span>(<span class="fu">terms</span>(form), <span class="st">"response"</span>)]</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Créer une base de données avec la réponse</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># moins l'ordonnée à l'origine</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>  matmod <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">cbind</span>(</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">get</span>(nom_reponse, data), </span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    matmod[,<span class="sc">-</span><span class="dv">1</span>]))</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(matmod) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"y"</span>, xnoms)</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Contenant pour params/ nb de sélections</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>  params <span class="ot">&lt;-</span> nselect <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, p <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(params) <span class="ot">&lt;-</span> </span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(nselect) <span class="ot">&lt;-</span> </span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">"(Intercept)"</span>, xnoms)</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Boucle</span></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(b <span class="cf">in</span> <span class="fu">seq_len</span>(B)){</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Procédure de sélection avec AIC ou BIC</span></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>  modselect <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">stepAIC</span>(</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Valeurs de départ</span></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> <span class="fu">lm</span>(<span class="at">formula =</span> y <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Rééchantillonner données (avec remplacement)</span></span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>       <span class="at">data =</span> matmod[<span class="fu">sample.int</span>(<span class="at">n =</span> N, </span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>                             <span class="at">size =</span> N, </span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>                             <span class="at">replace =</span> <span class="cn">TRUE</span>),]),</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Modèle maximal additif considéré</span></span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">scope =</span> fmod, </span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>    <span class="co"># pénalité pour critère d'information</span></span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># k = ifelse(aic, 2, log(N)), </span></span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">direction =</span> <span class="st">"both"</span>, </span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">trace =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>   <span class="at">keep =</span> <span class="cf">function</span>(mod, AIC, ...){ </span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a>      <span class="co"># autres sorties des modèles à conserver</span></span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list</span>(<span class="at">IC =</span> <span class="fu">AIC</span>(mod, <span class="at">k =</span> <span class="fu">ifelse</span>(aic, <span class="dv">2</span>, <span class="fu">log</span>(N))),</span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>           <span class="at">coef =</span> <span class="fu">coef</span>(mod))},</span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>   <span class="at">k =</span> ks)</span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a>  min_IC <span class="ot">&lt;-</span> <span class="fu">which.min</span>(<span class="fu">unlist</span>(modselect<span class="sc">$</span>keep[<span class="st">'IC'</span>,]))</span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a>  coefsv <span class="ot">&lt;-</span> modselect<span class="sc">$</span>keep[<span class="dv">2</span>,min_IC]<span class="sc">$</span>coef</span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Trouver quelles colonnes représentent</span></span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>  <span class="co">#  un coefficient non-nul</span></span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a>  colind <span class="ot">&lt;-</span> <span class="fu">match</span>(<span class="fu">names</span>(coefsv),</span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">names</span>(params))</span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Incrémenter paramètres non-nuls</span></span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a>  params[colind] <span class="ot">&lt;-</span> params[colind] <span class="sc">+</span></span>
+<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.numeric</span>(coefsv)</span>
+<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a>  nselect[colind] <span class="ot">&lt;-</span> nselect[colind] <span class="sc">+</span> 1L</span>
+<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(nselect) <span class="ot">&lt;-</span> noms</span>
+<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(params) <span class="ot">&lt;-</span> noms</span>
+<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">coefs =</span> params <span class="sc">/</span> B,</span>
+<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a>              <span class="at">nselect =</span> nselect[<span class="sc">-</span><span class="dv">1</span>] <span class="sc">/</span> B))</span>
+<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a><span class="co"># Moyenne de modèles</span></span>
+<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a><span class="co">#  procédure séquentielle ascendante (AIC) </span></span>
+<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a><span class="co">#  sélection de modèle selon BIC</span></span>
+<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a>mmodeles <span class="ot">&lt;-</span> </span>
+<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">moyenne_modeles</span>(</span>
+<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> dbm_a, </span>
+<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a>    <span class="at">form =</span> formule,</span>
+<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a>    <span class="at">B =</span> 10L,</span>
+<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a>    <span class="at">aic =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a><span class="co"># Proportion des variables </span></span>
+<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a><span class="co"># sélectionnées dans plus d'un modèle</span></span>
+<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(mmodeles<span class="sc">$</span>nselect <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a><span class="co"># Nombre moyen de coefficients</span></span>
+<span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(mmodeles<span class="sc">$</span>nselect)</span>
+<span id="cb10-94"><a href="#cb10-94" aria-hidden="true" tabindex="-1"></a><span class="co"># variables retenues plus de 20% du temps</span></span>
+<span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(<span class="fu">which</span>(mmodeles<span class="sc">$</span>nselect <span class="sc">&gt;</span> <span class="fl">0.2</span>))</span>
+<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a><span class="co"># moyenne des coefficients</span></span>
+<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a>mmodeles<span class="sc">$</span>coefs</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Chaque modèle est construit à l’aide d’un échantillon aléatoire avec remise. Utilisez <code>set.seed</code> pour fixer le générateur de nombre aléatoire et permettre la reproductibilité</p>
 <p>Toutes les méthodes employées jusqu’à maintenant utilise une méthode de pénalisation pour déterminer le meilleur modèle. Une alternative avec serait de répéter la sélection en utilisant directement l’erreur quadratique moyenne estimée à l’aide de la validation croisée comme critère de sélection: pour cela, il faudrait ajuster l’ensemble des modèles candidats retournés par une procédure exhaustive ou séquentielle.</p>

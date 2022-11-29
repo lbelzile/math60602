@@ -2,7 +2,9 @@
 
 ```{r}
 #| label: setup02
-#| include: false
+#| eval: true
+#| echo: false
+#| results: "hide"
 #| message: false
 #| warning: false
 # automatically create a bib database for R packages
@@ -83,9 +85,25 @@ Règle générale,
 - Plus la corrélation est près de 1 en valeur absolue, plus les points auront tendance à être alignés autour d'une droite.
 - Lorsque la corrélation est presque nulle, les points n'auront pas tendance à être alignés autour d'une droite. Il est très important de noter que cela n'implique pas qu'il n'y a pas de relation entre les deux variables. Cela implique seulement qu'il n'y a pas de **relation linéaire** entre les deux variables. La @fig-datasaurus montre bien ce point: ces jeux de données ont la même corrélation linéaire (quasi-nulle), mais ne sont pas clairement pas indépendantes puisqu'elles permettent de dessiner un dinosaure ou une étoile.
 
+::: {.content-visible when-format="pdf"}
 
 ![Datasaurus (Alberto Cairo): une douzaine de jeux de données qui ont les mêmes statistiques descriptives (à deux décimales près) et une faible corrélation, mais qui sont visuellement distincts.](figures/DataSaurusDozen.png){#fig-datasaurus}
 
+:::
+
+::: {.content-visible when-format="html"}
+
+```{r}
+#| eval: true
+#| echo: false
+#| out-width: '80%'
+#| label: fig-datasaurus
+#| fig-align: 'center'
+#| fig-cap: "Datasaurus (Alberto Cairo): une douzaine de jeux de données qui ont les mêmes statistiques descriptives (à deux décimales près) et dont les deux variables sont très faiblement corrélées."
+knitr::include_graphics("figures/DataSaurusDozen.gif")
+```
+
+:::
 
 La matrice de corrélation entre $X_1, \ldots, X_p$, dont l'entrée $(i, j)$ contient la corrélation entre $X_i$ et $X_j$, est une matrice symmétrique dont les éléments de la diagonale sont égaux à 1. À mesure que le nombre de variables augmente, le nombre de corrélations à estimer augmente: puisque la matrice est $p \times p$, ce nombre augmente comme le carré du nombre de variables explicatives. L'estimation ne sera pas fiable à moins que $n \gg p$.
 
@@ -335,6 +353,8 @@ Si on utilise le critère de Kaiser avec les données `factor`, on conservera `r
 hecmulti::eboulis(eigen(cor(factor)))
 ```
 
+Une fois qu'on a déterminé le nombre de facteurs, on peut extraire les nouvelles variables explicatives à partir de l'analyse en composantes principales. Les colonnes sont stockées dans `acp$score` et il suffit de conserver les premières colonnes.
+
 ### Formulation mathématique
 
 Ce complément d'information est optionnel.
@@ -375,7 +395,7 @@ On considère encore une fois la matrice de covariance associée avec $p$ variab
 Conceptuellement, le modèle d'analyse factorielle suppose qu'on peut regrouper les variables explicatives numériques (parfois avec quelques variables binaires) à l'aide de concepts communs appelés facteurs. Certaines variables explicatives devraient donc idéalement être fortements corrélées entre elles. Le choix des variables est dicté par le bon sens: on inclut dans le modèle des variables qui peuvent logiquement être associée, par exemple des items de questionnaires excluant les données sociodémographiques.
 
 
-Le modèle d'analyse factorielle fait l'hypothèse que les variables dépendent linéairement d'un plus petit nombre $m$ de variables aléatoires, $F_1, \ldots, F_m$, appelées facteurs communs. Cette relation n'est pas parfaite, aussi on inclut $p$ termes d'aléas $\varepsilon_1, \ldots, \varepsilon_p$, de moyenne zéro et de variance $\mathsf{Va}(\varepsilon_i)=\psi_i$ ($i=1, \ldots, p$). À des fins d'identifiabilité,  on suppose que les aléas ne sont pas corrélées aux facteurs $F$ et entre elles et que les facteurs $F_1, \ldots, F_m$  ont une moyenne nulle et une variance unitaire, donc $\mathsf{E}(F_i)=0$ et $\mathsf{Va}(F_i)=1$ ($i=1, \ldots, p$).
+Le modèle d'analyse factorielle fait l'hypothèse que les variables dépendent linéairement d'un plus petit nombre de variables aléatoires, $F_1, \ldots, F_m$, appelées facteurs communs. Cette relation n'est pas parfaite, aussi on inclut $p$ termes d'aléas $\varepsilon_1, \ldots, \varepsilon_p$, de moyenne zéro et de variance $\mathsf{Va}(\varepsilon_i)=\psi_i$ ($i=1, \ldots, p$). À des fins d'identifiabilité,  on suppose que les aléas ne sont pas corrélées aux facteurs $F$ et entre elles et que les facteurs $F_1, \ldots, F_m$  ont une moyenne nulle et une variance unitaire, donc $\mathsf{E}(F_i)=0$ et $\mathsf{Va}(F_i)=1$ ($i=1, \ldots, p$).
 
 
 Le modèle d'analyse factorielle s'écrit
@@ -424,7 +444,9 @@ La méthode varimax tend à produire une configuration de facteurs tel que les c
 
 La façon la plus simple d'estimer les chargements est d'utiliser la méthode des composantes principales en prenant comme estimation 
 \begin{align*}
-\widehat{\boldsymbol{\Gamma}} = \boldsymbol{Q}_{1:m} \mathrm{diag}(\lambda_1^{1/2}, \ldots, \lambda_m^{1/2}),\end{align*} où $\lambda_j$ est la $j$e plus grande valeur propre de $\boldsymbol{S}$, la matrice de covariance empirique, et $\boldsymbol{Q}_{1:m}$ est la sous-matrice formée par les $m$ premières colonnes de $\boldsymbol{Q}$. le vecteur propre associé. On peut estimer les variances des aléas à travers 
+\widehat{\boldsymbol{\Gamma}} = \boldsymbol{Q}_{1:m} \mathrm{diag}(\lambda_1^{1/2}, \ldots, \lambda_m^{1/2}),
+\end{align*}
+où $\lambda_j$ est la $j$e plus grande valeur propre de la matrice de covariance empirique $\mathbf{S}$ et $\boldsymbol{Q}_{1:m}$ est la sous-matrice formée par les $m$ premières colonnes de vecteurs propres de $\boldsymbol{Q}$. On peut estimer les variances des aléas à travers 
 \begin{align*}
 \widehat{\boldsymbol{\psi}} = \mathrm{diag}\left(\mathbf{S} - \widehat{\boldsymbol{\Gamma}}\widehat{\boldsymbol{\Gamma}}^\top\right).
 \end{align*}
@@ -479,7 +501,7 @@ knitr::kable(100*chargements,
   kableExtra::kable_styling(full_width = TRUE)
 ```
 
-On constate à la lecture du @tbl-factanal4 des chargements que le chargement associé à la première variable est de `r round(fa4$loading["x1","Factor4"],3)` pour le facteur 4: cela correspondrait à un facteur avec une corrélation de presque un, donc $F_4 \approx X_1$. Le modèle obtenu avec la méthode du maximum de vraisemblance n'est donc pas adéquat puisque l'optimisation a convergée vers un cas de quasi-Heywood. Pour diagnostiquer le tout, on peut aussi analyser les valeurs d'unicité: la minimum de `min(fa4$uniqueness)` est `r min(fa4$uniquenesses)`, ce qui correspond à la tolérance de l'algorithme (valeur minimale permise dans l'optimisation), voir `?factanal`.  On retourne à la planche à dessin en réduisant le nombre de variables.
+On constate à la lecture du @tbl-factanal4 des chargements que le chargement associé à la première variable est de `r round(fa4$loading["x1","Factor4"],3)` pour le facteur 4: cela correspondrait à un facteur avec une corrélation de presque un, donc $F_4 \approx X_1$. Le modèle obtenu avec la méthode du maximum de vraisemblance n'est donc pas adéquat puisque l'optimisation a convergée vers un cas de quasi-Heywood et que le facteur n'est pas une variable latente, mais une des variables de la base de données de départ. Pour diagnostiquer le tout, on peut aussi analyser les valeurs d'unicité: la minimum de `min(fa4$uniqueness)` est `r min(fa4$uniquenesses)`, ce qui correspond à la tolérance de l'algorithme (valeur minimale permise dans l'optimisation), voir `?factanal`.  On retourne à la planche à dessin en réduisant le nombre de variables.
 
 En général, on associe une variable à un groupe (facteur) si son chargement est supérieur à 0.3 (en valeur absolue), ce qui donne
 
@@ -487,6 +509,8 @@ En général, on associe une variable à un groupe (facteur) si son chargement e
 - Facteur 2: $X_3$, $X_6$, $X_9$ et $X_{12}$
 - Facteur 3: $X_2$, $X_7$ et $X_{10}$
 - Facteur 4: $X_1$ et $X_5$.
+
+Ce point de coupure est arbitraire et peut être augmenté si on note qu'il y a trop de variables disparates. Le signe des chargements est arbitraires.
 
 Ces facteurs sont interprétables:
 
@@ -578,7 +602,9 @@ avec un facteur de moins ou de plus. Au final, le plus important est de pouvoir 
 
 Si le seul but de l’analyse factorielle est de comprendre la structure de corrélation entre les variables, alors se limiter à l’interprétation des facteurs est suffisant.
 
-Si par contre, le but est de réduire le nombre de variables pour pouvoir par la suite procéder à d’autres analyses statistiques, l’analyse factorielle peut alors servir de guide pour construire de nouvelles variables (échelles). En supposant que l’analyse factorielle a produit des facteurs qui sont interprétables et satisfaisants, la méthode de construction d’échelles la plus couramment utilisée consiste à construire $m$ nouvelles variables, une par facteur. Pour un facteur donné, la nouvelle variable est simplement la moyenne des variables ayant des chargements élevés sur ce facteur (positifs ou négatifs, mais de même signe). Une autre méthode, les scores factoriels, sera présentée plus loin. 
+Si par contre, le but est de réduire le nombre de variables pour pouvoir par la suite procéder à d’autres analyses statistiques, l’analyse factorielle peut alors servir de guide pour construire de nouvelles variables (échelles). En supposant que l’analyse factorielle a produit des facteurs qui sont interprétables et satisfaisants, la méthode de construction d’échelles la plus couramment utilisée consiste à construire $m$ nouvelles variables, une par facteur. Pour un facteur donné, la nouvelle variable est simplement la moyenne des variables ayant des chargements élevés sur ce facteur. Une autre méthode, les scores factoriels, sera présentée plus loin.  Il est important que les corrélations soient de même signe si on veut regrouper les variables dans les échelles pour que ce regroupement soit logique: certaines questions avec des échelles de Likert ont parfois un encodage inverse comme test d'attention.
+
+Est-il logique de calculer des échelles avec autre chose que des items de questionnaire ramenés sur une plage commune? Par forcément... Il faut aussi s'assurer que les variables ont la même plage ou étendue avant des les combiner, sinon certaines variables seront des poids plumes et seule la variable avec la plus grande étendue ressortira.
 
 Lorsqu’on construit une échelle, il est important d’examiner sa cohérence interne. Ceci peut être fait à l’aide du coefficient alpha de Cronbach. Ce coefficient mesure à quel point chaque variable faisant partie d’une échelle est corrélée avec le total de toutes les variables pour cette échelle.
 Plus le coefficient est élevé, plus les variables ont tendance à être corrélées entre elles. L'alpha de Cronbach est 
@@ -587,7 +613,7 @@ Plus le coefficient est élevé, plus les variables ont tendance à être corré
 \end{align*}
 où $k$ est le nombre de variables dans l'échelle, $S^2$ est la variance empirique de la somme des variables et $S_i^2$ est la variance empirique de la $i$e variable. En pratique, on voudra que ce coefficient soit au moins égal à 0.6 pour être satisfait de la cohérence interne de l’échelle.^[Bien que ce nombre soit arbitraire.]
 
-Le paquet `hecmulti` contient une fonction, `alpha`, pour faire l'estimation du $\alpha$ de Cronbach
+Le paquet `hecmulti` contient une fonction, `alphaC`, pour faire l'estimation du $\alpha$ de Cronbach
 
 ```{r}
 #| label: alphaCronbach

@@ -2,7 +2,9 @@
 
 ```{r}
 #| label: setup01
-#| include: false
+#| echo: false
+#| eval: true
+#| results: "hide"
 #| message: false
 #| warning: false
 # automatically create a bib database for R packages
@@ -33,7 +35,7 @@ options(scipen = 1, digits = 3)
 library(viridis)
 library(ggplot2, warn.conflicts = FALSE, quietly = TRUE)
 library(poorman, quietly = TRUE, warn.conflicts = FALSE)
-
+library(patchwork)
 # safe_colorblind_palette <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
 #                              "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
 
@@ -99,18 +101,42 @@ Avant de regarder les données, il est souvent utile de se plonger dans la descr
 
 Le principal type de graphique pour représenter la distribution d'une variable catégorielle est le diagramme en bâtons, dans lequel la fréquence de chaque catégorie est présentée sur l'axe des ordonnées ($y$) en fonction de la modalité, sur l'axe des abscisses ($x$), et ordonnées pour des variables ordinales. Cette représentation est en tout point supérieur au [diagramme en camembert](http://www.perceptualedge.com/articles/08-21-07.pdf), une engeance répandue qui devrait être honnie (notamment parce que l'humain juge mal les différences d'aires, qu'une simple rotation change la perception du graphique et qu'il est difficile de mesurer les proportions) --- ce n'est pas de la tarte!
 
-```{r }
+```{r}
+#| label: barplotrenfe-code
+#| echo: true
+#| eval: false
+#| code-fold: true
+library(ggplot2)
+library(patchwork)
+library(dplyr)
+data(renfe, package = "hecmodstat")
+g1 <- renfe |>
+    count(classe) |>
+    mutate(classe = forcats::fct_reorder(classe, n))  |>
+ggplot(mapping = aes(y = classe, x = n)) + 
+    geom_col() + 
+    labs(subtitle = "classe", 
+    x = "dénombrement", 
+    y = "")
+g2 <- renfe |>
+    count(type) |>
+    mutate(type = forcats::fct_reorder(type, n))  |>
+ggplot(mapping = aes(y = type, x = n)) + 
+    geom_col() + 
+    labs(subtitle = "type de train", 
+         x = "dénombrement", 
+         y = "")
+g1 + g2
+```
+
+```{r}
 #| label: fig-barplotrenfe
 #| cache: true
-#| echo: true
-#| code-fold: true
-#| warning: false
+#| echo: false
+#| eval: true
 #| fig-cap: "Diagramme en bâtons pour la classe des billets de trains du jeu de données Renfe."
 #| out-width: '100%'
-library(ggplot2); 
-library(patchwork)
 data(renfe, package = "hecmodstat")
-
 g1 <- renfe |>
     dplyr::count(classe) |>
     dplyr::mutate(classe = forcats::fct_reorder(classe, n))  |>
@@ -129,8 +155,6 @@ ggplot(mapping = aes(y = type, x = n)) +
          y = "")
 g1 + g2
 ```
-
-
 Puisque les variables continues peuvent prendre autant de valeurs distinctes qu'il y a d'observations, on ne peut simplement compter le nombre d'occurrence par valeur unique. On regroupera plutôt dans un certain nombre d'intervalle, en discrétisant l'ensemble des valeurs en classes pour obtenir un histogramme. Le nombre de classes dépendra du nombre d'observations si on veut que l'estimation ne soit pas impactée par le faible nombre d'observations par classe: règle générale, le nombre de classes ne devrait pas dépasser $\sqrt{n}$, où $n$ est le nombre d'observations de l'échantillon. On obtiendra la fréquence de chaque classe, mais si on normalise l'histogramme (de façon à ce que l'aire sous les bandes verticales égale un), on obtient une approximation discrète de la fonction de densité. Faire varier le nombre de classes permet parfois de faire apparaître des caractéristiques de la variable (notamment la  multimodalité, l'asymmétrie et les arrondis). 
 
 Puisque qu'on groupe les observations en classe pour tracer l'histogramme, il est difficile de voir l'étendue des valeurs que prenne la variable: on peut rajouter des traits sous l'histogramme pour représenter les valeurs uniques prises par la variable, tandis que la hauteur de l'histogramme nous renseigne sur leur fréquence relative.
@@ -267,7 +291,7 @@ renfe |>
 #| out-width: '100%'
 ggplot(data = renfe, 
        mapping = aes(x = prix, 
-                     y=after_stat(density), 
+                     y = after_stat(density), 
                      fill = tarif)) +
     geom_histogram(binwidth = 5) +
     labs(x = "prix (en euros)", 
@@ -299,7 +323,7 @@ a <- renfe |>
 kableExtra::kbl(a,
              longtable = FALSE, 
              booktabs = TRUE) |>
-  kableExtra::kable_styling(full_width = FALSE)
+  kableExtra::kable_styling()
 ```
 
 On note que la répartition des prix pour les billets de classe Flexible est inhabituelle. Notre boîte à moustaches est écrasée et l'écart interquartile semble nul, même si quelques valeurs inexpliquées sont aussi présentes. L'écrasante majorité des billets Flexibles sont en classe Turista, donc ça pourrait être dû à un (trop) faible nombre de billets dans chaque catégorie. On peut rejeter cette hypothèse en calculant le nombre de trains au tarif Flexible pour les différents types de billets, comme dans le @tbl-renfeaedrep.  Ni la durée, ni le type de train, ni la destination n'expliquent pas pourquoi le prix de certains billets Flexibles est plus faible ou élevés. Le prix des billets Promo est plus faible, et les billets au tarif Preferente (la première classe) sont plus élevés. 
