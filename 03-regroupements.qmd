@@ -715,7 +715,7 @@ On peut représenter graphiquement les regroupements obtenus sur les premières 
 #| eval: true
 #| echo: false
 #| label: fig-acpkmoy5
-#| fig-cap: "Nuage de points des deux premières composantes principales des observations de dons multiples avec les étiquettes des regroupements obtenus selon la méthodes des $K$-moyennes et $K$-médianes avec $K=5$ regroupements."
+#| fig-cap: "Nuage de points des deux premières composantes principales des observations de dons multiples avec les étiquettes des regroupements obtenus selon la méthode des $K$-moyennes et $K$-médianes avec $K=5$ regroupements."
 set.seed(60602)
 acp <- princomp(donsmult_std)
 kmed5 <- flexclust::kcca(
@@ -1199,6 +1199,76 @@ Il y a plusieurs façons de calculer la distance entre deux groupes d'observatio
 - liaison complète (voisins les plus éloignés)
 - liaison moyenne: utilise la moyenne des distances entre toutes les paires de sujets (un pour chaque groupe) provenant des deux groupes.
 - méthode de Ward: calcul de l'homogénéité globale
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-distances
+#| fig-cap: "Distances entre regroupements selon la liaison (simple, complète, barycentre, homogenéité de Ward)."
+#| out-width: '80%'
+#| fig-width: 6
+#| fig-height: 4
+set.seed(1234)
+df <- rbind(
+  cbind(rnorm(5, -2, sd = 1.2), 
+        rnorm(5, mean = -2, sd = 1)),
+  cbind(2 + rt(n = 10, df = 5, ncp = 0.1),
+        5 + rt(n = 10, df = 10)))
+df <- data.frame(df)
+df$groupe <- c(rep(1, 5), rep(2, 10))
+
+cols = MetBrewer::met.brewer("Hiroshige", 3, type = "discrete")[c(1,3)]
+par(mfrow = c(2,2), mar = c(0,0,0,0))
+plot(df[,1:2], 
+     bty = "n", 
+     axes = FALSE, 
+     xlab = "", 
+     ylab = "", pch = 20, col = cols[df[,3]])
+di <- as.matrix(dist(df[,1:2]))
+dipair <- di[1:5,6:15]
+which.min(dipair)
+segments(x0 = df[3,1], y0 = df[3,2], x1 = df[12,1], y1 = df[12,2])
+text(x = -2, y = 6, "liaison simple")
+plot(df[,1:2], 
+     bty = "n", 
+     axes = FALSE, 
+     xlab = "", 
+     ylab = "", pch = 20, col = cols[df[,3]])
+segments(x0 = df[4,1], y0 = df[4,2], x1 = df[14,1], y1 = df[14,2])
+text(x = -2, y = 6, "liaison complète")
+plot(df[,1:2], 
+     bty = "n", 
+     axes = FALSE, 
+     xlab = "", 
+     ylab = "", pch = 20, col = cols[df[,3]])
+centroid <- rbind(colMeans(df[1:5,1:2]),
+                  colMeans(df[6:15,1:2]))
+points(centroid, color = cols, pch = 4)
+segments(x0 = centroid[2,1], y0 = centroid[2,2], 
+         x1 = centroid[1,1], y1 = centroid[1,2])
+text(x = -2, y = 6, "barycentre")
+
+plot(df[,1:2], 
+     bty = "n", 
+     axes = FALSE, 
+     xlab = "", 
+     ylab = "", pch = 20, col = cols[df[,3]])
+centroid <- rbind(colMeans(df[1:5,1:2]),
+                  colMeans(df[6:15,1:2]))
+text(x = -2, y = 2, "")
+points(centroid, color = cols, pch = 4)
+for(i in 1:5){
+  segments(x0 = df[i,1], y0 = df[i,2], 
+           x1 = centroid[1,1], y1 = centroid[1,2], 
+           col = cols[1])
+}
+for(i in 6:15){
+  segments(x0 = df[i,1], y0 = df[i,2], 
+           x1 = centroid[2,1], y1 = centroid[2,2], 
+           col = cols[2])
+}
+text(x = -2, y = 6, "Ward")
+```
 
 La méthode de Ward n'est pas définie en terme de distance entre représentants de groupes, mais plutôt en terme de mesure d'homogénéité au sein des groupes. Supposons qu’à une étape du processus hiérarchique, nous avons  $M$  groupes et que nous voulons passer à $M-1$. Pour chaque groupe $k$, nous pouvons calculer la somme des carrés des distances par rapport à la moyenne du groupe, disons $\mathsf{SCD}_k$: plus cette distance est petite, plus le groupe est compact et homogène. On calcule ensuite l'homogénéité globale en faisant la somme de l’homogénéité de tous les groupes, soit $\mathrm{H}^{(M)} = \mathsf{SCD}_1 + \cdots + \mathsf{SCD}_M$. La méthode de Ward va regrouper les deux groupes qui feront augmenter le moins possible l'homogénéité.
 
