@@ -248,6 +248,7 @@ div.csl-indent {
   <li><a href="#regroupements-hiérarchiques" id="toc-regroupements-hiérarchiques" class="nav-link" data-scroll-target="#regroupements-hiérarchiques"><span class="toc-section-number">7.5.4</span>  Regroupements hiérarchiques</a></li>
   <li><a href="#méthodes-basées-sur-la-densité" id="toc-méthodes-basées-sur-la-densité" class="nav-link" data-scroll-target="#méthodes-basées-sur-la-densité"><span class="toc-section-number">7.5.5</span>  Méthodes basées sur la densité</a></li>
   </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="toc-section-number">7.6</span>  Conclusion</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lbelzile/math60602/edit/master/03-regroupements.qmd" class="toc-action">Éditer cette page</a></p></div></div></nav>
     </div>
@@ -296,12 +297,11 @@ div.csl-indent {
 <div class="callout-body-container callout-body">
 <ol type="1">
 <li>Choisir les variables pertinentes à l’analyse. Cette étape peut nécessiter de créer, transformer de nouvelles variables ou d’aggréger les données.</li>
-<li>Décider quel méthode (algorithme, modèle, mesure de dissemblance) sera utilisé pour la segmentation.</li>
-<li>Choisir les hyperparamètres de l’algorithme (nombre de regroupements, rayon, etc.)</li>
-<li>Procéder à l’analyse de regroupements.</li>
-<li>Calculer une mesure de qualité.</li>
-<li>Assigner les étiquettes aux observations et calculer un représentant-type de groupe.</li>
-<li>Interpréter les regroupements obtenus.</li>
+<li>Décider quel méthode sera utilisée pour la segmentation.</li>
+<li>Choisir les hyperparamètres de l’algorithme (nombre de regroupements, rayon, etc.) et la mesure de dissemblance.</li>
+<li>Valider la qualité de la segmentation (interprétabilité, taille des groupes, homogénéité des regroupements).</li>
+<li>Avec les étiquettes, calculer un prototype de groupe.</li>
+<li>Interpréter les regroupements obtenus à partir des prototypes</li>
 </ol>
 </div>
 </div>
@@ -1182,6 +1182,40 @@ Avec une mesure de dissemblance, on peut créer une matrice qui pour chaque pair
 </div>
 </div>
 <p>Une variante de l’algorithme DBSCAN, intitulée OPTICS, est plus coûteuse mais permet de gérer le cas de regroupements de densités variables en évitant la spécification de <span class="math inline">\(\epsilon\)</span>.</p>
+</section>
+</section>
+</section>
+<section id="conclusion" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">7.6</span> Conclusion</h2>
+<p>Le résultat d’une analyse de regroupements est une étiquette pour chaque observation. Parfois, la méthode d’analyse de regroupement retourne également un prototype (le barycentre, une observation du groupe ou la médiane coordonnée par coordonnée) qui permet d’interpréter les regroupements.</p>
+<p>L’analyse de regroupement est une méthode d’apprentissage non-supervisé: l’objectif est de déduire la structure présente dans un ensemble de points sans étiquette préalable (contrairement à la classification). Ainsi, une fois cqu’on a obtenu les étiquettes, on peut comparer les regroupements entre eux avant d’effectuer le profilage. Est-ce que les regroupements sont homogènes et que les observations sont près de leur représentant de groupe? On pourrait calculer les silhouettes et voir si les groupes sont bien équilibrés, etc. S’il n’existe pas de solution, il existe des segmentations de moins bonne qualité (parce que difficilement interprétables, avec des regroupements qui contiennent une poignée d’observations). Si la segmentation n’est pas satisfaisante, on retourne à la planche à dessin et on modifie les variables, la méthode ou la calibration des hyperparamètres jusqu’à ce qu’on soit satisfaits du résultat.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+En résumé
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>L’objectif d’une analyse de regroupement est de mettre en commun des observations de telle sorte que les observations d’un même groupe soient le plus semblables possible, et que les groupes soient le plus différent possible les uns des autres.</li>
+<li>Chaque observation se voit assigner une étiquette de groupe.</li>
+<li>On procède ensuite à une analyse descriptive, segment par segment, à l’aide de prototypes L’analyse de regroupement (clustering) est une méthode d’apprentissage non-supervisée</li>
+<li>Plusieurs choix de l’analyste (mesure de dissemblance, algorithme ou méthode de regroupement, choix des hyperparamètres) peuvent donner une segmentation différente. L’analyste a une grande marge de manoeuvre.</li>
+<li>L’algorithme des <span class="math inline">\(K\)</span>-moyennes est le plus employé et son faible coût permet son utilisation avec des mégadonnées.</li>
+<li>Chaque algorithme de segmentation a des avantages et inconvénients.</li>
+<li>Aucun algorithme ne performe uniformément mieux, mais certains sont plus faciles à employer que d’autres.
+<ul>
+<li>avec des mégadonnées, la complexité est un facteur important à considérer pour le choix de la méthode.</li>
+<li>la plupart du temps, le choix des hyperparamètres nécessite un peu d’essai-erreur.</li>
+<li>la segmentation peut être médiocre parce que les hyperparamètres sont mal choisis.</li>
+</ul></li>
+<li>Le nombre de groupes peut être guidé par le contexte: les formules et indicateurs de qualité servent de balises.</li>
+</ul>
+</div>
+</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
@@ -1201,8 +1235,6 @@ Kaufman, Leonard, and Peter J. Rousseeuw. 1990. <em>Finding Groups in Data: An I
 Scrucca, Luca, Michael Fop, T. Brendan Murphy, and Adrian E. Raftery. 2016. <span>“<code>mclust</code> 5: Clustering, Classification and Density Estimation Using <span>G</span>aussian Finite Mixture Models.”</span> <em>The R Journal</em> 8: 289–317. <a href="https://doi.org/10.32614/RJ-2016-021">https://doi.org/10.32614/RJ-2016-021</a>.
 </div>
 </div>
-</section>
-</section>
 </section>
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>

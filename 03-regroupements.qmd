@@ -60,13 +60,12 @@ Pour créer les regroupements, on utilisera $p$ variables explicatives $X_1, \ld
 :::{.callout-tip}
 ## Étapes d'une analyse de regroupements
 
-1. Choisir les variables pertinentes à l'analyse. Cette étape peut nécessiter de créer, transformer de nouvelles variables ou d'aggréger les données.
-2. Décider quel méthode (algorithme, modèle, mesure de dissemblance) sera utilisé pour la segmentation.
-3. Choisir les hyperparamètres de l'algorithme (nombre de regroupements, rayon, etc.) 
-4. Procéder à l'analyse de regroupements.
-5. Calculer une mesure de qualité.
-6. Assigner les étiquettes aux observations et calculer un représentant-type de groupe. 
-7. Interpréter les regroupements obtenus.
+1. Choisir les variables pertinentes à l’analyse. Cette étape peut nécessiter de créer, transformer de nouvelles variables ou d’aggréger les données.
+2. Décider quel méthode sera utilisée pour la segmentation.
+3. Choisir les hyperparamètres de l’algorithme (nombre de regroupements, rayon, etc.) et la mesure de dissemblance.
+4. Valider la qualité de la segmentation (interprétabilité, taille des groupes, homogénéité des regroupements).
+5. Avec les étiquettes, calculer un prototype de groupe.
+6. Interpréter les regroupements obtenus à partir des prototypes
 
 
 :::
@@ -1204,3 +1203,33 @@ g1 + g2
 Une variante de l'algorithme DBSCAN, intitulée OPTICS, est plus coûteuse mais permet de gérer le cas de regroupements de densités variables en évitant la spécification de $\epsilon$.
 
 
+## Conclusion
+
+Le résultat d'une analyse de regroupements est une étiquette pour chaque observation. Parfois, la méthode d'analyse de regroupement retourne également un prototype (le barycentre, une observation du groupe ou la médiane coordonnée par coordonnée) qui permet d'interpréter les regroupements. 
+
+L'analyse de regroupement est une méthode d’apprentissage non-supervisé: l’objectif
+est de déduire la structure présente dans un ensemble de points sans étiquette préalable (contrairement à la classification). Ainsi, une fois cqu'on a obtenu les étiquettes, on peut comparer les regroupements entre eux avant d'effectuer le profilage. Est-ce que les regroupements sont homogènes et que les observations sont près de leur représentant de groupe? On pourrait calculer les silhouettes et voir si les groupes sont bien équilibrés, etc. S'il n'existe pas de solution, il existe des segmentations de moins bonne qualité (parce que difficilement interprétables, avec des regroupements qui contiennent une poignée d'observations). Si la segmentation n'est pas satisfaisante, on retourne à la planche à dessin et on modifie les variables, la méthode ou la calibration des hyperparamètres jusqu'à ce qu'on soit satisfaits du résultat.
+
+
+::: {.callout-note}
+
+## En résumé
+
+- L'objectif d'une analyse de regroupement est de mettre en commun des observations de telle sorte que
+les observations d’un même groupe soient le plus semblables possible, et que les groupes soient le plus différent possible les uns des autres.
+- Chaque observation se voit assigner une étiquette de groupe.
+- On procède ensuite à une analyse descriptive, segment par segment, à l'aide de prototypes
+L’analyse de regroupement (clustering) est une méthode
+d’apprentissage non-supervisée
+- Plusieurs choix de l’analyste (mesure de dissemblance, algorithme ou méthode de regroupement, choix des hyperparamètres) peuvent donner une segmentation différente. L’analyste a une grande marge de manoeuvre.
+- L'algorithme des $K$-moyennes est le plus employé et son faible coût permet son utilisation avec des mégadonnées.
+- Chaque algorithme de segmentation a des avantages et inconvénients.
+- Aucun algorithme ne performe uniformément mieux, mais certains sont plus faciles à employer que d’autres.
+   - avec des mégadonnées, la complexité est un facteur important à considérer pour le choix de la méthode.
+   - la plupart du temps, le choix des hyperparamètres nécessite un peu d’essai-erreur.
+   - la segmentation peut être médiocre parce que les hyperparamètres sont mal choisis.
+- Le nombre de groupes peut être guidé par le contexte: les formules et indicateurs de qualité servent de balises.
+
+
+
+:::
