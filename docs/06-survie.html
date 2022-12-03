@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.11">
+<meta name="generator" content="quarto-1.1.163">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -173,6 +173,7 @@ div.csl-indent {
       <a href="./">MATH 60602 - Analyse multidimensionnelle appliquée</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/lbelzile/math60602/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="./MATH60602.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -406,7 +407,7 @@ h(t) = - \frac{\mathrm{d} \ln\{S(t)\}}{\mathrm{d} t}, \qquad \qquad S(t) = \exp 
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"temps"</span>) </span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>La fonction résumé (<code>summary</code>) renvoit l’estimation de la fonction de survie pour chaque temps d’échec (événement): l’estimateur est indéfini à ces valeurs. Le <a href="#tbl-survie1-tableau">Tableau&nbsp;<span>6.1</span></a> offre une sortie (tronquée) du résumé, modifié pour mieux illustrer les changements. L’estimation de la probabilité que le temps d’abonnement soit supérieur à 30 semaines est <span class="math inline">\(\widehat{S}(30)=0.986\)</span>.</p>
-<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-survie1-tableau_a6c958c426f7ead799dc4f6401638ec1">
+<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-survie1-tableau_858093a8ece53d97ed29b1d0e6a0466d">
 <div class="cell-output-display">
 <div id="tbl-survie1-tableau" class="anchored">
 
@@ -549,6 +550,7 @@ h(t) = - \frac{\mathrm{d} \ln\{S(t)\}}{\mathrm{d} t}, \qquad \qquad S(t) = \exp 
 <p>Cette partie peut être omise; elle est incluse seulement par souci de complétude. Soit <span class="math inline">\(T_1, \ldots, T_n\)</span> les <span class="math inline">\(n\)</span> réalisations aléatoires de la variable temps (certaines censurées, d’autres pas). Supposons qu’il y a <span class="math inline">\(m\)</span> temps distincts où au moins un individu expérimente l’événement. Soient <span class="math inline">\(t_{(1)} &lt; \cdots &lt; t_{(m)}\)</span>, ces temps ordonnés en ordre croissant et <span class="math inline">\(r_i\)</span> le nombre d’individus à risque au temps <span class="math inline">\(t_{(i)}\)</span> (les individus qui n’ont pas encore expérimenté l‘événement, et qui ne sont pas encore censurés avant <span class="math inline">\(t_{(i)}\)</span>). On note <span class="math inline">\(d_i\)</span> le nombre d’individus qui expérimentent l’événement au temps <span class="math inline">\(t_{(i)}\)</span>. L’estimateur de Kaplan–Meier de la fonction de survie à un temps <span class="math inline">\(t\)</span> est <span class="math display">\[\begin{align*}
 \widehat{S}(t) = \left( 1- \frac{d_1}{r_1}\right) \times \cdots \times \left( 1- \frac{d_{i(t)}}{r_{i(t)}}\right), \qquad t_{(1)} \leq t \leq t_{(m)},
 \end{align*}\]</span> où <span class="math inline">\(i(t) =\max(j \in \{1, \ldots, m\}: t \geq t_{j})\)</span>, soit le plus grand indice parmi <span class="math inline">\(1, \ldots, m\)</span> tel que <span class="math inline">\(t \geq t_{i(t)}\)</span>. Par convention, si <span class="math inline">\(t &lt; t_{(1)}\)</span>, on fixe <span class="math inline">\(\widehat{S}(t)=1\)</span>. La fonction de survie n’est pas définie aux temps de défaillance observée, mais la convention veut qu’elle soit continue à gauche.</p>
+<p>Avec la troncation à gauche, la même logique s’applique mais les personnes ne sont à risque qu’à partir du temps minimum observé.</p>
 </section>
 </section>
 <section id="comparaison-de-deux-courbes-de-survie" class="level2" data-number="6.4">
@@ -663,8 +665,8 @@ h(t; \boldsymbol{x}) = h_0(t)\exp(\beta_1x_1 + \cdots + \beta_p x_p)
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Test du rapport de vraisemblance</span></span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(cox1, <span class="at">type =</span> <span class="dv">3</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>La sortie inclut notamment des tests de significativité globale basés sur la vraisemblance comparant le modèle sans variable explicative avec celui ajusté (rapport de vraisemblance, score et Wald). Ces trois statistiques ciblent la même hypothèse, aussi on peut ne s’attarder qu’au test du rapport de vraisemblance, qui est plus fiable et généralement plus puissant. Le tableau des coefficients donne les estimations <span class="math inline">\(\widehat{\beta}\)</span>. Le rapport de risque pour <code>sexe=1</code> versus <code>sexe=0</code> est <span class="math inline">\(\exp(\widehat{\beta})\)</span>, tandis qu&lt;on obtiendrait le rapport de risque pour <code>sexe=0</code> versus <code>sexe=1</code>, soit <span class="math inline">\(\exp(-\widehat{\beta})\)</span>. Les statistiques de test et la valeur-<span class="math inline">\(p\)</span> associée sont basées sur la statistique de Wald, soit <span class="math inline">\(\widehat{\beta}/\mathsf{se}(\widehat{\beta})\)</span>, tandis que les intervalles de confiance à 95% pour le rapport de risque sont des intervalles de Wald de la forme ${ ()} pour le rapport de risque. Un rapport de risque de 1 signifie que le risque n’est pas affecté par la variable explicative. Ici, le test correspondant à l’hypothèse nulle <span class="math inline">\(\beta=0\)</span> ne mène pas au rejet de l’hypothèse qui veut que la variable n’impacte pas le risque. On pourrait obtenir les intervalle</p>
-<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-cox1_7d6cb63cbd30950ed9ac9cedf56007bd">
+<p>La sortie inclut notamment des tests de significativité globale basés sur la vraisemblance comparant le modèle sans variable explicative avec celui ajusté (rapport de vraisemblance, score et Wald). Ces trois statistiques ciblent la même hypothèse, aussi on peut ne s’attarder qu’au test du rapport de vraisemblance, qui est plus fiable et généralement plus puissant. Le tableau des coefficients donne les estimations <span class="math inline">\(\widehat{\beta}\)</span>. Le rapport de risque pour <code>sexe=1</code> versus <code>sexe=0</code> est <span class="math inline">\(\exp(\widehat{\beta})\)</span>, tandis qu&lt;on obtiendrait le rapport de risque pour <code>sexe=0</code> versus <code>sexe=1</code>, soit <span class="math inline">\(\exp(-\widehat{\beta})\)</span>. Les statistiques de test et la valeur-<span class="math inline">\(p\)</span> associée sont basées sur la statistique de Wald, soit <span class="math inline">\(\widehat{\beta}/\mathsf{se}(\widehat{\beta})\)</span>, tandis que les intervalles de confiance à 95% pour le rapport de risque sont des intervalles de Wald de la forme <span class="math inline">\(\exp\{\widehat{\beta} \pm 1.96 \cdot \mathsf{se}(\widehat{\beta})\}\)</span> pour le rapport de risque. Un rapport de risque de 1 signifie que le risque n’est pas affecté par la variable explicative. Ici, le test correspondant à l’hypothèse nulle <span class="math inline">\(\beta=0\)</span> ne mène pas au rejet de l’hypothèse qui veut que la variable n’impacte pas le risque. On pourrait obtenir les intervalle</p>
+<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-cox1_6fd61b527a66a1b7f8e2a0e3673f9d7a">
 <div class="cell-output-display">
 <div id="tbl-cox1" class="anchored">
 
@@ -715,7 +717,7 @@ h(t; \boldsymbol{x}) = h_0(t)\exp(\beta_1x_1 + \cdots + \beta_p x_p)
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(cox3, </span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">type =</span> <span class="dv">3</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-survie5-coefs_f4b20f2d21e1563852d57e1b4060bb50">
+<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-survie5-coefs_4bd6cef60807a9a6fbda42a5051da584">
 <div class="cell-output-display">
 <div id="tbl-survie5-coefs" class="anchored">
 
@@ -789,7 +791,7 @@ h(t; \boldsymbol{x}) = h_0(t)\exp(\beta_1x_1 + \cdots + \beta_p x_p)
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-survie5-deviance_b11a7441efdcefc7ff3b2090f5323641">
+<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-survie5-deviance_5a044b643b2e48a05843050cf770d543">
 <div class="cell-output-display">
 <div id="tbl-survie5-deviance" class="anchored">
 
@@ -907,7 +909,7 @@ h(t; \boldsymbol{x}) = h_0(t)\exp(\beta_1x_1 + \cdots + \beta_p x_p)
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-coxph-hypothese_9da401a98456a58b7d2fecf3b69e9988">
+<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-coxph-hypothese_50b294920b1bbfbcab0f0f07f8be6e91">
 <div class="cell-output-display">
 <div id="tbl-coxph-hypothese" class="anchored">
 
@@ -985,7 +987,7 @@ h(t; \boldsymbol{x}) = h_0(t) \exp\{\beta_1x_1(t) + \cdots + \beta_px_p\},
 <p>Supposons que la variable <span class="math inline">\(\texttt{service}\)</span>, qui représente le nombre d’autres services souscrits, est la seule que nous voulons modéliser comme une variable qui varie dans le temps. Pour l’âge, nous prenons simplement l’âge au début de l’abonnement, idem pour la région.</p>
 <p>Le plus difficile est de créer correctement le fichier de données pour effectuer ce genre d’analyse. Pour chaque personne, on peut identifier plusieurs moments où l’une ou l’autres des valeurs des variables explicatives change. Supposons qu’on a observé un événement au temps <span class="math inline">\(t_1\)</span>, et que la valeur de la covariable change à <span class="math inline">\(t_0\)</span>, où <span class="math inline">\(0 &lt; t_0 &lt; t_1\)</span>. On peut envisager cette observation donne deux contributions: une pour la trajectoire sur l’intervalle <span class="math inline">\((0, t_0]\)</span> (censure à droite) et l’autre, après la modification, sur l’intervalle <span class="math inline">\((t_0, t_1]\)</span> (troncature à gauche). Puisque la valeur est observée passée le premier intervalle, on a besoin de l’information sur toute la fenêtre (les deux bornes) et le type d’événement pour la première fenêtre sera de la censure à droite.</p>
 <p>La base de données <code>survie3</code> contient le format adéquat: une colonne <code>evenement</code> qui indique la censure (tout intervalle intermédiaire pour un individu est traité comme de la censure à droite) et les bornes de la fenêtre, <code>debut</code> et <code>fin</code>. Dans cet exemple, il y a eu au plus un changement dans la variable <span class="math inline">\(\texttt{service}\)</span>, comme présenté dans le fichier <code>survie3</code>. Les variables explicatives <span class="math inline">\(\texttt{age}\)</span>, <span class="math inline">\(\texttt{sexe}\)</span> et <span class="math inline">\(\texttt{region}\)</span> sont comme précédemment.</p>
-<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-survie3-donnees_d5bd88c61715f97745d3230a4013f5c5">
+<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-survie3-donnees_818efad1af3d90cdea51a94cd9a21917">
 <div class="cell-output-display">
 <div id="tbl-survie3-donnees" class="anchored">
 
@@ -1122,7 +1124,7 @@ h_K(t; \boldsymbol{x})&amp;= h_{0K}(t) \exp(\beta_{1K}x_1 + \cdots + \beta_{pK} 
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">ties =</span> <span class="st">"exact"</span>)</span>
 <span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox5)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-cox-risquecompetA_b684a5f19f24e2542688b367f51872b1">
+<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-cox-risquecompetA_495ef15439b02090cb66b792313b809e">
 <div class="cell-output-display">
 <div id="tbl-cox-risquecompetA" class="anchored">
 
@@ -1344,7 +1346,7 @@ h(t; x) = h_0(t) \exp(\beta_1x + \beta_2xt).
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_np)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>On spécifie avec l’option <code>tt()</code> dans la formule la variable qui change dans le temps et par la suite la nature de l’interaction temporelle avec l’argument <code>tt</code>.</p>
-<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-cox-np_667bad54c65b35f4120a4ba7faca9260">
+<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-cox-np_d847e8027b53f137406bfb3724024395">
 <div class="cell-output-display">
 <div id="tbl-cox-np" class="anchored">
 
@@ -1443,7 +1445,7 @@ h(t; \mathbf{x}, z=k) = h_k(t) \exp(\boldsymbol{\beta} \mathbf{x}),
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Coefficients</span></span>
 <span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox7)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-cox-stratif_9cce1dfa287be7635e75c18f5f933d7c">
+<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-cox-stratif_0a3d05e940bd4f0f0e9f23107faf73c2">
 <div class="cell-output-display">
 <div id="tbl-cox-stratif" class="anchored">
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.11">
+<meta name="generator" content="quarto-1.1.163">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -173,6 +173,7 @@ div.csl-indent {
       <a href="./">MATH 60602 - Analyse multidimensionnelle appliquée</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/lbelzile/math60602/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="./MATH60602.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -350,7 +351,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
 \mathsf{cote}(p) = \frac{p}{1-p} = \frac{\Pr(Y=1 \mid \mathbf{X})}{\Pr(Y=0 \mid \mathbf{X})}.
 \end{align*}\]</span></p>
 <p>Par exemple, une cote de 4 veut dire qu’il y a 4 fois plus de chance que <span class="math inline">\(Y\)</span> soit égale à <span class="math inline">\(1\)</span> par rapport à <span class="math inline">\(0\)</span>. Une cote de 0.25 veut dire le contraire, il y a 4 fois moins de chance que <span class="math inline">\(Y=1\)</span> par rapport à <span class="math inline">\(0\)</span> ou bien, de manière équivalente, il y a 4 fois plus de chance que <span class="math inline">\(Y=0\)</span> par rapport à <span class="math inline">\(1\)</span>. Le <a href="#tbl-cotes">Tableau&nbsp;<span>5.1</span></a> donne un aperçu de cotes pour quelques probabilités <span class="math inline">\(p\)</span>.</p>
-<div class="cell" data-layout-align="center" data-hash="05-reglogistique_cache/html/tbl-cotes_b9ab6ce1ce5b635d3da44582358f66b7">
+<div class="cell" data-layout-align="center" data-hash="05-reglogistique_cache/html/tbl-cotes_bc3867c54b56e39a13fd1a7ef302f1ec">
 <div class="cell-output-display">
 <div id="tbl-cotes" class="anchored">
 
@@ -554,7 +555,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
 \frac{\Pr(Y=1 \mid \mathrm{X}_5=x_5)}{\Pr(Y=0 \mid \mathrm{X}_5=x_5)} = \exp(-3.05)\exp(0.0749x_5).
 \end{align*}\]</span> Ainsi, lorsque <span class="math inline">\(\mathrm{X}_5\)</span> augmente d’une année, la cote est multipliée par <span class="math inline">\(\exp(0.0749) = 1.078\)</span> peut importe la valeur de <span class="math inline">\(x_5\)</span>. Pour deux personnes dont la différence d’âge est un an, la cote de la personne plus âgée est 7.8% plus élevée. On peut aussi quantifier l’effet d’une augmentation d’un nombre d’unités quelconque. Par exemple, pour chaque augmentation de 10 ans de <span class="math inline">\(\mathrm{X}_5\)</span>, la cote est multiplié par <span class="math inline">\(1.078^{10} = 2.12\)</span>, soit une augmentation de 112%.</p>
 <p>L’interprétation des coefficients du modèle logistique se fait au niveau du rapport de cote, à savoir <span class="math inline">\(\exp(\beta)\)</span>.</p>
-<p>Un des avantages d’utiliser la vraisemblance comme fonction objective est que les intervalles de confiance et les estimateurs basés sur la vraisemblance (profilée) sont invariant aux reparamétrisations: l’intervalle de confiance à niveau 95% pour <span class="math inline">\(\exp(\beta_{\texttt{age}})\)</span> est obtenu en prenant l’exponentielle des bornes de l’intervalle pour <span class="math inline">\(\beta_{\texttt{age}}\)</span>, [<span class="math inline">\(\exp(0.0465); \exp(0.1043)\)</span>], soit [<span class="math inline">\(1.048; 1.110\)</span>] tel que rapporté dans la sortie.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>Un des avantages d’utiliser la vraisemblance comme fonction objective est que les intervalles de confiance et les estimateurs basés sur la vraisemblance (profilée) sont invariant aux reparamétrisations: l’intervalle de confiance à niveau 95% pour <span class="math inline">\(\exp(\beta_{\texttt{age}})\)</span> est obtenu en prenant l’exponentielle des bornes de l’intervalle pour <span class="math inline">\(\beta_{\texttt{age}}\)</span>, [<span class="math inline">\(\exp(0.0465); \exp(0.1043)\)</span>], soit [<span class="math inline">\(1.048; 1.110\)</span>] tel que rapporté dans la sortie. Ce n’est <strong>pas</strong> le cas des intervalles usuels de Wald qui ont la forme <span class="math inline">\(\widehat{\beta} \pm 1.96 \mathrm{se}(\widehat{\beta})\)</span>.</p>
 <p>Comme l’exponentielle est une transformation monotone croissante, on a <span class="math inline">\(\beta&gt;0\)</span> si et seulement si <span class="math inline">\(\exp(\beta)&gt;1\)</span>, etc. On peut ainsi utiliser les intervalles de confiance pour tester l’hypothèse <span class="math inline">\(\mathscr{H}_0: \beta_j=0\)</span> ou de façon équivalente <span class="math inline">\(\mathscr{H}_0: \exp(\beta_j)=1\)</span> à niveau 95%.</p>
 <p>Ajustons à présent le modèle avec toutes les variables explicatives. Rappelez-vous que la variable <span class="math inline">\(\mathrm{X}_1\)</span> (quel genre d’emploi occupez-vous) a cinq catégories, <span class="math inline">\(\mathrm{X}_2\)</span> (revenu familial annuel) a cinq catégories, et <span class="math inline">\(\mathrm{X}_6\)</span> (combien de fois avez-vous assisté à un rodéo au cours de la dernière année) a trois catégories. Notez qu’on pourrait aussi traiter <span class="math inline">\(\mathrm{X}_2\)</span> comme continue car elle est ordinale et possède tout de même cinq modalités, mais on la traitera comme variable nominale.</p>
 <p>Les variables de type <code>factor</code> sont modélisées par défaut à l’aide d’un ensemble de variables indicatrices, la catégorie de référence étant celle qui apparaît en dernier en ordre alphabétique.</p>
@@ -574,7 +575,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
 <div class="cell-output-display">
 <div id="tbl-logit1-complet" class="anchored">
 
-<div id="mwlefoodfi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="mwlefoodfi" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
@@ -614,11 +615,6 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   border-right-style: none;
   border-right-width: 1px;
   border-right-color: #D3D3D3;
-}
-
-:where(#mwlefoodfi) .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
 }
 
 :where(#mwlefoodfi) .gt_title {
@@ -741,7 +737,6 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   border-right-width: 1px;
   border-right-color: #D3D3D3;
   vertical-align: middle;
-  text-align: left;
 }
 
 :where(#mwlefoodfi) .gt_empty_group_heading {
@@ -989,105 +984,105 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   
   <thead class="gt_col_headings">
     <tr>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="variables">variables</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="cote<sup class=&quot;gt_footnote_marks&quot;>1</sup>">cote<sup class="gt_footnote_marks">1</sup></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="IC 95%<sup class=&quot;gt_footnote_marks&quot;>1</sup>">IC 95%<sup class="gt_footnote_marks">1</sup></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="valeur-p">valeur-p</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">variables</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col">cote<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col">IC 95%<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col">valeur-p</th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">x1</td>
-<td headers="estimate" class="gt_row gt_center"></td>
-<td headers="ci" class="gt_row gt_center"></td>
-<td headers="p.value" class="gt_row gt_center">0.4</td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;1</td>
-<td headers="estimate" class="gt_row gt_center">—</td>
-<td headers="ci" class="gt_row gt_center">—</td>
-<td headers="p.value" class="gt_row gt_center"></td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;2</td>
-<td headers="estimate" class="gt_row gt_center">0.44</td>
-<td headers="ci" class="gt_row gt_center">0.18, 1.06</td>
-<td headers="p.value" class="gt_row gt_center"></td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;3</td>
-<td headers="estimate" class="gt_row gt_center">0.51</td>
-<td headers="ci" class="gt_row gt_center">0.21, 1.21</td>
-<td headers="p.value" class="gt_row gt_center"></td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;4</td>
-<td headers="estimate" class="gt_row gt_center">0.51</td>
-<td headers="ci" class="gt_row gt_center">0.21, 1.25</td>
-<td headers="p.value" class="gt_row gt_center"></td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;5</td>
-<td headers="estimate" class="gt_row gt_center">0.70</td>
-<td headers="ci" class="gt_row gt_center">0.27, 1.80</td>
-<td headers="p.value" class="gt_row gt_center"></td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">x2</td>
-<td headers="estimate" class="gt_row gt_center"></td>
-<td headers="ci" class="gt_row gt_center"></td>
-<td headers="p.value" class="gt_row gt_center">&lt;0.001</td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;1</td>
-<td headers="estimate" class="gt_row gt_center">—</td>
-<td headers="ci" class="gt_row gt_center">—</td>
-<td headers="p.value" class="gt_row gt_center"></td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;2</td>
-<td headers="estimate" class="gt_row gt_center">0.83</td>
-<td headers="ci" class="gt_row gt_center">0.38, 1.82</td>
-<td headers="p.value" class="gt_row gt_center"></td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;3</td>
-<td headers="estimate" class="gt_row gt_center">0.57</td>
-<td headers="ci" class="gt_row gt_center">0.25, 1.31</td>
-<td headers="p.value" class="gt_row gt_center"></td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;4</td>
-<td headers="estimate" class="gt_row gt_center">0.09</td>
-<td headers="ci" class="gt_row gt_center">0.03, 0.25</td>
-<td headers="p.value" class="gt_row gt_center"></td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;5</td>
-<td headers="estimate" class="gt_row gt_center">0.26</td>
-<td headers="ci" class="gt_row gt_center">0.08, 0.84</td>
-<td headers="p.value" class="gt_row gt_center"></td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">x3</td>
-<td headers="estimate" class="gt_row gt_center"></td>
-<td headers="ci" class="gt_row gt_center"></td>
-<td headers="p.value" class="gt_row gt_center">&lt;0.001</td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;0</td>
-<td headers="estimate" class="gt_row gt_center">—</td>
-<td headers="ci" class="gt_row gt_center">—</td>
-<td headers="p.value" class="gt_row gt_center"></td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;1</td>
-<td headers="estimate" class="gt_row gt_center">3.85</td>
-<td headers="ci" class="gt_row gt_center">2.34, 6.50</td>
-<td headers="p.value" class="gt_row gt_center"></td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">x4</td>
-<td headers="estimate" class="gt_row gt_center"></td>
-<td headers="ci" class="gt_row gt_center"></td>
-<td headers="p.value" class="gt_row gt_center">&lt;0.001</td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;0</td>
-<td headers="estimate" class="gt_row gt_center">—</td>
-<td headers="ci" class="gt_row gt_center">—</td>
-<td headers="p.value" class="gt_row gt_center"></td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;1</td>
-<td headers="estimate" class="gt_row gt_center">6.24</td>
-<td headers="ci" class="gt_row gt_center">3.53, 11.4</td>
-<td headers="p.value" class="gt_row gt_center"></td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">x5</td>
-<td headers="estimate" class="gt_row gt_center">1.12</td>
-<td headers="ci" class="gt_row gt_center">1.08, 1.16</td>
-<td headers="p.value" class="gt_row gt_center">&lt;0.001</td></tr>
-    <tr><td headers="label" class="gt_row gt_left" style="font-weight: bold;">x6</td>
-<td headers="estimate" class="gt_row gt_center"></td>
-<td headers="ci" class="gt_row gt_center"></td>
-<td headers="p.value" class="gt_row gt_center">&lt;0.001</td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;1</td>
-<td headers="estimate" class="gt_row gt_center">—</td>
-<td headers="ci" class="gt_row gt_center">—</td>
-<td headers="p.value" class="gt_row gt_center"></td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;2</td>
-<td headers="estimate" class="gt_row gt_center">0.25</td>
-<td headers="ci" class="gt_row gt_center">0.13, 0.49</td>
-<td headers="p.value" class="gt_row gt_center"></td></tr>
-    <tr><td headers="label" class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;3</td>
-<td headers="estimate" class="gt_row gt_center">0.09</td>
-<td headers="ci" class="gt_row gt_center">0.04, 0.18</td>
-<td headers="p.value" class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="font-weight: bold;">x1</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">0.4</td></tr>
+    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;1</td>
+<td class="gt_row gt_center">—</td>
+<td class="gt_row gt_center">—</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;2</td>
+<td class="gt_row gt_center">0.44</td>
+<td class="gt_row gt_center">0.18, 1.06</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;3</td>
+<td class="gt_row gt_center">0.51</td>
+<td class="gt_row gt_center">0.21, 1.21</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;4</td>
+<td class="gt_row gt_center">0.51</td>
+<td class="gt_row gt_center">0.21, 1.25</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;5</td>
+<td class="gt_row gt_center">0.70</td>
+<td class="gt_row gt_center">0.27, 1.80</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="font-weight: bold;">x2</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">&lt;0.001</td></tr>
+    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;1</td>
+<td class="gt_row gt_center">—</td>
+<td class="gt_row gt_center">—</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;2</td>
+<td class="gt_row gt_center">0.83</td>
+<td class="gt_row gt_center">0.38, 1.82</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;3</td>
+<td class="gt_row gt_center">0.57</td>
+<td class="gt_row gt_center">0.25, 1.31</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;4</td>
+<td class="gt_row gt_center">0.09</td>
+<td class="gt_row gt_center">0.03, 0.25</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;5</td>
+<td class="gt_row gt_center">0.26</td>
+<td class="gt_row gt_center">0.08, 0.84</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="font-weight: bold;">x3</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">&lt;0.001</td></tr>
+    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;0</td>
+<td class="gt_row gt_center">—</td>
+<td class="gt_row gt_center">—</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;1</td>
+<td class="gt_row gt_center">3.85</td>
+<td class="gt_row gt_center">2.34, 6.50</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="font-weight: bold;">x4</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">&lt;0.001</td></tr>
+    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;0</td>
+<td class="gt_row gt_center">—</td>
+<td class="gt_row gt_center">—</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;1</td>
+<td class="gt_row gt_center">6.24</td>
+<td class="gt_row gt_center">3.53, 11.4</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="font-weight: bold;">x5</td>
+<td class="gt_row gt_center">1.12</td>
+<td class="gt_row gt_center">1.08, 1.16</td>
+<td class="gt_row gt_center">&lt;0.001</td></tr>
+    <tr><td class="gt_row gt_left" style="font-weight: bold;">x6</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center">&lt;0.001</td></tr>
+    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;1</td>
+<td class="gt_row gt_center">—</td>
+<td class="gt_row gt_center">—</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;2</td>
+<td class="gt_row gt_center">0.25</td>
+<td class="gt_row gt_center">0.13, 0.49</td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left">&nbsp;&nbsp;&nbsp;&nbsp;3</td>
+<td class="gt_row gt_center">0.09</td>
+<td class="gt_row gt_center">0.04, 0.18</td>
+<td class="gt_row gt_center"></td></tr>
   </tbody>
   
   <tfoot class="gt_footnotes">
@@ -1110,7 +1105,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="05-reglogistique_cache/html/tbl-gof-logist1_6ad6d2dba9155eedb0cc2169c8769dfb">
+<div class="cell" data-layout-align="center" data-hash="05-reglogistique_cache/html/tbl-gof-logist1_dcbc7170aaa782147e9430c1fd510829">
 <div class="cell-output-display">
 <div id="tbl-gof-logist1" class="anchored">
 
@@ -1253,11 +1248,11 @@ D = -2\{\ell(\widehat{\boldsymbol{\beta}}_0)-\ell(\widehat{\boldsymbol{\beta}})\
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="05-reglogistique_cache/html/tbl-classification-loocv_f8a6dc62f8008b4272c34a5813692ae9">
+<div class="cell" data-layout-align="center" data-hash="05-reglogistique_cache/html/tbl-classification-loocv_7662f247c20dc4e9a5ad0e61c64356a3">
 <div class="cell-output-display">
 <div id="tbl-classification-loocv" class="anchored">
 
-<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;5.4:  Tableau de classification avec le nombre de de vrais positifs (VP), vrais négatifs (VN), faux positifs (FP) et faux négatifs (FN), le taux de bonne classification, la sensibilité, la spécificité, le taux de vrais positifs (TVP) et le taux de vrais négatifs (TVN). </caption>
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;5.4:  Tableau de classification avec le nombre de vrais positifs (VP), vrais négatifs (VN), faux positifs (FP) et faux négatifs (FN), le taux de bonne classification, la sensibilité, la spécificité, le taux de vrais positifs (TVP) et le taux de vrais négatifs (TVN). </caption>
  <thead>
   <tr>
    <th style="text-align:right;"> coupe </th>
@@ -1871,7 +1866,7 @@ D = -2\{\ell(\widehat{\boldsymbol{\beta}}_0)-\ell(\widehat{\boldsymbol{\beta}})\
 <p>La colonne <code>Correct</code> donne le taux de bonne classification, <span class="math inline">\(\Pr(Y = \widehat{Y})\)</span>: avec un point de coupure de <span class="math inline">\(0\)</span>, on classifie toutes les observations à la classe achat (<span class="math inline">\(1\)</span>), car <span class="math inline">\(\widehat{p}\)</span> est forcément plus grande que zéro. Le taux de bonne classification dans ce cas de figure sera de <span class="math inline">\(21\)</span>%, puisque 210 individus ont acheté un produit dans le catalogue dans l’échantillon d’apprentissage. L’autre extrême, avec un point de coupure <span class="math inline">\(c=1\)</span>, donne un taux de bonne classification de <span class="math inline">\(79\)</span>%.</p>
 <p>On peut chercher dans le tableau les points de coupure qui donnent le meilleur taux de bonne classification. Ce dernier, à savoir 84.6%, est atteint par trois points de coupure, soit 0.52, soit 0.6, soit 0.62. Une recherche plus fine donne 0.465 comme point de coupure optimal, avec un taux de mauvaise classification de 15.3%.</p>
 <p>Avec une variable réponse binaire, il y a deux classifications possibles et le tableau de confusion contient, en partant du coin supérieur gauche et dans le sens des aiguilles d’une montre, le nombre de vrai positif (<span class="math inline">\(Y=1\)</span>, <span class="math inline">\(\widehat{Y}=1\)</span>), de faux positif (<span class="math inline">\(Y=0\)</span>, <span class="math inline">\(\widehat{Y}=1\)</span>), de vrai négatif (<span class="math inline">\(Y=0\)</span>, <span class="math inline">\(\widehat{Y}=0\)</span>) et finalement de faux négatif (<span class="math inline">\(Y=1\)</span>, <span class="math inline">\(\widehat{Y}=0\)</span>). La <strong>matrice de confusion</strong>, qui compare les vraies valeurs avec les prédictions, peut être construite à partir des colonnes <code>VP</code>, <code>VN</code>, <code>FP</code> et <code>FN</code>. Ces nombres proviennent de la validation croisée à <span class="math inline">\(n\)</span> groupes et ne sont pas ceux qu’on obtiendrait si on appliquait directement le modèle ajusté à notre échantillon. Le taux de mauvaise classification est <span class="math inline">\((\mathsf{FP}+\mathsf{FN})/n\)</span>; une estimation plus fiable serait obtenue en utilisant la validation croisée à 10 groupes.</p>
-<div class="cell" data-layout-align="center" data-hash="05-reglogistique_cache/html/tbl-confumat_a1f95fdb6f0af3ccf41edc04c3de6add">
+<div class="cell" data-layout-align="center" data-hash="05-reglogistique_cache/html/tbl-confumat_eb61b70f3c6ded57ed6043741654b26c">
 <div class="cell-output-display">
 <div id="tbl-confumat" class="anchored">
 
@@ -2018,7 +2013,7 @@ D = -2\{\ell(\widehat{\boldsymbol{\beta}}_0)-\ell(\widehat{\boldsymbol{\beta}})\
 \end{align*}\]</span></p>
 <p>Le meilleur modèle est alors celui qui maximise le gain moyen.</p>
 <p>Nous allons encore une fois seulement utiliser les 10 variables de base. Mais nous allons intégrer des revenus et coûts afin de trouver le meilleur point de coupure. Rappelez-vous que le coût de l’envoi d’un catalogue est de 10$. Le tableau des variables descriptives qui suit montre que, pour les 210 clients qui ont acheté quelque chose, le revenu moyen est de 67.29$ (moyenne de la variable <code>ymontant</code>).</p>
-<div class="cell" data-layout-align="center" data-hash="05-reglogistique_cache/html/tbl-dbm-ymontant-apprentissage_c2b984f7885a18bad2a7893a07634f01">
+<div class="cell" data-layout-align="center" data-hash="05-reglogistique_cache/html/tbl-dbm-ymontant-apprentissage_7488c3be3e20cc21a9a3e29d81a63ac7">
 <div class="cell-output-display">
 <div id="tbl-dbm-ymontant-apprentissage" class="anchored">
 
@@ -2133,7 +2128,7 @@ D = -2\{\ell(\widehat{\boldsymbol{\beta}}_0)-\ell(\widehat{\boldsymbol{\beta}})\
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="05-reglogistique_cache/html/tbl-lift_986b45cef793b17bb8e6fe41ffa8e2db">
+<div class="cell" data-layout-align="center" data-hash="05-reglogistique_cache/html/tbl-lift_3cd17126a7e79fe18e937e9e27a00f5d">
 <div class="cell-output-display">
 <div id="tbl-lift" class="anchored">
 
@@ -2460,7 +2455,7 @@ D = -2\{\ell(\widehat{\boldsymbol{\beta}}_0)-\ell(\widehat{\boldsymbol{\beta}})\
 <span id="cb10-177"><a href="#cb10-177" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(valid_ymontant[lasso_pred], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Table:</p>
-<div class="cell" data-layout-align="center" data-hash="05-reglogistique_cache/html/tbl-03-summarylog_36d6b52c0169f5fdfb41cf1f2b2ecdfd">
+<div class="cell" data-layout-align="center" data-hash="05-reglogistique_cache/html/tbl-03-summarylog_54adcc66c8cd672f5bbd049d5f66bd1d">
 <div class="cell-output-display">
 <div id="tbl-03-summarylog" class="anchored">
 
@@ -2606,7 +2601,7 @@ Y_{2}^{\star} &amp;= \beta_{02} + \beta_{12} \mathrm{X}_{12} + \cdots + \beta_{1
 <span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>heckit_perfo <span class="ot">&lt;-</span> </span>
 <span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(valid_ymontant[<span class="fu">which</span>(pred_achat <span class="sc">&gt;</span> <span class="dv">10</span>)] <span class="sc">-</span> <span class="dv">10</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="tbl-03-tobit" class="cell tbl-parent quarto-layout-panel anchored" data-tbl-cap="Matrice de gain pour l'envoi de catalogue avec des modèle Tobit de type II: sensibilité, taux de faux positifs et de bonne classification et gain net de la stratégie." data-hash="05-reglogistique_cache/html/tbl-03-tobit_39131ce611393b533400cc6ccb246a9a">
+<div id="tbl-03-tobit" class="cell tbl-parent quarto-layout-panel anchored" data-tbl-cap="Matrice de gain pour l'envoi de catalogue avec des modèle Tobit de type II: sensibilité, taux de faux positifs et de bonne classification et gain net de la stratégie." data-hash="05-reglogistique_cache/html/tbl-03-tobit_4da1049d487431e450b0bf7efeadbf44">
 
 </div>
 <p>Le modèle Heckit aurait produit un revenu net de 10007980$, un montant supérieur au revenu net de 918055$, qui était le meilleur trouvé à la sous-section précédente.</p>
@@ -2684,7 +2679,7 @@ p_{ik} &amp;= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\eta_{ik})}{1+ \sum_{j=2
 <span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Prédictions: classe la plus susceptible</span></span>
 <span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(multi1, <span class="at">type =</span> <span class="st">"class"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="tbl-multinom-coefs" class="cell tbl-parent quarto-layout-panel anchored" data-hash="05-reglogistique_cache/html/tbl-multinom-coefs_9e939705d72eb715d7a0820819044695">
+<div id="tbl-multinom-coefs" class="cell tbl-parent quarto-layout-panel anchored" data-hash="05-reglogistique_cache/html/tbl-multinom-coefs_7cafbf8759647ff1864d96e8cf6ce4e8">
 <div class="panel-caption table-caption">
 <p>Tableau&nbsp;5.12: Estimation des coefficients et intervalles de confiance à 95 pourcent pour le modèle multinomial logistique avec les données de vote.</p>
 </div>
@@ -2772,7 +2767,7 @@ p_{ik} &amp;= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\eta_{ik})}{1+ \sum_{j=2
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Test de rapport de vraisemblance</span></span>
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(multi0, multi1)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="05-reglogistique_cache/html/tbl-anova-multinom_c370c851d4a1190977287af941233247">
+<div class="cell" data-layout-align="center" data-hash="05-reglogistique_cache/html/tbl-anova-multinom_8daab432c5d161eaedb3c5ebfa437428">
 <div class="cell-output-display">
 <div id="tbl-anova-multinom" class="anchored">
 
@@ -2884,7 +2879,7 @@ S_{ik} &amp;= \Pr(Y_i \geq k \mid \mathbf{X}_{i})
 <span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>       <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Petite valeur-p = modèle inadéquat</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="05-reglogistique_cache/html/tbl-ordered-logistic_6f29fa23ef8a427575b13c93d5af8c52">
+<div class="cell" data-layout-align="center" data-hash="05-reglogistique_cache/html/tbl-ordered-logistic_1e03377c16310c21b049b9256483fb6c">
 <div class="cell-output-display">
 <div id="tbl-ordered-logistic" class="anchored">
 
@@ -2919,7 +2914,7 @@ S_{ik} &amp;= \Pr(Y_i \geq k \mid \mathbf{X}_{i})
 </div>
 </div>
 <p>Ici, l’effet estimé d’être un homme plutôt qu’une femme (<code>sexe</code>) est <span class="math inline">\(-0.166\)</span> et ce paramètre est significativement différent de zéro (valeur-<span class="math inline">\(p\)</span> de <span class="math inline">\(0.003\)</span> obtenue en faisant un test de rapport de vraisemblance).</p>
-<p>Ainsi, les hommes sont moins susceptibles de voter fréquemment que les femmes. Plus précisément, la cote d’être dans une catégorie plus élevée de <code>catvote</code>, par rapport à une catégorie plus basse, est multipliée par $(<code>r</code>sprintf(round(as.numeric(coef(multi2a)),3), fmt = “%.3f”)` = 0.847, ce qui correspond à une diminution de la cote des femmes 15% (et donc la probabilité d’être dans une catégorie plus élevée est plus faible).</p>
+<p>Ainsi, les hommes sont moins susceptibles de voter fréquemment que les femmes. Plus précisément, la cote d’être dans une catégorie plus élevée de <code>catvote</code>, par rapport à une catégorie plus basse, est multipliée par <span class="math inline">\(\exp(`r `sprintf(round(as.numeric(coef(multi2a)),3), fmt = "%.3f")` = 0.847\)</span>, ce qui correspond à une diminution de la cote des femmes <span class="math inline">\(15\)</span>% (et donc la probabilité d’être dans une catégorie plus élevée est plus faible).</p>
 <p>Avant toute chose, il faut s’assurer que le modèle est approprié. Rappelez-vous que l’une des hypothèses de ce modèle est que les effets des variables explicatives sont les mêmes pour chaque équation.</p>
 <ul>
 <li><span class="math inline">\(\mathscr{H}_0\)</span> : l’effet de chaque variable est le même pour les <span class="math inline">\(K\)</span> logit du modèle multinomial logistique, soit <span class="math inline">\(\beta_{11} = \cdots =\beta_{1K}\)</span>, <span class="math inline">\(\ldots\)</span>, <span class="math inline">\(\beta_{p1} = \cdots =\beta_{pK}\)</span>.</li>
@@ -2945,12 +2940,6 @@ McCullagh, Peter. 1980. <span>“Regression Models for Ordinal Data.”</span> <
 </div>
 </div>
 </section>
-</section>
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
-<hr>
-<ol>
-<li id="fn1"><p>Ce n’est <strong>pas</strong> le cas des intervalles usuels de Wald qui ont la forme <span class="math inline">\(\widehat{\beta} \pm 1.96 \mathrm{se}(\widehat{\beta})\)</span>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
 </section>
 
 </main> <!-- /main -->

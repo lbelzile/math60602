@@ -123,7 +123,7 @@ tibble::tibble(variable = colnames(dons),
              manquant = apply(dons, 2, function(x){sum(is.na(x))})) |>
 knitr::kable(digits = 2,
              booktabs = TRUE) |>
-kableExtra::kable_styling(full_width = TRUE)
+kableExtra::kable_styling()
 ```
 
 
@@ -301,12 +301,13 @@ Pour ce faire, on sélectionne préalablement un nombre $K$ de regroupements et 
 2. **Mise à jour** (étape M): estimer les coordoonnées des nouveaux prototypes; si on utilise la distance Euclidienne, cela revient à calculer le barycentre (la moyenne variable par variable) des observations assignées aux regroupements.
 
 En pratique, l'algorithme convergera rapidement vers une solution locale. Cette dernière est simplement une assignation pour laquelle, d'une itération à l'autre, aucune observation ne change de groupe.
-La @fig-kmoy-animation montre une animation avec un jeu de données fictif et $K=3$ regroupements.
+
 
 
 L'algorithme des $K$-moyennes présenté offre une forme de partitionnement dite rigide: chaque observation est assignée à un seul regroupement. Si cette appartenance unique peut être logique pour les points à proximité du barycentre, ceux situés à l'intersection des frontières qui définissent les différents regroupements pourraient parfois légitimement faire partie d'un ou l'autre de ces derniers. On pourrait plutôt assigner un poids représentant la probabilité d'être dans un des $K$ regroupements, appelé responsabilité et dénotée $r_{ik}$. Avec une assignation rigide, $r_{ik}=1$ si l'observation $i$ est dans le regroupement $k$ et $r_{ik}=0$ sinon.
 
 ::: {.content-visible when-format="html"}
+La @fig-kmoy-animation montre une animation avec un jeu de données fictif et $K=3$ regroupements.
 ```{r}
 #| label: fig-kmoy-animation
 #| echo: false
@@ -1080,6 +1081,9 @@ Généralement, le résultat de la procédure agglomérative avec la méthode de
 
 On peut comparer les performances des regroupements hiérarchiques selon la méthode de groupement. La page web de [scikit-learn developers](https://scikit-learn.org/stable/auto_examples/cluster/plot_linkage_comparison.html) montre la performance sur des exemples jouets très artificiels, qui montre que selon la structure des données, l'impact de la fonction de liaison. Ici, aucun approche hiérarchique ne performe mieux que les autres dans tous les exemples.
 
+
+::: {.content-visible when-format="html"}
+
 ```{r}
 #| label: fig-animation-ward
 #| eval: true
@@ -1091,11 +1095,13 @@ knitr::include_graphics("figures/ward_animation.gif")
 
 La @fig-animation-ward montre les différentes étapes de l'algorithme avec les regroupements étapes par étape, jusqu'à ce qu'on obtienne deux groupes. À l'étape 1, les observations (14, 19) sont regroupées, puis (2, 15), (10, 17). Ce n'est qu'à l'étape 7 qu'on ajoute une observation à un regroupement de deux existants.
 
+:::
+
 #### Sélection des hyperparamètres
 
 Outre le choix de la fonction de liaison qui déterminera la distance entre les regroupements à chaque étape, on devra choisir le nombre de regroupements.
 
-On peut représenter le modèle à l'aide d'un arbre, où les feuilles indiquent les regroupements à chaque étape jusqu'à la racine à la dernière étape. On appelle **dendrogramme**. La distance entre chaque embranchement est déterminée par notre critère: cela nous permet de sélectionner un nombre de regroupements $K$ après inspection du dendrogramme et d'extraire la solution en élaguer l'arbre à cette profondeur.
+On peut représenter le modèle à l'aide d'un **dendrogramme**, un arbre dont les feuilles indiquent les regroupements à chaque étape jusqu'à la racine à la dernière étape. La distance entre chaque embranchement est déterminée par notre critère: cela nous permet de sélectionner un nombre de regroupements $K$ après inspection du dendrogramme et d'extraire la solution en élaguer l'arbre à cette profondeur.
 
 ```{r}
 #| eval: true
@@ -1278,6 +1284,9 @@ L'analyse de regroupement est une méthode d’apprentissage non-supervisé: l�
 est de déduire la structure présente dans un ensemble de points sans étiquette préalable (contrairement à la classification). Ainsi, une fois cqu'on a obtenu les étiquettes, on peut comparer les regroupements entre eux avant d'effectuer le profilage. Est-ce que les regroupements sont homogènes et que les observations sont près de leur représentant de groupe? On pourrait calculer les silhouettes et voir si les groupes sont bien équilibrés, etc. S'il n'existe pas de solution, il existe des segmentations de moins bonne qualité (parce que difficilement interprétables, avec des regroupements qui contiennent une poignée d'observations). Si la segmentation n'est pas satisfaisante, on retourne à la planche à dessin et on modifie les variables, la méthode ou la calibration des hyperparamètres jusqu'à ce qu'on soit satisfaits du résultat.
 
 
+
+
+::: {.callout-note}
 
 ## En résumé
 

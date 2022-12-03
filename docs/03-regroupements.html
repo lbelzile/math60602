@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.11">
+<meta name="generator" content="quarto-1.1.163">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -173,6 +173,7 @@ div.csl-indent {
       <a href="./">MATH 60602 - Analyse multidimensionnelle appliquée</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/lbelzile/math60602/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="./MATH60602.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -249,7 +250,6 @@ div.csl-indent {
   <li><a href="#méthodes-basées-sur-la-densité" id="toc-méthodes-basées-sur-la-densité" class="nav-link" data-scroll-target="#méthodes-basées-sur-la-densité"><span class="toc-section-number">7.5.5</span>  Méthodes basées sur la densité</a></li>
   </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="toc-section-number">7.6</span>  Conclusion</a></li>
-  <li><a href="#en-résumé" id="toc-en-résumé" class="nav-link" data-scroll-target="#en-résumé"><span class="toc-section-number">7.7</span>  En résumé</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lbelzile/math60602/edit/master/03-regroupements.qmd" class="toc-action">Éditer cette page</a></p></div></div></nav>
     </div>
@@ -325,7 +325,7 @@ div.csl-indent {
 <p>Si certaines variables définissent naturellement des groupes, par exemple l’âge des personnes, et fait qu’ils et elles ont des caractéristiques intrinsèquement différentes, il peut être utile de faire une segmentation indépendamment pour chacun de ces sous-groupes.</p>
 <p>Dans ce chapitre, nous utiliserons des données simulées inspirées de campagnes de financement d’organismes de charité. Ces dernières font souvent du démarchage publicitaire auprès de donateurs ou envoient par publipostage des demandes de dons à toutes les adresses postales. Ces efforts ont un coût important: nous essaierons de créer des catégories de donateurs afin de mieux cibler les donateurs et donatrices et le moment adéquat pour ce démarchage. Plusieurs grandes compagnies sont associées à ces organismes et les parrainent: notre base de données contiendra le profil de toutes ces personnes, qu’elles fassent un don ou pas.</p>
 <p>La base de données <code>dons</code> contient 49730 observations pour 16 variables: le <a href="#tbl-statdescriptdons">Tableau&nbsp;<span>7.1</span></a> fournit les statistiques descriptives. Elle a été crée en regroupement les identifiants: de nombreuses variables explicatives sont dérivées des données brutes, notamment le temps entre dons, les statistiques descriptives (montant moyen, minimum maximum) pour les dons monétaires. Ces choix de variables sont loins d’être anodins et peuvent influencer la segmentation décrite dans ce chapitre. Une rapide exploration des données révèle que près de 61% des employé(e)s n’ont pas donné à l’organisme. Une poignée de dons sont très élevés, mais la plupart des montants tourne autour de 5$, 10$, 20$, etc.</p>
-<div class="cell" data-layout-align="center" data-hash="03-regroupements_cache/html/tbl-statdescriptdons_cd07f1b2015363186e8d4f83fd25ec2c">
+<div class="cell" data-layout-align="center" data-hash="03-regroupements_cache/html/tbl-statdescriptdons_a63d38ed288247f5c48d1a9d821d3b1a">
 <div class="cell-output-display">
 <div id="tbl-statdescriptdons" class="anchored">
 
@@ -593,9 +593,10 @@ S_{ij} = \frac{\sum_{k=1}^p s_{ijk} \delta_{ijk}}{\sum_{k=1}^p \delta_{ijk}}
 <li><strong>Assignation</strong> (étape E): calculer la distance entre chaque observation et les prototypes; assigner chaque observation au prototype le plus près.</li>
 <li><strong>Mise à jour</strong> (étape M): estimer les coordoonnées des nouveaux prototypes; si on utilise la distance Euclidienne, cela revient à calculer le barycentre (la moyenne variable par variable) des observations assignées aux regroupements.</li>
 </ol>
-<p>En pratique, l’algorithme convergera rapidement vers une solution locale. Cette dernière est simplement une assignation pour laquelle, d’une itération à l’autre, aucune observation ne change de groupe. La <a href="#fig-kmoy-animation">Figure&nbsp;<span>7.3</span></a> montre une animation avec un jeu de données fictif et <span class="math inline">\(K=3\)</span> regroupements.</p>
+<p>En pratique, l’algorithme convergera rapidement vers une solution locale. Cette dernière est simplement une assignation pour laquelle, d’une itération à l’autre, aucune observation ne change de groupe.</p>
 <p>L’algorithme des <span class="math inline">\(K\)</span>-moyennes présenté offre une forme de partitionnement dite rigide: chaque observation est assignée à un seul regroupement. Si cette appartenance unique peut être logique pour les points à proximité du barycentre, ceux situés à l’intersection des frontières qui définissent les différents regroupements pourraient parfois légitimement faire partie d’un ou l’autre de ces derniers. On pourrait plutôt assigner un poids représentant la probabilité d’être dans un des <span class="math inline">\(K\)</span> regroupements, appelé responsabilité et dénotée <span class="math inline">\(r_{ik}\)</span>. Avec une assignation rigide, <span class="math inline">\(r_{ik}=1\)</span> si l’observation <span class="math inline">\(i\)</span> est dans le regroupement <span class="math inline">\(k\)</span> et <span class="math inline">\(r_{ik}=0\)</span> sinon.</p>
 <div>
+<p>La <a href="#fig-kmoy-animation">Figure&nbsp;<span>7.3</span></a> montre une animation avec un jeu de données fictif et <span class="math inline">\(K=3\)</span> regroupements.</p>
 <div class="cell" data-layout-align="center" data-fig.format="png" data-animation.hook="gifski" data-hash="03-regroupements_cache/html/fig-kmoy-animation_fc0b690847e8ce0c75ba85e1186efce1">
 <div class="cell-output-display">
 <div id="fig-kmoy-animation" class="quarto-figure quarto-figure-center anchored">
@@ -1010,15 +1011,13 @@ f_{k}(\boldsymbol{X}_i,
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Mélanges de modèles gaussiens</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">60602</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mclust)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Package 'mclust' version 6.0.0</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Type 'citation("mclust")' for citing this R package in publications.</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>mmg <span class="ot">&lt;-</span> <span class="fu">Mclust</span>(<span class="at">data =</span> donsmult_std,</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">G =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>       <span class="co"># Ajouter composante uniforme</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>       <span class="co">#  pour bruit (aberrances)</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">initialization =</span> <span class="fu">list</span>(<span class="at">noise =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Résumé de la segmentation</span></span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mmg)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>mmg <span class="ot">&lt;-</span> <span class="fu">Mclust</span>(<span class="at">data =</span> donsmult_std,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">G =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>       <span class="co"># Ajouter composante uniforme</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>       <span class="co">#  pour bruit (aberrances)</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">initialization =</span> <span class="fu">list</span>(<span class="at">noise =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Résumé de la segmentation</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mmg)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>On peut obtenir les étiquettes (avec <code>0</code> pour le bruit) avec <code>mmg$classification</code>. Le graphique du critère d’information Bayésien (BIC) montre le négatif: on cherche donc la structure de covariance et le nombre qui maximise <span class="math inline">\(-\mathsf{BIC}\)</span>.</p>
 <div class="cell" data-layout-align="center" data-hash="03-regroupements_cache/html/fig-mclustbic_be3f361d41ecdd92eb7373586f1ed73b">
@@ -1090,6 +1089,7 @@ f_{k}(\boldsymbol{X}_i,
 <p>En général, les algorithmes de regroupement hiérarchiques stockent une matrice de dissemblance <span class="math inline">\(n \times n\)</span>, et donc un coût de stockage quadratique et un coût de calcul <span class="math inline">\(\Omega(n^2)\)</span> avec <span class="math inline">\(\mathrm{O}(n^3)\)</span>. Il faut réaliser que ce coût de calcul est <strong>prohibitif</strong> en haute dimension. Certains algorithmique efficaces pour la méthode de liaison simple permettent un temps de calcul quadratique sans calcul de toutes les distances, à coût <span class="math inline">\(\mathrm{O}(n)\)</span>. Si la méthode de liaison simple est la moins coûteuse du lot, elle n’est pas aussi populaire car elle fonctionne bien si l’écart entre deux regroupements est suffisamment grand. S’il y a du bruit entre deux regroupements, la qualité des regroupements en sera affectée. La méthode de liaison complète est moins sensible au bruit et aux faibles écarts entre regroupements, mais a tendance à casser les regroupements globulaires. Puisque le critère d’homogénéité de Ward ressemble à celui des <span class="math inline">\(K\)</span>-moyennes, la sortie aura tendance à bien regrouper les amas globulaires.</p>
 <p>Généralement, le résultat de la procédure agglomérative avec la méthode de liaison simple inclura quelques valeurs isolées et un seul grand regroupement. Une alternative récente <span class="citation" data-cites="Gagolewski:2016">(<a href="#ref-Gagolewski:2016" role="doc-biblioref">Gagolewski, Bartoszuk, and Cena 2016</a>)</span>, appelée Genie, modifie la fonction objective de la méthode de liaison simple en retenant son efficacité de calcul. Plutôt que de simplement trouver la paire de regroupements à distance minimale, cette fusion n’est appliquée que si une mesure d’inéquité est inférieur à un seuil spécifié par l’utilisateur. Si les regroupements sont fortement inéquitables, la fusion survient entre les regroupements dont un de la taille minimale courante. L’implémentation <strong>R</strong> <span class="citation" data-cites="Gagolewski:2021">(<a href="#ref-Gagolewski:2021" role="doc-biblioref">Gagolewski 2021</a>)</span> dans le paquet <code>genieclust</code> est nettement plus rapide que les autres alternatives et ne nécessite pas de calculer la matrice de dissimilarité.</p>
 <p>On peut comparer les performances des regroupements hiérarchiques selon la méthode de groupement. La page web de <a href="https://scikit-learn.org/stable/auto_examples/cluster/plot_linkage_comparison.html">scikit-learn developers</a> montre la performance sur des exemples jouets très artificiels, qui montre que selon la structure des données, l’impact de la fonction de liaison. Ici, aucun approche hiérarchique ne performe mieux que les autres dans tous les exemples.</p>
+<div>
 <div class="cell" data-layout-align="center" data-hash="03-regroupements_cache/html/fig-animation-ward_21426f2e6fc324099a0109da811cc2f5">
 <div class="cell-output-display">
 <div id="fig-animation-ward" class="quarto-figure quarto-figure-center anchored">
@@ -1101,10 +1101,11 @@ f_{k}(\boldsymbol{X}_i,
 </div>
 </div>
 <p>La <a href="#fig-animation-ward">Figure&nbsp;<span>7.16</span></a> montre les différentes étapes de l’algorithme avec les regroupements étapes par étape, jusqu’à ce qu’on obtienne deux groupes. À l’étape 1, les observations (14, 19) sont regroupées, puis (2, 15), (10, 17). Ce n’est qu’à l’étape 7 qu’on ajoute une observation à un regroupement de deux existants.</p>
+</div>
 <section id="sélection-des-hyperparamètres" class="level4" data-number="7.5.4.1">
 <h4 data-number="7.5.4.1" class="anchored" data-anchor-id="sélection-des-hyperparamètres"><span class="header-section-number">7.5.4.1</span> Sélection des hyperparamètres</h4>
 <p>Outre le choix de la fonction de liaison qui déterminera la distance entre les regroupements à chaque étape, on devra choisir le nombre de regroupements.</p>
-<p>On peut représenter le modèle à l’aide d’un arbre, où les feuilles indiquent les regroupements à chaque étape jusqu’à la racine à la dernière étape. On appelle <strong>dendrogramme</strong>. La distance entre chaque embranchement est déterminée par notre critère: cela nous permet de sélectionner un nombre de regroupements <span class="math inline">\(K\)</span> après inspection du dendrogramme et d’extraire la solution en élaguer l’arbre à cette profondeur.</p>
+<p>On peut représenter le modèle à l’aide d’un <strong>dendrogramme</strong>, un arbre dont les feuilles indiquent les regroupements à chaque étape jusqu’à la racine à la dernière étape. La distance entre chaque embranchement est déterminée par notre critère: cela nous permet de sélectionner un nombre de regroupements <span class="math inline">\(K\)</span> après inspection du dendrogramme et d’extraire la solution en élaguer l’arbre à cette profondeur.</p>
 <div class="cell" data-layout-align="center" data-hash="03-regroupements_cache/html/fig-dendrogramme_0c860a7c694f0df97ca5132af0ec1940">
 <div class="cell-output-display">
 <div id="fig-dendrogramme" class="quarto-figure quarto-figure-center anchored">
@@ -1194,9 +1195,16 @@ Avec une mesure de dissemblance, on peut créer une matrice qui pour chaque pair
 <h2 data-number="7.6" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">7.6</span> Conclusion</h2>
 <p>Le résultat d’une analyse de regroupements est une étiquette pour chaque observation. Parfois, la méthode d’analyse de regroupement retourne également un prototype (le barycentre, une observation du groupe ou la médiane coordonnée par coordonnée) qui permet d’interpréter les regroupements.</p>
 <p>L’analyse de regroupement est une méthode d’apprentissage non-supervisé: l’objectif est de déduire la structure présente dans un ensemble de points sans étiquette préalable (contrairement à la classification). Ainsi, une fois cqu’on a obtenu les étiquettes, on peut comparer les regroupements entre eux avant d’effectuer le profilage. Est-ce que les regroupements sont homogènes et que les observations sont près de leur représentant de groupe? On pourrait calculer les silhouettes et voir si les groupes sont bien équilibrés, etc. S’il n’existe pas de solution, il existe des segmentations de moins bonne qualité (parce que difficilement interprétables, avec des regroupements qui contiennent une poignée d’observations). Si la segmentation n’est pas satisfaisante, on retourne à la planche à dessin et on modifie les variables, la méthode ou la calibration des hyperparamètres jusqu’à ce qu’on soit satisfaits du résultat.</p>
-</section>
-<section id="en-résumé" class="level2" data-number="7.7">
-<h2 data-number="7.7" class="anchored" data-anchor-id="en-résumé"><span class="header-section-number">7.7</span> En résumé</h2>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+En résumé
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <ul>
 <li>L’objectif d’une analyse de regroupement est de mettre en commun des observations de telle sorte que les observations d’un même groupe soient le plus semblables possible, et que les groupes soient le plus différent possible les uns des autres.</li>
 <li>Chaque observation se voit assigner une étiquette de groupe.</li>
@@ -1214,7 +1222,8 @@ Avec une mesure de dissemblance, on peut créer une matrice qui pour chaque pair
 </ul></li>
 <li>Le nombre de groupes peut être guidé par le contexte: les formules et indicateurs de qualité servent de balises.</li>
 </ul>
-<p>:::</p>
+</div>
+</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">

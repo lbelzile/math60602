@@ -1,5 +1,5 @@
 html:
-	quarto render --to html
+	quarto render
 serve:
 	quarto preview
 

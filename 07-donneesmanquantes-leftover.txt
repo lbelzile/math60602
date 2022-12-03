@@ -1,0 +1,32 @@
+
+## Valeurs manquantes dans un contexte de prédiction
+
+Nous avons vu que l'imputation multiple permet de corriger les écarts-type des paramètres estimés afin d'obtenir une inférence valide. Mais cette fois-ci, le but n'est pas d'estimer un modèle afin de tester formellement certaines hypothèses, mais plutôt de développer un modèle pour obtenir des prédictions. Dans ce cas, l'imputation multiple peut aussi être utile.
+
+
+Nous allons revenir une dernière fois sur l'exemple de ciblage de clients pour l'envoi d'un catalogue. Rappelez-vous qu'on a un échantillon d'apprentissage de 1000 clients pour lesquels la variable $\texttt{yachat}$ est disponible (est-ce que le client a acheté quelque chose lorsqu'on lui a envoyé un catalogue). Nous avons développé des modèles avec ces 1000 clients afin de décider à qui, parmi les 100 000 clients restants, envoyer le catalogue. Nous avions alors utilisé des données sans valeurs manquantes.  Cette fois-ci, nous allons faire comme s'il y avait des valeurs manquantes pour les variables explicatives à la fois dans l'échantillon d'apprentissage mais aussi dans l'échantillon à prédire. Nous allons chercher à développer un modèle de régression logistique pour $\mathsf{P}(\texttt{yachat}=1)$. Plusieurs approches sont possibles et il n'est pas clair à priori laquelle est la meilleure. Voici la description de deux approches.
+
+**Approche 1: **
+
+1) Obtenir $K$ ensembles de données complets par imputations multiples (simultanément pour les échantillons tests et d'apprentissage). 
+2) Pour chaque ensemble de données complet,
+    a. Faire une sélection de variables
+    b. Obtenir les estimations de $\mathsf{P}(\texttt{yachat}=1)$
+3) Pour chaque observation dans les deux échantillons faire la moyenne des $K$ estimations de $\mathsf{P}(\texttt{yachat}=1)$ de manière à avoir une seule prédiction par observation de la probabilité d'achat.
+4) Trouver le meilleur point de coupure avec les probabilités calculées en 3) pour l'échantillon d'apprentissage. 
+5) Assigner les observations de l'échantillon à prédire avec ce point de coupure en utilisant les probabilités calculées en 3) pour les données de l'échantillon test.
+
+**Approche 2:**
+
+1) Obtenir $K$ ensembles de données complets par imputations multiples (simultanément pour les échantillons tests et d'apprentissage). 
+2) Pour chaque ensemble de données complet,
+    a.  Faire une sélection de variables
+    b. Trouver le meilleur point de coupure par validation-croisée
+    c. Obtenir les prédictions ($0$ ou $1$) pour l'échantillon à scorer, avec ce point de coupure.
+3) Assigner l'observation à la classe majoritaire (celle qui a le plus de votes parmi zéro ou un pour les $K$ prédictions) pour chaque observation à prédire.
+
+Nous allons seulement utiliser une approximation de la première approche ici et ignorer les valeurs de `yachat` et `ymontant` lors de l'imputation car ces dernières sont manquantes dans l'échantillon test et on se trouverait imputer à partir de modèles différentes dans les deux échantillons (test et apprentissage).  Il y a des valeurs manquantes dans chaque variable: par exemple, 99 valeurs manquantes pour $X_1$. Globalement, seulement 201 des 1000 clients n'ont aucune valeur manquante sur les 10 variables. Il y a 164 configurations différentes de valeurs manquantes.
+
+En utilisant l'approche 1 présentée plus haut, nous allons imputer simultanément les valeurs manquantes pour l'échantillon d'apprentissage et l'échantillon test à prédire avec $K=5$ échantillons imputés. La méthode de sélection de variables utilisée est la procédure séquentielle classique avec 0.05 comme critère d'entrée et de sortie. De plus, afin de simplifier le tout, le point de coupure a été fixé à 0.14 (celui que l'on avait obtenu dans le cas où il n'y a pas de valeurs manquantes) et non pas estimé par validation-croisée.
+
+Il s'avère que le revenu net, sur les 100 000 clients restants, aurait été de 926 917\$. S'il n'y avait pas eu de valeurs manquantes, la sélection basée sur une procédure séquentielle classique aurait généré un revenu net de 969 350\$. Les données manquantes rendent plus difficile le développement du modèle. Mais on fait quand même encore beaucoup mieux que la stratégie de référence qui consiste à envoyer le catalogue aux 100 000 clients, qui aurait généré un revenu net de 601 112\$.

@@ -200,7 +200,7 @@ knitr::kable(datf[-1,], col.names = datf[1,],
              longtable = FALSE,
              align =  paste0(c("l",rep("c", 9)),collapse = ""),
              escape = FALSE) |>
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling()
 
 ```
 
@@ -391,7 +391,7 @@ Ainsi, lorsque $\mathrm{X}_5$ augmente d'une année, la cote est multipliée par
 L'interprétation des coefficients du modèle logistique se fait au niveau du rapport de cote, à savoir $\exp(\beta)$. 
 
 
-Un des avantages d'utiliser la vraisemblance comme fonction objective est que les intervalles de confiance et les estimateurs basés sur la vraisemblance (profilée) sont invariant aux reparamétrisations: l'intervalle de confiance à niveau 95\% pour $\exp(\beta_{\texttt{age}})$ est obtenu en prenant l'exponentielle des bornes de l'intervalle pour $\beta_{\texttt{age}}$, [$\exp(0.0465); \exp(0.1043)$], soit [$1.048; 1.110$] tel que rapporté dans la sortie.^[Ce n'est **pas** le cas des intervalles usuels de Wald qui ont la forme $\widehat{\beta} \pm 1.96 \mathrm{se}(\widehat{\beta})$.]
+Un des avantages d'utiliser la vraisemblance comme fonction objective est que les intervalles de confiance et les estimateurs basés sur la vraisemblance (profilée) sont invariant aux reparamétrisations: l'intervalle de confiance à niveau 95\% pour $\exp(\beta_{\texttt{age}})$ est obtenu en prenant l'exponentielle des bornes de l'intervalle pour $\beta_{\texttt{age}}$, [$\exp(0.0465); \exp(0.1043)$], soit [$1.048; 1.110$] tel que rapporté dans la sortie. Ce n'est **pas** le cas des intervalles usuels de Wald qui ont la forme $\widehat{\beta} \pm 1.96 \mathrm{se}(\widehat{\beta})$.
 
 
 Comme l'exponentielle est une transformation monotone croissante, on a $\beta>0$ si et seulement si $\exp(\beta)>1$, etc. On peut ainsi utiliser les intervalles de confiance pour tester l'hypothèse $\mathscr{H}_0: \beta_j=0$ ou de façon équivalente $\mathscr{H}_0: \exp(\beta_j)=1$ à niveau 95\%.
@@ -494,7 +494,7 @@ knitr::kable(gof_df,
                 digits = 2,
                 row.names = TRUE, 
                 booktabs = TRUE) |>
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling()
 ci2 <- confint(modele2)
 modeleH0 <- update(modele2, formula. =  ". ~ . - x6")
 rvrais <- modeleH0$deviance - modele2$deviance
@@ -735,7 +735,7 @@ perfo1 <- perfo(prob = loocv_prob, resp = train$yachat)
 #| echo: false
 #| eval: true
 #| cache: true
-#| tbl-cap: "Tableau de classification avec le nombre de de vrais positifs (VP), vrais négatifs (VN), faux positifs (FP) et faux négatifs (FN), le taux de bonne classification, la sensibilité,  la spécificité, le taux de vrais positifs (TVP) et le taux de vrais négatifs (TVN)."
+#| tbl-cap: "Tableau de classification avec le nombre de vrais positifs (VP), vrais négatifs (VN), faux positifs (FP) et faux négatifs (FN), le taux de bonne classification, la sensibilité,  la spécificité, le taux de vrais positifs (TVP) et le taux de vrais négatifs (TVN)."
 knitr::kable(
   perfo1$table[seq(4, nrow(perfo1$table), by = 4),], 
   digits = c(2, rep(0,4), rep(1,5)), 
@@ -752,8 +752,8 @@ knitr::kable(
              row.names = FALSE,
              booktabs = TRUE,
              longtable = TRUE,
-             escape = FALSE) |>
-  kableExtra::kable_styling(full_width = TRUE)
+             escape = TRUE) |>
+  kableExtra::kable_styling()
 
 # La fonction cv.glm permet aussi de faire la validation croisée, 
 # Définir une fonction de coût, mais pour un seul point de coupure
@@ -786,7 +786,7 @@ knitr::kable(x = confumat,
                 align = "r",
                 escape = FALSE,
                 booktabs = TRUE) |>
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling()
 ```
 
 Quatre autres quantités, dérivées à partir de la matrice de confusion, sont parfois utilisées: 
@@ -928,7 +928,7 @@ dbm |>
             "minimum" = min(ymontant), 
             "maximum" = max(ymontant)) |>
 knitr::kable(booktabs = TRUE) |>
-    kableExtra::kable_styling(full_width = TRUE)
+    kableExtra::kable_styling()
 ```
 
 
@@ -1026,7 +1026,7 @@ tab_lift <- hecmulti::courbe_lift(
 #| tbl-cap: "Tableau du lift (déciles)."
 knitr::kable(tab_lift, 
                 booktabs = TRUE) |>
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling()
 ```
 
 Le @tbl-lift présente les 10 déciles. Si on classifiait comme acheteurs les 10\% qui ont la plus forte probabilité estimée d'achat, on détecterait 81 des 210 clients (37.6\%). En comparaison, on s'attend que 21 clients soient sélectionnés en moyenne si on prend un échantillon aléatoire de 100 personnes. Le ratio 81/21 (dernière colonne) est le _lift_ du modèle: il permet de détecter 3.86 fois plus de succès que le hasard.
@@ -1359,7 +1359,7 @@ knitr::kable(datf, col.names = colnames,
              longtable = FALSE,
              align =  paste0(c("l",rep("r", 5)),collapse = ""),
              escape = FALSE )   |>
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling()
 options(scipen = 100)
 ```
 
@@ -1470,7 +1470,7 @@ knitr::kable(datf, col.names = colnames,
              longtable = FALSE,
              align =  paste0(c("l",rep("r", 5)),collapse = ""),
              escape = FALSE)  |>
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling()
 ```
 
 Le modèle Heckit aurait produit un revenu net de `r sprintf(heckit_perfo, fmt = "%i0")`\$, un montant supérieur au revenu net de `r max(datf[,6])`\$, qui était le meilleur trouvé à la sous-section précédente. 
@@ -1703,12 +1703,12 @@ knitr::kable(tab1,
                 digits = 3,
                 caption = " catégorie rarement/jamais vs toujours", 
                 booktabs = TRUE) |>
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling()
 knitr::kable(tab2, 
                 digits = 3, 
                 caption = "catégorie occasionnellement vs toujours", 
                 booktabs = TRUE) |>
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling()
 expcoefm1 <- sprintf(
   exp(as.numeric(coef(multi1)[1,2])),
   fmt = "%.3f")
@@ -1774,7 +1774,7 @@ knitr::kable(tab, digits = 2,
                 "DL",
                 "rapport vrais.",
                 "valeur-p")) |>
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling()
 
 ```
 
@@ -1906,14 +1906,14 @@ kableExtra::kbl(tabcoef,
 	        booktabs = TRUE,
                 col.names = c("effet","coefficient","erreur-type"),
                 digits = 3) |>
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling()
 pval_lrt_multi2a_drop1 <- sprintf(round(drop1(multi2a, test = "Chisq")[2,4],3), fmt = "%.3f")
 ```
 
 
 Ici, l'effet estimé d'être un homme plutôt qu'une femme (`sexe`) est $`r sprintf(round(as.numeric(coef(multi2a)),3), fmt = "%.3f")`$ et ce paramètre est significativement différent de zéro (valeur-$p$ de $`r pval_lrt_multi2a_drop1`$ obtenue en faisant un test de rapport de vraisemblance).
 
-Ainsi, les hommes sont moins susceptibles de voter fréquemment que les femmes. Plus précisément, la cote d'être dans une catégorie plus élevée de `catvote`, par rapport à une catégorie plus basse, est multipliée par $\exp(`r `sprintf(round(as.numeric(coef(multi2a)),3), fmt = "%.3f")` = `r sprintf(round(exp(as.numeric(coef(multi2a))),3), fmt = "%.3f")`, ce qui correspond à une diminution de la cote des femmes `r round(100*(1-exp(as.numeric(coef(multi2a)))), 0)`% (et donc la probabilité d'être dans une catégorie plus élevée est plus faible).
+Ainsi, les hommes sont moins susceptibles de voter fréquemment que les femmes. Plus précisément, la cote d'être dans une catégorie plus élevée de `catvote`, par rapport à une catégorie plus basse, est multipliée par $\exp(`r `sprintf(round(as.numeric(coef(multi2a)),3), fmt = "%.3f")` = `r sprintf(round(exp(as.numeric(coef(multi2a))),3), fmt = "%.3f")`$, ce qui correspond à une diminution de la cote des femmes $`r round(100*(1-exp(as.numeric(coef(multi2a)))), 0)`$% (et donc la probabilité d'être dans une catégorie plus élevée est plus faible).
 
 
 

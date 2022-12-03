@@ -175,22 +175,16 @@ corrplot::corrplot(cor(factor),
 
 ```
 
+
+
+::: {.content-visible when-format="pdf"}
+
 ```{r}
-#| label: tbl-statdescriptfactor
+#| label: tbl-statdescriptfactorpdf
 #| echo: false
 #| cache: true
 #| eval: true
 #| tbl-cap: "Statistiques descriptives des 12 variables du jeu de données factor."
- if(knitr::opts_knit$get("rmarkdown.pandoc.to") == "html"){
- tibble::tibble(moyenne = apply(factor, 2, mean),
-              "écart-type" = apply(factor, 2, sd),
-               min = apply(factor, 2, min),
-               max = apply(factor, 2, max),
-               histogramme = apply(factor, 2, function(x){skimr::inline_hist(x = x, n_bins = 5)})) |>
-  knitr::kable(digits = 2,
-               booktabs = TRUE) |>
-  kableExtra::kable_styling(full_width = TRUE)
- } else{
 tibble::tibble(moyenne = apply(factor, 2, mean),
                "écart-type" = apply(factor, 2, sd),
                min = apply(factor, 2, min),
@@ -198,9 +192,31 @@ tibble::tibble(moyenne = apply(factor, 2, mean),
   kableExtra::kbl(digits = 2,
   	          longtable = FALSE, 
                   booktabs = TRUE) |>
-  kableExtra::kable_styling(full_width = TRUE)
-}
+  kableExtra::kable_styling()
 ```
+
+:::
+
+::: {.content-visible when-format="html"}
+
+```{r}
+#| label: tbl-statdescriptfactorhtml
+#| echo: false
+#| cache: true
+#| eval: true
+#| tbl-cap: "Statistiques descriptives des 12 variables du jeu de données factor."
+ tibble::tibble(moyenne = apply(factor, 2, mean),
+              "écart-type" = apply(factor, 2, sd),
+               min = apply(factor, 2, min),
+               max = apply(factor, 2, max),
+               histogramme = apply(factor, 2, function(x){skimr::inline_hist(x = x, n_bins = 5)})) |>
+  knitr::kable(digits = 2,
+               booktabs = TRUE) |>
+  kableExtra::kable_styling()
+```
+
+:::
+
 
 On voit dans la @fig-corrmat que quelques groupes de variables sont corrélés entre eux. On peut également regrouper certaines questions sous des thèmes manuellement: le but de l'analyse factorielle sera d'automatiser ce regroupement.
 
@@ -249,7 +265,7 @@ g1 <- ggplot(data = data, aes(x = x1, y = x2)) +
   geom_abline(slope = pc$loadings[2,2], 
               intercept = pc$loadings[2,1],
               linetype = 2) + 
-  ggpubr::stat_cor(aes(label = ..rr.label..),
+  ggpubr::stat_cor(aes(label = after_stat(rr.label)),
                    r.accuracy = 0.01,
                    label.x = 3, 
                    label.y = 0) +
@@ -260,7 +276,7 @@ g1 <- ggplot(data = data, aes(x = x1, y = x2)) +
   coord_fixed()
 g2 <- ggplot(data = pcdata, aes(x = x1, y = x2)) +
   geom_point(alpha = 0.8) +
-  ggpubr::stat_cor(aes(label = ..rr.label..),
+  ggpubr::stat_cor(aes(label = after_stat(rr.label)),
                    r.accuracy = 0.01,
                    label.x = -10, 
                    label.y = -2) +
@@ -330,7 +346,7 @@ knitr::kable(acp_var,
                 align = "c",
                 row.names = FALSE,
                 booktabs = TRUE) |>
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling()
 ```
 
 
@@ -498,7 +514,7 @@ knitr::kable(100*chargements,
                 digits = 0,
                 booktabs = TRUE,
                 row.names = TRUE) |>
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling()
 ```
 
 On constate à la lecture du @tbl-factanal4 des chargements que le chargement associé à la première variable est de `r round(fa4$loading["x1","Factor4"],3)` pour le facteur 4: cela correspondrait à un facteur avec une corrélation de presque un, donc $F_4 \approx X_1$. Le modèle obtenu avec la méthode du maximum de vraisemblance n'est donc pas adéquat puisque l'optimisation a convergée vers un cas de quasi-Heywood et que le facteur n'est pas une variable latente, mais une des variables de la base de données de départ. Pour diagnostiquer le tout, on peut aussi analyser les valeurs d'unicité: la minimum de `min(fa4$uniqueness)` est `r min(fa4$uniquenesses)`, ce qui correspond à la tolérance de l'algorithme (valeur minimale permise dans l'optimisation), voir `?factanal`.  On retourne à la planche à dessin en réduisant le nombre de variables.
@@ -561,7 +577,7 @@ knitr::kable(emv_crit,
                 digits = c(2,2,2,0,0),
                 row.names = TRUE,
                 booktabs = TRUE) |>
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling()
 ```
 
 Le nombre de facteurs à utiliser selon le AIC est `r which.min(emv_crit$AIC)`, 
@@ -590,7 +606,7 @@ knitr::kable(100*chargements,
                 digits = 0,
                 booktabs = TRUE,
                 row.names = TRUE) |>
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling()
 ```
 
 Cette solution récupère les trois facteurs _service_, _produits_ et _paiement_ de la solution précédente à quatre facteurs. Le facteur _prix_ (qui était formé de $X_1$ et $X_5$) n’est plus présent.
@@ -650,7 +666,7 @@ knitr::kable(t(alph),
              digits = 3, 
              booktabs = TRUE,
              row.names = FALSE) |>
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling()
 ```
 
 Ainsi, les $\alpha$ de Cronbach sont tous satisfaisants (plus grand que 0.6) sauf pour le facteur _prix_ (0.546). Tout est donc cohérent. Les échelles provenant des facteurs _service_, _produits_ et _paiement_, sont satisfaisantes. Ces facteurs sont identifiés à la fois dans la solution à quatre, mais aussi dans la solution à trois facteurs. Le facteur _prix_ est celui qui apparaît en plus dans la solution à quatre facteurs. Il a une interprétation claire (c'est essentiellement `x1`), mais son faible $\alpha$ ferait en sorte qu’il serait discutable de travailler avec l’échelle _prix_ dans d’autres analyses (du moins avec selon l’usage habituel du $\alpha$) plutôt que d'utiliser directement la variable `x1`.
@@ -706,7 +722,7 @@ scores <- solve(fa4$correlation) %*% loadings(fa4)
 colnames(scores) <- paste0("facteur ", 1:4)
 knitr::kable(scores, digits = 2,
                 booktabs = TRUE) |>
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling()
 ```
 
 Les scores factoriels sont obtenus en spécifiant `scores = "regression"` dans les options de la fonction `factanal`. Les poids avec le modèle à quatre facteurs sont rapportés dans le @tbl-scores. On remarque que
@@ -737,7 +753,7 @@ colnames(corr) <- paste0("score ", 1:4)
 rownames(corr) <- paste0("échelle ", 1:4)
 knitr::kable(corr,  
              booktabs = TRUE) |>
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling()
 ```
 
 :::{.callout-tip}

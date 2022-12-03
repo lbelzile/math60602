@@ -340,7 +340,7 @@ knitr::kable(x = as.data.frame(cbind(EQM[,c(2,1,3,5:6)], rowMeans(EQMcv))),
                           "\\(\\mathsf{VC}_{10}\\)"),
             escape = FALSE,
              booktabs = TRUE) |>
-    kableExtra::kable_styling(full_width = TRUE)
+    kableExtra::kable_styling()
   
 ```
 
@@ -598,7 +598,7 @@ knitr::kable(table(dbm_sub$x5), booktabs = TRUE,
              col.names = c("couple", "décompte")),
 knitr::kable(table(dbm_sub$x4), booktabs = TRUE, 
              col.names = c("région", "décompte")))) |>
-       kableExtra::kable_styling(full_width = TRUE)
+       kableExtra::kable_styling()
 
 ```
 
@@ -687,7 +687,7 @@ tibble::tibble(variable = c("x2","x6","x7","x8","x9","x10"),
                min = apply(dbm_sub_c, 2, min),
                max = apply(dbm_sub_c, 2, max)) |>
   knitr::kable(digits = 2, booktabs = TRUE, linesep = "") |>
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling()
 ```
 
 Le nombre d'achats différents depuis un an par ces clients varie entre 1 et 14. Un peu plus de la moitié (51.4%) ont fait cinq achats ou moins. Parmi les 1000 clients de l'échantillon d'apprentissage, 210 ont acheté quelque chose dans le catalogue. La variable yachat sera l'une des variables que nous allons chercher à modéliser en vue d'obtenir des prédictions.
@@ -761,7 +761,7 @@ knitr::kable(x = data.frame(p = p, npar = npar),
                           "nombre de paramètres"),
             escape = FALSE,
              booktabs = TRUE) |>
-    kableExtra::kable_styling(full_width = TRUE)
+    kableExtra::kable_styling()
 ```
 
 Ainsi, si le nombre de variables est restreint, il est possible de comparer tous les modèles potentiels et de choisir le meilleur (selon un critère). II existe même des algorithmes très efficaces qui permettent de trouver le meilleur modèle sans devoir examiner tous les modèles possibles. Le nombre de variables qu'il est possible d'avoir dépend de la puissance de calcul et augmente d'année en année.  Par contre, dans plusieurs applications, il ne sera pas possible de comparer tous les modèles et il faudra effectuer une recherche limitée. Faire une recherche exhaustive parmi tous les modèles possibles s'appelle sélection de tous les sous-ensembles (_best subsets_).
@@ -812,7 +812,7 @@ knitr::kable(data.frame(variables =  apply(resume_recherche$which, 1, function(x
            AIC = resume_recherche$bic - rowSums(resume_recherche$which)*(log(nrow(dbm_apprentissage))-2)
 ), digits = c(0,2,2),
 booktabs = TRUE)|>
-    kableExtra::kable_styling(full_width = TRUE)
+    kableExtra::kable_styling()
 ```
 
 Un algorithme par séparation et évaluation permet d'effectuer cette recherche de manière efficace sans essayer tous les candidats pour ces sous-ensembles. Dans l'exemple, on voit que le modèle avec les variables `x1` `x2` `x31` `x44` `x5` `x6` `x7` `x8` `x9` et `x10` est celui qui minimise le $\mathsf{AIC}$ globalement ($\mathsf{AIC}$ de `r min(resume_recherche$bic - rowSums(resume_recherche$which)*(log(nrow(dbm_apprentissage))-2))`). Le modèle choisi par le $\mathsf{BIC}$ contient seulement sept variables explicatives (plutôt que 10), soit `x1` `x31` `x5` `x6` `x7` `x8` `x10`.
@@ -1432,7 +1432,7 @@ cv_output <-
             y = dbm_a$ymontant, 
             alpha = 1, 
             lambda = lambda_seq)
-plot(cv.output)
+plot(cv_output)
 
 # On réestime le modèle avec la pénalité
 lambopt <- cv_output$lambda.min # ou lambda.1se
