@@ -259,15 +259,43 @@ Le graphique de la fonction de survie permet de lire le temps de survie pour une
 Une information pertinente de la sortie est le nombre de données censurées: parmi les 500 observations, il y a 334 clients qui ont terminé leur abonnement et 166 qui sont censurées (le client est toujours abonné et le temps est donc une borne inférieure de la durée d'abonnement). Les données censurées contiennent moins d'information que les temps observés de défaillance puisqu'on sait uniquement la borne inférieure de la plage possible des valeurs pour le vrai temps de défaillance.
 
 
+
+Les statistiques descriptives usuelles sont biaisées en raison de la censure. Avec l'estimateur de Kaplan--Meier, on peut aisément obtenir les quantiles. Si la courbe de survie estimée descend à zéro, il est également possible d'estimer la moyenne en calculant l'aire sous la courbe de survie.^[Si on considère une variable aléatoire positive, alors l'aire sous la courbe de survie donne l'espérance.] Si la courbe ne descend pas à zéro, on obtient une borne inférieure (sous-estimation de la moyenne), appelée *moyenne restreinte*.
+
+```{r}
+#| eval: false
+#| echo: true
+print(kapm, print.rmean = TRUE)
+```
+
+Par exemple, la moyenne estimée via Kaplan--Meier est 125 semaines (`rmean`), à comparer avec la moyenne empirique de `temps`, ici de `r with(survie1, mean(temps))` semaines, qui est biaisée.
+
+
+
 ### Calcul de l'estimateur de Kaplan--Meier
 
-Cette partie peut être omise; elle est incluse seulement par souci de complétude. Soit $T_1, \ldots, T_n$ les $n$ réalisations aléatoires de la variable temps (certaines censurées, d'autres pas). Supposons qu'il y a $m$ temps distincts où au moins un individu expérimente l'événement. Soient $t_{(1)} < \cdots < t_{(m)}$, ces temps ordonnés en ordre croissant et $r_i$  le nombre d'individus à risque au temps $t_{(i)}$ (les individus qui n'ont pas encore expérimenté l‘événement, et qui ne sont pas encore censurés avant $t_{(i)}$). On note $d_i$ le nombre d'individus qui expérimentent l'événement au temps $t_{(i)}$. L'estimateur de Kaplan--Meier de la fonction de survie à un temps $t$ est
+Pour comprendre l'estimateur de Kaplan--Meier, il est utile de s'intéresser à sa construction. Deux éléments sont essentiels: on parle d'**échec** ou d'événement au temps $t_i$ si l'événement est observé ($T_i=t_i$) au temps $t_i$. Le nombre de **personnes à risque** au temps $t_i$ est le total des observations dont le temps mesuré excède $t_i$ (censure et événements postérieurs à $t_i$)
+
+Pour la **construction**, on procède comme suit:
+
+- Ordonner les temps (uniques) où il y a des échecs (temps où `censure = 1`), disons $t_{(1)} \leq \cdots \leq t_{(m)}$
+- À chaque temps $t_{(i)}$ $(i=1, \ldots m)$, on calcule le nombre de personnes à risque, $r_i$, et le nombre d'échecs, $d_i$.
+- Le risque empirique est $\widehat{h}_i = r_i/d_i$, la proportion d'échecs parmi les personnes à risque.
+
+L'estimateur de Kaplan--Meier définit une **fonction escalier**
+
+- Entre $t=0$ et $t=t_{(1)}$, la survie est de 1.
+- Entre $t=t_{(1)}$ et $t=t_{(2)}$, la survie est $1-\widehat{h}_1$.
+- Entre $t=t_{(2)}$ et $t=t_{(3)}$, la survie est $(1-\widehat{h}_1) \times (1-\widehat{h}_2)$, etc.
+
+Pour un temps $t$ donné, on multiplie tous les termes ($1-\widehat{h}_i$) des temps d'échecs passés,
 \begin{align*}
- \widehat{S}(t) = \left( 1- \frac{d_1}{r_1}\right) \times \cdots \times \left( 1- \frac{d_{i(t)}}{r_{i(t)}}\right), \qquad t_{(1)} \leq t \leq t_{(m)},
+ \widehat{S}(t) &= \prod_{i: t_{(i)} < t} \left( 1- \widehat{h}_i\right) \\ &= \left( 1- \frac{d_1}{r_1}\right) \times \cdots \times \left( 1- \frac{d_{i(t)}}{r_{i(t)}}\right).
 \end{align*}
 où $i(t) =\max(j \in \{1, \ldots, m\}:  t \geq t_{j})$, soit le plus grand indice parmi $1, \ldots, m$ tel que $t \geq t_{i(t)}$. Par convention, si $t < t_{(1)}$, on fixe $\widehat{S}(t)=1$. La fonction de survie n'est pas définie aux temps de défaillance observée, mais la convention veut qu'elle soit continue à gauche.
 
-Avec la troncation à gauche, la même logique s'applique mais les personnes ne sont à risque qu'à partir du temps minimum observé.
+
+Ainsi, l'estimation de la survie estimée ne change qu'aux valeurs de $t_{(i)}$ ($i=1, \ldots, m$). Les contre-marches de l'escalier ainsi défini interviennent uniquement aux temps observés d'échecs. Si à un moment donné toutes les personnes à risque expérimentent l'événement, la courbe descend à zéro. Si on a uniquement de la censure à droite, la courbe de survie n'atteindra jamais zéro si la plus grande observation est censurée à droite. Avec la troncation à gauche, la même logique s'applique mais les personnes ne sont à risque qu'à partir du temps minimum observé.
 
 
 ## Comparaison de deux courbes de survie
@@ -524,11 +552,58 @@ Il est possible d'obtenir l'estimation de la fonction de survie pour des valeurs
 
 Supposons qu'on ajuste le modèle avec les variables sexe et âge seulement dans l'exemple du temps d'abonnement, et que l'on désire la fonction de survie pour les hommes de 25 et 60 ans et pour les femmes de 25 et 60 ans. Le fichier `survie2` contient les données qui seront utilisées à cette fin. 
 
+```{r}
+#| label: fig-courbes-survie
+#| eval: true
+#| echo: false
+#| message: false
+#| fig-width: 7
+#| fig-height: 4
+#| out-width: '80%'
+#| fig-align: 'center'
+#| warning: false
+#| fig-cap: "Courbes de survies du modèle de Cox pour les quatre profils client."
+cox4 <- coxph(
+  Surv(temps, censure) ~ 
+    age + sexe, 
+  data = survie1)
+pred <- survfit(cox4, 
+        newdata = hecmulti::survie2, 
+        type = "kaplan-meier")
+profil <- c("homme de 25 ans", "femme de 25 ans", 
+  "homme de 60 ans", "femme de 60 ans")
+survcurves <- with(pred,
+  data.frame(
+    temps = rep(time, 
+                length.out = 4*length(time)),
+    censure = rep(n.censor > 0, 
+                  length.out = 4*length(time)),
+    survie = c(surv),
+    groupe = factor(rep(profil, each = length(time)))
+  ))
+
+ggplot(data = survcurves, 
+       aes(x = temps, 
+           y = survie,
+           color = groupe)) +
+  geom_step() +
+  ggplot2::scale_y_continuous(
+    expand = c(0,0),
+    limits = c(0,1), 
+    breaks = seq(0, 1, by = 0.25),
+    labels = c("0","0.25","0.5","0.75","1")) + 
+  theme_classic() +
+  ggplot2::theme(legend.position = "bottom") + 
+  ggplot2::labs(x = "temps d'abonnement (en semaines)", 
+       subtitle = "Fonction de survie",
+       y = "")
+```
+
 
 ```{r}
 #| label: fig-courbes-survie
-#| echo: true
-#| eval: true
+#| echo: false
+#| eval: false
 #| cache: true
 #| fig-cap: "Courbes de survies du modèle de Cox pour les quatre profils client."
 #| out-width: '90%'
@@ -566,6 +641,68 @@ legend(x = "bottomleft",
 
 Les quatre fonctions de la @fig-courbes-survie correspondent aux profils pour lesquels nous désirons une estimation de la courbe de survie. La courbe 1 est pour les hommes de 25 ans, la courbe 2 pour les femmes de 25 ans, la courbe 3 pour les hommes de 60 ans et la courbe 4 pour les femmes de 60 ans. On voit donc que, parmi ces quatre profils, les hommes de 25 ans sont le plus à risque de quitter tandis que les femmes de 60 ans sont le moins à risque de quitter.
 
+
+### Variables explicatives dont la valeur change dans le temps 
+
+Il est clair que certaines caractéristiques d'un individu évoluent dans le temps (_time-varying covariates_). Si le sexe d'un individu est stable dans le temps, son revenu, son statut matrimonial, l'endroit où il habite, sont par contre des caractéristiques qui peuvent changer dans le temps. Il peut alors être intéressant d'en tenir compte dans l'analyse. Rappelez-vous que le modèle à risques proportionnels est
+\begin{align*}
+h(t; \boldsymbol{x}) = h_0(t) \exp(\beta_1x_1 + \cdots + \beta_px_p).
+\end{align*}
+
+Supposons que la variable $X_1$ change au fil du temps et que les autres demeurent fixes. On peut alors réécrire le modèle 
+\begin{align*}
+h(t; \boldsymbol{x}) = h_0(t) \exp\{\beta_1x_1(t) + \cdots + \beta_px_p\},
+\end{align*}
+où $x_1(t)$ indique que la valeur de $X_1$ dépend du temps $t$.
+
+Supposons que la variable $\texttt{service}$, qui représente le nombre d'autres services souscrits, est la seule que nous voulons modéliser comme une variable qui varie dans le temps. Pour l'âge, nous prenons simplement l'âge au début de l'abonnement, idem pour la région.
+
+Le plus difficile est de créer correctement le fichier de données pour effectuer ce genre d'analyse. Pour chaque personne, on peut identifier plusieurs moments où l'une ou l'autres des valeurs des variables explicatives change. Supposons qu'on a observé un événement au temps $t_1$, et que la valeur de la covariable change à $t_0$, où $0 < t_0 < t_1$. On peut envisager cette observation donne deux contributions: une pour la trajectoire sur l'intervalle $(0, t_0]$ (censure à droite) et l'autre, après la modification, sur l'intervalle $(t_0, t_1]$ (troncature à gauche). Puisque la valeur est observée passée le premier intervalle, on a besoin de l'information sur toute la fenêtre (les deux bornes) et le type d'événement pour la première fenêtre sera de la censure à droite.
+
+
+```{r}
+#| echo: false
+#| eval: true
+#| label: fig-lexischtemps
+#| fig-cap: "Diagramme de Lexis avec trajectoires. Pour ajuster le modèle, on peut casser la contribution d'une observation en segments: considérons un seul changement survenant au temps $t_c$. Pour le premier segment, on enregistre $t_c$ comme valeur maximale (censure à droite), tandis que pour la deuxième portion, l'observation est tronquée à gauche à partir de $t_c$."
+knitr::include_graphics("figures/Lexis_censure_modif.pdf")
+```
+
+
+
+La base de données `survie3` contient le format adéquat: une colonne `evenement` qui indique la censure (tout intervalle intermédiaire pour un individu est traité comme de la censure à droite) et les bornes de la fenêtre, `debut` et `fin`. Dans cet exemple, il y a eu au plus un changement dans la variable $\texttt{service}$, comme présenté dans le fichier `survie3`. Les variables explicatives $\texttt{age}$, $\texttt{sexe}$ et $\texttt{region}$ sont comme précédemment. 
+
+
+```{r}
+#| label: tbl-survie3-donnees
+#| tbl-cap: "Aperçu des cinq premières observations de la base de données `survie3`."
+#| echo: false
+#| eval: true
+data(survie3, package = "hecmulti")
+knitr::kable(survie3 |> dplyr::filter(id <= 5),
+             digits = 0,
+             booktabs = TRUE) |>
+  kableExtra::kable_styling()
+```
+
+On regarde plus en détail le profil des cinq premiers clients présenté dans le @tbl-survie3-donnees, dont seuls deux ont changé le nombre d'abonnements; les individus 3--5 se sont désabonnés du service cellulaire à un moment donné. Le premier client était abonné à deux autres services au début de son abonnement au téléphone cellulaire mais, après 130 semaines d'abonnement, a effectué un changement à son forfait pour ne conserver qu'un autre service en plus du cellulaire. Pour le deuxième client, comme $\verb+temps_ch+$ est manquante, il est toujours abonné à deux autres services et ce, jusqu'à la fin de l'étude. 
+
+
+
+```{r}
+#| label: cox-risques-nonprop
+#| eval: true
+#| echo: true
+#| cache: true
+data(survie3, package = "hecmulti")
+cox4 <- coxph(Surv(time = debut, 
+                   time2 = fin, 
+                   event = evenement) ~ 
+                age + sexe + region + service, 
+              data = survie3)
+```
+
+L'interprétation se fait comme précédemment; on a omis l'option `ties = "exact"` parce que cette option est trop gourmande en calcul. Puisque c'est la valeur d'une variable qui varie dans le temps et non pas son effet, on a l'interprétation usuelle. Par exemple, le risque de quitter pour un client qui a un autre service est `r round(exp(coef(cox4))['service1'], 3)` fois celui d'un client qui n'a aucun autre service (référence). Le fait d'avoir deux ou trois services diminue encore plus le risque de quitter (rapports de risque de `r round(exp(coef(cox4))['service2'], 3)` et `r round(exp(coef(cox4))['service3'], 3)`, respectivement). 
 
 ### Postulat de risques proportionnels
 
@@ -710,15 +847,13 @@ g6 <- ggplot(data = fsurvie2,
 ```
 
 
-Si ce n'est pas le cas, alors les résultats du modèle ne sont pas nécessairement fiables.
-
-Comme pour un modèle de régression, il est possible de créer des résidus du modèles et de faire des graphiques diagnostics pour potentiellement infirmer le postulat de risques proportionnels [@Grambsch.Therneau:1994]. Si l'hypothèse tient la route, alors il ne devrait pas y avoir de tendance temporelle dans les résidus.
+Si ce n'est pas le cas, alors les résultats du modèle ne sont pas nécessairement fiables.Comme pour un modèle de régression, il est possible de créer des résidus du modèles et de faire des graphiques diagnostics pour potentiellement infirmer le postulat de risques proportionnels [@Grambsch.Therneau:1994]. Si l'hypothèse tient la route, alors il ne devrait pas y avoir de tendance temporelle dans les résidus.
 
 La commande `cox.zph` permet de tester le postulat de risques proportionnels à l'aide d'un test du score pour voir si la pente $\beta(t)$ associée à une covariable est nulle en fonction du temps $t$; si la valeur-$p$ est grande, cela indique une absence de preuve. La fonction `plot` permet également d'obtenir un graphique des résidus en fonction du temps.
 
 
 ```{r}
-#| label: fig-coxph-hypothese
+#| label: fig-coxphhypothese
 #| fig-cap: "Estimations des coefficients en fonction du temps basés sur les moindres carrés pondérés (diagnostic graphique de Grampsch et Therneau)."
 #| eval: true
 #| echo: false
@@ -729,7 +864,7 @@ graphics.off()
 ```
 
 ```{r}
-#| label: tbl-coxph-hypothese
+#| label: tbl-coxphhypothese
 #| eval: true
 #| echo: false
 #| cache: true
@@ -747,7 +882,7 @@ knitr::kable(tab3,
 ```
 
 
-Dans la @fig-coxph-hypothese, on voit que le coefficient pour service augmente au fil du temps pour tous les groupes. On pourrait capturer cette interaction ou stratifier pour calculer le risque selon le nombre de services, au risque d'avoir trop peu d'observations pour estimer de manière fiable le risque de base. C'est explicable par le fait que les personnes avec plus de services tendent à avoir une survie plus longue.
+Dans la @fig-coxphhypothese, on voit que le coefficient pour service augmente au fil du temps pour tous les groupes. On pourrait capturer cette interaction ou stratifier pour calculer le risque selon le nombre de services, au risque d'avoir trop peu d'observations pour estimer de manière fiable le risque de base. C'est explicable par le fait que les personnes avec plus de services tendent à avoir une survie plus longue.
 
 ```{r}
 #| label: coxph-hypothese
@@ -760,336 +895,16 @@ plot(diag_risqueprop)
 
 Si le postulat n'est pas validé, on peut interpréter l'effet comme un rapport de risque moyen pondéré sur la période de suivi, mais ce dernier change selon le moment [@Stensrud.Hernan:2020]. Cela implique également que les erreurs-types associées aux estimations sont trompeuses. La section suivante permettra de généraliser le modèle de Cox et traiter ce cas de figure.
 
-## Extensions du modèle de Cox
 
-
-Dans cette section, nous allons voir deux extensions du modèle à risques proportionnels de base.
-
-i) Inclusion de variables explicatives dont la valeur change dans le temps.
-ii) Modèle à risques compétitifs (_competing risks_) pour étudier la situation où il y a plusieurs manières de quitter l'état.
-
-La vignette [*Using Time Dependent Covariates and Time Dependent Coefficients in the Cox Model* de Therneau, Crowson et Atkinson](https://cran.r-project.org/web/packages/survival/vignettes/timedep.pdf) du paquet `survival` offre des détails sur l'implémentation des méthodes qui suivent.
-
-
-### Variables explicatives dont la valeur change dans le temps 
-
-Il est clair que certaines caractéristiques d'un individu évoluent dans le temps (_time-varying covariates_). Si le sexe d'un individu est stable dans le temps, son revenu, son statut matrimonial, l'endroit où il habite, sont par contre des caractéristiques qui peuvent changer dans le temps. Il peut alors être intéressant d'en tenir compte dans l'analyse. Rappelez-vous que le modèle à risques proportionnels est
-\begin{align*}
-h(t; \boldsymbol{x}) = h_0(t) \exp(\beta_1x_1 + \cdots + \beta_px_p).
-\end{align*}
-
-Supposons que la variable $X_1$ change au fil du temps et que les autres demeurent fixes. On peut alors réécrire le modèle 
-\begin{align*}
-h(t; \boldsymbol{x}) = h_0(t) \exp\{\beta_1x_1(t) + \cdots + \beta_px_p\},
-\end{align*}
-où $x_1(t)$ indique que la valeur de $X_1$ dépend du temps $t$.
-
-Supposons que la variable $\texttt{service}$, qui représente le nombre d'autres services souscrits, est la seule que nous voulons modéliser comme une variable qui varie dans le temps. Pour l'âge, nous prenons simplement l'âge au début de l'abonnement, idem pour la région.
-
-Le plus difficile est de créer correctement le fichier de données pour effectuer ce genre d'analyse. Pour chaque personne, on peut identifier plusieurs moments où l'une ou l'autres des valeurs des variables explicatives change. Supposons qu'on a observé un événement au temps $t_1$, et que la valeur de la covariable change à $t_0$, où $0 < t_0 < t_1$. On peut envisager cette observation donne deux contributions: une pour la trajectoire sur l'intervalle $(0, t_0]$ (censure à droite) et l'autre, après la modification, sur l'intervalle $(t_0, t_1]$ (troncature à gauche). Puisque la valeur est observée passée le premier intervalle, on a besoin de l'information sur toute la fenêtre (les deux bornes) et le type d'événement pour la première fenêtre sera de la censure à droite.
-
-
-
-La base de données `survie3` contient le format adéquat: une colonne `evenement` qui indique la censure (tout intervalle intermédiaire pour un individu est traité comme de la censure à droite) et les bornes de la fenêtre, `debut` et `fin`. Dans cet exemple, il y a eu au plus un changement dans la variable $\texttt{service}$, comme présenté dans le fichier `survie3`. Les variables explicatives $\texttt{age}$, $\texttt{sexe}$ et $\texttt{region}$ sont comme précédemment. 
-
-
-```{r}
-#| label: tbl-survie3-donnees
-#| tbl-cap: "Aperçu des cinq premières observations de la base de données `survie3`."
-#| echo: false
-#| eval: true
-data(survie3, package = "hecmulti")
-knitr::kable(survie3 |> dplyr::filter(id <= 5),
-             digits = 0,
-             booktabs = TRUE) |>
-  kableExtra::kable_styling()
-```
-
-On regarde plus en détail le profil des cinq premiers clients présenté dans le @tbl-survie3-donnees, dont seuls deux ont changé le nombre d'abonnements; les individus 3--5 se sont désabonnés du service cellulaire à un moment donné. Le premier client était abonné à deux autres services au début de son abonnement au téléphone cellulaire mais, après 130 semaines d'abonnement, a effectué un changement à son forfait pour ne conserver qu'un autre service en plus du cellulaire. Pour le deuxième client, comme $\verb+temps_ch+$ est manquante, il est toujours abonné à deux autres services et ce, jusqu'à la fin de l'étude. 
-
-
-
-```{r}
-#| label: cox-risques-nonprop
-#| eval: true
-#| echo: true
-#| cache: true
-data(survie3, package = "hecmulti")
-cox4 <- coxph(Surv(time = debut, 
-                   time2 = fin, 
-                   event = evenement) ~ 
-                age + sexe + region + service, 
-              data = survie3)
-```
-
-L'interprétation se fait comme précédemment; on a omis l'option `ties = "exact"` parce que cette option est trop gourmande en calcul. Puisque c'est la valeur d'une variable qui varie dans le temps et non pas son effet, on a l'interprétation usuelle. Par exemple, le risque de quitter pour un client qui a un autre service est `r round(exp(coef(cox4))['service1'], 3)` fois celui d'un client qui n'a aucun autre service (référence). Le fait d'avoir deux ou trois services diminue encore plus le risque de quitter (rapports de risque de `r round(exp(coef(cox4))['service2'], 3)` et `r round(exp(coef(cox4))['service3'], 3)`, respectivement). 
-
-### Modèle à risques compétitifs
-
-Parfois, la raison pour laquelle un individu quitte l'état étudié peut avoir un intérêt en soi. Par exemple si on s'intéresse au temps qu'un employé demeure au service de la compagnie, la distinction entre le fait qu'il ait démissionné ou bien qu'il ait été renvoyé peut avoir un impact sur l'effet des variables explicatives. Comme autre exemple, si on s'intéresse au temps de survie d'un individu après qu'il ait été diagnostiqué avec un certain type de cancer, il pourrait être important de distinguer selon la cause exacte de la mort.
-
-De manière générale, supposons qu'il y a $K$ manières possibles que l'événement survienne. On peut alors spécifier $K$ fonctions de risques (une pour chaque manière) et obtenir le modèle de Cox à risques compétitifs (_competing risks_),
-\begin{align*}
-h_1(t; \boldsymbol{x})&= h_{01}(t) \exp(\beta_{11}x_1 + \cdots + \beta_{p1} x_p)\\
-&\vdots\\
-h_K(t; \boldsymbol{x})&= h_{0K}(t) \exp(\beta_{1K}x_1 + \cdots + \beta_{pK} x_p)\\
-\end{align*}
-Notez que les coefficients sont différents d'une équation à l'autre. En estimant ce modèle, on obtient donc une estimation de l'effet des variables selon la raison du départ de l'état. De plus, on peut aussi inclure des variables dont la valeur change dans le temps, comme vu précédemment.
-Ce qui simplifie énormément la situation est qu'il est prouvé qu'on peut estimer les paramètres de chaque équation séparément sans perte de précision. Par conséquent, en pratique, il suffira d'ajuster $K$ modèles de Cox séparément.
-
-
-Dans notre exemple d'abonnement cellulaire, supposons que nous avons trois causes possibles pour la perte d'un client: soit il a interrompu son abonnement pour aller chez le compétiteur A, soit pour aller chez le compétiteur B, soit il n'a plus de cellulaire du tout.
-
-Les données pour cet exemple se trouvent dans le fichier `survie4`. La seule nouveauté par rapport au fichier original est la variable $\texttt{censure}$ qui est maintenant codée ainsi
-
-- 1, si le temps est censuré (l'individu est toujours abonné à notre service)
-- 2, si l'individu a quitté pour aller chez le compétiteur A
-- 3, si l'individu a quitté pour aller chez le compétiteur B
-- 4, si l'individu a quitté parce qu'il n'a plus besoin de cellulaire.
-
-On peut calculer la fréquence de chaque modalité avec `table`.
-Ainsi, il y a donc 166 clients toujours abonnés, 170 qui nous ont quitté pour aller chez A, 121 pour aller chez B, et 43 qui n'ont plus de cellulaires.
-
-Pour ajuster le modèle lorsque la cause du départ est le compétiteur A, le code est
-
-```{r}
-#| label: risque-competitif
-#| eval: false
-#| echo: true
-# Rappel pour `event`:
-#   1 pour observation, 
-#   0 pour censure à droite
-# On utilise la convention TRUE = 1, FALSE = 0
-data(survie4, package = "hecmulti")
-cox5 <- coxph(Surv(time = temps, 
-                   event = censure == 2,
-                   type = "right") ~ 
-                age + sexe + region + service, 
-              data = survie4,
-              ties = "exact")
-summary(cox5)
-```
-
-
-
-```{r}
-#| label: tbl-cox-risquecompetA
-#| echo: false
-#| eval: true
-#| tbl-cap: "Rapport de risque et intervalles de confiance à niveau 95% pour le modèle à risques compétitifs (probabilité de quitter pour compétiteur A)."
-#| cache: true
-data(survie4, package = "hecmulti")
-cox5 <- survival::coxph(Surv(time = temps, 
-                   event = censure == 2,
-                   type = "right") ~ 
-                age + sexe + region + service, 
-              data = survie4,
-              ties = "exact")
-tab5 <- broom::tidy(cox5,
-            exponentiate = TRUE, 
-            conf.int = TRUE)[,-(3:5)]
-colnames(tab5) <- c("terme",
-                    "exp(coef)",
-                    "borne inf.", 
-                    "borne sup.")
-knitr::kable(tab5,
-               digits = 2,
-               booktabs = TRUE) |>
-  kableExtra::kable_styling()
-```
-Notez qu'on précise que les valeurs 1, 3 et 4 sont des observations censurées. Ici, l'événement d'intérêt est que le client est parti chez le compétiteur A. S'il est toujours abonné ($\texttt{censure=1}$), s'il est parti chez le compétiteur B ($\texttt{censure=3}$) ou s'il nous a quitté car il n'a plus de cellulaire ($\texttt{censure=4}$), alors l'événement « quitter pour aller chez A » n'est pas survenu. C'est pourquoi on doit traiter ces situations comme des censures. 
-
-Ainsi, on voit que l'événement est survenu 170 fois et qu'il y a 330 censures. L'interprétation des paramètres se fait comme précédemment. Sauf qu'il faut préciser qu'il s'agit du risque de quitter pour aller chez le compétiteur A. Par exemple, le risque de quitter pour aller chez le compétiteur A d'une femme est 0.444 fois le risque de quitter pour aller chez le compétiteur A d'un homme. Ainsi, les femmes sont moins à risque de quitter pour aller chez le compétiteur A que les hommes.
-
-
-Pour ajuster le modèle lorsque la cause du départ est le compétiteur B, procède de la même manière. Notez que cette fois-ci, ce sont les valeurs 1, 2 et 4 de la variable censure qui correspondent au fait que l'événement n'est pas survenu.  Il y a 121 clients qui ont quitté pour aller chez B et 379 cas autre (censure). L'interprétation des paramètres se fait en termes de risque de quitter pour aller chez le compétiteur B.
-
-
-Si on ajuste le modèle pour le cas de figure où la cause de départ est que le client n'a plus besoin de cellulaire, on obtient une sortie similaire. Comme il y a seulement 43 événements (quitter car on n'a plus besoin de cellulaire), les estimations des paramètres sont moins précises, ce qu'on peut voir avec les erreurs-types qui sont plus élevés. Les observations censurées contiennent moins d'information que les événements, d'où cette perte de précision.
-
-Dans **R**, on peut aussi ajuster simultanément tous les modèles en spécifiant que l'événement d'intérêt est un facteur: c'est alors la catégorie de référence qui fait fois de l'état de départ. Il faut également une variable qui identifie l'observation --- dans le cas qu'on considère, c'est simplement une colonne avec des valeurs de $1$ à $n$.
-
-```{r}
-#| eval: true
-#| echo: true
-rc_cox <- coxph(
-  Surv(time = temps, 
-       event = factor(censure)) ~ sexe + age + service,
-  data = survie4 |>
-    dplyr::mutate(id = 1:nrow(survie4)),
-  id = id)
-```
-
-On obtient l'ensemble des coefficients dans le tableau résumé, un pour chaque événement compétitif autre que la référence.
-
-Si on voulait ajuster le modèle de Kaplan--Meier, pour une transition d'un état de base (abonné) vers un état dit absorbant (désabonnement, soit chez compétiteur A ou B ou abandon du cellulaire), il faut obligatoirement ajuster toutes les courbes simultanément. On ajustera le modèle multi-état en spécifiant un facteur pour l'événement, où encore une fois la catégorie de référence est abonnement (`censure=1`).
-```{r}
-#| eval: true
-#| echo: true
-rc_km <- survfit(Surv(time = temps, 
-             event = factor(censure)) ~ 1,
-             data = survie4)
-```
-
-Les représentations graphiques pour le modèle à risque compétitif sont légèrement différente. Si on dichotomise l'événement d'intérêt (survie ou échec), il y a deux options possibles et la probabilité d'échec est complémentaire à la survie. Avec plus d'un choix, on obtiendra un graphique avec une estimation de la probabilité pour chaque modalité de l'événement: la @fig-competitif montre ceci pour la sortie du modèle de Cox et le modèle de Kaplan--Meier en ajoutant la courbe correspondant à la probabilité de demeurer abonné.
-
-```{r}
-#| label: fig-competitif
-#| fig-cap: "Probabilité d'événement sans variable explicative (Kaplan-Meier, gauche) et avec âge, service et sexe (modèle de Cox, droite)."
-#| eval: true
-#| echo: false
-#| out-width: '90%'
-#| fig-width: 8
-#| fig-height: 4
-par(mfrow = c(1,2), bty = "l")
-plot(rc_km, noplot = NULL, 
-     col = 1:4,
-     ylab = "probabilité dans l'état")
-legend("topright",
-       legend = c("abonnement", 
-                  "A","B","fin"),
-       bty = "n", col = 1:4, lty = 1)
-plot(survfit(rc_cox, 
-             newdata = hecmulti::survie4[1,]),
-     noplot = NULL,
-     col = 1:4)
-```
-
-
-
-## Risques non proportionnels
-
-
-Comme son nom l'indique, le modèle à risques proportionnels suppose que les risques sont proportionnels. Cela implique que l'effet d'une variable est stable dans le temps. Nous verrons dans cette section deux façons de modéliser le cas de risques non proportionnels.
-
-### Non-proportionnalité avec un terme d'interaction avec le temps 
-
-Pour simplifier l'exposition, supposons que nous avons une seule variable explicative $X$. L'équation du modèle à risques proportionnels est $h(t; x) = h_0(t)\exp(\beta x)$ et suppose que la fonction de risque de base $h_0(t)$ est indépendante de la variable explicative $X$. Une manière de modéliser la non-proportionnalité est d'inclure un terme d'interaction entre la variable et le temps. Il existe plusieurs façons de le faire. Par exemple, on pourrait inclure une nouvelle variable qui est le produit entre le temps et la variable $X$. Le modèle est alors 
-\begin{align*}
-h(t; x) = h_0(t) \exp(\beta_1x + \beta_2xt).
-\end{align*}
-Pour ce modèle, le rapport de risque, pour une augmentation d'une unité de $X$ est $\exp(\beta_1+ \beta_2t)$ et dépend du temps $t$: c'est un modèle avec risques non proportionnels. On retombe sur le modèle à risques proportionnels lorsque $\beta_2=0$. 
-
-Supposons que l'effet du nombre de service augmente avec le temps. On peut inclure à la fois `service`, qui capture l'effet au temps zéro, et le surenchérissement ou la diminution à mesure que le temps d'abonnement progresse.
-
-```{r}
-#| label: interaction-temps-service
-#| echo: true
-#| eval: true
-# Créer variables binaires par service
-service_bin <- model.matrix(
-  ~service, 
-  data = survie1)[,-1]
-# enlever ordonnée à l'origine (1e colonne)
-survie1m <- cbind(survie1, service_bin) 
-cox_np <- survival::coxph(
-    Surv(temps, censure) ~ 
-     age + sexe + service + 
-      tt(service1) + tt(service2) + tt(service3), 
-     data = survie1m, 
-     tt = function(x, t, ...){t * x})
-```
-
-Le bloc code précédent illustre comment créer le terme non proportionnel: on spécifie avec l'option `tt()` la variable qui change dans le temps et on spécifie par la suite la nature de l'interaction temporelle en définissant une fonction `tt`. 
-
-Les variables catégorielles n'étant pas supportées en l'état, elles doivent préalablement être transformées en variable indicatrices binaires. Une fois les nouvelles variables dans la base de données, on procède à la spécification du terme de risque non proportionnel.
-
-
-```{r}
-#| label: tbl-coxnph
-#| echo: false
-#| eval: true
-#| tbl-cap: "Rapport de risque et intervalles de confiance à niveau 95% pour le modèle à risques non proportionnels (interaction linéaire entre temps et service)."
-#| cache: true
-scnp <- summary(cox_np)$coefficients
-tab6 <- broom::tidy(cox_np,
-            exponentiate = TRUE, 
-            conf.int = TRUE)[,-c(3,6,7)]
-colnames(tab6) <- c("terme",
-                    "exp(coef)",
-                    "test de Wald",
-                    "valeur-p")
-tab6[,4] <- format.pval(tab6[,4], eps = 1e-3, digits = 3)
-knitr::kable(tab6,
-               digits = c(2,3,3),
-               booktabs = TRUE) |>
-  kableExtra::kable_styling()
-```
-
-Le @tbl-coxnph contient les résultats. Les coefficients pour l'interaction avec $t$ sont petits, mais c'est parce que la variable temps n'est pas standardisée et qu'elle s'étend de 0 à 200 semaines: de petites variations sont possiblement importantes quand le temps augmente. Les estimations des coefficients pour l'interaction sont tous positifs, ce qui suppose que le risque augmente avec le temps. Si on considère comme source plausible d'effet du nombre de services un quelconque rabais, il semble que cet effet protecteur s'amenuise. Deux des termes d'interaction sont significatifs à niveau 5% (statistiques de Wald $Z$ de `r round(summary(cox_np)$coefficients[6,4],3)`, `r round(summary(cox_np)$coefficients[7,4],3)` et `r round(summary(cox_np)$coefficients[8,4],3)` et valeurs-$p$ correspondantes de `r round(summary(cox_np)$coefficients[6,5],3)`, `r round(summary(cox_np)$coefficients[7,5],3)` et `r round(summary(cox_np)$coefficients[8,5],3)`).
-
-Ajustons maintenant un autre terme d'interaction, cette fois de manière à répliquer les changements qui interviennent au sein d'une variable explicative de manière plus simple. 
-
-```{r}
-#| label: interaction-temps-covariable
-#| echo: true
-#| eval: false
-# interaction entre service et temps
-# objet avec 'tt' varie dynamiquement
-cox6 <- coxph(
-    Surv(temps, censure) ~ 
-     tt(age) + sexe + service, 
-     data = survie1, 
-     tt = function(x, t, ...){x + t/52})
-summary(cox6)
-```
-
-L'âge (en années) augmente à mesure que le temps d'abonnement (en semaines) passe, d'où $\texttt{age}(t) = \texttt{age} + t/52$. Ici, on inclut uniquement la variable transformée `tt(age)` et son effet est toujours fortement significatif pour expliquer le désabonnement potentiel: les personnes plus âgées sont moins susceptibles de résilier leur abonnement.
-
-
-```{r}
-#| label: interaction-temps-age
-#| echo: true
-#| eval: false
-cox_np <- survival::coxph(
-    Surv(temps, censure) ~ 
-     tt(age) + sexe + service, 
-     data = survie1, 
-     tt = function(x, t, ...){x + t/52})
-summary(cox_np)
-```
-
-On spécifie avec l'option `tt()` dans la formule la variable qui change dans le temps et par la suite la nature de l'interaction temporelle avec l'argument `tt`.
-
-
-```{r}
-#| label: tbl-cox-np
-#| echo: false
-#| eval: true
-#| tbl-cap: "Rapport de risque et intervalles de confiance à niveau 95% pour le modèle à risques non proportionnels (interaction linéaire entre temps et âge)."
-#| cache: true
-library(survival)
-cox6 <- survival::coxph(
-    Surv(temps, censure) ~ 
-     age + tt(age) + sexe + region + service, 
-     data = hecmulti::survie1, 
-     tt = function(x, t, ...){ x * t },
-     ties = "exact")
-tab6 <- broom::tidy(cox6,
-            exponentiate = TRUE, 
-            conf.int = TRUE)[,-(3:5)]
-colnames(tab6) <- c("terme",
-                    "exp(coef)",
-                    "borne inf.", 
-                    "borne sup.")
-knitr::kable(tab6,
-               digits = 2,
-               booktabs = TRUE) |>
-  kableExtra::kable_styling()
-```
-
-L'interaction employée ici n'est pas la seule fonction du temps qu'on pourrait spécifier: on pourrait par exemple inclure une fonction de type escalier $\mathrm{I}(T< t_0)$ qui indique que l'effet de la variable disparaît après le temps $t_0$, si par exemple un rabais disparaît après une certaine durée d'abonnement, avec `rabais * I(t<t0)` pour une valeur numérique `t0` fixée.
 
 ### Stratification
 
-Une manière de modéliser la non-proportionnalité est par la stratification. Il est important de comprendre qu'on ne pourra pas estimer l'effet de la variable de stratification comme d'ordinaire en étudiant le coefficient $\beta$ associé. 
-
-Supposons que nous avons une variable explicative catégorielle $Z=1, \ldots, K$ pour lequel le postulat de risque proportionnels n'est pas valide. On s'intéresse à l'effet des variables $\mathbf{X}$. Typiquement, on ne s'intéresse pas directement à l'effet de la variable $Z$. Le modèle de Cox avec stratification (pour la variable $Z$) est \begin{align*}
+Une manière de modéliser la non-proportionnalité pour une variable catégorielle est par la stratification. Supposons que nous avons une variable explicative catégorielle $Z=1, \ldots, K$ pour lequel le postulat de risque proportionnels n'est pas valide. On s'intéresse à l'effet des variables $\mathbf{X}$. Typiquement, on ne s'intéresse pas directement à l'effet de la variable $Z$. Le modèle de Cox avec stratification (pour la variable $Z$) est \begin{align*}
 h(t; \mathbf{x}, z=k) = h_k(t) \exp(\boldsymbol{\beta} \mathbf{x}),
 \end{align*}
 où $h_k(t)$ est la fonction de risque de base quand $Z=k$ ($k=1, \ldots, K$). L'effet des autres variables explicatives $\mathbf{X}$ est supposé être le même peut importe la valeur de $Z$, mais la fonction de risque de base peut différer. Le rapport de risque pour $Z=k$ versus $Z=j$ est $h_k(t)/h_j(t)$; cette quantité dépend du temps $t$, mais pas des autres caractéristiques mesurées par $\mathbf{X}$. L'effet de la variable  est donc variable dans le temps (et non pas constant). Ce modèle permet donc de modéliser la non-proportionnalité pour la variable $Z$. Si on stratifie par rapport à une variable, il ne faut pas l'inclure dans le modèle en plus car elle est déjà modélisée via la stratification. Notez que les paramètres $\boldsymbol{\beta}$ seront estimés à l'aide des données de toutes les strates, mais les fonctions de risque $h_k(t)$ seront obtenues à l'aide des sous-échantillons correspondant aux valeurs de $Z$.
 
-L'avantage de la stratification est que cette méthode permet de modéliser n'importe quel changement dans l'effet d'une variable dans le temps sans devoir spécifier un type de changement particulier, comme lorsqu'on doit choisir la forme de l'interaction. Par contre, on perd la possibilité de tester l'effet de la variable de stratification on réduit la taille de l'échantillon pour l'estimation de la fonction de risque de base. On devrait principalement utiliser la stratification seulement avec des variables pour lesquelles nous n'avons pas besoin d'estimer l'effet (variables secondaires ou de contrôles).
+L'avantage de la stratification est que cette méthode permet de modéliser n'importe quel changement dans l'effet d'une variable dans le temps sans devoir spécifier un type de changement particulier, comme lorsqu'on doit choisir la forme de l'interaction.Il est important de comprendre qu'on ne pourra pas estimer l'effet de la variable de stratification comme d'ordinaire en étudiant le coefficient $\beta$ associé. On perd la possibilité de tester l'effet de la variable de stratification et on réduit la taille de l'échantillon pour l'estimation de la fonction de risque de base. On devrait principalement utiliser la stratification seulement avec des variables pour lesquelles nous n'avons pas besoin d'estimer l'effet (variables secondaires ou de contrôles). 
 
 ```{r}
 #| label: cox-stratification
@@ -1177,3 +992,274 @@ ggplot(data = survcurves,
        y = "",
        color = 'service')
 ```
+
+
+### Modèle non-proportionnel
+
+Pour simplifier l'exposition, supposons que nous avons une seule variable explicative $X$. L'équation du modèle à risques proportionnels est $h(t; x) = h_0(t)\exp(\beta x)$ et suppose que la fonction de risque de base $h_0(t)$ est indépendante de la variable explicative $X$. Une manière de modéliser la non-proportionnalité est d'inclure un terme d'interaction entre la variable et le temps. Il existe plusieurs façons de le faire. Par exemple, on pourrait inclure une nouvelle variable qui est le produit entre le temps et la variable $X$. Le modèle est alors 
+\begin{align*}
+h(t; x) = h_0(t) \exp(\beta_1x + \beta_2xt).
+\end{align*}
+Pour ce modèle, le rapport de risque, pour une augmentation d'une unité de $X$ est $\exp(\beta_1+ \beta_2t)$ et dépend du temps $t$: c'est un modèle avec risques non proportionnels. On retombe sur le modèle à risques proportionnels lorsque $\beta_2=0$. 
+
+Supposons que l'effet du nombre de service augmente avec le temps. On peut inclure à la fois `service`, qui capture l'effet au temps zéro, et le surenchérissement ou la diminution à mesure que le temps d'abonnement progresse.
+
+```{r}
+#| label: interaction-temps-service
+#| echo: true
+#| eval: true
+# Créer variables binaires par service
+survie1_modif <- survie1 |>
+  dplyr::mutate(service1 = service == 1,
+                service2 = service == 2,
+                service3 = service == 3)
+cox_np <- survival::coxph(
+    Surv(temps, censure) ~ 
+     age + sexe + service + 
+      tt(service1) + tt(service2) + tt(service3), 
+     data = survie1_modif, 
+     tt = function(x, t, ...){t * x})
+```
+
+Le bloc code précédent illustre comment créer le terme non proportionnel: on spécifie avec l'option `tt()` la variable qui change dans le temps et on spécifie par la suite la nature de l'interaction temporelle en définissant une fonction `tt`. 
+
+Les variables catégorielles n'étant pas supportées en l'état, elles doivent préalablement être transformées en variable indicatrices binaires. Une fois les nouvelles variables dans la base de données, on procède à la spécification du terme de risque non proportionnel.
+
+
+```{r}
+#| label: tbl-coxnph
+#| echo: false
+#| eval: true
+#| tbl-cap: "Rapport de risque et intervalles de confiance à niveau 95% pour le modèle à risques non proportionnels (interaction linéaire entre temps et service)."
+#| cache: true
+scnp <- summary(cox_np)$coefficients
+tab6 <- broom::tidy(cox_np,
+            exponentiate = TRUE, 
+            conf.int = TRUE)[,-c(3,6,7)]
+colnames(tab6) <- c("terme",
+                    "exp(coef)",
+                    "test de Wald",
+                    "valeur-p")
+tab6[,4] <- format.pval(tab6[,4], eps = 1e-3, digits = 3)
+knitr::kable(tab6,
+               digits = c(2,3,3),
+               booktabs = TRUE) |>
+  kableExtra::kable_styling()
+```
+
+Le @tbl-coxnph contient les résultats. Les coefficients pour l'interaction avec $t$ sont petits, mais c'est parce que la variable temps n'est pas standardisée et qu'elle s'étend de 0 à 200 semaines: de petites variations sont possiblement importantes quand le temps augmente. Les estimations des coefficients pour l'interaction sont tous positifs, ce qui suppose que le risque augmente avec le temps. Si on considère comme source plausible d'effet du nombre de services un quelconque rabais, il semble que cet effet protecteur s'amenuise. Deux des termes d'interaction sont significatifs à niveau 5% (statistiques de Wald $Z$ de `r round(summary(cox_np)$coefficients[6,4],3)`, `r round(summary(cox_np)$coefficients[7,4],3)` et `r round(summary(cox_np)$coefficients[8,4],3)` et valeurs-$p$ correspondantes de `r round(summary(cox_np)$coefficients[6,5],3)`, `r round(summary(cox_np)$coefficients[7,5],3)` et `r round(summary(cox_np)$coefficients[8,5],3)`).
+
+
+On peut aussi utiliser la structure de modèle à risques non-proportionnels pour capturer l'effet des changements qui interviennent au sein de variables explicatives dans le temps. Par exemple, l'âge de la personne (en années) augmente à mesure que le temps d'abonnement (en semaines) passe, d'où $\texttt{age}(t) = \texttt{age} + t/52$.
+
+```{r}
+#| label: interaction-temps-covariable
+#| echo: true
+#| eval: false
+# interaction entre service et temps
+# objet avec 'tt' varie dynamiquement
+cox6 <- coxph(
+    Surv(temps, censure) ~ 
+     tt(age) + sexe + service, 
+     data = survie1, 
+     tt = function(x, t, ...){x + t/52})
+summary(cox6)
+```
+
+ Ici, on inclut uniquement la variable transformée `tt(age)` et son effet est toujours fortement significatif pour expliquer le désabonnement potentiel: les personnes plus âgées sont moins susceptibles de résilier leur abonnement.
+
+
+```{r}
+#| label: interaction-temps-age
+#| echo: true
+#| eval: false
+cox_np <- survival::coxph(
+    Surv(temps, censure) ~ 
+     tt(age) + sexe + service, 
+     data = survie1, 
+     tt = function(x, t, ...){x + t/52})
+summary(cox_np)
+```
+
+On spécifie avec l'option `tt()` dans la formule la variable qui change dans le temps et par la suite la nature de l'interaction temporelle avec l'argument `tt`.
+
+
+```{r}
+#| label: tbl-cox-np
+#| echo: false
+#| eval: true
+#| tbl-cap: "Rapport de risque et intervalles de confiance à niveau 95% pour le modèle à risques non proportionnels (interaction linéaire entre temps et âge)."
+#| cache: true
+library(survival)
+cox6 <- survival::coxph(
+    Surv(temps, censure) ~ 
+     age + tt(age) + sexe + region + service, 
+     data = hecmulti::survie1, 
+     tt = function(x, t, ...){ x * t },
+     ties = "exact")
+tab6 <- broom::tidy(cox6,
+            exponentiate = TRUE, 
+            conf.int = TRUE)[,-(3:5)]
+colnames(tab6) <- c("terme",
+                    "exp(coef)",
+                    "borne inf.", 
+                    "borne sup.")
+knitr::kable(tab6,
+               digits = 2,
+               booktabs = TRUE) |>
+  kableExtra::kable_styling()
+```
+
+L'interaction employée ici n'est pas la seule fonction du temps qu'on pourrait spécifier: on pourrait par exemple inclure une fonction de type escalier $\mathrm{I}(T< t_0)$ qui indique que l'effet de la variable disparaît après le temps $t_0$, si par exemple un rabais disparaît après une certaine durée d'abonnement, avec `rabais * I(t<t0)` pour une valeur numérique `t0` fixée.
+
+
+## Modèle à risques compétitifs
+
+Parfois, la raison pour laquelle un individu quitte l'état étudié peut avoir un intérêt en soi. Par exemple si on s'intéresse au temps qu'un employé demeure au service de la compagnie, la distinction entre le fait qu'il ait démissionné ou bien qu'il ait été renvoyé peut avoir un impact sur l'effet des variables explicatives. Comme autre exemple, si on s'intéresse au temps de survie d'un individu après qu'il ait été diagnostiqué avec un certain type de cancer, il pourrait être important de distinguer selon la cause exacte de la mort.
+
+De manière générale, supposons qu'il y a $K$ manières possibles que l'événement survienne. 
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-transitionetat
+#| fig-cap: "Schéma illustrant la transition entre état de base et autres événements compétitifs."
+knitr::include_graphics("figures/transition_etats_modele_risque_competitifs.pdf")
+```
+
+
+Dans notre exemple d'abonnement cellulaire, supposons que nous avons trois causes possibles pour la perte d'un client: soit il a interrompu son abonnement pour aller chez le compétiteur A, soit pour aller chez le compétiteur B, soit il n'a plus de cellulaire du tout.
+On considère un modèle avec transition d'un état de base (abonné) vers un état absorbant (désabonnement, soit chez compétiteur $A$, compétiteur $B$ ou abandon du cellulaire).
+
+On a deux avenues pour l'estimation de ce type de modèle: soit on ajuste un modèle de Kaplan--Meier, soit un modèle de Cox.
+
+On peut alors spécifier $K$ fonctions de risques (une pour chaque manière) et obtenir le modèle de Cox à risques compétitifs (_competing risks_), 
+\begin{align*}
+h_1(t; \boldsymbol{x})&= h_{01}(t) \exp(\beta_{11}x_1 + \cdots + \beta_{p1} x_p)\\
+&\vdots\\
+h_K(t; \boldsymbol{x})&= h_{0K}(t) \exp(\beta_{1K}x_1 + \cdots + \beta_{pK} x_p)\\
+\end{align*}
+Notez que les coefficients sont différents d'une équation à l'autre. En estimant ce modèle, on obtient donc une estimation de l'effet des variables selon la raison du départ de l'état. De plus, on peut aussi inclure des variables dont la valeur change dans le temps, comme vu précédemment.
+
+
+Ce qui simplifie énormément la situation est qu'il est prouvé qu'on peut estimer les paramètres de chaque équation séparément sans perte de précision. Par conséquent, en pratique, il suffira d'ajuster $K$ modèles de Cox séparément. 
+
+Les données pour cet exemple se trouvent dans le fichier `survie4`. La seule nouveauté par rapport au fichier original est la variable $\texttt{censure}$ qui est maintenant codée ainsi
+
+- 1, si le temps est censuré (l'individu est toujours abonné à notre service)
+- 2, si l'individu a quitté pour aller chez le compétiteur A
+- 3, si l'individu a quitté pour aller chez le compétiteur B
+- 4, si l'individu a quitté parce qu'il n'a plus besoin de cellulaire.
+
+On peut calculer la fréquence de chaque modalité avec `table`.
+Ainsi, il y a donc 166 clients toujours abonnés, 170 qui nous ont quitté pour aller chez A, 121 pour aller chez B, et 43 qui n'ont plus de cellulaires.
+
+Pour ajuster le modèle lorsque la cause du départ est le compétiteur A, le code est
+
+```{r}
+#| label: risque-competitif
+#| eval: false
+#| echo: true
+# Rappel pour `event`:
+#   1 pour observation, 
+#   0 pour censure à droite
+# On utilise la convention TRUE = 1, FALSE = 0
+data(survie4, package = "hecmulti")
+cox5 <- coxph(Surv(time = temps, 
+                   event = censure == 2,
+                   type = "right") ~ 
+                age + sexe + region + service, 
+              data = survie4,
+              ties = "exact")
+summary(cox5)
+```
+
+
+
+```{r}
+#| label: tbl-cox-risquecompetA
+#| echo: false
+#| eval: true
+#| tbl-cap: "Rapport de risque et intervalles de confiance à niveau 95% pour le modèle à risques compétitifs (probabilité de quitter pour compétiteur A)."
+#| cache: true
+data(survie4, package = "hecmulti")
+cox5 <- survival::coxph(Surv(time = temps, 
+                   event = censure == 2,
+                   type = "right") ~ 
+                age + sexe + region + service, 
+              data = survie4,
+              ties = "exact")
+tab5 <- broom::tidy(cox5,
+            exponentiate = TRUE, 
+            conf.int = TRUE)[,-(3:5)]
+colnames(tab5) <- c("terme",
+                    "exp(coef)",
+                    "borne inf.", 
+                    "borne sup.")
+knitr::kable(tab5,
+               digits = 2,
+               booktabs = TRUE) |>
+  kableExtra::kable_styling()
+```
+
+Notez qu'on précise que les valeurs 1, 3 et 4 sont des observations censurées. Ici, l'événement d'intérêt est que le client est parti chez le compétiteur A. S'il est toujours abonné ($\texttt{censure=1}$), s'il est parti chez le compétiteur B ($\texttt{censure=3}$) ou s'il nous a quitté car il n'a plus de cellulaire ($\texttt{censure=4}$), alors l'événement « quitter pour aller chez A » n'est pas survenu. C'est pourquoi on doit traiter ces situations comme des censures. 
+
+Ainsi, on voit que l'événement est survenu 170 fois et qu'il y a 330 censures. L'interprétation des paramètres se fait comme précédemment. Sauf qu'il faut préciser qu'il s'agit du risque de quitter pour aller chez le compétiteur A. Par exemple, le risque de quitter pour aller chez le compétiteur A d'une femme est 0.444 fois le risque de quitter pour aller chez le compétiteur A d'un homme. Ainsi, les femmes sont moins à risque de quitter pour aller chez le compétiteur A que les hommes.
+
+
+Pour ajuster le modèle lorsque la cause du départ est le compétiteur B, procède de la même manière. Notez que cette fois-ci, ce sont les valeurs 1, 2 et 4 de la variable censure qui correspondent au fait que l'événement n'est pas survenu.  Il y a 121 clients qui ont quitté pour aller chez B et 379 cas autre (censure). L'interprétation des paramètres se fait en termes de risque de quitter pour aller chez le compétiteur B.
+
+
+Si on ajuste le modèle pour le cas de figure où la cause de départ est que le client n'a plus besoin de cellulaire, on obtient une sortie similaire. Comme il y a seulement 43 événements (quitter car on n'a plus besoin de cellulaire), les estimations des paramètres sont moins précises, ce qu'on peut voir avec les erreurs-types qui sont plus élevés. Les observations censurées contiennent moins d'information que les événements, d'où cette perte de précision.
+
+Dans **R**, on peut aussi ajuster simultanément tous les modèles en spécifiant que l'événement d'intérêt est un facteur: c'est alors la catégorie de référence qui fait fois de l'état de départ. Il faut également une variable qui identifie l'observation --- dans le cas qu'on considère, c'est simplement une colonne avec des valeurs de $1$ à $n$.
+
+```{r}
+#| eval: true
+#| echo: true
+rc_cox <- coxph(
+  Surv(time = temps, 
+       event = factor(censure)) ~ sexe + age + service,
+  data = survie4 |>
+    dplyr::mutate(id = 1:nrow(survie4)),
+  id = id)
+```
+
+On obtient l'ensemble des coefficients dans le tableau résumé, un pour chaque événement compétitif autre que la référence.
+
+Si on voulait ajuster le modèle de Kaplan--Meier, pour une transition d'un état de base (abonné) vers un état dit absorbant (désabonnement, soit chez compétiteur A ou B ou abandon du cellulaire), il faut obligatoirement ajuster toutes les courbes simultanément. On ajustera le modèle multi-état en spécifiant un facteur pour l'événement, où encore une fois la catégorie de référence est abonnement (`censure=1`).
+```{r}
+#| eval: true
+#| echo: true
+rc_km <- survfit(Surv(time = temps, 
+             event = factor(censure)) ~ 1,
+             data = survie4)
+```
+
+Les représentations graphiques pour le modèle à risque compétitif sont légèrement différente. Si on dichotomise l'événement d'intérêt (survie ou échec), il y a deux options possibles et la probabilité d'échec est complémentaire à la survie. Avec plus d'un choix, on obtiendra un graphique avec une estimation de la probabilité pour chaque modalité de l'événement: la @fig-competitif montre ceci pour la sortie du modèle de Cox et le modèle de Kaplan--Meier en ajoutant la courbe correspondant à la probabilité de demeurer abonné.
+
+```{r}
+#| label: fig-competitif
+#| fig-cap: "Probabilité d'événement sans variable explicative (Kaplan-Meier, gauche) et avec âge, service et sexe (modèle de Cox, droite)."
+#| eval: true
+#| echo: false
+#| out-width: '90%'
+#| fig-width: 8
+#| fig-height: 4
+par(mfrow = c(1,2), bty = "l")
+plot(rc_km, noplot = NULL, 
+     col = 1:4,
+     ylab = "probabilité dans l'état")
+legend("topright",
+       legend = c("abonnement", 
+                  "A","B","fin"),
+       bty = "n", col = 1:4, lty = 1)
+plot(survfit(rc_cox, 
+             newdata = hecmulti::survie4[1,]),
+     noplot = NULL,
+     col = 1:4)
+```
+
+
+
+La [vignette](https://cran.r-project.org/web/packages/survival/vignettes/timedep.pdf) du paquet `survival` offre des détails sur l'implémentation des méthodes qui traitent de l'inclusion de variables explicatives dont la valeur change dans le temps et sur les risques compétitifs.
