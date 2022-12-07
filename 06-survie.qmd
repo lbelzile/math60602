@@ -50,10 +50,55 @@ theme_set(theme_classic())
 
 ## Introduction
 
-Cette section traite de temps avant qu'un événement survienne. Le traitement de ce type de données, dites données de survie en référence au domain médical, est particulier parce que l'information disponible est incomplète. Plusieurs mécanismes peuvent impacter la survie.
+Cette section traite de temps avant qu'un événement survienne. Le traitement de ce type de données, dites données de survie en référence au domaine médical, est particulier parce que l'information disponible est incomplète. Plusieurs mécanismes peuvent impacter la survie: généralement les données sont sujettes à troncature et à censure. 
 
-On considère comme exemple une étude sur le chômage dû à la crise du coronavirus. On s'intéresse à tous ceux qui étaient en recherche active d'emploi entre mars et juin; seuls ceux qui étaient au chômage durant cette période seront considérés. Certaines personnes seront déjà au chômage en avril et donc leur durée de chômage en mars est déjà longue (troncature à gauche). Lors de notre suivi, d'autre mentionneront avoir trouvé un emploi lors de notre appel, mais ne pourront nous renseigner sur la date exacte de leur embauche: cette dernière précèdera notre prise de contact, mais nous est inconnue (censure à gauche). D'autres personnes seront toujours au chômage en juin à la fin de l'étude et on ignorera le nombre réel de mois passés au chômage (censure à droite). Enfin, certaines personnes cesseront de chercher activement un emploi et donc quitteront l'étude. Tous ces méchanismes (complexes) peuvent être dictés par certaines covariables (employabilité, découragement) et être aléatoires ou pas. Pour estimer le taux de chômage, il faudra prendre en compte les méchanismes de survie dans notre modèle. On se concentrera sur le cas simple des données censurées à droite de façon aléatoire.
+Pour déterminer les mécanismes de survie en présence, il peut être utile de représenter le processus de collecte de données à l'aide d'un diagramme de Lexis: ce dernier présente la trajectoire observée à l'aide d'une droite de pente un. L'axe des abscisses ($x$) donne le temps (au calendrier) et l'axe des ordonnées ($y$) la durée observée.
 
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-lexis
+#| fig-cap: "Diagramme de Lexis pour données tronquées à gauche ($A$ et $C$) et censurées à droite ($C$ et $D$)."
+knitr::include_graphics("figures/Lexis_censure.pdf")
+```
+
+La @fig-lexis montre des courbes fictives. On trace une droite de pente 1 représentant la durée en fonction du temps (date au calendrier) etl a fenêtre définit la période de collecte de donnée. 
+La censure est indiquée par des cercles, les événements par des croix.
+
+On parle de censure lorsque le temps réel de l'événement n'est pas observé (information partielle).
+
+- Censure à droite: l'événement n'est pas encore survenu au temps $t$: on sait que $T > t$.
+- Censure à gauche: l'événement survient avant le temps $t$, donc la vraie valeur est inférieure à la valeur observée ($T < t$)
+- Censure par intervalle: l'événement est survenu dans la plage $[t_1, t_2]$ (données arrondies)
+
+La censure peut être aléatoire (par exemple, une personne qui fait partie d'un protocole de rercherche déménage dans un autre pays parce que sa conjointe a trouvé un emploi là-bas et cette raison n'a aucun lien avec son état de santé). La censure administrative, un mécanisme déterministe qui survient lorsque les données sont collectées sur une période fixe de temps, ne fournit pas non plus d'information sur l'événement en question. On supposera dans ces notes que nous sommes dans un de ces deux cas de figure.
+
+Si la censure est informative, les outils présentés ne sont pas adéquats! Par exemple, si un patient d'une étude clinique est déchargé d'un protocole médical car il est trop mal en point, cela nous renseigne sur son état de santé et sur sa survie.
+
+La troncature, rarement discutée, est liée au processus de collecte et détermine quelles observations sont incluses dans l'étude. 
+La plage des valeurs possibles est tronquée. Les types de troncature sont:
+
+- troncature à gauche: le temps minimum est supérieur à $t_0$
+- troncature à droite: le temps maximum est inférieur à $t_1$
+- troncature par intervalle: le temps de l'événement doit survenir entre $t_0$ et $t_1$.
+
+
+La troncature à gauche est la plus fréquente: elle survient par exemple si on étudie le temps d'abonnement, mais qu'on n'a accès qu'aux dossiers de clients et de clientes qui sont actifs dans le système. Ainsi, une personne qui se serait désabonnée une journée avant qu'on télécharge les données ne se trouvera pas dans la base de données. Si on ne tient pas compte de cet état de fait et des fantômes, nos estimations seront biaisées.
+
+La troncature par intervalle survient quand on considère uniquement les personnes pour lesquelles l'événement d'intérêt est survenu. Si l'on s'intéresse à la durée de la relation d'emploi et  seules les personnes à l'emploi qui ont pris leur retraite entre 2009 et 2021 sont considérées pour l'étude, on sera en présence de troncature par intervalle comme représenté dans la @fig-troncatureintervalle.
+
+```{r}
+#| fig-troncatureintervalle
+#| fig-cap: "Diagramme de Lexis illustrant la troncature par intervalle."
+#| eval: true
+#| echo: false
+knitr::include_graphics("figures/lexis_troncationintervalle.pdf")
+```
+
+
+On considère comme exemple une étude sur le chômage dû à la crise du coronavirus. On s'intéresse à tous ceux qui étaient en recherche active d'emploi entre mars et juin; seuls ceux qui étaient au chômage durant cette période seront considérés. Certaines personnes seront déjà au chômage en avril et donc leur durée de chômage en mars est déjà longue (troncature à gauche). Lors de notre suivi, d'autres personnes mentionneront avoir trouvé un emploi lors de notre appel, mais ne pourront nous renseigner sur la date exacte de leur embauche: cette dernière précèdera notre prise de contact, mais nous est inconnue (censure à gauche). D'autres personnes seront toujours au chômage en juin à la fin de l'étude et on ignorera le nombre réel de mois passés au chômage (censure à droite). Enfin, certaines personnes cesseront de chercher activement un emploi et donc quitteront l'étude (censure à droite). Tous ces méchanismes (complexes) peuvent être dictés par certaines covariables (employabilité, découragement) et être aléatoires ou pas. Pour estimer le taux de chômage, il faudra prendre en compte les méchanismes de survie dans notre modèle. On se concentrera sur le cas simple des données censurées à droite de façon aléatoire.
+
+Avec la survie, les statistiques descriptives usuelles sont trompeuses. La figure de [cet article tiré de *The Conversation*](https://theconversation.com/music-to-die-for-how-genre-affects-popular-musicians-life-expectancy-36660) montre l'impact drastique de la censure en représentant l'âge moyen au décès en fonction du genre musical, ordonné par ordre d'apparition de ce dernier. Puisque seules les personnes décédées sont incluses, les artistes de hip-hop décédés l'ont été forcément en bas-âge. Si on ne prend pas en compte la censure, on obtiendrait une conclusion erronnée.
 
 ### Exemple du temps d'abonnement 
 
@@ -78,7 +123,7 @@ On s'intéresse au temps avant qu'un événement survienne. On observe chaque su
 - temps avant le prochain achat d'un client.
 - temps durant lequel un(e) employé(e) est au chômage.
 
-Si aucune observation n'est censurée, c'est-à-dire, si on a observé le « vrai » temps pour chaque sujet, on pourrait alors simplement modéliser $T$ en incluant des covariables dans les paramètres de vraisemblance d'une loi positive (par exemple, une régression log-linéaire). En revanche, si des observations sont censurées dans l'échantillon, leur omission biaiserait l'analyse.
+Si aucune observation n'est censurée, c'est-à-dire, si on a observé le « vrai » temps pour chaque sujet, on pourrait alors simplement modéliser $T$ en incluant des covariables dans les paramètres de vraisemblance d'une loi positive (par exemple, avec une régression log-linéaire). En revanche, si des observations sont censurées dans l'échantillon, leur omission biaiserait l'analyse.
 
 Ce chapitre se veut une introduction à l'analyse de données de survie. Comme le développement de la théorie de l'analyse de survie est assez complexe (plus encore que celle de la régression linéaire ou logistique), on s'intéressera ici uniquement aux principes de base afin d'être en mesure d'appliquer les méthodes et de bien interpréter les résultats. Plusieurs extensions sont également possibles. Un survol de ces dernières sera effectué dans des sections plus loin.
 
@@ -239,28 +284,13 @@ Testons l'hypothèse que la courbe de survie des clients masculins est la même 
 #| label: test-lograng
 #| eval: true
 #| echo: true
-## valeur-p du test asymptotique
-survdiff(formula = Surv(temps, censure) ~ sexe, 
-         data = survie1)
-# valeur-p exact par simulation
-# (pour petits échantillons, utiliser distribution="exact")
-coin::logrank_test(
-  Surv(temps, censure) ~ factor(sexe), 
-  data = survie1, 
-  distribution = coin::approximate(nresample = 1e5))
-
-# Le test du log-rang calcule si les 
-#  deux courbes sont identiques
-# Idée de base: sous H0, les étiquettes 
-#  'sexe' ne sont pas pertinentes
-#  On peut les permuter et comparer les courbes
+strat_sexe <- survfit(Surv(temps, censure) ~ sexe, data = survie1)
+lograng <- survdiff(Surv(temps, censure) ~ sexe, data = survie1)
 ```
 
-On retrouve dans la sortie les estimés de la fonction de survie, de même que les quartiles par strate: la première strate correspond aux hommes (`sexe=0`) et la deuxième aux femmes (`sexe=1`). 
+Si on utilise les méthodes (`print`, `summary`, `plot`, `quantile`) pour la sortie de `survfit`, on obtiendra les résultats pour chaque strate (ou niveaux de la variable catégorielle). Par exemple, il y a 309 hommes et 191 femmes et l'estimation du temps de survie médian est de 110 semaines pour les hommes et de 123 semaines pour les femmes. 
 
-Si on utilise les méthodes (`print`, `summary`, `plot`, `quantile`), on obtiendra les résultats pour chaque strate (ou niveaux de la variable catégorielle). Par exemple, il y a 309 hommes et 191 femmes et l'estimation du temps de survie médian est de 110 semaines pour les hommes et de 123 semaines pour les femmes. 
-
-La fonction `survdiff` avec la formule retourne le résultat du test asymptotique du log-rang pour l'hypothèse d'égalité des fonctions de survie. La valeur-$p$ du test est inférieure à $10^{-4}$: on rejette donc $\mathscr{H}_0$ pour conclure qu'il y a donc une différence significative entre les deux courbes de survie.
+La fonction `survdiff` avec la formule retourne le résultat du test asymptotique du log-rang pour l'hypothèse d'égalité des fonctions de survie. La statistique du khi-deux vaut `r round(lograng$chisq, 2)` et la valeur-$p$ du test est inférieure à $10^{-4}$: on rejette donc $\mathscr{H}_0$ pour conclure qu'il y a donc une différence significative entre les deux courbes de survie.
 
 
 Les courbes de survie selon le sexe sont représentées dans la @fig-survie-comparaison-courbes. On voit que la courbe des femmes est systématiquement au-dessus de celle des hommes. Les femmes ont donc tendance à rester abonnées plus longtemps que les hommes, et cette différence est significative. 
@@ -295,7 +325,12 @@ survdiffgraph$plot +
   ggplot2::theme(legend.position = "bottom") + 
   ggplot2::labs(x = "temps",
        y = "survie",
-       color = "sexe")
+       color = "sexe") +
+       scale_y_continuous(
+         limits = c(0,1), 
+         expand = c(0,0), 
+         breaks = seq(0, 1, by = 0.25),
+         labels = c("0","0.25","0.5","0.75","1"))
 ```
 
 Il est également possible de tester l'égalité des courbes de survie avec plus de deux groupes. Par exemple, s'il y a $k$ groupes, l'hypothèse nulle est alors $\mathscr{H}_0: S_1(t)=S_2(t)=\cdots = S_k(t)$ pour tout $t$, versus l'alternative qu'au moins deux des fonctions ont une valeur différente pour au moins une valeur de $t$; la loi nulle asymptotique du test est alors $\chi^2_{k-1}$. 

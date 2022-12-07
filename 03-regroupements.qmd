@@ -158,7 +158,8 @@ donsmult <- dons |>
 Le champ des applications de l'analyse de regroupements est parfois surprenant. Par exemple, [cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais](https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/) ou des [quartiers de Los Angeles](https://fivethirtyeight.com/features/the-6-political-neighborhoods-of-los-angeles/). Un autre exemple incongru est la compression d'images: la @fig-decelles montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l'algorithme des $K$-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l'image.
 
 
-```{r fig-decelles}
+```{r}
+#| label: fig-decelles
 #| echo: false
 #| eval: true 
 #| out-width: '100%'
@@ -361,7 +362,20 @@ Voici quelques forces et faiblesses de la méthode des $K$-moyennes
 
 
 
-```{r kmoyperfo, echo = FALSE, cache = TRUE, message = FALSE, fig.cap = "Performance de l'algorithme des $K$-moyennes en fonction de différents scénarios: (haut, à gauche) nombre incorrect de classe et données normales de même variance, bien séparées, (haut, à droite) données avec excès de zéro, un cas où les $K$-moyennes ignorent la topologie des regroupements, et ne segmente pas adéquatement les regroupements connectés (bas, à gauche) données elliptiques de même variance, mais fortement corrélées. Comme le critère minimise la distance intra-groupe sans pondération, les points regroupés appartiennent à différentes classes et (bas, à droite) données sphériques de variances différentes. L'algorithme des $K$-moyennes réussit une bonne segmentation si les groupements sont compacts et bien séparés."}
+```{r}
+#| label: kmoyperfo
+#| echo: false
+#| cache: true
+#| message: false
+#| fig-cap: 'Performance de l''algorithme des $K$-moyennes en fonction de différents
+#|   scénarios: (haut, à gauche) nombre incorrect de classe et données normales de même
+#|   variance, bien séparées, (haut, à droite) données avec excès de zéro, un cas où
+#|   les $K$-moyennes ignorent la topologie des regroupements, et ne segmente pas adéquatement
+#|   les regroupements connectés (bas, à gauche) données elliptiques de même variance,
+#|   mais fortement corrélées. Comme le critère minimise la distance intra-groupe sans
+#|   pondération, les points regroupés appartiennent à différentes classes et (bas, à
+#|   droite) données sphériques de variances différentes. L''algorithme des $K$-moyennes
+#|   réussit une bonne segmentation si les groupements sont compacts et bien séparés.'
 set.seed(1234)
 #https://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_assumptions.html
 # Figure 9.1 in Bishop
@@ -466,7 +480,7 @@ Comme mentionné précédemment, les regroupements obtenus peuvent varier fortem
 #| label: fig-kmoyenne-mauvais
 #| echo: false
 #| eval: true
-#| fig.cap: "Résultat d'une analyse de regroupement avec $K=3$ groupes avec une mauvaise initialisation principale (gauche) et une bonne initialisation (droite)."
+#| fig-cap: "Résultat d'une analyse de regroupement avec $K=3$ groupes avec une mauvaise initialisation principale (gauche) et une bonne initialisation (droite)."
 set.seed(1234)
 set1 <- mvtnorm::rmvnorm(n = 300, c(14,12), matrix(c(4,0.5,0.5,5),2))
 set2 <- mvtnorm::rmvnorm(n = 300, c(5.5,-1), matrix(c(1,0.5,0.5,6),2))

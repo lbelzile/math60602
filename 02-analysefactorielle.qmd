@@ -291,18 +291,19 @@ La @fig-acprotation démontre cette décomposition sur des données bidimensionn
 Dans une analyse en composantes principales, on conservera un nombre $k<p$ de variables explicatives pour résumer les données. Ce outil est utilisé à des fins exploratoires, puisqu'on n'implique pas de variable réponse dans le modèle.
 L'analyse en composantes principales est utilisé pour réduire la dimension afin de faire de la classification, de l'analyse de regroupements et aussi réduire les coûts associés à ces méthodes en projetant les données dans un sous-espace de dimension plus faible.
 
-En **R**, on effectue l'analyse en composantes principales avec la fonction `princomp`^[On pourrait aussi utiliser `eigen(cor(factor))` pour extraire directement la décomposition en valeurs propres/vecteurs propres, mais on n'aurait pas accès aux méthodes pour la visualisation.].
+En **R**, on effectue l'analyse en composantes principales avec la fonction `princomp` ou `prcomp`^[La différence entre les deux sorties est due à deux choses: `princomp` utilise la décomposition en valeurs propres avec $n^{-1}\mathbf{X}^\top\mathbf{X}$ pour la matrice de covariance, tandis que `prcomp` utilise la décomposition en valeurs singulières avec un dénominateur de $n-1$; cette dernière option est plus stable numériquement. On pourrait aussi utiliser `eigen(cor(factor))` pour extraire directement la décomposition en valeurs propres/vecteurs propres, mais on n'aurait pas accès aux méthodes pour la visualisation.].
 
 La sortie contient 
 
-- l'écart-type de chaque composante, `acp$sdev`
+- les coordonnées des composantes principales, `acp$scores`; la première est celle qui a la plus grande variabilité.
+- l'écart-type de chaque composante, `acp$sdev`. Chaque écart-type est la racine carrée d'une des valeurs propres. 
 - les poids $w_{ij}$, appelés chargements (*loadings*), qui donnent la correspondance entre le système de coordonnées des composantes principales et celui des variables $\boldsymbol{X}$ originales.
-- les nouvelles coordonnées dans l'espace des composantes principales, `acp$scores`
+
 
 On peut représenter les données à l'aide d'un bigramme: c'est une nuage de points de chaque observations dans l'espace des deux premières composantes principales. Si on couple cela avec les directions offertes par les chargements pour chacune des variables explicatives $X_1, \ldots, X_p$, il en ressort que certaines variables augmentent/diminuent de pair. Ainsi, on voit dans la @fig-biplot que les variables `x3`, `x6`, `x9` et `x12` tendent dans la même direction, comme `x4`, `x8` et `x11`. On reviendra sur ce point dans une section subséquente.
 
 
-Une fois qu'on a choisit le nombre de composantes, on pourrait ne conserver que les $k$ premières colonnes de la matrice des composantes principales `acp$scores` pour faire les graphiques ou pour approximer la matrice de covariance. Il faut garder en tête qu'il faudra néanmoins collecter les mêmes questions pour recréer les composantes principales avec de nouvelles observations, ce qui est peu commode si ce qu'on veut est réduire le coût de la collecte. 
+Une fois qu'on a choisit le nombre de composantes, on pourrait ne conserver que les $k$ premières colonnes de la matrice des composantes principales `acp$scores` pour faire les graphiques ou pour approximer la matrice de covariance. Il faut garder en tête qu'il faudra néanmoins collecter les mêmes questions pour recréer les composantes principales avec de nouvelles observations, ce qui est peu commode si on veut réduire le coût de la collecte. 
 
 
 ```{r}
@@ -357,7 +358,7 @@ Si on désire réduire la dimension, il nous faudra choisir $k \leq p$ variables
 Une première approche est de regarder le pourcentage de la variance totale expliquée. Puisque les composantes principales sont ordonnées en ordre décroissant de variance, on peut étudier la variance cumulative des $k$ premières composantes et choisir un nombre qui explique le plus possible. Si l'ajout d'une variable augmente peu la variabilité totale expliquée par l'ensemble, alors cette variable est probablement superflue. On pourrait choisir un nombre de composantes pour expliquer un pourcentage prédéfini de la vairance totale, disons 70%. Deux autres critères couramment employés sont:
 
 - **critère du coude de Cattell**: ce critère consiste à sélectionner un nombre de composantes dans le diagramme d'éboulis  (`screeplot`), un graphique des variances des composantes principales^[Soit les valeurs propres de la matrice de covariance ou corrélation]. Habituellement, il y a une décroissance rapide de la variance suivie d'un plateau: on prendra le nombre de composantes qui correspond au $k$ juste avant l'apparition du plateau (le début du coude, où il a stabilisation apparente). C'est un critère très subjectif, puisqu'il y a souvent plusieurs plateaux et que la variance peut décroître très lentement. On peut utiliser la fonction `screeplot` pour obtenir le diagramme d'éboulis mais il est facile de le créer manuellement et le résultat est esthétiquement plus réussi.
-- **critère de Kaiser**: un critère basé sur les valeurs propres de la matrice de corrélation. Le nombre de facteurs choisis est le nombre de composantes principales dont la variance est supérieures à 1. L’idée est de garder seulement les facteurs qui expliquent plus de variance qu’une variable individuelle. 
+- **critère des valeurs propres de Kaiser**: un critère basé sur les valeurs propres de la matrice de corrélation. Le nombre de facteurs choisis est le nombre de composantes principales dont la variance est supérieures à 1. L’idée est de garder seulement les facteurs qui expliquent plus de variance qu’une variable individuelle. 
 
 Si on utilise le critère de Kaiser avec les données `factor`, on conservera `r sum(acp$sdev>1)` composantes principales qui expliqueront `r round(100*sum(acp$sdev[acp$sdev>1]^2)/length(acp$sdev), 1)` pourcent de la variance totale des variables originales - voir le @tbl-eigenvalues. Le diagramme d'éboulis de la @fig-screeplot, qui peut être produit avec la fonction `hecmulti::eboulis(eigen(cor(factor))` suggère quant à lui cinq composantes.
 

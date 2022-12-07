@@ -80,19 +80,19 @@ Il est préférable d'avoir un modèle un peu trop complexe qu'un modèle trop s
 
 Par exemple, supposons que le vrai modèle est $Y=\beta_0+\beta_1X_1+\varepsilon$ mais que c'est le modèle $Y=\beta_0+\beta_1X_1+\beta_2X_2+\varepsilon$ qui a été ajusté. Dans ce cas, règle générale, les estimateurs des paramètres et les prédictions provenant du modèle sont sans biais. Mais leurs variances estimées seront un peu plus élevées car on estime des paramètres pour des variables superflues.
 
-Supposons à l'inverse qu'il manque des variables dans le modèle ajusté et que le modèle ajusté est sous-spécifié. Par exemple, supposons que le vrai modèle est $Y=\beta_0+\beta_1X_1+\beta_2X_2+\varepsilon$, mais que c'est le modèle $Y=\beta_0+\beta_1X_1+\varepsilon$ qui est ajusté. Dans ce cas, généralement, les estimateurs des paramètres et les prédictions sont biaisés.
-
+Pour illustrer ce point, j'ai simulé des données avec deux variables explicatives corrélées et $\beta_0 = 20$, $\beta_1=5$ et $\beta_2 = 0$.
 
 ```{r}
 #| label: specification-modele
 #| cache: true
 #| eval: true
-#| echo: true
+#| echo: false
 # Simuler des observations d'un modèle linéaire
+set.seed(60602)
 n <- 200L
-# Variables explicatives bidons
+# Variables explicatives bidons corrélées
 X1 <- rpois(n = n, lambda = 3)
-X2 <- rbinom(n = n, size = 1, prob = c(0.7, 0.3))
+X2 <- runif(n) < X1/7
 # Modèle de régression X*beta + aléas
 y_a <- 20 + 2*X1 + 5*X2 + rnorm(n)
 y_b <- 20 + 2*X1 + rnorm(n)
@@ -103,15 +103,74 @@ mod_2a <- lm(y_a ~ X1 + X2) # correct
 
 mod_1b <- lm(y_b ~ X1) # correct
 mod_2b <- lm(y_b ~ X1 + X2) # surspécifié
+```
 
-# Comparer l'estimation des coefficients
-#  aux vraies valeurs
-# Vérifier si ces dernières se trouvent
-#  dans l'intervalle de confiance
-coef(mod_1a) #coefficients
-confint(mod_1a) #intervalles de confiance
-coef(mod_2a)
-confint(mod_2a)
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: tbl-specification
+#| tbl-cap: "Surspécification de modèle de régression linéaire pour des données simulées."
+tab1 <- cbind(coef(mod_1a),
+          confint(mod_1a))
+rownames(tab1) <- c("(cst)", "X1")
+tab2 <- cbind(coef(mod_2a),
+          confint(mod_2a))
+rownames(tab2) <- c("(cst)", "X1", "X2")
+
+kables(
+  list(kable(
+    tab1,
+    booktabs = TRUE, 
+    digits = 2, 
+    col.names = c("coefficient", 
+                  "borne inf.",
+                  "borne sup."), 
+    caption = "modèle correct"),
+  kable(tab2, 
+  booktabs = TRUE, 
+  digits = 2, 
+  col.names = c("coefficient", 
+                "borne inf.", 
+                "borne sup."), 
+  caption = "modèle surspécifié")))
+```
+
+
+Une fois qu'on a obtenu l'estimation des coefficients et les intervalles de confiance, on peut les comparer aux vraies valeurs (soit $\beta_0 = 20$, $\beta_1=5$ et $\beta_2 = 0$) et vérifier si ces dernières se trouvent dans l'intervalle de confiance. Le @tbl-specification indique l'effet pour l'inférence de ces spécifications (avec des différences d'estimation, mais non de prédictions, qui sont dues à la colinéarité entre variables).
+
+
+Supposons à l'inverse qu'il manque des variables dans le modèle ajusté et que le modèle ajusté est sous-spécifié. Par exemple, supposons que le vrai modèle est $Y=\beta_0+\beta_1X_1+\beta_2X_2+\varepsilon$, mais que c'est le modèle $Y=\beta_0+\beta_1X_1+\varepsilon$ qui est ajusté. Dans ce cas, généralement, les estimateurs des paramètres et les prédictions sont biaisés. Le @tbl-specification montre les estimations du modèle: les vraies valeurs sont $\beta_0=20$, $\beta_1 = 2$ et $\beta_2 = 5$.
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: tbl-specification2
+#| tbl-cap: "Sous-spécification de modèle de régression linéaire pour des données simulées."
+tab1 <- cbind(coef(mod_1b),
+          confint(mod_1b))
+rownames(tab1) <- c("(cst)", "X1")
+tab2 <- cbind(coef(mod_2b),
+          confint(mod_2b))
+rownames(tab2) <- c("(cst)", "X1", "X2")
+
+kables(
+  list(kable(
+    tab1,
+    booktabs = TRUE, 
+    digits = 2, 
+    col.names = c("coefficient", 
+                  "borne inf.",
+                  "borne sup."), 
+    caption = "modèle sous-spécifié"),
+  kable(tab2, 
+  booktabs = TRUE, 
+  digits = 2, 
+  col.names = c("coefficient", 
+                "borne inf.", 
+                "borne sup."), 
+  caption = "modèle correct")))
 ```
 
 
@@ -154,7 +213,7 @@ Malheureusement, selon le principe fondamental de la section précédente, cette
 
 Cet exemple simple sur le choix d'un modèle polynomial en régression linéaire servira à illustrer le fait qu'on ne peut utiliser directement les mêmes données qui ont servi à ajuster un modèle pour évaluer sa performance. 
 
-Nous disposons de 100 observations sur une variable cible $Y$ et d'une seule variable explicative $X$ dans la base de données `selection1_train`. Nous voulons considérer des modèles polynomiaux (en $X$) afin d'en trouver un bon pour prédire $Y$. Un modèle polynomial est un modèle de la forme $Y=\beta_0 + \beta_1X+\cdots+\beta_kX^k+\varepsilon$. Le cas $k=1$ correspond à un modèle linéaire simple, $k=2$ à un modèle cubique, $k=3$ à un modèle cubique, etc. Notre but est de  déterminer l'ordre ($k$) du polynôme qui nous donnera un bon modèle. Voici d'abord le graphe de ces 100 observations de l'échantillon d'apprentissage.
+Nous disposons de 100 observations sur une variable cible $Y$ et d'une seule variable explicative $X$ dans la base de données `selection1_train`. Nous voulons considérer des modèles polynomiaux (en $X$) afin d'en trouver un bon pour prédire $Y$. Un modèle polynomial est un modèle de la forme $Y=\beta_0 + \beta_1X+\cdots+\beta_kX^k+\varepsilon$. Le cas $k=1$ correspond à un modèle linéaire simple, $k=2$ à un modèle cubique, $k=3$ à un modèle cubique, etc. Notre but est de  déterminer l'ordre ($k$) du polynôme qui nous donnera un bon modèle. Voici d'abord le graphe de ces 100 observations de l'échantillon d'apprentissage et les valeurs ajustées de polynômes d'ordre 1, 4 et 10.
 
 ```{r}
 #| label: fig-donneestest
@@ -162,14 +221,36 @@ Nous disposons de 100 observations sur une variable cible $Y$ et d'une seule var
 #| echo: false
 #| fig-align: 'center'
 #| out-width: '100%'
-#| fig-cap: "Nuage de points de 100 observations simulées d'un modèle polynomial de degré inconnu."
-file <- "https://lbelzile.bitbucket.io/MATH60602/selection1_train.sas7bdat"
-train <- haven::read_sas(data_file = file)
-file <- "https://lbelzile.bitbucket.io/MATH60602/selection1_test.sas7bdat"
-test <- haven::read_sas(data_file = file)
-print(ggplot(data = train, mapping = aes(x=x,y=y)) +
-        geom_point())
+#| fig-cap: "Nuage de points de 100 observations simulées d'un modèle polynomial de degré inconnu (gauche) et ajustement de différents polynômes de degré variable (droite)."
+data(polynome, package = "hecmulti")
+g1 <- ggplot(data = polynome, 
+       mapping = aes(x=x, y=y)) +
+ geom_point()
+x0 <- seq(from = -6, to = 6, length.out = 1001L)
+
+mod <- lm(y ~ poly(x, degree = 10), data = polynome)
+ypred10 <- predict(mod, newdata = data.frame(x = x0))
+
+mod <- lm(y ~ poly(x, degree = 4), data = polynome)
+ypred4 <- predict(mod, newdata = data.frame(x = x0))
+
+mod <- lm(y ~ poly(x, degree = 1), data = polynome)
+ypred1 <- predict(mod, newdata = data.frame(x = x0))
+
+g2 <- ggplot() +
+   geom_point(data = polynome,
+              aes(x = x, y = y)) +
+   geom_line(data = data.frame(x0, ypred1),
+              aes(x = x0, y = ypred1), color = 2) +
+   geom_line(data = data.frame(x0, ypred4),
+              aes(x = x0, y = ypred4), color = 3) +
+   geom_line(data = data.frame(x0, ypred10),
+              aes(x = x0, y = ypred10), color = 4) + 
+   theme_classic() +
+   scale_y_continuous(limits = c(-400,400))
+g1 + g2 
 ```
+
 
 Ces données ont été obtenues par simulation et le vrai modèle sous-jacent (celui qui a généré les données) est le modèle cubique, c'est-à-dire le modèle d'ordre $k=3$.
 
@@ -184,6 +265,9 @@ J'ai ajusté tour à tour à tour les modèles polynomiaux jusqu'à l'ordre 10, 
 #| echo: false
 #| cache: true
 #| message: false
+train <- polynome
+file <- "https://lbelzile.bitbucket.io/MATH60602/selection1_test.sas7bdat"
+test <- haven::read_sas(data_file = file)
 lmkfold <- function(formula, data, k, ...){
   accu <- 0
   k <- as.integer(k)
@@ -310,7 +394,7 @@ Il est facile d'obtenir le $\mathsf{AIC}$ et $\mathsf{BIC}$ avec les méthodes `
 
 ```{r}
 #| label: modelecubique
-#| eval: true
+#| eval: false
 #| echo: true
 data(polynome, package = "hecmulti")
 # Ajuster un polynôme de degré trois (modèle cubique)
@@ -396,7 +480,7 @@ La deuxième grande approche après celle consistant à pénaliser le $\widehat{
 Ces deux méthodes s'attaquent directement au problème qu'on ne peut utiliser (sans ajustement) les mêmes données qui ont servi à estimer les paramètres d'un modèle pour estimer sa performance. Pour ce faire, l'échantillon de départ est divisé en deux, ou plusieurs parties, qui vont jouer des rôles différents.
 
 
-L'idée de la validation externe est simple. Nous avons un échantillon de taille $n$ que nous pouvons diviser au hasard en deux parties de tailles respectives $n_1$ et $n_2$ ($n_1+n_2=n$), soit
+L'idée de la validation externe est simple. Nous avons un échantillon de taille $n$ que nous pouvons diviser *au hasard* en deux parties de tailles respectives $n_1$ et $n_2$ ($n_1+n_2=n$), soit
 
 - un échantillon d'apprentissage (_training_) de taille $n_1$ et
 - un échantillon de validation (_test_) de taille $n_2$.
@@ -459,7 +543,7 @@ ggplot(df, aes(x, y)) +
 
 ```
 
-On recommande habituellement de prendre $K=\min\{n^{1/2}, 10\}$ groupes (le choix de cinq ou 10 groupes sont ceux qui revient le plus souvent en pratique). Si on prend $K=10$ groupes, alors chaque modèle est estimé avec 90% des données et on prédit ensuite le 10% restant. Comme on passe en boucle les 10 parties, chaque observation est prédite une et une seule fois à la fin. Il est important de souligner que les groupes sont formés de façon aléatoire et donc que l'estimé que l'on obtient peut être très variable, surtout si la taille de l'échantillon d'apprentissage est petite. Il arrive également que le modèle ajusté sur un groupe ne puisse pas être utilisé pour prédire les observations mises de côté, notamment si des variables catégorielles sont présentes mais qu'une modalité n'est présente que dans un des groupes; ce problème se présente en pratique si certaines classes ont peu d'observations. Un échantillonnage stratifié permet de pallier à cette lacune et de s'assurer d'une répartition plus homogène des variables catégorielles.
+La validation croisée est coûteuse parce qu’on doit ajuster $K$ fois le modèles. On recommande habituellement de prendre $K=\min\{n^{1/2}, 10\}$ groupes (le choix de cinq ou 10 groupes sont ceux qui revient le plus souvent en pratique). Si on prend $K=10$ groupes, alors chaque modèle est estimé avec 90% des données et on prédit ensuite le 10% restant. Comme on passe en boucle les 10 parties, chaque observation est prédite une et une seule fois à la fin. Il est important de souligner que les groupes sont formés de façon aléatoire et donc que l'estimé que l'on obtient peut être très variable, surtout si la taille de l'échantillon d'apprentissage est petite. Il arrive également que le modèle ajusté sur un groupe ne puisse pas être utilisé pour prédire les observations mises de côté, notamment si des variables catégorielles sont présentes mais qu'une modalité n'est présente que dans un des groupes; ce problème se présente en pratique si certaines classes ont peu d'observations. Un échantillonnage stratifié permet de pallier à cette lacune et de s'assurer d'une répartition plus homogène des variables catégorielles.
 
 ```{r}
 #| label: validation-croisée
@@ -502,12 +586,17 @@ eqm_cv <- cv_caret$results$RMSE^2
 
 Le cas particulier $K=n$ (en anglais _leave-one-out cross validation_, ou $\mathsf{LOOCV}$) consiste à enlever une seule observation, à estimer le modèle avec les $n-1$ autres et à valider à l'aide de l'observation laissée de côté: on répète cette procédure pour chaque observation. Pour les modèles linéaires, il existe des formules explicites qui nous permettent d'éviter d'ajuster $n$ régressions par moindre carrés. Cette forme de validation croisée tend à être trop optimiste.
 
+Il faut garder en tête que le résultat de la validation croisée est aléatoire parce que la séparation des données en plis l'est également.  La figure @fig-plotcv, obtenue en répétant 100 fois la procédure et en calculant à chaque fois la performance de différents modèles polynomiaux, montre la variabilité des estimations. Plutôt que de répéter le calcul, si on a un nombre de groupes $K$ suffisamment grand et assez d'observations par pli, on pourrait estimer la variabilité de la procédure directement. Posons $\widehat{\mathsf{EQM}}_{\text{VC}, k}$ ($k=1, \ldots, K$) calculer l'erreur quadratique moyenne de chaque pli. On peut estimer l'écart-type empirique de cette moyenne via
+\begin{align*}
+\mathsf{sd}(\widehat{\mathsf{EQM}}_{\text{VC}}) = \frac{1}{K-1} \sum_{k=1}^{K} (\widehat{\mathsf{EQM}}_{\text{VC}, k}-\widehat{\mathsf{EQM}}_{\text{VC}})^2.
+\end{align*}
+
 
 Revenons à notre exemple où une seule variable explicative est disponible et où l'on cherche à déterminer un bon modèle polynomial. La dernière colonne de @tbl-polynome-ajustement,  $\mathsf{VC}_{10}$, donne les moyennes de 100 réplications de estimations de l'$\mathsf{EQM}$ obtenues avec la validation croisée à 10 groupes.  Notez que si vous exécutez le programme, vous n'obtiendrez pas les mêmes valeurs car il y a un élément aléatoire dans ce processus. 
 
 
 
-Le modèle cubique (ordre 3) est aussi choisi par la validation croisée, en moyenne (comme il l'était par le $\mathsf{AIC}$ et le $\mathsf{BIC}$). Le graphe qui suit trace les valeurs de l'estimation par validation croisée (courbe de validation croisée) et aussi le $\mathsf{EQM}$. On voit que l'estimation par validation croisée suit assez bien la forme du $\mathsf{EQM}$ (qu'il est supposé estimer). Les boîtes à moustache permettent d'apprécier la variabilité des estimés de l'erreur quadratique moyenne telles qu'estimée par validation croisée avec 10 groupes.
+Le modèle cubique (ordre 3) est aussi choisi par la validation croisée, en moyenne (comme il l'était par le $\mathsf{AIC}$ et le $\mathsf{BIC}$). Le graphe qui suit trace les valeurs de l'estimation par validation croisée (courbe de validation croisée) et aussi le $\mathsf{EQM}$. On voit que l'estimation par validation croisée suit assez bien la forme du $\mathsf{EQM}$ (qu'il est supposé estimer). Les boîtes à moustache de la @fig-plotcv permettent d'apprécier la variabilité des estimés de l'erreur quadratique moyenne telles qu'estimée par validation croisée avec 10 groupes.
 
 ```{r}
 #| label: fig-plotcv
@@ -539,6 +628,14 @@ ggplot(data = EQMdat, aes(x=ordre, y=EQM)) +
                      labels = as.character(0:10))
 
 ```
+
+Il arrive que la performance soit très similaire pour plusieurs modèles, auquel cas on pourrait être tenté de prendre le modèle le plus parsimonieux (c'est-à-dire, celui qui a le moins de paramètres). Si on a calculé la performance avec la validation croisée et qu'on a obtenu une mesure d'incertitude pour notre performance, on peut utiliser la règle du « 1 écart-type». Cette dernière veut qu'on choisisse le modèle le plus simple parmi un ensemble $\mathcal{M}_0 \subset\cdots \subset \mathcal{M}_m$ qui satisfasse
+\begin{align*}
+\widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_i) \leq \min_{m = i+1}^M \widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_m) + \mathsf{sd}\{\widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_m)\}.
+\end{align*}
+Autrement dit, on trouve le modèle qui minimise notre critère d'erreur et on choisit ensuite le modèle le plus simple qui soit à au plus un écart-type de ce modèle. On verra ainsi souvent des barres d'erreurs à $\pm$ un écart-type, comme dans la @fig-lassopath.
+
+
 
 ## Présentation des données
 
@@ -1451,7 +1548,7 @@ pred <- predict(lasso_best,
 eqm_lasso <- mean((pred - dbm_a$ymontant)^2)
 ```
 
-Le graphique de la @fig-lassopath montre l'évolution de l'erreur quadratique moyenne estimée en fonction du logarithme naturel de la pénalité (axe des abscisses). Comme plusieurs pénalités sont dans la marge d'erreurs, on choisit le première modèle à un erreur-type de la valeur minimale
+Le graphique de la @fig-lassopath montre l'évolution de l'erreur quadratique moyenne estimée en fonction du logarithme naturel de la pénalité (axe des abscisses). Comme plusieurs pénalités sont dans la marge d'erreurs, on choisit le première modèle à un erreur-type de la valeur minimale.
 
 ```{r}
 #| label: fig-lassopath
