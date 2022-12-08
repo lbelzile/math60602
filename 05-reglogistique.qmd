@@ -572,6 +572,21 @@ Comme la multicolinéarité est une propriété des variables explicatives (le $
 
 La multicolinéarité est surtout un problème lorsque vient le temps d'interpréter et tester l'effet des paramètres individuels. Si le but est seulement de faire de la classification (prédiction) et que l'interprétation des paramètres individuels n'est pas cruciale alors il n'y a pas lieu de se soucier de la multicolinéarité. Il faut alors plutôt comparer correctement la performance de classification des modèles en utilisant des méthodes permettant d'obtenir un bon modèle tout en se protégeant contre le surajustement. Certaines de ces méthodes (division de l'échantillon, validation croisée) ont déjà été présentées.
 
+
+::: {.callout-note}
+
+## En résumé
+
+
+- Une régression logistique sert à modéliser la moyenne de **variables catégorielles**, typiquement binaires.
+- C'est un cas particulier d'un modèle de régression linéaire généralisée.
+- Le modèle est interprétable à l'échelle de la cote, qui donne dans le cas binaire le rapport probabilité de réussite (1) sur probabilité d'échec (0)
+- En l'absence d'interactions, on interprète les coefficients en terme de pourcentage d'augmentation si $\exp(\widehat{\beta}) > 1$, avec $\exp(\widehat{\beta})-1$ ou en terme de pourcentage de diminution si $\exp(\widehat{\beta}) < 1$, avec $1-\exp(\widehat{\beta})$
+- L'estimation est faite par maximum de vraisemblance: on a accès aux critères d'information et aux tests d'hypothèses omnibus pour comparer des modèles emboîtés.
+- Les intervalles de confiance de vraisemblance profilée rapportés sont invariants aux reparamétrisations.
+
+:::
+
 ## Classification et prédiction
 
 La finalité du modèle de régression logistique est fréquemment l'obtention de prédictions. Une fois qu'on a ajusté un modèle, on peut l'utiliser pour prévoir la valeur de $Y$ pour de nouvelles observations. Ceci consiste à assigner une classe ($0$ ou $1$) à ces observations (pour lesquels $Y$ est inconnue) à partir des valeurs prises par $\mathrm{X}_1, \ldots, \mathrm{X}_p$.
@@ -1481,6 +1496,30 @@ Pour conclure cet exemple, il s'avère donc que la régression logistique permet
 
 Nous reviendrons une dernière fois sur cet exemple dans le chapitre traitant des données manquantes. Nous verrons alors comment procéder si des valeurs manquantes sont présentes dans les variables explicatives. 
 
+
+::: {.callout-note}
+
+## En résumé
+
+
+- La classification est une forme d'apprentissage supervisée.
+- On peut assigner l'observation à la classe la plus plausible, ou déterminer un point de coupure.
+- Si on a un objectif particulier (fonction de gain), on peut optimiser les profits en assignant une importance différente à chaque scénario.
+- On peut catégoriser les observations dans une matrice de confusion et on peut calculer le taux de bonne classification comme mesure d'adéquation.
+- Dans le cas binaire, on s'intéresse généralement à
+   - la spécificité (proportion d'échecs correctement classifiés) 
+   - la sensibilité (proportion de succès correctement classifiés)
+   - le taux de faux positifs ou faux négatifs
+- L'aire sous la courbe de la fonction d'efficacité du récepteur (courbe ROC) et le lift donnent une mesure de la qualité des prédictions.
+- L'erreur quadratique moyenne se réduit à calculer le taux de mauvaise classification, qu'on cherche à minimiser. On peut aussi utiliser la vraisemblance comme fonction objective.
+- Les outils pour la sélection de variables couverts précédemment (critères d'information, LASSO, estimation de l'erreur par validation externe ou croisée) sont toujours applicables.
+- Les modèles sont plus coûteux à estimer.
+- Il y a moins d'information disponible avec une variable cible binaire, d'où une incertitude plus prononcée.
+
+:::
+
+
+
 ## Modèles pour données multinomiales
 
 Supposons que la variable $Y$ que vous cherchez à modéliser est une variable catégorielle pouvant prendre trois valeurs ou plus. Voici quelques exemples :
@@ -1992,3 +2031,20 @@ ggplot2::ggplot(
 On a précédemment utilisé un test du rapport de vraisemblance pour valider l'hypothèse des cotes proportionnelles: il n'y avait aucune indication que la simplification n'était pas adéquate. Ce n'est pas le cas pour le modèle qui ne contient que la variable `age` ou plusieurs variables explicatives: la @fig-predmultinom montre les différences de probabilités ajustées pour les deux modèles qui incluent uniquement l'âge comme variable explicative. Règle générale, on n'ajustera jamais un modèle avec une seule des variables: un test du rapport de vraisemblance indique que **toutes** les variables explicatives sont utiles pour expliquer le comportement.
 
 On peut également vérifier si le modèle est adéquat pour décrire les données en comparant le modèle pour les données ordinales avec un modèle saturé (qui contient autant de paramètres que d'observations/niveaux): la valeur-$p$, infime, indique que le modèle plus complexe, soit le modèle saturé, est préférable. Cela nous indique que le modèle a un piètre pouvoir explicatif.
+
+
+
+
+::: {.callout-note}
+
+## En résumé
+
+
+- La régression multinomiale logistique pour une variable catégorielle à $K$ niveaux est une extension directe de la régression logistique pour données binaires: il y a $K-1$ équations de cote en termes des variables explicatives (puisque la somme des probabilités vaut 1), donc le nombre de paramètres croît rapidement.
+- Le modèle est multiplicatif: la cote de catégorie $k$ vs référence est multipliée par $\exp(\beta_{jk})$ pour chaque augmentation de $\mathrm{X}_j$ d'une unité.
+- Les coefficients manquants de la sortie du tableau peuvent être déduits par des manipulations algébriques.
+- Le modèle cumulatif à cote proportionnelle est une simplification du modèle multinomial pour des données ordinales.
+- On suppose que l'effet des variables est le même pour la cote de la survie de chaque modalité
+- Le modèle à cotes proportionnelles a moins de paramètres, mais le postulat de cotes proportionnelles doit être vérifié (via un test de rapport de vraisemblance ou un test du score).
+
+:::

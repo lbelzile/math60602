@@ -262,7 +262,7 @@
 \begin{document}
 \frontmatter
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, boxrule=0pt, interior hidden, borderline west={3pt}{0pt}{shadecolor}, sharp corners, enhanced, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, breakable, frame hidden, interior hidden, sharp corners, enhanced]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table des matières}
 {
@@ -1058,16 +1058,16 @@ de billets de trains de la Renfe.}
 \toprule
 prix & classe & n\\
 \midrule
-108 & Turista & 1050\\
-108 & TuristaSolo & 67\\
-127 & Turista & 285\\
-127 & TuristaSolo & 9\\
-129 & TuristaPlus & 31\\
+107.7 & Turista & 1050\\
+107.7 & TuristaSolo & 67\\
+127.1 & Turista & 285\\
+127.1 & TuristaSolo & 9\\
+129.3 & TuristaPlus & 31\\
 \addlinespace
-140 & Preferente & 2\\
-152 & TuristaPlus & 10\\
-182 & Preferente & 78\\
-214 & Preferente & 12\\
+140.0 & Preferente & 2\\
+152.5 & TuristaPlus & 10\\
+181.5 & Preferente & 78\\
+214.2 & Preferente & 12\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1143,7 +1143,7 @@ particulier, votre description devrait coïncider avec le rendu. Votre
 graphique raconte une histoire, aussi prenez-soin que cette dernière
 soit nécessaire et attrayante.
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, toptitle=1mm, leftrule=.75mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, colback=white, titlerule=0mm, bottomrule=.15mm, rightrule=.15mm, toprule=.15mm, breakable, colframe=quarto-callout-note-color-frame, coltitle=black, bottomtitle=1mm, left=2mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, coltitle=black, colbacktitle=quarto-callout-note-color!10!white, rightrule=.15mm, colback=white, arc=.35mm, bottomrule=.15mm, left=2mm, toptitle=1mm, colframe=quarto-callout-note-color-frame, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, opacitybacktitle=0.6, opacityback=0]
 
 \begin{itemize}
 \tightlist
@@ -1544,7 +1544,13 @@ méthodes en projetant les données dans un sous-espace de dimension plus
 faible.
 
 En \textbf{R}, on effectue l'analyse en composantes principales avec la
-fonction \texttt{princomp}\footnote{On pourrait aussi utiliser
+fonction \texttt{princomp} ou \texttt{prcomp}\footnote{La différence
+  entre les deux sorties est due à deux choses: \texttt{princomp}
+  utilise la décomposition en valeurs propres avec
+  \(n^{-1}\mathbf{X}^\top\mathbf{X}\) pour la matrice de covariance,
+  tandis que \texttt{prcomp} utilise la décomposition en valeurs
+  singulières avec un dénominateur de \(n-1\); cette dernière option est
+  plus stable numériquement. On pourrait aussi utiliser
   \texttt{eigen(cor(factor))} pour extraire directement la décomposition
   en valeurs propres/vecteurs propres, mais on n'aurait pas accès aux
   méthodes pour la visualisation.}.
@@ -1554,15 +1560,16 @@ La sortie contient
 \begin{itemize}
 \tightlist
 \item
-  l'écart-type de chaque composante, \texttt{acp\$sdev}
+  les coordonnées des composantes principales, \texttt{acp\$scores}; la
+  première est celle qui a la plus grande variabilité.
+\item
+  l'écart-type de chaque composante, \texttt{acp\$sdev}. Chaque
+  écart-type est la racine carrée d'une des valeurs propres.
 \item
   les poids \(w_{ij}\), appelés chargements (\emph{loadings}), qui
   donnent la correspondance entre le système de coordonnées des
   composantes principales et celui des variables \(\boldsymbol{X}\)
   originales.
-\item
-  les nouvelles coordonnées dans l'espace des composantes principales,
-  \texttt{acp\$scores}
 \end{itemize}
 
 On peut représenter les données à l'aide d'un bigramme: c'est une nuage
@@ -1581,8 +1588,8 @@ conserver que les \(k\) premières colonnes de la matrice des composantes
 principales \texttt{acp\$scores} pour faire les graphiques ou pour
 approximer la matrice de covariance. Il faut garder en tête qu'il faudra
 néanmoins collecter les mêmes questions pour recréer les composantes
-principales avec de nouvelles observations, ce qui est peu commode si ce
-qu'on veut est réduire le coût de la collecte.
+principales avec de nouvelles observations, ce qui est peu commode si on
+veut réduire le coût de la collecte.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1665,11 +1672,11 @@ critères couramment employés sont:
   il est facile de le créer manuellement et le résultat est
   esthétiquement plus réussi.
 \item
-  \textbf{critère de Kaiser}: un critère basé sur les valeurs propres de
-  la matrice de corrélation. Le nombre de facteurs choisis est le nombre
-  de composantes principales dont la variance est supérieures à 1.
-  L'idée est de garder seulement les facteurs qui expliquent plus de
-  variance qu'une variable individuelle.
+  \textbf{critère des valeurs propres de Kaiser}: un critère basé sur
+  les valeurs propres de la matrice de corrélation. Le nombre de
+  facteurs choisis est le nombre de composantes principales dont la
+  variance est supérieures à 1. L'idée est de garder seulement les
+  facteurs qui expliquent plus de variance qu'une variable individuelle.
 \end{itemize}
 
 Si on utilise le critère de Kaiser avec les données \texttt{factor}, on
@@ -1688,7 +1695,7 @@ composantes.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.7\textwidth,height=\textheight]{./02-analysefactorielle_files/figure-pdf/fig-screeplot-1.pdf}
+{\centering \includegraphics{./02-analysefactorielle_files/figure-pdf/fig-screeplot-1.pdf}
 
 }
 
@@ -1729,7 +1736,7 @@ contenant les vecteurs propres. La meilleure approximation de rang
 \(\boldsymbol{q}_1, \ldots, \boldsymbol{q}_k \in \mathbb{R}^p\) non
 corrélés.
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, toptitle=1mm, leftrule=.75mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, colback=white, titlerule=0mm, bottomrule=.15mm, rightrule=.15mm, toprule=.15mm, breakable, colframe=quarto-callout-note-color-frame, coltitle=black, bottomtitle=1mm, left=2mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, coltitle=black, colbacktitle=quarto-callout-note-color!10!white, rightrule=.15mm, colback=white, arc=.35mm, bottomrule=.15mm, left=2mm, toptitle=1mm, colframe=quarto-callout-note-color-frame, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, opacitybacktitle=0.6, opacityback=0]
 
 \begin{itemize}
 \tightlist
@@ -2103,11 +2110,11 @@ nombre de paramètres estimés et indicateur pour les cas de
 \toprule
   & k & AIC & BIC & valeur-p & npar & heywood\\
 \midrule
-1 & 1 & 2267 & 2346 & < 2e-16 & 24 & 0\\
-2 & 2 & 2138 & 2253 & < 2e-16 & 35 & 0\\
-3 & 3 & 2017 & 2166 & 0.09604 & 45 & 0\\
-4 & 4 & 2003 & 2181 & 0.97262 & 54 & 1\\
-5 & 5 & 2013 & 2217 & 0.97445 & 62 & 1\\
+1 & 1 & 2267.14 & 2346.30 & < 2e-16 & 24 & 0\\
+2 & 2 & 2137.87 & 2253.31 & < 2e-16 & 35 & 0\\
+3 & 3 & 2017.19 & 2165.61 & 0.09604 & 45 & 0\\
+4 & 4 & 2002.56 & 2180.67 & 0.97262 & 54 & 1\\
+5 & 5 & 2012.70 & 2217.19 & 0.97445 & 62 & 1\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -2445,7 +2452,7 @@ quatre facteurs) et échelles. }\tabularnewline
 \end{tabular}
 \end{table}
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, toptitle=1mm, leftrule=.75mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes de l'analyse factorielle exploratoire}, colback=white, titlerule=0mm, bottomrule=.15mm, rightrule=.15mm, toprule=.15mm, breakable, colframe=quarto-callout-tip-color-frame, coltitle=black, bottomtitle=1mm, left=2mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-tip-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, coltitle=black, colbacktitle=quarto-callout-tip-color!10!white, rightrule=.15mm, colback=white, arc=.35mm, bottomrule=.15mm, left=2mm, toptitle=1mm, colframe=quarto-callout-tip-color-frame, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes de l'analyse factorielle exploratoire}, leftrule=.75mm, opacitybacktitle=0.6, opacityback=0]
 
 \begin{itemize}
 \tightlist
@@ -2467,7 +2474,7 @@ quatre facteurs) et échelles. }\tabularnewline
 
 \end{tcolorbox}
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, toptitle=1mm, leftrule=.75mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, colback=white, titlerule=0mm, bottomrule=.15mm, rightrule=.15mm, toprule=.15mm, breakable, colframe=quarto-callout-note-color-frame, coltitle=black, bottomtitle=1mm, left=2mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, coltitle=black, colbacktitle=quarto-callout-note-color!10!white, rightrule=.15mm, colback=white, arc=.35mm, bottomrule=.15mm, left=2mm, toptitle=1mm, colframe=quarto-callout-note-color-frame, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, opacitybacktitle=0.6, opacityback=0]
 
 \begin{itemize}
 \tightlist
@@ -2629,52 +2636,116 @@ prédictions provenant du modèle sont sans biais. Mais leurs variances
 estimées seront un peu plus élevées car on estime des paramètres pour
 des variables superflues.
 
+Pour illustrer ce point, j'ai simulé des données avec deux variables
+explicatives corrélées et \(\beta_0 = 20\), \(\beta_1=5\) et
+\(\beta_2 = 0\).
+
+\begin{table}
+
+\caption{\label{tbl-specification}Surspécification de modèle de
+régression linéaire pour des données
+simulées.}\begin{minipage}[t]{\linewidth}
+\subcaption{\label{tbl-specification-1}modèle correct}
+
+{\centering 
+
+\centering
+\begin{tabular}[t]{lrrr}
+\toprule
+  & coefficient & borne inf. & borne sup.\\
+\midrule
+(cst) & 19.95 & 19.28 & 20.62\\
+X1 & 2.74 & 2.55 & 2.94\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{minipage}%
+\newline
+\begin{minipage}[t]{\linewidth}
+\subcaption{\label{tbl-specification-2}modèle surspécifié}
+
+{\centering 
+
+\centering
+\begin{tabular}[t]{lrrr}
+\toprule
+  & coefficient & borne inf. & borne sup.\\
+\midrule
+(cst) & 20.16 & 19.88 & 20.44\\
+X1 & 1.93 & 1.84 & 2.03\\
+X2 & 5.06 & 4.74 & 5.38\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{minipage}%
+
+\end{table}
+
+Une fois qu'on a obtenu l'estimation des coefficients et les intervalles
+de confiance, on peut les comparer aux vraies valeurs (soit
+\(\beta_0 = 20\), \(\beta_1=5\) et \(\beta_2 = 0\)) et vérifier si ces
+dernières se trouvent dans l'intervalle de confiance. Le
+Tableau~\ref{tbl-specification} indique l'effet pour l'inférence de ces
+spécifications (avec des différences d'estimation, mais non de
+prédictions, qui sont dues à la colinéarité entre variables).
+
 Supposons à l'inverse qu'il manque des variables dans le modèle ajusté
 et que le modèle ajusté est sous-spécifié. Par exemple, supposons que le
 vrai modèle est \(Y=\beta_0+\beta_1X_1+\beta_2X_2+\varepsilon\), mais
 que c'est le modèle \(Y=\beta_0+\beta_1X_1+\varepsilon\) qui est ajusté.
 Dans ce cas, généralement, les estimateurs des paramètres et les
-prédictions sont biaisés.
+prédictions sont biaisés. Le Tableau~\ref{tbl-specification} montre les
+estimations du modèle: les vraies valeurs sont \(\beta_0=20\),
+\(\beta_1 = 2\) et \(\beta_2 = 5\).
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Simuler des observations d\textquotesingle{}un modèle linéaire}
-\NormalTok{n }\OtherTok{\textless{}{-}}\NormalTok{ 200L}
-\CommentTok{\# Variables explicatives bidons}
-\NormalTok{X1 }\OtherTok{\textless{}{-}} \FunctionTok{rpois}\NormalTok{(}\AttributeTok{n =}\NormalTok{ n, }\AttributeTok{lambda =} \DecValTok{3}\NormalTok{)}
-\NormalTok{X2 }\OtherTok{\textless{}{-}} \FunctionTok{rbinom}\NormalTok{(}\AttributeTok{n =}\NormalTok{ n, }\AttributeTok{size =} \DecValTok{1}\NormalTok{, }\AttributeTok{prob =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.7}\NormalTok{, }\FloatTok{0.3}\NormalTok{))}
-\CommentTok{\# Modèle de régression X*beta + aléas}
-\NormalTok{y\_a }\OtherTok{\textless{}{-}} \DecValTok{20} \SpecialCharTok{+} \DecValTok{2}\SpecialCharTok{*}\NormalTok{X1 }\SpecialCharTok{+} \DecValTok{5}\SpecialCharTok{*}\NormalTok{X2 }\SpecialCharTok{+} \FunctionTok{rnorm}\NormalTok{(n)}
-\NormalTok{y\_b }\OtherTok{\textless{}{-}} \DecValTok{20} \SpecialCharTok{+} \DecValTok{2}\SpecialCharTok{*}\NormalTok{X1 }\SpecialCharTok{+} \FunctionTok{rnorm}\NormalTok{(n)}
-\CommentTok{\# Ajuster un modèle linéaire}
-\CommentTok{\# lm(réponse \textasciitilde{} variables explicatives)}
-\NormalTok{mod\_1a }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y\_a }\SpecialCharTok{\textasciitilde{}}\NormalTok{ X1) }\CommentTok{\# sous{-}spécifié}
-\NormalTok{mod\_2a }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y\_a }\SpecialCharTok{\textasciitilde{}}\NormalTok{ X1 }\SpecialCharTok{+}\NormalTok{ X2) }\CommentTok{\# correct}
+\begin{table}
 
-\NormalTok{mod\_1b }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y\_b }\SpecialCharTok{\textasciitilde{}}\NormalTok{ X1) }\CommentTok{\# correct}
-\NormalTok{mod\_2b }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y\_b }\SpecialCharTok{\textasciitilde{}}\NormalTok{ X1 }\SpecialCharTok{+}\NormalTok{ X2) }\CommentTok{\# surspécifié}
+\caption{\label{tbl-specification2}Sous-spécification de modèle de
+régression linéaire pour des données
+simulées.}\begin{minipage}[t]{\linewidth}
+\subcaption{\label{tbl-specification2-1}modèle sous-spécifié}
 
-\CommentTok{\# Comparer l\textquotesingle{}estimation des coefficients}
-\CommentTok{\#  aux vraies valeurs}
-\CommentTok{\# Vérifier si ces dernières se trouvent}
-\CommentTok{\#  dans l\textquotesingle{}intervalle de confiance}
-\FunctionTok{coef}\NormalTok{(mod\_1a) }\CommentTok{\#coefficients}
-\DocumentationTok{\#\# (Intercept)          X1 }
-\DocumentationTok{\#\#        22.6         2.0}
-\FunctionTok{confint}\NormalTok{(mod\_1a) }\CommentTok{\#intervalles de confiance}
-\DocumentationTok{\#\#             2.5 \% 97.5 \%}
-\DocumentationTok{\#\# (Intercept)  21.9  23.36}
-\DocumentationTok{\#\# X1            1.8   2.21}
-\FunctionTok{coef}\NormalTok{(mod\_2a)}
-\DocumentationTok{\#\# (Intercept)          X1          X2 }
-\DocumentationTok{\#\#       19.98        2.03        5.01}
-\FunctionTok{confint}\NormalTok{(mod\_2a)}
-\DocumentationTok{\#\#             2.5 \% 97.5 \%}
-\DocumentationTok{\#\# (Intercept) 19.66   20.3}
-\DocumentationTok{\#\# X1           1.95    2.1}
-\DocumentationTok{\#\# X2           4.73    5.3}
-\end{Highlighting}
-\end{Shaded}
+{\centering 
+
+\centering
+\begin{tabular}[t]{lrrr}
+\toprule
+  & coefficient & borne inf. & borne sup.\\
+\midrule
+(cst) & 20.03 & 19.74 & 20.31\\
+X1 & 2.00 & 1.91 & 2.08\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{minipage}%
+\newline
+\begin{minipage}[t]{\linewidth}
+\subcaption{\label{tbl-specification2-2}modèle correct}
+
+{\centering 
+
+\centering
+\begin{tabular}[t]{lrrr}
+\toprule
+  & coefficient & borne inf. & borne sup.\\
+\midrule
+(cst) & 20.05 & 19.77 & 20.33\\
+X1 & 1.92 & 1.83 & 2.02\\
+X2 & 0.47 & 0.14 & 0.79\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{minipage}%
+
+\end{table}
 
 Ainsi, il est généralement préférable d'avoir un modèle légèrement
 surspécifié qu'un modèle sous-spécifié. Plus généralement, il est
@@ -2770,7 +2841,12 @@ modèle polynomial est un modèle de la forme
 correspond à un modèle linéaire simple, \(k=2\) à un modèle cubique,
 \(k=3\) à un modèle cubique, etc. Notre but est de déterminer l'ordre
 (\(k\)) du polynôme qui nous donnera un bon modèle. Voici d'abord le
-graphe de ces 100 observations de l'échantillon d'apprentissage.
+graphe de ces 100 observations de l'échantillon d'apprentissage et les
+valeurs ajustées de polynômes d'ordre 1, 4 et 10.
+
+\begin{verbatim}
+Warning: Removed 28 rows containing missing values (`geom_line()`).
+\end{verbatim}
 
 \begin{figure}[ht!]
 
@@ -2779,7 +2855,8 @@ graphe de ces 100 observations de l'échantillon d'apprentissage.
 }
 
 \caption{\label{fig-donneestest}Nuage de points de 100 observations
-simulées d'un modèle polynomial de degré inconnu.}
+simulées d'un modèle polynomial de degré inconnu (gauche) et ajustement
+de différents polynômes de degré variable (droite).}
 
 \end{figure}
 
@@ -2977,30 +3054,8 @@ cubique:
 \NormalTok{mod\_cub }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}} \FunctionTok{poly}\NormalTok{(x, }\DecValTok{3}\NormalTok{),}
               \AttributeTok{data =}\NormalTok{ polynome)}
 \FunctionTok{summary}\NormalTok{(mod\_cub) }\CommentTok{\# Tableau résumé des coefficients}
-\DocumentationTok{\#\# }
-\DocumentationTok{\#\# Call:}
-\DocumentationTok{\#\# lm(formula = y \textasciitilde{} poly(x, 3), data = polynome)}
-\DocumentationTok{\#\# }
-\DocumentationTok{\#\# Residuals:}
-\DocumentationTok{\#\#     Min      1Q  Median      3Q     Max }
-\DocumentationTok{\#\# {-}111.91  {-}34.11    2.08   36.69  142.48 }
-\DocumentationTok{\#\# }
-\DocumentationTok{\#\# Coefficients:}
-\DocumentationTok{\#\#             Estimate Std. Error t value Pr(\textgreater{}|t|)    }
-\DocumentationTok{\#\# (Intercept)    {-}9.77       5.22   {-}1.87   0.0645 .  }
-\DocumentationTok{\#\# poly(x, 3)1   824.81      52.24   15.79  \textless{} 2e{-}16 ***}
-\DocumentationTok{\#\# poly(x, 3)2  {-}281.95      52.24   {-}5.40  4.9e{-}07 ***}
-\DocumentationTok{\#\# poly(x, 3)3   160.99      52.24    3.08   0.0027 ** }
-\DocumentationTok{\#\# {-}{-}{-}}
-\DocumentationTok{\#\# Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
-\DocumentationTok{\#\# }
-\DocumentationTok{\#\# Residual standard error: 52.2 on 96 degrees of freedom}
-\DocumentationTok{\#\# Multiple R{-}squared:  0.75,   Adjusted R{-}squared:  0.742 }
-\DocumentationTok{\#\# F{-}statistic:   96 on 3 and 96 DF,  p{-}value: \textless{}2e{-}16}
 \FunctionTok{AIC}\NormalTok{(mod\_cub)}
-\DocumentationTok{\#\# [1] 1081}
 \FunctionTok{BIC}\NormalTok{(mod\_cub)}
-\DocumentationTok{\#\# [1] 1094}
 \end{Highlighting}
 \end{Shaded}
 
@@ -3017,17 +3072,17 @@ en fonction de l'ordre du polynôme. }\tabularnewline
 \toprule
   & \(\mathsf{EQM}\) & \(\widehat{\mathsf{EQM}}_a\) & \(R^2\) & \(\mathsf{AIC}\) & \(\mathsf{BIC}\) & \(\mathsf{VC}_{10}\)\\
 \midrule
-1 & 3191 & 3674 & 0.65 & 1111 & 1119 & 3675\\
-2 & 3133 & 2879 & 0.73 & 1088 & 1099 & 2898\\
-3 & 2697 & 2620 & 0.75 & 1081 & 1094 & 2676\\
-4 & 2767 & 2582 & 0.75 & 1081 & 1097 & 2666\\
-5 & 2771 & 2581 & 0.75 & 1083 & 1102 & 2711\\
+1 & 3191.29 & 3674.20 & 0.65 & 1110.70 & 1118.51 & 3675.37\\
+2 & 3132.67 & 2879.24 & 0.73 & 1088.32 & 1098.74 & 2897.94\\
+3 & 2697.40 & 2620.05 & 0.75 & 1080.88 & 1093.91 & 2675.51\\
+4 & 2766.68 & 2581.70 & 0.75 & 1081.41 & 1097.04 & 2666.16\\
+5 & 2771.05 & 2580.86 & 0.75 & 1083.38 & 1101.61 & 2711.11\\
 \addlinespace
-6 & 2780 & 2578 & 0.75 & 1085 & 1106 & 2757\\
-7 & 2780 & 2577 & 0.75 & 1087 & 1111 & 2788\\
-8 & 2797 & 2531 & 0.76 & 1087 & 1113 & 2846\\
-9 & 2811 & 2528 & 0.76 & 1089 & 1118 & 2896\\
-10 & 2849 & 2519 & 0.76 & 1091 & 1122 & 2976\\
+6 & 2779.66 & 2577.60 & 0.75 & 1085.25 & 1106.09 & 2757.13\\
+7 & 2780.21 & 2577.49 & 0.75 & 1087.24 & 1110.69 & 2787.95\\
+8 & 2797.35 & 2531.00 & 0.76 & 1087.42 & 1113.48 & 2845.78\\
+9 & 2811.07 & 2527.85 & 0.76 & 1089.30 & 1117.96 & 2895.61\\
+10 & 2848.81 & 2519.14 & 0.76 & 1090.95 & 1122.22 & 2976.04\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -3080,8 +3135,8 @@ l'échantillon de départ est divisé en deux, ou plusieurs parties, qui
 vont jouer des rôles différents.
 
 L'idée de la validation externe est simple. Nous avons un échantillon de
-taille \(n\) que nous pouvons diviser au hasard en deux parties de
-tailles respectives \(n_1\) et \(n_2\) (\(n_1+n_2=n\)), soit
+taille \(n\) que nous pouvons diviser \emph{au hasard} en deux parties
+de tailles respectives \(n_1\) et \(n_2\) (\(n_1+n_2=n\)), soit
 
 \begin{itemize}
 \tightlist
@@ -3196,6 +3251,11 @@ Pour l'erreur quadratique moyenne, cette dernière étape revient à
 additionner la somme du carré des erreurs avant de diviser par la taille
 de l'échantillon totale.
 
+\begin{verbatim}
+Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+i Please use `linewidth` instead.
+\end{verbatim}
+
 \begin{figure}[ht!]
 
 {\centering \includegraphics[width=1\textwidth,height=\textheight]{./04-selectionmodeles_files/figure-pdf/fig-validationcroiseeillust-1.pdf}
@@ -3209,21 +3269,23 @@ est mise de côté et ne sert que pour la validation.}
 
 \end{figure}
 
-On recommande habituellement de prendre \(K=\min\{n^{1/2}, 10\}\)
-groupes (le choix de cinq ou 10 groupes sont ceux qui revient le plus
-souvent en pratique). Si on prend \(K=10\) groupes, alors chaque modèle
-est estimé avec 90\% des données et on prédit ensuite le 10\% restant.
-Comme on passe en boucle les 10 parties, chaque observation est prédite
-une et une seule fois à la fin. Il est important de souligner que les
-groupes sont formés de façon aléatoire et donc que l'estimé que l'on
-obtient peut être très variable, surtout si la taille de l'échantillon
-d'apprentissage est petite. Il arrive également que le modèle ajusté sur
-un groupe ne puisse pas être utilisé pour prédire les observations mises
-de côté, notamment si des variables catégorielles sont présentes mais
-qu'une modalité n'est présente que dans un des groupes; ce problème se
-présente en pratique si certaines classes ont peu d'observations. Un
-échantillonnage stratifié permet de pallier à cette lacune et de
-s'assurer d'une répartition plus homogène des variables catégorielles.
+La validation croisée est coûteuse parce qu'on doit ajuster \(K\) fois
+le modèles. On recommande habituellement de prendre
+\(K=\min\{n^{1/2}, 10\}\) groupes (le choix de cinq ou 10 groupes sont
+ceux qui revient le plus souvent en pratique). Si on prend \(K=10\)
+groupes, alors chaque modèle est estimé avec 90\% des données et on
+prédit ensuite le 10\% restant. Comme on passe en boucle les 10 parties,
+chaque observation est prédite une et une seule fois à la fin. Il est
+important de souligner que les groupes sont formés de façon aléatoire et
+donc que l'estimé que l'on obtient peut être très variable, surtout si
+la taille de l'échantillon d'apprentissage est petite. Il arrive
+également que le modèle ajusté sur un groupe ne puisse pas être utilisé
+pour prédire les observations mises de côté, notamment si des variables
+catégorielles sont présentes mais qu'une modalité n'est présente que
+dans un des groupes; ce problème se présente en pratique si certaines
+classes ont peu d'observations. Un échantillonnage stratifié permet de
+pallier à cette lacune et de s'assurer d'une répartition plus homogène
+des variables catégorielles.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3272,6 +3334,20 @@ explicites qui nous permettent d'éviter d'ajuster \(n\) régressions par
 moindre carrés. Cette forme de validation croisée tend à être trop
 optimiste.
 
+Il faut garder en tête que le résultat de la validation croisée est
+aléatoire parce que la séparation des données en plis l'est également.
+La figure Figure~\ref{fig-plotcv}, obtenue en répétant 100 fois la
+procédure et en calculant à chaque fois la performance de différents
+modèles polynomiaux, montre la variabilité des estimations. Plutôt que
+de répéter le calcul, si on a un nombre de groupes \(K\) suffisamment
+grand et assez d'observations par pli, on pourrait estimer la
+variabilité de la procédure directement. Posons
+\(\widehat{\mathsf{EQM}}_{\text{VC}, k}\) (\(k=1, \ldots, K\)) calculer
+l'erreur quadratique moyenne de chaque pli. On peut estimer l'écart-type
+empirique de cette moyenne via \begin{align*}
+\mathsf{sd}(\widehat{\mathsf{EQM}}_{\text{VC}}) = \frac{1}{K-1} \sum_{k=1}^{K} (\widehat{\mathsf{EQM}}_{\text{VC}, k}-\widehat{\mathsf{EQM}}_{\text{VC}})^2.
+\end{align*}
+
 Revenons à notre exemple où une seule variable explicative est
 disponible et où l'on cherche à déterminer un bon modèle polynomial. La
 dernière colonne de Tableau~\ref{tbl-polynome-ajustement},
@@ -3286,9 +3362,9 @@ en moyenne (comme il l'était par le \(\mathsf{AIC}\) et le
 par validation croisée (courbe de validation croisée) et aussi le
 \(\mathsf{EQM}\). On voit que l'estimation par validation croisée suit
 assez bien la forme du \(\mathsf{EQM}\) (qu'il est supposé estimer). Les
-boîtes à moustache permettent d'apprécier la variabilité des estimés de
-l'erreur quadratique moyenne telles qu'estimée par validation croisée
-avec 10 groupes.
+boîtes à moustache de la Figure~\ref{fig-plotcv} permettent d'apprécier
+la variabilité des estimés de l'erreur quadratique moyenne telles
+qu'estimée par validation croisée avec 10 groupes.
 
 \begin{figure}[ht!]
 
@@ -3301,6 +3377,22 @@ valeurs de l'erreur quadratique moyenne estimées par validation croisée
 à 10 plis pour chaque ordre du polynôme.}
 
 \end{figure}
+
+Il arrive que la performance soit très similaire pour plusieurs modèles,
+auquel cas on pourrait être tenté de prendre le modèle le plus
+parsimonieux (c'est-à-dire, celui qui a le moins de paramètres). Si on a
+calculé la performance avec la validation croisée et qu'on a obtenu une
+mesure d'incertitude pour notre performance, on peut utiliser la règle
+du « 1 écart-type». Cette dernière veut qu'on choisisse le modèle le
+plus simple parmi un ensemble
+\(\mathcal{M}_0 \subset\cdots \subset \mathcal{M}_m\) qui satisfasse
+\begin{align*}
+\widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_i) \leq \min_{m = i+1}^M \widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_m) + \mathsf{sd}\{\widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_m)\}.
+\end{align*} Autrement dit, on trouve le modèle qui minimise notre
+critère d'erreur et on choisit ensuite le modèle le plus simple qui soit
+à au plus un écart-type de ce modèle. On verra ainsi souvent des barres
+d'erreurs à \(\pm\) un écart-type, comme dans la
+Figure~\ref{fig-lassopath}.
 
 \hypertarget{pruxe9sentation-des-donnuxe9es-1}{%
 \section{Présentation des
@@ -3387,22 +3479,25 @@ statistiques descriptives pour l'échantillon d'apprentissage.
 \begin{Highlighting}[]
 \FunctionTok{data}\NormalTok{(dbm, }\AttributeTok{package =} \StringTok{"hecmulti"}\NormalTok{)}
 \FunctionTok{str}\NormalTok{(dbm)}
-\DocumentationTok{\#\# tibble [101,000 x 13] (S3: tbl\_df/tbl/data.frame)}
-\DocumentationTok{\#\#  $ x1      : int [1:101000] 1 1 0 0 1 1 0 0 0 1 ...}
-\DocumentationTok{\#\#  $ x2      : num [1:101000] 42 59 52 32 38 63 35 32 26 32 ...}
-\DocumentationTok{\#\#  $ x3      : Factor w/ 3 levels "1","2","3": 1 2 3 1 2 2 2 1 3 1 ...}
-\DocumentationTok{\#\#  $ x4      : Factor w/ 5 levels "1","2","3","4",..: 3 3 5 1 5 5 1 3 1 5 ...}
-\DocumentationTok{\#\#  $ x5      : int [1:101000] 1 1 1 0 0 1 1 0 0 0 ...}
-\DocumentationTok{\#\#  $ x6      : num [1:101000] 8.6 8.6 1.4 10.7 9.1 9.4 10.6 4.8 4 10.3 ...}
-\DocumentationTok{\#\#  $ x7      : num [1:101000] 8 9 9 42 5 1 6 5 48 9 ...}
-\DocumentationTok{\#\#  $ x8      : num [1:101000] 49 70 120 31 30 28 59 70 73 55 ...}
-\DocumentationTok{\#\#  $ x9      : num [1:101000] 159 123 434 110 55 102 593 298 83 90 ...}
-\DocumentationTok{\#\#  $ x10     : num [1:101000] 5 5 8 3 3 8 10 6 2 3 ...}
-\DocumentationTok{\#\#  $ yachat  : int [1:101000] 0 0 0 0 0 0 0 1 1 1 ...}
-\DocumentationTok{\#\#  $ ymontant: num [1:101000] NA NA NA NA NA NA NA 52 79 77 ...}
-\DocumentationTok{\#\#  $ test    : Factor w/ 2 levels "0","1": 1 1 1 1 1 1 1 1 1 1 ...}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+tibble [101,000 x 13] (S3: tbl_df/tbl/data.frame)
+ $ x1      : int [1:101000] 1 1 0 0 1 1 0 0 0 1 ...
+ $ x2      : num [1:101000] 42 59 52 32 38 63 35 32 26 32 ...
+ $ x3      : Factor w/ 3 levels "1","2","3": 1 2 3 1 2 2 2 1 3 1 ...
+ $ x4      : Factor w/ 5 levels "1","2","3","4",..: 3 3 5 1 5 5 1 3 1 5 ...
+ $ x5      : int [1:101000] 1 1 1 0 0 1 1 0 0 0 ...
+ $ x6      : num [1:101000] 8.6 8.6 1.4 10.7 9.1 9.4 10.6 4.8 4 10.3 ...
+ $ x7      : num [1:101000] 8 9 9 42 5 1 6 5 48 9 ...
+ $ x8      : num [1:101000] 49 70 120 31 30 28 59 70 73 55 ...
+ $ x9      : num [1:101000] 159 123 434 110 55 102 593 298 83 90 ...
+ $ x10     : num [1:101000] 5 5 8 3 3 8 10 6 2 3 ...
+ $ yachat  : int [1:101000] 0 0 0 0 0 0 0 1 1 1 ...
+ $ ymontant: num [1:101000] NA NA NA NA NA NA NA 52 79 77 ...
+ $ test    : Factor w/ 2 levels "0","1": 1 1 1 1 1 1 1 1 1 1 ...
+\end{verbatim}
 
 \hypertarget{tbl-contingence-dbm}{}
 \begin{table}
@@ -3618,7 +3713,7 @@ l'origine englobera toutes les autres valeurs de \texttt{x3}, à savoir
   fois. La fonction \texttt{leaps::regsubsets} va quant à elle créer des
   indicateurs binaires.}
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, toptitle=1mm, leftrule=.75mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Danger de surajustement avec variables catégorielles}, colback=white, titlerule=0mm, bottomrule=.15mm, rightrule=.15mm, toprule=.15mm, breakable, colframe=quarto-callout-tip-color-frame, coltitle=black, bottomtitle=1mm, left=2mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-tip-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, coltitle=black, colbacktitle=quarto-callout-tip-color!10!white, rightrule=.15mm, colback=white, arc=.35mm, bottomrule=.15mm, left=2mm, toptitle=1mm, colframe=quarto-callout-tip-color-frame, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Danger de surajustement avec variables catégorielles}, leftrule=.75mm, opacitybacktitle=0.6, opacityback=0]
 La principale cause de mauvaise performance est le surajustement
 sélectif. Dans l'exemple que l'on considère avec la base de données
 marketing, la plupart des modalités des variables catégorielles semblent
@@ -3730,21 +3825,21 @@ d'informations. }\tabularnewline
 \toprule
 variables & BIC & AIC\\
 \midrule
-x5 & -96 & -103\\
-x5 x6 & -196 & -206\\
-x31 x5 x6 & -311 & -324\\
-x31 x5 x6 x10 & -351 & -368\\
-x1 x31 x5 x6 x10 & -369 & -389\\
+x5 & -95.96 & -102.65\\
+x5 x6 & -196.41 & -206.45\\
+x31 x5 x6 & -311.09 & -324.48\\
+x31 x5 x6 x10 & -351.05 & -367.79\\
+x1 x31 x5 x6 x10 & -369.33 & -389.41\\
 \addlinespace
-x1 x31 x5 x6 x7 x10 & -387 & -411\\
-x1 x31 x5 x6 x7 x8 x10 & -392 & -419\\
-x1 x31 x44 x5 x6 x7 x8 x10 & -391 & -421\\
-x1 x2 x31 x44 x5 x6 x7 x8 x10 & -390 & -424\\
-x1 x2 x31 x44 x5 x6 x7 x8 x9 x10 & -387 & -424\\
+x1 x31 x5 x6 x7 x10 & -387.09 & -410.52\\
+x1 x31 x5 x6 x7 x8 x10 & -392.18 & -418.95\\
+x1 x31 x44 x5 x6 x7 x8 x10 & -390.68 & -420.80\\
+x1 x2 x31 x44 x5 x6 x7 x8 x10 & -390.05 & -423.53\\
+x1 x2 x31 x44 x5 x6 x7 x8 x9 x10 & -386.94 & -423.75\\
 \addlinespace
-x1 x2 x31 x43 x44 x5 x6 x7 x8 x9 x10 & -383 & -423\\
-x1 x2 x31 x41 x42 x43 x44 x5 x6 x7 x8 x10 & -378 & -422\\
-x1 x2 x31 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10 & -375 & -422\\
+x1 x2 x31 x43 x44 x5 x6 x7 x8 x9 x10 & -382.86 & -423.03\\
+x1 x2 x31 x41 x42 x43 x44 x5 x6 x7 x8 x10 & -378.39 & -421.91\\
+x1 x2 x31 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10 & -374.76 & -421.62\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -3755,8 +3850,8 @@ sous-ensembles. Dans l'exemple, on voit que le modèle avec les variables
 \texttt{x1} \texttt{x2} \texttt{x31} \texttt{x44} \texttt{x5}
 \texttt{x6} \texttt{x7} \texttt{x8} \texttt{x9} et \texttt{x10} est
 celui qui minimise le \(\mathsf{AIC}\) globalement (\(\mathsf{AIC}\) de
--423.754). Le modèle choisi par le \(\mathsf{BIC}\) contient seulement
-sept variables explicatives (plutôt que 10), soit \texttt{x1}
+-423.7539583). Le modèle choisi par le \(\mathsf{BIC}\) contient
+seulement sept variables explicatives (plutôt que 10), soit \texttt{x1}
 \texttt{x31} \texttt{x5} \texttt{x6} \texttt{x7} \texttt{x8}
 \texttt{x10}.
 
@@ -4062,7 +4157,7 @@ intervient dans un coin avec certaines coordonnées nulles.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=1\textwidth,height=\textheight]{./04-selectionmodeles_files/figure-pdf/fig-lassopenalty-1.pdf}
+{\centering \includegraphics{./04-selectionmodeles_files/figure-pdf/fig-lassopenalty-1.pdf}
 
 }
 
@@ -4117,7 +4212,7 @@ Le graphique de la Figure~\ref{fig-lassopath} montre l'évolution de
 l'erreur quadratique moyenne estimée en fonction du logarithme naturel
 de la pénalité (axe des abscisses). Comme plusieurs pénalités sont dans
 la marge d'erreurs, on choisit le première modèle à un erreur-type de la
-valeur minimale
+valeur minimale.
 
 \begin{figure}[ht!]
 
@@ -4434,7 +4529,7 @@ des parties d'effet par le rétrécissement (\emph{shrinkage}). De récents
 développements théoriques permettent aussi de corriger les
 valeurs-\emph{p} pour faire de l'inférence post-sélection avec le LASSO.
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, toptitle=1mm, leftrule=.75mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, colback=white, titlerule=0mm, bottomrule=.15mm, rightrule=.15mm, toprule=.15mm, breakable, colframe=quarto-callout-note-color-frame, coltitle=black, bottomtitle=1mm, left=2mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, coltitle=black, colbacktitle=quarto-callout-note-color!10!white, rightrule=.15mm, colback=white, arc=.35mm, bottomrule=.15mm, left=2mm, toptitle=1mm, colframe=quarto-callout-note-color-frame, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, opacitybacktitle=0.6, opacityback=0]
 
 \begin{itemize}
 \tightlist
@@ -5340,6 +5435,36 @@ plutôt comparer correctement la performance de classification des
 modèles en utilisant des méthodes permettant d'obtenir un bon modèle
 tout en se protégeant contre le surajustement. Certaines de ces méthodes
 (division de l'échantillon, validation croisée) ont déjà été présentées.
+
+\begin{tcolorbox}[enhanced jigsaw, breakable, coltitle=black, colbacktitle=quarto-callout-note-color!10!white, rightrule=.15mm, colback=white, arc=.35mm, bottomrule=.15mm, left=2mm, toptitle=1mm, colframe=quarto-callout-note-color-frame, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, opacitybacktitle=0.6, opacityback=0]
+
+\begin{itemize}
+\tightlist
+\item
+  Une régression logistique sert à modéliser la moyenne de
+  \textbf{variables catégorielles}, typiquement binaires.
+\item
+  C'est un cas particulier d'un modèle de régression linéaire
+  généralisée.
+\item
+  Le modèle est interprétable à l'échelle de la cote, qui donne dans le
+  cas binaire le rapport probabilité de réussite (1) sur probabilité
+  d'échec (0)
+\item
+  En l'absence d'interactions, on interprète les coefficients en terme
+  de pourcentage d'augmentation si \(\exp(\widehat{\beta}) > 1\), avec
+  \(\exp(\widehat{\beta})-1\) ou en terme de pourcentage de diminution
+  si \(\exp(\widehat{\beta}) < 1\), avec \(1-\exp(\widehat{\beta})\)
+\item
+  L'estimation est faite par maximum de vraisemblance: on a accès aux
+  critères d'information et aux tests d'hypothèses omnibus pour comparer
+  des modèles emboîtés.
+\item
+  Les intervalles de confiance de vraisemblance profilée rapportés sont
+  invariants aux reparamétrisations.
+\end{itemize}
+
+\end{tcolorbox}
 
 \hypertarget{classification-et-pruxe9diction}{%
 \section{Classification et
@@ -6558,6 +6683,54 @@ Nous reviendrons une dernière fois sur cet exemple dans le chapitre
 traitant des données manquantes. Nous verrons alors comment procéder si
 des valeurs manquantes sont présentes dans les variables explicatives.
 
+\begin{tcolorbox}[enhanced jigsaw, breakable, coltitle=black, colbacktitle=quarto-callout-note-color!10!white, rightrule=.15mm, colback=white, arc=.35mm, bottomrule=.15mm, left=2mm, toptitle=1mm, colframe=quarto-callout-note-color-frame, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, opacitybacktitle=0.6, opacityback=0]
+
+\begin{itemize}
+\tightlist
+\item
+  La classification est une forme d'apprentissage supervisée.
+\item
+  On peut assigner l'observation à la classe la plus plausible, ou
+  déterminer un point de coupure.
+\item
+  Si on a un objectif particulier (fonction de gain), on peut optimiser
+  les profits en assignant une importance différente à chaque scénario.
+\item
+  On peut catégoriser les observations dans une matrice de confusion et
+  on peut calculer le taux de bonne classification comme mesure
+  d'adéquation.
+\item
+  Dans le cas binaire, on s'intéresse généralement à
+
+  \begin{itemize}
+  \tightlist
+  \item
+    la spécificité (proportion d'échecs correctement classifiés)
+  \item
+    la sensibilité (proportion de succès correctement classifiés)
+  \item
+    le taux de faux positifs ou faux négatifs
+  \end{itemize}
+\item
+  L'aire sous la courbe de la fonction d'efficacité du récepteur (courbe
+  ROC) et le lift donnent une mesure de la qualité des prédictions.
+\item
+  L'erreur quadratique moyenne se réduit à calculer le taux de mauvaise
+  classification, qu'on cherche à minimiser. On peut aussi utiliser la
+  vraisemblance comme fonction objective.
+\item
+  Les outils pour la sélection de variables couverts précédemment
+  (critères d'information, LASSO, estimation de l'erreur par validation
+  externe ou croisée) sont toujours applicables.
+\item
+  Les modèles sont plus coûteux à estimer.
+\item
+  Il y a moins d'information disponible avec une variable cible binaire,
+  d'où une incertitude plus prononcée.
+\end{itemize}
+
+\end{tcolorbox}
+
 \hypertarget{moduxe8les-pour-donnuxe9es-multinomiales}{%
 \section{Modèles pour données
 multinomiales}\label{moduxe8les-pour-donnuxe9es-multinomiales}}
@@ -7025,6 +7198,37 @@ la valeur-\(p\), infime, indique que le modèle plus complexe, soit le
 modèle saturé, est préférable. Cela nous indique que le modèle a un
 piètre pouvoir explicatif.
 
+\begin{tcolorbox}[enhanced jigsaw, breakable, coltitle=black, colbacktitle=quarto-callout-note-color!10!white, rightrule=.15mm, colback=white, arc=.35mm, bottomrule=.15mm, left=2mm, toptitle=1mm, colframe=quarto-callout-note-color-frame, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, opacitybacktitle=0.6, opacityback=0]
+
+\begin{itemize}
+\tightlist
+\item
+  La régression multinomiale logistique pour une variable catégorielle à
+  \(K\) niveaux est une extension directe de la régression logistique
+  pour données binaires: il y a \(K-1\) équations de cote en termes des
+  variables explicatives (puisque la somme des probabilités vaut 1),
+  donc le nombre de paramètres croît rapidement.
+\item
+  Le modèle est multiplicatif: la cote de catégorie \(k\) vs référence
+  est multipliée par \(\exp(\beta_{jk})\) pour chaque augmentation de
+  \(\mathrm{X}_j\) d'une unité.
+\item
+  Les coefficients manquants de la sortie du tableau peuvent être
+  déduits par des manipulations algébriques.
+\item
+  Le modèle cumulatif à cote proportionnelle est une simplification du
+  modèle multinomial pour des données ordinales.
+\item
+  On suppose que l'effet des variables est le même pour la cote de la
+  survie de chaque modalité
+\item
+  Le modèle à cotes proportionnelles a moins de paramètres, mais le
+  postulat de cotes proportionnelles doit être vérifié (via un test de
+  rapport de vraisemblance ou un test du score).
+\end{itemize}
+
+\end{tcolorbox}
+
 \bookmarksetup{startatroot}
 
 \hypertarget{analyse-survie}{%
@@ -7035,26 +7239,131 @@ piètre pouvoir explicatif.
 
 Cette section traite de temps avant qu'un événement survienne. Le
 traitement de ce type de données, dites données de survie en référence
-au domain médical, est particulier parce que l'information disponible
-est incomplète. Plusieurs mécanismes peuvent impacter la survie.
+au domaine médical, est particulier parce que l'information disponible
+est incomplète. Plusieurs mécanismes peuvent impacter la survie:
+généralement les données sont sujettes à troncature et à censure.
+
+Pour déterminer les mécanismes de survie en présence, il peut être utile
+de représenter le processus de collecte de données à l'aide d'un
+diagramme de Lexis: ce dernier présente la trajectoire observée à l'aide
+d'une droite de pente un. L'axe des abscisses (\(x\)) donne le temps (au
+calendrier) et l'axe des ordonnées (\(y\)) la durée observée.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics[width=1.83in,height=\textheight]{./figures/Lexis_censure.png}
+
+}
+
+\caption{\label{fig-lexis}Diagramme de Lexis pour données tronquées à
+gauche (\(A\) et \(C\)) et censurées à droite (\(C\) et \(D\)).}
+
+\end{figure}
+
+La Figure~\ref{fig-lexis} montre des courbes fictives. On trace une
+droite de pente 1 représentant la durée en fonction du temps (date au
+calendrier) etl a fenêtre définit la période de collecte de donnée. La
+censure est indiquée par des cercles, les événements par des croix.
+
+On parle de censure lorsque le temps réel de l'événement n'est pas
+observé (information partielle).
+
+\begin{itemize}
+\tightlist
+\item
+  Censure à droite: l'événement n'est pas encore survenu au temps \(t\):
+  on sait que \(T > t\).
+\item
+  Censure à gauche: l'événement survient avant le temps \(t\), donc la
+  vraie valeur est inférieure à la valeur observée (\(T < t\))
+\item
+  Censure par intervalle: l'événement est survenu dans la plage
+  \([t_1, t_2]\) (données arrondies)
+\end{itemize}
+
+La censure peut être aléatoire (par exemple, une personne qui fait
+partie d'un protocole de rercherche déménage dans un autre pays parce
+que sa conjointe a trouvé un emploi là-bas et cette raison n'a aucun
+lien avec son état de santé). La censure administrative, un mécanisme
+déterministe qui survient lorsque les données sont collectées sur une
+période fixe de temps, ne fournit pas non plus d'information sur
+l'événement en question. On supposera dans ces notes que nous sommes
+dans un de ces deux cas de figure.
+
+Si la censure est informative, les outils présentés ne sont pas
+adéquats! Par exemple, si un patient d'une étude clinique est déchargé
+d'un protocole médical car il est trop mal en point, cela nous renseigne
+sur son état de santé et sur sa survie.
+
+La troncature, rarement discutée, est liée au processus de collecte et
+détermine quelles observations sont incluses dans l'étude. La plage des
+valeurs possibles est tronquée. Les types de troncature sont:
+
+\begin{itemize}
+\tightlist
+\item
+  troncature à gauche: le temps minimum est supérieur à \(t_0\)
+\item
+  troncature à droite: le temps maximum est inférieur à \(t_1\)
+\item
+  troncature par intervalle: le temps de l'événement doit survenir entre
+  \(t_0\) et \(t_1\).
+\end{itemize}
+
+La troncature à gauche est la plus fréquente: elle survient par exemple
+si on étudie le temps d'abonnement, mais qu'on n'a accès qu'aux dossiers
+de clients et de clientes qui sont actifs dans le système. Ainsi, une
+personne qui se serait désabonnée une journée avant qu'on télécharge les
+données ne se trouvera pas dans la base de données. Si on ne tient pas
+compte de cet état de fait et des fantômes, nos estimations seront
+biaisées.
+
+La troncature par intervalle survient quand on considère uniquement les
+personnes pour lesquelles l'événement d'intérêt est survenu. Si l'on
+s'intéresse à la durée de la relation d'emploi et seules les personnes à
+l'emploi qui ont pris leur retraite entre 2009 et 2021 sont considérées
+pour l'étude, on sera en présence de troncature par intervalle comme
+représenté dans la Figure~\ref{fig-troncatureintervalle}.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics[width=4in,height=\textheight]{./figures/lexis_troncationintervalle.png}
+
+}
+
+\caption{\label{fig-troncatureintervalle}Diagramme de Lexis illustrant
+la troncature par intervalle.}
+
+\end{figure}
 
 On considère comme exemple une étude sur le chômage dû à la crise du
 coronavirus. On s'intéresse à tous ceux qui étaient en recherche active
 d'emploi entre mars et juin; seuls ceux qui étaient au chômage durant
 cette période seront considérés. Certaines personnes seront déjà au
 chômage en avril et donc leur durée de chômage en mars est déjà longue
-(troncature à gauche). Lors de notre suivi, d'autre mentionneront avoir
-trouvé un emploi lors de notre appel, mais ne pourront nous renseigner
-sur la date exacte de leur embauche: cette dernière précèdera notre
-prise de contact, mais nous est inconnue (censure à gauche). D'autres
-personnes seront toujours au chômage en juin à la fin de l'étude et on
-ignorera le nombre réel de mois passés au chômage (censure à droite).
-Enfin, certaines personnes cesseront de chercher activement un emploi et
-donc quitteront l'étude. Tous ces méchanismes (complexes) peuvent être
-dictés par certaines covariables (employabilité, découragement) et être
-aléatoires ou pas. Pour estimer le taux de chômage, il faudra prendre en
-compte les méchanismes de survie dans notre modèle. On se concentrera
-sur le cas simple des données censurées à droite de façon aléatoire.
+(troncature à gauche). Lors de notre suivi, d'autres personnes
+mentionneront avoir trouvé un emploi lors de notre appel, mais ne
+pourront nous renseigner sur la date exacte de leur embauche: cette
+dernière précèdera notre prise de contact, mais nous est inconnue
+(censure à gauche). D'autres personnes seront toujours au chômage en
+juin à la fin de l'étude et on ignorera le nombre réel de mois passés au
+chômage (censure à droite). Enfin, certaines personnes cesseront de
+chercher activement un emploi et donc quitteront l'étude (censure à
+droite). Tous ces méchanismes (complexes) peuvent être dictés par
+certaines covariables (employabilité, découragement) et être aléatoires
+ou pas. Pour estimer le taux de chômage, il faudra prendre en compte les
+méchanismes de survie dans notre modèle. On se concentrera sur le cas
+simple des données censurées à droite de façon aléatoire.
+
+Avec la survie, les statistiques descriptives usuelles sont trompeuses.
+La figure de
+\href{https://theconversation.com/music-to-die-for-how-genre-affects-popular-musicians-life-expectancy-36660}{cet
+article tiré de \emph{The Conversation}} montre l'impact drastique de la
+censure en représentant l'âge moyen au décès en fonction du genre
+musical, ordonné par ordre d'apparition de ce dernier. Puisque seules
+les personnes décédées sont incluses, les artistes de hip-hop décédés
+l'ont été forcément en bas-âge. Si on ne prend pas en compte la censure,
+on obtiendrait une conclusion erronnée.
 
 \hypertarget{exemple-du-temps-dabonnement}{%
 \subsection{Exemple du temps
@@ -7135,7 +7444,7 @@ temps. Bien que le terme analyse de survie semble implicitement référer
 Si aucune observation n'est censurée, c'est-à-dire, si on a observé le «
 vrai » temps pour chaque sujet, on pourrait alors simplement modéliser
 \(T\) en incluant des covariables dans les paramètres de vraisemblance
-d'une loi positive (par exemple, une régression log-linéaire). En
+d'une loi positive (par exemple, avec une régression log-linéaire). En
 revanche, si des observations sont censurées dans l'échantillon, leur
 omission biaiserait l'analyse.
 
@@ -7378,22 +7687,68 @@ les temps observés de défaillance puisqu'on sait uniquement la borne
 inférieure de la plage possible des valeurs pour le vrai temps de
 défaillance.
 
+Les statistiques descriptives usuelles sont biaisées en raison de la
+censure. Avec l'estimateur de Kaplan--Meier, on peut aisément obtenir
+les quantiles. Si la courbe de survie estimée descend à zéro, il est
+également possible d'estimer la moyenne en calculant l'aire sous la
+courbe de survie.\footnote{Si on considère une variable aléatoire
+  positive, alors l'aire sous la courbe de survie donne l'espérance.} Si
+la courbe ne descend pas à zéro, on obtient une borne inférieure
+(sous-estimation de la moyenne), appelée \emph{moyenne restreinte}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(kapm, }\AttributeTok{print.rmean =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Par exemple, la moyenne estimée via Kaplan--Meier est 125 semaines
+(\texttt{rmean}), à comparer avec la moyenne empirique de
+\texttt{temps}, ici de 107.788 semaines, qui est biaisée.
+
 \hypertarget{calcul-de-lestimateur-de-kaplanmeier}{%
 \subsection{Calcul de l'estimateur de
 Kaplan--Meier}\label{calcul-de-lestimateur-de-kaplanmeier}}
 
-Cette partie peut être omise; elle est incluse seulement par souci de
-complétude. Soit \(T_1, \ldots, T_n\) les \(n\) réalisations aléatoires
-de la variable temps (certaines censurées, d'autres pas). Supposons
-qu'il y a \(m\) temps distincts où au moins un individu expérimente
-l'événement. Soient \(t_{(1)} < \cdots < t_{(m)}\), ces temps ordonnés
-en ordre croissant et \(r_i\) le nombre d'individus à risque au temps
-\(t_{(i)}\) (les individus qui n'ont pas encore expérimenté l`événement,
-et qui ne sont pas encore censurés avant \(t_{(i)}\)). On note \(d_i\)
-le nombre d'individus qui expérimentent l'événement au temps
-\(t_{(i)}\). L'estimateur de Kaplan--Meier de la fonction de survie à un
-temps \(t\) est \begin{align*}
- \widehat{S}(t) = \left( 1- \frac{d_1}{r_1}\right) \times \cdots \times \left( 1- \frac{d_{i(t)}}{r_{i(t)}}\right), \qquad t_{(1)} \leq t \leq t_{(m)},
+Pour comprendre l'estimateur de Kaplan--Meier, il est utile de
+s'intéresser à sa construction. Deux éléments sont essentiels: on parle
+d'\textbf{échec} ou d'événement au temps \(t_i\) si l'événement est
+observé (\(T_i=t_i\)) au temps \(t_i\). Le nombre de \textbf{personnes à
+risque} au temps \(t_i\) est le total des observations dont le temps
+mesuré excède \(t_i\) (censure et événements postérieurs à \(t_i\))
+
+Pour la \textbf{construction}, on procède comme suit:
+
+\begin{itemize}
+\tightlist
+\item
+  Ordonner les temps (uniques) où il y a des échecs (temps où
+  \texttt{censure\ =\ 1}), disons \(t_{(1)} \leq \cdots \leq t_{(m)}\)
+\item
+  À chaque temps \(t_{(i)}\) \((i=1, \ldots m)\), on calcule le nombre
+  de personnes à risque, \(r_i\), et le nombre d'échecs, \(d_i\).
+\item
+  Le risque empirique est \(\widehat{h}_i = r_i/d_i\), la proportion
+  d'échecs parmi les personnes à risque.
+\end{itemize}
+
+L'estimateur de Kaplan--Meier définit une \textbf{fonction escalier}
+
+\begin{itemize}
+\tightlist
+\item
+  Entre \(t=0\) et \(t=t_{(1)}\), la survie est de 1.
+\item
+  Entre \(t=t_{(1)}\) et \(t=t_{(2)}\), la survie est
+  \(1-\widehat{h}_1\).
+\item
+  Entre \(t=t_{(2)}\) et \(t=t_{(3)}\), la survie est
+  \((1-\widehat{h}_1) \times (1-\widehat{h}_2)\), etc.
+\end{itemize}
+
+Pour un temps \(t\) donné, on multiplie tous les termes
+(\(1-\widehat{h}_i\)) des temps d'échecs passés, \begin{align*}
+ \widehat{S}(t) &= \prod_{i: t_{(i)} < t} \left( 1- \widehat{h}_i\right) \\ &= \left( 1- \frac{d_1}{r_1}\right) \times \cdots \times \left( 1- \frac{d_{i(t)}}{r_{i(t)}}\right).
 \end{align*} où \(i(t) =\max(j \in \{1, \ldots, m\}: t \geq t_{j})\),
 soit le plus grand indice parmi \(1, \ldots, m\) tel que
 \(t \geq t_{i(t)}\). Par convention, si \(t < t_{(1)}\), on fixe
@@ -7401,8 +7756,15 @@ soit le plus grand indice parmi \(1, \ldots, m\) tel que
 de défaillance observée, mais la convention veut qu'elle soit continue à
 gauche.
 
-Avec la troncation à gauche, la même logique s'applique mais les
-personnes ne sont à risque qu'à partir du temps minimum observé.
+Ainsi, l'estimation de la survie estimée ne change qu'aux valeurs de
+\(t_{(i)}\) (\(i=1, \ldots, m\)). Les contre-marches de l'escalier ainsi
+défini interviennent uniquement aux temps observés d'échecs. Si à un
+moment donné toutes les personnes à risque expérimentent l'événement, la
+courbe descend à zéro. Si on a uniquement de la censure à droite, la
+courbe de survie n'atteindra jamais zéro si la plus grande observation
+est censurée à droite. Avec la troncation à gauche, la même logique
+s'applique mais les personnes ne sont à risque qu'à partir du temps
+minimum observé.
 
 \hypertarget{comparaison-de-deux-courbes-de-survie}{%
 \section{Comparaison de deux courbes de
@@ -7431,68 +7793,24 @@ d'abonnement:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\DocumentationTok{\#\# valeur{-}p du test asymptotique}
-\FunctionTok{survdiff}\NormalTok{(}\AttributeTok{formula =} \FunctionTok{Surv}\NormalTok{(temps, censure) }\SpecialCharTok{\textasciitilde{}}\NormalTok{ sexe, }
-         \AttributeTok{data =}\NormalTok{ survie1)}
+\NormalTok{strat\_sexe }\OtherTok{\textless{}{-}} \FunctionTok{survfit}\NormalTok{(}\FunctionTok{Surv}\NormalTok{(temps, censure) }\SpecialCharTok{\textasciitilde{}}\NormalTok{ sexe, }\AttributeTok{data =}\NormalTok{ survie1)}
+\NormalTok{lograng }\OtherTok{\textless{}{-}} \FunctionTok{survdiff}\NormalTok{(}\FunctionTok{Surv}\NormalTok{(temps, censure) }\SpecialCharTok{\textasciitilde{}}\NormalTok{ sexe, }\AttributeTok{data =}\NormalTok{ survie1)}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-Call:
-survdiff(formula = Surv(temps, censure) ~ sexe, data = survie1)
-
-         N Observed Expected (O-E)^2/E (O-E)^2/V
-sexe=0 309      217      181      7.33      16.4
-sexe=1 191      117      153      8.63      16.4
-
- Chisq= 16.4  on 1 degrees of freedom, p= 5e-05 
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# valeur{-}p exact par simulation}
-\CommentTok{\# (pour petits échantillons, utiliser distribution="exact")}
-\NormalTok{coin}\SpecialCharTok{::}\FunctionTok{logrank\_test}\NormalTok{(}
-  \FunctionTok{Surv}\NormalTok{(temps, censure) }\SpecialCharTok{\textasciitilde{}} \FunctionTok{factor}\NormalTok{(sexe), }
-  \AttributeTok{data =}\NormalTok{ survie1, }
-  \AttributeTok{distribution =}\NormalTok{ coin}\SpecialCharTok{::}\FunctionTok{approximate}\NormalTok{(}\AttributeTok{nresample =} \FloatTok{1e5}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-
-    Approximative Two-Sample Logrank Test
-
-data:  Surv(temps, censure) by factor(sexe) (0, 1)
-Z = -4.1415, p-value = 4e-05
-alternative hypothesis: true theta is not equal to 1
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Le test du log{-}rang calcule si les }
-\CommentTok{\#  deux courbes sont identiques}
-\CommentTok{\# Idée de base: sous H0, les étiquettes }
-\CommentTok{\#  \textquotesingle{}sexe\textquotesingle{} ne sont pas pertinentes}
-\CommentTok{\#  On peut les permuter et comparer les courbes}
-\end{Highlighting}
-\end{Shaded}
-
-On retrouve dans la sortie les estimés de la fonction de survie, de même
-que les quartiles par strate: la première strate correspond aux hommes
-(\texttt{sexe=0}) et la deuxième aux femmes (\texttt{sexe=1}).
 
 Si on utilise les méthodes (\texttt{print}, \texttt{summary},
-\texttt{plot}, \texttt{quantile}), on obtiendra les résultats pour
-chaque strate (ou niveaux de la variable catégorielle). Par exemple, il
-y a 309 hommes et 191 femmes et l'estimation du temps de survie médian
-est de 110 semaines pour les hommes et de 123 semaines pour les femmes.
+\texttt{plot}, \texttt{quantile}) pour la sortie de \texttt{survfit}, on
+obtiendra les résultats pour chaque strate (ou niveaux de la variable
+catégorielle). Par exemple, il y a 309 hommes et 191 femmes et
+l'estimation du temps de survie médian est de 110 semaines pour les
+hommes et de 123 semaines pour les femmes.
 
 La fonction \texttt{survdiff} avec la formule retourne le résultat du
 test asymptotique du log-rang pour l'hypothèse d'égalité des fonctions
-de survie. La valeur-\(p\) du test est inférieure à \(10^{-4}\): on
-rejette donc \(\mathscr{H}_0\) pour conclure qu'il y a donc une
-différence significative entre les deux courbes de survie.
+de survie. La statistique du khi-deux vaut 16.43 et la valeur-\(p\) du
+test est inférieure à \(10^{-4}\): on rejette donc \(\mathscr{H}_0\)
+pour conclure qu'il y a donc une différence significative entre les deux
+courbes de survie.
 
 Les courbes de survie selon le sexe sont représentées dans la
 Figure~\ref{fig-survie-comparaison-courbes}. On voit que la courbe des
@@ -7538,7 +7856,7 @@ gardant en tête que cela réduit la taille de l'échantillon disponible et
 que l'estimation résultante est possiblement trop incertaine pour être
 utile.
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, toptitle=1mm, leftrule=.75mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, colback=white, titlerule=0mm, bottomrule=.15mm, rightrule=.15mm, toprule=.15mm, breakable, colframe=quarto-callout-note-color-frame, coltitle=black, bottomtitle=1mm, left=2mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, coltitle=black, colbacktitle=quarto-callout-note-color!10!white, rightrule=.15mm, colback=white, arc=.35mm, bottomrule=.15mm, left=2mm, toptitle=1mm, colframe=quarto-callout-note-color-frame, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, opacitybacktitle=0.6, opacityback=0]
 
 \begin{itemize}
 \tightlist
@@ -7577,7 +7895,8 @@ utile.
   d'observations censurées impacte la précision de l'estimation.
 \item
   L'estimateur est déficient si le plus grand temps observé est censuré
-  à droite (l'estimation de la fonction de survie ne décroît pas à zéro)
+  à droite (l'estimation de la fonction de survie ne décroît pas à
+  zéro).
 \item
   Le test du log-rang permet de valider si deux fonctions de survie sont
   égales (en tout temps).
@@ -7585,6 +7904,9 @@ utile.
   On peut estimer la fonction de survie indépendamment pour chaque
   modalité d'une variable explicative catégorielle en stratifiant: cela
   réduit la taille de l'échantillon pour chaque strate.
+\item
+  Le modèle de Kaplan--Meier ne permet pas d'estimer l'impact de
+  variables explicatives sur la survie.
 \end{itemize}
 
 \end{tcolorbox}
@@ -7880,41 +8202,9 @@ fonction de survie pour les hommes de 25 et 60 ans et pour les femmes de
 25 et 60 ans. Le fichier \texttt{survie2} contient les données qui
 seront utilisées à cette fin.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{cox4 }\OtherTok{\textless{}{-}}\NormalTok{ survival}\SpecialCharTok{::}\FunctionTok{coxph}\NormalTok{(}
-  \FunctionTok{Surv}\NormalTok{(}\AttributeTok{time =}\NormalTok{ temps, }
-       \AttributeTok{event =}\NormalTok{ censure, }
-       \AttributeTok{type =} \StringTok{"right"}\NormalTok{) }\SpecialCharTok{\textasciitilde{}}
-\NormalTok{    sexe }\SpecialCharTok{+}\NormalTok{ age,}
-  \AttributeTok{data =}\NormalTok{ survie1,}
-  \AttributeTok{ties =} \StringTok{"exact"}
-\NormalTok{)}
-\FunctionTok{data}\NormalTok{(survie2, }\AttributeTok{package =} \StringTok{"hecmulti"}\NormalTok{)}
-\CommentTok{\# Calculer la fonction de survie}
-\NormalTok{fsurv }\OtherTok{\textless{}{-}} \FunctionTok{survfit}\NormalTok{(cox4, }
-             \AttributeTok{newdata =}\NormalTok{ survie2, }
-             \AttributeTok{type =} \StringTok{"kaplan{-}meier"}\NormalTok{)}
-\CommentTok{\# Tracer la fonction de survie selon le profil}
-\FunctionTok{plot}\NormalTok{(fsurv,}
-     \AttributeTok{col =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{4}\NormalTok{,}
-     \AttributeTok{ylab =} \StringTok{"survie"}\NormalTok{,}
-     \AttributeTok{xlab =} \StringTok{"temps d\textquotesingle{}abonnement (semaines)"}\NormalTok{,}
-     \AttributeTok{bty =} \StringTok{"n"}\NormalTok{)}
-\FunctionTok{legend}\NormalTok{(}\AttributeTok{x =} \StringTok{"bottomleft"}\NormalTok{,}
-       \AttributeTok{legend =} \FunctionTok{c}\NormalTok{(}\StringTok{"homme, 25 ans"}\NormalTok{, }
-                  \StringTok{"femme, 25 ans"}\NormalTok{,}
-                  \StringTok{"homme, 60 ans"}\NormalTok{, }
-                  \StringTok{"femme, 60 ans"}\NormalTok{),}
-       \AttributeTok{col =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{4}\NormalTok{,}
-       \AttributeTok{lty =} \DecValTok{1}\NormalTok{,}
-       \AttributeTok{bty =} \StringTok{"n"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.9\textwidth,height=\textheight]{./06-survie_files/figure-pdf/fig-courbes-survie-1.pdf}
+{\centering \includegraphics[width=0.8\textwidth,height=\textheight]{./06-survie_files/figure-pdf/fig-courbes-survie-1.pdf}
 
 }
 
@@ -7930,123 +8220,6 @@ femmes de 25 ans, la courbe 3 pour les hommes de 60 ans et la courbe 4
 pour les femmes de 60 ans. On voit donc que, parmi ces quatre profils,
 les hommes de 25 ans sont le plus à risque de quitter tandis que les
 femmes de 60 ans sont le moins à risque de quitter.
-
-\hypertarget{postulat-de-risques-proportionnels}{%
-\subsection{Postulat de risques
-proportionnels}\label{postulat-de-risques-proportionnels}}
-
-Le modèle de Cox fait l'hypothèse que la fonction de risque de base est
-identique peut importe la valeur des variables catégorielles. La
-Figure~\ref{fig-risquepropfig} illustre à quoi ce postulat correspond
-dans un cas simple où il y a uniquement une variable binaire
-explicative.
-
-\begin{figure}[ht!]
-
-{\centering \includegraphics[width=0.9\textwidth,height=\textheight]{./06-survie_files/figure-pdf/fig-risquepropfig-1.pdf}
-
-}
-
-\caption{\label{fig-risquepropfig}Courbes de risques proportionnelles
-(panneau supérieur) et non proportionnelles (panneau inférieur) avec
-rapport de risque et fonctions de survie correspondantes.}
-
-\end{figure}
-
-Si ce n'est pas le cas, alors les résultats du modèle ne sont pas
-nécessairement fiables.
-
-Comme pour un modèle de régression, il est possible de créer des résidus
-du modèles et de faire des graphiques diagnostics pour potentiellement
-infirmer le postulat de risques proportionnels
-{[}@Grambsch.Therneau:1994{]}. Si l'hypothèse tient la route, alors il
-ne devrait pas y avoir de tendance temporelle dans les résidus.
-
-La commande \texttt{cox.zph} permet de tester le postulat de risques
-proportionnels à l'aide d'un test du score pour voir si la pente
-\(\beta(t)\) associée à une covariable est nulle en fonction du temps
-\(t\); si la valeur-\(p\) est grande, cela indique une absence de
-preuve. La fonction \texttt{plot} permet également d'obtenir un
-graphique des résidus en fonction du temps.
-
-\begin{figure}[ht!]
-
-{\centering \includegraphics{./06-survie_files/figure-pdf/fig-coxph-hypothese-1.pdf}
-
-}
-
-\caption{\label{fig-coxph-hypothese}Estimations des coefficients en
-fonction du temps basés sur les moindres carrés pondérés (diagnostic
-graphique de Grampsch et Therneau).}
-
-\end{figure}
-
-\hypertarget{tbl-coxph-hypothese}{}
-\begin{table}
-\caption{\label{tbl-coxph-hypothese}Postulat de risques proportionnels: test du score de Grampsch et
-Therneau (1994) pour les coefficients constants dans le temps et
-valeur-p asymptotique basée sur la loi nulle khi-deux. }\tabularnewline
-
-\centering
-\begin{tabular}{lrrl}
-\toprule
-effet & score & ddl & valeur-p\\
-\midrule
-age & 4.22 & 1 & 0.040\\
-sexe & 1.11 & 1 & 0.291\\
-region & 3.81 & 4 & 0.432\\
-service & 10.97 & 3 & 0.012\\
-global & 21.23 & 9 & 0.012\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Dans la Figure~\ref{fig-coxph-hypothese}, on voit que le coefficient
-pour service augmente au fil du temps pour tous les groupes. On pourrait
-capturer cette interaction ou stratifier pour calculer le risque selon
-le nombre de services, au risque d'avoir trop peu d'observations pour
-estimer de manière fiable le risque de base. C'est explicable par le
-fait que les personnes avec plus de services tendent à avoir une survie
-plus longue.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{diag\_risqueprop }\OtherTok{\textless{}{-}} \FunctionTok{cox.zph}\NormalTok{(cox3)}
-\FunctionTok{print}\NormalTok{(diag\_risqueprop)}
-\FunctionTok{plot}\NormalTok{(diag\_risqueprop)}
-\end{Highlighting}
-\end{Shaded}
-
-Si le postulat n'est pas validé, on peut interpréter l'effet comme un
-rapport de risque moyen pondéré sur la période de suivi, mais ce dernier
-change selon le moment {[}@Stensrud.Hernan:2020{]}. Cela implique
-également que les erreurs-types associées aux estimations sont
-trompeuses. La section suivante permettra de généraliser le modèle de
-Cox et traiter ce cas de figure.
-
-\hypertarget{extensions-du-moduxe8le-de-cox}{%
-\section{Extensions du modèle de
-Cox}\label{extensions-du-moduxe8le-de-cox}}
-
-Dans cette section, nous allons voir deux extensions du modèle à risques
-proportionnels de base.
-
-\begin{enumerate}
-\def\labelenumi{\roman{enumi})}
-\tightlist
-\item
-  Inclusion de variables explicatives dont la valeur change dans le
-  temps.
-\item
-  Modèle à risques compétitifs (\emph{competing risks}) pour étudier la
-  situation où il y a plusieurs manières de quitter l'état.
-\end{enumerate}
-
-La vignette
-\href{https://cran.r-project.org/web/packages/survival/vignettes/timedep.pdf}{\emph{Using
-Time Dependent Covariates and Time Dependent Coefficients in the Cox
-Model} de Therneau, Crowson et Atkinson} du paquet \texttt{survival}
-offre des détails sur l'implémentation des méthodes qui suivent.
 
 \hypertarget{variables-explicatives-dont-la-valeur-change-dans-le-temps}{%
 \subsection{Variables explicatives dont la valeur change dans le
@@ -8085,6 +8258,21 @@ contributions: une pour la trajectoire sur l'intervalle \((0, t_0]\)
 passée le premier intervalle, on a besoin de l'information sur toute la
 fenêtre (les deux bornes) et le type d'événement pour la première
 fenêtre sera de la censure à droite.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics[width=1.03in,height=\textheight]{./figures/Lexis_censure_modif.png}
+
+}
+
+\caption{\label{fig-lexischtemps}Diagramme de Lexis avec trajectoires.
+Pour ajuster le modèle, on peut casser la contribution d'une observation
+en segments: considérons un seul changement survenant au temps \(t_c\).
+Pour le premier segment, on enregistre \(t_c\) comme valeur maximale
+(censure à droite), tandis que pour la deuxième portion, l'observation
+est tronquée à gauche à partir de \(t_c\).}
+
+\end{figure}
 
 La base de données \texttt{survie3} contient le format adéquat: une
 colonne \texttt{evenement} qui indique la censure (tout intervalle
@@ -8146,8 +8334,351 @@ celui d'un client qui n'a aucun autre service (référence). Le fait
 d'avoir deux ou trois services diminue encore plus le risque de quitter
 (rapports de risque de 0.265 et 0.209, respectivement).
 
+\hypertarget{postulat-de-risques-proportionnels}{%
+\subsection{Postulat de risques
+proportionnels}\label{postulat-de-risques-proportionnels}}
+
+Le modèle de Cox fait l'hypothèse que la fonction de risque de base est
+identique peut importe la valeur des variables catégorielles. La
+Figure~\ref{fig-risquepropfig} illustre à quoi ce postulat correspond
+dans un cas simple où il y a uniquement une variable binaire
+explicative.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics[width=0.9\textwidth,height=\textheight]{./06-survie_files/figure-pdf/fig-risquepropfig-1.pdf}
+
+}
+
+\caption{\label{fig-risquepropfig}Courbes de risques proportionnelles
+(panneau supérieur) et non proportionnelles (panneau inférieur) avec
+rapport de risque et fonctions de survie correspondantes.}
+
+\end{figure}
+
+Si ce n'est pas le cas, alors les résultats du modèle ne sont pas
+nécessairement fiables.Comme pour un modèle de régression, il est
+possible de créer des résidus du modèles et de faire des graphiques
+diagnostics pour potentiellement infirmer le postulat de risques
+proportionnels {[}@Grambsch.Therneau:1994{]}. Si l'hypothèse tient la
+route, alors il ne devrait pas y avoir de tendance temporelle dans les
+résidus.
+
+La commande \texttt{cox.zph} permet de tester le postulat de risques
+proportionnels à l'aide d'un test du score pour voir si la pente
+\(\beta(t)\) associée à une covariable est nulle en fonction du temps
+\(t\); si la valeur-\(p\) est grande, cela indique une absence de
+preuve. La fonction \texttt{plot} permet également d'obtenir un
+graphique des résidus en fonction du temps.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics{./06-survie_files/figure-pdf/fig-coxphhypothese-1.pdf}
+
+}
+
+\caption{\label{fig-coxphhypothese}Estimations des coefficients en
+fonction du temps basés sur les moindres carrés pondérés (diagnostic
+graphique de Grampsch et Therneau).}
+
+\end{figure}
+
+\hypertarget{tbl-coxphhypothese}{}
+\begin{table}
+\caption{\label{tbl-coxphhypothese}Postulat de risques proportionnels: test du score de Grampsch et
+Therneau (1994) pour les coefficients constants dans le temps et
+valeur-p asymptotique basée sur la loi nulle khi-deux. }\tabularnewline
+
+\centering
+\begin{tabular}{lrrl}
+\toprule
+effet & score & ddl & valeur-p\\
+\midrule
+age & 4.22 & 1 & 0.040\\
+sexe & 1.11 & 1 & 0.291\\
+region & 3.81 & 4 & 0.432\\
+service & 10.97 & 3 & 0.012\\
+global & 21.23 & 9 & 0.012\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Dans la Figure~\ref{fig-coxphhypothese}, on voit que le coefficient pour
+service augmente au fil du temps pour tous les groupes. On pourrait
+capturer cette interaction ou stratifier pour calculer le risque selon
+le nombre de services, au risque d'avoir trop peu d'observations pour
+estimer de manière fiable le risque de base. C'est explicable par le
+fait que les personnes avec plus de services tendent à avoir une survie
+plus longue.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diag\_risqueprop }\OtherTok{\textless{}{-}} \FunctionTok{cox.zph}\NormalTok{(cox3)}
+\FunctionTok{print}\NormalTok{(diag\_risqueprop)}
+\FunctionTok{plot}\NormalTok{(diag\_risqueprop)}
+\end{Highlighting}
+\end{Shaded}
+
+Si le postulat n'est pas validé, on peut interpréter l'effet comme un
+rapport de risque moyen pondéré sur la période de suivi, mais ce dernier
+change selon le moment {[}@Stensrud.Hernan:2020{]}. Cela implique
+également que les erreurs-types associées aux estimations sont
+trompeuses. La section suivante permettra de généraliser le modèle de
+Cox et traiter ce cas de figure.
+
+\hypertarget{stratification}{%
+\subsection{Stratification}\label{stratification}}
+
+Une manière de modéliser la non-proportionnalité pour une variable
+catégorielle est par la stratification. Supposons que nous avons une
+variable explicative catégorielle \(Z=1, \ldots, K\) pour lequel le
+postulat de risque proportionnels n'est pas valide. On s'intéresse à
+l'effet des variables \(\mathbf{X}\). Typiquement, on ne s'intéresse pas
+directement à l'effet de la variable \(Z\). Le modèle de Cox avec
+stratification (pour la variable \(Z\)) est \begin{align*}
+h(t; \mathbf{x}, z=k) = h_k(t) \exp(\boldsymbol{\beta} \mathbf{x}),
+\end{align*} où \(h_k(t)\) est la fonction de risque de base quand
+\(Z=k\) (\(k=1, \ldots, K\)). L'effet des autres variables explicatives
+\(\mathbf{X}\) est supposé être le même peut importe la valeur de \(Z\),
+mais la fonction de risque de base peut différer. Le rapport de risque
+pour \(Z=k\) versus \(Z=j\) est \(h_k(t)/h_j(t)\); cette quantité dépend
+du temps \(t\), mais pas des autres caractéristiques mesurées par
+\(\mathbf{X}\). L'effet de la variable est donc variable dans le temps
+(et non pas constant). Ce modèle permet donc de modéliser la
+non-proportionnalité pour la variable \(Z\). Si on stratifie par rapport
+à une variable, il ne faut pas l'inclure dans le modèle en plus car elle
+est déjà modélisée via la stratification. Notez que les paramètres
+\(\boldsymbol{\beta}\) seront estimés à l'aide des données de toutes les
+strates, mais les fonctions de risque \(h_k(t)\) seront obtenues à
+l'aide des sous-échantillons correspondant aux valeurs de \(Z\).
+
+L'avantage de la stratification est que cette méthode permet de
+modéliser n'importe quel changement dans l'effet d'une variable dans le
+temps sans devoir spécifier un type de changement particulier, comme
+lorsqu'on doit choisir la forme de l'interaction.Il est important de
+comprendre qu'on ne pourra pas estimer l'effet de la variable de
+stratification comme d'ordinaire en étudiant le coefficient \(\beta\)
+associé. On perd la possibilité de tester l'effet de la variable de
+stratification et on réduit la taille de l'échantillon pour l'estimation
+de la fonction de risque de base. On devrait principalement utiliser la
+stratification seulement avec des variables pour lesquelles nous n'avons
+pas besoin d'estimer l'effet (variables secondaires ou de contrôles).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Stratification par service}
+\NormalTok{cox7 }\OtherTok{\textless{}{-}} \FunctionTok{coxph}\NormalTok{(}\FunctionTok{Surv}\NormalTok{(temps, }\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{censure) }\SpecialCharTok{\textasciitilde{}} 
+\NormalTok{                age }\SpecialCharTok{+}\NormalTok{ sexe }\SpecialCharTok{+} \FunctionTok{strata}\NormalTok{(service), }
+              \AttributeTok{data =}\NormalTok{ survie1)}
+\CommentTok{\# Décompte par région}
+\FunctionTok{with}\NormalTok{(survie1, }\FunctionTok{table}\NormalTok{(service)}
+\CommentTok{\# Coefficients}
+\FunctionTok{summary}\NormalTok{(cox7)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{tbl-cox-stratif}{}
+\begin{table}
+\caption{\label{tbl-cox-stratif}Rapport de risques et intervalles de confiances à niveau 95\% pour le
+modèle de Cox stratifié par service. }\tabularnewline
+
+\centering
+\begin{tabular}{lrrr}
+\toprule
+terme & exp(coef) & borne inf. & borne sup.\\
+\midrule
+age & 0.96 & 0.94 & 0.97\\
+sexe & 0.61 & 0.44 & 0.85\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+On voit à la lecture de la sortie dans le Tableau~\ref{tbl-cox-stratif}
+qu'il n'y a plus de paramètres pour la variable \texttt{service}. Les
+paramètres des autres variables s'interprètent comme d'habitude. On peut
+néanmoins résumer l'information pour \texttt{service} en calculant une
+statistique descriptive, par exemple les différences de survie à des
+temps donnés.
+
+La Figure~\ref{fig-courbesurviesstrat} illustre l'effet de la
+stratification sur l'estimation du risque de base et des courbes de
+survie. On voit que la résolution des courbes est moindre, puisque
+chaque fonction est estimée à partir d'un sous-ensemble des données.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./06-survie_files/figure-pdf/fig-courbesurviesstrat-1.pdf}
+
+}
+
+\caption{\label{fig-courbesurviesstrat}Courbes de survie estimées par
+nombre de service pour le modèle de Cox avec stratification pour un
+homme de 40 ans.}
+
+\end{figure}
+
+\hypertarget{moduxe8le-non-proportionnel}{%
+\subsection{Modèle
+non-proportionnel}\label{moduxe8le-non-proportionnel}}
+
+Pour simplifier l'exposition, supposons que nous avons une seule
+variable explicative \(X\). L'équation du modèle à risques
+proportionnels est \(h(t; x) = h_0(t)\exp(\beta x)\) et suppose que la
+fonction de risque de base \(h_0(t)\) est indépendante de la variable
+explicative \(X\). Une manière de modéliser la non-proportionnalité est
+d'inclure un terme d'interaction entre la variable et le temps. Il
+existe plusieurs façons de le faire. Par exemple, on pourrait inclure
+une nouvelle variable qui est le produit entre le temps et la variable
+\(X\). Le modèle est alors \begin{align*}
+h(t; x) = h_0(t) \exp(\beta_1x + \beta_2xt).
+\end{align*} Pour ce modèle, le rapport de risque, pour une augmentation
+d'une unité de \(X\) est \(\exp(\beta_1+ \beta_2t)\) et dépend du temps
+\(t\): c'est un modèle avec risques non proportionnels. On retombe sur
+le modèle à risques proportionnels lorsque \(\beta_2=0\).
+
+Supposons que l'effet du nombre de service augmente avec le temps. On
+peut inclure à la fois \texttt{service}, qui capture l'effet au temps
+zéro, et le surenchérissement ou la diminution à mesure que le temps
+d'abonnement progresse.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Créer variables binaires par service}
+\NormalTok{survie1\_modif }\OtherTok{\textless{}{-}}\NormalTok{ survie1 }\SpecialCharTok{|\textgreater{}}
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{mutate}\NormalTok{(}\AttributeTok{service1 =}\NormalTok{ service }\SpecialCharTok{==} \DecValTok{1}\NormalTok{,}
+                \AttributeTok{service2 =}\NormalTok{ service }\SpecialCharTok{==} \DecValTok{2}\NormalTok{,}
+                \AttributeTok{service3 =}\NormalTok{ service }\SpecialCharTok{==} \DecValTok{3}\NormalTok{)}
+\NormalTok{cox\_np }\OtherTok{\textless{}{-}}\NormalTok{ survival}\SpecialCharTok{::}\FunctionTok{coxph}\NormalTok{(}
+    \FunctionTok{Surv}\NormalTok{(temps, censure) }\SpecialCharTok{\textasciitilde{}} 
+\NormalTok{     age }\SpecialCharTok{+}\NormalTok{ sexe }\SpecialCharTok{+}\NormalTok{ service }\SpecialCharTok{+} 
+      \FunctionTok{tt}\NormalTok{(service1) }\SpecialCharTok{+} \FunctionTok{tt}\NormalTok{(service2) }\SpecialCharTok{+} \FunctionTok{tt}\NormalTok{(service3), }
+     \AttributeTok{data =}\NormalTok{ survie1\_modif, }
+     \AttributeTok{tt =} \ControlFlowTok{function}\NormalTok{(x, t, ...)\{t }\SpecialCharTok{*}\NormalTok{ x\})}
+\end{Highlighting}
+\end{Shaded}
+
+Le bloc code précédent illustre comment créer le terme non
+proportionnel: on spécifie avec l'option \texttt{tt()} la variable qui
+change dans le temps et on spécifie par la suite la nature de
+l'interaction temporelle en définissant une fonction \texttt{tt}.
+
+Les variables catégorielles n'étant pas supportées en l'état, elles
+doivent préalablement être transformées en variable indicatrices
+binaires. Une fois les nouvelles variables dans la base de données, on
+procède à la spécification du terme de risque non proportionnel.
+
+\hypertarget{tbl-coxnph}{}
+\begin{table}
+\caption{\label{tbl-coxnph}Rapport de risque et intervalles de confiance à niveau 95\% pour le
+modèle à risques non proportionnels (interaction linéaire entre temps et
+service). }\tabularnewline
+
+\centering
+\begin{tabular}{lrrl}
+\toprule
+terme & exp(coef) & test de Wald & valeur-p\\
+\midrule
+age & 0.953 & -7.368 & <0.001\\
+sexe & 0.543 & -5.241 & <0.001\\
+service1 & 0.144 & -4.293 & <0.001\\
+service2 & 0.072 & -3.762 & <0.001\\
+service3 & 0.010 & -4.139 & <0.001\\
+\addlinespace
+tt(service1) & 1.010 & 2.173 & 0.0298\\
+tt(service2) & 1.010 & 1.584 & 0.1132\\
+tt(service3) & 1.023 & 2.476 & 0.0133\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Le Tableau~\ref{tbl-coxnph} contient les résultats. Les coefficients
+pour l'interaction avec \(t\) sont petits, mais c'est parce que la
+variable temps n'est pas standardisée et qu'elle s'étend de 0 à 200
+semaines: de petites variations sont possiblement importantes quand le
+temps augmente. Les estimations des coefficients pour l'interaction sont
+tous positifs, ce qui suppose que le risque augmente avec le temps. Si
+on considère comme source plausible d'effet du nombre de services un
+quelconque rabais, il semble que cet effet protecteur s'amenuise. Deux
+des termes d'interaction sont significatifs à niveau 5\% (statistiques
+de Wald \(Z\) de 2.173, 1.584 et 2.476 et valeurs-\(p\) correspondantes
+de 0.03, 0.113 et 0.013).
+
+On peut aussi utiliser la structure de modèle à risques
+non-proportionnels pour capturer l'effet des changements qui
+interviennent au sein de variables explicatives dans le temps. Par
+exemple, l'âge de la personne (en années) augmente à mesure que le temps
+d'abonnement (en semaines) passe, d'où
+\(\texttt{age}(t) = \texttt{age} + t/52\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# interaction entre service et temps}
+\CommentTok{\# objet avec \textquotesingle{}tt\textquotesingle{} varie dynamiquement}
+\NormalTok{cox6 }\OtherTok{\textless{}{-}} \FunctionTok{coxph}\NormalTok{(}
+    \FunctionTok{Surv}\NormalTok{(temps, censure) }\SpecialCharTok{\textasciitilde{}} 
+     \FunctionTok{tt}\NormalTok{(age) }\SpecialCharTok{+}\NormalTok{ sexe }\SpecialCharTok{+}\NormalTok{ service, }
+     \AttributeTok{data =}\NormalTok{ survie1, }
+     \AttributeTok{tt =} \ControlFlowTok{function}\NormalTok{(x, t, ...)\{x }\SpecialCharTok{+}\NormalTok{ t}\SpecialCharTok{/}\DecValTok{52}\NormalTok{\})}
+\FunctionTok{summary}\NormalTok{(cox6)}
+\end{Highlighting}
+\end{Shaded}
+
+Ici, on inclut uniquement la variable transformée \texttt{tt(age)} et
+son effet est toujours fortement significatif pour expliquer le
+désabonnement potentiel: les personnes plus âgées sont moins
+susceptibles de résilier leur abonnement.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cox\_np }\OtherTok{\textless{}{-}}\NormalTok{ survival}\SpecialCharTok{::}\FunctionTok{coxph}\NormalTok{(}
+    \FunctionTok{Surv}\NormalTok{(temps, censure) }\SpecialCharTok{\textasciitilde{}} 
+     \FunctionTok{tt}\NormalTok{(age) }\SpecialCharTok{+}\NormalTok{ sexe }\SpecialCharTok{+}\NormalTok{ service, }
+     \AttributeTok{data =}\NormalTok{ survie1, }
+     \AttributeTok{tt =} \ControlFlowTok{function}\NormalTok{(x, t, ...)\{x }\SpecialCharTok{+}\NormalTok{ t}\SpecialCharTok{/}\DecValTok{52}\NormalTok{\})}
+\FunctionTok{summary}\NormalTok{(cox\_np)}
+\end{Highlighting}
+\end{Shaded}
+
+On spécifie avec l'option \texttt{tt()} dans la formule la variable qui
+change dans le temps et par la suite la nature de l'interaction
+temporelle avec l'argument \texttt{tt}.
+
+\hypertarget{tbl-cox-np}{}
+\begin{table}
+\caption{\label{tbl-cox-np}Rapport de risque et intervalles de confiance à niveau 95\% pour le
+modèle à risques non proportionnels (interaction linéaire entre temps et
+âge). }\tabularnewline
+
+\centering
+\begin{tabular}{lrrr}
+\toprule
+terme & exp(coef) & borne inf. & borne sup.\\
+\midrule
+age & 0.91 & 0.87 & 0.95\\
+tt(age) & 1.00 & 1.00 & 1.00\\
+sexe & 0.52 & 0.41 & 0.65\\
+region2 & 0.70 & 0.48 & 1.02\\
+region3 & 1.03 & 0.73 & 1.46\\
+\addlinespace
+region4 & 0.80 & 0.56 & 1.12\\
+region5 & 0.97 & 0.69 & 1.37\\
+service1 & 0.36 & 0.28 & 0.46\\
+service2 & 0.18 & 0.12 & 0.26\\
+service3 & 0.12 & 0.07 & 0.20\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+L'interaction employée ici n'est pas la seule fonction du temps qu'on
+pourrait spécifier: on pourrait par exemple inclure une fonction de type
+escalier \(\mathrm{I}(T< t_0)\) qui indique que l'effet de la variable
+disparaît après le temps \(t_0\), si par exemple un rabais disparaît
+après une certaine durée d'abonnement, avec
+\texttt{rabais\ *\ I(t\textless{}t0)} pour une valeur numérique
+\texttt{t0} fixée.
+
 \hypertarget{moduxe8le-uxe0-risques-compuxe9titifs}{%
-\subsection{Modèle à risques
+\section{Modèle à risques
 compétitifs}\label{moduxe8le-uxe0-risques-compuxe9titifs}}
 
 Parfois, la raison pour laquelle un individu quitte l'état étudié peut
@@ -8160,9 +8691,33 @@ diagnostiqué avec un certain type de cancer, il pourrait être important
 de distinguer selon la cause exacte de la mort.
 
 De manière générale, supposons qu'il y a \(K\) manières possibles que
-l'événement survienne. On peut alors spécifier \(K\) fonctions de
-risques (une pour chaque manière) et obtenir le modèle de Cox à risques
-compétitifs (\emph{competing risks}), \begin{align*}
+l'événement survienne.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics[width=1.63in,height=\textheight]{./figures/transition_etats_modele_risque_competitifs.png}
+
+}
+
+\caption{\label{fig-transitionetat}Schéma illustrant la transition entre
+état de base et autres événements compétitifs.}
+
+\end{figure}
+
+Dans notre exemple d'abonnement cellulaire, supposons que nous avons
+trois causes possibles pour la perte d'un client: soit il a interrompu
+son abonnement pour aller chez le compétiteur A, soit pour aller chez le
+compétiteur B, soit il n'a plus de cellulaire du tout. On considère un
+modèle avec transition d'un état de base (abonné) vers un état absorbant
+(désabonnement, soit chez compétiteur \(A\), compétiteur \(B\) ou
+abandon du cellulaire).
+
+On a deux avenues pour l'estimation de ce type de modèle: soit on ajuste
+un modèle de Kaplan--Meier, soit un modèle de Cox.
+
+On peut alors spécifier \(K\) fonctions de risques (une pour chaque
+manière) et obtenir le modèle de Cox à risques compétitifs
+(\emph{competing risks}), \begin{align*}
 h_1(t; \boldsymbol{x})&= h_{01}(t) \exp(\beta_{11}x_1 + \cdots + \beta_{p1} x_p)\\
 &\vdots\\
 h_K(t; \boldsymbol{x})&= h_{0K}(t) \exp(\beta_{1K}x_1 + \cdots + \beta_{pK} x_p)\\
@@ -8170,15 +8725,12 @@ h_K(t; \boldsymbol{x})&= h_{0K}(t) \exp(\beta_{1K}x_1 + \cdots + \beta_{pK} x_p)
 l'autre. En estimant ce modèle, on obtient donc une estimation de
 l'effet des variables selon la raison du départ de l'état. De plus, on
 peut aussi inclure des variables dont la valeur change dans le temps,
-comme vu précédemment. Ce qui simplifie énormément la situation est
-qu'il est prouvé qu'on peut estimer les paramètres de chaque équation
-séparément sans perte de précision. Par conséquent, en pratique, il
-suffira d'ajuster \(K\) modèles de Cox séparément.
+comme vu précédemment.
 
-Dans notre exemple d'abonnement cellulaire, supposons que nous avons
-trois causes possibles pour la perte d'un client: soit il a interrompu
-son abonnement pour aller chez le compétiteur A, soit pour aller chez le
-compétiteur B, soit il n'a plus de cellulaire du tout.
+Ce qui simplifie énormément la situation est qu'il est prouvé qu'on peut
+estimer les paramètres de chaque équation séparément sans perte de
+précision. Par conséquent, en pratique, il suffira d'ajuster \(K\)
+modèles de Cox séparément.
 
 Les données pour cet exemple se trouvent dans le fichier
 \texttt{survie4}. La seule nouveauté par rapport au fichier original est
@@ -8263,24 +8815,9 @@ le compétiteur A d'une femme est 0.444 fois le risque de quitter pour
 aller chez le compétiteur A d'un homme. Ainsi, les femmes sont moins à
 risque de quitter pour aller chez le compétiteur A que les hommes.
 
-Pour ajuster le modèle lorsque la cause du départ est le compétiteur B,
-procède de la même manière. Notez que cette fois-ci, ce sont les valeurs
-1, 2 et 4 de la variable censure qui correspondent au fait que
-l'événement n'est pas survenu. Il y a 121 clients qui ont quitté pour
-aller chez B et 379 cas autre (censure). L'interprétation des paramètres
-se fait en termes de risque de quitter pour aller chez le compétiteur B.
-
-Si on ajuste le modèle pour le cas de figure où la cause de départ est
-que le client n'a plus besoin de cellulaire, on obtient une sortie
-similaire. Comme il y a seulement 43 événements (quitter car on n'a plus
-besoin de cellulaire), les estimations des paramètres sont moins
-précises, ce qu'on peut voir avec les erreurs-types qui sont plus
-élevés. Les observations censurées contiennent moins d'information que
-les événements, d'où cette perte de précision.
-
 Dans \textbf{R}, on peut aussi ajuster simultanément tous les modèles en
 spécifiant que l'événement d'intérêt est un facteur: c'est alors la
-catégorie de référence qui fait fois de l'état de départ. Il faut
+catégorie de référence qui fait foi de l'état de départ. Il faut
 également une variable qui identifie l'observation --- dans le cas qu'on
 considère, c'est simplement une colonne avec des valeurs de \(1\) à
 \(n\).
@@ -8335,266 +8872,53 @@ de Cox, droite).}
 
 \end{figure}
 
-\hypertarget{risques-non-proportionnels}{%
-\section{Risques non proportionnels}\label{risques-non-proportionnels}}
+La
+\href{https://cran.r-project.org/web/packages/survival/vignettes/timedep.pdf}{vignette}
+du paquet \texttt{survival} offre des détails sur l'implémentation des
+méthodes qui traitent de l'inclusion de variables explicatives dont la
+valeur change dans le temps et sur les risques compétitifs.
 
-Comme son nom l'indique, le modèle à risques proportionnels suppose que
-les risques sont proportionnels. Cela implique que l'effet d'une
-variable est stable dans le temps. Nous verrons dans cette section deux
-façons de modéliser le cas de risques non proportionnels.
+\begin{tcolorbox}[enhanced jigsaw, breakable, coltitle=black, colbacktitle=quarto-callout-note-color!10!white, rightrule=.15mm, colback=white, arc=.35mm, bottomrule=.15mm, left=2mm, toptitle=1mm, colframe=quarto-callout-note-color-frame, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, opacitybacktitle=0.6, opacityback=0]
 
-\hypertarget{non-proportionnalituxe9-avec-un-terme-dinteraction-avec-le-temps}{%
-\subsection{Non-proportionnalité avec un terme d'interaction avec le
-temps}\label{non-proportionnalituxe9-avec-un-terme-dinteraction-avec-le-temps}}
+\begin{itemize}
+\tightlist
+\item
+  Le modèle de Cox suppose qu'on peut diviser le risque en deux parties:
+  le risque de base \(h_0(t)\) commun à tou(te)s (composante
+  nonparamétrique) et l'effet multiplicatif
+  \(\exp(\mathbf{X}\boldsymbol{\beta})\) (composante paramétrique)
+\item
+  Puisque la fonction de risque de base est commune à toutes les
+  observations, moins d'incertitude sur l'estimation de la survie.
+\item
+  L'impact sur la survie de changement dans les variables explicatives
+  n'est pas multiplicatif.
+\item
+  Le modèle de Cox suppose que le rapport de cote ne dépend pas du temps
+  (postulat de risques proportionnels).
+\item
+  On peut vérifier ce postulat et généraliser le modèle au besoin.
+\item
+  Plutôt que d'inclure une variable catégorielle, on peut utiliser la
+  stratification pour estimer le risque de base séparément sur chaque
+  sous-groupe.
+\item
+  le modèle à risques non-proportionnels permet d'inclure une
+  interaction entre le temps et une avec variable ou un coefficient.
+\item
+  Si les variables explicatives changent au fil du temps, on peut
+  décomposer la contribution de l'observation en plusieurs segments.
+\item
+  Il y a un lien possible avec le modèle à risque proportionnels si
+  l'effet est le même pour tous (comme l'âge).
+\item
+  Le modèle multi-état (modèle à risques compétitifs) permet d'estimer
+  la probabilité de chaque transition: la survie pour l'événement de
+  base reste le même (désabonnement), mais on décompose la probabilité
+  de la censure selon les différents événements compétitifs.
+\end{itemize}
 
-Pour simplifier l'exposition, supposons que nous avons une seule
-variable explicative \(X\). L'équation du modèle à risques
-proportionnels est \(h(t; x) = h_0(t)\exp(\beta x)\) et suppose que la
-fonction de risque de base \(h_0(t)\) est indépendante de la variable
-explicative \(X\). Une manière de modéliser la non-proportionnalité est
-d'inclure un terme d'interaction entre la variable et le temps. Il
-existe plusieurs façons de le faire. Par exemple, on pourrait inclure
-une nouvelle variable qui est le produit entre le temps et la variable
-\(X\). Le modèle est alors \begin{align*}
-h(t; x) = h_0(t) \exp(\beta_1x + \beta_2xt).
-\end{align*} Pour ce modèle, le rapport de risque, pour une augmentation
-d'une unité de \(X\) est \(\exp(\beta_1+ \beta_2t)\) et dépend du temps
-\(t\): c'est un modèle avec risques non proportionnels. On retombe sur
-le modèle à risques proportionnels lorsque \(\beta_2=0\).
-
-Supposons que l'effet du nombre de service augmente avec le temps. On
-peut inclure à la fois \texttt{service}, qui capture l'effet au temps
-zéro, et le surenchérissement ou la diminution à mesure que le temps
-d'abonnement progresse.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Créer variables binaires par service}
-\NormalTok{service\_bin }\OtherTok{\textless{}{-}} \FunctionTok{model.matrix}\NormalTok{(}
-  \SpecialCharTok{\textasciitilde{}}\NormalTok{service, }
-  \AttributeTok{data =}\NormalTok{ survie1)[,}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]}
-\CommentTok{\# enlever ordonnée à l\textquotesingle{}origine (1e colonne)}
-\NormalTok{survie1m }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(survie1, service\_bin) }
-\NormalTok{cox\_np }\OtherTok{\textless{}{-}}\NormalTok{ survival}\SpecialCharTok{::}\FunctionTok{coxph}\NormalTok{(}
-    \FunctionTok{Surv}\NormalTok{(temps, censure) }\SpecialCharTok{\textasciitilde{}} 
-\NormalTok{     age }\SpecialCharTok{+}\NormalTok{ sexe }\SpecialCharTok{+}\NormalTok{ service }\SpecialCharTok{+} 
-      \FunctionTok{tt}\NormalTok{(service1) }\SpecialCharTok{+} \FunctionTok{tt}\NormalTok{(service2) }\SpecialCharTok{+} \FunctionTok{tt}\NormalTok{(service3), }
-     \AttributeTok{data =}\NormalTok{ survie1m, }
-     \AttributeTok{tt =} \ControlFlowTok{function}\NormalTok{(x, t, ...)\{t }\SpecialCharTok{*}\NormalTok{ x\})}
-\end{Highlighting}
-\end{Shaded}
-
-Le bloc code précédent illustre comment créer le terme non
-proportionnel: on spécifie avec l'option \texttt{tt()} la variable qui
-change dans le temps et on spécifie par la suite la nature de
-l'interaction temporelle en définissant une fonction \texttt{tt}.
-
-Les variables catégorielles n'étant pas supportées en l'état, elles
-doivent préalablement être transformées en variable indicatrices
-binaires. Une fois les nouvelles variables dans la base de données, on
-procède à la spécification du terme de risque non proportionnel.
-
-\hypertarget{tbl-coxnph}{}
-\begin{table}
-\caption{\label{tbl-coxnph}Rapport de risque et intervalles de confiance à niveau 95\% pour le
-modèle à risques non proportionnels (interaction linéaire entre temps et
-service). }\tabularnewline
-
-\centering
-\begin{tabular}{lrrl}
-\toprule
-terme & exp(coef) & test de Wald & valeur-p\\
-\midrule
-age & 0.953 & -7.368 & <0.001\\
-sexe & 0.543 & -5.241 & <0.001\\
-service1 & 0.144 & -4.293 & <0.001\\
-service2 & 0.072 & -3.762 & <0.001\\
-service3 & 0.010 & -4.139 & <0.001\\
-\addlinespace
-tt(service1) & 1.010 & 2.173 & 0.0298\\
-tt(service2) & 1.010 & 1.584 & 0.1132\\
-tt(service3) & 1.023 & 2.476 & 0.0133\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Le Tableau~\ref{tbl-coxnph} contient les résultats. Les coefficients
-pour l'interaction avec \(t\) sont petits, mais c'est parce que la
-variable temps n'est pas standardisée et qu'elle s'étend de 0 à 200
-semaines: de petites variations sont possiblement importantes quand le
-temps augmente. Les estimations des coefficients pour l'interaction sont
-tous positifs, ce qui suppose que le risque augmente avec le temps. Si
-on considère comme source plausible d'effet du nombre de services un
-quelconque rabais, il semble que cet effet protecteur s'amenuise. Deux
-des termes d'interaction sont significatifs à niveau 5\% (statistiques
-de Wald \(Z\) de 2.173, 1.584 et 2.476 et valeurs-\(p\) correspondantes
-de 0.03, 0.113 et 0.013).
-
-Ajustons maintenant un autre terme d'interaction, cette fois de manière
-à répliquer les changements qui interviennent au sein d'une variable
-explicative de manière plus simple.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# interaction entre service et temps}
-\CommentTok{\# objet avec \textquotesingle{}tt\textquotesingle{} varie dynamiquement}
-\NormalTok{cox6 }\OtherTok{\textless{}{-}} \FunctionTok{coxph}\NormalTok{(}
-    \FunctionTok{Surv}\NormalTok{(temps, censure) }\SpecialCharTok{\textasciitilde{}} 
-     \FunctionTok{tt}\NormalTok{(age) }\SpecialCharTok{+}\NormalTok{ sexe }\SpecialCharTok{+}\NormalTok{ service, }
-     \AttributeTok{data =}\NormalTok{ survie1, }
-     \AttributeTok{tt =} \ControlFlowTok{function}\NormalTok{(x, t, ...)\{x }\SpecialCharTok{+}\NormalTok{ t}\SpecialCharTok{/}\DecValTok{52}\NormalTok{\})}
-\FunctionTok{summary}\NormalTok{(cox6)}
-\end{Highlighting}
-\end{Shaded}
-
-L'âge (en années) augmente à mesure que le temps d'abonnement (en
-semaines) passe, d'où \(\texttt{age}(t) = \texttt{age} + t/52\). Ici, on
-inclut uniquement la variable transformée \texttt{tt(age)} et son effet
-est toujours fortement significatif pour expliquer le désabonnement
-potentiel: les personnes plus âgées sont moins susceptibles de résilier
-leur abonnement.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{cox\_np }\OtherTok{\textless{}{-}}\NormalTok{ survival}\SpecialCharTok{::}\FunctionTok{coxph}\NormalTok{(}
-    \FunctionTok{Surv}\NormalTok{(temps, censure) }\SpecialCharTok{\textasciitilde{}} 
-     \FunctionTok{tt}\NormalTok{(age) }\SpecialCharTok{+}\NormalTok{ sexe }\SpecialCharTok{+}\NormalTok{ service, }
-     \AttributeTok{data =}\NormalTok{ survie1, }
-     \AttributeTok{tt =} \ControlFlowTok{function}\NormalTok{(x, t, ...)\{x }\SpecialCharTok{+}\NormalTok{ t}\SpecialCharTok{/}\DecValTok{52}\NormalTok{\})}
-\FunctionTok{summary}\NormalTok{(cox\_np)}
-\end{Highlighting}
-\end{Shaded}
-
-On spécifie avec l'option \texttt{tt()} dans la formule la variable qui
-change dans le temps et par la suite la nature de l'interaction
-temporelle avec l'argument \texttt{tt}.
-
-\hypertarget{tbl-cox-np}{}
-\begin{table}
-\caption{\label{tbl-cox-np}Rapport de risque et intervalles de confiance à niveau 95\% pour le
-modèle à risques non proportionnels (interaction linéaire entre temps et
-âge). }\tabularnewline
-
-\centering
-\begin{tabular}{lrrr}
-\toprule
-terme & exp(coef) & borne inf. & borne sup.\\
-\midrule
-age & 0.91 & 0.87 & 0.95\\
-tt(age) & 1.00 & 1.00 & 1.00\\
-sexe & 0.52 & 0.41 & 0.65\\
-region2 & 0.70 & 0.48 & 1.02\\
-region3 & 1.03 & 0.73 & 1.46\\
-\addlinespace
-region4 & 0.80 & 0.56 & 1.12\\
-region5 & 0.97 & 0.69 & 1.37\\
-service1 & 0.36 & 0.28 & 0.46\\
-service2 & 0.18 & 0.12 & 0.26\\
-service3 & 0.12 & 0.07 & 0.20\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-L'interaction employée ici n'est pas la seule fonction du temps qu'on
-pourrait spécifier: on pourrait par exemple inclure une fonction de type
-escalier \(\mathrm{I}(T< t_0)\) qui indique que l'effet de la variable
-disparaît après le temps \(t_0\), si par exemple un rabais disparaît
-après une certaine durée d'abonnement, avec
-\texttt{rabais\ *\ I(t\textless{}t0)} pour une valeur numérique
-\texttt{t0} fixée.
-
-\hypertarget{stratification}{%
-\subsection{Stratification}\label{stratification}}
-
-Une manière de modéliser la non-proportionnalité est par la
-stratification. Il est important de comprendre qu'on ne pourra pas
-estimer l'effet de la variable de stratification comme d'ordinaire en
-étudiant le coefficient \(\beta\) associé.
-
-Supposons que nous avons une variable explicative catégorielle
-\(Z=1, \ldots, K\) pour lequel le postulat de risque proportionnels
-n'est pas valide. On s'intéresse à l'effet des variables \(\mathbf{X}\).
-Typiquement, on ne s'intéresse pas directement à l'effet de la variable
-\(Z\). Le modèle de Cox avec stratification (pour la variable \(Z\)) est
-\begin{align*}
-h(t; \mathbf{x}, z=k) = h_k(t) \exp(\boldsymbol{\beta} \mathbf{x}),
-\end{align*} où \(h_k(t)\) est la fonction de risque de base quand
-\(Z=k\) (\(k=1, \ldots, K\)). L'effet des autres variables explicatives
-\(\mathbf{X}\) est supposé être le même peut importe la valeur de \(Z\),
-mais la fonction de risque de base peut différer. Le rapport de risque
-pour \(Z=k\) versus \(Z=j\) est \(h_k(t)/h_j(t)\); cette quantité dépend
-du temps \(t\), mais pas des autres caractéristiques mesurées par
-\(\mathbf{X}\). L'effet de la variable est donc variable dans le temps
-(et non pas constant). Ce modèle permet donc de modéliser la
-non-proportionnalité pour la variable \(Z\). Si on stratifie par rapport
-à une variable, il ne faut pas l'inclure dans le modèle en plus car elle
-est déjà modélisée via la stratification. Notez que les paramètres
-\(\boldsymbol{\beta}\) seront estimés à l'aide des données de toutes les
-strates, mais les fonctions de risque \(h_k(t)\) seront obtenues à
-l'aide des sous-échantillons correspondant aux valeurs de \(Z\).
-
-L'avantage de la stratification est que cette méthode permet de
-modéliser n'importe quel changement dans l'effet d'une variable dans le
-temps sans devoir spécifier un type de changement particulier, comme
-lorsqu'on doit choisir la forme de l'interaction. Par contre, on perd la
-possibilité de tester l'effet de la variable de stratification on réduit
-la taille de l'échantillon pour l'estimation de la fonction de risque de
-base. On devrait principalement utiliser la stratification seulement
-avec des variables pour lesquelles nous n'avons pas besoin d'estimer
-l'effet (variables secondaires ou de contrôles).
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Stratification par service}
-\NormalTok{cox7 }\OtherTok{\textless{}{-}} \FunctionTok{coxph}\NormalTok{(}\FunctionTok{Surv}\NormalTok{(temps, }\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{censure) }\SpecialCharTok{\textasciitilde{}} 
-\NormalTok{                age }\SpecialCharTok{+}\NormalTok{ sexe }\SpecialCharTok{+} \FunctionTok{strata}\NormalTok{(service), }
-              \AttributeTok{data =}\NormalTok{ survie1)}
-\CommentTok{\# Décompte par région}
-\FunctionTok{with}\NormalTok{(survie1, }\FunctionTok{table}\NormalTok{(service)}
-\CommentTok{\# Coefficients}
-\FunctionTok{summary}\NormalTok{(cox7)}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{tbl-cox-stratif}{}
-\begin{table}
-\caption{\label{tbl-cox-stratif}Rapport de risques et intervalles de confiances à niveau 95\% pour le
-modèle de Cox stratifié par service. }\tabularnewline
-
-\centering
-\begin{tabular}{lrrr}
-\toprule
-terme & exp(coef) & borne inf. & borne sup.\\
-\midrule
-age & 0.96 & 0.94 & 0.97\\
-sexe & 0.61 & 0.44 & 0.85\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-On voit à la lecture de la sortie dans le Tableau~\ref{tbl-cox-stratif}
-qu'il n'y a plus de paramètres pour la variable \texttt{service}. Les
-paramètres des autres variables s'interprètent comme d'habitude. On peut
-néanmoins résumer l'information pour \texttt{service} en calculant une
-statistique descriptive, par exemple les différences de survie à des
-temps donnés.
-
-La Figure~\ref{fig-courbesurviesstrat} illustre l'effet de la
-stratification sur l'estimation du risque de base et des courbes de
-survie. On voit que la résolution des courbes est moindre, puisque
-chaque fonction est estimée à partir d'un sous-ensemble des données.
-
-\begin{figure}[ht!]
-
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./06-survie_files/figure-pdf/fig-courbesurviesstrat-1.pdf}
-
-}
-
-\caption{\label{fig-courbesurviesstrat}Courbes de survie estimées par
-nombre de service pour le modèle de Cox avec stratification pour un
-homme de 40 ans.}
-
-\end{figure}
+\end{tcolorbox}
 
 \bookmarksetup{startatroot}
 
@@ -8632,7 +8956,7 @@ Pour créer les regroupements, on utilisera \(p\) variables explicatives
 dénotera la valeur de la \(j\)e variable explicative pour le \(i\)e
 sujet.
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, toptitle=1mm, leftrule=.75mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes d'une analyse de regroupements}, colback=white, titlerule=0mm, bottomrule=.15mm, rightrule=.15mm, toprule=.15mm, breakable, colframe=quarto-callout-tip-color-frame, coltitle=black, bottomtitle=1mm, left=2mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-tip-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, coltitle=black, colbacktitle=quarto-callout-tip-color!10!white, rightrule=.15mm, colback=white, arc=.35mm, bottomrule=.15mm, left=2mm, toptitle=1mm, colframe=quarto-callout-tip-color-frame, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes d'une analyse de regroupements}, leftrule=.75mm, opacitybacktitle=0.6, opacityback=0]
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -9958,8 +10282,6 @@ différents symboles et couleurs pour les regroupements, etc.
 \DocumentationTok{\#\# Mélanges de modèles gaussiens}
 \FunctionTok{set.seed}\NormalTok{(}\DecValTok{60602}\NormalTok{)}
 \FunctionTok{library}\NormalTok{(mclust)}
-\DocumentationTok{\#\# Package \textquotesingle{}mclust\textquotesingle{} version 6.0.0}
-\DocumentationTok{\#\# Type \textquotesingle{}citation("mclust")\textquotesingle{} for citing this R package in publications.}
 \NormalTok{mmg }\OtherTok{\textless{}{-}} \FunctionTok{Mclust}\NormalTok{(}\AttributeTok{data =}\NormalTok{ donsmult\_std,}
        \AttributeTok{G =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{10}\NormalTok{,}
        \CommentTok{\# Ajouter composante uniforme}
@@ -10065,15 +10387,6 @@ regroupements différents. Les méthodes les plus populaires incluent
 \item
   méthode de Ward: calcul de l'homogénéité globale
 \end{itemize}
-
-\begin{verbatim}
-## [1] 33
-## Warning in plot.xy(xy.coords(x, y), type = type, ...): "color" n'est pas un
-## paramètre graphique
-
-## Warning in plot.xy(xy.coords(x, y), type = type, ...): "color" n'est pas un
-## paramètre graphique
-\end{verbatim}
 
 \begin{figure}[ht!]
 
@@ -10229,7 +10542,7 @@ en trois catégories: aberrance, point central et point frontière.
   Un point central est une observation qui possède \(M-1\) voisins à
   distance \(\epsilon\).
 \item
-  Un point frontière est un point qui est distant de moins de
+  Un point périphérique est un point qui est distant de moins de
   \(\epsilon\) d'un point central, sans en être un.
 \item
   Un point isolé est une observation qui n'est pas rattachée à aucun
@@ -10254,13 +10567,13 @@ observation ait été visitée.
   créer un regroupement.
 \item
   Étiqueter chaque point à distance \(\epsilon\) créé et l'ajouter au
-  regroupement, ainsi que tout point à distance \(\epsilon\) de ces
-  voisins.
+  regroupement s'il a un point central comme voisin.
 \end{enumerate}
 
-{[}Ce site web{]} offre une visualisation interactive des différentes
-étapes de l'algorithme et de comparer la performance de DBSCAN selon le
-type de regroupements.
+\href{https://www.naftaliharris.com/blog/visualizing-dbscan-clustering/}{Ce
+site web} offre une visualisation interactive des différentes étapes de
+l'algorithme et de comparer la performance de DBSCAN selon le type de
+regroupements.
 
 Puisque chaque point est visité à tour de rôle et comparé aux autres
 pour trouver les plus proches voisins, la complexité brute est
@@ -10376,7 +10689,7 @@ d'observations). Si la segmentation n'est pas satisfaisante, on retourne
 calibration des hyperparamètres jusqu'à ce qu'on soit satisfaits du
 résultat.
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, toptitle=1mm, leftrule=.75mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, colback=white, titlerule=0mm, bottomrule=.15mm, rightrule=.15mm, toprule=.15mm, breakable, colframe=quarto-callout-note-color-frame, coltitle=black, bottomtitle=1mm, left=2mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, coltitle=black, colbacktitle=quarto-callout-note-color!10!white, rightrule=.15mm, colback=white, arc=.35mm, bottomrule=.15mm, left=2mm, toptitle=1mm, colframe=quarto-callout-note-color-frame, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, opacitybacktitle=0.6, opacityback=0]
 
 \begin{itemize}
 \tightlist
@@ -10489,14 +10802,13 @@ restrictive.
 \end{enumerate}
 
 Il est possible par exemple que les femmes refusent plus souvent que les
-hommes de répondre à une question (et donc, le processus n'est pas
-MCAR). Si pour les femmes, la probabilité que \(X\) est manquante ne
-dépend pas de la valeur de \(X\) et que pour les hommes, la probabilité
-que \(X\) est manquante ne dépend pas de la valeur de \(X\), alors le
-processus est MAR. Les probabilités d'avoir une valeur manquante sont
-différentes pour les hommes et les femmes mais cette probabilité ne
-dépend pas de la valeur de \(X\) elle-même. L'hypothèse MAR est donc
-plus faible que l'hypothèse MCAR.
+hommes de répondre à une question, par exemple de donner leur âge (et
+donc, le processus n'est pas MCAR). Si pour les femmes et les hommes, la
+probabilité que \(X\) est manquante ne dépend pas de la valeur de \(X\),
+alors le processus est MAR. Les probabilités d'avoir une valeur
+manquante sont différentes pour les hommes et les femmes mais cette
+probabilité ne dépend pas de la valeur de \(X\) elle-même. L'hypothèse
+MAR est donc plus faible que l'hypothèse MCAR.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
@@ -10510,14 +10822,28 @@ plus faible que l'hypothèse MCAR.
 \end{enumerate}
 
 Par exemple, les gens qui ont un revenu élevé pourraient avoir plus de
-réticences à répondre à une question sur leur revenu. La méthode de
-traitement que nous allons voir dans ce chapitre, l'imputation multiple,
-est très générale et est valide dans le cas MAR (et donc aussi dans le
-cas MCAR). Le cas MNAR est beaucoup plus difficile à traiter et ne sera
-pas considéré ici.
+réticences à répondre à une question sur leur revenu. Un autre exemple
+est si une personne transgenre ne répond pas à la question genre (si on
+offre seulement deux choix, homme/femme) et aucune autre question ne se
+rattache au genre ou à l'identité sexuelle. La méthode de traitement que
+nous allons voir dans ce chapitre, l'imputation multiple, est très
+générale et est valide dans le cas MAR (et donc aussi dans le cas MCAR).
+Le cas MNAR est beaucoup plus difficile à traiter et ne sera pas
+considéré ici.
+
+Il n'est pas possible de tester l'hypothèse que le données sont
+manquantes de façon aléatoire ou complètement aléatoire; ce postulat
+doit donc être déterminé à partir du contexte et des variables
+auxiliaires disponibles.
 
 \hypertarget{muxe9thodes-dimputation}{%
 \section{Méthodes d'imputation}\label{muxe9thodes-dimputation}}
+
+Il est important de noter que, dans bien des cas, les données manquantes
+ont une valeur logique: un client qui n'a pas de carte de crédit a un
+solde de 0! Tous ces cas devraient être traités en amon, d'où
+l'importance des validations d'usage et du nettoyage préliminaire de la
+base de données.
 
 \hypertarget{cas-complets}{%
 \subsection{Cas complets}\label{cas-complets}}
@@ -10558,15 +10884,49 @@ des variables explicatives sont manquantes) est sous-optimal.
 \hypertarget{imputation-simple}{%
 \subsection{Imputation simple}\label{imputation-simple}}
 
-La deuxième approche est l'\textbf{imputation simple}. L'idée ici est de
-ne pas enlever les observations avec des valeurs manquantes mais de
-remplacer ces valeurs par des valeurs raisonnables. Par exemple, on peut
-remplacer les valeurs manquantes d'une variable par la moyenne de cette
-variable dans notre échantillon. On peut aussi ajuster un modèle de
-régression avec cette variable comme variable dépendante et d'autres
-variables explicatives comme variables indépendantes et utiliser les
-valeurs prédites comme remplacement. Une fois que les valeurs manquantes
-ont été remplacées, on fait l'analyse avec toutes les observations.
+L'\textbf{imputation} consiste à remplacer les valeurs manquantes pour
+boucher le trous. Pour paraphraser Dempster et Rubin (1983),
+
+\begin{quote}
+Le concept d'imputation est à la fois séduisant et dangereux.
+\end{quote}
+
+Avec l'\textbf{imputation simple}, on remplace les valeurs manquantes
+par des ersatz raisonnables. Par exemple, on peut remplacer les valeurs
+manquantes d'une variable par la moyenne de cette variable dans notre
+échantillon. On peut aussi ajuster un modèle de régression avec cette
+variable comme variable dépendante et d'autres variables explicatives
+comme variables indépendantes et utiliser les valeurs prédites comme
+remplacement. Une fois que les valeurs manquantes ont été remplacées, on
+fait l'analyse avec toutes les observations.
+
+L'imputation par le mode ou la moyenne n'est pas recommandée parce
+qu'elle dilue la corrélation entre les variables explicatives et elle
+réduit la variabilité. Les modèles de régression mènent également à
+une-sous estimation de l'incertitude en raison cette fois-ci de
+l'augmentation de la corrélation, ce qui augmente mécaniquement la
+significativité des tests, contrairement à l'imputation aléatoire
+(droite). Le Figure~\ref{fig-imputation} montre clairement cet état de
+fait.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics[width=1\textwidth,height=\textheight]{./07-donneesmanquantes_files/figure-pdf/fig-imputation-1.pdf}
+
+}
+
+\caption{\label{fig-imputation}Différences entre méthodes d'imputation,
+avec imputation par la moyenne, par le biais d'une régression linéaire
+et par un modèle aléatoire de régression, de gauche à droite.}
+
+\end{figure}
+
+En quoi constitue l'imputation aléatoire recommandée ci-dessus?
+Considérons le cas d'une régression logistique pour une variable
+explicative binaire. Plutôt que d'assigner à la classe la plus probable,
+une prédiction aléatoire simule une variable 0/1 avec probabilité
+\((1-\widehat{p}_i, \widehat{p}_i)\). Pour un modèle de régression
+linéaire, la prédiction
 
 Il existe d'autres façons d'imputer les valeurs manquantes mais le
 problème de toutes ces approches est que l'on ne tient pas compte du
@@ -10594,6 +10954,14 @@ L'idée consiste à procéder à une imputation aléatoire, selon une
 certaine technique, pour obtenir un échantillon complet et à ajuster le
 modèle d'intérêt avec cet échantillon. On répète ce processus plusieurs
 fois et on combine les résultats obtenus.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics[width=0.7\textwidth,height=\textheight]{./figures/donnees_manquantes_workflow.png}
+
+}
+
+\end{figure}
 
 L'estimation finale des paramètres du modèle est alors simplement la
 moyenne des estimations pour les différentes répétitions et on peut
@@ -10635,7 +11003,11 @@ d'aléatoire pour essayer de reproduire la variabilité des données), on
 ne serait pas en mesure d'estimer la variance inter-groupe de
 l'estimateur. Notez que la formule présentée n'est valide que pour le
 cas unidimensionnel; l'estimation de la variance dans le cas
-multidimensionnel est différente (voir Little et Rubin, 2002).
+multidimensionnel est différente {[}@Little.Rubin:2019{]}.
+
+Il faut également ajuster les formules pour le calcul des intervalles de
+confiance, valeurs-\(p\) et degrés de liberté. Le logiciel s'en chargera
+pour nous.
 
 La méthode d'imputation multiple possède l'avantage d'être applicable
 avec n'importe quel modèle sous-jacent. Une fois qu'on a des
@@ -10661,6 +11033,46 @@ remplacées par d'autres jouant à peu près le même rôle qui elles sont
 disponibles), alors vous pourriez considérer la possibilité de les
 éliminer. Il est donc nécessaire d'examiner la configuration des valeurs
 manquantes avant de faire quoi que ce soit.
+
+Pour l'imputation, nous utiliserons l'algorithme d'imputation multiple
+par équations chaînées (MICE).
+
+Avec \(p\) variables \(X_1, \ldots, X_p\), spécifier un ensemble de
+modèles \textbf{conditionnels} pour chaque variable \(X_j\) en fonction
+de toutes les autres variables, \(\boldsymbol{X}_{-j}\) et les valeurs
+observées pour cette variable, \(X_{j, \text{obs}}\).
+
+L'idée est de remplir aléatoire tous les trous et ensuite d'utiliser des
+modèles d'imputation aléatoire pour chaque variable à tour de rôle.
+Après plusieurs cycles où chacune des variables explicatives (au plus le
+nombre de colonnes \(p\)) est imputée, l'impact de l'initialisation
+devrait être faible. On retourne alors une copie de la base de données.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Initialisation: remplir les trous avec des données au hasard parmi
+  \(X_{j, \text{obs}}\) pour \(X_{j, \text{man}}\)
+\item
+  À l'itération \(t\), pour chaque variable \(j=1, \ldots, p\), à tour
+  de rôle:
+
+  \begin{enumerate}
+  \def\labelenumii{\alph{enumii})}
+  \tightlist
+  \item
+    tirage aléatoire des paramètres \(\phi_j^{(t)}\) du modèle pour
+    \(X_{j,\text{man}}\) conditionnel à \(\boldsymbol{X}_{-j}^{(t-1)}\)
+    et \(X_{j, \text{obs}}\)
+  \item
+    échantillonnage de nouvelles observations \(X^{(t)}_{j,\text{man}}\)
+    du modèle avec paramètres \(\phi_j^{(t)}\) conditionnel à
+    \(\boldsymbol{X}_{-j}^{(t-1)}\) et \(X_{j, \text{obs}}\)
+  \end{enumerate}
+\item
+  Répéter le cycle
+\end{enumerate}
 
 \hypertarget{example-dapplication-de-limputation}{%
 \section{Example d'application de
@@ -10735,6 +11147,20 @@ pourcentage & 0.384 & 0.098 & 0 & 0.368 & 0 & 0 & 0\\
 \FunctionTok{md.pattern}\NormalTok{(manquantes)}
 \end{Highlighting}
 \end{Shaded}
+
+Nous utiliserons le paquet \textbf{R} \texttt{mice} pour faire
+l'imputation.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Procéder à plusieurs imputations \textbf{aléatoires} pour obtenir un
+  échantillon complet (\texttt{mice})
+\item
+  Ajuster le modèle d'intérêt avec chaque échantillon (\texttt{with}).
+  3. Combiner les résultats obtenus (\texttt{pool} et \texttt{summary})
+\end{enumerate}
 
 \begin{figure}[ht!]
 
@@ -10864,6 +11290,34 @@ l'estimation avec l'imputation multiple est seulement un peu moins bonne
 aussi significatif, alors qu'il ne l'était plus si on retirait les
 manquantes. Il est peu probable que les données soit \(\mathsf{MCAR}\)
 et donc les résultats de l'analyse des cas complets seraient biaisés.
+
+\begin{tcolorbox}[enhanced jigsaw, breakable, coltitle=black, colbacktitle=quarto-callout-note-color!10!white, rightrule=.15mm, colback=white, arc=.35mm, bottomrule=.15mm, left=2mm, toptitle=1mm, colframe=quarto-callout-note-color-frame, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, opacitybacktitle=0.6, opacityback=0]
+
+\begin{itemize}
+\tightlist
+\item
+  Les données manquantes réduisent la quantité d'information disponible
+  et augmentent l'incertitude.
+\item
+  On ne peut \textbf{pas} les ignorer (étude des cas complets) sans
+  biaiser les interprétations et réduire la quantité d'information
+  disponible.
+\item
+  Pour bien capturer l'incertitude et ne pas modifier les relations
+  entre variables, il faut utiliser une méthode d'imputation aléatoire.
+\item
+  Avec l'algorithme MICE, on utilise un modèle conditionnel pour chaque
+  variable à tour de rôle.
+\item
+  L'imputation multiple est préférée à l'imputation simple car elle
+  permet d'estimer l'incertitude sous-jacente en raison des données
+  manquantes.
+\item
+  Il faut un traitement spécial pour les erreurs-type, degrés de
+  liberté, valeurs-\(p\) et intervalles de confiance.
+\end{itemize}
+
+\end{tcolorbox}
 
 
 \backmatter

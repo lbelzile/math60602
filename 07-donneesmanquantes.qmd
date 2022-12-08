@@ -60,13 +60,20 @@ Le cas MCAR peut se présenter par exemple si des questionnaires, ou des pages o
 2) Les données manquantes de $X$ sont dites **données manquantes de façon aléatoire** (MAR, de l'anglais _missing at random_) si la probabilité que la valeur de $X$ soit manquante ne dépend pas de la valeur de $X$ (qui n'est pas observée) une fois qu'on a contrôlé pour les autres variables. 
 
 
-Il est possible par exemple que les femmes refusent plus souvent que les hommes de répondre à une question (et donc, le processus n'est pas MCAR). Si pour les femmes, la probabilité que $X$ est manquante ne dépend pas de la valeur de $X$ et que pour les hommes, la probabilité que $X$ est manquante ne dépend pas de la valeur de $X$, alors le processus est MAR. Les probabilités d'avoir une valeur manquante sont différentes pour les hommes et les femmes mais cette probabilité ne dépend pas de la valeur de $X$ elle-même. L'hypothèse MAR est donc plus faible que l'hypothèse MCAR.
+Il est possible par exemple que les femmes refusent plus souvent que les hommes de répondre à une question, par exemple de donner leur âge (et donc, le processus n'est pas MCAR). Si pour les femmes et les hommes, la probabilité que $X$ est manquante ne dépend pas de la valeur de $X$, alors le processus est MAR. Les probabilités d'avoir une valeur manquante sont différentes pour les hommes et les femmes mais cette probabilité ne dépend pas de la valeur de $X$ elle-même. L'hypothèse MAR est donc plus faible que l'hypothèse MCAR.
 
 3) Les données manquantes de $X$ sont dites **manquantes de façon non-aléatoire** (MNAR, de l'anglais _missing not at random_) si la probabilité que la valeur de $X$ soit manquante dépend de la valeur de $X$ elle-même.
 
-Par exemple, les gens qui ont un revenu élevé pourraient avoir plus de réticences à répondre à une question sur leur revenu. La méthode de traitement que nous allons voir dans ce chapitre, l'imputation multiple, est très générale et est valide dans le cas MAR (et donc aussi dans le cas MCAR). Le cas MNAR est beaucoup plus difficile à traiter et ne sera pas considéré ici. 
+Par exemple, les gens qui ont un revenu élevé pourraient avoir plus de réticences à répondre à une question sur leur revenu. Un autre exemple est si une personne transgenre ne répond pas à la question genre (si on offre seulement deux choix, homme/femme) et aucune autre question ne se rattache au genre ou à l’identité sexuelle. La méthode de traitement que nous allons voir dans ce chapitre, l'imputation multiple, est très générale et est valide dans le cas MAR (et donc aussi dans le cas MCAR). Le cas MNAR est beaucoup plus difficile à traiter et ne sera pas considéré ici. 
+
+Il n'est pas possible de tester l'hypothèse que le données sont manquantes de façon aléatoire ou complètement aléatoire; ce postulat doit donc être déterminé à partir du contexte et des variables auxiliaires disponibles.
+
 
 ## Méthodes d'imputation
+
+
+Il est important de noter que, dans bien des cas, les données manquantes ont une valeur logique: un client qui n’a pas de carte de crédit a un solde de 0! Tous ces cas devraient être traités en amon, d'où l’importance des validations d'usage et du nettoyage préliminaire
+de la base de données.
 
 ### Cas complets
 
@@ -81,7 +88,138 @@ En général, l'approche des cas complet est la première étape d'une analyse a
 
 ### Imputation simple 
 
-La deuxième approche est l'**imputation simple**. L'idée ici est de ne pas enlever les observations avec des valeurs manquantes mais de remplacer ces valeurs par des valeurs raisonnables. Par exemple, on peut remplacer les valeurs manquantes d'une variable par la moyenne de cette variable dans notre échantillon. On peut aussi ajuster un modèle de régression avec cette variable comme variable dépendante et d'autres variables explicatives comme variables indépendantes et utiliser les valeurs prédites comme remplacement. Une fois que les valeurs manquantes ont été remplacées, on fait l'analyse avec toutes les observations.
+L'**imputation** consiste à remplacer les valeurs manquantes pour boucher le trous. Pour paraphraser Dempster et Rubin (1983),
+
+> Le concept d’imputation est à la fois séduisant et dangereux.
+
+Avec l'**imputation simple**, on remplace les valeurs manquantes par des ersatz raisonnables. Par exemple, on peut remplacer les valeurs manquantes d'une variable par la moyenne de cette variable dans notre échantillon. On peut aussi ajuster un modèle de régression avec cette variable comme variable dépendante et d'autres variables explicatives comme variables indépendantes et utiliser les valeurs prédites comme remplacement. Une fois que les valeurs manquantes ont été remplacées, on fait l'analyse avec toutes les observations.
+
+L'imputation par le mode ou la moyenne n'est pas recommandée parce qu'elle dilue la corrélation entre les variables explicatives et elle réduit la variabilité. Les modèles de régression mènent également à une-sous estimation de l'incertitude en raison cette fois-ci de l'augmentation de la corrélation, ce qui augmente mécaniquement la significativité des tests, contrairement à l'imputation aléatoire (droite).
+Le @fig-imputation montre clairement cet état de fait.
+
+
+```{r}
+#| echo: false
+#| eval: true
+#| out-width: '100%'
+#| fig-width: 8
+#| fig-align: 'center'
+#| fig-height: 4
+#| label: fig-imputation
+#| fig-cap: "Différences entre méthodes d'imputation, avec imputation par la moyenne, par le biais d'une régression linéaire et par un modèle aléatoire de régression, de gauche à droite."
+library(ggplot2)
+set.seed(1234)
+nobs <- 400L
+ventes <- runif(n = nobs, min = 400, max = 800) + 
+  rlnorm(n = nobs, meanlog = 4, sdlog = 1) -100 + 
+  TruncatedNormal::rtnorm(n = 1, 
+              mu = seq(100, to = 300, length.out = nobs), 
+              sd = seq(0, 100, length.out = nobs),
+              lb = 0, ub = 1000)
+nbvisiteurs <- sort(rpois(n = nobs, lambda = 40))
+full <- data.frame(ventes = ventes, 
+                   nbclients = nbvisiteurs)
+manquants <- as.matrix(full)
+amputer <- mice::ampute(data = manquants, prop = 0.25)
+# manquants[sample(x = c(TRUE, FALSE),
+#                          size = 2*nobs, 
+#                          replace = TRUE,
+#                          prob = c(0.15,0.85))] <- NA
+manquants1 <- amputer$amp |> 
+  tibble::as_tibble() |>
+  dplyr::mutate(
+    manquant = dplyr::case_when(
+      is.na(nbclients) | is.na(ventes) ~ 1,
+      TRUE ~ 2),
+    manqventes = dplyr::case_when(
+      is.na(ventes) ~ 1,
+      TRUE ~ 2), 
+    manqnbclients = dplyr::case_when(
+      is.na(nbclients) ~ 1,
+      TRUE ~ 2),
+    ventes = dplyr::case_when(
+      is.na(ventes) ~ mean(ventes, na.rm = TRUE),
+      TRUE ~ ventes),
+    nbclients = dplyr::case_when(
+      is.na(nbclients) ~ mean(nbclients, na.rm = TRUE),
+      TRUE ~ nbclients))
+g1 <- ggplot(data = manquants1,
+       aes(x = nbclients, 
+           y = ventes, 
+           color = factor(1-manquant),
+           shape = factor(manquant))) + 
+  geom_point(size = 2) + 
+    scale_shape_manual(values = c(1,20)) +
+  scale_colour_discrete(palette = mice::mdc) +
+  labs(y = "ventes",
+       x = "nombre de clients") +
+  theme_classic() +
+  theme(legend.position = "none")
+library(patchwork)
+manquants2 <- manquants1 |>
+  dplyr::mutate(
+   ventes = dplyr::case_when(
+      manqventes == 1 & manqnbclients == 2 ~
+        predict(lm(ventes ~ nbclients, 
+                   data = manquants1)),
+      manqventes == 1 & manqnbclients == 1 ~ mean(ventes, na.rm = TRUE),
+      TRUE ~ ventes
+    ),
+   nbclients = dplyr::case_when(
+      manqventes == 2 & manqnbclients == 1 ~
+        predict(lm(nbclients ~ ventes,
+                   data = manquants1)),
+      manqventes == 1 & manqnbclients == 1 ~ mean(nbclients, na.rm = TRUE),
+      TRUE ~ nbclients
+    )
+  )
+g2 <- ggplot(data = manquants2,
+       aes(x = nbclients, 
+           y = ventes, 
+           color = factor(1-manquant),
+           shape = factor(manquant))) + 
+  geom_point(size = 2) + 
+    scale_shape_manual(values = c(1,20)) +
+  scale_colour_discrete(palette = mice::mdc) +
+  labs(y = "ventes",
+       x = "nombre de clients") +
+  theme_classic() +
+  theme(legend.position = "none")
+# 
+# g2 <- ggplot(data = manquants2,
+#        aes(x = ventes,
+#            #y = after_stat(density),
+#            fill = factor(manqventes),
+#            group = factor(manqventes))) + 
+#   geom_histogram(alpha = 0.5,) +
+#   scale_y_continuous(expand = c(0,0)) + 
+#   labs(y = "") +
+#   theme_classic() +
+#   theme(legend.position = "none")
+g3 <- ggplot(data = data.frame(cbind(
+  mice::complete(
+    mice::mice(manquants[,1:2], 
+               m = 1, 
+               printFlag = FALSE), 1),
+  manquant = manquants1$manquant)),
+      mapping = aes(x = nbclients, 
+           y = ventes, 
+           color = factor(1-manquant),
+           shape = factor(manquant))) + 
+  geom_point(size = 2) + 
+  scale_colour_discrete(palette = mice::mdc) +
+    scale_shape_manual(values = c(1,20)) +
+  labs(y = "ventes",
+       x = "nombre de clients") +
+  theme_classic() +
+  theme(legend.position = "none")
+
+g1 + g2 + g3
+```
+
+En quoi constitue l'imputation aléatoire recommandée ci-dessus? Considérons le cas d'une régression logistique pour une variable explicative binaire. Plutôt que d'assigner à la classe la plus probable, une prédiction aléatoire simule une variable 0/1 avec probabilité $(1-\widehat{p}_i, \widehat{p}_i)$. Pour un modèle de régression linéaire, la prédiction
+
+
 
 Il existe d'autres façons d'imputer les valeurs manquantes mais le problème de toutes ces approches est que l'on ne tient pas compte du fait que des valeurs ont été remplacées et on fait comme si c'était de vraies observations. Cela va en général sous-évaluer la variabilité dans les données. Par conséquent, les écarts-type des paramètres estimés seront en général sous-estimés et l'inférence (tests et intervalles de confiance) ne sera pas valide.
 Cette approche n'est donc **pas recommandée**.
@@ -93,6 +231,15 @@ Une manière de tenter de reproduire correctement la variabilité dans les donn�
 Cette méthode peut être appliquée dans à peu près n'importe quelle situation et permet d'ajuster les écarts-type des paramètres estimés. Elle peut être appliquée lorsque le processus est MAR (et donc aussi MCAR).
 
 L'idée consiste à procéder à une imputation aléatoire, selon une certaine technique, pour obtenir un échantillon complet et à ajuster le modèle d'intérêt avec cet échantillon. On répète ce processus plusieurs fois et on combine les résultats obtenus. 
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| out-width: '70%'
+#| fig-align: 'center'
+knitr::include_graphics("figures/donnees_manquantes_workflow.png")
+```
 
 L'estimation finale des paramètres du modèle est alors simplement la moyenne des estimations pour les différentes répétitions et on peut également obtenir une estimation des écarts-type des paramètres qui tient compte du processus d'imputation.
 
@@ -112,13 +259,28 @@ B &= \frac{1}{K-1} \sum_{k=1}^K (\widehat{\theta}_k - \widehat{\theta})^2.
 \end{align*}
 Ainsi, le terme $W$ est la moyenne des variances et $B$ est la variance entre les imputations. Le terme $(1+1/K)B$ est celui qui vient corriger le fait qu'on travaille avec des données imputées et non pas des vraies données en augmentant la variance estimée du paramètre. 
 
-C'est ici qu'on voit l'intérêt à procéder à de l'imputation multiple. Si on procédait à une seule imputation (même en ajoutant une part d'aléatoire pour essayer de reproduire la variabilité des données), on ne serait pas en mesure d'estimer la variance inter-groupe de l'estimateur. Notez que la formule présentée n'est valide que pour le cas unidimensionnel; l'estimation de la variance dans le cas multidimensionnel est différente (voir Little et Rubin, 2002).
+C'est ici qu'on voit l'intérêt à procéder à de l'imputation multiple. Si on procédait à une seule imputation (même en ajoutant une part d'aléatoire pour essayer de reproduire la variabilité des données), on ne serait pas en mesure d'estimer la variance inter-groupe de l'estimateur. Notez que la formule présentée n'est valide que pour le cas unidimensionnel; l'estimation de la variance dans le cas multidimensionnel est différente [@Little.Rubin:2019].
+
+Il faut également ajuster les formules pour le calcul des intervalles de confiance, valeurs-$p$ et degrés de liberté. Le logiciel s'en chargera pour nous.
 
 La méthode d'imputation multiple possède l'avantage d'être applicable avec n'importe quel modèle sous-jacent. Une fois qu'on a des échantillons complets (imputés), on ajuste le modèle comme d'habitude. Mais une observation imputée ne remplacera jamais une vraie observation. Il faut donc faire tout ce qu'on peut pour limiter le plus possible les données manquantes. 
 
 Il faut utiliser son jugement. Par exemple, si la proportion d'observations perdues est petite (moins de 5\%), ça ne vaut peut-être pas la peine de prendre des mesures particulières et on peut faire une analyse avec les données complètes seulement. S'il y a un doute, on peut faire une analyse avec les données complètes seulement et une autre avec imputations multiples afin de valider la première. 
  
 Si, à l'inverse, une variable secondaire cause à elle seule une grande proportion de valeurs manquantes, on peut alors considérer l'éliminer afin de récupérer des observations. Par exemple, si vous avez une proportion de 30\% de valeurs manquantes en utilisant toutes vos variables et que cette proportion baisse à 3\% lorsque vous éliminez quelques variables peu importantes pour votre étude (ou qui peuvent être remplacées par d'autres jouant à peu près le même rôle qui elles sont disponibles), alors vous pourriez considérer la possibilité de les éliminer. Il est donc nécessaire d'examiner la configuration des valeurs manquantes avant de faire quoi que ce soit. 
+
+Pour l'imputation, nous utiliserons l'algorithme d'imputation multiple par équations chaînées (MICE).
+
+Avec $p$ variables $X_1, \ldots, X_p$, spécifier un ensemble de modèles **conditionnels** pour chaque variable $X_j$ en fonction de toutes les autres variables, $\boldsymbol{X}_{-j}$ et les valeurs observées pour cette variable, $X_{j, \text{obs}}$.
+
+L'idée est de remplir aléatoire tous les trous et ensuite d'utiliser des modèles d'imputation aléatoire pour chaque variable à tour de rôle. Après plusieurs cycles où chacune des variables explicatives (au plus le nombre de colonnes $p$) est imputée, l'impact de l'initialisation devrait être faible. On retourne alors une copie de la base de données. 
+
+1. Initialisation: remplir les trous avec des données au hasard parmi $X_{j, \text{obs}}$ pour $X_{j, \text{man}}$
+2. À l'itération $t$, pour chaque variable $j=1, \ldots, p$, à tour de rôle:
+   a) tirage aléatoire des paramètres $\phi_j^{(t)}$ du modèle pour $X_{j,\text{man}}$ conditionnel à $\boldsymbol{X}_{-j}^{(t-1)}$ et  $X_{j, \text{obs}}$
+   b) échantillonnage de nouvelles observations $X^{(t)}_{j,\text{man}}$ du modèle avec paramètres $\phi_j^{(t)}$ conditionnel à $\boldsymbol{X}_{-j}^{(t-1)}$ et  $X_{j, \text{obs}}$
+3. Répéter le cycle
+
 
 ## Example d'application de l'imputation 
 
@@ -180,6 +342,13 @@ apply(manquantes, 2, function(x){mean(is.na(x))})
 md.pattern(manquantes)
 
 ```
+
+
+
+Nous utiliserons le paquet **R** `mice` pour faire l'imputation.
+
+1. Procéder à plusieurs imputations **aléatoires** pour obtenir un échantillon complet (`mice`)
+2. Ajuster le modèle d'intérêt avec chaque échantillon (`with`). 3. Combiner les résultats obtenus (`pool` et `summary`)
 
 
 ```{r}
@@ -294,3 +463,15 @@ On peut remarquer que la précision est systématiquement meilleure avec l'imput
 On voit que la variable $X_3$ (sexe) est significative avec l'imputation multiple. Son paramètre estimé est `r round(as.numeric(summar_mi[10,1]),3)`, comparativement à `r round(as.numeric(summar_full[10,1]),3)` s'il n'y avait pas eu de valeurs manquantes. La précision dans l'estimation avec l'imputation multiple est seulement un peu moins bonne (erreur-type de `r round(as.numeric(summar_mi[10,2]),2)`) que celle s'il n'y avait pas eu de manquantes (erreur type de 0.26). Le paramètre de $\mathsf{I}(X_6=2)$ redevient aussi significatif, alors qu'il ne l'était plus si on retirait les manquantes. Il est peu probable que les données soit $\mathsf{MCAR}$ et donc les résultats de l'analyse des cas complets seraient biaisés.
 
 
+::: {.callout-note}
+
+## En résumé
+
+- Les données manquantes réduisent la quantité d'information disponible et augmentent l'incertitude.
+- On ne peut **pas** les ignorer (étude des cas complets) sans biaiser les interprétations et réduire la quantité d'information disponible.
+- Pour bien capturer l'incertitude et ne pas modifier les relations entre variables, il faut utiliser une méthode d'imputation aléatoire.
+- Avec l'algorithme MICE, on utilise un modèle conditionnel pour chaque variable à tour de rôle.
+- L'imputation multiple est préférée à l'imputation simple car elle permet d'estimer l'incertitude sous-jacente en raison des données manquantes.
+- Il faut un traitement spécial pour les erreurs-type, degrés de liberté, valeurs-$p$ et intervalles de confiance.
+
+:::

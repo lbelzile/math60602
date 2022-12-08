@@ -59,7 +59,7 @@ Pour déterminer les mécanismes de survie en présence, il peut être utile de 
 #| echo: false
 #| label: fig-lexis
 #| fig-cap: "Diagramme de Lexis pour données tronquées à gauche ($A$ et $C$) et censurées à droite ($C$ et $D$)."
-knitr::include_graphics("figures/Lexis_censure.pdf")
+knitr::include_graphics("figures/Lexis_censure.png")
 ```
 
 La @fig-lexis montre des courbes fictives. On trace une droite de pente 1 représentant la durée en fonction du temps (date au calendrier) etl a fenêtre définit la période de collecte de donnée. 
@@ -88,11 +88,11 @@ La troncature à gauche est la plus fréquente: elle survient par exemple si on 
 La troncature par intervalle survient quand on considère uniquement les personnes pour lesquelles l'événement d'intérêt est survenu. Si l'on s'intéresse à la durée de la relation d'emploi et  seules les personnes à l'emploi qui ont pris leur retraite entre 2009 et 2021 sont considérées pour l'étude, on sera en présence de troncature par intervalle comme représenté dans la @fig-troncatureintervalle.
 
 ```{r}
-#| fig-troncatureintervalle
+#| label: fig-troncatureintervalle
 #| fig-cap: "Diagramme de Lexis illustrant la troncature par intervalle."
 #| eval: true
 #| echo: false
-knitr::include_graphics("figures/lexis_troncationintervalle.pdf")
+knitr::include_graphics("figures/lexis_troncationintervalle.png")
 ```
 
 
@@ -342,6 +342,8 @@ plot(survfit(Surv(temps, censure) ~ sexe,
 #| fig-align: center
 #| eval: true
 #| echo: false
+#| message: false
+#| warning: false
 #| fig-cap: "Courbes de survie pour les durées d'abonnement selon le sexe de l'individu."
 modele_survdiff <- 
   survfit(Surv(temps, censure) ~ sexe, 
@@ -381,9 +383,10 @@ L'estimateur de Kaplan--Meier ne permet pas l'inclusion de variables explicative
 - Si on traitait les temps de censure comme des temps de défaillance observée, on *sous-estimerait* la durée de survie.
 - L'estimateur de Kaplan--Meier est l'estimateur du maximum de vraisemblance nonparamétrique si on a de la censure à droite aléatoire ou non-informative. Il ne fait aucun postulat sur la distribution de la survie.
 - Pour que l'estimation soit de qualité, il faut un nombre *conséquent* d'observations (disons 1000). La quantité d'observations censurées impacte la précision de l'estimation.
-- L'estimateur est déficient si le plus grand temps observé est censuré à droite (l'estimation de la fonction de survie ne décroît pas à zéro)
+- L'estimateur est déficient si le plus grand temps observé est censuré à droite (l'estimation de la fonction de survie ne décroît pas à zéro).
 - Le test du log-rang permet de valider si deux fonctions de survie sont égales (en tout temps).
 - On peut estimer la fonction de survie indépendamment pour chaque modalité d'une variable explicative catégorielle en stratifiant: cela réduit la taille de l'échantillon pour chaque strate.
+- Le modèle de Kaplan--Meier ne permet pas d'estimer l'impact de variables explicatives sur la survie.
 
 :::
 
@@ -601,7 +604,7 @@ ggplot(data = survcurves,
 
 
 ```{r}
-#| label: fig-courbes-survie
+#| label: fig-courbessurvieold
 #| echo: false
 #| eval: false
 #| cache: true
@@ -665,7 +668,7 @@ Le plus difficile est de créer correctement le fichier de données pour effectu
 #| eval: true
 #| label: fig-lexischtemps
 #| fig-cap: "Diagramme de Lexis avec trajectoires. Pour ajuster le modèle, on peut casser la contribution d'une observation en segments: considérons un seul changement survenant au temps $t_c$. Pour le premier segment, on enregistre $t_c$ comme valeur maximale (censure à droite), tandis que pour la deuxième portion, l'observation est tronquée à gauche à partir de $t_c$."
-knitr::include_graphics("figures/Lexis_censure_modif.pdf")
+knitr::include_graphics("figures/Lexis_censure_modif.png")
 ```
 
 
@@ -1124,7 +1127,7 @@ De manière générale, supposons qu'il y a $K$ manières possibles que l'évén
 #| echo: false
 #| label: fig-transitionetat
 #| fig-cap: "Schéma illustrant la transition entre état de base et autres événements compétitifs."
-knitr::include_graphics("figures/transition_etats_modele_risque_competitifs.pdf")
+knitr::include_graphics("figures/transition_etats_modele_risque_competitifs.png")
 ```
 
 
@@ -1206,13 +1209,7 @@ Notez qu'on précise que les valeurs 1, 3 et 4 sont des observations censurées.
 
 Ainsi, on voit que l'événement est survenu 170 fois et qu'il y a 330 censures. L'interprétation des paramètres se fait comme précédemment. Sauf qu'il faut préciser qu'il s'agit du risque de quitter pour aller chez le compétiteur A. Par exemple, le risque de quitter pour aller chez le compétiteur A d'une femme est 0.444 fois le risque de quitter pour aller chez le compétiteur A d'un homme. Ainsi, les femmes sont moins à risque de quitter pour aller chez le compétiteur A que les hommes.
 
-
-Pour ajuster le modèle lorsque la cause du départ est le compétiteur B, procède de la même manière. Notez que cette fois-ci, ce sont les valeurs 1, 2 et 4 de la variable censure qui correspondent au fait que l'événement n'est pas survenu.  Il y a 121 clients qui ont quitté pour aller chez B et 379 cas autre (censure). L'interprétation des paramètres se fait en termes de risque de quitter pour aller chez le compétiteur B.
-
-
-Si on ajuste le modèle pour le cas de figure où la cause de départ est que le client n'a plus besoin de cellulaire, on obtient une sortie similaire. Comme il y a seulement 43 événements (quitter car on n'a plus besoin de cellulaire), les estimations des paramètres sont moins précises, ce qu'on peut voir avec les erreurs-types qui sont plus élevés. Les observations censurées contiennent moins d'information que les événements, d'où cette perte de précision.
-
-Dans **R**, on peut aussi ajuster simultanément tous les modèles en spécifiant que l'événement d'intérêt est un facteur: c'est alors la catégorie de référence qui fait fois de l'état de départ. Il faut également une variable qui identifie l'observation --- dans le cas qu'on considère, c'est simplement une colonne avec des valeurs de $1$ à $n$.
+Dans **R**, on peut aussi ajuster simultanément tous les modèles en spécifiant que l'événement d'intérêt est un facteur: c'est alors la catégorie de référence qui fait foi de l'état de départ. Il faut également une variable qui identifie l'observation --- dans le cas qu'on considère, c'est simplement une colonne avec des valeurs de $1$ à $n$.
 
 ```{r}
 #| eval: true
@@ -1263,3 +1260,22 @@ plot(survfit(rc_cox,
 
 
 La [vignette](https://cran.r-project.org/web/packages/survival/vignettes/timedep.pdf) du paquet `survival` offre des détails sur l'implémentation des méthodes qui traitent de l'inclusion de variables explicatives dont la valeur change dans le temps et sur les risques compétitifs.
+
+
+::: {.callout-note}
+
+## En résumé
+
+
+- Le modèle de Cox suppose qu'on peut diviser le risque en deux parties: le risque de base $h_0(t)$ commun à tou(te)s (composante nonparamétrique) et l'effet multiplicatif $\exp(\mathbf{X}\boldsymbol{\beta})$ (composante paramétrique)
+- Puisque la fonction de risque de base est commune à toutes les observations, moins d'incertitude sur l'estimation de la survie.
+- L'impact sur la survie de changement dans les variables explicatives n'est pas multiplicatif.
+- Le modèle de Cox suppose que le rapport de cote ne dépend pas du temps (postulat de risques proportionnels).
+- On peut vérifier ce postulat et généraliser le modèle au besoin.
+- Plutôt que d'inclure une variable catégorielle, on peut utiliser la stratification  pour estimer le risque de base séparément sur chaque sous-groupe.
+- le modèle à risques non-proportionnels permet d'inclure une interaction entre le temps et une avec variable ou un coefficient.
+- Si les variables explicatives changent au fil du temps, on peut décomposer la contribution de l'observation en plusieurs segments.
+- Il y a un lien possible avec le modèle à risque proportionnels si l'effet est le même pour tous (comme l'âge).
+- Le modèle multi-état (modèle à risques compétitifs) permet d'estimer la probabilité de chaque transition: la survie pour l'événement de base reste le même (désabonnement), mais on décompose la probabilité de la censure selon les différents événements compétitifs.
+
+:::

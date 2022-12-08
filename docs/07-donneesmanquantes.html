@@ -84,6 +84,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -263,14 +282,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ol start="2" type="1">
 <li>Les données manquantes de <span class="math inline">\(X\)</span> sont dites <strong>données manquantes de façon aléatoire</strong> (MAR, de l’anglais <em>missing at random</em>) si la probabilité que la valeur de <span class="math inline">\(X\)</span> soit manquante ne dépend pas de la valeur de <span class="math inline">\(X\)</span> (qui n’est pas observée) une fois qu’on a contrôlé pour les autres variables.</li>
 </ol>
-<p>Il est possible par exemple que les femmes refusent plus souvent que les hommes de répondre à une question (et donc, le processus n’est pas MCAR). Si pour les femmes, la probabilité que <span class="math inline">\(X\)</span> est manquante ne dépend pas de la valeur de <span class="math inline">\(X\)</span> et que pour les hommes, la probabilité que <span class="math inline">\(X\)</span> est manquante ne dépend pas de la valeur de <span class="math inline">\(X\)</span>, alors le processus est MAR. Les probabilités d’avoir une valeur manquante sont différentes pour les hommes et les femmes mais cette probabilité ne dépend pas de la valeur de <span class="math inline">\(X\)</span> elle-même. L’hypothèse MAR est donc plus faible que l’hypothèse MCAR.</p>
+<p>Il est possible par exemple que les femmes refusent plus souvent que les hommes de répondre à une question, par exemple de donner leur âge (et donc, le processus n’est pas MCAR). Si pour les femmes et les hommes, la probabilité que <span class="math inline">\(X\)</span> est manquante ne dépend pas de la valeur de <span class="math inline">\(X\)</span>, alors le processus est MAR. Les probabilités d’avoir une valeur manquante sont différentes pour les hommes et les femmes mais cette probabilité ne dépend pas de la valeur de <span class="math inline">\(X\)</span> elle-même. L’hypothèse MAR est donc plus faible que l’hypothèse MCAR.</p>
 <ol start="3" type="1">
 <li>Les données manquantes de <span class="math inline">\(X\)</span> sont dites <strong>manquantes de façon non-aléatoire</strong> (MNAR, de l’anglais <em>missing not at random</em>) si la probabilité que la valeur de <span class="math inline">\(X\)</span> soit manquante dépend de la valeur de <span class="math inline">\(X\)</span> elle-même.</li>
 </ol>
-<p>Par exemple, les gens qui ont un revenu élevé pourraient avoir plus de réticences à répondre à une question sur leur revenu. La méthode de traitement que nous allons voir dans ce chapitre, l’imputation multiple, est très générale et est valide dans le cas MAR (et donc aussi dans le cas MCAR). Le cas MNAR est beaucoup plus difficile à traiter et ne sera pas considéré ici.</p>
+<p>Par exemple, les gens qui ont un revenu élevé pourraient avoir plus de réticences à répondre à une question sur leur revenu. Un autre exemple est si une personne transgenre ne répond pas à la question genre (si on offre seulement deux choix, homme/femme) et aucune autre question ne se rattache au genre ou à l’identité sexuelle. La méthode de traitement que nous allons voir dans ce chapitre, l’imputation multiple, est très générale et est valide dans le cas MAR (et donc aussi dans le cas MCAR). Le cas MNAR est beaucoup plus difficile à traiter et ne sera pas considéré ici.</p>
+<p>Il n’est pas possible de tester l’hypothèse que le données sont manquantes de façon aléatoire ou complètement aléatoire; ce postulat doit donc être déterminé à partir du contexte et des variables auxiliaires disponibles.</p>
 </section>
 <section id="méthodes-dimputation" class="level2" data-number="8.2">
 <h2 data-number="8.2" class="anchored" data-anchor-id="méthodes-dimputation"><span class="header-section-number">8.2</span> Méthodes d’imputation</h2>
+<p>Il est important de noter que, dans bien des cas, les données manquantes ont une valeur logique: un client qui n’a pas de carte de crédit a un solde de 0! Tous ces cas devraient être traités en amon, d’où l’importance des validations d’usage et du nettoyage préliminaire de la base de données.</p>
 <section id="cas-complets" class="level3" data-number="8.2.1">
 <h3 data-number="8.2.1" class="anchored" data-anchor-id="cas-complets"><span class="header-section-number">8.2.1</span> Cas complets</h3>
 <p>La première idée naïve pour une analyse est de retirer les observations avec données manquantes pour conserver les cas complets (<em>listwise deletion</em>, ou <em>complete case analysis</em>).</p>
@@ -283,7 +304,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="imputation-simple" class="level3" data-number="8.2.2">
 <h3 data-number="8.2.2" class="anchored" data-anchor-id="imputation-simple"><span class="header-section-number">8.2.2</span> Imputation simple</h3>
-<p>La deuxième approche est l’<strong>imputation simple</strong>. L’idée ici est de ne pas enlever les observations avec des valeurs manquantes mais de remplacer ces valeurs par des valeurs raisonnables. Par exemple, on peut remplacer les valeurs manquantes d’une variable par la moyenne de cette variable dans notre échantillon. On peut aussi ajuster un modèle de régression avec cette variable comme variable dépendante et d’autres variables explicatives comme variables indépendantes et utiliser les valeurs prédites comme remplacement. Une fois que les valeurs manquantes ont été remplacées, on fait l’analyse avec toutes les observations.</p>
+<p>L’<strong>imputation</strong> consiste à remplacer les valeurs manquantes pour boucher le trous. Pour paraphraser Dempster et Rubin (1983),</p>
+<blockquote class="blockquote">
+<p>Le concept d’imputation est à la fois séduisant et dangereux.</p>
+</blockquote>
+<p>Avec l’<strong>imputation simple</strong>, on remplace les valeurs manquantes par des ersatz raisonnables. Par exemple, on peut remplacer les valeurs manquantes d’une variable par la moyenne de cette variable dans notre échantillon. On peut aussi ajuster un modèle de régression avec cette variable comme variable dépendante et d’autres variables explicatives comme variables indépendantes et utiliser les valeurs prédites comme remplacement. Une fois que les valeurs manquantes ont été remplacées, on fait l’analyse avec toutes les observations.</p>
+<p>L’imputation par le mode ou la moyenne n’est pas recommandée parce qu’elle dilue la corrélation entre les variables explicatives et elle réduit la variabilité. Les modèles de régression mènent également à une-sous estimation de l’incertitude en raison cette fois-ci de l’augmentation de la corrélation, ce qui augmente mécaniquement la significativité des tests, contrairement à l’imputation aléatoire (droite). Le <a href="#fig-imputation">Figure&nbsp;<span>8.1</span></a> montre clairement cet état de fait.</p>
+<div class="cell" data-layout-align="center" data-hash="07-donneesmanquantes_cache/html/fig-imputation_479f819850a2227488c4164b25559297">
+<div class="cell-output-display">
+<div id="fig-imputation" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="07-donneesmanquantes_files/figure-html/fig-imputation-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;8.1: Différences entre méthodes d’imputation, avec imputation par la moyenne, par le biais d’une régression linéaire et par un modèle aléatoire de régression, de gauche à droite.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>En quoi constitue l’imputation aléatoire recommandée ci-dessus? Considérons le cas d’une régression logistique pour une variable explicative binaire. Plutôt que d’assigner à la classe la plus probable, une prédiction aléatoire simule une variable 0/1 avec probabilité <span class="math inline">\((1-\widehat{p}_i, \widehat{p}_i)\)</span>. Pour un modèle de régression linéaire, la prédiction</p>
 <p>Il existe d’autres façons d’imputer les valeurs manquantes mais le problème de toutes ces approches est que l’on ne tient pas compte du fait que des valeurs ont été remplacées et on fait comme si c’était de vraies observations. Cela va en général sous-évaluer la variabilité dans les données. Par conséquent, les écarts-type des paramètres estimés seront en général sous-estimés et l’inférence (tests et intervalles de confiance) ne sera pas valide. Cette approche n’est donc <strong>pas recommandée</strong>.</p>
 <p>Une manière de tenter de reproduire correctement la variabilité dans les données consiste à ajouter un terme aléatoire dans l’imputation. C’est ce que fait la méthode suivante, qui possédera l’avantage de corriger automatiquement les écarts-type des paramètres estimés.</p>
 </section>
@@ -291,6 +328,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 data-number="8.2.3" class="anchored" data-anchor-id="imputation-multiple"><span class="header-section-number">8.2.3</span> Imputation multiple</h3>
 <p>Cette méthode peut être appliquée dans à peu près n’importe quelle situation et permet d’ajuster les écarts-type des paramètres estimés. Elle peut être appliquée lorsque le processus est MAR (et donc aussi MCAR).</p>
 <p>L’idée consiste à procéder à une imputation aléatoire, selon une certaine technique, pour obtenir un échantillon complet et à ajuster le modèle d’intérêt avec cet échantillon. On répète ce processus plusieurs fois et on combine les résultats obtenus.</p>
+<div class="cell" data-layout-align="center" data-hash="07-donneesmanquantes_cache/html/unnamed-chunk-3_4826cf3d87458bd4a145d7972d3d68eb">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/donnees_manquantes_workflow.png" class="img-fluid figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+</div>
+</div>
 <p>L’estimation finale des paramètres du modèle est alors simplement la moyenne des estimations pour les différentes répétitions et on peut également obtenir une estimation des écarts-type des paramètres qui tient compte du processus d’imputation.</p>
 <p>Plus précisément, supposons qu’on s’intéresse à un seul paramètre <span class="math inline">\(\theta\)</span> dans un modèle donné. Ce modèle pourrait être un modèle de régression linéaire, de régression logistique, etc. Le paramètre <span class="math inline">\(\theta\)</span> serait alors un des <span class="math inline">\(\boldsymbol{\beta}\)</span> du modèle.</p>
 <p>Supposons qu’on procède à <span class="math inline">\(K\)</span> imputations, c’est-à-dire, qu’on construit <span class="math inline">\(K\)</span> ensemble de données complets à partir de l’ensemble de données initial contenant des valeurs manquantes. On estime alors les paramètres du modèle séparément pour chacun des ensembles de données imputés. Soit <span class="math inline">\(\widehat{\theta}_k\)</span>, l’estimé du paramètre <span class="math inline">\(\theta\)</span> pour l’échantillon <span class="math inline">\(k \in \{1, \ldots, K\}\)</span> et <span class="math inline">\(\widehat{\sigma}_k^2=\mathsf{Va}(\widehat{\theta}_k)\)</span> l’estimé de la variance de <span class="math inline">\(\widehat{\theta}_k\)</span> produite par le modèle estimé.</p>
@@ -301,17 +347,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 \\ W &amp;= \frac{1}{K} \sum_{k=1}^K \widehat{\sigma}^2_k = \frac{\widehat{\sigma}_1^2 + \cdots + \widehat{\sigma}_K^2}{K},\\
 B &amp;= \frac{1}{K-1} \sum_{k=1}^K (\widehat{\theta}_k - \widehat{\theta})^2.
 \end{align*}\]</span> Ainsi, le terme <span class="math inline">\(W\)</span> est la moyenne des variances et <span class="math inline">\(B\)</span> est la variance entre les imputations. Le terme <span class="math inline">\((1+1/K)B\)</span> est celui qui vient corriger le fait qu’on travaille avec des données imputées et non pas des vraies données en augmentant la variance estimée du paramètre.</p>
-<p>C’est ici qu’on voit l’intérêt à procéder à de l’imputation multiple. Si on procédait à une seule imputation (même en ajoutant une part d’aléatoire pour essayer de reproduire la variabilité des données), on ne serait pas en mesure d’estimer la variance inter-groupe de l’estimateur. Notez que la formule présentée n’est valide que pour le cas unidimensionnel; l’estimation de la variance dans le cas multidimensionnel est différente (voir Little et Rubin, 2002).</p>
+<p>C’est ici qu’on voit l’intérêt à procéder à de l’imputation multiple. Si on procédait à une seule imputation (même en ajoutant une part d’aléatoire pour essayer de reproduire la variabilité des données), on ne serait pas en mesure d’estimer la variance inter-groupe de l’estimateur. Notez que la formule présentée n’est valide que pour le cas unidimensionnel; l’estimation de la variance dans le cas multidimensionnel est différente <span class="citation" data-cites="Little.Rubin:2019">(<a href="#ref-Little.Rubin:2019" role="doc-biblioref">Little and Rubin 2019</a>)</span>.</p>
+<p>Il faut également ajuster les formules pour le calcul des intervalles de confiance, valeurs-<span class="math inline">\(p\)</span> et degrés de liberté. Le logiciel s’en chargera pour nous.</p>
 <p>La méthode d’imputation multiple possède l’avantage d’être applicable avec n’importe quel modèle sous-jacent. Une fois qu’on a des échantillons complets (imputés), on ajuste le modèle comme d’habitude. Mais une observation imputée ne remplacera jamais une vraie observation. Il faut donc faire tout ce qu’on peut pour limiter le plus possible les données manquantes.</p>
 <p>Il faut utiliser son jugement. Par exemple, si la proportion d’observations perdues est petite (moins de 5%), ça ne vaut peut-être pas la peine de prendre des mesures particulières et on peut faire une analyse avec les données complètes seulement. S’il y a un doute, on peut faire une analyse avec les données complètes seulement et une autre avec imputations multiples afin de valider la première.</p>
 <p>Si, à l’inverse, une variable secondaire cause à elle seule une grande proportion de valeurs manquantes, on peut alors considérer l’éliminer afin de récupérer des observations. Par exemple, si vous avez une proportion de 30% de valeurs manquantes en utilisant toutes vos variables et que cette proportion baisse à 3% lorsque vous éliminez quelques variables peu importantes pour votre étude (ou qui peuvent être remplacées par d’autres jouant à peu près le même rôle qui elles sont disponibles), alors vous pourriez considérer la possibilité de les éliminer. Il est donc nécessaire d’examiner la configuration des valeurs manquantes avant de faire quoi que ce soit.</p>
+<p>Pour l’imputation, nous utiliserons l’algorithme d’imputation multiple par équations chaînées (MICE).</p>
+<p>Avec <span class="math inline">\(p\)</span> variables <span class="math inline">\(X_1, \ldots, X_p\)</span>, spécifier un ensemble de modèles <strong>conditionnels</strong> pour chaque variable <span class="math inline">\(X_j\)</span> en fonction de toutes les autres variables, <span class="math inline">\(\boldsymbol{X}_{-j}\)</span> et les valeurs observées pour cette variable, <span class="math inline">\(X_{j, \text{obs}}\)</span>.</p>
+<p>L’idée est de remplir aléatoire tous les trous et ensuite d’utiliser des modèles d’imputation aléatoire pour chaque variable à tour de rôle. Après plusieurs cycles où chacune des variables explicatives (au plus le nombre de colonnes <span class="math inline">\(p\)</span>) est imputée, l’impact de l’initialisation devrait être faible. On retourne alors une copie de la base de données.</p>
+<ol type="1">
+<li>Initialisation: remplir les trous avec des données au hasard parmi <span class="math inline">\(X_{j, \text{obs}}\)</span> pour <span class="math inline">\(X_{j, \text{man}}\)</span></li>
+<li>À l’itération <span class="math inline">\(t\)</span>, pour chaque variable <span class="math inline">\(j=1, \ldots, p\)</span>, à tour de rôle:
+<ol type="a">
+<li>tirage aléatoire des paramètres <span class="math inline">\(\phi_j^{(t)}\)</span> du modèle pour <span class="math inline">\(X_{j,\text{man}}\)</span> conditionnel à <span class="math inline">\(\boldsymbol{X}_{-j}^{(t-1)}\)</span> et <span class="math inline">\(X_{j, \text{obs}}\)</span></li>
+<li>échantillonnage de nouvelles observations <span class="math inline">\(X^{(t)}_{j,\text{man}}\)</span> du modèle avec paramètres <span class="math inline">\(\phi_j^{(t)}\)</span> conditionnel à <span class="math inline">\(\boldsymbol{X}_{-j}^{(t-1)}\)</span> et <span class="math inline">\(X_{j, \text{obs}}\)</span></li>
+</ol></li>
+<li>Répéter le cycle</li>
+</ol>
 </section>
 </section>
 <section id="example-dapplication-de-limputation" class="level2" data-number="8.3">
 <h2 data-number="8.3" class="anchored" data-anchor-id="example-dapplication-de-limputation"><span class="header-section-number">8.3</span> Example d’application de l’imputation</h2>
-<p>On examine l’exemple de recommandations de l’association professionnelle des vachers de la section <a href="#sec-cowboy"><span class="quarto-unresolved-ref">sec-cowboy</span></a>.</p>
+<p>On examine l’exemple de recommandations de l’association professionnelle des vachers de la section <a href="05-reglogistique.html#sec-cowboy"><span>Section&nbsp;5.2.3</span></a>.</p>
 <p>Le but est d’examiner les effets des variables <span class="math inline">\(X_1\)</span> à <span class="math inline">\(X_6\)</span> sur les intentions d’achat; la base de données <code>manquantes</code> contient les observations. Il s’agit des mêmes données que celles du fichier <code>logit1</code> mais avec des valeurs manquantes.</p>
-<div class="cell" data-layout-align="center" data-hash="07-donneesmanquantes_cache/html/tbl-missing1r_be4792be3bf398c9cdf068849770aaad">
+<div class="cell" data-hash="07-donneesmanquantes_cache/html/tbl-missing1r_77effccf9902bffc0715824392aba44c">
 <div class="cell-output-display">
 <div id="tbl-missing1r" class="anchored">
 
@@ -426,7 +485,7 @@ B &amp;= \frac{1}{K-1} \sum_{k=1}^K (\widehat{\theta}_k - \widehat{\theta})^2.
 </div>
 <p>Les points (<code>.</code>) indiquent des valeurs manquantes. Le premier sujet n’a pas de valeur manquante. Le deuxième a une valeur manquante pour <span class="math inline">\(X_1\)</span> (emploi) et <span class="math inline">\(X_4\)</span> (éducation), etc.</p>
 <p>Une première façon de voir combien il y a de valeurs manquantes consiste à faire sortir les statistiques descriptives avec <code>summary</code>. Ainsi, il y 192 valeurs manquantes pour <span class="math inline">\(X_1\)</span>, 48 pour <span class="math inline">\(X_2\)</span> et 184 pour <span class="math inline">\(X_4\)</span>. Les autres variables n’ont pas de valeurs manquantes, incluant la variable dépendante <span class="math inline">\(Y\)</span>. La procédure unidimensionnelle nous permet seulement de voir combien il y a de valeurs manquantes variable par variable.</p>
-<div class="cell" data-layout-align="center" data-hash="07-donneesmanquantes_cache/html/tbl-manquantes-univ_8ae135652a7af03d85151c3360a5ea41">
+<div class="cell" data-hash="07-donneesmanquantes_cache/html/tbl-manquantes-univ_72163f331c9d4026a832b3f0c929232e">
 <div class="cell-output-display">
 <div id="tbl-manquantes-univ" class="anchored">
 
@@ -470,7 +529,7 @@ B &amp;= \frac{1}{K-1} \sum_{k=1}^K (\widehat{\theta}_k - \widehat{\theta})^2.
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="07-donneesmanquantes_cache/html/manquantes-summary-uni_ab12c83f245e069cd3cc0cebffce10e7">
+<div class="cell" data-hash="07-donneesmanquantes_cache/html/manquantes-summary-uni_090bb5cb5f80db0ccc7262e5c4bfc1f6">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(manquantes, <span class="at">package =</span> <span class="st">'hecmulti'</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(manquantes)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Pourcentage de valeurs manquantes</span></span>
@@ -478,22 +537,27 @@ B &amp;= \frac{1}{K-1} \sum_{k=1}^K (\widehat{\theta}_k - \widehat{\theta})^2.
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Voir les configurations de valeurs manquantes</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">md.pattern</span>(manquantes)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="07-donneesmanquantes_cache/html/fig-manquantes2_a3a35ee79a97f4c8761fbe2c049ed652">
+<p>Nous utiliserons le paquet <strong>R</strong> <code>mice</code> pour faire l’imputation.</p>
+<ol type="1">
+<li>Procéder à plusieurs imputations <strong>aléatoires</strong> pour obtenir un échantillon complet (<code>mice</code>)</li>
+<li>Ajuster le modèle d’intérêt avec chaque échantillon (<code>with</code>). 3. Combiner les résultats obtenus (<code>pool</code> et <code>summary</code>)</li>
+</ol>
+<div class="cell" data-hash="07-donneesmanquantes_cache/html/fig-manquantes2_69cd1a8ebb2e2fd810a284575cba6a65">
 <div class="cell-output-display">
 <div id="fig-manquantes2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="07-donneesmanquantes_files/figure-html/fig-manquantes2-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;8.1: Configurations des valeurs manquantes pour la base de données <code>manquantes</code>.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;8.2: Configurations des valeurs manquantes pour la base de données <code>manquantes</code>.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>La <a href="#fig-manquantes2">Figure&nbsp;<span class="quarto-unresolved-ref">fig-manquantes2</span></a> donne une indication sur les différentes combinaisons de données complètes (cases bleues) et les observations manquantes (cases roses) avec leur fréquence. Les variables sont indiquées au dessus, les effectifs manquants en dessous, le nombre de cas de chaque combinaisons à gauche et le nombre de variables avec des valeurs manquantes à droite. Ainsi, il y a 180 sujets (36% de l’échantillon) avec aucune observation manquante. Il y en a 99 avec seulement <span class="math inline">\(X_4\)</span> manquante et ainsi de suite. On voit donc, par exemple, que pour 14 sujets, à la fois <span class="math inline">\(X_1\)</span> et <span class="math inline">\(X_2\)</span> sont manquantes.</p>
+<p>La <a href="#fig-manquantes2">Figure&nbsp;<span>8.2</span></a> donne une indication sur les différentes combinaisons de données complètes (cases bleues) et les observations manquantes (cases roses) avec leur fréquence. Les variables sont indiquées au dessus, les effectifs manquants en dessous, le nombre de cas de chaque combinaisons à gauche et le nombre de variables avec des valeurs manquantes à droite. Ainsi, il y a 180 sujets (36% de l’échantillon) avec aucune observation manquante. Il y en a 99 avec seulement <span class="math inline">\(X_4\)</span> manquante et ainsi de suite. On voit donc, par exemple, que pour 14 sujets, à la fois <span class="math inline">\(X_1\)</span> et <span class="math inline">\(X_2\)</span> sont manquantes.</p>
 <p>La recommandation d’usage est d’imputer au moins le pourcentage de cas incomplet, ici 64% donc 64 imputations. Si la procédure est trop coûteuse en calcul, on peut diminuer le nombre d’imputations, mais il faut au minimum 10 réplications pour avoir une bonne idée de la variabilité.</p>
-<p>On peut comparer l’inférence avec toutes les variables explicatives pour les données sans valeurs manquantes (<span class="math inline">\(n=500\)</span> observations), avec les cas complets uniquement (<span class="math inline">\(n=180\)</span> observations). Le <a href="#tbl-missing3r">Tableau&nbsp;<span class="quarto-unresolved-ref">tbl-missing3r</span></a> présente les estimations des paramètres du modèle de régression logistique s’il n’y avait pas eu de valeurs manquantes, avec les cas complets et les résultats de l’imputation multiple.</p>
-<p>Si on ajuste un modèle à une base de données qui contient des valeurs manquantes, le comportement par défaut est de retirer les observations qui ont au moins une valeur manquante pour une des variables nécessaires à l’analyse (voir la sortie de <code>glm(y ~ ., data = manquantes)</code>). Il ne serait pas raisonnable de faire l’analyse avec seulement 180 observations et de laisser tomber les 320 autres. De plus, comme nous l’avons vu plus haut, ce n’est pas valide à moins que le processus ne soit MCAR. La partie du milieu du <a href="#tbl-missing3r">Tableau&nbsp;<span class="quarto-unresolved-ref">tbl-missing3r</span></a> présente les estimations obtenues. Plusieurs variables significatives à niveau <span class="math inline">\(\alpha=0.05\)</span> ne le sont plus (puisqu’il y a moins d’information quand on réduit le nombre d’observations). Il y a même pire: non seulement la variable <span class="math inline">\(\mathsf{I}(X_2=1)\)</span> est passée de significative à non significative, mais en plus l’estimé de son paramètre a changé de signe.</p>
+<p>On peut comparer l’inférence avec toutes les variables explicatives pour les données sans valeurs manquantes (<span class="math inline">\(n=500\)</span> observations), avec les cas complets uniquement (<span class="math inline">\(n=180\)</span> observations). Le <a href="#tbl-missing3r">Tableau&nbsp;<span>8.3</span></a> présente les estimations des paramètres du modèle de régression logistique s’il n’y avait pas eu de valeurs manquantes, avec les cas complets et les résultats de l’imputation multiple.</p>
+<p>Si on ajuste un modèle à une base de données qui contient des valeurs manquantes, le comportement par défaut est de retirer les observations qui ont au moins une valeur manquante pour une des variables nécessaires à l’analyse (voir la sortie de <code>glm(y ~ ., data = manquantes)</code>). Il ne serait pas raisonnable de faire l’analyse avec seulement 180 observations et de laisser tomber les 320 autres. De plus, comme nous l’avons vu plus haut, ce n’est pas valide à moins que le processus ne soit MCAR. La partie du milieu du <a href="#tbl-missing3r">Tableau&nbsp;<span>8.3</span></a> présente les estimations obtenues. Plusieurs variables significatives à niveau <span class="math inline">\(\alpha=0.05\)</span> ne le sont plus (puisqu’il y a moins d’information quand on réduit le nombre d’observations). Il y a même pire: non seulement la variable <span class="math inline">\(\mathsf{I}(X_2=1)\)</span> est passée de significative à non significative, mais en plus l’estimé de son paramètre a changé de signe.</p>
 <p>Nous allons donc faire l’analyse avec l’imputation multiple, en prenant la méthode d’imputation par défaut</p>
-<div class="cell" data-layout-align="center" data-hash="07-donneesmanquantes_cache/html/manquante2_3110903696e2a1c7ef1cfe3102e0a221">
+<div class="cell" data-hash="07-donneesmanquantes_cache/html/manquante2_ab775962d8dd809123abd6720dc3eaee">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mice)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Imputation multiple avec équations enchaînées</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Intensif en calcul, réduire `m` si nécessaire</span></span>
@@ -515,11 +579,11 @@ B &amp;= \frac{1}{K-1} \sum_{k=1}^K (\widehat{\theta}_k - \widehat{\theta})^2.
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>La procédure <code>mice</code> du paquet éponyme crée les copies complètes du jeu de données. On peut ensuite appliquer une procédure quelconque et combiner les estimations avec <code>pool</code>.</p>
-<div class="cell" data-layout-align="center" data-hash="07-donneesmanquantes_cache/html/tbl-missing3r_e2b8f3f7731cc5a831e5780744a27f0e">
+<div class="cell" data-hash="07-donneesmanquantes_cache/html/tbl-missing3r_d0a26b80a8ea7e2a37341a4516e18757">
 <div class="cell-output-display">
 <div id="tbl-missing3r" class="anchored">
 
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;8.3:  Estimés, erreurs-type et valeurs-p des paramètres avec les 500 données complètes (gauche), avec les 180 cas complets (milieu) et avec l’imputation multiple (droite). </caption>
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;8.3:  Estimés, erreurs-type et valeurs-p des paramètres avec les 500 données complètes (gauche), avec les 180 cas complets (milieu) et avec l’imputation multiple (droite). </caption>
  <thead>
 <tr>
 <th style="empty-cells: hide;border-bottom:hidden;" colspan="1"></th>
@@ -717,8 +781,33 @@ B &amp;= \frac{1}{K-1} \sum_{k=1}^K (\widehat{\theta}_k - \widehat{\theta})^2.
 </div>
 <p>On peut remarquer que la précision est systématiquement meilleure avec l’imputation multiple; les erreurs-type pour l’imputation multiple sont plus petits que celle du modèle qui retire les données incomplètes.</p>
 <p>On voit que la variable <span class="math inline">\(X_3\)</span> (sexe) est significative avec l’imputation multiple. Son paramètre estimé est 1.19, comparativement à 1.349 s’il n’y avait pas eu de valeurs manquantes. La précision dans l’estimation avec l’imputation multiple est seulement un peu moins bonne (erreur-type de 0.27) que celle s’il n’y avait pas eu de manquantes (erreur type de 0.26). Le paramètre de <span class="math inline">\(\mathsf{I}(X_6=2)\)</span> redevient aussi significatif, alors qu’il ne l’était plus si on retirait les manquantes. Il est peu probable que les données soit <span class="math inline">\(\mathsf{MCAR}\)</span> et donc les résultats de l’analyse des cas complets seraient biaisés.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+En résumé
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Les données manquantes réduisent la quantité d’information disponible et augmentent l’incertitude.</li>
+<li>On ne peut <strong>pas</strong> les ignorer (étude des cas complets) sans biaiser les interprétations et réduire la quantité d’information disponible.</li>
+<li>Pour bien capturer l’incertitude et ne pas modifier les relations entre variables, il faut utiliser une méthode d’imputation aléatoire.</li>
+<li>Avec l’algorithme MICE, on utilise un modèle conditionnel pour chaque variable à tour de rôle.</li>
+<li>L’imputation multiple est préférée à l’imputation simple car elle permet d’estimer l’incertitude sous-jacente en raison des données manquantes.</li>
+<li>Il faut un traitement spécial pour les erreurs-type, degrés de liberté, valeurs-<span class="math inline">\(p\)</span> et intervalles de confiance.</li>
+</ul>
+</div>
+</div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-Little.Rubin:2019" class="csl-entry" role="doc-biblioentry">
+Little, Roderick J. A., and Donald B Rubin. 2019. <span>“Statistical Analysis with Missing Data.”</span> Edited by Wiley. <a href="https://doi.org/10.1002/9781119482260">https://doi.org/10.1002/9781119482260</a>.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->

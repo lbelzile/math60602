@@ -248,18 +248,12 @@ div.csl-indent {
   <ul class="collapse">
   <li><a href="#description-du-modèle-de-cox" id="toc-description-du-modèle-de-cox" class="nav-link" data-scroll-target="#description-du-modèle-de-cox"><span class="toc-section-number">6.5.1</span>  Description du modèle de Cox</a></li>
   <li><a href="#estimation-de-la-fonction-de-survie-pour-des-valeurs-particulières-des-variables-explicatives" id="toc-estimation-de-la-fonction-de-survie-pour-des-valeurs-particulières-des-variables-explicatives" class="nav-link" data-scroll-target="#estimation-de-la-fonction-de-survie-pour-des-valeurs-particulières-des-variables-explicatives"><span class="toc-section-number">6.5.2</span>  Estimation de la fonction de survie pour des valeurs particulières des variables explicatives</a></li>
-  <li><a href="#postulat-de-risques-proportionnels" id="toc-postulat-de-risques-proportionnels" class="nav-link" data-scroll-target="#postulat-de-risques-proportionnels"><span class="toc-section-number">6.5.3</span>  Postulat de risques proportionnels</a></li>
+  <li><a href="#variables-explicatives-dont-la-valeur-change-dans-le-temps" id="toc-variables-explicatives-dont-la-valeur-change-dans-le-temps" class="nav-link" data-scroll-target="#variables-explicatives-dont-la-valeur-change-dans-le-temps"><span class="toc-section-number">6.5.3</span>  Variables explicatives dont la valeur change dans le temps</a></li>
+  <li><a href="#postulat-de-risques-proportionnels" id="toc-postulat-de-risques-proportionnels" class="nav-link" data-scroll-target="#postulat-de-risques-proportionnels"><span class="toc-section-number">6.5.4</span>  Postulat de risques proportionnels</a></li>
+  <li><a href="#stratification" id="toc-stratification" class="nav-link" data-scroll-target="#stratification"><span class="toc-section-number">6.5.5</span>  Stratification</a></li>
+  <li><a href="#modèle-non-proportionnel" id="toc-modèle-non-proportionnel" class="nav-link" data-scroll-target="#modèle-non-proportionnel"><span class="toc-section-number">6.5.6</span>  Modèle non-proportionnel</a></li>
   </ul></li>
-  <li><a href="#extensions-du-modèle-de-cox" id="toc-extensions-du-modèle-de-cox" class="nav-link" data-scroll-target="#extensions-du-modèle-de-cox"><span class="toc-section-number">6.6</span>  Extensions du modèle de Cox</a>
-  <ul class="collapse">
-  <li><a href="#variables-explicatives-dont-la-valeur-change-dans-le-temps" id="toc-variables-explicatives-dont-la-valeur-change-dans-le-temps" class="nav-link" data-scroll-target="#variables-explicatives-dont-la-valeur-change-dans-le-temps"><span class="toc-section-number">6.6.1</span>  Variables explicatives dont la valeur change dans le temps</a></li>
-  <li><a href="#modèle-à-risques-compétitifs" id="toc-modèle-à-risques-compétitifs" class="nav-link" data-scroll-target="#modèle-à-risques-compétitifs"><span class="toc-section-number">6.6.2</span>  Modèle à risques compétitifs</a></li>
-  </ul></li>
-  <li><a href="#risques-non-proportionnels" id="toc-risques-non-proportionnels" class="nav-link" data-scroll-target="#risques-non-proportionnels"><span class="toc-section-number">6.7</span>  Risques non proportionnels</a>
-  <ul class="collapse">
-  <li><a href="#non-proportionnalité-avec-un-terme-dinteraction-avec-le-temps" id="toc-non-proportionnalité-avec-un-terme-dinteraction-avec-le-temps" class="nav-link" data-scroll-target="#non-proportionnalité-avec-un-terme-dinteraction-avec-le-temps"><span class="toc-section-number">6.7.1</span>  Non-proportionnalité avec un terme d’interaction avec le temps</a></li>
-  <li><a href="#stratification" id="toc-stratification" class="nav-link" data-scroll-target="#stratification"><span class="toc-section-number">6.7.2</span>  Stratification</a></li>
-  </ul></li>
+  <li><a href="#modèle-à-risques-compétitifs" id="toc-modèle-à-risques-compétitifs" class="nav-link" data-scroll-target="#modèle-à-risques-compétitifs"><span class="toc-section-number">6.6</span>  Modèle à risques compétitifs</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lbelzile/math60602/edit/master/06-survie.qmd" class="toc-action">Éditer cette page</a></p></div></div></nav>
     </div>
@@ -292,8 +286,47 @@ div.csl-indent {
 </div>
 <section id="introduction" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">6.1</span> Introduction</h2>
-<p>Cette section traite de temps avant qu’un événement survienne. Le traitement de ce type de données, dites données de survie en référence au domain médical, est particulier parce que l’information disponible est incomplète. Plusieurs mécanismes peuvent impacter la survie.</p>
-<p>On considère comme exemple une étude sur le chômage dû à la crise du coronavirus. On s’intéresse à tous ceux qui étaient en recherche active d’emploi entre mars et juin; seuls ceux qui étaient au chômage durant cette période seront considérés. Certaines personnes seront déjà au chômage en avril et donc leur durée de chômage en mars est déjà longue (troncature à gauche). Lors de notre suivi, d’autre mentionneront avoir trouvé un emploi lors de notre appel, mais ne pourront nous renseigner sur la date exacte de leur embauche: cette dernière précèdera notre prise de contact, mais nous est inconnue (censure à gauche). D’autres personnes seront toujours au chômage en juin à la fin de l’étude et on ignorera le nombre réel de mois passés au chômage (censure à droite). Enfin, certaines personnes cesseront de chercher activement un emploi et donc quitteront l’étude. Tous ces méchanismes (complexes) peuvent être dictés par certaines covariables (employabilité, découragement) et être aléatoires ou pas. Pour estimer le taux de chômage, il faudra prendre en compte les méchanismes de survie dans notre modèle. On se concentrera sur le cas simple des données censurées à droite de façon aléatoire.</p>
+<p>Cette section traite de temps avant qu’un événement survienne. Le traitement de ce type de données, dites données de survie en référence au domaine médical, est particulier parce que l’information disponible est incomplète. Plusieurs mécanismes peuvent impacter la survie: généralement les données sont sujettes à troncature et à censure.</p>
+<p>Pour déterminer les mécanismes de survie en présence, il peut être utile de représenter le processus de collecte de données à l’aide d’un diagramme de Lexis: ce dernier présente la trajectoire observée à l’aide d’une droite de pente un. L’axe des abscisses (<span class="math inline">\(x\)</span>) donne le temps (au calendrier) et l’axe des ordonnées (<span class="math inline">\(y\)</span>) la durée observée.</p>
+<div class="cell" data-hash="06-survie_cache/html/fig-lexis_7ec24b0c5b610fdd99e585ccf9cd14d8">
+<div class="cell-output-display">
+<div id="fig-lexis" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="figures/Lexis_censure.png" class="img-fluid figure-img" width="274"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6.1: Diagramme de Lexis pour données tronquées à gauche (<span class="math inline">\(A\)</span> et <span class="math inline">\(C\)</span>) et censurées à droite (<span class="math inline">\(C\)</span> et <span class="math inline">\(D\)</span>).</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La <a href="#fig-lexis">Figure&nbsp;<span>6.1</span></a> montre des courbes fictives. On trace une droite de pente 1 représentant la durée en fonction du temps (date au calendrier) etl a fenêtre définit la période de collecte de donnée. La censure est indiquée par des cercles, les événements par des croix.</p>
+<p>On parle de censure lorsque le temps réel de l’événement n’est pas observé (information partielle).</p>
+<ul>
+<li>Censure à droite: l’événement n’est pas encore survenu au temps <span class="math inline">\(t\)</span>: on sait que <span class="math inline">\(T &gt; t\)</span>.</li>
+<li>Censure à gauche: l’événement survient avant le temps <span class="math inline">\(t\)</span>, donc la vraie valeur est inférieure à la valeur observée (<span class="math inline">\(T &lt; t\)</span>)</li>
+<li>Censure par intervalle: l’événement est survenu dans la plage <span class="math inline">\([t_1, t_2]\)</span> (données arrondies)</li>
+</ul>
+<p>La censure peut être aléatoire (par exemple, une personne qui fait partie d’un protocole de rercherche déménage dans un autre pays parce que sa conjointe a trouvé un emploi là-bas et cette raison n’a aucun lien avec son état de santé). La censure administrative, un mécanisme déterministe qui survient lorsque les données sont collectées sur une période fixe de temps, ne fournit pas non plus d’information sur l’événement en question. On supposera dans ces notes que nous sommes dans un de ces deux cas de figure.</p>
+<p>Si la censure est informative, les outils présentés ne sont pas adéquats! Par exemple, si un patient d’une étude clinique est déchargé d’un protocole médical car il est trop mal en point, cela nous renseigne sur son état de santé et sur sa survie.</p>
+<p>La troncature, rarement discutée, est liée au processus de collecte et détermine quelles observations sont incluses dans l’étude. La plage des valeurs possibles est tronquée. Les types de troncature sont:</p>
+<ul>
+<li>troncature à gauche: le temps minimum est supérieur à <span class="math inline">\(t_0\)</span></li>
+<li>troncature à droite: le temps maximum est inférieur à <span class="math inline">\(t_1\)</span></li>
+<li>troncature par intervalle: le temps de l’événement doit survenir entre <span class="math inline">\(t_0\)</span> et <span class="math inline">\(t_1\)</span>.</li>
+</ul>
+<p>La troncature à gauche est la plus fréquente: elle survient par exemple si on étudie le temps d’abonnement, mais qu’on n’a accès qu’aux dossiers de clients et de clientes qui sont actifs dans le système. Ainsi, une personne qui se serait désabonnée une journée avant qu’on télécharge les données ne se trouvera pas dans la base de données. Si on ne tient pas compte de cet état de fait et des fantômes, nos estimations seront biaisées.</p>
+<p>La troncature par intervalle survient quand on considère uniquement les personnes pour lesquelles l’événement d’intérêt est survenu. Si l’on s’intéresse à la durée de la relation d’emploi et seules les personnes à l’emploi qui ont pris leur retraite entre 2009 et 2021 sont considérées pour l’étude, on sera en présence de troncature par intervalle comme représenté dans la <a href="#fig-troncatureintervalle">Figure&nbsp;<span>6.2</span></a>.</p>
+<div class="cell" data-hash="06-survie_cache/html/fig-troncatureintervalle_cea61e8ac47defb3a81e3ed42de07598">
+<div class="cell-output-display">
+<div id="fig-troncatureintervalle" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="figures/lexis_troncationintervalle.png" class="img-fluid figure-img" width="600"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6.2: Diagramme de Lexis illustrant la troncature par intervalle.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>On considère comme exemple une étude sur le chômage dû à la crise du coronavirus. On s’intéresse à tous ceux qui étaient en recherche active d’emploi entre mars et juin; seuls ceux qui étaient au chômage durant cette période seront considérés. Certaines personnes seront déjà au chômage en avril et donc leur durée de chômage en mars est déjà longue (troncature à gauche). Lors de notre suivi, d’autres personnes mentionneront avoir trouvé un emploi lors de notre appel, mais ne pourront nous renseigner sur la date exacte de leur embauche: cette dernière précèdera notre prise de contact, mais nous est inconnue (censure à gauche). D’autres personnes seront toujours au chômage en juin à la fin de l’étude et on ignorera le nombre réel de mois passés au chômage (censure à droite). Enfin, certaines personnes cesseront de chercher activement un emploi et donc quitteront l’étude (censure à droite). Tous ces méchanismes (complexes) peuvent être dictés par certaines covariables (employabilité, découragement) et être aléatoires ou pas. Pour estimer le taux de chômage, il faudra prendre en compte les méchanismes de survie dans notre modèle. On se concentrera sur le cas simple des données censurées à droite de façon aléatoire.</p>
+<p>Avec la survie, les statistiques descriptives usuelles sont trompeuses. La figure de <a href="https://theconversation.com/music-to-die-for-how-genre-affects-popular-musicians-life-expectancy-36660">cet article tiré de <em>The Conversation</em></a> montre l’impact drastique de la censure en représentant l’âge moyen au décès en fonction du genre musical, ordonné par ordre d’apparition de ce dernier. Puisque seules les personnes décédées sont incluses, les artistes de hip-hop décédés l’ont été forcément en bas-âge. Si on ne prend pas en compte la censure, on obtiendrait une conclusion erronnée.</p>
 <section id="exemple-du-temps-dabonnement" class="level3" data-number="6.1.1">
 <h3 data-number="6.1.1" class="anchored" data-anchor-id="exemple-du-temps-dabonnement"><span class="header-section-number">6.1.1</span> Exemple du temps d’abonnement</h3>
 <p>Une entreprise oeuvrant dans le secteur des télécommunications s’intéresse aux facteurs influençant le temps qu’un client reste abonné à son service de téléphone cellulaire. Des données provenant d’un échantillon de clients se trouvent dans le fichier <code>survie1</code>, qui contient les variables suivantes:</p>
@@ -318,7 +351,7 @@ div.csl-indent {
 <li>temps avant le prochain achat d’un client.</li>
 <li>temps durant lequel un(e) employé(e) est au chômage.</li>
 </ul>
-<p>Si aucune observation n’est censurée, c’est-à-dire, si on a observé le « vrai » temps pour chaque sujet, on pourrait alors simplement modéliser <span class="math inline">\(T\)</span> en incluant des covariables dans les paramètres de vraisemblance d’une loi positive (par exemple, une régression log-linéaire). En revanche, si des observations sont censurées dans l’échantillon, leur omission biaiserait l’analyse.</p>
+<p>Si aucune observation n’est censurée, c’est-à-dire, si on a observé le « vrai » temps pour chaque sujet, on pourrait alors simplement modéliser <span class="math inline">\(T\)</span> en incluant des covariables dans les paramètres de vraisemblance d’une loi positive (par exemple, avec une régression log-linéaire). En revanche, si des observations sont censurées dans l’échantillon, leur omission biaiserait l’analyse.</p>
 <p>Ce chapitre se veut une introduction à l’analyse de données de survie. Comme le développement de la théorie de l’analyse de survie est assez complexe (plus encore que celle de la régression linéaire ou logistique), on s’intéressera ici uniquement aux principes de base afin d’être en mesure d’appliquer les méthodes et de bien interpréter les résultats. Plusieurs extensions sont également possibles. Un survol de ces dernières sera effectué dans des sections plus loin.</p>
 <p>Il existe deux grandes approches pour analyser des données de survies :</p>
 <ol type="i">
@@ -406,7 +439,7 @@ h(t) = - \frac{\mathrm{d} \ln\{S(t)\}}{\mathrm{d} t}, \qquad \qquad S(t) = \exp 
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"fonction de survie"</span>, </span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"temps"</span>) </span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>La fonction résumé (<code>summary</code>) renvoit l’estimation de la fonction de survie pour chaque temps d’échec (événement): l’estimateur est indéfini à ces valeurs. Le <a href="#tbl-survie1-tableau">Tableau&nbsp;<span class="quarto-unresolved-ref">tbl-survie1-tableau</span></a> offre une sortie (tronquée) du résumé, modifié pour mieux illustrer les changements. L’estimation de la probabilité que le temps d’abonnement soit supérieur à 30 semaines est <span class="math inline">\(\widehat{S}(30)=0.986\)</span>.</p>
+<p>La fonction résumé (<code>summary</code>) renvoit l’estimation de la fonction de survie pour chaque temps d’échec (événement): l’estimateur est indéfini à ces valeurs. Le <a href="#tbl-survie1-tableau">Tableau&nbsp;<span>6.1</span></a> offre une sortie (tronquée) du résumé, modifié pour mieux illustrer les changements. L’estimation de la probabilité que le temps d’abonnement soit supérieur à 30 semaines est <span class="math inline">\(\widehat{S}(30)=0.986\)</span>.</p>
 <div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/tbl-survie1-tableau_bbfe7d71c6a3610fc0d6915eddf10eb7">
 <div class="cell-output-display">
 <div id="tbl-survie1-tableau" class="anchored">
@@ -536,7 +569,7 @@ h(t) = - \frac{\mathrm{d} \ln\{S(t)\}}{\mathrm{d} t}, \qquad \qquad S(t) = \exp 
 <div id="fig-km-survie1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="06-survie_files/figure-html/fig-km-survie1-1.png" class="img-fluid figure-img" style="width:95.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;6.1: Estimation de Kaplan–Meier de la fonction de survie pour les données d’abonnement avec intervalles de confiance ponctuels à 95%.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6.3: Estimation de Kaplan–Meier de la fonction de survie pour les données d’abonnement avec intervalles de confiance ponctuels à 95%.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -545,12 +578,30 @@ h(t) = - \frac{\mathrm{d} \ln\{S(t)\}}{\mathrm{d} t}, \qquad \qquad S(t) = \exp 
 <p>Un estimé de la moyenne et de l’écart-type est donné, mais ce dernier est biaisé (trop bas) puisque les données censurées ne donnent qu’une borne inférieure pour la vraie valeur. Avec un modèle paramétrique pour la survie (par ex., une loi exponentielle), les paramètres estimés du modèle dicteraient ces deux valeurs. Le modèle de Kaplan–Meier estime la survie, mais si la plus grande observation est censurée, la courbe n’atteindra pas zéro.</p>
 <p>Le graphique de la fonction de survie permet de lire le temps de survie pour une probabilité donnée. Les bandes donnent un intervalle de confiance ponctuel de niveau 95% pour chaque temps donné.</p>
 <p>Une information pertinente de la sortie est le nombre de données censurées: parmi les 500 observations, il y a 334 clients qui ont terminé leur abonnement et 166 qui sont censurées (le client est toujours abonné et le temps est donc une borne inférieure de la durée d’abonnement). Les données censurées contiennent moins d’information que les temps observés de défaillance puisqu’on sait uniquement la borne inférieure de la plage possible des valeurs pour le vrai temps de défaillance.</p>
+<p>Les statistiques descriptives usuelles sont biaisées en raison de la censure. Avec l’estimateur de Kaplan–Meier, on peut aisément obtenir les quantiles. Si la courbe de survie estimée descend à zéro, il est également possible d’estimer la moyenne en calculant l’aire sous la courbe de survie.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Si la courbe ne descend pas à zéro, on obtient une borne inférieure (sous-estimation de la moyenne), appelée <em>moyenne restreinte</em>.</p>
+<div class="cell" data-hash="06-survie_cache/html/unnamed-chunk-7_5b774790a25b2291d3c3043cd9a48c86">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(kapm, <span class="at">print.rmean =</span> <span class="cn">TRUE</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Par exemple, la moyenne estimée via Kaplan–Meier est 125 semaines (<code>rmean</code>), à comparer avec la moyenne empirique de <code>temps</code>, ici de 107.788 semaines, qui est biaisée.</p>
 <section id="calcul-de-lestimateur-de-kaplanmeier" class="level3" data-number="6.3.1">
 <h3 data-number="6.3.1" class="anchored" data-anchor-id="calcul-de-lestimateur-de-kaplanmeier"><span class="header-section-number">6.3.1</span> Calcul de l’estimateur de Kaplan–Meier</h3>
-<p>Cette partie peut être omise; elle est incluse seulement par souci de complétude. Soit <span class="math inline">\(T_1, \ldots, T_n\)</span> les <span class="math inline">\(n\)</span> réalisations aléatoires de la variable temps (certaines censurées, d’autres pas). Supposons qu’il y a <span class="math inline">\(m\)</span> temps distincts où au moins un individu expérimente l’événement. Soient <span class="math inline">\(t_{(1)} &lt; \cdots &lt; t_{(m)}\)</span>, ces temps ordonnés en ordre croissant et <span class="math inline">\(r_i\)</span> le nombre d’individus à risque au temps <span class="math inline">\(t_{(i)}\)</span> (les individus qui n’ont pas encore expérimenté l‘événement, et qui ne sont pas encore censurés avant <span class="math inline">\(t_{(i)}\)</span>). On note <span class="math inline">\(d_i\)</span> le nombre d’individus qui expérimentent l’événement au temps <span class="math inline">\(t_{(i)}\)</span>. L’estimateur de Kaplan–Meier de la fonction de survie à un temps <span class="math inline">\(t\)</span> est <span class="math display">\[\begin{align*}
-\widehat{S}(t) = \left( 1- \frac{d_1}{r_1}\right) \times \cdots \times \left( 1- \frac{d_{i(t)}}{r_{i(t)}}\right), \qquad t_{(1)} \leq t \leq t_{(m)},
+<p>Pour comprendre l’estimateur de Kaplan–Meier, il est utile de s’intéresser à sa construction. Deux éléments sont essentiels: on parle d’<strong>échec</strong> ou d’événement au temps <span class="math inline">\(t_i\)</span> si l’événement est observé (<span class="math inline">\(T_i=t_i\)</span>) au temps <span class="math inline">\(t_i\)</span>. Le nombre de <strong>personnes à risque</strong> au temps <span class="math inline">\(t_i\)</span> est le total des observations dont le temps mesuré excède <span class="math inline">\(t_i\)</span> (censure et événements postérieurs à <span class="math inline">\(t_i\)</span>)</p>
+<p>Pour la <strong>construction</strong>, on procède comme suit:</p>
+<ul>
+<li>Ordonner les temps (uniques) où il y a des échecs (temps où <code>censure = 1</code>), disons <span class="math inline">\(t_{(1)} \leq \cdots \leq t_{(m)}\)</span></li>
+<li>À chaque temps <span class="math inline">\(t_{(i)}\)</span> <span class="math inline">\((i=1, \ldots m)\)</span>, on calcule le nombre de personnes à risque, <span class="math inline">\(r_i\)</span>, et le nombre d’échecs, <span class="math inline">\(d_i\)</span>.</li>
+<li>Le risque empirique est <span class="math inline">\(\widehat{h}_i = r_i/d_i\)</span>, la proportion d’échecs parmi les personnes à risque.</li>
+</ul>
+<p>L’estimateur de Kaplan–Meier définit une <strong>fonction escalier</strong></p>
+<ul>
+<li>Entre <span class="math inline">\(t=0\)</span> et <span class="math inline">\(t=t_{(1)}\)</span>, la survie est de 1.</li>
+<li>Entre <span class="math inline">\(t=t_{(1)}\)</span> et <span class="math inline">\(t=t_{(2)}\)</span>, la survie est <span class="math inline">\(1-\widehat{h}_1\)</span>.</li>
+<li>Entre <span class="math inline">\(t=t_{(2)}\)</span> et <span class="math inline">\(t=t_{(3)}\)</span>, la survie est <span class="math inline">\((1-\widehat{h}_1) \times (1-\widehat{h}_2)\)</span>, etc.</li>
+</ul>
+<p>Pour un temps <span class="math inline">\(t\)</span> donné, on multiplie tous les termes (<span class="math inline">\(1-\widehat{h}_i\)</span>) des temps d’échecs passés, <span class="math display">\[\begin{align*}
+\widehat{S}(t) &amp;= \prod_{i: t_{(i)} &lt; t} \left( 1- \widehat{h}_i\right) \\ &amp;= \left( 1- \frac{d_1}{r_1}\right) \times \cdots \times \left( 1- \frac{d_{i(t)}}{r_{i(t)}}\right).
 \end{align*}\]</span> où <span class="math inline">\(i(t) =\max(j \in \{1, \ldots, m\}: t \geq t_{j})\)</span>, soit le plus grand indice parmi <span class="math inline">\(1, \ldots, m\)</span> tel que <span class="math inline">\(t \geq t_{i(t)}\)</span>. Par convention, si <span class="math inline">\(t &lt; t_{(1)}\)</span>, on fixe <span class="math inline">\(\widehat{S}(t)=1\)</span>. La fonction de survie n’est pas définie aux temps de défaillance observée, mais la convention veut qu’elle soit continue à gauche.</p>
-<p>Avec la troncation à gauche, la même logique s’applique mais les personnes ne sont à risque qu’à partir du temps minimum observé.</p>
+<p>Ainsi, l’estimation de la survie estimée ne change qu’aux valeurs de <span class="math inline">\(t_{(i)}\)</span> (<span class="math inline">\(i=1, \ldots, m\)</span>). Les contre-marches de l’escalier ainsi défini interviennent uniquement aux temps observés d’échecs. Si à un moment donné toutes les personnes à risque expérimentent l’événement, la courbe descend à zéro. Si on a uniquement de la censure à droite, la courbe de survie n’atteindra jamais zéro si la plus grande observation est censurée à droite. Avec la troncation à gauche, la même logique s’applique mais les personnes ne sont à risque qu’à partir du temps minimum observé.</p>
 </section>
 </section>
 <section id="comparaison-de-deux-courbes-de-survie" class="level2" data-number="6.4">
@@ -559,33 +610,27 @@ h(t) = - \frac{\mathrm{d} \ln\{S(t)\}}{\mathrm{d} t}, \qquad \qquad S(t) = \exp 
 <p>Par exemple, dans une étude sur le temps de survie après avoir été diagnostiqué avec un certain type de cancer, on pourrait vouloir comparer le temps de survie des individus ayant reçu le traitement standard (groupe 1) au temps de survie des individus ayant reçu un nouveau traitement (groupe 2).</p>
 <p>Les deux tests utilisés habituellement sont le test du log-rang (<em>log-rank test</em>) et le test de Wilcoxon généralisé (ou test de Gehan).</p>
 <p>Testons l’hypothèse que la courbe de survie des clients masculins est la même que celle des clients féminins dans l’exemple des données d’abonnement:</p>
-<div class="cell" data-hash="06-survie_cache/html/test-lograng_e16d889f3420cadc41436b4e04979712">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## valeur-p du test asymptotique</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>lograng <span class="ot">&lt;-</span> <span class="fu">survdiff</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(temps, censure) <span class="sc">~</span> sexe, </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> survie1)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="06-survie_cache/html/test-lograng_6ba9d0fa58166452412fceed1f5ace53">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>strat_sexe <span class="ot">&lt;-</span> <span class="fu">survfit</span>(<span class="fu">Surv</span>(temps, censure) <span class="sc">~</span> sexe, <span class="at">data =</span> survie1)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>lograng <span class="ot">&lt;-</span> <span class="fu">survdiff</span>(<span class="fu">Surv</span>(temps, censure) <span class="sc">~</span> sexe, <span class="at">data =</span> survie1)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>On retrouve dans la sortie les estimés de la fonction de survie, de même que les quartiles par strate: la première strate correspond aux hommes (<code>sexe=0</code>) et la deuxième aux femmes (<code>sexe=1</code>).</p>
-<p>Si on utilise les méthodes (<code>print</code>, <code>summary</code>, <code>plot</code>, <code>quantile</code>), on obtiendra les résultats pour chaque strate (ou niveaux de la variable catégorielle). Par exemple, il y a 309 hommes et 191 femmes et l’estimation du temps de survie médian est de 110 semaines pour les hommes et de 123 semaines pour les femmes.</p>
-<p>La fonction <code>survdiff</code> avec la formule retourne le résultat du test asymptotique du log-rang pour l’hypothèse d’égalité des fonctions de survie. La valeur-<span class="math inline">\(p\)</span> du test est inférieure à <span class="math inline">\(10^{-4}\)</span>: on rejette donc <span class="math inline">\(\mathscr{H}_0\)</span> pour conclure qu’il y a donc une différence significative entre les deux courbes de survie.</p>
-<p>Les courbes de survie selon le sexe sont représentées dans la <a href="#fig-survie-comparaison-courbes">Figure&nbsp;<span class="quarto-unresolved-ref">fig-survie-comparaison-courbes</span></a>. On voit que la courbe des femmes est systématiquement au-dessus de celle des hommes. Les femmes ont donc tendance à rester abonnées plus longtemps que les hommes, et cette différence est significative.</p>
+<p>Si on utilise les méthodes (<code>print</code>, <code>summary</code>, <code>plot</code>, <code>quantile</code>) pour la sortie de <code>survfit</code>, on obtiendra les résultats pour chaque strate (ou niveaux de la variable catégorielle). Par exemple, il y a 309 hommes et 191 femmes et l’estimation du temps de survie médian est de 110 semaines pour les hommes et de 123 semaines pour les femmes.</p>
+<p>La fonction <code>survdiff</code> avec la formule retourne le résultat du test asymptotique du log-rang pour l’hypothèse d’égalité des fonctions de survie. La statistique du khi-deux vaut 16.43 et la valeur-<span class="math inline">\(p\)</span> du test est inférieure à <span class="math inline">\(10^{-4}\)</span>: on rejette donc <span class="math inline">\(\mathscr{H}_0\)</span> pour conclure qu’il y a donc une différence significative entre les deux courbes de survie.</p>
+<p>Les courbes de survie selon le sexe sont représentées dans la <a href="#fig-survie-comparaison-courbes">Figure&nbsp;<span>6.4</span></a>. On voit que la courbe des femmes est systématiquement au-dessus de celle des hommes. Les femmes ont donc tendance à rester abonnées plus longtemps que les hommes, et cette différence est significative.</p>
 <div class="cell" data-hash="06-survie_cache/html/fig-survie-comparaison_cbafee15215d6f67849e3d182aa7a5d9">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">survfit</span>(<span class="fu">Surv</span>(temps, censure) <span class="sc">~</span> sexe, </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> survie1), </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">conf.int =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), </span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"temps"</span>, </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"fonction de survie"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">survfit</span>(<span class="fu">Surv</span>(temps, censure) <span class="sc">~</span> sexe, </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> survie1), </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">conf.int =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>), </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"temps"</span>, </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"fonction de survie"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/fig-survie-comparaison-courbes_7c754671ebac9f30bcb8ad1f88eb56fd">
-<div class="cell-output cell-output-stderr">
-<pre><code>Scale for y is already present.
-Adding another scale for y, which will replace the existing scale.</code></pre>
-</div>
+<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/fig-survie-comparaison-courbes_8cc8338d2fba39438bcb088496a1368c">
 <div class="cell-output-display">
 <div id="fig-survie-comparaison-courbes" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="06-survie_files/figure-html/fig-survie-comparaison-courbes-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;6.2: Courbes de survie pour les durées d’abonnement selon le sexe de l’individu.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6.4: Courbes de survie pour les durées d’abonnement selon le sexe de l’individu.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -612,9 +657,10 @@ En résumé
 <li>Si on traitait les temps de censure comme des temps de défaillance observée, on <em>sous-estimerait</em> la durée de survie.</li>
 <li>L’estimateur de Kaplan–Meier est l’estimateur du maximum de vraisemblance nonparamétrique si on a de la censure à droite aléatoire ou non-informative. Il ne fait aucun postulat sur la distribution de la survie.</li>
 <li>Pour que l’estimation soit de qualité, il faut un nombre <em>conséquent</em> d’observations (disons 1000). La quantité d’observations censurées impacte la précision de l’estimation.</li>
-<li>L’estimateur est déficient si le plus grand temps observé est censuré à droite (l’estimation de la fonction de survie ne décroît pas à zéro)</li>
+<li>L’estimateur est déficient si le plus grand temps observé est censuré à droite (l’estimation de la fonction de survie ne décroît pas à zéro).</li>
 <li>Le test du log-rang permet de valider si deux fonctions de survie sont égales (en tout temps).</li>
 <li>On peut estimer la fonction de survie indépendamment pour chaque modalité d’une variable explicative catégorielle en stratifiant: cela réduit la taille de l’échantillon pour chaque strate.</li>
+<li>Le modèle de Kaplan–Meier ne permet pas d’estimer l’impact de variables explicatives sur la survie.</li>
 </ul>
 </div>
 </div>
@@ -822,140 +868,23 @@ h(t; \boldsymbol{x}) = h_0(t)\exp(\beta_1x_1 + \cdots + \beta_p x_p)
 <h3 data-number="6.5.2" class="anchored" data-anchor-id="estimation-de-la-fonction-de-survie-pour-des-valeurs-particulières-des-variables-explicatives"><span class="header-section-number">6.5.2</span> Estimation de la fonction de survie pour des valeurs particulières des variables explicatives</h3>
 <p>Il est possible d’obtenir l’estimation de la fonction de survie pour des valeurs particulières des variables explicatives. Pour ce faire, il faut avoir un autre fichier de données qui contient les valeurs des variables explicatives pour lesquelles on veut une estimation de la fonction de survie. Si on ajuste le modèle avec aucune variable explicative, on retrouvera alors l’estimation de Kaplan–Meier de la fonction de survie.</p>
 <p>Supposons qu’on ajuste le modèle avec les variables sexe et âge seulement dans l’exemple du temps d’abonnement, et que l’on désire la fonction de survie pour les hommes de 25 et 60 ans et pour les femmes de 25 et 60 ans. Le fichier <code>survie2</code> contient les données qui seront utilisées à cette fin.</p>
-<div class="cell" data-hash="06-survie_cache/html/fig-courbes-survie_6a6651241843668df81a19dbf092b095">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cox4 <span class="ot">&lt;-</span> survival<span class="sc">::</span><span class="fu">coxph</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Surv</span>(<span class="at">time =</span> temps, </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">event =</span> censure, </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">type =</span> <span class="st">"right"</span>) <span class="sc">~</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    sexe <span class="sc">+</span> age,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> survie1,</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ties =</span> <span class="st">"exact"</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(survie2, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculer la fonction de survie</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>fsurv <span class="ot">&lt;-</span> <span class="fu">survfit</span>(cox4, </span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">newdata =</span> survie2, </span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">type =</span> <span class="st">"kaplan-meier"</span>)</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Tracer la fonction de survie selon le profil</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fsurv,</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"survie"</span>,</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"temps d'abonnement (semaines)"</span>,</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>     <span class="at">bty =</span> <span class="st">"n"</span>)</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="at">x =</span> <span class="st">"bottomleft"</span>,</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"homme, 25 ans"</span>, </span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"femme, 25 ans"</span>,</span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"homme, 60 ans"</span>, </span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"femme, 60 ans"</span>),</span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,</span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">lty =</span> <span class="dv">1</span>,</span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>       <span class="at">bty =</span> <span class="st">"n"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/fig-courbes-survie_533415355d04a46c4ec942378da07cfa">
 <div class="cell-output-display">
 <div id="fig-courbes-survie" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="06-survie_files/figure-html/fig-courbes-survie-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;6.3: Courbes de survies du modèle de Cox pour les quatre profils client.</figcaption><p></p>
+<p><img src="06-survie_files/figure-html/fig-courbes-survie-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6.5: Courbes de survies du modèle de Cox pour les quatre profils client.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Les quatre fonctions de la <a href="#fig-courbes-survie">Figure&nbsp;<span class="quarto-unresolved-ref">fig-courbes-survie</span></a> correspondent aux profils pour lesquels nous désirons une estimation de la courbe de survie. La courbe 1 est pour les hommes de 25 ans, la courbe 2 pour les femmes de 25 ans, la courbe 3 pour les hommes de 60 ans et la courbe 4 pour les femmes de 60 ans. On voit donc que, parmi ces quatre profils, les hommes de 25 ans sont le plus à risque de quitter tandis que les femmes de 60 ans sont le moins à risque de quitter.</p>
-</section>
-<section id="postulat-de-risques-proportionnels" class="level3" data-number="6.5.3">
-<h3 data-number="6.5.3" class="anchored" data-anchor-id="postulat-de-risques-proportionnels"><span class="header-section-number">6.5.3</span> Postulat de risques proportionnels</h3>
-<p>Le modèle de Cox fait l’hypothèse que la fonction de risque de base est identique peut importe la valeur des variables catégorielles. La <a href="#fig-risquepropfig">Figure&nbsp;<span class="quarto-unresolved-ref">fig-risquepropfig</span></a> illustre à quoi ce postulat correspond dans un cas simple où il y a uniquement une variable binaire explicative.</p>
-<div class="cell" data-hash="06-survie_cache/html/fig-risquepropfig_21ea229980e5fde1788911864fd8c68b">
-<div class="cell-output-display">
-<div id="fig-risquepropfig" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="06-survie_files/figure-html/fig-risquepropfig-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;6.4: Courbes de risques proportionnelles (panneau supérieur) et non proportionnelles (panneau inférieur) avec rapport de risque et fonctions de survie correspondantes.</figcaption><p></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Si ce n’est pas le cas, alors les résultats du modèle ne sont pas nécessairement fiables.</p>
-<p>Comme pour un modèle de régression, il est possible de créer des résidus du modèles et de faire des graphiques diagnostics pour potentiellement infirmer le postulat de risques proportionnels <span class="citation" data-cites="Grambsch.Therneau:1994">(<a href="#ref-Grambsch.Therneau:1994" role="doc-biblioref">Grambsch and Therneau 1994</a>)</span>. Si l’hypothèse tient la route, alors il ne devrait pas y avoir de tendance temporelle dans les résidus.</p>
-<p>La commande <code>cox.zph</code> permet de tester le postulat de risques proportionnels à l’aide d’un test du score pour voir si la pente <span class="math inline">\(\beta(t)\)</span> associée à une covariable est nulle en fonction du temps <span class="math inline">\(t\)</span>; si la valeur-<span class="math inline">\(p\)</span> est grande, cela indique une absence de preuve. La fonction <code>plot</code> permet également d’obtenir un graphique des résidus en fonction du temps.</p>
-<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/fig-coxph-hypothese_6ed1cee1e37aaa132d256807addc91b6">
-<div class="cell-output-display">
-<div id="fig-coxph-hypothese" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="06-survie_files/figure-html/fig-coxph-hypothese-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;6.5: Estimations des coefficients en fonction du temps basés sur les moindres carrés pondérés (diagnostic graphique de Grampsch et Therneau).</figcaption><p></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-hash="06-survie_cache/html/tbl-coxph-hypothese_2cbd28ceb9655f2d2dc1e132e6975534">
-<div class="cell-output-display">
-<div id="tbl-coxph-hypothese" class="anchored">
-
-<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;6.5:  Postulat de risques proportionnels: test du score de Grampsch et Therneau (1994) pour les coefficients constants dans le temps et valeur-p asymptotique basée sur la loi nulle khi-deux. </caption>
- <thead>
-  <tr>
-   <th style="text-align:left;"> effet </th>
-   <th style="text-align:right;"> score </th>
-   <th style="text-align:right;"> ddl </th>
-   <th style="text-align:left;"> valeur-p </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> age </td>
-   <td style="text-align:right;"> 4.22 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:left;"> 0.040 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> sexe </td>
-   <td style="text-align:right;"> 1.11 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:left;"> 0.291 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> region </td>
-   <td style="text-align:right;"> 3.81 </td>
-   <td style="text-align:right;"> 4 </td>
-   <td style="text-align:left;"> 0.432 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> service </td>
-   <td style="text-align:right;"> 10.97 </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:left;"> 0.012 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> global </td>
-   <td style="text-align:right;"> 21.23 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:left;"> 0.012 </td>
-  </tr>
-</tbody>
-</table>
+<div class="cell" data-hash="06-survie_cache/html/fig-courbessurvieold_5d024d5a71da0169099ee6b12487cfa3">
 
 </div>
-</div>
-</div>
-<p>Dans la <a href="#fig-coxph-hypothese">Figure&nbsp;<span class="quarto-unresolved-ref">fig-coxph-hypothese</span></a>, on voit que le coefficient pour service augmente au fil du temps pour tous les groupes. On pourrait capturer cette interaction ou stratifier pour calculer le risque selon le nombre de services, au risque d’avoir trop peu d’observations pour estimer de manière fiable le risque de base. C’est explicable par le fait que les personnes avec plus de services tendent à avoir une survie plus longue.</p>
-<div class="cell" data-hash="06-survie_cache/html/coxph-hypothese_2eca930ecb54ba273a3be8a7dc681708">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>diag_risqueprop <span class="ot">&lt;-</span> <span class="fu">cox.zph</span>(cox3)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(diag_risqueprop)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(diag_risqueprop)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Si le postulat n’est pas validé, on peut interpréter l’effet comme un rapport de risque moyen pondéré sur la période de suivi, mais ce dernier change selon le moment <span class="citation" data-cites="Stensrud.Hernan:2020">(<a href="#ref-Stensrud.Hernan:2020" role="doc-biblioref">Stensrud and Hernán 2020</a>)</span>. Cela implique également que les erreurs-types associées aux estimations sont trompeuses. La section suivante permettra de généraliser le modèle de Cox et traiter ce cas de figure.</p>
+<p>Les quatre fonctions de la <a href="#fig-courbes-survie">Figure&nbsp;<span>6.5</span></a> correspondent aux profils pour lesquels nous désirons une estimation de la courbe de survie. La courbe 1 est pour les hommes de 25 ans, la courbe 2 pour les femmes de 25 ans, la courbe 3 pour les hommes de 60 ans et la courbe 4 pour les femmes de 60 ans. On voit donc que, parmi ces quatre profils, les hommes de 25 ans sont le plus à risque de quitter tandis que les femmes de 60 ans sont le moins à risque de quitter.</p>
 </section>
-</section>
-<section id="extensions-du-modèle-de-cox" class="level2" data-number="6.6">
-<h2 data-number="6.6" class="anchored" data-anchor-id="extensions-du-modèle-de-cox"><span class="header-section-number">6.6</span> Extensions du modèle de Cox</h2>
-<p>Dans cette section, nous allons voir deux extensions du modèle à risques proportionnels de base.</p>
-<ol type="i">
-<li>Inclusion de variables explicatives dont la valeur change dans le temps.</li>
-<li>Modèle à risques compétitifs (<em>competing risks</em>) pour étudier la situation où il y a plusieurs manières de quitter l’état.</li>
-</ol>
-<p>La vignette <a href="https://cran.r-project.org/web/packages/survival/vignettes/timedep.pdf"><em>Using Time Dependent Covariates and Time Dependent Coefficients in the Cox Model</em> de Therneau, Crowson et Atkinson</a> du paquet <code>survival</code> offre des détails sur l’implémentation des méthodes qui suivent.</p>
-<section id="variables-explicatives-dont-la-valeur-change-dans-le-temps" class="level3" data-number="6.6.1">
-<h3 data-number="6.6.1" class="anchored" data-anchor-id="variables-explicatives-dont-la-valeur-change-dans-le-temps"><span class="header-section-number">6.6.1</span> Variables explicatives dont la valeur change dans le temps</h3>
+<section id="variables-explicatives-dont-la-valeur-change-dans-le-temps" class="level3" data-number="6.5.3">
+<h3 data-number="6.5.3" class="anchored" data-anchor-id="variables-explicatives-dont-la-valeur-change-dans-le-temps"><span class="header-section-number">6.5.3</span> Variables explicatives dont la valeur change dans le temps</h3>
 <p>Il est clair que certaines caractéristiques d’un individu évoluent dans le temps (<em>time-varying covariates</em>). Si le sexe d’un individu est stable dans le temps, son revenu, son statut matrimonial, l’endroit où il habite, sont par contre des caractéristiques qui peuvent changer dans le temps. Il peut alors être intéressant d’en tenir compte dans l’analyse. Rappelez-vous que le modèle à risques proportionnels est <span class="math display">\[\begin{align*}
 h(t; \boldsymbol{x}) = h_0(t) \exp(\beta_1x_1 + \cdots + \beta_px_p).
 \end{align*}\]</span></p>
@@ -964,12 +893,22 @@ h(t; \boldsymbol{x}) = h_0(t) \exp\{\beta_1x_1(t) + \cdots + \beta_px_p\},
 \end{align*}\]</span> où <span class="math inline">\(x_1(t)\)</span> indique que la valeur de <span class="math inline">\(X_1\)</span> dépend du temps <span class="math inline">\(t\)</span>.</p>
 <p>Supposons que la variable <span class="math inline">\(\texttt{service}\)</span>, qui représente le nombre d’autres services souscrits, est la seule que nous voulons modéliser comme une variable qui varie dans le temps. Pour l’âge, nous prenons simplement l’âge au début de l’abonnement, idem pour la région.</p>
 <p>Le plus difficile est de créer correctement le fichier de données pour effectuer ce genre d’analyse. Pour chaque personne, on peut identifier plusieurs moments où l’une ou l’autres des valeurs des variables explicatives change. Supposons qu’on a observé un événement au temps <span class="math inline">\(t_1\)</span>, et que la valeur de la covariable change à <span class="math inline">\(t_0\)</span>, où <span class="math inline">\(0 &lt; t_0 &lt; t_1\)</span>. On peut envisager cette observation donne deux contributions: une pour la trajectoire sur l’intervalle <span class="math inline">\((0, t_0]\)</span> (censure à droite) et l’autre, après la modification, sur l’intervalle <span class="math inline">\((t_0, t_1]\)</span> (troncature à gauche). Puisque la valeur est observée passée le premier intervalle, on a besoin de l’information sur toute la fenêtre (les deux bornes) et le type d’événement pour la première fenêtre sera de la censure à droite.</p>
+<div class="cell" data-hash="06-survie_cache/html/fig-lexischtemps_ad52aa57056ce503f5471fa5a31c0f25">
+<div class="cell-output-display">
+<div id="fig-lexischtemps" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="figures/Lexis_censure_modif.png" class="img-fluid figure-img" width="155"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6.6: Diagramme de Lexis avec trajectoires. Pour ajuster le modèle, on peut casser la contribution d’une observation en segments: considérons un seul changement survenant au temps <span class="math inline">\(t_c\)</span>. Pour le premier segment, on enregistre <span class="math inline">\(t_c\)</span> comme valeur maximale (censure à droite), tandis que pour la deuxième portion, l’observation est tronquée à gauche à partir de <span class="math inline">\(t_c\)</span>.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
 <p>La base de données <code>survie3</code> contient le format adéquat: une colonne <code>evenement</code> qui indique la censure (tout intervalle intermédiaire pour un individu est traité comme de la censure à droite) et les bornes de la fenêtre, <code>debut</code> et <code>fin</code>. Dans cet exemple, il y a eu au plus un changement dans la variable <span class="math inline">\(\texttt{service}\)</span>, comme présenté dans le fichier <code>survie3</code>. Les variables explicatives <span class="math inline">\(\texttt{age}\)</span>, <span class="math inline">\(\texttt{sexe}\)</span> et <span class="math inline">\(\texttt{region}\)</span> sont comme précédemment.</p>
 <div class="cell" data-hash="06-survie_cache/html/tbl-survie3-donnees_1555cf1f2333c7b250474a6758f09fe9">
 <div class="cell-output-display">
 <div id="tbl-survie3-donnees" class="anchored">
 
-<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;6.6:  Aperçu des cinq premières observations de la base de données survie3. </caption>
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;6.5:  Aperçu des cinq premières observations de la base de données survie3. </caption>
  <thead>
   <tr>
    <th style="text-align:right;"> id </th>
@@ -1059,54 +998,121 @@ h(t; \boldsymbol{x}) = h_0(t) \exp\{\beta_1x_1(t) + \cdots + \beta_px_p\},
 </div>
 </div>
 </div>
-<p>On regarde plus en détail le profil des cinq premiers clients présenté dans le <a href="#tbl-survie3-donnees">Tableau&nbsp;<span class="quarto-unresolved-ref">tbl-survie3-donnees</span></a>, dont seuls deux ont changé le nombre d’abonnements; les individus 3–5 se sont désabonnés du service cellulaire à un moment donné. Le premier client était abonné à deux autres services au début de son abonnement au téléphone cellulaire mais, après 130 semaines d’abonnement, a effectué un changement à son forfait pour ne conserver qu’un autre service en plus du cellulaire. Pour le deuxième client, comme <span class="math inline">\(\verb+temps_ch+\)</span> est manquante, il est toujours abonné à deux autres services et ce, jusqu’à la fin de l’étude.</p>
+<p>On regarde plus en détail le profil des cinq premiers clients présenté dans le <a href="#tbl-survie3-donnees">Tableau&nbsp;<span>6.5</span></a>, dont seuls deux ont changé le nombre d’abonnements; les individus 3–5 se sont désabonnés du service cellulaire à un moment donné. Le premier client était abonné à deux autres services au début de son abonnement au téléphone cellulaire mais, après 130 semaines d’abonnement, a effectué un changement à son forfait pour ne conserver qu’un autre service en plus du cellulaire. Pour le deuxième client, comme <span class="math inline">\(\verb+temps_ch+\)</span> est manquante, il est toujours abonné à deux autres services et ce, jusqu’à la fin de l’étude.</p>
 <div class="cell" data-hash="06-survie_cache/html/cox-risques-nonprop_669a26087f17402dc98360ad687b1acb">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(survie3, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>cox4 <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(<span class="at">time =</span> debut, </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">time2 =</span> fin, </span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">event =</span> evenement) <span class="sc">~</span> </span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>                age <span class="sc">+</span> sexe <span class="sc">+</span> region <span class="sc">+</span> service, </span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> survie3)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(survie3, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>cox4 <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(<span class="at">time =</span> debut, </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">time2 =</span> fin, </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">event =</span> evenement) <span class="sc">~</span> </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                age <span class="sc">+</span> sexe <span class="sc">+</span> region <span class="sc">+</span> service, </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> survie3)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>L’interprétation se fait comme précédemment; on a omis l’option <code>ties = "exact"</code> parce que cette option est trop gourmande en calcul. Puisque c’est la valeur d’une variable qui varie dans le temps et non pas son effet, on a l’interprétation usuelle. Par exemple, le risque de quitter pour un client qui a un autre service est 0.601 fois celui d’un client qui n’a aucun autre service (référence). Le fait d’avoir deux ou trois services diminue encore plus le risque de quitter (rapports de risque de 0.265 et 0.209, respectivement).</p>
 </section>
-<section id="modèle-à-risques-compétitifs" class="level3" data-number="6.6.2">
-<h3 data-number="6.6.2" class="anchored" data-anchor-id="modèle-à-risques-compétitifs"><span class="header-section-number">6.6.2</span> Modèle à risques compétitifs</h3>
-<p>Parfois, la raison pour laquelle un individu quitte l’état étudié peut avoir un intérêt en soi. Par exemple si on s’intéresse au temps qu’un employé demeure au service de la compagnie, la distinction entre le fait qu’il ait démissionné ou bien qu’il ait été renvoyé peut avoir un impact sur l’effet des variables explicatives. Comme autre exemple, si on s’intéresse au temps de survie d’un individu après qu’il ait été diagnostiqué avec un certain type de cancer, il pourrait être important de distinguer selon la cause exacte de la mort.</p>
-<p>De manière générale, supposons qu’il y a <span class="math inline">\(K\)</span> manières possibles que l’événement survienne. On peut alors spécifier <span class="math inline">\(K\)</span> fonctions de risques (une pour chaque manière) et obtenir le modèle de Cox à risques compétitifs (<em>competing risks</em>), <span class="math display">\[\begin{align*}
-h_1(t; \boldsymbol{x})&amp;= h_{01}(t) \exp(\beta_{11}x_1 + \cdots + \beta_{p1} x_p)\\
-&amp;\vdots\\
-h_K(t; \boldsymbol{x})&amp;= h_{0K}(t) \exp(\beta_{1K}x_1 + \cdots + \beta_{pK} x_p)\\
-\end{align*}\]</span> Notez que les coefficients sont différents d’une équation à l’autre. En estimant ce modèle, on obtient donc une estimation de l’effet des variables selon la raison du départ de l’état. De plus, on peut aussi inclure des variables dont la valeur change dans le temps, comme vu précédemment. Ce qui simplifie énormément la situation est qu’il est prouvé qu’on peut estimer les paramètres de chaque équation séparément sans perte de précision. Par conséquent, en pratique, il suffira d’ajuster <span class="math inline">\(K\)</span> modèles de Cox séparément.</p>
-<p>Dans notre exemple d’abonnement cellulaire, supposons que nous avons trois causes possibles pour la perte d’un client: soit il a interrompu son abonnement pour aller chez le compétiteur A, soit pour aller chez le compétiteur B, soit il n’a plus de cellulaire du tout.</p>
-<p>Les données pour cet exemple se trouvent dans le fichier <code>survie4</code>. La seule nouveauté par rapport au fichier original est la variable <span class="math inline">\(\texttt{censure}\)</span> qui est maintenant codée ainsi</p>
-<ul>
-<li>1, si le temps est censuré (l’individu est toujours abonné à notre service)</li>
-<li>2, si l’individu a quitté pour aller chez le compétiteur A</li>
-<li>3, si l’individu a quitté pour aller chez le compétiteur B</li>
-<li>4, si l’individu a quitté parce qu’il n’a plus besoin de cellulaire.</li>
-</ul>
-<p>On peut calculer la fréquence de chaque modalité avec <code>table</code>. Ainsi, il y a donc 166 clients toujours abonnés, 170 qui nous ont quitté pour aller chez A, 121 pour aller chez B, et 43 qui n’ont plus de cellulaires.</p>
-<p>Pour ajuster le modèle lorsque la cause du départ est le compétiteur A, le code est</p>
-<div class="cell" data-hash="06-survie_cache/html/risque-competitif_03e838b75e9ecd10d04d51ba5c2ce4cf">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Rappel pour `event`:</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   1 pour observation, </span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   0 pour censure à droite</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># On utilise la convention TRUE = 1, FALSE = 0</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(survie4, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>cox5 <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(<span class="at">time =</span> temps, </span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">event =</span> censure <span class="sc">==</span> <span class="dv">2</span>,</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">type =</span> <span class="st">"right"</span>) <span class="sc">~</span> </span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>                age <span class="sc">+</span> sexe <span class="sc">+</span> region <span class="sc">+</span> service, </span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> survie4,</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">ties =</span> <span class="st">"exact"</span>)</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox5)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell" data-hash="06-survie_cache/html/tbl-cox-risquecompetA_94db7b48e7fc5b4b00ee07685e1001f5">
+<section id="postulat-de-risques-proportionnels" class="level3" data-number="6.5.4">
+<h3 data-number="6.5.4" class="anchored" data-anchor-id="postulat-de-risques-proportionnels"><span class="header-section-number">6.5.4</span> Postulat de risques proportionnels</h3>
+<p>Le modèle de Cox fait l’hypothèse que la fonction de risque de base est identique peut importe la valeur des variables catégorielles. La <a href="#fig-risquepropfig">Figure&nbsp;<span>6.7</span></a> illustre à quoi ce postulat correspond dans un cas simple où il y a uniquement une variable binaire explicative.</p>
+<div class="cell" data-hash="06-survie_cache/html/fig-risquepropfig_21ea229980e5fde1788911864fd8c68b">
 <div class="cell-output-display">
-<div id="tbl-cox-risquecompetA" class="anchored">
+<div id="fig-risquepropfig" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="06-survie_files/figure-html/fig-risquepropfig-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6.7: Courbes de risques proportionnelles (panneau supérieur) et non proportionnelles (panneau inférieur) avec rapport de risque et fonctions de survie correspondantes.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Si ce n’est pas le cas, alors les résultats du modèle ne sont pas nécessairement fiables.Comme pour un modèle de régression, il est possible de créer des résidus du modèles et de faire des graphiques diagnostics pour potentiellement infirmer le postulat de risques proportionnels <span class="citation" data-cites="Grambsch.Therneau:1994">(<a href="#ref-Grambsch.Therneau:1994" role="doc-biblioref">Grambsch and Therneau 1994</a>)</span>. Si l’hypothèse tient la route, alors il ne devrait pas y avoir de tendance temporelle dans les résidus.</p>
+<p>La commande <code>cox.zph</code> permet de tester le postulat de risques proportionnels à l’aide d’un test du score pour voir si la pente <span class="math inline">\(\beta(t)\)</span> associée à une covariable est nulle en fonction du temps <span class="math inline">\(t\)</span>; si la valeur-<span class="math inline">\(p\)</span> est grande, cela indique une absence de preuve. La fonction <code>plot</code> permet également d’obtenir un graphique des résidus en fonction du temps.</p>
+<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/fig-coxphhypothese_180a65aeae9260d1767f1671c6d3dc6d">
+<div class="cell-output-display">
+<div id="fig-coxphhypothese" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="06-survie_files/figure-html/fig-coxphhypothese-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6.8: Estimations des coefficients en fonction du temps basés sur les moindres carrés pondérés (diagnostic graphique de Grampsch et Therneau).</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-hash="06-survie_cache/html/tbl-coxphhypothese_dd4a4c1ebbba437c7b55d2779b4195ef">
+<div class="cell-output-display">
+<div id="tbl-coxphhypothese" class="anchored">
 
-<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;6.7:  Rapport de risque et intervalles de confiance à niveau 95% pour le modèle à risques compétitifs (probabilité de quitter pour compétiteur A). </caption>
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;6.6:  Postulat de risques proportionnels: test du score de Grampsch et Therneau (1994) pour les coefficients constants dans le temps et valeur-p asymptotique basée sur la loi nulle khi-deux. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> effet </th>
+   <th style="text-align:right;"> score </th>
+   <th style="text-align:right;"> ddl </th>
+   <th style="text-align:left;"> valeur-p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> age </td>
+   <td style="text-align:right;"> 4.22 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> 0.040 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> sexe </td>
+   <td style="text-align:right;"> 1.11 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> 0.291 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> region </td>
+   <td style="text-align:right;"> 3.81 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:left;"> 0.432 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> service </td>
+   <td style="text-align:right;"> 10.97 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> 0.012 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> global </td>
+   <td style="text-align:right;"> 21.23 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:left;"> 0.012 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Dans la <a href="#fig-coxphhypothese">Figure&nbsp;<span>6.8</span></a>, on voit que le coefficient pour service augmente au fil du temps pour tous les groupes. On pourrait capturer cette interaction ou stratifier pour calculer le risque selon le nombre de services, au risque d’avoir trop peu d’observations pour estimer de manière fiable le risque de base. C’est explicable par le fait que les personnes avec plus de services tendent à avoir une survie plus longue.</p>
+<div class="cell" data-hash="06-survie_cache/html/coxph-hypothese_2eca930ecb54ba273a3be8a7dc681708">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>diag_risqueprop <span class="ot">&lt;-</span> <span class="fu">cox.zph</span>(cox3)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(diag_risqueprop)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(diag_risqueprop)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Si le postulat n’est pas validé, on peut interpréter l’effet comme un rapport de risque moyen pondéré sur la période de suivi, mais ce dernier change selon le moment <span class="citation" data-cites="Stensrud.Hernan:2020">(<a href="#ref-Stensrud.Hernan:2020" role="doc-biblioref">Stensrud and Hernán 2020</a>)</span>. Cela implique également que les erreurs-types associées aux estimations sont trompeuses. La section suivante permettra de généraliser le modèle de Cox et traiter ce cas de figure.</p>
+</section>
+<section id="stratification" class="level3" data-number="6.5.5">
+<h3 data-number="6.5.5" class="anchored" data-anchor-id="stratification"><span class="header-section-number">6.5.5</span> Stratification</h3>
+<p>Une manière de modéliser la non-proportionnalité pour une variable catégorielle est par la stratification. Supposons que nous avons une variable explicative catégorielle <span class="math inline">\(Z=1, \ldots, K\)</span> pour lequel le postulat de risque proportionnels n’est pas valide. On s’intéresse à l’effet des variables <span class="math inline">\(\mathbf{X}\)</span>. Typiquement, on ne s’intéresse pas directement à l’effet de la variable <span class="math inline">\(Z\)</span>. Le modèle de Cox avec stratification (pour la variable <span class="math inline">\(Z\)</span>) est <span class="math display">\[\begin{align*}
+h(t; \mathbf{x}, z=k) = h_k(t) \exp(\boldsymbol{\beta} \mathbf{x}),
+\end{align*}\]</span> où <span class="math inline">\(h_k(t)\)</span> est la fonction de risque de base quand <span class="math inline">\(Z=k\)</span> (<span class="math inline">\(k=1, \ldots, K\)</span>). L’effet des autres variables explicatives <span class="math inline">\(\mathbf{X}\)</span> est supposé être le même peut importe la valeur de <span class="math inline">\(Z\)</span>, mais la fonction de risque de base peut différer. Le rapport de risque pour <span class="math inline">\(Z=k\)</span> versus <span class="math inline">\(Z=j\)</span> est <span class="math inline">\(h_k(t)/h_j(t)\)</span>; cette quantité dépend du temps <span class="math inline">\(t\)</span>, mais pas des autres caractéristiques mesurées par <span class="math inline">\(\mathbf{X}\)</span>. L’effet de la variable est donc variable dans le temps (et non pas constant). Ce modèle permet donc de modéliser la non-proportionnalité pour la variable <span class="math inline">\(Z\)</span>. Si on stratifie par rapport à une variable, il ne faut pas l’inclure dans le modèle en plus car elle est déjà modélisée via la stratification. Notez que les paramètres <span class="math inline">\(\boldsymbol{\beta}\)</span> seront estimés à l’aide des données de toutes les strates, mais les fonctions de risque <span class="math inline">\(h_k(t)\)</span> seront obtenues à l’aide des sous-échantillons correspondant aux valeurs de <span class="math inline">\(Z\)</span>.</p>
+<p>L’avantage de la stratification est que cette méthode permet de modéliser n’importe quel changement dans l’effet d’une variable dans le temps sans devoir spécifier un type de changement particulier, comme lorsqu’on doit choisir la forme de l’interaction.Il est important de comprendre qu’on ne pourra pas estimer l’effet de la variable de stratification comme d’ordinaire en étudiant le coefficient <span class="math inline">\(\beta\)</span> associé. On perd la possibilité de tester l’effet de la variable de stratification et on réduit la taille de l’échantillon pour l’estimation de la fonction de risque de base. On devrait principalement utiliser la stratification seulement avec des variables pour lesquelles nous n’avons pas besoin d’estimer l’effet (variables secondaires ou de contrôles).</p>
+<div class="cell" data-hash="06-survie_cache/html/cox-stratification_e17db40993a0766bb14f04b537e268a9">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Stratification par service</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>cox7 <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(temps, <span class="dv">1</span><span class="sc">-</span>censure) <span class="sc">~</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                age <span class="sc">+</span> sexe <span class="sc">+</span> <span class="fu">strata</span>(service), </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> survie1)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Décompte par région</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(survie1, <span class="fu">table</span>(service)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Coefficients</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox7)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-hash="06-survie_cache/html/tbl-cox-stratif_3c738cc69016cd1d821fa8d155d4efa2">
+<div class="cell-output-display">
+<div id="tbl-cox-stratif" class="anchored">
+
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;6.7:  Rapport de risques et intervalles de confiances à niveau 95% pour le modèle de Cox stratifié par service. </caption>
  <thead>
   <tr>
    <th style="text-align:left;"> terme </th>
@@ -1118,57 +1124,15 @@ h_K(t; \boldsymbol{x})&amp;= h_{0K}(t) \exp(\beta_{1K}x_1 + \cdots + \beta_{pK} 
 <tbody>
   <tr>
    <td style="text-align:left;"> age </td>
-   <td style="text-align:right;"> 0.95 </td>
+   <td style="text-align:right;"> 0.96 </td>
    <td style="text-align:right;"> 0.94 </td>
    <td style="text-align:right;"> 0.97 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> sexe </td>
+   <td style="text-align:right;"> 0.61 </td>
    <td style="text-align:right;"> 0.44 </td>
-   <td style="text-align:right;"> 0.32 </td>
-   <td style="text-align:right;"> 0.62 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> region2 </td>
-   <td style="text-align:right;"> 0.54 </td>
-   <td style="text-align:right;"> 0.32 </td>
-   <td style="text-align:right;"> 0.92 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> region3 </td>
-   <td style="text-align:right;"> 0.82 </td>
-   <td style="text-align:right;"> 0.50 </td>
-   <td style="text-align:right;"> 1.35 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> region4 </td>
-   <td style="text-align:right;"> 0.72 </td>
-   <td style="text-align:right;"> 0.45 </td>
-   <td style="text-align:right;"> 1.16 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> region5 </td>
-   <td style="text-align:right;"> 1.05 </td>
-   <td style="text-align:right;"> 0.66 </td>
-   <td style="text-align:right;"> 1.66 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> service1 </td>
-   <td style="text-align:right;"> 0.38 </td>
-   <td style="text-align:right;"> 0.27 </td>
-   <td style="text-align:right;"> 0.54 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> service2 </td>
-   <td style="text-align:right;"> 0.18 </td>
-   <td style="text-align:right;"> 0.11 </td>
-   <td style="text-align:right;"> 0.30 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> service3 </td>
-   <td style="text-align:right;"> 0.11 </td>
-   <td style="text-align:right;"> 0.05 </td>
-   <td style="text-align:right;"> 0.22 </td>
+   <td style="text-align:right;"> 0.85 </td>
   </tr>
 </tbody>
 </table>
@@ -1176,61 +1140,37 @@ h_K(t; \boldsymbol{x})&amp;= h_{0K}(t) \exp(\beta_{1K}x_1 + \cdots + \beta_{pK} 
 </div>
 </div>
 </div>
-<p>Notez qu’on précise que les valeurs 1, 3 et 4 sont des observations censurées. Ici, l’événement d’intérêt est que le client est parti chez le compétiteur A. S’il est toujours abonné (<span class="math inline">\(\texttt{censure=1}\)</span>), s’il est parti chez le compétiteur B (<span class="math inline">\(\texttt{censure=3}\)</span>) ou s’il nous a quitté car il n’a plus de cellulaire (<span class="math inline">\(\texttt{censure=4}\)</span>), alors l’événement « quitter pour aller chez A » n’est pas survenu. C’est pourquoi on doit traiter ces situations comme des censures.</p>
-<p>Ainsi, on voit que l’événement est survenu 170 fois et qu’il y a 330 censures. L’interprétation des paramètres se fait comme précédemment. Sauf qu’il faut préciser qu’il s’agit du risque de quitter pour aller chez le compétiteur A. Par exemple, le risque de quitter pour aller chez le compétiteur A d’une femme est 0.444 fois le risque de quitter pour aller chez le compétiteur A d’un homme. Ainsi, les femmes sont moins à risque de quitter pour aller chez le compétiteur A que les hommes.</p>
-<p>Pour ajuster le modèle lorsque la cause du départ est le compétiteur B, procède de la même manière. Notez que cette fois-ci, ce sont les valeurs 1, 2 et 4 de la variable censure qui correspondent au fait que l’événement n’est pas survenu. Il y a 121 clients qui ont quitté pour aller chez B et 379 cas autre (censure). L’interprétation des paramètres se fait en termes de risque de quitter pour aller chez le compétiteur B.</p>
-<p>Si on ajuste le modèle pour le cas de figure où la cause de départ est que le client n’a plus besoin de cellulaire, on obtient une sortie similaire. Comme il y a seulement 43 événements (quitter car on n’a plus besoin de cellulaire), les estimations des paramètres sont moins précises, ce qu’on peut voir avec les erreurs-types qui sont plus élevés. Les observations censurées contiennent moins d’information que les événements, d’où cette perte de précision.</p>
-<p>Dans <strong>R</strong>, on peut aussi ajuster simultanément tous les modèles en spécifiant que l’événement d’intérêt est un facteur: c’est alors la catégorie de référence qui fait fois de l’état de départ. Il faut également une variable qui identifie l’observation — dans le cas qu’on considère, c’est simplement une colonne avec des valeurs de <span class="math inline">\(1\)</span> à <span class="math inline">\(n\)</span>.</p>
-<div class="cell" data-hash="06-survie_cache/html/unnamed-chunk-23_c2f0d3eefc50c514261740c497e5bc56">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>rc_cox <span class="ot">&lt;-</span> <span class="fu">coxph</span>(</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Surv</span>(<span class="at">time =</span> temps, </span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">event =</span> <span class="fu">factor</span>(censure)) <span class="sc">~</span> sexe <span class="sc">+</span> age <span class="sc">+</span> service,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> survie4 <span class="sc">|&gt;</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(survie4)),</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> id)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>On obtient l’ensemble des coefficients dans le tableau résumé, un pour chaque événement compétitif autre que la référence.</p>
-<p>Si on voulait ajuster le modèle de Kaplan–Meier, pour une transition d’un état de base (abonné) vers un état dit absorbant (désabonnement, soit chez compétiteur A ou B ou abandon du cellulaire), il faut obligatoirement ajuster toutes les courbes simultanément. On ajustera le modèle multi-état en spécifiant un facteur pour l’événement, où encore une fois la catégorie de référence est abonnement (<code>censure=1</code>).</p>
-<div class="cell" data-hash="06-survie_cache/html/unnamed-chunk-24_add0b35903fe1f99e11c47faf5fe3631">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>rc_km <span class="ot">&lt;-</span> <span class="fu">survfit</span>(<span class="fu">Surv</span>(<span class="at">time =</span> temps, </span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">event =</span> <span class="fu">factor</span>(censure)) <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> survie4)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Les représentations graphiques pour le modèle à risque compétitif sont légèrement différente. Si on dichotomise l’événement d’intérêt (survie ou échec), il y a deux options possibles et la probabilité d’échec est complémentaire à la survie. Avec plus d’un choix, on obtiendra un graphique avec une estimation de la probabilité pour chaque modalité de l’événement: la <a href="#fig-competitif">Figure&nbsp;<span class="quarto-unresolved-ref">fig-competitif</span></a> montre ceci pour la sortie du modèle de Cox et le modèle de Kaplan–Meier en ajoutant la courbe correspondant à la probabilité de demeurer abonné.</p>
-<div class="cell" data-hash="06-survie_cache/html/fig-competitif_b3f45232548a46b130b1c3448707f923">
+<p>On voit à la lecture de la sortie dans le <a href="#tbl-cox-stratif">Tableau&nbsp;<span>6.7</span></a> qu’il n’y a plus de paramètres pour la variable <code>service</code>. Les paramètres des autres variables s’interprètent comme d’habitude. On peut néanmoins résumer l’information pour <code>service</code> en calculant une statistique descriptive, par exemple les différences de survie à des temps donnés.</p>
+<p>La <a href="#fig-courbesurviesstrat">Figure&nbsp;<span>6.9</span></a> illustre l’effet de la stratification sur l’estimation du risque de base et des courbes de survie. On voit que la résolution des courbes est moindre, puisque chaque fonction est estimée à partir d’un sous-ensemble des données.</p>
+<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/fig-courbesurviesstrat_d4c7f62d82d9d677b4b0293718a72130">
 <div class="cell-output-display">
-<div id="fig-competitif" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-courbesurviesstrat" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="06-survie_files/figure-html/fig-competitif-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;6.6: Probabilité d’événement sans variable explicative (Kaplan-Meier, gauche) et avec âge, service et sexe (modèle de Cox, droite).</figcaption><p></p>
+<p><img src="06-survie_files/figure-html/fig-courbesurviesstrat-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6.9: Courbes de survie estimées par nombre de service pour le modèle de Cox avec stratification pour un homme de 40 ans.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-</section>
-<section id="risques-non-proportionnels" class="level2" data-number="6.7">
-<h2 data-number="6.7" class="anchored" data-anchor-id="risques-non-proportionnels"><span class="header-section-number">6.7</span> Risques non proportionnels</h2>
-<p>Comme son nom l’indique, le modèle à risques proportionnels suppose que les risques sont proportionnels. Cela implique que l’effet d’une variable est stable dans le temps. Nous verrons dans cette section deux façons de modéliser le cas de risques non proportionnels.</p>
-<section id="non-proportionnalité-avec-un-terme-dinteraction-avec-le-temps" class="level3" data-number="6.7.1">
-<h3 data-number="6.7.1" class="anchored" data-anchor-id="non-proportionnalité-avec-un-terme-dinteraction-avec-le-temps"><span class="header-section-number">6.7.1</span> Non-proportionnalité avec un terme d’interaction avec le temps</h3>
+<section id="modèle-non-proportionnel" class="level3" data-number="6.5.6">
+<h3 data-number="6.5.6" class="anchored" data-anchor-id="modèle-non-proportionnel"><span class="header-section-number">6.5.6</span> Modèle non-proportionnel</h3>
 <p>Pour simplifier l’exposition, supposons que nous avons une seule variable explicative <span class="math inline">\(X\)</span>. L’équation du modèle à risques proportionnels est <span class="math inline">\(h(t; x) = h_0(t)\exp(\beta x)\)</span> et suppose que la fonction de risque de base <span class="math inline">\(h_0(t)\)</span> est indépendante de la variable explicative <span class="math inline">\(X\)</span>. Une manière de modéliser la non-proportionnalité est d’inclure un terme d’interaction entre la variable et le temps. Il existe plusieurs façons de le faire. Par exemple, on pourrait inclure une nouvelle variable qui est le produit entre le temps et la variable <span class="math inline">\(X\)</span>. Le modèle est alors <span class="math display">\[\begin{align*}
 h(t; x) = h_0(t) \exp(\beta_1x + \beta_2xt).
 \end{align*}\]</span> Pour ce modèle, le rapport de risque, pour une augmentation d’une unité de <span class="math inline">\(X\)</span> est <span class="math inline">\(\exp(\beta_1+ \beta_2t)\)</span> et dépend du temps <span class="math inline">\(t\)</span>: c’est un modèle avec risques non proportionnels. On retombe sur le modèle à risques proportionnels lorsque <span class="math inline">\(\beta_2=0\)</span>.</p>
 <p>Supposons que l’effet du nombre de service augmente avec le temps. On peut inclure à la fois <code>service</code>, qui capture l’effet au temps zéro, et le surenchérissement ou la diminution à mesure que le temps d’abonnement progresse.</p>
-<div class="cell" data-hash="06-survie_cache/html/interaction-temps-service_a5739239eb1ae2584a1c922c73606535">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Créer variables binaires par service</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>service_bin <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>service, </span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> survie1)[,<span class="sc">-</span><span class="dv">1</span>]</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># enlever ordonnée à l'origine (1e colonne)</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>survie1m <span class="ot">&lt;-</span> <span class="fu">cbind</span>(survie1, service_bin) </span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>cox_np <span class="ot">&lt;-</span> survival<span class="sc">::</span><span class="fu">coxph</span>(</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Surv</span>(temps, censure) <span class="sc">~</span> </span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>     age <span class="sc">+</span> sexe <span class="sc">+</span> service <span class="sc">+</span> </span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tt</span>(service1) <span class="sc">+</span> <span class="fu">tt</span>(service2) <span class="sc">+</span> <span class="fu">tt</span>(service3), </span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">data =</span> survie1m, </span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">tt =</span> <span class="cf">function</span>(x, t, ...){t <span class="sc">*</span> x})</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="06-survie_cache/html/interaction-temps-service_bf3c3bc880d7e121f0820274329b5fe3">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Créer variables binaires par service</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>survie1_modif <span class="ot">&lt;-</span> survie1 <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">service1 =</span> service <span class="sc">==</span> <span class="dv">1</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">service2 =</span> service <span class="sc">==</span> <span class="dv">2</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">service3 =</span> service <span class="sc">==</span> <span class="dv">3</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>cox_np <span class="ot">&lt;-</span> survival<span class="sc">::</span><span class="fu">coxph</span>(</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Surv</span>(temps, censure) <span class="sc">~</span> </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>     age <span class="sc">+</span> sexe <span class="sc">+</span> service <span class="sc">+</span> </span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tt</span>(service1) <span class="sc">+</span> <span class="fu">tt</span>(service2) <span class="sc">+</span> <span class="fu">tt</span>(service3), </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">data =</span> survie1_modif, </span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">tt =</span> <span class="cf">function</span>(x, t, ...){t <span class="sc">*</span> x})</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Le bloc code précédent illustre comment créer le terme non proportionnel: on spécifie avec l’option <code>tt()</code> la variable qui change dans le temps et on spécifie par la suite la nature de l’interaction temporelle en définissant une fonction <code>tt</code>.</p>
 <p>Les variables catégorielles n’étant pas supportées en l’état, elles doivent préalablement être transformées en variable indicatrices binaires. Une fois les nouvelles variables dans la base de données, on procède à la spécification du terme de risque non proportionnel.</p>
@@ -1302,26 +1242,26 @@ h(t; x) = h_0(t) \exp(\beta_1x + \beta_2xt).
 </div>
 </div>
 </div>
-<p>Le <a href="#tbl-coxnph">Tableau&nbsp;<span class="quarto-unresolved-ref">tbl-coxnph</span></a> contient les résultats. Les coefficients pour l’interaction avec <span class="math inline">\(t\)</span> sont petits, mais c’est parce que la variable temps n’est pas standardisée et qu’elle s’étend de 0 à 200 semaines: de petites variations sont possiblement importantes quand le temps augmente. Les estimations des coefficients pour l’interaction sont tous positifs, ce qui suppose que le risque augmente avec le temps. Si on considère comme source plausible d’effet du nombre de services un quelconque rabais, il semble que cet effet protecteur s’amenuise. Deux des termes d’interaction sont significatifs à niveau 5% (statistiques de Wald <span class="math inline">\(Z\)</span> de 2.173, 1.584 et 2.476 et valeurs-<span class="math inline">\(p\)</span> correspondantes de 0.03, 0.113 et 0.013).</p>
-<p>Ajustons maintenant un autre terme d’interaction, cette fois de manière à répliquer les changements qui interviennent au sein d’une variable explicative de manière plus simple.</p>
+<p>Le <a href="#tbl-coxnph">Tableau&nbsp;<span>6.8</span></a> contient les résultats. Les coefficients pour l’interaction avec <span class="math inline">\(t\)</span> sont petits, mais c’est parce que la variable temps n’est pas standardisée et qu’elle s’étend de 0 à 200 semaines: de petites variations sont possiblement importantes quand le temps augmente. Les estimations des coefficients pour l’interaction sont tous positifs, ce qui suppose que le risque augmente avec le temps. Si on considère comme source plausible d’effet du nombre de services un quelconque rabais, il semble que cet effet protecteur s’amenuise. Deux des termes d’interaction sont significatifs à niveau 5% (statistiques de Wald <span class="math inline">\(Z\)</span> de 2.173, 1.584 et 2.476 et valeurs-<span class="math inline">\(p\)</span> correspondantes de 0.03, 0.113 et 0.013).</p>
+<p>On peut aussi utiliser la structure de modèle à risques non-proportionnels pour capturer l’effet des changements qui interviennent au sein de variables explicatives dans le temps. Par exemple, l’âge de la personne (en années) augmente à mesure que le temps d’abonnement (en semaines) passe, d’où <span class="math inline">\(\texttt{age}(t) = \texttt{age} + t/52\)</span>.</p>
 <div class="cell" data-hash="06-survie_cache/html/interaction-temps-covariable_b9efba06d033e2f558d56594f13bc380">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># interaction entre service et temps</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># objet avec 'tt' varie dynamiquement</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>cox6 <span class="ot">&lt;-</span> <span class="fu">coxph</span>(</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Surv</span>(temps, censure) <span class="sc">~</span> </span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>     <span class="fu">tt</span>(age) <span class="sc">+</span> sexe <span class="sc">+</span> service, </span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">data =</span> survie1, </span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">tt =</span> <span class="cf">function</span>(x, t, ...){x <span class="sc">+</span> t<span class="sc">/</span><span class="dv">52</span>})</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox6)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># interaction entre service et temps</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># objet avec 'tt' varie dynamiquement</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>cox6 <span class="ot">&lt;-</span> <span class="fu">coxph</span>(</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Surv</span>(temps, censure) <span class="sc">~</span> </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>     <span class="fu">tt</span>(age) <span class="sc">+</span> sexe <span class="sc">+</span> service, </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">data =</span> survie1, </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">tt =</span> <span class="cf">function</span>(x, t, ...){x <span class="sc">+</span> t<span class="sc">/</span><span class="dv">52</span>})</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox6)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>L’âge (en années) augmente à mesure que le temps d’abonnement (en semaines) passe, d’où <span class="math inline">\(\texttt{age}(t) = \texttt{age} + t/52\)</span>. Ici, on inclut uniquement la variable transformée <code>tt(age)</code> et son effet est toujours fortement significatif pour expliquer le désabonnement potentiel: les personnes plus âgées sont moins susceptibles de résilier leur abonnement.</p>
+<p>Ici, on inclut uniquement la variable transformée <code>tt(age)</code> et son effet est toujours fortement significatif pour expliquer le désabonnement potentiel: les personnes plus âgées sont moins susceptibles de résilier leur abonnement.</p>
 <div class="cell" data-hash="06-survie_cache/html/interaction-temps-age_84c23c3fe2828061d237a75731eef562">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>cox_np <span class="ot">&lt;-</span> survival<span class="sc">::</span><span class="fu">coxph</span>(</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Surv</span>(temps, censure) <span class="sc">~</span> </span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>     <span class="fu">tt</span>(age) <span class="sc">+</span> sexe <span class="sc">+</span> service, </span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">data =</span> survie1, </span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">tt =</span> <span class="cf">function</span>(x, t, ...){x <span class="sc">+</span> t<span class="sc">/</span><span class="dv">52</span>})</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_np)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>cox_np <span class="ot">&lt;-</span> survival<span class="sc">::</span><span class="fu">coxph</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Surv</span>(temps, censure) <span class="sc">~</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>     <span class="fu">tt</span>(age) <span class="sc">+</span> sexe <span class="sc">+</span> service, </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">data =</span> survie1, </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">tt =</span> <span class="cf">function</span>(x, t, ...){x <span class="sc">+</span> t<span class="sc">/</span><span class="dv">52</span>})</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox_np)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>On spécifie avec l’option <code>tt()</code> dans la formule la variable qui change dans le temps et par la suite la nature de l’interaction temporelle avec l’argument <code>tt</code>.</p>
 <div class="cell" data-hash="06-survie_cache/html/tbl-cox-np_0221e1242f4ab82f59c2210c76f4c3fd">
@@ -1406,28 +1346,57 @@ h(t; x) = h_0(t) \exp(\beta_1x + \beta_2xt).
 </div>
 <p>L’interaction employée ici n’est pas la seule fonction du temps qu’on pourrait spécifier: on pourrait par exemple inclure une fonction de type escalier <span class="math inline">\(\mathrm{I}(T&lt; t_0)\)</span> qui indique que l’effet de la variable disparaît après le temps <span class="math inline">\(t_0\)</span>, si par exemple un rabais disparaît après une certaine durée d’abonnement, avec <code>rabais * I(t&lt;t0)</code> pour une valeur numérique <code>t0</code> fixée.</p>
 </section>
-<section id="stratification" class="level3" data-number="6.7.2">
-<h3 data-number="6.7.2" class="anchored" data-anchor-id="stratification"><span class="header-section-number">6.7.2</span> Stratification</h3>
-<p>Une manière de modéliser la non-proportionnalité est par la stratification. Il est important de comprendre qu’on ne pourra pas estimer l’effet de la variable de stratification comme d’ordinaire en étudiant le coefficient <span class="math inline">\(\beta\)</span> associé.</p>
-<p>Supposons que nous avons une variable explicative catégorielle <span class="math inline">\(Z=1, \ldots, K\)</span> pour lequel le postulat de risque proportionnels n’est pas valide. On s’intéresse à l’effet des variables <span class="math inline">\(\mathbf{X}\)</span>. Typiquement, on ne s’intéresse pas directement à l’effet de la variable <span class="math inline">\(Z\)</span>. Le modèle de Cox avec stratification (pour la variable <span class="math inline">\(Z\)</span>) est <span class="math display">\[\begin{align*}
-h(t; \mathbf{x}, z=k) = h_k(t) \exp(\boldsymbol{\beta} \mathbf{x}),
-\end{align*}\]</span> où <span class="math inline">\(h_k(t)\)</span> est la fonction de risque de base quand <span class="math inline">\(Z=k\)</span> (<span class="math inline">\(k=1, \ldots, K\)</span>). L’effet des autres variables explicatives <span class="math inline">\(\mathbf{X}\)</span> est supposé être le même peut importe la valeur de <span class="math inline">\(Z\)</span>, mais la fonction de risque de base peut différer. Le rapport de risque pour <span class="math inline">\(Z=k\)</span> versus <span class="math inline">\(Z=j\)</span> est <span class="math inline">\(h_k(t)/h_j(t)\)</span>; cette quantité dépend du temps <span class="math inline">\(t\)</span>, mais pas des autres caractéristiques mesurées par <span class="math inline">\(\mathbf{X}\)</span>. L’effet de la variable est donc variable dans le temps (et non pas constant). Ce modèle permet donc de modéliser la non-proportionnalité pour la variable <span class="math inline">\(Z\)</span>. Si on stratifie par rapport à une variable, il ne faut pas l’inclure dans le modèle en plus car elle est déjà modélisée via la stratification. Notez que les paramètres <span class="math inline">\(\boldsymbol{\beta}\)</span> seront estimés à l’aide des données de toutes les strates, mais les fonctions de risque <span class="math inline">\(h_k(t)\)</span> seront obtenues à l’aide des sous-échantillons correspondant aux valeurs de <span class="math inline">\(Z\)</span>.</p>
-<p>L’avantage de la stratification est que cette méthode permet de modéliser n’importe quel changement dans l’effet d’une variable dans le temps sans devoir spécifier un type de changement particulier, comme lorsqu’on doit choisir la forme de l’interaction. Par contre, on perd la possibilité de tester l’effet de la variable de stratification on réduit la taille de l’échantillon pour l’estimation de la fonction de risque de base. On devrait principalement utiliser la stratification seulement avec des variables pour lesquelles nous n’avons pas besoin d’estimer l’effet (variables secondaires ou de contrôles).</p>
-<div class="cell" data-hash="06-survie_cache/html/cox-stratification_e17db40993a0766bb14f04b537e268a9">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Stratification par service</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>cox7 <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(temps, <span class="dv">1</span><span class="sc">-</span>censure) <span class="sc">~</span> </span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                age <span class="sc">+</span> sexe <span class="sc">+</span> <span class="fu">strata</span>(service), </span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> survie1)</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Décompte par région</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(survie1, <span class="fu">table</span>(service)</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Coefficients</span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox7)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell" data-hash="06-survie_cache/html/tbl-cox-stratif_3c738cc69016cd1d821fa8d155d4efa2">
+</section>
+<section id="modèle-à-risques-compétitifs" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="modèle-à-risques-compétitifs"><span class="header-section-number">6.6</span> Modèle à risques compétitifs</h2>
+<p>Parfois, la raison pour laquelle un individu quitte l’état étudié peut avoir un intérêt en soi. Par exemple si on s’intéresse au temps qu’un employé demeure au service de la compagnie, la distinction entre le fait qu’il ait démissionné ou bien qu’il ait été renvoyé peut avoir un impact sur l’effet des variables explicatives. Comme autre exemple, si on s’intéresse au temps de survie d’un individu après qu’il ait été diagnostiqué avec un certain type de cancer, il pourrait être important de distinguer selon la cause exacte de la mort.</p>
+<p>De manière générale, supposons qu’il y a <span class="math inline">\(K\)</span> manières possibles que l’événement survienne.</p>
+<div class="cell" data-hash="06-survie_cache/html/fig-transitionetat_02265d41216c04ff5125b9f275b66adb">
 <div class="cell-output-display">
-<div id="tbl-cox-stratif" class="anchored">
+<div id="fig-transitionetat" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="figures/transition_etats_modele_risque_competitifs.png" class="img-fluid figure-img" width="245"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6.10: Schéma illustrant la transition entre état de base et autres événements compétitifs.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Dans notre exemple d’abonnement cellulaire, supposons que nous avons trois causes possibles pour la perte d’un client: soit il a interrompu son abonnement pour aller chez le compétiteur A, soit pour aller chez le compétiteur B, soit il n’a plus de cellulaire du tout. On considère un modèle avec transition d’un état de base (abonné) vers un état absorbant (désabonnement, soit chez compétiteur <span class="math inline">\(A\)</span>, compétiteur <span class="math inline">\(B\)</span> ou abandon du cellulaire).</p>
+<p>On a deux avenues pour l’estimation de ce type de modèle: soit on ajuste un modèle de Kaplan–Meier, soit un modèle de Cox.</p>
+<p>On peut alors spécifier <span class="math inline">\(K\)</span> fonctions de risques (une pour chaque manière) et obtenir le modèle de Cox à risques compétitifs (<em>competing risks</em>), <span class="math display">\[\begin{align*}
+h_1(t; \boldsymbol{x})&amp;= h_{01}(t) \exp(\beta_{11}x_1 + \cdots + \beta_{p1} x_p)\\
+&amp;\vdots\\
+h_K(t; \boldsymbol{x})&amp;= h_{0K}(t) \exp(\beta_{1K}x_1 + \cdots + \beta_{pK} x_p)\\
+\end{align*}\]</span> Notez que les coefficients sont différents d’une équation à l’autre. En estimant ce modèle, on obtient donc une estimation de l’effet des variables selon la raison du départ de l’état. De plus, on peut aussi inclure des variables dont la valeur change dans le temps, comme vu précédemment.</p>
+<p>Ce qui simplifie énormément la situation est qu’il est prouvé qu’on peut estimer les paramètres de chaque équation séparément sans perte de précision. Par conséquent, en pratique, il suffira d’ajuster <span class="math inline">\(K\)</span> modèles de Cox séparément.</p>
+<p>Les données pour cet exemple se trouvent dans le fichier <code>survie4</code>. La seule nouveauté par rapport au fichier original est la variable <span class="math inline">\(\texttt{censure}\)</span> qui est maintenant codée ainsi</p>
+<ul>
+<li>1, si le temps est censuré (l’individu est toujours abonné à notre service)</li>
+<li>2, si l’individu a quitté pour aller chez le compétiteur A</li>
+<li>3, si l’individu a quitté pour aller chez le compétiteur B</li>
+<li>4, si l’individu a quitté parce qu’il n’a plus besoin de cellulaire.</li>
+</ul>
+<p>On peut calculer la fréquence de chaque modalité avec <code>table</code>. Ainsi, il y a donc 166 clients toujours abonnés, 170 qui nous ont quitté pour aller chez A, 121 pour aller chez B, et 43 qui n’ont plus de cellulaires.</p>
+<p>Pour ajuster le modèle lorsque la cause du départ est le compétiteur A, le code est</p>
+<div class="cell" data-hash="06-survie_cache/html/risque-competitif_03e838b75e9ecd10d04d51ba5c2ce4cf">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Rappel pour `event`:</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   1 pour observation, </span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   0 pour censure à droite</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># On utilise la convention TRUE = 1, FALSE = 0</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(survie4, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>cox5 <span class="ot">&lt;-</span> <span class="fu">coxph</span>(<span class="fu">Surv</span>(<span class="at">time =</span> temps, </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">event =</span> censure <span class="sc">==</span> <span class="dv">2</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">type =</span> <span class="st">"right"</span>) <span class="sc">~</span> </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                age <span class="sc">+</span> sexe <span class="sc">+</span> region <span class="sc">+</span> service, </span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> survie4,</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">ties =</span> <span class="st">"exact"</span>)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cox5)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-hash="06-survie_cache/html/tbl-cox-risquecompetA_94db7b48e7fc5b4b00ee07685e1001f5">
+<div class="cell-output-display">
+<div id="tbl-cox-risquecompetA" class="anchored">
 
-<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;6.10:  Rapport de risques et intervalles de confiances à niveau 95% pour le modèle de Cox stratifié par service. </caption>
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;6.10:  Rapport de risque et intervalles de confiance à niveau 95% pour le modèle à risques compétitifs (probabilité de quitter pour compétiteur A). </caption>
  <thead>
   <tr>
    <th style="text-align:left;"> terme </th>
@@ -1439,15 +1408,57 @@ h(t; \mathbf{x}, z=k) = h_k(t) \exp(\boldsymbol{\beta} \mathbf{x}),
 <tbody>
   <tr>
    <td style="text-align:left;"> age </td>
-   <td style="text-align:right;"> 0.96 </td>
+   <td style="text-align:right;"> 0.95 </td>
    <td style="text-align:right;"> 0.94 </td>
    <td style="text-align:right;"> 0.97 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> sexe </td>
-   <td style="text-align:right;"> 0.61 </td>
    <td style="text-align:right;"> 0.44 </td>
-   <td style="text-align:right;"> 0.85 </td>
+   <td style="text-align:right;"> 0.32 </td>
+   <td style="text-align:right;"> 0.62 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> region2 </td>
+   <td style="text-align:right;"> 0.54 </td>
+   <td style="text-align:right;"> 0.32 </td>
+   <td style="text-align:right;"> 0.92 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> region3 </td>
+   <td style="text-align:right;"> 0.82 </td>
+   <td style="text-align:right;"> 0.50 </td>
+   <td style="text-align:right;"> 1.35 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> region4 </td>
+   <td style="text-align:right;"> 0.72 </td>
+   <td style="text-align:right;"> 0.45 </td>
+   <td style="text-align:right;"> 1.16 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> region5 </td>
+   <td style="text-align:right;"> 1.05 </td>
+   <td style="text-align:right;"> 0.66 </td>
+   <td style="text-align:right;"> 1.66 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> service1 </td>
+   <td style="text-align:right;"> 0.38 </td>
+   <td style="text-align:right;"> 0.27 </td>
+   <td style="text-align:right;"> 0.54 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> service2 </td>
+   <td style="text-align:right;"> 0.18 </td>
+   <td style="text-align:right;"> 0.11 </td>
+   <td style="text-align:right;"> 0.30 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> service3 </td>
+   <td style="text-align:right;"> 0.11 </td>
+   <td style="text-align:right;"> 0.05 </td>
+   <td style="text-align:right;"> 0.22 </td>
   </tr>
 </tbody>
 </table>
@@ -1455,16 +1466,58 @@ h(t; \mathbf{x}, z=k) = h_k(t) \exp(\boldsymbol{\beta} \mathbf{x}),
 </div>
 </div>
 </div>
-<p>On voit à la lecture de la sortie dans le <a href="#tbl-cox-stratif">Tableau&nbsp;<span class="quarto-unresolved-ref">tbl-cox-stratif</span></a> qu’il n’y a plus de paramètres pour la variable <code>service</code>. Les paramètres des autres variables s’interprètent comme d’habitude. On peut néanmoins résumer l’information pour <code>service</code> en calculant une statistique descriptive, par exemple les différences de survie à des temps donnés.</p>
-<p>La <a href="#fig-courbesurviesstrat">Figure&nbsp;<span class="quarto-unresolved-ref">fig-courbesurviesstrat</span></a> illustre l’effet de la stratification sur l’estimation du risque de base et des courbes de survie. On voit que la résolution des courbes est moindre, puisque chaque fonction est estimée à partir d’un sous-ensemble des données.</p>
-<div class="cell" data-layout-align="center" data-hash="06-survie_cache/html/fig-courbesurviesstrat_d4c7f62d82d9d677b4b0293718a72130">
+<p>Notez qu’on précise que les valeurs 1, 3 et 4 sont des observations censurées. Ici, l’événement d’intérêt est que le client est parti chez le compétiteur A. S’il est toujours abonné (<span class="math inline">\(\texttt{censure=1}\)</span>), s’il est parti chez le compétiteur B (<span class="math inline">\(\texttt{censure=3}\)</span>) ou s’il nous a quitté car il n’a plus de cellulaire (<span class="math inline">\(\texttt{censure=4}\)</span>), alors l’événement « quitter pour aller chez A » n’est pas survenu. C’est pourquoi on doit traiter ces situations comme des censures.</p>
+<p>Ainsi, on voit que l’événement est survenu 170 fois et qu’il y a 330 censures. L’interprétation des paramètres se fait comme précédemment. Sauf qu’il faut préciser qu’il s’agit du risque de quitter pour aller chez le compétiteur A. Par exemple, le risque de quitter pour aller chez le compétiteur A d’une femme est 0.444 fois le risque de quitter pour aller chez le compétiteur A d’un homme. Ainsi, les femmes sont moins à risque de quitter pour aller chez le compétiteur A que les hommes.</p>
+<p>Dans <strong>R</strong>, on peut aussi ajuster simultanément tous les modèles en spécifiant que l’événement d’intérêt est un facteur: c’est alors la catégorie de référence qui fait foi de l’état de départ. Il faut également une variable qui identifie l’observation — dans le cas qu’on considère, c’est simplement une colonne avec des valeurs de <span class="math inline">\(1\)</span> à <span class="math inline">\(n\)</span>.</p>
+<div class="cell" data-hash="06-survie_cache/html/unnamed-chunk-37_17426248cb1931bfc85a9613b1520ad0">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>rc_cox <span class="ot">&lt;-</span> <span class="fu">coxph</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Surv</span>(<span class="at">time =</span> temps, </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">event =</span> <span class="fu">factor</span>(censure)) <span class="sc">~</span> sexe <span class="sc">+</span> age <span class="sc">+</span> service,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> survie4 <span class="sc">|&gt;</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(survie4)),</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> id)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>On obtient l’ensemble des coefficients dans le tableau résumé, un pour chaque événement compétitif autre que la référence.</p>
+<p>Si on voulait ajuster le modèle de Kaplan–Meier, pour une transition d’un état de base (abonné) vers un état dit absorbant (désabonnement, soit chez compétiteur A ou B ou abandon du cellulaire), il faut obligatoirement ajuster toutes les courbes simultanément. On ajustera le modèle multi-état en spécifiant un facteur pour l’événement, où encore une fois la catégorie de référence est abonnement (<code>censure=1</code>).</p>
+<div class="cell" data-hash="06-survie_cache/html/unnamed-chunk-38_adb85c48b5690edf32d0b3a534a06c7b">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>rc_km <span class="ot">&lt;-</span> <span class="fu">survfit</span>(<span class="fu">Surv</span>(<span class="at">time =</span> temps, </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">event =</span> <span class="fu">factor</span>(censure)) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> survie4)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Les représentations graphiques pour le modèle à risque compétitif sont légèrement différente. Si on dichotomise l’événement d’intérêt (survie ou échec), il y a deux options possibles et la probabilité d’échec est complémentaire à la survie. Avec plus d’un choix, on obtiendra un graphique avec une estimation de la probabilité pour chaque modalité de l’événement: la <a href="#fig-competitif">Figure&nbsp;<span>6.11</span></a> montre ceci pour la sortie du modèle de Cox et le modèle de Kaplan–Meier en ajoutant la courbe correspondant à la probabilité de demeurer abonné.</p>
+<div class="cell" data-hash="06-survie_cache/html/fig-competitif_b3f45232548a46b130b1c3448707f923">
 <div class="cell-output-display">
-<div id="fig-courbesurviesstrat" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-competitif" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="06-survie_files/figure-html/fig-courbesurviesstrat-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;6.7: Courbes de survie estimées par nombre de service pour le modèle de Cox avec stratification pour un homme de 40 ans.</figcaption><p></p>
+<p><img src="06-survie_files/figure-html/fig-competitif-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6.11: Probabilité d’événement sans variable explicative (Kaplan-Meier, gauche) et avec âge, service et sexe (modèle de Cox, droite).</figcaption><p></p>
 </figure>
 </div>
+</div>
+</div>
+<p>La <a href="https://cran.r-project.org/web/packages/survival/vignettes/timedep.pdf">vignette</a> du paquet <code>survival</code> offre des détails sur l’implémentation des méthodes qui traitent de l’inclusion de variables explicatives dont la valeur change dans le temps et sur les risques compétitifs.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+En résumé
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Le modèle de Cox suppose qu’on peut diviser le risque en deux parties: le risque de base <span class="math inline">\(h_0(t)\)</span> commun à tou(te)s (composante nonparamétrique) et l’effet multiplicatif <span class="math inline">\(\exp(\mathbf{X}\boldsymbol{\beta})\)</span> (composante paramétrique)</li>
+<li>Puisque la fonction de risque de base est commune à toutes les observations, moins d’incertitude sur l’estimation de la survie.</li>
+<li>L’impact sur la survie de changement dans les variables explicatives n’est pas multiplicatif.</li>
+<li>Le modèle de Cox suppose que le rapport de cote ne dépend pas du temps (postulat de risques proportionnels).</li>
+<li>On peut vérifier ce postulat et généraliser le modèle au besoin.</li>
+<li>Plutôt que d’inclure une variable catégorielle, on peut utiliser la stratification pour estimer le risque de base séparément sur chaque sous-groupe.</li>
+<li>le modèle à risques non-proportionnels permet d’inclure une interaction entre le temps et une avec variable ou un coefficient.</li>
+<li>Si les variables explicatives changent au fil du temps, on peut décomposer la contribution de l’observation en plusieurs segments.</li>
+<li>Il y a un lien possible avec le modèle à risque proportionnels si l’effet est le même pour tous (comme l’âge).</li>
+<li>Le modèle multi-état (modèle à risques compétitifs) permet d’estimer la probabilité de chaque transition: la survie pour l’événement de base reste le même (désabonnement), mais on décompose la probabilité de la censure selon les différents événements compétitifs.</li>
+</ul>
 </div>
 </div>
 
@@ -1478,6 +1531,11 @@ Stensrud, Mats J., and Miguel A. Hernán. 2020. <span>“<span class="nocase">Wh
 </div>
 </div>
 </section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Si on considère une variable aléatoire positive, alors l’aire sous la courbe de survie donne l’espérance.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
 </section>
 
 </main> <!-- /main -->
