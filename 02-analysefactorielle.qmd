@@ -167,7 +167,7 @@ knitr::kable(cormat,
 #| fig-cap: "Corrélogramme de la base de données `factor`."
 #| eval: true
 #| echo: false
-#| out-width: '100%'
+#| out-width: '80%'
 corrplot::corrplot(cor(factor), 
                    type = "upper", 
                    diag = FALSE,
@@ -321,15 +321,23 @@ biplot(acp) # bigramme
 #| label: fig-biplot
 #| echo: false
 #| fig-cap: "Bigramme: nuage de point des coordonnées des deux premières composantes principales et direction selon chargements des variables explicatives originales."
-#| out-width: '100%'
+#| out-width: '60%'
+#| fig-width: 6
+#| fig-height: 6
 # Analyse en composantes principales
 # de la matrice de corrélation
-acp <- princomp(factor, cor = TRUE)
+acp <- princomp(hecmulti::factor, cor = TRUE)
 # loadings(acp)
-biplot(acp, xlab = "composante principale 1",
-       ylab = "composante principale 2",
-       cex = 0.5
-       )
+factoextra::fviz_pca_biplot(acp,geom = "point") +
+  labs(x = "composante principale 1",
+       y = "composante principale 2",
+       subtitle = "bigramme",
+       title = "") +
+  theme_classic() 
+# biplot(acp, xlab = "composante principale 1",
+#        ylab = "composante principale 2",
+#        cex = 0.5
+#        )
 ```
 
 On peut étudier la sortie pour vérifier les propriétés de notre décomposition. Le @tbl-eigenvalues montre la variance de chaque composante principale. Si on additionne l'ensemble des variances (sans arrondir), on obtient une variance cumulative des 12 composantes principales, `r sum(acp$sdev^2)`, soit le même que le nombre de variables explicatives puisque les variables standardisées ont variance unitaire. Si on calcule la matrice de corrélation, `cor(acp$scores)`, on remarquera que la corrélation est nulle entre les variables.

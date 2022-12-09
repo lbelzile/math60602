@@ -313,6 +313,7 @@ div.csl-indent {
 <p>Les programmes de fidélisation font partie de la stratégie de commercialisation de plusieurs grandes chaînes (pharmacies, épiceries): en échange de rabais et d’offres promotionnelles, la clientèle fournit des informations sociodémographique (nom, adresse, date de naissance, etc.) et utilise un identifiant numérique, une carte ou une application pour inscrire chaque achat: ce faisant, le système peut traquer les habitudes de consommation.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Créer des regroupements permet de mieux cerner les besoins et habitudes de segments de consommateurs et ainsi d’adapter l’offre promotionnelle. Les algorithmes utilisés pour l’analyse de regroupements peuvent également servir à la résolution d’entité, qui consiste à fusionner les profils de bases de données sans identifiant unique client.</p>
 <p>Un autre exemple d’application de l’analyse de regroupements est la segmentation de la clientèle de transport en commun. Dans la région métropolitaine de Montréal, l’<a href="https://www.artm.quebec/">Agence régionale de transport métropolitain</a> recueille des informations sur les passages et transactions par le biais des cartes à puce Opus (achat de passes mensuelles ou de billets unitaires, lieu de l’achat, etc.) ainsi que les passages (heure, type de véhicule, emplacement approximatif pour les services d’autobus ou station de métro). En créant des regroupements, une agence de transport peut ainsi ajuster son offre et proposer des abonnements ou des produits qui reflètent les besoins de sa clientèle. Un exemple extrême de traquage de compagnie de transport est <a href="https://www.ns.nl/en/"><em>Nederlandse Spoorwegen</em> (NS)</a>: toute personne qui veut voyager en train sur les chemins de fers néerlandais doit acheter une carte à puce et la charger, en plus de composter son billet au départ et à l’arrivée de son voyage. Cette approche, qui peut sembler intrusive, permet néanmoins de mesurer précisément la demande sur les lignes en fonction du moment de la journée et de l’associer à chaque client.</p>
 <p>Souvent, les bases de données marketing sont souvent de nature longitudinale: chaque ligne correspond à une transaction, mais plusieurs d’entre elles peuvent être le fait d’une même personne/compte. Une fois l’analyse exploratoire des données complétée, on procédera à l’aggrégation des observations par compte client, puisque la segmentation doit être effectuée à cette échelle. C’est également à ce stade qu’on pourra créer de nouvelles variables explicatives à partir de l’information présente dans la base de données: par exemple, on pourrait considérer la fréquence moyenne d’achat, le montant moyen par transaction, le mode du moment de la journée, la variabilité de cette fréquentation, le pourcentage des ventes provenant d’articles en solde, la variabilité du montant du panier, etc. Cette liste, non exhaustive, illustre l’étape cruciale de l’extraction de l’information utilisée dans l’analyse statistique: il faut être conscients que la qualité de la segmentation dépend du choix de variables employées.</p>
+<p>Il y a une pléthore d’exemples d’analyse de regroupements. Par exemple, les articles suivants de science politique utilisent les résultats d’élections passées ou de sondages pour établir <a href="https://cybergeo.hypotheses.org/1199">typologie des électeurs français suite à la présidentielle</a>, une segmentation de <a href="https://fivethirtyeight.com/features/the-6-political-neighborhoods-of-los-angeles/">quartiers de Los Angeles</a> et de <a href="https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/">New York</a> selon leur vote ou le <a href="https://www.cbc.ca/news/canada/calgary/danielle-smith-alberta-moderate-middle-ucp-ndp-poll-1.6651460">profils des électeurs albertains</a>. Ce <a href="https://github.com/nedwardsthro/Thesis_Work">travail de maîtrise</a> se penche de son côté sur le positionnement de joueurs lors de match de la NBA.</p>
 </section>
 <section id="choix-des-variables" class="level2" data-number="7.3">
 <h2 data-number="7.3" class="anchored" data-anchor-id="choix-des-variables"><span class="header-section-number">7.3</span> Choix des variables</h2>
@@ -324,8 +325,8 @@ div.csl-indent {
 <p>Malheureusement, il n’est pas évident de prime abord de déterminer quelles variables inclure dans la base de données pas plus qu’il n’est facile de juger de la qualité d’une segmentation ou du nombre de regroupements à effectuer. Les choix individuels auront un impact certain sur les regroupements obtenus: on recommande d’essayer plusieurs alternatives et de vérifier graphiquement ou à l’aide de critères d’ajustement si les regroupements obtenus sont homogènes et compacts.</p>
 <p>Si certaines variables définissent naturellement des groupes, par exemple l’âge des personnes, et fait qu’ils et elles ont des caractéristiques intrinsèquement différentes, il peut être utile de faire une segmentation indépendamment pour chacun de ces sous-groupes.</p>
 <p>Dans ce chapitre, nous utiliserons des données simulées inspirées de campagnes de financement d’organismes de charité. Ces dernières font souvent du démarchage publicitaire auprès de donateurs ou envoient par publipostage des demandes de dons à toutes les adresses postales. Ces efforts ont un coût important: nous essaierons de créer des catégories de donateurs afin de mieux cibler les donateurs et donatrices et le moment adéquat pour ce démarchage. Plusieurs grandes compagnies sont associées à ces organismes et les parrainent: notre base de données contiendra le profil de toutes ces personnes, qu’elles fassent un don ou pas.</p>
-<p>La base de données <code>dons</code> contient 49730 observations pour 16 variables: le <a href="#tbl-statdescriptdons">Tableau&nbsp;<span>7.1</span></a> fournit les statistiques descriptives. Elle a été crée en regroupement les identifiants: de nombreuses variables explicatives sont dérivées des données brutes, notamment le temps entre dons, les statistiques descriptives (montant moyen, minimum maximum) pour les dons monétaires. Ces choix de variables sont loins d’être anodins et peuvent influencer la segmentation décrite dans ce chapitre. Une rapide exploration des données révèle que près de 61% des employé(e)s n’ont pas donné à l’organisme. Une poignée de dons sont très élevés, mais la plupart des montants tourne autour de 5$, 10$, 20$, etc.</p>
-<div class="cell" data-layout-align="center" data-hash="03-regroupements_cache/html/tbl-statdescriptdons_a63d38ed288247f5c48d1a9d821d3b1a">
+<p>La base de données <code>dons</code> contient 19353 observations pour 16 variables: le <a href="#tbl-statdescriptdons">Tableau&nbsp;<span>7.1</span></a> fournit les statistiques descriptives. Elle a été crée en regroupement les identifiants: de nombreuses variables explicatives sont dérivées des données brutes, notamment le temps entre dons, les statistiques descriptives (montant moyen, minimum maximum) pour les dons monétaires. Ces choix de variables sont loins d’être anodins et peuvent influencer la segmentation décrite dans ce chapitre. Une rapide exploration des données révèle que près de 0% des employé(e)s n’ont pas donné à l’organisme. Une poignée de dons sont très élevés, mais la plupart des montants tourne autour de 5$, 10$, 20$, etc.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div id="tbl-statdescriptdons" class="anchored">
 
@@ -347,7 +348,7 @@ div.csl-indent {
    <td style="text-align:right;"> 5.21 </td>
    <td style="text-align:right;"> 1 </td>
    <td style="text-align:right;"> 27.0 </td>
-   <td style="text-align:right;"> 30377 </td>
+   <td style="text-align:right;"> 0 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> recence </td>
@@ -355,7 +356,7 @@ div.csl-indent {
    <td style="text-align:right;"> 81.80 </td>
    <td style="text-align:right;"> 2 </td>
    <td style="text-align:right;"> 299.0 </td>
-   <td style="text-align:right;"> 30377 </td>
+   <td style="text-align:right;"> 0 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> anciennete </td>
@@ -363,7 +364,7 @@ div.csl-indent {
    <td style="text-align:right;"> 95.77 </td>
    <td style="text-align:right;"> 2 </td>
    <td style="text-align:right;"> 302.0 </td>
-   <td style="text-align:right;"> 30377 </td>
+   <td style="text-align:right;"> 0 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> vdons </td>
@@ -371,7 +372,7 @@ div.csl-indent {
    <td style="text-align:right;"> 431.08 </td>
    <td style="text-align:right;"> 1 </td>
    <td style="text-align:right;"> 19260.0 </td>
-   <td style="text-align:right;"> 30377 </td>
+   <td style="text-align:right;"> 0 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> vdonsmax </td>
@@ -379,7 +380,7 @@ div.csl-indent {
    <td style="text-align:right;"> 88.13 </td>
    <td style="text-align:right;"> 1 </td>
    <td style="text-align:right;"> 2460.0 </td>
-   <td style="text-align:right;"> 30377 </td>
+   <td style="text-align:right;"> 0 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> vdonsmin </td>
@@ -387,7 +388,7 @@ div.csl-indent {
    <td style="text-align:right;"> 28.79 </td>
    <td style="text-align:right;"> 1 </td>
    <td style="text-align:right;"> 1570.0 </td>
-   <td style="text-align:right;"> 30377 </td>
+   <td style="text-align:right;"> 0 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> npromesse </td>
@@ -395,7 +396,7 @@ div.csl-indent {
    <td style="text-align:right;"> 2.37 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 15.0 </td>
-   <td style="text-align:right;"> 30377 </td>
+   <td style="text-align:right;"> 0 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> vpromesse </td>
@@ -403,7 +404,7 @@ div.csl-indent {
    <td style="text-align:right;"> 282.07 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 12680.0 </td>
-   <td style="text-align:right;"> 30377 </td>
+   <td style="text-align:right;"> 0 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> nradiations </td>
@@ -411,7 +412,7 @@ div.csl-indent {
    <td style="text-align:right;"> 0.89 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 10.0 </td>
-   <td style="text-align:right;"> 30377 </td>
+   <td style="text-align:right;"> 0 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> vradiations </td>
@@ -419,7 +420,7 @@ div.csl-indent {
    <td style="text-align:right;"> 141.47 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 11815.0 </td>
-   <td style="text-align:right;"> 37519 </td>
+   <td style="text-align:right;"> 7142 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> ddons </td>
@@ -427,7 +428,7 @@ div.csl-indent {
    <td style="text-align:right;"> 1.94 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 23.9 </td>
-   <td style="text-align:right;"> 36113 </td>
+   <td style="text-align:right;"> 5736 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> ddonsmax </td>
@@ -435,7 +436,7 @@ div.csl-indent {
    <td style="text-align:right;"> 3.24 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 23.9 </td>
-   <td style="text-align:right;"> 36113 </td>
+   <td style="text-align:right;"> 5736 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> ddonsmin </td>
@@ -443,28 +444,28 @@ div.csl-indent {
    <td style="text-align:right;"> 1.83 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 23.9 </td>
-   <td style="text-align:right;"> 36113 </td>
+   <td style="text-align:right;"> 5736 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> nrefus </td>
-   <td style="text-align:right;"> 1.67 </td>
-   <td style="text-align:right;"> 1.98 </td>
+   <td style="text-align:right;"> 2.18 </td>
+   <td style="text-align:right;"> 2.26 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 11.0 </td>
    <td style="text-align:right;"> 0 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> nrefusconsec </td>
-   <td style="text-align:right;"> 1.43 </td>
-   <td style="text-align:right;"> 1.86 </td>
+   <td style="text-align:right;"> 1.56 </td>
+   <td style="text-align:right;"> 2.06 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 11.0 </td>
    <td style="text-align:right;"> 0 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> nindecis </td>
-   <td style="text-align:right;"> 0.31 </td>
-   <td style="text-align:right;"> 0.76 </td>
+   <td style="text-align:right;"> 0.47 </td>
+   <td style="text-align:right;"> 0.93 </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 8.0 </td>
    <td style="text-align:right;"> 0 </td>
