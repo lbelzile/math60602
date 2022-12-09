@@ -93,6 +93,9 @@ soit la probabilité que $Y$ égale 1 étant donné les valeurs des variables ex
 #| label: fig-demandecredit
 #| eval: true
 #| echo: false
+#| fig-width: 7
+#| out-width: '80%'
+#| fig-height: 4
 #| cache: true
 #| fig-cap: "Données de la réserve de Boston sur l'approbation de prêts hypothécaires (1990); données tirées de Stock et Watson (2007)."
 #| message: false
@@ -161,21 +164,21 @@ Si le coefficient $\beta_j$ est négatif, $p$ diminuera à mesure que $\mathrm{X
 ```{r}
 #| label: fig-logitplot
 #| echo: false
-#| out-width: '100%'
+#| out-width: '80%'
+#| fig-width: 8
+#| fig-height: 5
 #| fig.cap: "Valeurs ajustées du modèle de régression logistique en fonction du prédicteur linéaire $\\eta$."
 #| eval: true
 #| fig-align: 'center'
 logit <- function(x){log(x/(1-x))}
 expit <- function(x){1/(1+exp(-x))}
-par(mar = c(4,4,1,0.1), bty = "l")
-curve(expit, 
-    ylim = c(0,1),
-    yaxs="i",
-    from = -3.5, 
-    to = 3.5, 
-    xlab = expression(eta), 
-    ylab = expression(p))
-
+ggplot() + 
+  stat_function(fun = expit,
+                xlim = c(-3.5,3.5)) + 
+  labs(x = "prédicteur linéaire", 
+       y = "",
+       subtitle = "Probabilité de succès") +
+  theme_classic()
 ```
 
 Pour une variable binaire $Y$, le rapport $p/(1-p)$ est appelé **cote** et représente le ratio de la probabilité de succès ($Y=1$) sur la probabilité d'échec ($Y=0$),
@@ -353,23 +356,24 @@ Quelques observations sur l'échantillon et les données:
 \begin{align*}
 \Pr(Y=1 \mid \mathrm{X}_5=x_5) &= \textrm{expit}(-3.05 + 0.0749 x_5) \\&= \frac{1}{1+\exp(-3.05 - 0.0749 x_5)}
 \end{align*}
-Le graphe de cette fonction pour $\mathrm{X}_5$ allant de 18 à 59 ans, respectivement les valeurs minimales et maximales observées dans l'échantillon, montre que le lien entre l'âge et $p$ est presque linéaire entre 20 et 60 ans. On décèle tout de même la forme sigmoide de la fonction $\textrm{logit}$ aux deux extrémités.
+Le graphe de cette fonction (@fig-logitplot2) pour $\mathrm{X}_5$ allant de 18 à 59 ans, respectivement les valeurs minimales et maximales observées dans l'échantillon, montre que le lien entre l'âge et $p$ est presque linéaire entre 20 et 60 ans. On décèle tout de même la forme sigmoide de la fonction $\textrm{logit}$ aux deux extrémités.
 
 ```{r}
-#| label: logitplot2
+#| label: fig-logitplot2
+#| fig-cap: "Probabilité de suivre les recommendations selon l'âge."
 #| echo: false
 #| eval: true
-#| out-width: '100%'
+#| out-width: '80%'
+#| fig-width: 8
+#| fig-height: 4
 #| fig-align: 'center'
-par(mar = c(4,4,1,0.1), bty = "l")
-curve(expit(-3.05+0.0749*x), 
-    ylim = c(0,1),
-    yaxs="i",
-    from = 18, 
-    to = 59, 
-    xlab = "âge (en années)", 
-    ylab = "p")
-
+ggplot() + 
+  stat_function(fun = function(x){expit(-3.05+0.0749*x)},
+                xlim = c(18,59)) + 
+  labs(x = "âge (en années)", 
+       y = "",
+       subtitle = "Probabilité de succès") +
+  theme_classic()
 ```
 
 - La valeur-$p$ pour $\widehat{\beta}_{\texttt{age}}$ correspondant au test des hypothèses $\mathscr{H}_0: \beta_{\texttt{age}}=0$ versus $\mathscr{H}_1: \beta_{\texttt{age}} \neq 0$, est plus petite que $10^{-4}$ et donc l'effet de la variable âge est statistiquement différent de zéro. Plus l'âge augmente, plus la probabilité d'être intéressé à acheter un produit recommandé par le PRCA augmente.

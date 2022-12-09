@@ -58,6 +58,7 @@ Pour déterminer les mécanismes de survie en présence, il peut être utile de 
 #| eval: true
 #| echo: false
 #| label: fig-lexis
+#| out-width: '55%'
 #| fig-cap: "Diagramme de Lexis pour données tronquées à gauche ($A$ et $C$) et censurées à droite ($C$ et $D$)."
 knitr::include_graphics("figures/Lexis_censure.png")
 ```
@@ -91,6 +92,7 @@ La troncature par intervalle survient quand on considère uniquement les personn
 #| label: fig-troncatureintervalle
 #| fig-cap: "Diagramme de Lexis illustrant la troncature par intervalle."
 #| eval: true
+#| out-width: '100%'
 #| echo: false
 knitr::include_graphics("figures/lexis_troncationintervalle.png")
 ```
@@ -238,7 +240,9 @@ knitr::kable(km_subtab,
 
 ```{r}
 #| label: fig-km-survie1
-#| out-width: '95%'
+#| out-width: '90%'
+#| fig-width: 8
+#| fig-height: 5
 #| fig-align: "center"
 #| fig-cap: "Estimation de Kaplan--Meier de la fonction de survie pour les données d'abonnement avec intervalles de confiance ponctuels à 95%."
 ggsurv <- survminer::ggsurvplot(kapm, palette = 1)
@@ -339,6 +343,8 @@ plot(survfit(Surv(temps, censure) ~ sexe,
 ```{r}
 #| label: fig-survie-comparaison-courbes
 #| out-width: '90%'
+#| fig-width: 7
+#| fig-height: 4
 #| fig-align: center
 #| eval: true
 #| echo: false
@@ -666,6 +672,7 @@ Le plus difficile est de créer correctement le fichier de données pour effectu
 ```{r}
 #| echo: false
 #| eval: true
+#| out-width: '35%'
 #| label: fig-lexischtemps
 #| fig-cap: "Diagramme de Lexis avec trajectoires. Pour ajuster le modèle, on peut casser la contribution d'une observation en segments: considérons un seul changement survenant au temps $t_c$. Pour le premier segment, on enregistre $t_c$ comme valeur maximale (censure à droite), tandis que pour la deuxième portion, l'observation est tronquée à gauche à partir de $t_c$."
 knitr::include_graphics("figures/Lexis_censure_modif.png")
@@ -1125,6 +1132,7 @@ De manière générale, supposons qu'il y a $K$ manières possibles que l'évén
 ```{r}
 #| eval: true
 #| echo: false
+#| out-width: '65%'
 #| label: fig-transitionetat
 #| fig-cap: "Schéma illustrant la transition entre état de base et autres événements compétitifs."
 knitr::include_graphics("figures/transition_etats_modele_risque_competitifs.png")
@@ -1157,7 +1165,7 @@ Les données pour cet exemple se trouvent dans le fichier `survie4`. La seule no
 On peut calculer la fréquence de chaque modalité avec `table`.
 Ainsi, il y a donc 166 clients toujours abonnés, 170 qui nous ont quitté pour aller chez A, 121 pour aller chez B, et 43 qui n'ont plus de cellulaires.
 
-Pour ajuster le modèle lorsque la cause du départ est le compétiteur A, le code est
+Pour ajuster le modèle lorsque la cause du départ est le compétiteur A, le code définit `censure == 2`.
 
 ```{r}
 #| label: risque-competitif
