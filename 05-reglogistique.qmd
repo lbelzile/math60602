@@ -1831,37 +1831,24 @@ Cette valeur est donnée dans la dernière colonne du tableau. De plus, cet effe
 
 Si les modalités de la réponse sont ordinales, la régression logistique multinomiale est toujours appropriée. Il peut néanmoins être préférable d'utiliser un modèle qui utilise l'ordre des modalités pour obtenir un modèle plus facile à interpréter et plus parcimonieux. Le modèle de régression logistique cumulative à cotes proportionnelles [@McCullagh:1980] est une simplification du modèle multinomial sous l'hypothèse que les rapports de cotes sont les mêmes peut importe la catégorie.
 
-Supposons que les $K$ modalités de la variable **ordinale** $Y$ sont en ordre croissant ($1 \leq \cdots \leq  K$) et que l'on dispose de $p$ variables explicatives $\mathrm{X}_1, \ldots, \mathrm{X}_p$ pour chaque observation.
+Supposons que les $K$ modalités de la variable **ordinale** $Y$ sont en ordre croissant et que l'on dispose de $p$ variables explicatives $\mathrm{X}_1, \ldots, \mathrm{X}_p$ pour chaque observation. Soit $p_{ik}=\Pr(Y_i=k \mid \mathbf{X}_{i})$ ($k=1, \ldots, K$) la probabilité que $Y_{i}$ prenne la valeur $k$.
 
-Soit $p_{ik}=\Pr(Y_i=k \mid \mathbf{X}_{i})$ ($k=1, \ldots, K$) la probabilité que $Y_{i}$ prenne la valeur $k$. On dénote 
+Le modèle logistique à cotes proportionnelles spécifie que 
 \begin{align*}
-S_{ij}=\sum_{k=j}^K p_{ik}= \Pr(Y_{i} > j - 1 \mid \mathbf{X}_{i}), \qquad j=2, \ldots, K.
+\frac{\Pr(Y_i > k \mid \mathbf{X}_i)}{\Pr(Y_i \leq k \mid \mathbf{X}_i)} = \frac{p_{i(k+1)} + \cdots + p_{iK}}{p_{i1} + \cdots + p_{ik}} = \exp(\mathbf{X}_i \boldsymbol{\beta} - \zeta_k), \qquad k=1, \ldots, K-1
 \end{align*}
-La quantité $S_{ij}$ est la probabilité que $Y_i$ soit plus grand ou égal à $j$; $S_{i1}$ est égal à 1 et $S_{iK} = \Pr(Y_i=K \mid \mathbf{X}_{i})=p_{iK}$.
+en utilisant la paramétrisation de la fonction `polr` du paquet `MASS`. Le terme $-\eta_{k}$ correspond à l'ordonnée à l'origine spécifique à la catégorie $k$ et $-\infty=\zeta_0 < \zeta_1 < \cdots < \zeta_K =\infty$ aux points de coupe qui déterminent les probabilités de chaque catégorie. Puisque $\Pr(Y_i > K \mid \mathbf{X}_i)=1$, il y a $K-1$ équations pour le rapport de cote. Si l'ordonnée à l'origine change d'une équation à l'autre, les paramètres quantifiant les effets des variables explicatives, $\beta_1, \ldots, \beta_p$ sont les mêmes pour chacune des cotes. Par conséquent, pour modéliser une variable ordinale $Y$ ayant $K$ valeurs possibles et avec $p$ variables explicatives, le modèle cumulatif logistique utilise $p + K - 1$ paramètres. Le modèle logit multinomial, qui peut également être utilisé pour les données ordinales, utilise plutôt $(K-1) \cdot(p+1)$ paramètres. Le modèle logistique cumulatif à cotes proportionnelles est donc plus parcimonieux et, pour autant qu'il soit approprié, mènera à des estimations des paramètres plus précises qu'avec le modèle de régression logistique multinomiale. Les deux modèles sont identiques au modèle de régression logistique si la variable ordinale a uniquement deux modalités (variable binaire).
 
-Le modèle logistique cumulé spécifie que 
+La cote pour $Y_i > k$ mesure à quel point il est plus probable que $Y_i$ prenne une valeur plus grande que $k$ par rapport à une valeur plus petite ou égale à $k$. Dans cet exemple, nous n'avons aucune transformation des variables explicatives, ni aucune  interaction dans le modèle; l'interprétation des paramètres est donc simplifiée. Si le paramètre $\beta_j$ est positif, cela indique que plus $\mathrm{X}_j$ prend une valeur élevée, plus la variable $Y$ a tendance à prendre aussi une valeur élevée. Inversement, si le paramètre $\beta_j$ est négatif, cela indique que plus $\mathrm{X}_j$ prend une valeur élevée, plus la variable $Y$ a tendance à prendre une valeur basse. Plus précisément, pour chaque augmentation d'une unité de $\mathrm{X}_j$, la cote pour $\Pr(Y_i > k \mid \mathbf{X}_i)$ versus $\Pr(Y_i \leq k \mid \mathbf{X}_i)$ est multipliée par $\exp(\beta_j)$, peu importe la valeur de $Y$. En terme de probabilité cumulée d'excéder $k$,
 \begin{align*}
-\ln \left( \frac{S_{ij}}{1-S_{ij}}\right) = \beta_{0j} + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p \mathrm{X}_{ip}, \qquad \qquad  j=2, \ldots, K.
-\end{align*}
-
-Comme pour le modèle multinomial logistique, il y a $K-1$ équations pour le rapport de cote. En revanche, si l'ordonnée à l'origine change d'une équation à l'autre, les paramètres quantifiant les effets des variables explicatives, $\beta_1, \ldots, \beta_p$ sont les mêmes pour chacune des cotes. Par conséquent, pour modéliser une variable ordinale $Y$ ayant $K$ valeurs possibles et avec $p$ variables explicatives, le modèle cumulatif logistique utilise $p + K - 1$ paramètres. Le modèle logit multinomial, qui peut également être utilisé pour les données ordinales, utilise plutôt $(K-1) \cdot(p+1)$ paramètres. Le modèle logistique cumulatif à cotes proportionnelles est donc plus parcimonieux et, pour autant qu'il soit approprié, mènera à des estimations des paramètres plus précises qu'avec le modèle de régression logistique multinomiale. Les deux modèles sont identiques au modèle de régression logistique si la variable ordinale a uniquement deux modalités (variable binaire).
-
-
-La cote $S_{ij}/(1-S_{ij})$ mesure à quel point il est plus probable que $Y_i$ prenne une valeur plus grande ou égale à $j$ par rapport à une valeur plus petite que $j$, viz.
-\begin{align*}
-\frac{S_{ij}}{1-S_{ij}} = \exp( \beta_{0j} + \beta_1\mathrm{X}_{i1} + \cdots + \beta_p \mathrm{X}_{ip}).
-\end{align*}
-Dans cet exemple, nous n'avons aucune transformation des variables explicatives, ni aucune  interaction dans le modèle; l'interprétation des paramètres est donc simplifiée. Si le paramètre $\beta_j$ est positif, cela indique que plus $\mathrm{X}_j$ prend une valeur élevée, plus la variable $Y$ a tendance à prendre aussi une valeur élevée. Inversement, si le paramètre $\beta_j$ est négatif, cela indique que plus $\mathrm{X}_j$ prend une valeur élevée, plus la variable $Y$ a tendance à prendre une valeur basse. Plus précisément, pour chaque augmentation d'une unité de $\mathrm{X}_j$, la cote $S_k$ versus $(1-S_k)$ est multipliée par $\exp(\beta_j)$, peu importe la valeur de $Y$. En terme de probabilités cumulées d'excéder $k$,
-\begin{align*}
-S_{ik} &= \Pr(Y_i \geq k \mid \mathbf{X}_{i}) 
-\\& = \textrm{expit}(\beta_{0k} + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p \mathrm{X}_{ip}), \qquad j =2, \ldots, K.
+\Pr(Y_i > k \mid \mathbf{X}_i) &= \textrm{expit}(-\eta_k + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p \mathrm{X}_{ip}), \qquad j =2, \ldots, K.
 \end{align*}
 En utilisant ces expressions, on peut obtenir la probabilité de chaque catégorie,
 \begin{align*}
-&\Pr(Y_i = k \mid \mathbf{X}_{i}) \\&\quad=\Pr(Y_i \geq k \mid \mathbf{X}_{i}) -\Pr(Y_i \geq k+1 \mid \mathbf{X}_{i}) \\&\quad= S_{k} - S_{k+1}.
+&\Pr(Y_i = k \mid \mathbf{X}_{i}) =\Pr(Y_i > k \mid \mathbf{X}_{i}) - \Pr(Y_i > k-1 \mid \mathbf{X}_{i}).
 \end{align*}
 
-On peut répéter le même modèle que précédemment, même s'il est peu susceptible que l'hypothèse de cotes proportionnelles soit valide. La variable réponse doit être de classe `ordered`, une forme particulière de facteur dont les niveaux sont ordonnés en ordre croissant. On ajuste un modèle, cette fois avec sexe pour nous permettre de pratiquer l'interprétation d'une variable catégorielle.
+On peut répéter le même modèle que précédemment pour les données de sondage, même s'il est peu susceptible que l'hypothèse de cotes proportionnelles soit valide. Dans **R**, la variable réponse doit être de classe `ordered`, une forme particulière de facteur dont les niveaux sont ordonnés en ordre croissant. On ajuste un modèle, cette fois avec sexe pour nous permettre de pratiquer l'interprétation d'une variable catégorielle.
 
 ```{r}
 #| label: ordinal-logistique
@@ -1904,7 +1891,7 @@ AIC(multi2a)
 BIC(multi2a)
 
 # Tableau des coefficients 
-# Ordonnées à l'origine:
+# Négatif de l'ordonnée à l'origine:
 multi2a$zeta
 # Uniquement pour variables explicatives
 # exp(beta) avec l'IC de vraisemblance profilée
@@ -1955,11 +1942,41 @@ kableExtra::kbl(tabcoef,
 pval_lrt_multi2a_drop1 <- sprintf(round(drop1(multi2a, test = "Chisq")[2,4],3), fmt = "%.3f")
 ```
 
+Si on écrit les équations pour la cote, on obtient
+\begin{align*}
+\frac{\Pr(Y = \texttt{rarement} \mid \texttt{sexe})}{\Pr(Y \geq \texttt{occasionnellement} \mid \texttt{sexe})} &= \exp(`r round(coef(multi2a)[1], 3)`\texttt{sexe} `r paste(ifelse(multi2a$zeta[1] < 0, "+","-"), round(abs(multi2a$zeta[1]), 3))`) \\ 
+\frac{\Pr(Y \leq \texttt{occasionnellement} \mid \texttt{sexe})}{\Pr(Y = \texttt{toujours} \mid \texttt{sexe})} &= \exp(`r round(coef(multi2a)[1], 3)`\texttt{sexe} `r paste(ifelse(multi2a$zeta[2] < 0, "+","-"), round(abs(multi2a$zeta[2]), 3))`).
+\end{align*}
+
 
 Ici, l'effet estimé d'être un homme plutôt qu'une femme (`sexe`) est $`r sprintf(round(as.numeric(coef(multi2a)),3), fmt = "%.3f")`$ et ce paramètre est significativement différent de zéro (valeur-$p$ de $`r pval_lrt_multi2a_drop1`$ obtenue en faisant un test de rapport de vraisemblance).
 
-Ainsi, les hommes sont moins susceptibles de voter fréquemment que les femmes. Plus précisément, la cote d'être dans une catégorie plus élevée de `catvote`, par rapport à une catégorie plus basse, est multipliée par $\exp(`r sprintf(round(as.numeric(coef(multi2a)),3), fmt = "%.3f")` = `r sprintf(round(exp(as.numeric(coef(multi2a))),3), fmt = "%.3f")`$, ce qui correspond à une diminution de la cote des femmes $`r round(100*(1-exp(as.numeric(coef(multi2a)))), 0)`$% (et donc la probabilité d'être dans une catégorie plus élevée est plus faible).
+Ainsi, les hommes sont moins susceptibles de voter fréquemment que les femmes. Plus précisément, la cote d'être dans une catégorie plus élevée de `catvote`, par rapport à une catégorie plus basse, est multipliée par $\exp(`r sprintf(round(as.numeric(coef(multi2a)),3), fmt = "%.3f")`) = `r sprintf(round(exp(as.numeric(coef(multi2a))),3), fmt = "%.3f")`$, ce qui correspond à une diminution de la cote des femmes $`r round(100*(1-exp(as.numeric(coef(multi2a)))), 0)`$% (et donc la probabilité estimée que la personne vote plus fréquemment est plus faible).
 
+Considérons pour illustrer le rôle des paramètres $\zeta_1, \ldots, \zeta_{k-1}$ pour la prédiction pour une femme (valeur de la référence). Soit $p_1$, $p_2$ et $p_3$ les probabilités pour respectivement rarement/jamais, occasionnellement et toujours. 
+<!-- On obtient les rapports de cote $(p_2+p_3)/p_1 = \exp(-\zeta_1)$, $p_3/(p_1 + p_2) = \exp(-\zeta_2)$ avec la contrainte d'identifiabilité $p_1 + p_2 + p_3 = 1$. On déduit de ce système d'équation que $p_1 =\mathrm{expit}(\zeta_1)$ et $p_3 = \mathrm{expit}(-\zeta_2)$.
+-->
+On peut calculer $\mathrm{expit}(\zeta_k)$ ($k=0, \ldots, K$) qui donne $0$, $`r round(expit(multi2a$zeta)[1], 3)`$, $`r round(expit(multi2a$zeta)[2], 3)`$ et $1$ et les différences donnent $\widehat{p}_1 = `r round(expit(multi2a$zeta)[1], 3)`$, $\widehat{p}_2 = `r round(expit(multi2a$zeta)[2]-expit(multi2a$zeta)[1], 3)`$ et $\widehat{p}_3 = `r round(1-expit(multi2a$zeta)[2], 3)`$. Un rapide calcul numérique montre que c'est bien ce que retourne les prédictions dans le @tbl-predpolr.
+
+```{r}
+#| eval: false
+#| echo: true
+predict(multi2a, 
+        newdata = data.frame(sexe = factor("femme")), 
+        type = "probs")
+```
+
+```{r}
+#| label: tbl-predpolr
+#| eval: true
+#| echo: false
+#| tbl-cap: "Probabilités de chaque classe pour une femme avec le modèle à cotes proportionnelles qui inclut uniquement le sexe."
+knitr::kable(t(predict(multi2a, 
+                     newdata = data.frame(sexe = factor("femme")), 
+                     type = "probs")),digits = 3,
+                     booktabs = TRUE) |> 
+ kableExtra::kable_styling()
+```
 
 
 Avant toute chose, il faut s'assurer que le modèle est approprié. Rappelez-vous que l'une des hypothèses de ce modèle est que les effets des variables explicatives sont les mêmes pour chaque équation. 
