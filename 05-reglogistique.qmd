@@ -1833,15 +1833,15 @@ Si les modalités de la réponse sont ordinales, la régression logistique multi
 
 Supposons que les $K$ modalités de la variable **ordinale** $Y$ sont en ordre croissant et que l'on dispose de $p$ variables explicatives $\mathrm{X}_1, \ldots, \mathrm{X}_p$ pour chaque observation. Soit $p_{ik}=\Pr(Y_i=k \mid \mathbf{X}_{i})$ ($k=1, \ldots, K$) la probabilité que $Y_{i}$ prenne la valeur $k$.
 
-Le modèle logistique à cotes proportionnelles spécifie que 
+Le modèle logistique à cotes proportionnelles spécifie que pour $k=1, \ldots, K-1$,
 \begin{align*}
-\frac{\Pr(Y_i > k \mid \mathbf{X}_i)}{\Pr(Y_i \leq k \mid \mathbf{X}_i)} = \frac{p_{i(k+1)} + \cdots + p_{iK}}{p_{i1} + \cdots + p_{ik}} = \exp(\mathbf{X}_i \boldsymbol{\beta} - \zeta_k), \qquad k=1, \ldots, K-1
+\frac{\Pr(Y_i > k \mid \mathbf{X}_i)}{\Pr(Y_i \leq k \mid \mathbf{X}_i)} = \frac{p_{i(k+1)} + \cdots + p_{iK}}{p_{i1} + \cdots + p_{ik}} = \exp(\mathbf{X}_i \boldsymbol{\beta} - \zeta_k),
 \end{align*}
 en utilisant la paramétrisation de la fonction `polr` du paquet `MASS`. Le terme $-\eta_{k}$ correspond à l'ordonnée à l'origine spécifique à la catégorie $k$ et $-\infty=\zeta_0 < \zeta_1 < \cdots < \zeta_K =\infty$ aux points de coupe qui déterminent les probabilités de chaque catégorie. Puisque $\Pr(Y_i > K \mid \mathbf{X}_i)=1$, il y a $K-1$ équations pour le rapport de cote. Si l'ordonnée à l'origine change d'une équation à l'autre, les paramètres quantifiant les effets des variables explicatives, $\beta_1, \ldots, \beta_p$ sont les mêmes pour chacune des cotes. Par conséquent, pour modéliser une variable ordinale $Y$ ayant $K$ valeurs possibles et avec $p$ variables explicatives, le modèle cumulatif logistique utilise $p + K - 1$ paramètres. Le modèle logit multinomial, qui peut également être utilisé pour les données ordinales, utilise plutôt $(K-1) \cdot(p+1)$ paramètres. Le modèle logistique cumulatif à cotes proportionnelles est donc plus parcimonieux et, pour autant qu'il soit approprié, mènera à des estimations des paramètres plus précises qu'avec le modèle de régression logistique multinomiale. Les deux modèles sont identiques au modèle de régression logistique si la variable ordinale a uniquement deux modalités (variable binaire).
 
 La cote pour $Y_i > k$ mesure à quel point il est plus probable que $Y_i$ prenne une valeur plus grande que $k$ par rapport à une valeur plus petite ou égale à $k$. Dans cet exemple, nous n'avons aucune transformation des variables explicatives, ni aucune  interaction dans le modèle; l'interprétation des paramètres est donc simplifiée. Si le paramètre $\beta_j$ est positif, cela indique que plus $\mathrm{X}_j$ prend une valeur élevée, plus la variable $Y$ a tendance à prendre aussi une valeur élevée. Inversement, si le paramètre $\beta_j$ est négatif, cela indique que plus $\mathrm{X}_j$ prend une valeur élevée, plus la variable $Y$ a tendance à prendre une valeur basse. Plus précisément, pour chaque augmentation d'une unité de $\mathrm{X}_j$, la cote pour $\Pr(Y_i > k \mid \mathbf{X}_i)$ versus $\Pr(Y_i \leq k \mid \mathbf{X}_i)$ est multipliée par $\exp(\beta_j)$, peu importe la valeur de $Y$. En terme de probabilité cumulée d'excéder $k$,
 \begin{align*}
-\Pr(Y_i > k \mid \mathbf{X}_i) &= \textrm{expit}(-\eta_k + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p \mathrm{X}_{ip}), \qquad j =2, \ldots, K.
+\Pr(Y_i > k \mid \mathbf{X}_i) &= \textrm{expit}(-\eta_k + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p \mathrm{X}_{ip}), \qquad k=1, \ldots, K-1.
 \end{align*}
 En utilisant ces expressions, on peut obtenir la probabilité de chaque catégorie,
 \begin{align*}
