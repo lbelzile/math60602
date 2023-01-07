@@ -1,46 +1,12 @@
 # Données manquantes {#donnees-manquantes}
 
-
 ```{r}
-#| label: setup7
-#| eval: true
-#| echo: false
-#| results: "hide"
+#| label: setup
+#| file: "_common.R"
+#| include: true
 #| message: false
 #| warning: false
-library(knitr)
-library(kableExtra)
-set.seed(1014)
-
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  cache = TRUE,
-  out.width = "90%",
-  fig.align = 'center',
-  fig.width = 6.5,
-  fig.asp = 0.618  # 1 / phi
-)
-options(knitr.table.format = function() {
-  if (knitr::is_latex_output()) 
-    "latex" else "html"
-})
-
-options(dplyr.print_min = 6, dplyr.print_max = 6)
-options(knitr.graphics.auto_pdf = TRUE)
-options(scipen = 1, digits = 3)
-library(viridis)
-library(ggplot2, warn.conflicts = FALSE, quietly = TRUE)
-library(poorman, quietly = TRUE, warn.conflicts = FALSE)
-options(knitr.kable.NA = '')
-library(patchwork)
-
-safe_colorblind_palette <- MetBrewer::met.brewer("Hiroshige",10)
-
-options(ggplot2.continuous.colour="viridis")
-options(ggplot2.continuous.fill = "viridis")
-scale_colour_discrete <- scale_color_manual(MetBrewer::met.brewer("Hiroshige",10))
-scale_fill_discrete <- scale_fill_manual(MetBrewer::met.brewer("Hiroshige",10))
-theme_set(theme_classic())
+#| echo: false
 ```
 
 
@@ -293,7 +259,7 @@ Le but est d'examiner les effets des variables $X_1$ à $X_6$ sur les intentions
 #| label: tbl-missing1r
 #| eval: true
 #| echo: false
-#| tbl-cap: "Tableau des configurations des données manquantes."
+#| tbl-cap: "Tableau de la configuration des données manquantes."
 url <- "https://lbelzile.bitbucket.io/MATH60602/missing1.sas7bdat"
 missing1 <- haven::read_sas(url)
 smallmiss <- missing1[1:10,]
@@ -356,7 +322,7 @@ Nous utiliserons le paquet **R** `mice` pour faire l'imputation.
 #| echo: false
 #| eval: true
 #| out-width: '70%'
-#| fig-width: 4
+#| fig-width: 6
 #| fig-height: 8
 #| fig-cap: "Configurations des valeurs manquantes pour la base de données `manquantes`."
 puzle <- mice::md.pattern(manquantes[,1:6], 

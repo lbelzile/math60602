@@ -1,50 +1,14 @@
 # Sélection de variables et de modèles {#selection-modele}
 
-
 ```{r}
-#| label: setup-section4
-#| eval: true
-#| echo: false
-#| results: "hide"
+#| label: setup
+#| file: "_common.R"
+#| include: true
 #| message: false
 #| warning: false
-# automatically create a bib database for R packages
-library(knitr)
-library(kableExtra)
-set.seed(1014)
-
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  cache = TRUE,
-  out.width = "100%",
-  fig.align = 'center',
-  fig.width = 8.5,
-  fig.asp = 0.618,  # 1 / phi
-  fig.show = "hold"
-)
-options(knitr.table.format = function() {
-  if (knitr::is_latex_output())
-    "latex" else "html"
-})
-
-options(dplyr.print_min = 6, dplyr.print_max = 6)
-options(knitr.graphics.auto_pdf = TRUE)
-options(scipen = 1, digits = 3)
-library(viridis)
-library(ggplot2, warn.conflicts = FALSE, quietly = TRUE)
-library(poorman, quietly = TRUE, warn.conflicts = FALSE)
-library(patchwork)
-
-safe_colorblind_palette <- MetBrewer::met.brewer("Hiroshige",10)
-
-options(ggplot2.continuous.colour="viridis")
-options(ggplot2.continuous.fill = "viridis")
-scale_colour_discrete <- scale_color_manual(MetBrewer::met.brewer("Hiroshige",10))
-scale_fill_discrete <- scale_fill_manual(MetBrewer::met.brewer("Hiroshige",10))
-theme_set(theme_classic())
+#| echo: false
 ```
 
-## Introduction
 
 Ce chapitre présente des principes, outils et méthodes très généraux pour choisir un « bon » modèle. Nous allons principalement utiliser la régression linéaire pour illustrer les méthodes en supposant que tout le monde connaît ce modèle de base. Les méthodes présentées sont en revanche très générales et peuvent être appliquées avec n'importe quel autre modèle (régression logistique, arbres de classification et régression, réseaux de neurones, analyse de survie, etc.)
 
@@ -125,14 +89,16 @@ kable(
     col.names = c("coefficient", 
                   "borne inf.",
                   "borne sup."), 
-    caption = "modèle correct")
+    caption = "modèle correct") |>
+    kableExtra::kable_styling()
 kable(tab2, 
   booktabs = TRUE, 
   digits = 2, 
   col.names = c("coefficient", 
                 "borne inf.", 
                 "borne sup."), 
-  caption = "modèle surspécifié")
+  caption = "modèle surspécifié") |>
+    kableExtra::kable_styling()
 ```
 
 
@@ -161,14 +127,16 @@ kable(
     col.names = c("coefficient", 
                   "borne inf.",
                   "borne sup."), 
-    caption = "modèle sous-spécifié")
+    caption = "modèle sous-spécifié") |>
+    kableExtra::kable_styling()
 kable(tab2, 
   booktabs = TRUE, 
   digits = 2, 
   col.names = c("coefficient", 
                 "borne inf.", 
                 "borne sup."), 
-  caption = "modèle correct")
+  caption = "modèle correct")|>
+    kableExtra::kable_styling()
 ```
 
 
@@ -219,6 +187,7 @@ Nous disposons de 100 observations sur une variable cible $Y$ et d'une seule var
 #| echo: false
 #| fig-align: 'center'
 #| out-width: '100%'
+#| message: false
 #| fig-cap: "Nuage de points de 100 observations simulées d'un modèle polynomial de degré inconnu (gauche) et ajustement de différents polynômes de degré variable (droite)."
 data(polynome, package = "hecmulti")
 g1 <- ggplot(data = polynome, 
@@ -245,7 +214,6 @@ g2 <- ggplot() +
               aes(x = x0, y = ypred4), color = 3) +
    geom_line(data = data.frame(x0, ypred10),
               aes(x = x0, y = ypred10), color = 4) + 
-   theme_classic() +
    scale_y_continuous(limits = c(-400,400))
 g1 + g2 
 ```
@@ -327,12 +295,14 @@ ggplot(data = EQMdat, aes(x=ordre, y=EQM, color=echantillon)) +
   geom_point(aes(shape=echantillon, color=echantillon)) +
   labs(x = "ordre du polynôme",
        y = "erreur quadratique moyenne") +
+  theme_classic() + 
   theme(legend.position="bottom",
         legend.title=element_blank()) +
   scale_color_manual(values = MetBrewer::met.brewer("Hiroshige",
                                            n =  2)) +
   scale_x_continuous(breaks = 0:10,
                      labels = as.character(0:10))
+                     
 ```
 
 On voit clairement dans la @fig-plotEQMa que l'$\widehat{\mathsf{EQM}}_a$ diminue en fonction de l'ordre sur l'échantillon d'apprentissage: plus le modèle est complexe, plus l'erreur observée sur l'échantillon d'apprentissage est petite. La courbe $\mathsf{EQM}$ donne l'heure juste, car il s'agit d'une estimation de la performance réelle des modèles sur de nouvelles données. On voit que le meilleur modèle est donc le modèle cubique ($k=3$),  ce qui n'est pas surprenant puisqu'il s'agit du modèle que utilisé pour générer les données. On peut aussi remarquer d'autres éléments intéressants. Premièrement, on obtient un bon gain en performance ($\mathsf{EQM}$) en passant de l'ordre $2$ à l'ordre $3$. Ensuite, la perte de performance en passant de l'ordre $3$ à $4$, et ensuite à des ordres supérieurs n'est pas si sévère, même si elle est présente. Cela illustre empiriquement qu'il est préférable d'avoir un modèle un peu trop complexe que d'avoir un modèle trop simple. Il serait beaucoup plus grave pour la performance de choisir le modèle avec $k=2$ que celui avec $k=4$.
@@ -561,10 +531,13 @@ lmkfold <- function(formula, data, k, ...){
    for(i in seq_len(k)){
       # Extraire les indices des observations de la portion validation
       g <- as.integer(unlist(folds[i]))
-      # Ajuster le modèles à toutes les données, moins celles de la portion validation
+      # Ajuster le modèles à toutes les données, 
+      moins celles de la portion validation
       fitlm <- lm(formula, data = data[-g,])
       # ajouter l'erreur quadratique du pli de validation
-      accu <- accu + sum((data[g, all.vars(formula)[1]] -predict(fitlm, newdata=data[g,]))^2)
+      accu <- accu + 
+          sum((data[g, all.vars(formula)[1]] - 
+                predict(fitlm, newdata=data[g,]))^2)
    }
    # Diviser par la taille de l'échantillon 
    # pour obtenir la moyenne
