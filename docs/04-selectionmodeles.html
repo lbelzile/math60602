@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.280">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="MATH 60602 - Analyse multidimensionnelle appliquée, HEC Montréal.">
+
+<title>MATH 60602 - Analyse multidimensionnelle appliquée - 5&nbsp; Sélection de variables et de modèles</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./05-reglogistique.html" rel="next">
+<link href="./03-regroupements.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Pas de résultats",
+    "search-matching-documents-text": "documents trouvés",
+    "search-copy-link-title": "Copier le lien vers la recherche",
+    "search-hide-matches-text": "Cacher les correspondances additionnelles",
+    "search-more-match-text": "correspondance de plus dans ce document",
+    "search-more-matches-text": "correspondances de plus dans ce document",
+    "search-clear-button-title": "Effacer",
+    "search-detached-cancel-button-title": "Annuler",
+    "search-submit-button-title": "Envoyer"
+  }
+}</script>
+
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Sélection de variables et de modèles</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">MATH 60602 - Analyse multidimensionnelle appliquée</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/lbelzile/math60602/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="./MATH60602.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-analyseexploratoire.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Analyse exploratoire</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-analysefactorielle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Réduction de la dimension</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-regroupements.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Analyse de regroupements</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-selectionmodeles.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Sélection de variables et de modèles</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-reglogistique.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Régression logistique</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-survie.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Analyse de survie</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-donneesmanquantes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Données manquantes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">Références</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table des matières</h2>
+   
+  <ul>
+  <li><a href="#sélection-de-variables-et-de-modèles-selon-les-buts-de-létude" id="toc-sélection-de-variables-et-de-modèles-selon-les-buts-de-létude" class="nav-link active" data-scroll-target="#sélection-de-variables-et-de-modèles-selon-les-buts-de-létude"><span class="toc-section-number">5.1</span>  Sélection de variables et de modèles selon les buts de l’étude</a></li>
+  <li><a href="#estimation-de-la-performance" id="toc-estimation-de-la-performance" class="nav-link" data-scroll-target="#estimation-de-la-performance"><span class="toc-section-number">5.2</span>  Estimation de la performance</a>
+  <ul class="collapse">
+  <li><a href="#surajustement" id="toc-surajustement" class="nav-link" data-scroll-target="#surajustement"><span class="toc-section-number">5.2.1</span>  Surajustement</a></li>
+  <li><a href="#principes-généraux" id="toc-principes-généraux" class="nav-link" data-scroll-target="#principes-généraux"><span class="toc-section-number">5.2.2</span>  Principes généraux</a></li>
+  <li><a href="#présentation-de-lexemple" id="toc-présentation-de-lexemple" class="nav-link" data-scroll-target="#présentation-de-lexemple"><span class="toc-section-number">5.2.3</span>  Présentation de l’exemple</a></li>
+  <li><a href="#pénalisation-et-critères-dinformation" id="toc-pénalisation-et-critères-dinformation" class="nav-link" data-scroll-target="#pénalisation-et-critères-dinformation"><span class="toc-section-number">5.2.4</span>  Pénalisation et critères d’information</a></li>
+  <li><a href="#validation-externe" id="toc-validation-externe" class="nav-link" data-scroll-target="#validation-externe"><span class="toc-section-number">5.2.5</span>  Validation externe</a></li>
+  <li><a href="#validation-croisée" id="toc-validation-croisée" class="nav-link" data-scroll-target="#validation-croisée"><span class="toc-section-number">5.2.6</span>  Validation croisée</a></li>
+  </ul></li>
+  <li><a href="#présentation-des-données" id="toc-présentation-des-données" class="nav-link" data-scroll-target="#présentation-des-données"><span class="toc-section-number">5.3</span>  Présentation des données</a></li>
+  <li><a href="#sélection-de-variables" id="toc-sélection-de-variables" class="nav-link" data-scroll-target="#sélection-de-variables"><span class="toc-section-number">5.4</span>  Sélection de variables</a>
+  <ul class="collapse">
+  <li><a href="#recherche-exhaustive-meilleurs-sous-ensembles" id="toc-recherche-exhaustive-meilleurs-sous-ensembles" class="nav-link" data-scroll-target="#recherche-exhaustive-meilleurs-sous-ensembles"><span class="toc-section-number">5.4.1</span>  Recherche exhaustive (meilleurs sous-ensembles)</a></li>
+  <li><a href="#méthodes-séquentielles-de-sélection" id="toc-méthodes-séquentielles-de-sélection" class="nav-link" data-scroll-target="#méthodes-séquentielles-de-sélection"><span class="toc-section-number">5.4.2</span>  Méthodes séquentielles de sélection</a></li>
+  <li><a href="#méthodes-de-régression-avec-régularisation" id="toc-méthodes-de-régression-avec-régularisation" class="nav-link" data-scroll-target="#méthodes-de-régression-avec-régularisation"><span class="toc-section-number">5.4.3</span>  Méthodes de régression avec régularisation</a></li>
+  <li><a href="#moyenne-de-modèles" id="toc-moyenne-de-modèles" class="nav-link" data-scroll-target="#moyenne-de-modèles"><span class="toc-section-number">5.4.4</span>  Moyenne de modèles</a></li>
+  </ul></li>
+  <li><a href="#évaluation-de-la-performance" id="toc-évaluation-de-la-performance" class="nav-link" data-scroll-target="#évaluation-de-la-performance"><span class="toc-section-number">5.5</span>  Évaluation de la performance</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lbelzile/math60602/edit/master/04-selectionmodeles.qmd" class="toc-action">Éditer cette page</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="selection-modele" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Sélection de variables et de modèles</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell" data-file="_common.R" data-hash="04-selectionmodeles_cache/html/setup_038cbf04465f76070ac17e2a3c2ed302">
+
+</div>
+<p>Ce chapitre présente des principes, outils et méthodes très généraux pour choisir un « bon » modèle. Nous allons principalement utiliser la régression linéaire pour illustrer les méthodes en supposant que tout le monde connaît ce modèle de base. Les méthodes présentées sont en revanche très générales et peuvent être appliquées avec n’importe quel autre modèle (régression logistique, arbres de classification et régression, réseaux de neurones, analyse de survie, etc.)</p>
+<p>L’expression « sélection de variables » fait référence à la situation où l’on cherche à sélectionner un sous-ensemble de variables à inclure dans notre modèle à partir d’un ensemble de variables <span class="math inline">\(X_1, \ldots, X_p\)</span>. Le terme variable ici inclut autant des variables distinctes que des transformations d’une ou plusieurs variables.</p>
+<p>Par exemple, supposons que les variables <span class="math inline">\(\texttt{age}\)</span>, <span class="math inline">\(\texttt{sexe}\)</span> et <span class="math inline">\(\texttt{revenu}\)</span> soient trois variables explicatives disponibles. Nous pourrions alors considérer choisir entre ces trois variables. Mais aussi, nous pourrions considérer inclure <span class="math inline">\(\texttt{age}^2\)</span>, <span class="math inline">\(\texttt{age}^3\)</span>, <span class="math inline">\(\log(\texttt{age})\)</span>, etc. Nous pourrions aussi considérer des termes d’interactions entre les variables, comme <span class="math inline">\(\texttt{age} \cdot \texttt{revenu}\)</span> ou <span class="math inline">\(\texttt{age}\cdot\texttt{revenu}\cdot\texttt{sexe}\)</span>. Le problème est alors de trouver un bon sous-ensemble de variables parmi toutes celles considérées.</p>
+<p>L’expression « sélection de modèle » est un peu plus générale. D’une part, elle inclut la sélection de variables car, pour une famille de modèles spécifiques (régression linéaire par exemple), choisir un sous-ensemble de variables revient à choisir un modèle. D’autre part, elle fait référence à la situation où l’on cherche à trouver le meilleur modèle parmi des modèles de natures différentes. Par exemple, on pourrait choisir entre une régression linéaire, un arbre de régression, une forêt aléatoire, un réseau de neurones, etc.</p>
+<section id="sélection-de-variables-et-de-modèles-selon-les-buts-de-létude" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="sélection-de-variables-et-de-modèles-selon-les-buts-de-létude"><span class="header-section-number">5.1</span> Sélection de variables et de modèles selon les buts de l’étude</h2>
+<p>Nous disposons d’une variable réponse <span class="math inline">\(Y\)</span> et d’un ensemble de variables explicatives <span class="math inline">\(X_1, \ldots, X_p\)</span>. L’attitude à adopter dépend des buts de l’étude.</p>
+<ul>
+<li><strong>1e situation</strong>: On veut développer un modèle pour faire des prédictions sans qu’il soit important de tester formellement les effets des paramètres individuels.</li>
+</ul>
+<p>Dans ce cas, on désire seulement que notre modèle soit performant pour prédire des valeurs futures de <span class="math inline">\(Y\)</span>. On peut alors baser notre choix de variable (et de modèle) en utilisant des outils qui nous guiderons quant aux performances prédictives futures du modèle (voir <span class="math inline">\(\mathsf{AIC}\)</span>, <span class="math inline">\(\mathsf{BIC}\)</span> et validation croisée plus loin). On pourra enlever ou rajouter des variables et des transformations de variables au besoin afin d’améliorer les performances prédictives. Les méthodes que nous allons voir concernent essentiellement ce contexte.</p>
+<ul>
+<li><strong>2e situation</strong>: On veut développer un modèle pour estimer les effets de certaines variables sur notre <span class="math inline">\(Y\)</span> et tester des hypothèses de recherche spécifiques concernant certaines variables.</li>
+</ul>
+<p>Dans ce cas, il est préférable de spécifier le modèle dès le départ selon des considérations scientifiques et de s’en tenir à lui. Faire une sélection de variables dans ce cas est dangereux car on ne peut pas utiliser directement les valeurs-<em>p</em> des tests d’hypothèses (ou les intervalles de confiance sur les paramètres) concernant les paramètres du modèle final car elles ne tiennent pas compte de la variabilité due au processus de sélection de variables.</p>
+<p>Une bonne planification de l’étude est alors cruciale afin de collecter les bonnes variables, de spécifier le ou les bons modèles, et de s’assurer d’avoir suffisamment d’observations pour ajuster le ou les modèles désirés.</p>
+<p>Si procéder à une sélection de variables est quand même nécessaire dans ce contexte, il est quand même possible de le faire en divisant l’échantillon en deux. La sélection de variables pourrait être alors effectuée avec le premier échantillon. Une fois qu’un modèle est retenu, on pourrait alors réajuster ce modèle avec le deuxième échantillon (sans faire de sélection de variables cette fois-ci). L’inférence sur les paramètres (valeurs-<em>p</em>, etc.) sera alors valide. Le désavantage ici qu’il faut avoir une très grande taille d’échantillon au départ afin d’être en mesure de le diviser en deux.</p>
+</section>
+<section id="estimation-de-la-performance" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="estimation-de-la-performance"><span class="header-section-number">5.2</span> Estimation de la performance</h2>
+<p>Il est préférable d’avoir un modèle un peu trop complexe qu’un modèle trop simple. Plaçons-nous dans le contexte de la régression linéaire et supposons que le vrai modèle est inclus dans le modèle qui a été ajusté. Il y a donc des variables en trop dans le modèle qui a été ajusté: ce dernier est dit surspécifié.</p>
+<p>Par exemple, supposons que le vrai modèle est <span class="math inline">\(Y=\beta_0+\beta_1X_1+\varepsilon\)</span> mais que c’est le modèle <span class="math inline">\(Y=\beta_0+\beta_1X_1+\beta_2X_2+\varepsilon\)</span> qui a été ajusté. Dans ce cas, règle générale, les estimateurs des paramètres et les prédictions provenant du modèle sont sans biais. Mais leurs variances estimées seront un peu plus élevées car on estime des paramètres pour des variables superflues.</p>
+<p>Pour illustrer ce point, j’ai simulé des données avec deux variables explicatives corrélées et <span class="math inline">\(\beta_0 = 20\)</span>, <span class="math inline">\(\beta_1=5\)</span> et <span class="math inline">\(\beta_2 = 0\)</span>.</p>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/specification-modele_d84e206b5487518d57d15d73673be879">
+
+</div>
+<div id="tbl-specification" class="cell tbl-parent quarto-layout-panel anchored" data-hash="04-selectionmodeles_cache/html/tbl-specification_226543e5ae4b87836d654386eb88335f">
+<div class="panel-caption table-caption">
+<p>Tableau&nbsp;5.1: Surspécification de modèle de régression linéaire pour des données simulées.</p>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="tbl-specification-1" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-specification" style="flex-basis: 100.0%;justify-content: center;">
+
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>(a) modèle correct</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> coefficient </th>
+   <th style="text-align:right;"> borne inf. </th>
+   <th style="text-align:right;"> borne sup. </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> (cst) </td>
+   <td style="text-align:right;"> 19.95 </td>
+   <td style="text-align:right;"> 19.28 </td>
+   <td style="text-align:right;"> 20.62 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> X1 </td>
+   <td style="text-align:right;"> 2.74 </td>
+   <td style="text-align:right;"> 2.55 </td>
+   <td style="text-align:right;"> 2.94 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="tbl-specification-2" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-specification" style="flex-basis: 100.0%;justify-content: center;">
+
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>(b) modèle surspécifié</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> coefficient </th>
+   <th style="text-align:right;"> borne inf. </th>
+   <th style="text-align:right;"> borne sup. </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> (cst) </td>
+   <td style="text-align:right;"> 20.16 </td>
+   <td style="text-align:right;"> 19.88 </td>
+   <td style="text-align:right;"> 20.44 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> X1 </td>
+   <td style="text-align:right;"> 1.93 </td>
+   <td style="text-align:right;"> 1.84 </td>
+   <td style="text-align:right;"> 2.03 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> X2 </td>
+   <td style="text-align:right;"> 5.06 </td>
+   <td style="text-align:right;"> 4.74 </td>
+   <td style="text-align:right;"> 5.38 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Une fois qu’on a obtenu l’estimation des coefficients et les intervalles de confiance, on peut les comparer aux vraies valeurs (soit <span class="math inline">\(\beta_0 = 20\)</span>, <span class="math inline">\(\beta_1=5\)</span> et <span class="math inline">\(\beta_2 = 0\)</span>) et vérifier si ces dernières se trouvent dans l’intervalle de confiance. Le <a href="#tbl-specification">Tableau&nbsp;<span>5.1</span></a> indique l’effet pour l’inférence de ces spécifications (avec des différences d’estimation, mais non de prédictions, qui sont dues à la colinéarité entre variables).</p>
+<p>Supposons à l’inverse qu’il manque des variables dans le modèle ajusté et que le modèle ajusté est sous-spécifié. Par exemple, supposons que le vrai modèle est <span class="math inline">\(Y=\beta_0+\beta_1X_1+\beta_2X_2+\varepsilon\)</span>, mais que c’est le modèle <span class="math inline">\(Y=\beta_0+\beta_1X_1+\varepsilon\)</span> qui est ajusté. Dans ce cas, généralement, les estimateurs des paramètres et les prédictions sont biaisés. Le <a href="#tbl-specification">Tableau&nbsp;<span>5.1</span></a> montre les estimations du modèle: les vraies valeurs sont <span class="math inline">\(\beta_0=20\)</span>, <span class="math inline">\(\beta_1 = 2\)</span> et <span class="math inline">\(\beta_2 = 5\)</span>.</p>
+<div id="tbl-specification2" class="cell tbl-parent quarto-layout-panel anchored" data-hash="04-selectionmodeles_cache/html/tbl-specification2_bbc9e010d25185bd7611c1968c26fa5d">
+<div class="panel-caption table-caption">
+<p>Tableau&nbsp;5.2: Sous-spécification de modèle de régression linéaire pour des données simulées.</p>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="tbl-specification2-1" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-specification2" style="flex-basis: 100.0%;justify-content: center;">
+
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>(a) modèle sous-spécifié</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> coefficient </th>
+   <th style="text-align:right;"> borne inf. </th>
+   <th style="text-align:right;"> borne sup. </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> (cst) </td>
+   <td style="text-align:right;"> 20.03 </td>
+   <td style="text-align:right;"> 19.74 </td>
+   <td style="text-align:right;"> 20.31 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> X1 </td>
+   <td style="text-align:right;"> 2.00 </td>
+   <td style="text-align:right;"> 1.91 </td>
+   <td style="text-align:right;"> 2.08 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="tbl-specification2-2" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-specification2" style="flex-basis: 100.0%;justify-content: center;">
+
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>(b) modèle correct</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> coefficient </th>
+   <th style="text-align:right;"> borne inf. </th>
+   <th style="text-align:right;"> borne sup. </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> (cst) </td>
+   <td style="text-align:right;"> 20.05 </td>
+   <td style="text-align:right;"> 19.77 </td>
+   <td style="text-align:right;"> 20.33 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> X1 </td>
+   <td style="text-align:right;"> 1.92 </td>
+   <td style="text-align:right;"> 1.83 </td>
+   <td style="text-align:right;"> 2.02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> X2 </td>
+   <td style="text-align:right;"> 0.47 </td>
+   <td style="text-align:right;"> 0.14 </td>
+   <td style="text-align:right;"> 0.79 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Ainsi, il est généralement préférable d’avoir un modèle légèrement surspécifié qu’un modèle sous-spécifié. Plus généralement, il est préférable d’avoir un peu trop de variables dans le modèle que de prendre le risque d’omettre une ou plusieurs variables importantes. Il faut faire attention et ne pas tomber dans l’excès et avoir un modèle trop complexe (avec trop de variables inutiles) car il pourrait souffrir de surajustement (<em>over-fitting</em>). Les exemples qui suivent illustreront ce fait.</p>
+<section id="surajustement" class="level3" data-number="5.2.1">
+<h3 data-number="5.2.1" class="anchored" data-anchor-id="surajustement"><span class="header-section-number">5.2.1</span> Surajustement</h3>
+<p>Cette section traite de l’optimisme de l’évaluation d’un modèle (<em>trop beau pour être vrai</em>) lorsqu’on utilise les mêmes données qui ont servies à l’ajuster pour évaluer sa performance. Un principe fondamental lorsque vient le temps d’évaluer la performance prédictive d’un modèle est le suivant : si on utilise les mêmes observations pour évaluer la performance d’un modèle que celles qui ont servi à l’ajuster (à estimer le modèle et ses paramètres), on va surestimer sa performance. Autrement dit, notre estimation de l’erreur que fera le modèle pour prédire des observations futures sera biaisée à la baisse. Ainsi, il aura l’air meilleur que ce qu’il est en réalité. C’est comme si on demandait à un cinéaste d’évaluer son dernier film. Comme c’est son film, il n’aura généralement pas un regard objectif. C’est pourquoi on aura tendance à se fier à l’opinion d’un critique.</p>
+<p>On cherchera donc à utiliser des outils et méthodes qui nous donneront l’heure juste (une évaluation objective) quant à la performance prédictive d’un modèle.</p>
+</section>
+<section id="principes-généraux" class="level3" data-number="5.2.2">
+<h3 data-number="5.2.2" class="anchored" data-anchor-id="principes-généraux"><span class="header-section-number">5.2.2</span> Principes généraux</h3>
+<p>Les idées présentées ici seront illustrées à l’aide de la régression linéaire. Par contre, elles sont valides dans à peu près n’importe quel contexte de modélisation.</p>
+<p>Plaçons-nous d’abord dans un contexte plus général que celui de la régression linéaire. Supposons que l’on dispose de <span class="math inline">\(n\)</span> observations indépendantes sur (<span class="math inline">\(Y, X_1, \ldots, X_p\)</span>) et que l’on a ajusté un modèle <span class="math inline">\(\widehat{f}(X_1, \ldots, X_p)\)</span>, avec ces données, pour prédire une variable continue <span class="math inline">\(Y\)</span>.</p>
+<p>Ce modèle peut être un modèle de régression linéaire, <span class="math display">\[\begin{align*}
+\widehat{f}(X_1, \ldots, X_p) = \widehat{\beta}_0 + \widehat{\beta}_1X_1 + \cdots + \widehat{\beta}_pX_p
+\end{align*}\]</span> mais il pourrait aussi avoir été construit selon d’autres méthodes (réseau de neurones, arbre de régression, forêt aléatoire, etc.) Une manière de quantifier la performance prédictive du modèle est l’erreur quadratique moyenne (<em>mean squared error</em>), <span class="math display">\[\begin{align*}
+\mathsf{EQM}=\mathsf{E}\left[\left\{(Y-\widehat{f}(X_1, \ldots, X_p)\right\}^2\right]
+\end{align*}\]</span> lorsque (<span class="math inline">\(Y, X_1, \ldots, X_p\)</span>) est choisi au hasard dans la population. Cette quantité mesure l’erreur théorique (la différence au carré entre la vraie valeur de <span class="math inline">\(Y\)</span> et la valeur prédite par le modèle) que fait le modèle en moyenne pour l’ensemble de la population. Plus cette quantité est petite, meilleur est le modèle. Le problème est que l’on ne peut pas la calculer car on n’a pas accès à toute la population. Tout au plus peut-on essayer de l’estimer ou bien d’estimer une fonction qui, sans l’estimer directement, classifiera les modèles dans le même ordre qu’elle.</p>
+<p>Une première idée est d’estimer l’erreur quadratique moyenne de l’échantillon d’apprentissage (<em>training mean squared error</em>), <span class="math display">\[\begin{align*}
+\widehat{\mathsf{EQM}}_a= \frac{1}{n}\sum_{i=1}^n \left\{Y_i-\widehat{f}(X_{i1}, \ldots, X_{ip})\right\}^2.
+\end{align*}\]</span></p>
+<p>Malheureusement, selon le principe fondamental de la section précédente, cette quantité n’est pas un bon estimateur de l’<span class="math inline">\(\mathsf{EQM}\)</span>. En effet, comme on utilise les mêmes observations que celles qui ont estimé le modèle, l’<span class="math inline">\(\widehat{\mathsf{EQM}}_a\)</span> aura tendance à toujours diminuer lorsqu’on augmente la complexité du modèle (par exemple, lorsqu’on augmente le nombre de paramètres). L’<span class="math inline">\(\widehat{\mathsf{EQM}}_a\)</span> tend à surestimer la qualité du modèle en sous-estimant l’<span class="math inline">\(\mathsf{EQM}\)</span> et le modèle a l’air meilleur qu’il ne l’est en réalité.</p>
+</section>
+<section id="présentation-de-lexemple" class="level3" data-number="5.2.3">
+<h3 data-number="5.2.3" class="anchored" data-anchor-id="présentation-de-lexemple"><span class="header-section-number">5.2.3</span> Présentation de l’exemple</h3>
+<p>Cet exemple simple sur le choix d’un modèle polynomial en régression linéaire servira à illustrer le fait qu’on ne peut utiliser directement les mêmes données qui ont servi à ajuster un modèle pour évaluer sa performance.</p>
+<p>Nous disposons de 100 observations sur une variable cible <span class="math inline">\(Y\)</span> et d’une seule variable explicative <span class="math inline">\(X\)</span> dans la base de données <code>selection1_train</code>. Nous voulons considérer des modèles polynomiaux (en <span class="math inline">\(X\)</span>) afin d’en trouver un bon pour prédire <span class="math inline">\(Y\)</span>. Un modèle polynomial est un modèle de la forme <span class="math inline">\(Y=\beta_0 + \beta_1X+\cdots+\beta_kX^k+\varepsilon\)</span>. Le cas <span class="math inline">\(k=1\)</span> correspond à un modèle linéaire simple, <span class="math inline">\(k=2\)</span> à un modèle cubique, <span class="math inline">\(k=3\)</span> à un modèle cubique, etc. Notre but est de déterminer l’ordre (<span class="math inline">\(k\)</span>) du polynôme qui nous donnera un bon modèle. Voici d’abord le graphe de ces 100 observations de l’échantillon d’apprentissage et les valeurs ajustées de polynômes d’ordre 1, 4 et 10.</p>
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/fig-donneestest_c477ce4453c57fa839abca2892b2f682">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 28 rows containing missing values (`geom_line()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-donneestest" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-selectionmodeles_files/figure-html/fig-donneestest-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5.1: Nuage de points de 100 observations simulées d’un modèle polynomial de degré inconnu (gauche) et ajustement de différents polynômes de degré variable (droite).</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Ces données ont été obtenues par simulation et le vrai modèle sous-jacent (celui qui a généré les données) est le modèle cubique, c’est-à-dire le modèle d’ordre <span class="math inline">\(k=3\)</span>.</p>
+<p>J’ai ajusté tour à tour à tour les modèles polynomiaux jusqu’à l’ordre 10, avec l’échantillon d’apprentissage de taille 100. C’est-à-dire, le modèle linéaire avec un polynôme d’ordre <span class="math inline">\(k=1\)</span> (linéaire), <span class="math inline">\(k=2\)</span> (quadratique), etc., jusqu’à <span class="math inline">\(k=10\)</span>. J’ai ensuite obtenu la valeur de l’erreur quadratique moyenne d’apprentissage pour chacun de ces modèles. En pratique, on ne pourrait pas calculer l’erreur quadratique moyenne de généralization puisqu’on ne connaît pas le vrai modèle. J’ai fait une approximation de cette dernière en simulant 100 000 observations du vrai modèle (<code>selection1_test</code>), en obtenant la prédiction pour chacune de ces 100 000 observations en utilisant le modèle d’ordre <span class="math inline">\(k\)</span> ajusté sur les données d’apprentissage et en calculant l’erreur quadratique moyenne par la suite.</p>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/EQMa_comput_2ae3ef3983b2e28c96285442fbbf4ab5">
+
+</div>
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/fig-plotEQMa_1259867020651f46e7f411af9d8c1d32">
+<div class="cell-output-display">
+<div id="fig-plotEQMa" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-selectionmodeles_files/figure-html/fig-plotEQMa-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5.2: erreur quadratique moyenne d’apprentissage (<span class="math inline">\(\widehat{\mathsf{EQM}}_a\)</span>) et erreur quadratique moyenne théorique (<span class="math inline">\(\mathsf{EQM}\)</span>) en fonction de l’ordre (<span class="math inline">\(k\)</span>) du polynôme ajusté.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>On voit clairement dans la <a href="#fig-plotEQMa">Figure&nbsp;<span>5.2</span></a> que l’<span class="math inline">\(\widehat{\mathsf{EQM}}_a\)</span> diminue en fonction de l’ordre sur l’échantillon d’apprentissage: plus le modèle est complexe, plus l’erreur observée sur l’échantillon d’apprentissage est petite. La courbe <span class="math inline">\(\mathsf{EQM}\)</span> donne l’heure juste, car il s’agit d’une estimation de la performance réelle des modèles sur de nouvelles données. On voit que le meilleur modèle est donc le modèle cubique (<span class="math inline">\(k=3\)</span>), ce qui n’est pas surprenant puisqu’il s’agit du modèle que utilisé pour générer les données. On peut aussi remarquer d’autres éléments intéressants. Premièrement, on obtient un bon gain en performance (<span class="math inline">\(\mathsf{EQM}\)</span>) en passant de l’ordre <span class="math inline">\(2\)</span> à l’ordre <span class="math inline">\(3\)</span>. Ensuite, la perte de performance en passant de l’ordre <span class="math inline">\(3\)</span> à <span class="math inline">\(4\)</span>, et ensuite à des ordres supérieurs n’est pas si sévère, même si elle est présente. Cela illustre empiriquement qu’il est préférable d’avoir un modèle un peu trop complexe que d’avoir un modèle trop simple. Il serait beaucoup plus grave pour la performance de choisir le modèle avec <span class="math inline">\(k=2\)</span> que celui avec <span class="math inline">\(k=4\)</span>.</p>
+<p>En pratique par contre, on n’a pas accès à la population : les 100 000 observations qui ont servi à estimer l’<span class="math inline">\(\mathsf{EQM}\)</span> théorique ne seront pas disponible. Si on a seulement l’échantillon d’apprentissage, soit 100 observations dans notre exemple, comment faire alors pour choisir le bon modèle? C’est ce que nous verrons à partir de la section suivante.</p>
+<p>Mais avant cela, nous allons discuter un peu plus en détail au sujet de la régression linéaire et d’une mesure très connue, le coefficient de détermination (<span class="math inline">\(R^2\)</span>). Supposons que l’on a ajusté un modèle de régression linéaire <span class="math display">\[\begin{align*}
+\widehat{f}(X_1, \ldots, X_p) = \widehat{Y}=\widehat{\beta}_0 + \widehat{\beta}_1X_1+ \cdots + \widehat{\beta}_p X_p.
+\end{align*}\]</span> La somme du carré des erreurs (<span class="math inline">\(\mathsf{SCE}\)</span>) pour notre échantillon est <span class="math display">\[\begin{align*}
+\mathsf{SCE}=\sum_{i=1}^n (Y_i - \widehat{\beta}_0 - \widehat{\beta}_1X_1 - \cdots - \widehat{\beta}_p X_p)^2 = \sum_{i=1}^n (Y_i-\widehat{Y}_i)^2.
+\end{align*}\]</span> On peut démontrer que si on ajoute une variable quelconque au modèle, la valeur de la somme du carré des erreurs va nécessairement baisser. Il est facile de se convaincre de cela. En régression linéaire, les estimations sont obtenues par la méthode des moindres carrés qui consiste justement à minimiser la <span class="math inline">\(\mathsf{SCE}\)</span>. Ainsi, en ajoutant une variable <span class="math inline">\(X_{p+1}\)</span> au modèle, la <span class="math inline">\(\mathsf{SCE}\)</span> ne peut que baisser car, dans le pire des cas, le paramètre de la nouvelle variable sera <span class="math inline">\(\widehat{\beta}_{p+1}=0\)</span> et on retombera sur le modèle sans cette variable. C’est pourquoi, la quantité <span class="math inline">\(\widehat{\mathsf{EQM}}_a=\mathsf{SCE}/n\)</span> ne peut être utilisée comme outil de sélection de modèles en régression linéaire.</p>
+<p>Nous venons d’ailleurs d’illustrer cela avec notre exemple sur les modèles polynomiaux. En effet, augmenter l’ordre du polynôme de <span class="math inline">\(1\)</span> revient à ajouter une variable. Le coefficient de détermination (<span class="math inline">\(R^2\)</span>) est souvent utilisé, à tort, comme mesure de qualité du modèle. Il peut s’interpréter comme étant la proportion de la variance de <span class="math inline">\(Y\)</span> qui est expliquée par le modèle.</p>
+<p>Le coefficient de détermination est <span class="math display">\[\begin{align*}
+R^2=\{\mathsf{cor}(\boldsymbol{y}, \widehat{\boldsymbol{y}})\}^2 = 1-\frac{\mathsf{SCE}}{\mathsf{SCT}},
+\end{align*}\]</span> où <span class="math inline">\(\mathsf{SCT}=\sum_{i=1}^n (Y_i-\overline{Y})^2\)</span> est la somme des carrés totale calculée en centrant les observations. La somme des carrés totale, <span class="math inline">\(\mathsf{SCT}\)</span>, ne varie pas en fonction du modèle. Ainsi, on voit que le <span class="math inline">\(R^2\)</span> va méchaniquement augmenter lorsqu’on ajoute une variable au modèle (car la <span class="math inline">\(\mathsf{SCE}\)</span> diminue). C’est pourquoi on ne peut pas l’utiliser comme outil de sélection de variables.</p>
+<p>Le problème principal que nous avons identifié jusqu’à présent afin d’être en mesure de bien estimer la performance d’un modèle est le suivant : si on utilise les mêmes observations pour évaluer la performance d’un modèle que celles qui ont servi à l’ajuster, on va surestimer sa performance.</p>
+<p>Il existe deux grandes approches pour contourner ce problème lorsque le but est de faire de la sélection de variables ou de modèle :</p>
+<ul>
+<li>utiliser les données de l’échantillon d’apprentissage (en échantillon) et pénaliser la mesure d’ajustement (ici <span class="math inline">\(\widehat{\mathsf{EQM}}_a\)</span>) pour tenir compte de la complexité du modèle (par exemple, à l’aide de critères d’informations).</li>
+<li>tenter d’estimer l’<span class="math inline">\(\mathsf{EQM}\)</span> directement sur d’autres données (hors échantillon) en utilisant des méthodes de rééchantillonnage, notamment la validation croisée ou la validation externe (division de l’échantillon).</li>
+</ul>
+</section>
+<section id="pénalisation-et-critères-dinformation" class="level3" data-number="5.2.4">
+<h3 data-number="5.2.4" class="anchored" data-anchor-id="pénalisation-et-critères-dinformation"><span class="header-section-number">5.2.4</span> Pénalisation et critères d’information</h3>
+<p>Plaçons-nous dans le contexte de la régression linéaire pour l’instant. Nous avons déjà utilisé les critères <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span> en analyse factorielle. Il s’agit de mesures qui découlent d’une méthode d’estimation des paramètres, la méthode du maximum de vraisemblance.</p>
+<p>Il s’avère que les estimateurs des paramètres obtenus par la méthode des moindres carrés en régression linéaire sont équivalents à ceux provenant de la méthode du maximum de vraisemblance si on suppose la normalité des termes d’erreurs du modèle. Ainsi, dans ce cas, nous avons accès aux <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span>, deux critères d’information définis pour les modèles dont la fonction objective est la vraisemblance (qui mesure la probabilité des observations sous le modèle postulé suivant une loi choisie par l’utilisateur). La fonction de vraisemblance <span class="math inline">\(\mathcal{L}\)</span> et la log-vraisemblance <span class="math inline">\(\ell\)</span> mesurent l’adéquation du modèle.</p>
+<p>Supposons que nous avons ajusté un modèle avec <span class="math inline">\(p\)</span> paramètres en tout (<strong>incluant</strong> l’ordonnée à l’origine). En régression linéaire, le critère d’information d’Akaike, <span class="math inline">\(\mathsf{AIC}\)</span>, est <span class="math display">\[\begin{align*}
+\mathsf{AIC} &amp;=-2 \ell(\widehat{\boldsymbol{\beta}}, \widehat{\sigma}^2) +2p = n \ln (\mathsf{EQM}) + 2p + \text{constante},
+\end{align*}\]</span> tandis que le critère d’information bayésien de Schwartz, <span class="math inline">\(\mathsf{BIC}\)</span>, est défini par <span class="math display">\[\begin{align*}
+\mathsf{BIC} &amp;=-2 \ell(\widehat{\boldsymbol{\beta}}, \widehat{\sigma}^2) + p\ln(n)=n \ln (\mathsf{EQM}) + p\ln(n) + \text{constante}.
+\end{align*}\]</span> Plus la valeur du <span class="math inline">\(\mathsf{AIC}\)</span> (ou du <span class="math inline">\(\mathsf{BIC}\)</span>) est petite, meilleur est l’adéquation. Que se passe-t-il lorsqu’on ajoute un paramètre à un modèle? D’une part, la somme du carré des erreurs va méchaniquement diminuer tout comme l’erreur quadratique moyenne <span class="math inline">\(\textsf{EQM} = \textsf{SCE}/n\)</span>, donc la quantité <span class="math inline">\(n \ln (\mathsf{EQM})\)</span> va diminuer. D’autre part, la valeur de <span class="math inline">\(p\)</span> augmente de <span class="math inline">\(1\)</span>. Ainsi, le <span class="math inline">\(\mathsf{AIC}\)</span> peut soit augmenter, soit diminuer, lorsqu’on ajoute un paramètre; idem pour le <span class="math inline">\(\mathsf{BIC}\)</span>. Par exemple, le <span class="math inline">\(\mathsf{AIC}\)</span> va diminuer seulement si la baisse de la somme du carré des erreurs est suffisante pour compenser le fait que le terme <span class="math inline">\(2p\)</span> augmente à <span class="math inline">\(2 (p+1)\)</span>.</p>
+<p>Ces critères pénalisent l’ajout de variables afin de se prémunir contre le surajustement. De plus, le <span class="math inline">\(\mathsf{BIC}\)</span> pénalise plus que le <span class="math inline">\(\mathsf{AIC}\)</span>. Par conséquent, le critère <span class="math inline">\(\mathsf{BIC}\)</span> va choisir des modèles contenant soit le même nombre, soit moins de paramètres que le <span class="math inline">\(\mathsf{AIC}\)</span>.</p>
+<p>Les critères <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span> peuvent être utilisés comme outils de sélection de variables en régression linéaire mais aussi beaucoup plus généralement avec d’autres méthodes basées sur la vraisemblance (analyse factorielle, régression logistique, etc.) En fait, n’importe quel modèle dont les estimateurs proviennent de la méthode du maximum de vraisemblance produira ces quantités. Nous donnerons des formules générales pour le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span> dans le chapitre sur la régression logistique.</p>
+<p>Le critère <span class="math inline">\(\mathsf{BIC}\)</span> est le seul de ces critères qui est convergent. Cela veut dire que si l’ensemble des modèles que l’on considère contient le vrai modèle, alors la probabilité que le critère <span class="math inline">\(\mathsf{BIC}\)</span> choisissent le bon modèle tend vers 1 lorsque <span class="math inline">\(n\)</span> tend vers l’infini. Il faut mettre cela en perspective : il est peu vraisemblable que <span class="math inline">\(Y\)</span> ait été généré exactement selon un modèle de régression linéaire, car le modèle de régression n’est qu’une approximation de la réalité. Certains auteurs trouvent que le <span class="math inline">\(\mathsf{BIC}\)</span> est quelquefois trop sévère (il choisit des modèles trop simples) pour les tailles d’échantillons finies. Dans certaines applications, cette parcimonie est utile, mais il n’est pas possible de savoir d’avance lequel de ces deux critères (<span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span>) sera préférable pour un problème donné.</p>
+<p>Il est facile d’obtenir le <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span> avec les méthodes <code>AIC</code> et <code>BIC</code>. On illustre ceci avec le modèle cubique:</p>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/modelecubique_a2688e23a77504a7e7d5998585211224">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(polynome, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajuster un polynôme de degré trois (modèle cubique)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>mod_cub <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="dv">3</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> polynome)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_cub) <span class="co"># Tableau résumé des coefficients</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(mod_cub)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(mod_cub)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Le <a href="#tbl-polynome-ajustement">Tableau&nbsp;<span>5.3</span></a> résume ces quantités pour tous les modèles de l’ordre 1 à l’ordre 10.</p>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/tbl-polynome-ajustement_8e7f70bbfb92f82f395fb2025d8978b9">
+<div class="cell-output-display">
+<div id="tbl-polynome-ajustement" class="anchored">
+
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;5.3:  Mesures de la qualité de l’ajustement d’un modèle polynomial aux données en fonction de l’ordre du polynôme. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> \(\mathsf{EQM}\) </th>
+   <th style="text-align:right;"> \(\widehat{\mathsf{EQM}}_a\) </th>
+   <th style="text-align:right;"> \(R^2\) </th>
+   <th style="text-align:right;"> \(\mathsf{AIC}\) </th>
+   <th style="text-align:right;"> \(\mathsf{BIC}\) </th>
+   <th style="text-align:right;"> \(\mathsf{VC}_{10}\) </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> 3191.29 </td>
+   <td style="text-align:right;"> 3674.20 </td>
+   <td style="text-align:right;"> 0.65 </td>
+   <td style="text-align:right;"> 1110.70 </td>
+   <td style="text-align:right;"> 1118.51 </td>
+   <td style="text-align:right;"> 3675.37 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:right;"> 3132.67 </td>
+   <td style="text-align:right;"> 2879.24 </td>
+   <td style="text-align:right;"> 0.73 </td>
+   <td style="text-align:right;"> 1088.32 </td>
+   <td style="text-align:right;"> 1098.74 </td>
+   <td style="text-align:right;"> 2897.94 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> 2697.40 </td>
+   <td style="text-align:right;"> 2620.05 </td>
+   <td style="text-align:right;"> 0.75 </td>
+   <td style="text-align:right;"> 1080.88 </td>
+   <td style="text-align:right;"> 1093.91 </td>
+   <td style="text-align:right;"> 2675.51 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:right;"> 2766.68 </td>
+   <td style="text-align:right;"> 2581.70 </td>
+   <td style="text-align:right;"> 0.75 </td>
+   <td style="text-align:right;"> 1081.41 </td>
+   <td style="text-align:right;"> 1097.04 </td>
+   <td style="text-align:right;"> 2666.16 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 5 </td>
+   <td style="text-align:right;"> 2771.05 </td>
+   <td style="text-align:right;"> 2580.86 </td>
+   <td style="text-align:right;"> 0.75 </td>
+   <td style="text-align:right;"> 1083.38 </td>
+   <td style="text-align:right;"> 1101.61 </td>
+   <td style="text-align:right;"> 2711.11 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 6 </td>
+   <td style="text-align:right;"> 2779.66 </td>
+   <td style="text-align:right;"> 2577.60 </td>
+   <td style="text-align:right;"> 0.75 </td>
+   <td style="text-align:right;"> 1085.25 </td>
+   <td style="text-align:right;"> 1106.09 </td>
+   <td style="text-align:right;"> 2757.13 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 7 </td>
+   <td style="text-align:right;"> 2780.21 </td>
+   <td style="text-align:right;"> 2577.49 </td>
+   <td style="text-align:right;"> 0.75 </td>
+   <td style="text-align:right;"> 1087.24 </td>
+   <td style="text-align:right;"> 1110.69 </td>
+   <td style="text-align:right;"> 2787.95 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 8 </td>
+   <td style="text-align:right;"> 2797.35 </td>
+   <td style="text-align:right;"> 2531.00 </td>
+   <td style="text-align:right;"> 0.76 </td>
+   <td style="text-align:right;"> 1087.42 </td>
+   <td style="text-align:right;"> 1113.48 </td>
+   <td style="text-align:right;"> 2845.78 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 9 </td>
+   <td style="text-align:right;"> 2811.07 </td>
+   <td style="text-align:right;"> 2527.85 </td>
+   <td style="text-align:right;"> 0.76 </td>
+   <td style="text-align:right;"> 1089.30 </td>
+   <td style="text-align:right;"> 1117.96 </td>
+   <td style="text-align:right;"> 2895.61 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 10 </td>
+   <td style="text-align:right;"> 2848.81 </td>
+   <td style="text-align:right;"> 2519.14 </td>
+   <td style="text-align:right;"> 0.76 </td>
+   <td style="text-align:right;"> 1090.95 </td>
+   <td style="text-align:right;"> 1122.22 </td>
+   <td style="text-align:right;"> 2976.04 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/fig-polynome-ajustement_de342c643dc245024ad9e9702659509e">
+<div class="cell-output-display">
+<div id="fig-polynome-ajustement" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-selectionmodeles_files/figure-html/fig-polynome-ajustement-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5.3: Critères d’information en fonction de l’ordre du polynôme.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>On voit dans le <a href="#tbl-polynome-ajustement">Tableau&nbsp;<span>5.3</span></a> que l’erreur quadratique moyenne des données d’apprentissage, <span class="math inline">\(\widehat{\mathsf{EQM}}_a\)</span>, diminue toujours à mesure qu’on ajoute des variables (c’est-à-dire, qu’on augmente l’ordre du polynôme); ces valeurs sont représentées dans la <a href="#fig-plotEQMa">Figure&nbsp;<span>5.2</span></a>. Les critères d’information, <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span>, ne sont pas sur la même échelle, mais le graphique de la <a href="#fig-polynome-ajustement">Figure&nbsp;<span>5.3</span></a> illustre un comportement semblable à la vraie courbe de l’erreur quadratique moyenne théorique et suggèrent que le meilleur modèle est le modèle cubique (<span class="math inline">\(k=3\)</span>), c’est-à-dire le vrai modèle. N’oubliez pas que ces critères sont calculés avec l’échantillon d’apprentissage (<span class="math inline">\(n=100\)</span>), mais en pénalisant l’ajout de variables. On est ainsi en mesure de contrecarrer le problème provenant du fait qu’on ne peut pas utiliser directement le <span class="math inline">\(\widehat{\mathsf{EQM}}_a\)</span>.</p>
+<p>Le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span> sont des critères très utilisés et très généraux. Ils sont disponibles dès qu’on utilise la méthode du maximum de vraisemblance comme méthode d’estimation.</p>
+</section>
+<section id="validation-externe" class="level3" data-number="5.2.5">
+<h3 data-number="5.2.5" class="anchored" data-anchor-id="validation-externe"><span class="header-section-number">5.2.5</span> Validation externe</h3>
+<p>La deuxième grande approche après celle consistant à pénaliser le <span class="math inline">\(\widehat{\mathsf{EQM}}_a\)</span> consiste à tenter d’estimer le <span class="math inline">\(\mathsf{EQM}\)</span> directement sans utiliser deux fois les mêmes données. Nous allons voir deux telles méthodes ici, la validation externe (division de l’échantillon) et la validation croisée (<em>cross-validation</em>).</p>
+<p>Ces deux méthodes s’attaquent directement au problème qu’on ne peut utiliser (sans ajustement) les mêmes données qui ont servi à estimer les paramètres d’un modèle pour estimer sa performance. Pour ce faire, l’échantillon de départ est divisé en deux, ou plusieurs parties, qui vont jouer des rôles différents.</p>
+<p>L’idée de la validation externe est simple. Nous avons un échantillon de taille <span class="math inline">\(n\)</span> que nous pouvons diviser <em>au hasard</em> en deux parties de tailles respectives <span class="math inline">\(n_1\)</span> et <span class="math inline">\(n_2\)</span> (<span class="math inline">\(n_1+n_2=n\)</span>), soit</p>
+<ul>
+<li>un échantillon d’apprentissage (<em>training</em>) de taille <span class="math inline">\(n_1\)</span> et</li>
+<li>un échantillon de validation (<em>test</em>) de taille <span class="math inline">\(n_2\)</span>.</li>
+</ul>
+<p>L’échantillon d’apprentissage servira à estimer les paramètres du modèle. L’échantillon de validation servira à estimer la performance prédictive (par exemple estimer l’<span class="math inline">\(\mathsf{EQM}\)</span>) du modèle. Comme cet échantillon n’a pas servi à estimer le modèle lui-même, il est formé de « nouvelles » observations qui permettent d’évaluer d’une manière réaliste la performance du modèle. Comme il s’agit de nouvelles observations, on n’a pas à pénaliser la complexité du modèle et on peut directement utiliser le critère de performance choisi, par exemple, l’erreur quadratique moyenne, c’est-à-dire, la moyenne des erreurs au carré pour l’échantillon de validation. Cette quantité est une estimation valable de l’<span class="math inline">\(\mathsf{EQM}\)</span> de ce modèle. On peut faire la même chose pour tous les modèles en compétition et choisir celui qui a la meilleure performance sur l’échantillon de validation.</p>
+<p>Cette approche possède plusieurs avantages. Elle est facile à implanter. Elle est encore plus générale que les critères <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span>. En effet, ces critères découlent de la méthode d’estimation du maximum de vraisemblance. Plusieurs autres types de modèles ne sont pas estimés par la méthode du maximum de vraisemblance (par exemple, les arbres, les forêts aléatoires, les réseaux de neurones, etc.) La performance de ces modèles peut toujours être estimée en divisant l’échantillon. Cette méthode peut donc servir à comparer des modèles de familles différentes. Par exemple, choisit-on un modèle de régression linéaire, une forêt aléatoire ou bien un réseau de neurones?</p>
+<p>Cette approche possède tout de même un désavantage. Elle nécessite une grande taille d’échantillon au départ. En effet, comme on divise l’échantillon, on doit en avoir assez pour bien estimer les paramètres du modèle (l’échantillon d’apprentissage) et assez pour bien estimer sa performance (l’échantillon de validation).</p>
+<p>La méthode consistant à diviser l’échantillon en deux (apprentissage et validation) afin de sélectionner un modèle est valide. Par contre, si on veut une estimation sans biais de la performance du modèle choisi (celui qui est le meilleur sur l’échantillon de validation), on ne peut pas utiliser directement la valeur observée de l’erreur de ce modèle sur l’échantillon de validation car elle risque de sous-évaluer l’erreur. En effet, supposons qu’on a 10 échantillons et qu’on ajuste 10 fois le même modèle séparément sur les 10 échantillons. Nous aurons alors 10 estimations différentes de l’erreur du modèle. Il est alors évident que de choisir la plus petite d’entre elles sous-estimerait la vraie erreur du modèle. C’est un peu ce qui se passe lorsqu’on choisit le modèle qui minimise l’erreur sur l’échantillon de validation. Le modèle lui-même est un bon choix, mais l’estimation de son erreur risque d’être sous-évaluée.</p>
+<p>Une manière d’avoir une estimation de l’erreur du modèle retenu consiste à diviser l’échantillon de départ en trois (plutôt que deux). Aux échantillons d’apprentissage et de validation, s’ajoute un échantillon « test ». Cet échantillon est laissé de côté durant tout le processus de sélection du modèle qui est effectué avec les deux premiers échantillons tel qu’expliqué plus haut. Une fois un modèle retenu (par exemple celui qui minimise l’erreur sur l’échantillon de validation), on peut alors évaluer sa performance sur l’échantillon test qui n’a pas encore été utilisé jusque là. L’estimation de l’erreur du modèle retenu sera ainsi valide. Il est évident que pour procéder ainsi, on doit avoir une très grande taille d’échantillon au départ.</p>
+</section>
+<section id="validation-croisée" class="level3" data-number="5.2.6">
+<h3 data-number="5.2.6" class="anchored" data-anchor-id="validation-croisée"><span class="header-section-number">5.2.6</span> Validation croisée</h3>
+<p>Si la taille d’échantillon n’est pas suffisante pour diviser l’échantillon en deux et procéder comme nous venons de l’expliquer, la validation croisée est une bonne alternative. Cette méthode permet d’imiter le processus de division de l’échantillon.</p>
+<p>Voici les étapes à suivre pour faire une validation croisée à <span class="math inline">\(K\)</span> groupes (<em><span class="math inline">\(K\)</span>-fold cross-validation</em>) :</p>
+<ol type="1">
+<li>Diviser l’échantillon au hasard en <span class="math inline">\(K\)</span> parties <span class="math inline">\(P_1, P_2, \ldots, P_K\)</span> contenant toutes à peu près le même nombre d’observations.</li>
+<li>Pour <span class="math inline">\(j = 1\)</span> à <span class="math inline">\(K\)</span>,
+<ol type="i">
+<li>Enlever la partie <span class="math inline">\(j\)</span>.</li>
+<li>Estimer les paramètres du modèle en utilisant les observations des <span class="math inline">\(K-1\)</span> autres parties combinées.</li>
+<li>Calculer la mesure de performance (par exemple la somme du carré des erreurs) de ce modèle pour le groupe <span class="math inline">\(P_j\)</span>.</li>
+</ol></li>
+<li>Combiner les <span class="math inline">\(K\)</span> estimations de performance pour obtenir une mesure de performance finale.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></li>
+</ol>
+<p>Pour l’erreur quadratique moyenne, cette dernière étape revient à additionner la somme du carré des erreurs avant de diviser par la taille de l’échantillon totale.</p>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/fig-validationcroiseeillust_96ed3f50957c2e8cebaa728e07da97a7">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-validationcroiseeillust" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-selectionmodeles_files/figure-html/fig-validationcroiseeillust-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5.4: Illustration de la validation croisée: on scinde l’échantillon d’apprentissage en cinq groupes (abcisse) et à chaque étape, une portion différente des données est mise de côté et ne sert que pour la validation.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La validation croisée est coûteuse parce qu’on doit ajuster <span class="math inline">\(K\)</span> fois le modèles. On recommande habituellement de prendre <span class="math inline">\(K=\min\{n^{1/2}, 10\}\)</span> groupes (le choix de cinq ou 10 groupes sont ceux qui revient le plus souvent en pratique). Si on prend <span class="math inline">\(K=10\)</span> groupes, alors chaque modèle est estimé avec 90% des données et on prédit ensuite le 10% restant. Comme on passe en boucle les 10 parties, chaque observation est prédite une et une seule fois à la fin. Il est important de souligner que les groupes sont formés de façon aléatoire et donc que l’estimé que l’on obtient peut être très variable, surtout si la taille de l’échantillon d’apprentissage est petite. Il arrive également que le modèle ajusté sur un groupe ne puisse pas être utilisé pour prédire les observations mises de côté, notamment si des variables catégorielles sont présentes mais qu’une modalité n’est présente que dans un des groupes; ce problème se présente en pratique si certaines classes ont peu d’observations. Un échantillonnage stratifié permet de pallier à cette lacune et de s’assurer d’une répartition plus homogène des variables catégorielles.</p>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/validation-croisée_434650401f4aa6ce0f0731adfe5bba26">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Validation croisée avec k groupes</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>lmkfold <span class="ot">&lt;-</span> <span class="cf">function</span>(formula, data, k, ...){</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Créer un accumulateur pour le calcul de l'EQM</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>   accu <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>   k <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(k) <span class="co"># nombre de groupes</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>   n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data) <span class="co"># nombre d'observations</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Permuter les indices des observatoins</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>   gp <span class="ot">&lt;-</span> <span class="fu">sample.int</span>(n, n, <span class="at">replace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Créer une liste de k éléments avec les nos d'observations</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>   folds <span class="ot">&lt;-</span> <span class="fu">split</span>(gp, <span class="fu">cut</span>(<span class="fu">seq_along</span>(gp), k, <span class="at">labels =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>   <span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_len</span>(k)){</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Extraire les indices des observations de la portion validation</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      g <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">unlist</span>(folds[i]))</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Ajuster le modèles à toutes les données, </span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>      moins celles de la portion validation</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      fitlm <span class="ot">&lt;-</span> <span class="fu">lm</span>(formula, <span class="at">data =</span> data[<span class="sc">-</span>g,])</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>      <span class="co"># ajouter l'erreur quadratique du pli de validation</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>      accu <span class="ot">&lt;-</span> accu <span class="sc">+</span> </span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>          <span class="fu">sum</span>((data[g, <span class="fu">all.vars</span>(formula)[<span class="dv">1</span>]] <span class="sc">-</span> </span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>                <span class="fu">predict</span>(fitlm, <span class="at">newdata=</span>data[g,]))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>   }</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Diviser par la taille de l'échantillon </span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>   <span class="co"># pour obtenir la moyenne</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>   <span class="fu">return</span>(accu<span class="sc">/</span>n)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Le paquet 'caret' a une fonction </span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co"># pour faire la validation croisée</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>cv_caret <span class="ot">&lt;-</span> </span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  caret<span class="sc">::</span><span class="fu">train</span>(<span class="at">form =</span> formula, </span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> data, </span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>             <span class="at">method =</span> <span class="st">"lm"</span>,</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>             <span class="at">trControl =</span> caret<span class="sc">::</span><span class="fu">trainControl</span>(</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>               <span class="at">method =</span> <span class="st">"cv"</span>,</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>               <span class="at">number =</span> <span class="dv">10</span>))</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>eqm_cv <span class="ot">&lt;-</span> cv_caret<span class="sc">$</span>results<span class="sc">$</span>RMSE<span class="sc">^</span><span class="dv">2</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Le cas particulier <span class="math inline">\(K=n\)</span> (en anglais <em>leave-one-out cross validation</em>, ou <span class="math inline">\(\mathsf{LOOCV}\)</span>) consiste à enlever une seule observation, à estimer le modèle avec les <span class="math inline">\(n-1\)</span> autres et à valider à l’aide de l’observation laissée de côté: on répète cette procédure pour chaque observation. Pour les modèles linéaires, il existe des formules explicites qui nous permettent d’éviter d’ajuster <span class="math inline">\(n\)</span> régressions par moindre carrés. Cette forme de validation croisée tend à être trop optimiste.</p>
+<p>Il faut garder en tête que le résultat de la validation croisée est aléatoire parce que la séparation des données en plis l’est également. La figure <a href="#fig-plotcv">Figure&nbsp;<span>5.5</span></a>, obtenue en répétant 100 fois la procédure et en calculant à chaque fois la performance de différents modèles polynomiaux, montre la variabilité des estimations. Plutôt que de répéter le calcul, si on a un nombre de groupes <span class="math inline">\(K\)</span> suffisamment grand et assez d’observations par pli, on pourrait estimer la variabilité de la procédure directement. Posons <span class="math inline">\(\widehat{\mathsf{EQM}}_{\text{VC}, k}\)</span> (<span class="math inline">\(k=1, \ldots, K\)</span>) calculer l’erreur quadratique moyenne de chaque pli. On peut estimer l’écart-type empirique de cette moyenne via <span class="math display">\[\begin{align*}
+\mathsf{sd}(\widehat{\mathsf{EQM}}_{\text{VC}}) = \frac{1}{K-1} \sum_{k=1}^{K} (\widehat{\mathsf{EQM}}_{\text{VC}, k}-\widehat{\mathsf{EQM}}_{\text{VC}})^2.
+\end{align*}\]</span></p>
+<p>Revenons à notre exemple où une seule variable explicative est disponible et où l’on cherche à déterminer un bon modèle polynomial. La dernière colonne de <a href="#tbl-polynome-ajustement">Tableau&nbsp;<span>5.3</span></a>, <span class="math inline">\(\mathsf{VC}_{10}\)</span>, donne les moyennes de 100 réplications de estimations de l’<span class="math inline">\(\mathsf{EQM}\)</span> obtenues avec la validation croisée à 10 groupes. Notez que si vous exécutez le programme, vous n’obtiendrez pas les mêmes valeurs car il y a un élément aléatoire dans ce processus.</p>
+<p>Le modèle cubique (ordre 3) est aussi choisi par la validation croisée, en moyenne (comme il l’était par le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span>). Le graphe qui suit trace les valeurs de l’estimation par validation croisée (courbe de validation croisée) et aussi le <span class="math inline">\(\mathsf{EQM}\)</span>. On voit que l’estimation par validation croisée suit assez bien la forme du <span class="math inline">\(\mathsf{EQM}\)</span> (qu’il est supposé estimer). Les boîtes à moustache de la <a href="#fig-plotcv">Figure&nbsp;<span>5.5</span></a> permettent d’apprécier la variabilité des estimés de l’erreur quadratique moyenne telles qu’estimée par validation croisée avec 10 groupes.</p>
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/fig-plotcv_240ce5a9007e646eb9039c40d8ddd0bf">
+<div class="cell-output-display">
+<div id="fig-plotcv" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-selectionmodeles_files/figure-html/fig-plotcv-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5.5: Boîtes-à-moustaches des 100 réplications des valeurs de l’erreur quadratique moyenne estimées par validation croisée à 10 plis pour chaque ordre du polynôme.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Il arrive que la performance soit très similaire pour plusieurs modèles, auquel cas on pourrait être tenté de prendre le modèle le plus parsimonieux (c’est-à-dire, celui qui a le moins de paramètres). Si on a calculé la performance avec la validation croisée et qu’on a obtenu une mesure d’incertitude pour notre performance, on peut utiliser la règle du « 1 écart-type». Cette dernière veut qu’on choisisse le modèle le plus simple parmi un ensemble <span class="math inline">\(\mathcal{M}_0 \subset\cdots \subset \mathcal{M}_m\)</span> qui satisfasse <span class="math display">\[\begin{align*}
+\widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_i) \leq \min_{m = i+1}^M \widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_m) + \mathsf{sd}\{\widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_m)\}.
+\end{align*}\]</span> Autrement dit, on trouve le modèle qui minimise notre critère d’erreur et on choisit ensuite le modèle le plus simple qui soit à au plus un écart-type de ce modèle. On verra ainsi souvent des barres d’erreurs à <span class="math inline">\(\pm\)</span> un écart-type, comme dans la <a href="#fig-lassopath">Figure&nbsp;<span>5.9</span></a>.</p>
+</section>
+</section>
+<section id="présentation-des-données" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="présentation-des-données"><span class="header-section-number">5.3</span> Présentation des données</h2>
+<p>Nous allons présenter un exemple classique de commercialisation de bases de données qui nous servira à illustrer la sélection de modèles, la régression logistique et la gestion de données manquantes. Le but est de cibler les clients pour l’envoi d’un catalogue.</p>
+<p>Le contexte est le suivant : une entreprise possède une grande base de données client. Elle désire envoyer un catalogue à ses clients mais souhaite maximiser les revenus d’une telle initiative. Il est évidemment possible d’envoyer le catalogue à tous les clients mais ce n’est possiblement pas optimal. La stratégie envisagée est la suivante :</p>
+<ol type="1">
+<li>Envoyer le catalogue à un échantillon de clients et attendre les réponses. Le coût de l’envoi d’un catalogue est de 10$.</li>
+<li>Construire un modèle avec cet échantillon afin de décider à quels clients (parmi les autres) le catalogue devrait être envoyé, afin de maximiser les revenus.</li>
+</ol>
+<p>Plus précisément, on s’intéresse aux clients de 18 ans et plus qui ont au moins un an d’historique avec l’entreprise et qui ont effectué au moins un achat au cours de la dernière année. Dans un premier lieu, on a envoyé le catalogue à un échantillon de 1000 clients. Un modèle sera construit avec ces 1000 clients afin de cibler lesquels des clients restants seront choisis pour recevoir le catalogue.</p>
+<p>Pour les 1000 clients de l’échantillon d’apprentissage, les deux variables cibles suivantes sont disponibles :</p>
+<ul>
+<li><code>yachat</code>, une variable binaire qui indique si le client a acheté quelque chose dans le catalogue égale à 1 si oui et 0 sinon.</li>
+<li><code>ymontant</code>, le montant de l’achat si le client a acheté quelque chose.</li>
+</ul>
+<p>Les 10 variables suivantes sont disponibles pour tous les clients et serviront de variables explicatives pour les deux variables cibles. Il s’agit de :</p>
+<ul>
+<li><code>x1</code>: sexe de l’individu, soit homme (0) ou femme (1);</li>
+<li><code>x2</code>: l’âge (en année);</li>
+<li><code>x3</code>: variable catégorielle indiquant le revenu, soit moins de 35 000$ (1), entre 35 000$ et 75 000$ (2) ou plus de 75 000$ (3);</li>
+<li><code>x4</code>: variable catégorielle indiquant la région où habite le client (de 1 à 5);</li>
+<li><code>x5</code>: couple : la personne est elle en couple (0=non, 1=oui);</li>
+<li><code>x6</code>: nombre d’année depuis que le client est avec la compagnie;</li>
+<li><code>x7</code>: nombre de semaines depuis le dernier achat;</li>
+<li><code>x8</code>: montant (en dollars) du dernier achat;</li>
+<li><code>x9</code>: montant total (en dollars) dépensé depuis un an;</li>
+<li><code>x10</code>: nombre d’achats différents depuis un an.</li>
+</ul>
+<p>Les données se trouvent dans le fichier <code>dbm</code>. Voici d’abord des statistiques descriptives pour l’échantillon d’apprentissage.</p>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/loaddbm_4b6f8bc50393d92f18b1c4872a0b71dd">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(dbm, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dbm)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [101,000 × 13] (S3: tbl_df/tbl/data.frame)
+ $ x1      : int [1:101000] 1 1 0 0 1 1 0 0 0 1 ...
+ $ x2      : num [1:101000] 42 59 52 32 38 63 35 32 26 32 ...
+ $ x3      : Factor w/ 3 levels "1","2","3": 1 2 3 1 2 2 2 1 3 1 ...
+ $ x4      : Factor w/ 5 levels "1","2","3","4",..: 3 3 5 1 5 5 1 3 1 5 ...
+ $ x5      : int [1:101000] 1 1 1 0 0 1 1 0 0 0 ...
+ $ x6      : num [1:101000] 8.6 8.6 1.4 10.7 9.1 9.4 10.6 4.8 4 10.3 ...
+ $ x7      : num [1:101000] 8 9 9 42 5 1 6 5 48 9 ...
+ $ x8      : num [1:101000] 49 70 120 31 30 28 59 70 73 55 ...
+ $ x9      : num [1:101000] 159 123 434 110 55 102 593 298 83 90 ...
+ $ x10     : num [1:101000] 5 5 8 3 3 8 10 6 2 3 ...
+ $ yachat  : int [1:101000] 0 0 0 0 0 0 0 1 1 1 ...
+ $ ymontant: num [1:101000] NA NA NA NA NA NA NA 52 79 77 ...
+ $ test    : Factor w/ 2 levels "0","1": 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/tbl-contingence-dbm_4ab8c81e6b1265e1a0b4bfd2ab6c7889">
+<div class="cell-output-display">
+<div id="tbl-contingence-dbm" class="anchored">
+
+<table class="kable_wrapper table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;5.4:  Tableaux de fréquence pour les variables catégorielles de la base de données marketing. </caption>
+<tbody>
+  <tr>
+   <td> 
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> sexe </th>
+   <th style="text-align:right;"> décompte </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 0 </td>
+   <td style="text-align:right;"> 534 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> 466 </td>
+  </tr>
+</tbody>
+</table>
+
+ </td>
+   <td> 
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> revenu </th>
+   <th style="text-align:right;"> décompte </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> 397 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:right;"> 337 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> 266 </td>
+  </tr>
+</tbody>
+</table>
+
+ </td>
+   <td> 
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> couple </th>
+   <th style="text-align:right;"> décompte </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 0 </td>
+   <td style="text-align:right;"> 575 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> 425 </td>
+  </tr>
+</tbody>
+</table>
+
+ </td>
+   <td> 
+
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> région </th>
+   <th style="text-align:right;"> décompte </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> 216 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:right;"> 185 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> 216 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:right;"> 191 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 5 </td>
+   <td style="text-align:right;"> 192 </td>
+  </tr>
+</tbody>
+</table>
+
+ </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/fig-histogrammes-eda-dbm_3bb0cf500ec434d5b47022ee0b005b98">
+<div class="cell-output-display">
+<div id="fig-histogrammes-eda-dbm" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-selectionmodeles_files/figure-html/fig-histogrammes-eda-dbm-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5.6: Histogrammes des variables continues de la base de données <code>dbm</code> pour les 1000 clients par intention d’achat.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Il y a 46.6% de femmes parmi les 1000 clients de l’échantillon. De plus, 39.7% ont un revenu de moins de 35 000$, 33.7% sont entre 35 000$ et 75 000$ et 26.6% ont plus de 75 000$. 42.5% de ces clients qui ont un conjoint.</p>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/tbl-statdescript-dbm_6ed77063ed566d07fb226fbfa4c47848">
+<div class="cell-output-display">
+<div id="tbl-statdescript-dbm" class="anchored">
+
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;5.5:  Statistiques descriptives des variables numériques de la base de données marketing. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> variable </th>
+   <th style="text-align:left;"> description </th>
+   <th style="text-align:right;"> moyenne </th>
+   <th style="text-align:right;"> écart-type </th>
+   <th style="text-align:right;"> min </th>
+   <th style="text-align:right;"> max </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> x2 </td>
+   <td style="text-align:left;"> âge </td>
+   <td style="text-align:right;"> 37.06 </td>
+   <td style="text-align:right;"> 9.27 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 70 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x6 </td>
+   <td style="text-align:left;"> nombre d’année comme client </td>
+   <td style="text-align:right;"> 6.01 </td>
+   <td style="text-align:right;"> 2.92 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 11 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x7 </td>
+   <td style="text-align:left;"> nombre de semaines depuis le dernier achat </td>
+   <td style="text-align:right;"> 9.97 </td>
+   <td style="text-align:right;"> 9.34 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 52 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x8 </td>
+   <td style="text-align:left;"> montant du dernier achat </td>
+   <td style="text-align:right;"> 48.41 </td>
+   <td style="text-align:right;"> 28.27 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 252 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x9 </td>
+   <td style="text-align:left;"> montant total dépensé sur un an </td>
+   <td style="text-align:right;"> 229.27 </td>
+   <td style="text-align:right;"> 173.97 </td>
+   <td style="text-align:right;"> 22 </td>
+   <td style="text-align:right;"> 1407 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x10 </td>
+   <td style="text-align:left;"> nombre d'achats différents sur un an </td>
+   <td style="text-align:right;"> 5.64 </td>
+   <td style="text-align:right;"> 2.31 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 14 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Le nombre d’achats différents depuis un an par ces clients varie entre 1 et 14. Un peu plus de la moitié (51.4%) ont fait cinq achats ou moins. Parmi les 1000 clients de l’échantillon d’apprentissage, 210 ont acheté quelque chose dans le catalogue. La variable yachat sera l’une des variables que nous allons chercher à modéliser en vue d’obtenir des prédictions.</p>
+<p>L’âge des 1000 clients de l’échantillon d’apprentissage varie entre 20 et 70 avec une moyenne de 37.1 ans. En moyenne, ces clients ont acheté pour 229.30$ depuis un an. Le dernier achat de ces clients remonte, en moyenne, à 10 semaines.</p>
+<p>Dans cette section, nous modéliserons le montant d’achat, <code>ymontant</code>. Seuls 210 clients ont acheté quelque chose dans le catalogue et les statistiques rapportées correspondent seulement à ces derniers, car la variable <code>ymontant</code> est manquante si le client n’a rien acheté dans le catalogue. On pourrait également remplacer ces valeurs par des zéros et les modéliser, mais nous aborderons cet aspect ultérieurement. Les clients qui ont acheté quelque chose ont dépensé en moyenne 67.3$, et au minimum 25$. La <a href="#fig-histogrammes-eda-dbm">Figure&nbsp;<span>5.6</span></a> présente les histogrammes de quelques unes de ces variables.</p>
+<p>Il y a plusieurs façons d’utiliser l’échantillon d’apprentissage afin de mieux cibler les clients à qui envoyer le catalogue et maximiser les revenus. En voici quelques unes.</p>
+<ol type="a">
+<li>On pourrait développer un modèle afin d’estimer la probabilité qu’un client achète quelque chose si on lui envoie un catalogue. Plus précisément, on peut développer un modèle pour <span class="math inline">\(\Pr(\texttt{yachat}=1)\)</span>. Comme la variable <code>yachat</code> est binaire, un modèle possible est la régression logistique, que nous décrirons au chapitre suivant. Ainsi, en appliquant le modèle aux 100 000 clients restant, on pourra cibler les clients susceptibles d’acheter (ceux avec une probabilité élevée).</li>
+<li>Une autre façon serait de tenter de prévoir le montant d’argent dépensé. Nous venons de voir la distribution de la variable <code>ymontant</code>. Il y a deux situations, ceux qui ont acheté et ceux qui n’ont pas achetés. En conditionnant sur le fait d’avoir acheté quelque chose, il est possible de décomposer le problème de la manière suivante :</li>
+</ol>
+<p><span class="math display">\[\begin{align*}
+\mathsf{E}(\texttt{ymontant}) &amp;= \mathsf{E}(\texttt{ymontant} \mid \texttt{yachat}=1) \mathsf{P}(\texttt{yachat}=1) \\&amp; \quad +
+\mathsf{E}(\texttt{ymontant} \mid \texttt{yachat}=0) \mathsf{P}(\texttt{yachat}=0) \\
+&amp;= \mathsf{E}(\texttt{ymontant} \mid \texttt{yachat}=1) \mathsf{P}(\texttt{yachat}=1),
+\end{align*}\]</span> puisque le terme <span class="math inline">\(\mathsf{E}(\texttt{ymontant} \mid \texttt{yachat}=0)\)</span> est zéro: les gens qui n’ont pas acheté n’ont rien dépensé.</p>
+<p>On peut donc estimer <span class="math inline">\(\mathsf{E}(\texttt{ymontant} \mid \texttt{yachat}=1)\)</span> et <span class="math inline">\(\mathsf{P}(\texttt{yachat}=1)\)</span>, pour ensuite les combiner et avoir une estimation de <span class="math inline">\(\mathsf{E}(\texttt{ymontant})\)</span>. Le développement du modèle pour <span class="math inline">\(\mathsf{E}(\texttt{ymontant} \mid \texttt{yachat}=1)\)</span> peut se faire avec la régression linéaire, en utilisant seulement les clients qui ont acheté dans l’échantillon d’apprentissage, car <span class="math inline">\(\texttt{ymontant}\)</span> est une variable continue dans ce cas. Le développement du modèle pour <span class="math inline">\(\mathsf{P}(\texttt{yachat}=1)\)</span> peut se faire avec la régression logistique, tel que mentionné plus haut, en utilisant tous les 1000 clients de l’échantillon d’apprentissage. En fait, nous verrons plus loin qu’il est possible d’estimer conjointement les deux modèles avec un modèle Tobit. En appliquant le modèle aux 100 000 clients restants, on pourra cibler les clients qui risquent de dépenser un assez grand montant.</p>
+<p>Comme nous n’avons pas encore vu la régression logistique, nous allons nous limiter à illustrer les méthodes qui restent à voir dans ce chapitre avec la régression linéaire en cherchant à développer un modèle pour <span class="math inline">\(\mathsf{E}(\texttt{ymontant} \mid \texttt{yachat}=1)\)</span>, le montant d’argent dépensé par les clients qui ont acheté quelque chose.</p>
+<p>La base de donnée contient deux variables explicatives catégorielles. Il s’agit de revenu (<code>x3</code>) et région (<code>x4</code>). Il faut coder d’une manière appropriée afin de pouvoir les incorporer dans les modèles. La manière habituelle est de créer des variables indicatrices (binaires) qui indiquent si la variable prend ou non une valeur particulière dans <strong>R</strong> est de transformer la variable en facteur (<code>factor</code>). En général, si une variable catégorielle possède <span class="math inline">\(K\)</span> valeurs possibles, il est suffisant de créer <span class="math inline">\(K-1\)</span> indicatrices, en laissant une modalité comme référence. Par exemple, pour <code>x3</code>, nous allons créer deux variables,</p>
+<ul>
+<li><code>x31</code>: variable binaire égale à 1 si <code>x3</code> égale 1 et 0 sinon,</li>
+<li><code>x32</code>: variable binaire égale à 1 si <code>x3</code> égale 2 et 0 sinon.</li>
+</ul>
+<p>Ainsi, la valeur 3 est celle de référence. Ces deux indicatrices sont suffisantes pour récupérer toute l’information comme le démontre le <a href="#tbl-02-dummy">Tableau&nbsp;<span>5.6</span></a>.</p>
+<div id="tbl-02-dummy" class="anchored">
+<table class="table">
+<caption>Tableau&nbsp;5.6: Valeur des indicateurs en fonction du niveau de la variable catégorielle</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><code>x3</code></th>
+<th style="text-align: center;"><code>x31</code></th>
+<th style="text-align: center;"><code>x32</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Il est important de noter que, si le modèle qui inclut toutes les modalités (ordonnée à l’origine, <code>x31</code> et <code>x32</code>) possibles ne dépend pas de la catégorie de référence, ce ne sera plus le cas si on permet lors de la sélection de variables de ne conserver que certains niveaux de la variable catégorielle. Par exemple, si on inclut uniquement <code>x31</code> comme variable explicative, l’ordonnée à l’origine englobera toutes les autres valeurs de <code>x3</code>, à savoir <span class="math inline">\(\{2, 3\}\)</span>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Danger de surajustement avec variables catégorielles
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La principale cause de mauvaise performance est le surajustement sélectif. Dans l’exemple que l’on considère avec la base de données marketing, la plupart des modalités des variables catégorielles semblent à première vues suffisantes pour estimer des coefficients. Si on s’intéresse par contre aux interactions, on se rendra rapidement compte qu’il y a trop peu de valeurs pour certaines combinaisons (par exemple, <code>x3*x5</code>) pour estimer de manière fiable l’effet combiné. Si on a une valeur aberrante dans un groupe avec de faibles modalités, les indicateurs donneront systématiquement préférence à l’inclusion d’un terme pour l’accomoder (au détriment de la généralisation). Cela a pour effet de fausser la sélection et donner une grande erreur quadratique moyenne de validation. Si certaines modalités ont des effectifs trop petits, on peut envisager de les regrouper avec d’autres similaires.</p>
+</div>
+</div>
+</section>
+<section id="sélection-de-variables" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="sélection-de-variables"><span class="header-section-number">5.4</span> Sélection de variables</h2>
+<section id="recherche-exhaustive-meilleurs-sous-ensembles" class="level3" data-number="5.4.1">
+<h3 data-number="5.4.1" class="anchored" data-anchor-id="recherche-exhaustive-meilleurs-sous-ensembles"><span class="header-section-number">5.4.1</span> Recherche exhaustive (meilleurs sous-ensembles)</h3>
+<p>Lorsque nous voulons comparer un petit nombre de modèles, il est relativement aisé d’obtenir les critères (<span class="math inline">\(\mathsf{AIC}\)</span>, <span class="math inline">\(\mathsf{BIC}\)</span> ou autre) pour tous les modèles et de choisir le meilleur. C’était le cas dans l’exemple du choix de l’ordre du polynôme où il y avait seulement 10 modèles en compétitions. Mais lorsqu’il y a plusieurs variables en jeu, le nombre de modèles potentiel augmente très rapidement.</p>
+<p>En fait, supposons qu’on a <span class="math inline">\(p\)</span> variables distinctes disponibles. Avant même de considérer les transformations des variables et les interactions entre elles, il y a déjà trop de modèles possibles. En effet, chaque variable est soit incluse ou pas (deux possibilités) et donc il y a <span class="math inline">\(2^p=2\times 2 \times \cdots \times 2\)</span> (<span class="math inline">\(p\)</span> fois) modèles en tout à considérer. Ce nombre augmente très rapidement comme en témoigne le <a href="#tbl-02-table3">Tableau&nbsp;<span>5.7</span></a>.</p>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/tbl-02-table3_76f8fa4b9e251a0b56082ce1a58572c4">
+<div class="cell-output-display">
+<div id="tbl-02-table3" class="anchored">
+
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;5.7:  Nombres de modèles en fonction du nombre de paramètres. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> \(p\) </th>
+   <th style="text-align:right;"> nombre de paramètres </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 32 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 1024 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> 32768 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 1048576 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 25 </td>
+   <td style="text-align:right;"> 33554432 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 30 </td>
+   <td style="text-align:right;"> 1073741824 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Ainsi, si le nombre de variables est restreint, il est possible de comparer tous les modèles potentiels et de choisir le meilleur (selon un critère). II existe même des algorithmes très efficaces qui permettent de trouver le meilleur modèle sans devoir examiner tous les modèles possibles. Le nombre de variables qu’il est possible d’avoir dépend de la puissance de calcul et augmente d’année en année. Par contre, dans plusieurs applications, il ne sera pas possible de comparer tous les modèles et il faudra effectuer une recherche limitée. Faire une recherche exhaustive parmi tous les modèles possibles s’appelle sélection de tous les sous-ensembles (<em>best subsets</em>).</p>
+<p>On veut trouver un bon modèle pour prévoir la valeur de <code>ymontant</code> des clients qui ont acheté quelque chose. On a vu qu’il y a 210 clients qui ont acheté dans l’échantillon d’apprentissage. Nous allons chercher à développer un « bon » modèle avec ces 210 clients. Dans ce premier exemple, nous allons seulement utiliser les 10 variables explicatives de base (14 variables avec les indicatrices).</p>
+<p>Pour un nombre de variables fixé, le meilleur modèle selon le <span class="math inline">\(R^2\)</span> est aussi le meilleur selon les critères d’information <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span>, pour ce nombre fixé de variables. Pour vous convaincre de cette affirmation, fixons le nombre de variables et restreignons-nous seulement aux modèles avec ce nombre de variables. Comme <span class="math inline">\(R^2=1 - \mathsf{SCE}/\mathsf{SCT}\)</span> et que <span class="math inline">\(\mathsf{SCT}\)</span> est une constante indépendante du modèle, le modèle avec le plus grand coefficient de détermination, <span class="math inline">\(R^2\)</span>, est aussi celui avec la plus petite somme du carré des erreurs (<span class="math inline">\(\mathsf{SCE}\)</span>). Comme <span class="math inline">\(\mathsf{AIC}=n \ln (\mathsf{EQM}) + 2p\)</span>, ce sera aussi celui avec le plus petit <span class="math inline">\(\mathsf{AIC}\)</span> car la pénalité <span class="math inline">\(2p\)</span> est la même si on fixe le nombre de variables; la même remarque est valide pour le <span class="math inline">\(\mathsf{BIC}\)</span>.</p>
+<p>Ainsi, pour trouver le meilleur modèle globalement (sans fixer le nombre de variables), il suffit de trouver le modèle à <span class="math inline">\(k\)</span> variables explicatives ayant le coefficient de détermination le plus élevé pour tous les nombres de variables fixés et d’ensuite de trouver celui qui minimise le <span class="math inline">\(\mathsf{AIC}\)</span> (ou le <span class="math inline">\(\mathsf{BIC}\)</span>) parmi ces modèles. Ainsi, le modèle linéaire simple qui a le plus grand <span class="math inline">\(R^2\)</span> est celui qui inclut l’indicateur de couple (<code>x5</code>). Le meilleur modèle (selon le <span class="math inline">\(R^2\)</span>) parmi tous les modèles avec deux variables est celui avec <code>x5</code> et <code>x6</code>.</p>
+<div class="cell" data-layout-align="center" data-hash="04-selectionmodeles_cache/html/tbl-leaps-simple_b568c2b928c577502bca84a6690642a8">
+<div class="cell-output-display">
+<div id="tbl-leaps-simple" class="anchored">
+
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;5.8:  Modèle parmi les candidats ayant la plus grande valeur de coefficient de détermination selon le nombre de régresseurs, avec valeurs des critères d’informations. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> variables </th>
+   <th style="text-align:right;"> BIC </th>
+   <th style="text-align:right;"> AIC </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> x5 </td>
+   <td style="text-align:right;"> -95.96 </td>
+   <td style="text-align:right;"> -102.65 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x5 x6 </td>
+   <td style="text-align:right;"> -196.41 </td>
+   <td style="text-align:right;"> -206.45 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x31 x5 x6 </td>
+   <td style="text-align:right;"> -311.09 </td>
+   <td style="text-align:right;"> -324.48 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x31 x5 x6 x10 </td>
+   <td style="text-align:right;"> -351.05 </td>
+   <td style="text-align:right;"> -367.79 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x1 x31 x5 x6 x10 </td>
+   <td style="text-align:right;"> -369.33 </td>
+   <td style="text-align:right;"> -389.41 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x1 x31 x5 x6 x7 x10 </td>
+   <td style="text-align:right;"> -387.09 </td>
+   <td style="text-align:right;"> -410.52 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x1 x31 x5 x6 x7 x8 x10 </td>
+   <td style="text-align:right;"> -392.18 </td>
+   <td style="text-align:right;"> -418.95 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x1 x31 x44 x5 x6 x7 x8 x10 </td>
+   <td style="text-align:right;"> -390.68 </td>
+   <td style="text-align:right;"> -420.80 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x1 x2 x31 x44 x5 x6 x7 x8 x10 </td>
+   <td style="text-align:right;"> -390.05 </td>
+   <td style="text-align:right;"> -423.53 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x1 x2 x31 x44 x5 x6 x7 x8 x9 x10 </td>
+   <td style="text-align:right;"> -386.94 </td>
+   <td style="text-align:right;"> -423.75 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x1 x2 x31 x43 x44 x5 x6 x7 x8 x9 x10 </td>
+   <td style="text-align:right;"> -382.86 </td>
+   <td style="text-align:right;"> -423.03 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x1 x2 x31 x41 x42 x43 x44 x5 x6 x7 x8 x10 </td>
+   <td style="text-align:right;"> -378.39 </td>
+   <td style="text-align:right;"> -421.91 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x1 x2 x31 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10 </td>
+   <td style="text-align:right;"> -374.76 </td>
+   <td style="text-align:right;"> -421.62 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Un algorithme par séparation et évaluation permet d’effectuer cette recherche de manière efficace sans essayer tous les candidats pour ces sous-ensembles. Dans l’exemple, on voit que le modèle avec les variables <code>x1</code> <code>x2</code> <code>x31</code> <code>x44</code> <code>x5</code> <code>x6</code> <code>x7</code> <code>x8</code> <code>x9</code> et <code>x10</code> est celui qui minimise le <span class="math inline">\(\mathsf{AIC}\)</span> globalement (<span class="math inline">\(\mathsf{AIC}\)</span> de -423.7539583). Le modèle choisi par le <span class="math inline">\(\mathsf{BIC}\)</span> contient seulement sept variables explicatives (plutôt que 10), soit <code>x1</code> <code>x31</code> <code>x5</code> <code>x6</code> <code>x7</code> <code>x8</code> <code>x10</code>.</p>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/unnamed-chunk-20_ed5e4b6b24a4c64a76c3b9c323e1724e">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(dbm, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>dbm_a <span class="ot">&lt;-</span> dbm <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(test <span class="sc">==</span> <span class="dv">0</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                <span class="sc">!</span><span class="fu">is.na</span>(ymontant))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Conserver données d'entraînement (test == 0)</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># des personnes qui ont acheté ymontant &gt; 0</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>rec_ex <span class="ot">&lt;-</span> leaps<span class="sc">::</span><span class="fu">regsubsets</span>(</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> ymontant <span class="sc">~</span> x1<span class="sc">+</span>x2<span class="sc">+</span>x3<span class="sc">+</span>x4<span class="sc">+</span>x5<span class="sc">+</span>x6<span class="sc">+</span>x7<span class="sc">+</span>x8<span class="sc">+</span>x9<span class="sc">+</span>x10, </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">nvmax =</span> 13L,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"exhaustive"</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dbm_a)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>resume_rec_ex <span class="ot">&lt;-</span> <span class="fu">summary</span>(rec_ex,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>                         <span class="at">matrix.logical =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Trouver le modèle avec le plus petit BIC</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>min_BIC <span class="ot">&lt;-</span> <span class="fu">which.min</span>(resume_rec_ex<span class="sc">$</span>bic)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Nom des variables dans le modèle retenu</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>rec_ex<span class="sc">$</span>xnames[resume_rec_ex<span class="sc">$</span>which[min_BIC,]]</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Coefficients</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co"># coef(rec_ex, id = min_BIC)</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Nous avons seulement inclus les variables de base pour ce premier essai. Il est possible qu’ajouter des variables supplémentaires améliore la performance du modèle. Pour cet exemple, nous allons considérer les variables suivantes<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>:</p>
+<ul>
+<li>les variables continues au carré, comme <span class="math inline">\(\texttt{age}^2\)</span>.</li>
+<li>toutes les interactions d’ordre deux entre les variables de base, comme <span class="math inline">\(\texttt{sexe}\cdot\texttt{age}\)</span>.</li>
+</ul>
+<p>Aux variables de base (10 variables explicatives, mais 14 avec les indicatrices pour les variables catégorielles), s’ajoutent ainsi 90 autres variables. Il y a donc 104 variables explicatives potentielles si on inclut les interactions et les termes quadratiques. Notez qu’il y a des interactions entre chacune des variables indicatrices et chacune des autres variables, mais il ne sert à rien de calculer une interaction entre deux indicatrices d’une même variable (car une telle variable est zéro pour tous les individus). De même, il ne sert à rien de calculer le carré d’une variable binaire codée <span class="math inline">\(\{0, 1\}\)</span>.</p>
+<p>Dans la mesure où on aura un ratio d’environ un paramètre pour deux observations,Le modèle à 104 variables servira uniquement à illustrer le surajustement. Pensez à la taille de votre échantillon comme à un budget et aux paramètres comme à un nombre d’items: plus vous achetez d’items, moins votre budget est élevé pour chacun et leur qualité en pâtira. Réalistement, un modèle avec plus d’une vingtaine de variables ici serait difficilement estimable de manière fiable et l’inclusion d’interactions et de termes quadratiques sert surtout à augmenter la flexibilité et les possibilités lors de la sélection de variables.</p>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/modele-complet_cd8788ee4bc3b7c4de81def8f017d8b3">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (...)^2 crée toutes les interactions d'ordre deux</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># I(x^2) permet de créer les termes quadratiques</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>formule <span class="ot">&lt;-</span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formula</span>(ymontant <span class="sc">~</span> </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>          (x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x4 <span class="sc">+</span> x5 <span class="sc">+</span> </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>             x6 <span class="sc">+</span> x7 <span class="sc">+</span> x8 <span class="sc">+</span> x9 <span class="sc">+</span> x10)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>            <span class="fu">I</span>(x2<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x6<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x7<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>            <span class="fu">I</span>(x8<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x9<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x10<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>mod_complet <span class="ot">&lt;-</span> <span class="fu">lm</span>(formule, <span class="at">data =</span> dbm_a)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Lancer une sélection exhaustive de tous les sous-modèles avec 104 variables risque de prendre un temps énorme. Que faire alors? Il y a plusieurs possibilités. Nous pourrions faire une recherche limitée avec les méthodes que nous allons voir à partir de la section suivante. Nous pourrions aussi combiner les deux approches. Supposons que notre ordinateur permet de faire une recherche exhaustive de tous les sous-modèles avec 40 variables. Nous pourrions alors commencer avec une recherche limitée pour trouver un sous-ensemble de 40 « bonnes » variables et faire une recherche exhaustive, mais en se restraignant à ces 40 variables.</p>
+</section>
+<section id="méthodes-séquentielles-de-sélection" class="level3" data-number="5.4.2">
+<h3 data-number="5.4.2" class="anchored" data-anchor-id="méthodes-séquentielles-de-sélection"><span class="header-section-number">5.4.2</span> Méthodes séquentielles de sélection</h3>
+<p>Les méthodes de sélection ascendante, descendante et séquentielle sont des algorithmes gloutons. Elles ont été développées à une époque où la puissance de calcul était bien moindre, et où il était impossible de faire une recherche exhaustive des sous-modèles. La procédure <code>leaps::regsubsets</code> permet une sélection de modèle avec une approche séquentielle, ascendante ou descendante en choisissant le meilleur modèle (côté ajustement) avec <span class="math inline">\(k\)</span> variables <span class="math inline">\((k=1, \ldots, k_{\text{max}})\)</span>. La procédure <code>MASS::stepAIC</code> permet de faire cette sélection en utilisant un critère d’information.</p>
+<p>L’idée de la <strong>sélection ascendante</strong> est d’ajouter à chaque étape au modèle précédent la variable qui améliore le plus l’ajustement. Le modèle de départ est celui qui n’inclut que l’ordonnée à l’origine (aucune variable explicative). À chaque étape, on ajoute la variable qui améliore le plus le critère d’ajustement jusqu’à ce qu’aucune amélioration ne soit résultante.</p>
+<p>Un algorithme glouton résoud un problème d’optimisation étape par étape: après <span class="math inline">\(k\)</span> étapes, le modèle construit par la procédure n’est pas nécessairement le meilleur modèle (si on essayait toutes les combinaisons). Si on commence avec <span class="math inline">\(p\)</span> variables, on regarde <span class="math inline">\(p\)</span> choix à la première étape de la procédure ascendante, puis on choisit nue variable parmi les <span class="math inline">\(p-1\)</span> restantes à la deuxième étape, etc. La procédure exhaustive essaiera toutes les <span class="math inline">\(\binom{p}{2}\)</span> combinaisons possibles<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>: puisque plus de modèles sont essayés, la solution finale est nécessairement meilleure côté performance évaluée sur l’échantillon d’apprentissage.</p>
+<p>La <strong>sélection descendante</strong> est similaire, sauf qu’on part avec le modèle qui inclut toutes les variables explicatives. À chaque étape, on retire la variable qui contribue le moins à l’ajustement jusqu’à ce que le critère d’ajustement ne puisse plus être amélioré ou jusqu’à ce qu’on recouvre le modèle sans variables explicatives, selon le scénario. C’est l’inverse de la méthode ascendante: on va tester le retrait de chaque variable individuellement et retirer celle qui est la moins significative.</p>
+<p>La <strong>méthode de sélection séquentielle</strong> est un hybride entre les méthodes de sélection ascendantes et descendante. On débute la recherche à partir du modèle ne contenant que l’ordonnée à l’origine. À chaque étape, on fait une étape ascendante suivie de une (ou plusieurs) étapes descendantes. On continue ainsi tant que le modèle retourné par l’algorithme n’est pas identique à celui de l’étape précédente (dépendant de notre critère). Le dernier modèle est celui retenu.</p>
+<p>Avec la méthode séquentielle, une fois qu’on entre une variable (étape ascendante), on fait autant d’étapes descendante afin de retirer toutes les variables qui satisfont le critère de sortie (il peut ne pas y en avoir). Une fois cela effectué, on refait une étape ascendante pour voir si on peut ajouter une nouvelle variable.</p>
+<p>Avec la méthode ascendante, une fois qu’une variable est dans le modèle, elle y reste. Avec la méthode descendante, une fois qu’une variable est sortie du modèle, elle ne peut plus y entrer. Avec la méthode séquentielle, une variable peut entrer dans le modèle et sortir plus tard dans le processus. Par conséquent, parmi les trois, la méthode séquentielle est généralement préférable aux méthodes ascendante et descendante, car elle inspecte potentiellement un plus grand nombre de modèles.</p>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/modele-sequentiel_261d18a21b51055b696df56f4bc70789">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cette procédure séquentielle retourne</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># la liste de modèles de 1 variables à</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># nvmax variables.</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>rec_seq <span class="ot">&lt;-</span> </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  leaps<span class="sc">::</span><span class="fu">regsubsets</span>(</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> formule, </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> dbm_a,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"seqrep"</span>, </span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">nvmax =</span> <span class="fu">length</span>(<span class="fu">coef</span>(mod_complet)))</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">which.min</span>(<span class="fu">summary</span>(rec_seq)<span class="sc">$</span>bic)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Alternative avec procédure séquentielle</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># qui utilise le critère AIC pour déterminer </span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co"># l'inclusion ou l'exclusion de variables</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Procédure plus longue à rouler</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co"># (car les modèles linéaires sont ajustés)</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co"># On ajoute ou retire la variable qui</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co"># améliore le plus le critère de sélection</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co"># à chaque étape.</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>seq_AIC <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">stepAIC</span>(</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(ymontant <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> dbm_a), </span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># modèle initial sans variables explicative</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">scope =</span> formule, <span class="co"># modèle maximal possible</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">direction =</span> <span class="st">"both"</span>, <span class="co">#séquentielle</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">trace =</span> <span class="cn">FALSE</span>, <span class="co"># ne pas imprimer le suivi</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">keep =</span> <span class="cf">function</span>(mod, AIC, ...){ </span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>      <span class="co"># autres sorties des modèles à conserver</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list</span>(<span class="at">bic =</span> <span class="fu">BIC</span>(mod), </span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>           <span class="at">coef =</span> <span class="fu">coef</span>(mod))},</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">k =</span> <span class="dv">2</span>) <span class="co">#</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Remplacer k=2 par k = log(nrow(dbm_a)) pour BIC</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="co"># L'historique des étapes est disponible via</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a><span class="co"># seq_AIC$anova</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>La procédure exhaustive est préférable aux méthodes séquentielles si le nombre de variables n’est pas trop élevé. S’il y a trop de variables, rien ne nous empêche de combiner plusieurs méthodes: on pourrait par exemple faire une procédure descendante pour ne conserver que 40 variables. En utilisant seulement ce sous-ensemble de variables, on choisit le meilleur modèle selon le <span class="math inline">\(\mathsf{AIC}\)</span> ou le <span class="math inline">\(\mathsf{BIC}\)</span> en faisant une recherche exhaustive de tous les sous-modèles. On pourrait également faire une recherche séquentielle avec le <span class="math inline">\(\mathsf{AIC}\)</span> et choisir le modèle parmi l’historique avec le plus petit <span class="math inline">\(\mathsf{BIC}\)</span>.</p>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/performodeles_49954b648c32fb8628614384b69a6452">
+
+</div>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/fig-perfo-sequentiel_3dc5ab96204e769e647ff0dccb29e581">
+<div class="cell-output-display">
+<div id="fig-perfo-sequentiel" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-selectionmodeles_files/figure-html/fig-perfo-sequentiel-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5.7: Critères d’information et estimation de l’erreur quadratique moyenne de validation externe et de validation croisée (10 groupes) pour les 40 premiers modèles de la procédure descendante, selon le nombre de termes inclus dans la régression linéaire. Les traitillés verticaux indiquent le nombre de terme du modèle avec la meilleure valeur du critère pour chaque méthode.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>On peut voir sur la <a href="#fig-perfo-sequentiel">Figure&nbsp;<span>5.7</span></a> l’historique des valeurs de AIC et BIC à mesure qu’on augmente le nombre de variables dans le modèle obtenu par une procédure séquentielle: les mêmes variables sont enlevées à chaque étape, mais la valeur optimale du critère est différente pour la sélection finale. Sur l’axe des abscisses, j’ai ajouté l’erreur quadratique moyenne de l’échantillon de validation pour les clients avec <code>ymontant</code> positif. Cet exemple n’est pas réaliste puisqu’on regarde la solution, mais il permet de nous comparer et de voir à quel point ici le critère d’information bayésien suit la même tendance que l’erreur quadratique moyenne de validation. L’erreur quadratique moyenne obtenue par validation croisée est trop optimiste (mais aléatoire!), comme le AIC. Pour éviter le surentraînement dans une région où le critère est quasi constant, on peut utiliser la règle d’une erreur-type. Puisque on a plusieurs réplications, on peut estimer ce dernier avec la validation croisée en même temps que l’EQM et choisir le modèle le plus simple à distance une erreur-type du modèle avec la plus petite erreur de validation croisée.</p>
+</section>
+<section id="méthodes-de-régression-avec-régularisation" class="level3" data-number="5.4.3">
+<h3 data-number="5.4.3" class="anchored" data-anchor-id="méthodes-de-régression-avec-régularisation"><span class="header-section-number">5.4.3</span> Méthodes de régression avec régularisation</h3>
+<p>Une façon d’éviter le surajustement est d’ajouter une pénalité sur les coefficients: ce faisant, on introduit un biais dans nos estimés, mais dans l’espoir de réduire leur variabilité et ainsi d’obtenir une meilleur erreur quadratique moyenne.</p>
+<p>L’avantage des moindres carrés est que les valeurs ajustées et les prédictions ne changent pas si on fait une transformation affine (de type <span class="math inline">\(Z = aX+b\)</span>). Peu importe le choix d’unité (par exemple, exprimer une distance en centimètres plutôt qu’en mètres, ou la température en Farenheit plutôt qu’en Celcius), on obtient le même ajustement. En revanche, une fois qu’on introduit un terme de pénalité, notre solution dépendra de l’unité de mesure, d’où l’importance d’utiliser les données centrées et réduites pour que la solution reste la même.</p>
+<p>Les estimateurs des moindres carrés ordinaires pour la régression linéaire représentent la combinaison qui minimise la somme du carré des erreurs, <span class="math display">\[\begin{align*}
+\mathsf{SCE} = \sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^pX_{ij}\beta_{j}\right)^2.
+\end{align*}\]</span> On peut ajouter à cette fonction objective <span class="math inline">\(\mathsf{SCE}\)</span> un terme additionnel de pénalité qui va contraindre les paramètres à ne pas être trop grand. On considère une pénalité additionnelle pour la valeur absolue des coefficients, <span class="math display">\[\begin{align*}
+q_1(\lambda) = \lambda \sum_{j=1}^p |\beta_j|.
+\end{align*}\]</span> Pour chaque valeur de <span class="math inline">\(\lambda\)</span> donnée, on obtiendra une solution différente pour les estimés car on minimisera désormais <span class="math inline">\(\mathsf{SCE} + q_1(\lambda)\)</span>. On ne pénalise pas l’ordonnée à l’origine <span class="math inline">\(\beta_0\)</span>, parce que ce coefficient sert à recentrer les observations et a une signification particulière: si on standardise les données, de manière à ce que leur moyenne empirique soit zéro et leur écart-type un, alors <span class="math inline">\(\widehat{\beta}_0 = \overline{y}\)</span>.</p>
+<p>La pénalité <span class="math inline">\(q_1(\lambda)\)</span> a un rôle particulier parce qu’elle a deux effets: elle réduit la taille des paramètres, mais elle force également certains paramètres très proches de zéro à être exactement égaux à zéro, ce qui fait que la régression pénalité agit également comme outil de sélection de variables. Des algorithmes efficaces permettent de trouver la solution du problème d’optimisation <span class="math display">\[\begin{align*}
+\min_{\boldsymbol{\beta}} \{\mathsf{SCE} + q_1(\lambda)\} = \min_{\boldsymbol{\beta}}  \left\{\sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^pX_{ij}\beta_{j}\right)^2 +
+\lambda \sum_{j=1}^p |\beta_j|\right\}
+\end{align*}\]</span> laquelle est appelée LASSO. La <a href="#fig-lassopenalty">Figure&nbsp;<span>5.8</span></a> montre la fonction objective dans le cas où on a deux paramètres, <span class="math inline">\(\beta_1\)</span> et <span class="math inline">\(\beta_2\)</span>. La solution des moindres carrés ordinaires, qui minimisent l’erreur quadratique moyenne, est au centre des ellipses de contour et correspond à la solution du modèle avec <span class="math inline">\(\lambda=0\)</span>. À mesure que l’on augmente la pénalité <span class="math inline">\(\lambda\)</span>, les coefficients rétrécissent vers <span class="math inline">\((0, 0)\)</span>. On peut interpréter la pénalité <span class="math inline">\(l_1\)</span> comme une contraire budgétaire: les coefficients estimés pour une valeur de <span class="math inline">\(\lambda\)</span> donnée sont ceux qui minimisent la somme du carré des erreurs, mais doivent être à l’intérieur d’un budget alloué (losange). La forme de la région fait en sorte que la solution, qui se trouve sur la bordure du losange, intervient dans un coin avec certaines coordonnées nulles.</p>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/fig-lassopenalty_a9741682d3d1ecd64b22e3578a121214">
+<div class="cell-output-display">
+<div id="fig-lassopenalty" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-selectionmodeles_files/figure-html/fig-lassopenalty-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5.8: Courbes de contour du critère de l’erreur quadratique moyenne (ellipses) et fonction de pénalité (losanges) pour différentes valeurs de <span class="math inline">\(\lambda\)</span>. Les points dénotent des solutions différentes et intersectent les contours du losange.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Plusieurs variantes existent dans la littérature qui généralisent le modèle à des contextes plus compliqués. Le choix des variables à inclure dans la sélection dépend du choix de la pénalité <span class="math inline">\(\lambda\)</span>, qui est règle générale estimée par validation croisée à cinq ou 10 groupes.</p>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/lasso_8c6ba6fdee900d60118bdb7ca023f6e2">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sélection par LASSO</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Paramètre de pénalité déterminé par </span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># validation croisée à partir d'un vecteur</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># de valeurs candidates</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>lambda_seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="fl">0.1</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">to =</span> <span class="dv">10</span>, </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">by =</span> <span class="fl">0.01</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>cv_output <span class="ot">&lt;-</span> </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  glmnet<span class="sc">::</span><span class="fu">cv.glmnet</span>(<span class="at">x =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]), </span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> dbm_a<span class="sc">$</span>ymontant, </span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="dv">1</span>, </span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">lambda =</span> lambda_seq)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cv_output)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co"># On réestime le modèle avec la pénalité</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>lambopt <span class="ot">&lt;-</span> cv_output<span class="sc">$</span>lambda.min <span class="co"># ou lambda.1se</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>lasso_best <span class="ot">&lt;-</span> </span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  glmnet<span class="sc">::</span><span class="fu">glmnet</span>(</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]),</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> dbm_a<span class="sc">$</span>ymontant,</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="dv">1</span>, </span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda =</span> lambopt)</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Prédictions et calcul de l'EQM</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co"># On pourrait remplacer `newx` par </span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="co"># d'autres données (validation externe)</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(lasso_best, </span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>                <span class="at">s =</span> lambopt, </span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>                <span class="at">newx =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="sc">-</span><span class="dv">1</span>]))</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>eqm_lasso <span class="ot">&lt;-</span> <span class="fu">mean</span>((pred <span class="sc">-</span> dbm_a<span class="sc">$</span>ymontant)<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Le graphique de la <a href="#fig-lassopath">Figure&nbsp;<span>5.9</span></a> montre l’évolution de l’erreur quadratique moyenne estimée en fonction du logarithme naturel de la pénalité (axe des abscisses). Comme plusieurs pénalités sont dans la marge d’erreurs, on choisit le première modèle à un erreur-type de la valeur minimale.</p>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/fig-lassopath_0df6bf99d1830728156d867ef423d76d">
+<div class="cell-output-display">
+<div id="fig-lassopath" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="04-selectionmodeles_files/figure-html/fig-lassopath-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5.9: Estimation de l’erreur quadratique moyenne (validation croisée à 10 groupes) pour les modèles avec pénalité LASSO en fonction de la pénalité (échelle log).</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="moyenne-de-modèles" class="level3" data-number="5.4.4">
+<h3 data-number="5.4.4" class="anchored" data-anchor-id="moyenne-de-modèles"><span class="header-section-number">5.4.4</span> Moyenne de modèles</h3>
+<p>Il est souvent préférable de combiner plusieurs modèles plutôt que d’en choisir un seul. La technique des forêts aléatoires (<em>random forests</em>) est une des meilleures techniques de prédiction disponibles de nos jours. Elle est basée sur cette idée, en combinant plusieurs arbres de classification (ou de régression) individuels. C’est une des techniques de base en exploitation de données.</p>
+<p>Ici, nous allons voir comment cette idée peut être appliquée à notre contexte. Toutes les méthodes que nous avons vues jusqu’à maintenant font une sélection « rigide » de variables, dans le sens que chaque variable est soit sélectionnée pour faire partie du modèle, soit elle ne l’est pas. C’est donc tout ou rien pour chaque variable. Il y a beaucoup de variabilité associée à une telle forme de sélection. Une variable peut avoir été très près d’être choisie, mais elle ne l’a pas été et est éliminée complètement. Construire plusieurs modèles et en faire la moyenne permet d’adoucir le processus de sélection car une variable peut alors être partiellement sélectionnée.</p>
+<p>Supposons qu’on dispose de deux échantillons et qu’on fasse une sélection de variables séparément pour les deux échantillons, avec l’une des approches que nous avons vues jusqu’à maintenant. Il est alors très probable qu’on ne va pas avoir exactement les mêmes variables sélectionnées pour les deux échantillons. Supposons ensuite qu’on fasse la moyenne des coefficients pour les deux modèles. Si une variable, disons <span class="math inline">\(X_1\)</span>, a été choisie les deux fois, alors la moyenne des deux coefficients devrait estimer en quelque sorte un effet global pour cette variable. Si une autre variable, disons <span class="math inline">\(X_2\)</span>, n’a pas été choisie du tout pour les deux échantillons, alors la moyenne de ses deux coefficients est nulle. Mais si une variable, disons, <span class="math inline">\(X_3\)</span>, a été choisie pour seulement l’un des deux échantillons, alors la moyenne de ses deux coefficients est la moitié du coefficient pour le modèle dans lequel elle a été choisie (car l’autre est zéro). Ainsi, cette variable est donc représentée par une « moitié » d’effet dans la moyenne des modèles. Donc au lieu d’être totalement là ou totalement absente, elle est présente en fonction de sa probabilité d’être sélectionnée. Ceci diminue de beaucoup la variabilité engendrée par une sélection « rigide » de variables et permet souvent de produire un modèle fort raisonnable.</p>
+<p>Le problème est que l’on n’a pas plusieurs échantillons mais un seul. Une solution possible est de générer nous-mêmes des échantillons différents à partir de l‘échantillon original. Cela peut être fait avec l’autoamorçage (<em>bootstrap</em>). Un échantillon d’autoamorçage est tout simplement un échantillon choisi au hasard et <strong>avec remise</strong> dans l’échantillon original. Ainsi, une même observation peut être sélectionnée plus d’une fois tandis qu’une autre peut ne pas être sélectionnée du tout.</p>
+<p>L’idée est alors la suivante :</p>
+<ol type="1">
+<li>Générer plusieurs échantillons par autoamorçage nonparamétrique à partir de l‘échantillon original.</li>
+<li>Faire une sélection de variables pour chaque échantillon.</li>
+<li>Faire la moyenne des paramètres de ces modèles.</li>
+</ol>
+<div class="cell" data-hash="04-selectionmodeles_cache/html/modelaverage_881e6320af6814069deb05ed20933ea6">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Moyenne de modèles</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>moyenne_modeles <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    data, </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    form, </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">aic =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">B =</span> 100L,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">ks =</span> <span class="dv">2</span>){</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  B <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(B)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">is.logical</span>(aic),</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>            <span class="fu">length</span>(aic) <span class="sc">==</span> 1L,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>            <span class="fu">inherits</span>(form, <span class="st">"formula"</span>),</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>            B <span class="sc">&gt;</span> <span class="dv">1</span>,</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>            ks <span class="sc">&gt;=</span> <span class="dv">0</span>,</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>            <span class="fu">inherits</span>(data, <span class="st">"data.frame"</span>))</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data)</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Faire une expansion pour obtenir colonnes</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  matmod <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(form, <span class="at">data =</span> data)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Nombre de variables explicatives</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">ncol</span>(matmod) <span class="sc">-</span> 1L</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Formule du modèle complet</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  fmod <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="fu">paste0</span>(<span class="st">"y ~"</span>, <span class="fu">paste0</span>(<span class="st">"x"</span>, <span class="fu">seq_len</span>(p), <span class="at">collapse =</span> <span class="st">"+"</span>)))</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sauvegarder les noms</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  noms <span class="ot">&lt;-</span> <span class="fu">colnames</span>(matmod)</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>  xnoms <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"x"</span>, <span class="fu">seq_len</span>(p))</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extraire le nom de la variable réponse</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>  nom_reponse <span class="ot">&lt;-</span> <span class="fu">all.vars</span>(form)[<span class="fu">attr</span>(<span class="fu">terms</span>(form), <span class="st">"response"</span>)]</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Créer une base de données avec la réponse</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># moins l'ordonnée à l'origine</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>  matmod <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">cbind</span>(</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">get</span>(nom_reponse, data), </span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>    matmod[,<span class="sc">-</span><span class="dv">1</span>]))</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(matmod) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"y"</span>, xnoms)</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Contenant pour params/ nb de sélections</span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>  params <span class="ot">&lt;-</span> nselect <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, p <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(params) <span class="ot">&lt;-</span> </span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(nselect) <span class="ot">&lt;-</span> </span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">"(Intercept)"</span>, xnoms)</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Boucle</span></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(b <span class="cf">in</span> <span class="fu">seq_len</span>(B)){</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Procédure de sélection avec AIC ou BIC</span></span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>  modselect <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">stepAIC</span>(</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Valeurs de départ</span></span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> <span class="fu">lm</span>(<span class="at">formula =</span> y <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Rééchantillonner données (avec remplacement)</span></span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>       <span class="at">data =</span> matmod[<span class="fu">sample.int</span>(<span class="at">n =</span> N, </span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>                             <span class="at">size =</span> N, </span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>                             <span class="at">replace =</span> <span class="cn">TRUE</span>),]),</span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Modèle maximal additif considéré</span></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">scope =</span> fmod, </span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a>    <span class="co"># pénalité pour critère d'information</span></span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># k = ifelse(aic, 2, log(N)), </span></span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">direction =</span> <span class="st">"both"</span>, </span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">trace =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a>   <span class="at">keep =</span> <span class="cf">function</span>(mod, AIC, ...){ </span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a>      <span class="co"># autres sorties des modèles à conserver</span></span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list</span>(<span class="at">IC =</span> <span class="fu">AIC</span>(mod, <span class="at">k =</span> <span class="fu">ifelse</span>(aic, <span class="dv">2</span>, <span class="fu">log</span>(N))),</span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a>           <span class="at">coef =</span> <span class="fu">coef</span>(mod))},</span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a>   <span class="at">k =</span> ks)</span>
+<span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a>  min_IC <span class="ot">&lt;-</span> <span class="fu">which.min</span>(<span class="fu">unlist</span>(modselect<span class="sc">$</span>keep[<span class="st">'IC'</span>,]))</span>
+<span id="cb11-61"><a href="#cb11-61" aria-hidden="true" tabindex="-1"></a>  coefsv <span class="ot">&lt;-</span> modselect<span class="sc">$</span>keep[<span class="dv">2</span>,min_IC]<span class="sc">$</span>coef</span>
+<span id="cb11-62"><a href="#cb11-62" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Trouver quelles colonnes représentent</span></span>
+<span id="cb11-63"><a href="#cb11-63" aria-hidden="true" tabindex="-1"></a>  <span class="co">#  un coefficient non-nul</span></span>
+<span id="cb11-64"><a href="#cb11-64" aria-hidden="true" tabindex="-1"></a>  colind <span class="ot">&lt;-</span> <span class="fu">match</span>(<span class="fu">names</span>(coefsv),</span>
+<span id="cb11-65"><a href="#cb11-65" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">names</span>(params))</span>
+<span id="cb11-66"><a href="#cb11-66" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Incrémenter paramètres non-nuls</span></span>
+<span id="cb11-67"><a href="#cb11-67" aria-hidden="true" tabindex="-1"></a>  params[colind] <span class="ot">&lt;-</span> params[colind] <span class="sc">+</span></span>
+<span id="cb11-68"><a href="#cb11-68" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.numeric</span>(coefsv)</span>
+<span id="cb11-69"><a href="#cb11-69" aria-hidden="true" tabindex="-1"></a>  nselect[colind] <span class="ot">&lt;-</span> nselect[colind] <span class="sc">+</span> 1L</span>
+<span id="cb11-70"><a href="#cb11-70" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb11-71"><a href="#cb11-71" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-72"><a href="#cb11-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(nselect) <span class="ot">&lt;-</span> noms</span>
+<span id="cb11-73"><a href="#cb11-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(params) <span class="ot">&lt;-</span> noms</span>
+<span id="cb11-74"><a href="#cb11-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">coefs =</span> params <span class="sc">/</span> B,</span>
+<span id="cb11-75"><a href="#cb11-75" aria-hidden="true" tabindex="-1"></a>              <span class="at">nselect =</span> nselect[<span class="sc">-</span><span class="dv">1</span>] <span class="sc">/</span> B))</span>
+<span id="cb11-76"><a href="#cb11-76" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-77"><a href="#cb11-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-78"><a href="#cb11-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-79"><a href="#cb11-79" aria-hidden="true" tabindex="-1"></a><span class="co"># Moyenne de modèles</span></span>
+<span id="cb11-80"><a href="#cb11-80" aria-hidden="true" tabindex="-1"></a><span class="co">#  procédure séquentielle ascendante (AIC) </span></span>
+<span id="cb11-81"><a href="#cb11-81" aria-hidden="true" tabindex="-1"></a><span class="co">#  sélection de modèle selon BIC</span></span>
+<span id="cb11-82"><a href="#cb11-82" aria-hidden="true" tabindex="-1"></a>mmodeles <span class="ot">&lt;-</span> </span>
+<span id="cb11-83"><a href="#cb11-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">moyenne_modeles</span>(</span>
+<span id="cb11-84"><a href="#cb11-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> dbm_a, </span>
+<span id="cb11-85"><a href="#cb11-85" aria-hidden="true" tabindex="-1"></a>    <span class="at">form =</span> formule,</span>
+<span id="cb11-86"><a href="#cb11-86" aria-hidden="true" tabindex="-1"></a>    <span class="at">B =</span> 10L,</span>
+<span id="cb11-87"><a href="#cb11-87" aria-hidden="true" tabindex="-1"></a>    <span class="at">aic =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb11-88"><a href="#cb11-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-89"><a href="#cb11-89" aria-hidden="true" tabindex="-1"></a><span class="co"># Proportion des variables </span></span>
+<span id="cb11-90"><a href="#cb11-90" aria-hidden="true" tabindex="-1"></a><span class="co"># sélectionnées dans plus d'un modèle</span></span>
+<span id="cb11-91"><a href="#cb11-91" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(mmodeles<span class="sc">$</span>nselect <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb11-92"><a href="#cb11-92" aria-hidden="true" tabindex="-1"></a><span class="co"># Nombre moyen de coefficients</span></span>
+<span id="cb11-93"><a href="#cb11-93" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(mmodeles<span class="sc">$</span>nselect)</span>
+<span id="cb11-94"><a href="#cb11-94" aria-hidden="true" tabindex="-1"></a><span class="co"># variables retenues plus de 20% du temps</span></span>
+<span id="cb11-95"><a href="#cb11-95" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(<span class="fu">which</span>(mmodeles<span class="sc">$</span>nselect <span class="sc">&gt;</span> <span class="fl">0.2</span>))</span>
+<span id="cb11-96"><a href="#cb11-96" aria-hidden="true" tabindex="-1"></a><span class="co"># moyenne des coefficients</span></span>
+<span id="cb11-97"><a href="#cb11-97" aria-hidden="true" tabindex="-1"></a>mmodeles<span class="sc">$</span>coefs</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Chaque modèle est construit à l’aide d’un échantillon aléatoire avec remise. Utilisez <code>set.seed</code> pour fixer le générateur de nombre aléatoire et permettre la reproductibilité</p>
+<p>Toutes les méthodes employées jusqu’à maintenant utilise une méthode de pénalisation pour déterminer le meilleur modèle. Une alternative avec serait de répéter la sélection en utilisant directement l’erreur quadratique moyenne estimée à l’aide de la validation croisée comme critère de sélection: pour cela, il faudrait ajuster l’ensemble des modèles candidats retournés par une procédure exhaustive ou séquentielle.</p>
+</section>
+</section>
+<section id="évaluation-de-la-performance" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="évaluation-de-la-performance"><span class="header-section-number">5.5</span> Évaluation de la performance</h2>
+<p>La direction de la compagnie a décidé de passer outre vos recommandations et d’envoyer le catalogue aux 100 000 clients restants; nous pouvons donc faire un post-mortem afin de voir ce que chaque modèle aurait donné comme profit, comparativement à la stratégie de référence. Les 100 000 autres clients serviront d’échantillon de validation pour évaluer la performance des modèles et, plus précisément, afin d’évaluer les revenus (ou d’autres mesures de performance) si ces modèles avaient été utilisés. L’échantillon de validation nous donnera donc l’heure juste quant aux mérites des différentes approches que nous allons comparer. En pratique, nous ne pourrions pas faire cela car la valeur de la variable cible ne serait pas connue pour ces clients et nous utiliserions plutôt les modèles pour obtenir des prédictions pour déterminer quels clients cibler avec l’envoi. Parmi, les 100 000 clients restants, il y en a 23 179 qui auraient acheté quelque chose si on leur avait envoyé le catalogue. Ces 23 179 observations vont nous servir pour estimer l’erreur quadratique moyenne (théorique) des modèles retenus par nos critères.</p>
+<p>Commençons par l’estimation de l’erreur quadratique moyenne (moyenne des carrés des erreurs) pour les deux modèles retenus par le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span> avec les variables de base. Le <a href="#tbl-02-gmse-base">Tableau&nbsp;<span>5.9</span></a> contient aussi l’estimation de l’erreur quadratique moyenne si on utilise toutes les variables (14 en incluant les indicatrices) sans faire de sélection. On voit que le modèle choisi par le <span class="math inline">\(\mathsf{BIC}\)</span> est le meilleur des trois. Ces deux méthodes font mieux que le modèle qui inclut toutes les variables sans faire de sélection, mais nous verrons que leur performance est exécrable: les variables de base ne permettent pas de capturer les effets présents dans les données et ce manque de flexibilité coûte cher.</p>
+<div id="tbl-02-gmse-base" class="anchored">
+<table class="table">
+<caption>Tableau&nbsp;5.9: Estimation de l’erreur quadratique moyenne sur l’échantillon test avec les variables de base. Les meilleurs modèles selon les critères d’informations découlent d’une recherche exhaustive de tous les sous-ensembles.</caption>
+<colgroup>
+<col style="width: 31%">
+<col style="width: 36%">
+<col style="width: 31%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">nombre de variables</th>
+<th style="text-align: center;"><span class="math inline">\(\mathsf{EQM}\)</span></th>
+<th style="text-align: left;">méthode</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">25.69</td>
+<td style="text-align: left;">toutes les variables</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">25.53</td>
+<td style="text-align: left;">exhaustive - <span class="math inline">\(\mathsf{AIC}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">25.04</td>
+<td style="text-align: left;">exhaustive - <span class="math inline">\(\mathsf{BIC}\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tbl-02-modelcomparaisonfull" class="anchored">
+<table class="table">
+<caption>Tableau&nbsp;5.10: Comparaison des méthodes selon l’erreur quadratique moyenne avec les variables de base, les interactions et les termes quadratiques.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;">nombre de variables</th>
+<th style="text-align: center;"><span class="math inline">\(\mathsf{EQM}\)</span></th>
+<th style="text-align: left;">méthode</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">104</td>
+<td style="text-align: center;">19.63</td>
+<td style="text-align: left;">toutes les variables</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">21</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: left;">séquentielle ascendante, choix selon <span class="math inline">\(\mathsf{AIC}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">12.31</td>
+<td style="text-align: left;">séquentielle ascendante, choix selon <span class="math inline">\(\mathsf{BIC}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">23</td>
+<td style="text-align: center;">12.75</td>
+<td style="text-align: left;">séquentielle ascendante avec critère <span class="math inline">\(\mathsf{AIC}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">12.4</td>
+<td style="text-align: left;">séquentielle descendante avec critère <span class="math inline">\(\mathsf{BIC}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: left;">LASSO, validation croisée avec 10 groupes</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Le <a href="#tbl-02-modelcomparaisonfull">Tableau&nbsp;<span>5.10</span></a> présente la performance de toutes les méthodes avec les autres variables. On voit d’abord qu’utiliser toutes les 104 variables sans faire de sélection fait mieux (<span class="math inline">\(\mathsf{EQM}\)</span> de 19.63) que les modèles précédents basés sur les 10 variables originales. Mais faire une sélection permet une amélioration très importante de la performance (<span class="math inline">\(\mathsf{EQM}\)</span> jusqu’à 12 dans l’exemple). Utiliser les 104 variables mène à du surajustement (<em>over-fitting</em>).</p>
+<p>Les méthodes séquentielles avec un critère d’information (qui pénalisent davantage que les tests d’hypothèse classique) mènent à des modèles plus parcimonieux qui ont une erreur quadratique moyenne de validation plus faible. Le LASSO performe très bien dans ce cas de figure. Les coefficients sont tous rétrécis vers zéro (donc le nombre de coefficients non-nuls n’est pas évocateur), ce qui engendre du biais et peut affecter négativement la performance si le rapport signal-bruit est élevé.</p>
+<p>Il faut bien comprendre qu’il ne s’agit que d’un seul exemple: il ne faut surtout pas conclure que la méthode séquentielle sera toujours la meilleure. En fait, il est impossible de prévoir quelle méthode donnera les meilleurs résultats.</p>
+<p>Il y aurait plusieurs autres approches/combinaisons qui pourraient être testées. Le but de ce chapitre était simplement de présenter les principes de base en sélection de modèles et de variables ainsi que certaines approches pratiques. Il y a d’autres approches intéressantes, tels le filet élastique. Ces méthodes sont dans la même mouvance moderne que celle qui consiste à faire la moyenne de plusieurs modèles, en performant à la fois une sélection de variables et en permettant d’avoir des parties d’effet par le rétrécissement (<em>shrinkage</em>). De récents développements théoriques permettent aussi de corriger les valeurs-<em>p</em> pour faire de l’inférence post-sélection avec le LASSO.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+En résumé
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>En présence de nombreuses variables explicatives, choisir un modèle <strong>prédictif</strong> est compliqué: le nombre de modèles possibles augmente rapidement avec le nombre de prédicteurs, <span class="math inline">\(p\)</span>.</li>
+<li>Si un modèle est mal spécifié (variables importantes manquantes), alors les estimations sont biaisées. Si le modèle est surspécifié, les coefficients correspondants aux variables superflues incluses sont en moyenne nuls, mais contribuent à l’augmentation de la variance (compromis <em>biais/variance</em>).</li>
+<li>La taille du modèle (<span class="math inline">\(p\)</span>, le nombre de variables explicatives) est restreinte par le nombre d’observations disponibles, <span class="math inline">\(n\)</span>.
+<ul>
+<li>En général, il faut s’assurer d’avoir suffisamment d’observations pour estimer de manière fiable les coefficients (le rapport <span class="math inline">\(n/p\)</span> donne le budget moyen par paramètre).</li>
+<li>Porter une attention particulière aux variables binaires et aux interactions avec ces dernières: si les effectifs de certaines modalités sont faibles, il y a possible de surajustement.</li>
+</ul></li>
+<li>Le principal critère pour juger de la qualité d’un modèle linéaire est l’erreur quadratique moyenne.
+<ul>
+<li>L’estimation de l’erreur quadratique moyenne obtenue à partir de l’échantillon d’apprentissage (qui sert à estimer les paramètres) est trompeuse et mène au surajustement:</li>
+<li>plus le modèle est compliqué, plus cette erreur décroît.</li>
+<li>cette performance n’est pas répétée sur de nouvelles données.</li>
+</ul></li>
+<li>Critères de sélection: Plusieurs stratégies existent pour pallier à cet excès d’optimisme
+<ul>
+<li>validation externe: diviser le jeu de données aléatoirement au préalable en deux ou trois. Nécessite une grande base de données, potentiellement sous-optimal.</li>
+<li>validation croisée: diviser aléatoirement le jeu de données en plis et varier les échantillons d’apprentissage en conservant un pli en réserve à chaque fois comme validation. Plus coûteux en calcul (il faut réajuster plusieurs fois les modèles), applicable avec des petites bases de données.</li>
+<li>pénalisation a posteriori: ajouter une pénalité fonction du nombre de paramètres qui compense pour l’augmentation constante de l’ajustement (par ex., critères d’information).</li>
+<li>rétrécissement des coefficients: inclure dans la fonction objective qui est maximisée une pénalité qui contraint les paramètres et les force à demeurer petit. Cela introduit du biais pour réduire la variance.</li>
+<li>Une pénalité particulière (LASSO) contraint certains paramètres à être exactement nuls, ce qui correspond implicitement à une sélection de variables.</li>
+</ul></li>
+<li>En pratique, on cherche à essayer plusieurs modèle pour trouver un choix optimal de variables.
+<ul>
+<li>Une recherche exhaustive garantie le survol du plus grand nombre de modèles possibles, mais est coûteuse et limitée à moins de 50 variables.</li>
+<li>Les algorithmes gloutons de recherche séquentielle sont sous-optimaux, mais rapides</li>
+</ul></li>
+<li>On applique le critère de sélection sur la liste de modèles candidats pour retenir celui qui donne la meilleure performance.</li>
+<li>Pour éviter une sélection rigide, on peut perturber les données et répéter la procédure pour calculer une moyenne de modèles. Cette approche est très coûteuse en calcul.</li>
+</ul>
+</div>
+</div>
+
+
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Le fait d’utiliser <span class="math inline">\(K \neq n\)</span> mène à une estimation biaisée de la quantité d’intérêt et ce biais peut être important si <span class="math inline">\(n\)</span> est petit; un ajustement simple est possible pour réduire ce dernier est présenté dans Davison et Hinkley (1997), <em>Bootstrap Methods and their Application</em>, Cambridge University Press à l’équation 6.48.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>La fonction <code>MASS::stepAIC</code> ne segmente pas les variables catégorielles: tous les niveaux sont inclus à la fois. La fonction <code>leaps::regsubsets</code> va quant à elle créer des indicateurs binaires.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Pourquoi prendre ces variables en particulier? Si on suppose que la vrai moyenne de la variable réponse <code>ymontant</code> centrée et réduite est une fonction lisse inconnue et qu’on utilise les bonnes variables explicatives centrées, le modèle ajusté précédemment capture l’approximation de degré 1 (série de Taylor) de la vraie fonction de moyenne, tandis que le modèle avec termes quadratiques (incluant les interactions) représente l’approximation de degré 2.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>En pratique, il existe des algorithmes d’optimisation qui permettront de faire cette exploration de manière astucieuse sans ajuster les modèles sous-optimaux.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./03-regroupements.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Analyse de regroupements</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./05-reglogistique.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Régression logistique</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center">Tous droits réservés (Denis Larocque, Léo Belzile)</div>
+  </div>
+</footer>
+
+
+
+</body></html>

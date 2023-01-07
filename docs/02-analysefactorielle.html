@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.280">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="MATH 60602 - Analyse multidimensionnelle appliquée, HEC Montréal.">
+
+<title>MATH 60602 - Analyse multidimensionnelle appliquée - 3&nbsp; Réduction de la dimension</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./03-regroupements.html" rel="next">
+<link href="./01-analyseexploratoire.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Pas de résultats",
+    "search-matching-documents-text": "documents trouvés",
+    "search-copy-link-title": "Copier le lien vers la recherche",
+    "search-hide-matches-text": "Cacher les correspondances additionnelles",
+    "search-more-match-text": "correspondance de plus dans ce document",
+    "search-more-matches-text": "correspondances de plus dans ce document",
+    "search-clear-button-title": "Effacer",
+    "search-detached-cancel-button-title": "Annuler",
+    "search-submit-button-title": "Envoyer"
+  }
+}</script>
+
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Réduction de la dimension</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">MATH 60602 - Analyse multidimensionnelle appliquée</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/lbelzile/math60602/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="./MATH60602.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-analyseexploratoire.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Analyse exploratoire</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-analysefactorielle.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Réduction de la dimension</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-regroupements.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Analyse de regroupements</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-selectionmodeles.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Sélection de variables et de modèles</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-reglogistique.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Régression logistique</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-survie.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Analyse de survie</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-donneesmanquantes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Données manquantes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">Références</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table des matières</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="toc-section-number">3.1</span>  Introduction</a></li>
+  <li><a href="#coefficient-de-corrélation-linéaire" id="toc-coefficient-de-corrélation-linéaire" class="nav-link" data-scroll-target="#coefficient-de-corrélation-linéaire"><span class="toc-section-number">3.2</span>  Coefficient de corrélation linéaire</a></li>
+  <li><a href="#présentation-des-données" id="toc-présentation-des-données" class="nav-link" data-scroll-target="#présentation-des-données"><span class="toc-section-number">3.3</span>  Présentation des données</a></li>
+  <li><a href="#analyse-en-composantes-principales" id="toc-analyse-en-composantes-principales" class="nav-link" data-scroll-target="#analyse-en-composantes-principales"><span class="toc-section-number">3.4</span>  Analyse en composantes principales</a>
+  <ul class="collapse">
+  <li><a href="#sec-acp-choix" id="toc-sec-acp-choix" class="nav-link" data-scroll-target="#sec-acp-choix"><span class="toc-section-number">3.4.1</span>  Choix du nombre de composantes principales</a></li>
+  <li><a href="#formulation-mathématique" id="toc-formulation-mathématique" class="nav-link" data-scroll-target="#formulation-mathématique"><span class="toc-section-number">3.4.2</span>  Formulation mathématique</a></li>
+  </ul></li>
+  <li><a href="#analyse-factorielle-exploratoire" id="toc-analyse-factorielle-exploratoire" class="nav-link" data-scroll-target="#analyse-factorielle-exploratoire"><span class="toc-section-number">3.5</span>  Analyse factorielle exploratoire</a>
+  <ul class="collapse">
+  <li><a href="#rotation-des-facteurs" id="toc-rotation-des-facteurs" class="nav-link" data-scroll-target="#rotation-des-facteurs"><span class="toc-section-number">3.5.1</span>  Rotation des facteurs</a></li>
+  <li><a href="#choix-du-nombre-de-facteurs" id="toc-choix-du-nombre-de-facteurs" class="nav-link" data-scroll-target="#choix-du-nombre-de-facteurs"><span class="toc-section-number">3.5.2</span>  Choix du nombre de facteurs</a></li>
+  <li><a href="#construction-déchelles-à-partir-des-facteurs" id="toc-construction-déchelles-à-partir-des-facteurs" class="nav-link" data-scroll-target="#construction-déchelles-à-partir-des-facteurs"><span class="toc-section-number">3.5.3</span>  Construction d’échelles à partir des facteurs</a></li>
+  </ul></li>
+  <li><a href="#compléments-dinformation" id="toc-compléments-dinformation" class="nav-link" data-scroll-target="#compléments-dinformation"><span class="toc-section-number">3.6</span>  Compléments d’information</a>
+  <ul class="collapse">
+  <li><a href="#variables-ordinales" id="toc-variables-ordinales" class="nav-link" data-scroll-target="#variables-ordinales"><span class="toc-section-number">3.6.1</span>  Variables ordinales</a></li>
+  <li><a href="#autres-méthodes-de-rotation-des-facteurs" id="toc-autres-méthodes-de-rotation-des-facteurs" class="nav-link" data-scroll-target="#autres-méthodes-de-rotation-des-facteurs"><span class="toc-section-number">3.6.2</span>  Autres méthodes de rotation des facteurs</a></li>
+  <li><a href="#scores-factoriels" id="toc-scores-factoriels" class="nav-link" data-scroll-target="#scores-factoriels"><span class="toc-section-number">3.6.3</span>  Scores factoriels</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lbelzile/math60602/edit/master/02-analysefactorielle.qmd" class="toc-action">Éditer cette page</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="analyse-factorielle" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Réduction de la dimension</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell" data-file="_common.R" data-hash="02-analysefactorielle_cache/html/setup_b4751a045b38b460a92d0ea731915a0a">
+
+</div>
+<section id="introduction" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">3.1</span> Introduction</h2>
+<p>Ce chapitre traite de réduction de la dimensionalité d’un problème d’analyse multidimensionnelle. On dispose de <span class="math inline">\(p\)</span> variables <span class="math inline">\(X_1, \ldots, X_p\)</span>: comment résumer cet ensemble avec moins de variables (disons <span class="math inline">\(k\)</span>) tout en conservant le plus de variabilité possible? Nous couvrons deux méthodes dans ce chapitre: la première, intitulée <strong>analyse en composantes principales</strong>, cherche à <strong>réduire le nombre de variables explicatives</strong> tout en préservant le plus possible de variabilité exprimée et en créant de nouvelles variables explicatives qui ne sont pas corrélées les unes avec les autres.</p>
+<p>La deuxième, appelée analyse factorielle exploratoire, cherche à expliquer la structure de corrélation entre les <span class="math inline">\(p\)</span> variables à l’aide d’un nombre restreint de facteurs. Elle répond aux questions suivantes:</p>
+<ul>
+<li>Y a-t-il des groupements de variables?</li>
+<li>Est-ce que les variables faisant partie d’un groupement semblent mesurer certains aspects d’un facteur commun (non observé)?</li>
+</ul>
+<p>De tels groupements peuvent être détecté si plusieurs variables sont très corrélées entre elles. Une analyse factorielle cherchera à identifier automatiquement ces groupes de variables.</p>
+<p>Les facteurs sont des variables latentes qui mesurent des constructions. Par exemple, l’habileté quantitative, habileté sociale, importance accordée à la qualité du service, importance accordée à la loyauté, habileté de leader, etc.</p>
+<p>L’analyse factorielle est aussi une méthode de réduction du nombre de variables. En effet, une fois qu’on a identifié les facteurs, on peut remplacer les variables individuelles par un résumé pour chaque facteur (qui est souvent la moyenne des variables qui font partie du facteur).</p>
+</section>
+<section id="coefficient-de-corrélation-linéaire" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="coefficient-de-corrélation-linéaire"><span class="header-section-number">3.2</span> Coefficient de corrélation linéaire</h2>
+<p>On veut examiner la relation entre deux variables <span class="math inline">\(X_j\)</span> et <span class="math inline">\(X_k\)</span> et on dispose de <span class="math inline">\(n\)</span> couples d’observations, où <span class="math inline">\(x_{i, j}\)</span> (respectivement <span class="math inline">\(x_{i, k}\)</span>) est la valeur de la variable <span class="math inline">\(X_j\)</span> (<span class="math inline">\(X_k\)</span>) pour la <span class="math inline">\(i\)</span>e observation.</p>
+<p>Le coefficient de corrélation linéaire entre <span class="math inline">\(X_j\)</span> et <span class="math inline">\(X_k\)</span>, que l’on note <span class="math inline">\(r_{j, k}\)</span>, cherche à mesurer la force de la relation linéaire entre deux variables, c’est-à-dire à quantifier à quel point les observations sont alignées autour d’une droite. Le coefficient de corrélation est <span class="math display">\[\begin{align*}
+r_{j, k} &amp;= \frac{\widehat{\mathsf{Co}}(X_j, X_k)}{\{\widehat{\mathsf{Va}}(X_j) \widehat{\mathsf{Va}}(X_k)\}^{1/2}}
+%\\&amp;=\frac{\sum_{i=1}^n (x_{i, j}-\overline{x}_j)(x_{i, k} -\overline{x}_{k})}{\left\{\sum_{i=1}^n (x_{i, j}-\overline{x}_j)^2 \sum_{i=1}^n(x_{i, k} -\overline{x}_{k})^2\right\}^{1/2}}
+\end{align*}\]</span></p>
+<p>Les propriétés les plus importantes du coefficient de corrélation linéaire <span class="math inline">\(r\)</span> sont les suivantes:</p>
+<ol type="1">
+<li><span class="math inline">\(-1 \leq r \leq 1\)</span>;</li>
+<li><span class="math inline">\(r=1\)</span> (respectivement <span class="math inline">\(r=-1\)</span>) si et seulement si les <span class="math inline">\(n\)</span> observations sont exactement alignées sur une droite de pente positive (négative). C’est-à-dire, s’il existe deux constantes <span class="math inline">\(a\)</span> et <span class="math inline">\(b&gt;0\)</span> (<span class="math inline">\(b&lt;0\)</span>) telles que <span class="math inline">\(y_i=a+b x_i\)</span> pour tout <span class="math inline">\(i=1, \ldots, n\)</span>.</li>
+</ol>
+<p>Règle générale,</p>
+<ul>
+<li>Le signe de la corrélation détermine l’orientation de la pente (négative ou positive)</li>
+<li>Plus la corrélation est près de 1 en valeur absolue, plus les points auront tendance à être alignés autour d’une droite.</li>
+<li>Lorsque la corrélation est presque nulle, les points n’auront pas tendance à être alignés autour d’une droite. Il est très important de noter que cela n’implique pas qu’il n’y a pas de relation entre les deux variables. Cela implique seulement qu’il n’y a pas de <strong>relation linéaire</strong> entre les deux variables. La <a href="#fig-datasaurus">Figure&nbsp;<span>3.1</span></a> montre bien ce point: ces jeux de données ont la même corrélation linéaire (quasi-nulle), mais ne sont pas clairement pas indépendantes puisqu’elles permettent de dessiner un dinosaure ou une étoile.</li>
+</ul>
+<div>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/fig-datasaurus_f0d775b0bcc68e1ac5fec5d28f6f2fa0">
+<div class="cell-output-display">
+<div id="fig-datasaurus" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="figures/DataSaurusDozen.gif" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.1: Datasaurus (Alberto Cairo): une douzaine de jeux de données qui ont les mêmes statistiques descriptives (à deux décimales près) et dont les deux variables sont très faiblement corrélées.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>La matrice de corrélation entre <span class="math inline">\(X_1, \ldots, X_p\)</span>, dont l’entrée <span class="math inline">\((i, j)\)</span> contient la corrélation entre <span class="math inline">\(X_i\)</span> et <span class="math inline">\(X_j\)</span>, est une matrice symmétrique dont les éléments de la diagonale sont égaux à 1. À mesure que le nombre de variables augmente, le nombre de corrélations à estimer augmente: puisque la matrice est <span class="math inline">\(p \times p\)</span>, ce nombre augmente comme le carré du nombre de variables explicatives. L’estimation ne sera pas fiable à moins que <span class="math inline">\(n \gg p\)</span>.</p>
+</section>
+<section id="présentation-des-données" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="présentation-des-données"><span class="header-section-number">3.3</span> Présentation des données</h2>
+<p>Le questionnaire suivant porte sur une étude dans un magasin. Pour les besoins d’une enquête, on a demandé à 200 consommateurs adultes de répondre aux questions suivantes par rapport à un certain type de magasin sur une échelle de 1 à 5, où</p>
+<ol type="1">
+<li>pas important</li>
+<li>peu important</li>
+<li>moyennement important</li>
+<li>assez important</li>
+<li>très important</li>
+</ol>
+<p>Pour vous, à quel point est-ce important</p>
+<ol type="1">
+<li>que le magasin offre de bons prix tous les jours?</li>
+<li>que le magasin accepte les cartes de crédit majeures (Visa, Mastercard)?</li>
+<li>que le magasin offre des produits de qualité?</li>
+<li>que les vendeurs connaissent bien les produits?</li>
+<li>qu’il y ait des ventes spéciales régulièrement?</li>
+<li>que les marques connues soient disponibles?</li>
+<li>que le magasin ait sa propre carte de crédit?</li>
+<li>que le service soit rapide?</li>
+<li>qu’il y ait une vaste sélection de produits?</li>
+<li>que le magasin accepte le paiement par carte de débit?</li>
+<li>que le personnel soit courtois?</li>
+<li>que le magasin ait en stock les produits annoncés?</li>
+</ol>
+<p>Les statistiques descriptives ainsi que la matrice des corrélations sont obtenues en exécutant les lignes suivantes:</p>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/correlation-facto_8c3d2bcbde4cb44eb268871f9bae74c5">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(factor, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Matrice de corrélation</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(factor)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Statistiques descriptives</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(factor)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/tbl-corrmat_3a1b2ed239ec783063ddae3a06068a98">
+<div class="cell-output-display">
+<div id="tbl-corrmat" class="anchored">
+
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;3.1:  Matrice de corrélation de factor. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> x1 </th>
+   <th style="text-align:right;"> x2 </th>
+   <th style="text-align:right;"> x3 </th>
+   <th style="text-align:right;"> x4 </th>
+   <th style="text-align:right;"> x5 </th>
+   <th style="text-align:right;"> x6 </th>
+   <th style="text-align:right;"> x7 </th>
+   <th style="text-align:right;"> x8 </th>
+   <th style="text-align:right;"> x9 </th>
+   <th style="text-align:right;"> x10 </th>
+   <th style="text-align:right;"> x11 </th>
+   <th style="text-align:right;"> x12 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> x1 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> -0.08 </td>
+   <td style="text-align:right;"> -0.14 </td>
+   <td style="text-align:right;"> -0.07 </td>
+   <td style="text-align:right;"> 0.38 </td>
+   <td style="text-align:right;"> -0.01 </td>
+   <td style="text-align:right;"> -0.10 </td>
+   <td style="text-align:right;"> -0.13 </td>
+   <td style="text-align:right;"> -0.03 </td>
+   <td style="text-align:right;"> -0.11 </td>
+   <td style="text-align:right;"> -0.12 </td>
+   <td style="text-align:right;"> -0.01 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x2 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 0.04 </td>
+   <td style="text-align:right;"> -0.02 </td>
+   <td style="text-align:right;"> -0.08 </td>
+   <td style="text-align:right;"> 0.06 </td>
+   <td style="text-align:right;"> 0.50 </td>
+   <td style="text-align:right;"> 0.01 </td>
+   <td style="text-align:right;"> -0.01 </td>
+   <td style="text-align:right;"> 0.43 </td>
+   <td style="text-align:right;"> -0.12 </td>
+   <td style="text-align:right;"> 0.07 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x3 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 0.10 </td>
+   <td style="text-align:right;"> -0.06 </td>
+   <td style="text-align:right;"> 0.39 </td>
+   <td style="text-align:right;"> 0.00 </td>
+   <td style="text-align:right;"> 0.05 </td>
+   <td style="text-align:right;"> 0.47 </td>
+   <td style="text-align:right;"> 0.08 </td>
+   <td style="text-align:right;"> 0.13 </td>
+   <td style="text-align:right;"> 0.46 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x4 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> -0.05 </td>
+   <td style="text-align:right;"> 0.06 </td>
+   <td style="text-align:right;"> 0.08 </td>
+   <td style="text-align:right;"> 0.57 </td>
+   <td style="text-align:right;"> 0.01 </td>
+   <td style="text-align:right;"> 0.09 </td>
+   <td style="text-align:right;"> 0.50 </td>
+   <td style="text-align:right;"> 0.09 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x5 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> -0.04 </td>
+   <td style="text-align:right;"> -0.04 </td>
+   <td style="text-align:right;"> -0.02 </td>
+   <td style="text-align:right;"> 0.03 </td>
+   <td style="text-align:right;"> -0.07 </td>
+   <td style="text-align:right;"> -0.06 </td>
+   <td style="text-align:right;"> -0.07 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x6 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 0.07 </td>
+   <td style="text-align:right;"> 0.04 </td>
+   <td style="text-align:right;"> 0.32 </td>
+   <td style="text-align:right;"> 0.07 </td>
+   <td style="text-align:right;"> -0.04 </td>
+   <td style="text-align:right;"> 0.32 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x7 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 0.09 </td>
+   <td style="text-align:right;"> -0.02 </td>
+   <td style="text-align:right;"> 0.51 </td>
+   <td style="text-align:right;"> -0.03 </td>
+   <td style="text-align:right;"> 0.02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x8 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> -0.03 </td>
+   <td style="text-align:right;"> 0.16 </td>
+   <td style="text-align:right;"> 0.55 </td>
+   <td style="text-align:right;"> 0.04 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x9 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 0.01 </td>
+   <td style="text-align:right;"> 0.02 </td>
+   <td style="text-align:right;"> 0.39 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x10 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 0.01 </td>
+   <td style="text-align:right;"> 0.02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x11 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 0.05 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x12 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/fig-corrmat_150f1008b2b14ebb357e9af07b990c80">
+<div class="cell-output-display">
+<div id="fig-corrmat" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="02-analysefactorielle_files/figure-html/fig-corrmat-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.2: Corrélogramme de la base de données <code>factor</code>.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/tbl-statdescriptfactorhtml_90d0a0d78325760992be5350e8489f09">
+<div class="cell-output-display">
+<div id="tbl-statdescriptfactorhtml" class="anchored">
+
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;3.2:  Statistiques descriptives des 12 variables du jeu de données factor. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> moyenne </th>
+   <th style="text-align:right;"> écart-type </th>
+   <th style="text-align:right;"> min </th>
+   <th style="text-align:right;"> max </th>
+   <th style="text-align:left;"> histogramme </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 2.26 </td>
+   <td style="text-align:right;"> 1.13 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:left;"> ▇▇▆▃▁ </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2.51 </td>
+   <td style="text-align:right;"> 1.24 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:left;"> ▇▇▇▅▂ </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3.00 </td>
+   <td style="text-align:right;"> 1.19 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:left;"> ▃▆▇▇▃ </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2.91 </td>
+   <td style="text-align:right;"> 1.33 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:left;"> ▆▇▇▆▅ </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3.55 </td>
+   <td style="text-align:right;"> 1.17 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:left;"> ▂▃▇▇▇ </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2.14 </td>
+   <td style="text-align:right;"> 1.14 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:left;"> ▇▅▅▂▁ </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 1.82 </td>
+   <td style="text-align:right;"> 1.06 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:left;"> ▇▃▂▁▁ </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2.92 </td>
+   <td style="text-align:right;"> 1.32 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:left;"> ▆▇▇▇▅ </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3.04 </td>
+   <td style="text-align:right;"> 1.12 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:left;"> ▃▃▇▇▂ </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2.59 </td>
+   <td style="text-align:right;"> 1.32 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:left;"> ▇▆▆▅▂ </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2.98 </td>
+   <td style="text-align:right;"> 1.33 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:left;"> ▆▅▇▆▅ </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3.45 </td>
+   <td style="text-align:right;"> 1.16 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:left;"> ▂▃▇▇▆ </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+<p>On voit dans la <a href="#fig-corrmat">Figure&nbsp;<span>3.2</span></a> que quelques groupes de variables sont corrélés entre eux. On peut également regrouper certaines questions sous des thèmes manuellement: le but de l’analyse factorielle sera d’automatiser ce regroupement.</p>
+</section>
+<section id="analyse-en-composantes-principales" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="analyse-en-composantes-principales"><span class="header-section-number">3.4</span> Analyse en composantes principales</h2>
+<p>Le but de l’analyse en composantes principales est de réduire le nombre de variables explicatives. En partant de <span class="math inline">\(p\)</span> variables <span class="math inline">\(X_1, \ldots, X_p\)</span>, on forme de nouvelles variables qui sont des combinaisons linéaires des variables originales, <span class="math display">\[\begin{align*}
+C_j &amp;= \underset{\text{somme de poids fois variables explicatives}}{w_{j1} X_1 + w_{j2} X_2 + \cdots + w_{jp} X_p}, \qquad (j=1, \ldots, p),
+\\
+1 &amp;= \underset{\text{poids standardisés}}{w_{j1}^2 + \cdots + w_{jp}^2}
+\end{align*}\]</span> de telle sorte que</p>
+<ul>
+<li>La première variable formée, <span class="math inline">\(C_1\)</span>, appelée première composante principale, possède la variance maximale parmi toutes les combinaisons linéaires sous la contrainte <span class="math inline">\(w_{1i}^2 + \cdots + w_{1p}^2=1\)</span>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></li>
+<li>Pour <span class="math inline">\(j=2, \ldots, p\)</span>, la <span class="math inline">\(j\)</span>e composante principale <span class="math inline">\(C_j\)</span> possède la variance maximale parmi toutes les combinaisons linéaires qui sont non corrélées avec <span class="math inline">\(C_1, \ldots, C_{j-1}\)</span> sous la contrainte <span class="math inline">\(w_{j1}^2 + \cdots + w_{jp}^2=1\)</span>.</li>
+</ul>
+<p>Ainsi, les composantes principales forment un ensemble de variables non corrélées entre elles, qui récupèrent en ordre décroissant le plus possible de la variance des variables originales. La somme des variances des <span class="math inline">\(p\)</span> composantes principales est égale à la somme des variances des <span class="math inline">\(p\)</span> variables originales.</p>
+<p>Mathématiquement, les composantes principales correspondent aux vecteurs propres de la matrice de covariance, mais on peut également utiliser la matrice de corrélation<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. L’avantage de la matrice de corrélation (ou de la standardisation des variables) est que l’unité de mesure n’impacte pas le résultat; autrement, un poids plus important est attribué aux variables qui ont la plus forte hétérogénéité.</p>
+<p>Si on conserve toutes les composantes principales, cela revient à changer le système de coordonnées dans lequel sont exprimées nos observations en effectuant une rotation: avec deux variables, on on trouve la direction dans le système 2D dans lequel l’étendue est la plus grande. Si une simple rotation peut sembler inutile, la méthode est fort utile en haute dimension. On espère en général qu’un petit nombre de composantes principales réussira à expliquer la plus grande partie de la variance totale.</p>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/fig-acprotation_438ebc3aa48bf33e8c668ed85dfcf376">
+<div class="cell-output-display">
+<div id="fig-acprotation" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="02-analysefactorielle_files/figure-html/fig-acprotation-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.3: Nuage de points avant (gauche) et après (droite) analyse en composantes principales. Les directions des composantes principales (lignes pleines et traitillés), qui forment un angle droit, sont ajoutées au nuage de points à gauche. On peut constater que la corrélation entre les deux composantes principales est nulle.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La <a href="#fig-acprotation">Figure&nbsp;<span>3.3</span></a> démontre cette décomposition sur des données bidimensionnelles simulées. La variance des données dans le premier panneau est 13.51 pour l’axe des abscisse et 6.43 pour l’axe des ordonnées avec une corrélation de 0.86, à comparer avec des variances de 18.65 et 1.21 et une corrélation nulle entre les deux composantes principales.</p>
+<p>Dans une analyse en composantes principales, on conservera un nombre <span class="math inline">\(k&lt;p\)</span> de variables explicatives pour résumer les données. Ce outil est utilisé à des fins exploratoires, puisqu’on n’implique pas de variable réponse dans le modèle. L’analyse en composantes principales est utilisé pour réduire la dimension afin de faire de la classification, de l’analyse de regroupements et aussi réduire les coûts associés à ces méthodes en projetant les données dans un sous-espace de dimension plus faible.</p>
+<p>En <strong>R</strong>, on effectue l’analyse en composantes principales avec la fonction <code>princomp</code> ou <code>prcomp</code><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
+<p>La sortie contient</p>
+<ul>
+<li>les coordonnées des composantes principales, <code>acp$scores</code>; la première est celle qui a la plus grande variabilité.</li>
+<li>l’écart-type de chaque composante, <code>acp$sdev</code>. Chaque écart-type est la racine carrée d’une des valeurs propres.</li>
+<li>les poids <span class="math inline">\(w_{ij}\)</span>, appelés chargements (<em>loadings</em>), qui donnent la correspondance entre le système de coordonnées des composantes principales et celui des variables <span class="math inline">\(\boldsymbol{X}\)</span> originales.</li>
+</ul>
+<p>On peut représenter les données à l’aide d’un bigramme: c’est une nuage de points de chaque observations dans l’espace des deux premières composantes principales. Si on couple cela avec les directions offertes par les chargements pour chacune des variables explicatives <span class="math inline">\(X_1, \ldots, X_p\)</span>, il en ressort que certaines variables augmentent/diminuent de pair. Ainsi, on voit dans la <a href="#fig-biplot">Figure&nbsp;<span>3.4</span></a> que les variables <code>x3</code>, <code>x6</code>, <code>x9</code> et <code>x12</code> tendent dans la même direction, comme <code>x4</code>, <code>x8</code> et <code>x11</code>. On reviendra sur ce point dans une section subséquente.</p>
+<p>Une fois qu’on a choisit le nombre de composantes, on pourrait ne conserver que les <span class="math inline">\(k\)</span> premières colonnes de la matrice des composantes principales <code>acp$scores</code> pour faire les graphiques ou pour approximer la matrice de covariance. Il faut garder en tête qu’il faudra néanmoins collecter les mêmes questions pour recréer les composantes principales avec de nouvelles observations, ce qui est peu commode si on veut réduire le coût de la collecte.</p>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/acpfactor_3e153e2d1fdafef1619748527353215c">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyse en composantes principales</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># de la matrice de corrélation</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>acp <span class="ot">&lt;-</span> <span class="fu">princomp</span>(factor, <span class="at">cor =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">loadings</span>(acp) <span class="co"># chargements</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">biplot</span>(acp) <span class="co"># bigramme</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/fig-biplot_a4aa1393bae457218f3e05a0eaec6b6d">
+<div class="cell-output-display">
+<div id="fig-biplot" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="02-analysefactorielle_files/figure-html/fig-biplot-1.png" class="img-fluid figure-img" style="width:60.0%"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.4: Bigramme: nuage de point des coordonnées des deux premières composantes principales et direction selon chargements des variables explicatives originales.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>On peut étudier la sortie pour vérifier les propriétés de notre décomposition. Le <a href="#tbl-eigenvalues">Tableau&nbsp;<span>3.3</span></a> montre la variance de chaque composante principale. Si on additionne l’ensemble des variances (sans arrondir), on obtient une variance cumulative des 12 composantes principales, 12, soit le même que le nombre de variables explicatives puisque les variables standardisées ont variance unitaire. Si on calcule la matrice de corrélation, <code>cor(acp$scores)</code>, on remarquera que la corrélation est nulle entre les variables.</p>
+<div class="cell" data-layout-align="center" data-tbl-align="center" data-hash="02-analysefactorielle_cache/html/tbl-eigenvalues_4abb1b12e4ba93508685a0c84208bf8e">
+<div class="cell-output-display">
+<div id="tbl-eigenvalues" class="anchored">
+
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;3.3:  Variance des composantes principales </caption>
+ <thead>
+  <tr>
+   <th style="text-align:center;"> C1 </th>
+   <th style="text-align:center;"> C2 </th>
+   <th style="text-align:center;"> C3 </th>
+   <th style="text-align:center;"> C4 </th>
+   <th style="text-align:center;"> C5 </th>
+   <th style="text-align:center;"> C6 </th>
+   <th style="text-align:center;"> C7 </th>
+   <th style="text-align:center;"> C8 </th>
+   <th style="text-align:center;"> C9 </th>
+   <th style="text-align:center;"> C10 </th>
+   <th style="text-align:center;"> C11 </th>
+   <th style="text-align:center;"> C12 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:center;"> 2.43 </td>
+   <td style="text-align:center;"> 2.00 </td>
+   <td style="text-align:center;"> 1.94 </td>
+   <td style="text-align:center;"> 1.30 </td>
+   <td style="text-align:center;"> 0.74 </td>
+   <td style="text-align:center;"> 0.69 </td>
+   <td style="text-align:center;"> 0.57 </td>
+   <td style="text-align:center;"> 0.54 </td>
+   <td style="text-align:center;"> 0.51 </td>
+   <td style="text-align:center;"> 0.47 </td>
+   <td style="text-align:center;"> 0.46 </td>
+   <td style="text-align:center;"> 0.36 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<section id="sec-acp-choix" class="level3" data-number="3.4.1">
+<h3 data-number="3.4.1" class="anchored" data-anchor-id="sec-acp-choix"><span class="header-section-number">3.4.1</span> Choix du nombre de composantes principales</h3>
+<p>Si on désire réduire la dimension, il nous faudra choisir <span class="math inline">\(k \leq p\)</span> variables. Cette section traite du choix du nombre de variables explicatives à retenir. Idéalement, ce nombre devrait être beaucoup plus petit que le nombre original de variables.</p>
+<p>Une première approche est de regarder le pourcentage de la variance totale expliquée. Puisque les composantes principales sont ordonnées en ordre décroissant de variance, on peut étudier la variance cumulative des <span class="math inline">\(k\)</span> premières composantes et choisir un nombre qui explique le plus possible. Si l’ajout d’une variable augmente peu la variabilité totale expliquée par l’ensemble, alors cette variable est probablement superflue. On pourrait choisir un nombre de composantes pour expliquer un pourcentage prédéfini de la vairance totale, disons 70%. Deux autres critères couramment employés sont:</p>
+<ul>
+<li><strong>critère du coude de Cattell</strong>: ce critère consiste à sélectionner un nombre de composantes dans le diagramme d’éboulis (<code>screeplot</code>), un graphique des variances des composantes principales<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Habituellement, il y a une décroissance rapide de la variance suivie d’un plateau: on prendra le nombre de composantes qui correspond au <span class="math inline">\(k\)</span> juste avant l’apparition du plateau (le début du coude, où il a stabilisation apparente). C’est un critère très subjectif, puisqu’il y a souvent plusieurs plateaux et que la variance peut décroître très lentement. On peut utiliser la fonction <code>screeplot</code> pour obtenir le diagramme d’éboulis mais il est facile de le créer manuellement et le résultat est esthétiquement plus réussi.</li>
+<li><strong>critère des valeurs propres de Kaiser</strong>: un critère basé sur les valeurs propres de la matrice de corrélation. Le nombre de facteurs choisis est le nombre de composantes principales dont la variance est supérieures à 1. L’idée est de garder seulement les facteurs qui expliquent plus de variance qu’une variable individuelle.</li>
+</ul>
+<p>Si on utilise le critère de Kaiser avec les données <code>factor</code>, on conservera 4 composantes principales qui expliqueront 63.9 pourcent de la variance totale des variables originales - voir le <a href="#tbl-eigenvalues">Tableau&nbsp;<span>3.3</span></a>. Le diagramme d’éboulis de la <a href="#fig-screeplot">Figure&nbsp;<span>3.5</span></a>, qui peut être produit avec la fonction <code>hecmulti::eboulis(eigen(cor(factor))</code> suggère quant à lui cinq composantes.</p>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/fig-screeplot_8646fe490d643d3b03d9bfb40fbcbafb">
+<div class="cell-output-display">
+<div id="fig-screeplot" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="02-analysefactorielle_files/figure-html/fig-screeplot-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.5: Diagramme d’éboulis (gauche) représentant la variance des composantes principales (en ordonnée) en fonction du nombre composantes principales (en abscisse). Variance cumulative en fonction du nombre de composantes principales (droite).</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Une fois qu’on a déterminé le nombre de facteurs, on peut extraire les nouvelles variables explicatives à partir de l’analyse en composantes principales. Les colonnes sont stockées dans <code>acp$score</code> et il suffit de conserver les premières colonnes.</p>
+</section>
+<section id="formulation-mathématique" class="level3" data-number="3.4.2">
+<h3 data-number="3.4.2" class="anchored" data-anchor-id="formulation-mathématique"><span class="header-section-number">3.4.2</span> Formulation mathématique</h3>
+<p>Ce complément d’information est optionnel.</p>
+<p>Mathématiquement, le problème de l’analyse en composantes principales revient à calculer la décomposition en valeurs propres et vecteurs propres de la matrice de covariance <span class="math inline">\(\mathsf{Co}(\boldsymbol{X})=\boldsymbol{\Sigma}\)</span>. On peut écrire <span class="math display">\[\begin{align*}
+\boldsymbol{\Sigma} = \boldsymbol{Q}\boldsymbol{\Lambda}\boldsymbol{Q}^\top
+\end{align*}\]</span> où <span class="math inline">\(\boldsymbol{\Lambda} = \mathrm{diag}\{\lambda_1, \ldots, \lambda_p\}\)</span> est une matrice diagonale contenant les valeurs propres en ordre décroissant (<span class="math inline">\(\lambda_1 \geq \cdots \geq \lambda_p &gt; 0\)</span>) et <span class="math inline">\(\boldsymbol{Q}\)</span> est une matrice carrée <span class="math inline">\(p \times p\)</span> orthogonale contenant les vecteurs propres. La meilleure approximation de rang <span class="math inline">\(k \leq p\)</span> de <span class="math inline">\(\boldsymbol{\Sigma}\)</span> est obtenue en spécifiant <span class="math display">\[\begin{align*}
+\widetilde{\boldsymbol{\Sigma}}_k = \sum_{j=1}^k \lambda_j \boldsymbol{q}_j\boldsymbol{q}_j^\top,
+\end{align*}\]</span> une combinaison des vecteurs propres <span class="math inline">\(\boldsymbol{q}_1, \ldots, \boldsymbol{q}_k \in \mathbb{R}^p\)</span> non corrélés.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+En résumé
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>La corrélation mesure la force de la dépendance linéaire entre deux variables: plus elle est élevée, plus les points s’alignent.</li>
+<li>Si le nombre de variables explicatives <span class="math inline">\(p\)</span> est conséquent par rapport au nombre d’observations <span class="math inline">\(n\)</span>, on a peu d’information disponible pour estimer de manière fiable les corrélations.</li>
+<li>Une analyse en composante principales fait une décomposition en valeurs propres/vecteurs propres de la matrice de covariance ou de corrélation.
+<ul>
+<li>Ces nouvelles variables sont orthogonales (corrélation nulle) entre elles.</li>
+<li>Les composantes principales sont ordonnées en ordre décroissant de variance: si on ne conserve que <span class="math inline">\(k&lt;p\)</span> de variables, on maximise la variance expliquée.</li>
+<li>Le choix du nombre de variables est basé sur des règles du pouce: le critère des valeurs propres de Kaiser suggère de prendre autant de composantes principales que de variances supérieures à 1.</li>
+<li>Un bigramme permet de représenter graphiquement les directions des variables en fonction des deux premières composantes principales.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="analyse-factorielle-exploratoire" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="analyse-factorielle-exploratoire"><span class="header-section-number">3.5</span> Analyse factorielle exploratoire</h2>
+<p>Si le bigramme a permis de faire ressortir quelques orientations communes, on aimerait aller plus loin dans notre exploration. On considère encore une fois la matrice de covariance associée avec <span class="math inline">\(p\)</span> variables explicatives <span class="math inline">\(X_1, \ldots, X_p\)</span>: le modèle d’analyse factorielle cherche à décrire cette dernière en fonction d’un plus petit nombre de paramètres.</p>
+<p>Conceptuellement, le modèle d’analyse factorielle suppose qu’on peut regrouper les variables explicatives numériques (parfois avec quelques variables binaires) à l’aide de concepts communs appelés facteurs. Certaines variables explicatives devraient donc idéalement être fortements corrélées entre elles. Le choix des variables est dicté par le bon sens: on inclut dans le modèle des variables qui peuvent logiquement être associée, par exemple des items de questionnaires excluant les données sociodémographiques.</p>
+<p>Le modèle d’analyse factorielle fait l’hypothèse que les variables dépendent linéairement d’un plus petit nombre de variables aléatoires, <span class="math inline">\(F_1, \ldots, F_m\)</span>, appelées facteurs communs. Cette relation n’est pas parfaite, aussi on inclut <span class="math inline">\(p\)</span> termes d’aléas <span class="math inline">\(\varepsilon_1, \ldots, \varepsilon_p\)</span>, de moyenne zéro et de variance <span class="math inline">\(\mathsf{Va}(\varepsilon_i)=\psi_i\)</span> (<span class="math inline">\(i=1, \ldots, p\)</span>). À des fins d’identifiabilité, on suppose que les aléas ne sont pas corrélées aux facteurs <span class="math inline">\(F\)</span> et entre elles et que les facteurs <span class="math inline">\(F_1, \ldots, F_m\)</span> ont une moyenne nulle et une variance unitaire, donc <span class="math inline">\(\mathsf{E}(F_i)=0\)</span> et <span class="math inline">\(\mathsf{Va}(F_i)=1\)</span> (<span class="math inline">\(i=1, \ldots, p\)</span>).</p>
+<p>Le modèle d’analyse factorielle s’écrit <span class="math display">\[\begin{align*}
+\boldsymbol{X} &amp;= \underset{\text{moyenne}}{\boldsymbol{\mu}} + \underset{\text{combinaison linéaire de facteurs latents}}{\boldsymbol{\Gamma}\boldsymbol{F}} + \underset{\text{aléa}}{\boldsymbol{\varepsilon}},
+\end{align*}\]</span> ou si on écrit le système ligne par ligne, <span class="math display">\[\begin{align*}
+X_1 &amp;= \mu_1 + \gamma_{11}F_1 + \gamma_{12} F_2 + \cdots + \gamma_{1m}F_m + \varepsilon_1\\
+X_2 &amp;= \mu_2 + \gamma_{21}F_1 + \gamma_{22} F_2 + \cdots + \gamma_{2m}F_m + \varepsilon_2\\
+&amp;\vdots \\
+X_p &amp;= \mu_p + \gamma_{p1}F_1 + \gamma_{p2} F_2 + \cdots + \gamma_{pm}F_m + \varepsilon_p,
+\end{align*}\]</span> où <span class="math inline">\(\mu_i\)</span> est l’espérance (moyenne théorique) de la variable aléatoire <span class="math inline">\(X_i\)</span>, <span class="math inline">\(\boldsymbol{\Gamma}\)</span> est une matrice <span class="math inline">\(p \times m\)</span> avec éléments <span class="math inline">\(\gamma_{ij}\)</span>, qui représentent le chargement (poids) de la variable <span class="math inline">\(X_i\)</span> sur le facteur <span class="math inline">\(F_j\)</span> (<span class="math inline">\(i=1, \ldots, p\)</span>; <span class="math inline">\(j=1, \ldots, m\)</span>).</p>
+<p>Les espérances (<span class="math inline">\(\mu_i\)</span>), les chargements (<span class="math inline">\(\gamma_{ij}\)</span>) et les variances (<span class="math inline">\(\psi_i\)</span>) sont des quantités fixes, mais inconnues, tandis que les facteurs communs (<span class="math inline">\(F_i\)</span>) et les aléas (<span class="math inline">\(\varepsilon_i\)</span>) sont des variables aléatoires non observables.</p>
+<p>Selon ce modèle, on obtient <span class="math display">\[\begin{align*}
+\mathsf{Va}(\boldsymbol{X}) &amp;= \boldsymbol{\Gamma}\mathsf{Va}(\boldsymbol{F})\boldsymbol{\Gamma}^\top + \mathsf{Va}(\boldsymbol{\varepsilon})\\
+&amp; = \boldsymbol{\Gamma}\boldsymbol{\Gamma}^\top + \mathrm{diag}(\boldsymbol{\psi}).
+\end{align*}\]</span> Les éléments diagonaux de cette matrice sont <span class="math inline">\(\mathsf{Va}(X_j) = \sum_{l=1}^k \gamma_{jl}^2 + \psi_j\)</span>: on appelle <strong>communalité</strong> le terme <span class="math inline">\(h_j = \sum_{l=1}^k \gamma_{jl}^2\)</span>, qui représente la proportion de variance totale de <span class="math inline">\(X_j\)</span> due à la corrélation entre les facteurs. Le terme <span class="math inline">\(\psi_j\)</span> est dénommé <strong>unicité</strong>.</p>
+<p>Si les variables ont été préalablement standardisées de telle sorte que <span class="math inline">\(\mathsf{E}(X_i)=0\)</span> et <span class="math inline">\(\mathsf{Va}(X_i)=1\)</span> (ce qui revient à utiliser la matrice de corrélation des observations dans l’analyse), alors <span class="math inline">\(\mathsf{Cor}(X_i, F_j)=\gamma_{ij}\)</span>, c’est-à-dire, le chargement de la variable <span class="math inline">\(X_i\)</span> sur le facteur <span class="math inline">\(F_j\)</span> est le coefficient de corrélation entre les deux.</p>
+<p>Sans aucune contrainte sur le modèle, la matrice de covariance de <span class="math inline">\(X_1, \ldots, X_p\)</span> possède <span class="math inline">\(p(p+1)/2\)</span> paramètres, soit <span class="math inline">\(p\)</span> variances et <span class="math inline">\(p(p-1)/2\)</span> termes de corrélation. Avec le modèle d’analyse factorielle, on suppose que l’on peut décrire cette structure en utilisant seulement <span class="math inline">\(p(m+1) - m(m-1)/2\)</span> paramètres<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. Par exemple, avec <span class="math inline">\(p=50\)</span> variables explicatives et <span class="math inline">\(m=6\)</span> facteurs, on essaie de décrire la structure de covariance à l’aide de 350 paramètres au lieu de 1275.</p>
+<p>Pour faire une analyse factorielle, la taille d’échantillon devrait être quand même conséquente: le nombre d’entrées dans la base de données est <span class="math inline">\(np\)</span> et ce nombre représente la quantité d’unités (information) disponible pour estimer les covariances. Plusieurs références suggèrent d’avoir une taille d’échantillon entre cinq et 20 fois le fois le nombre de variables, ou bien un nombre minimal de 100 à 1000 observations. Des études de simulations suggèrent que la taille critique dépend des paramètres, communalités, distribution des données, etc. Ces règles du pouce sont donc essentiellement arbitraires.</p>
+<p>Il existe plusieurs méthodes pour extraire les facteurs, c’est-à-dire pour estimer les paramètres du modèle (les <span class="math inline">\(\psi_i\)</span> et les <span class="math inline">\(\gamma_{ij}\)</span>). Nous allons discuter de deux d’entre elles: la méthode du maximum de vraisemblance et la méthode des composantes principales. L’avantage de l’estimation par maximum de vraisemblance est qu’elle permet l’utilisation de critères d’information et de statistiques de tests pour guider le choix du nombre de facteurs, en supposant toutefois la normalité des facteurs et des aléas.</p>
+<section id="rotation-des-facteurs" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="rotation-des-facteurs"><span class="header-section-number">3.5.1</span> Rotation des facteurs</h3>
+<p>Dans le modèle d’analyse factorielle, on peut montrer que, lorsqu’il y a deux facteurs ou plus, il existe plusieurs configurations de facteurs qui donnent la même structure de covariance. En fait, les chargements peuvent seulement être déterminés à une transformation orthogonale près<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>. Si les chargements provenant d’une méthode d’extraction des facteurs ne sont pas uniques, la matrice de corrélation estimée par le modèle est par contre unique.</p>
+<p>Il existe plusieurs techniques de rotation de facteurs. Le but de ces techniques est d’essayer de trouver une solution qui fera en sorte que les facteurs seront facilement interprétables. La méthode la plus utilisée est la méthode <strong>varimax</strong>: elle produit une configuration de chargement en maximisant la variance de la somme des carrés des chargements pour les <span class="math inline">\(m\)</span> facteurs.</p>
+<p>La méthode varimax tend à produire une configuration de facteurs tel que les chargements de chaque variable sont dispersés (des chargements élevés positifs ou négatifs et d’autres presque nuls). Il est conseillé de toujours tenter d’interpréter la solution avec une rotation varimax. Si ce n’est pas suffisamment clair, il existe d’autres méthodes de rotation dont certaines (les rotations de type oblique) permettent la présence de corrélation entre les facteurs.</p>
+<section id="estimation-par-la-méthode-des-composantes-principales" class="level4" data-number="3.5.1.1">
+<h4 data-number="3.5.1.1" class="anchored" data-anchor-id="estimation-par-la-méthode-des-composantes-principales"><span class="header-section-number">3.5.1.1</span> Estimation par la méthode des composantes principales</h4>
+<p>La façon la plus simple d’estimer les chargements est d’utiliser la méthode des composantes principales en prenant comme estimation <span class="math display">\[\begin{align*}
+\widehat{\boldsymbol{\Gamma}} = \boldsymbol{Q}_{1:m} \mathrm{diag}(\lambda_1^{1/2}, \ldots, \lambda_m^{1/2}),
+\end{align*}\]</span> où <span class="math inline">\(\lambda_j\)</span> est la <span class="math inline">\(j\)</span>e plus grande valeur propre de la matrice de covariance empirique <span class="math inline">\(\mathbf{S}\)</span> et <span class="math inline">\(\boldsymbol{Q}_{1:m}\)</span> est la sous-matrice formée par les <span class="math inline">\(m\)</span> premières colonnes de vecteurs propres de <span class="math inline">\(\boldsymbol{Q}\)</span>. On peut estimer les variances des aléas à travers <span class="math display">\[\begin{align*}
+\widehat{\boldsymbol{\psi}} = \mathrm{diag}\left(\mathbf{S} - \widehat{\boldsymbol{\Gamma}}\widehat{\boldsymbol{\Gamma}}^\top\right).
+\end{align*}\]</span> L’avantage de cette approche est que l’on peut utiliser la même décomposition en valeurs propres et vecteurs propres pour chaque valeur de <span class="math inline">\(m\)</span>: seule la rotation dépend de la dimension choisie. La solution est également toujours valide avec la garantie que <span class="math inline">\(\widehat{\psi}_j&gt;0\)</span>. On peut utiliser la discussion de la <a href="#sec-acp-choix"><span>Section&nbsp;3.4.1</span></a> pour choisir le nombre de variables.</p>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/acp-factor_ed067ea5088d7f340b21dc08f4c3020b">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Solution (chargements) avec rotation varimax</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>facto_cp <span class="ot">&lt;-</span> hecmulti<span class="sc">::</span><span class="fu">factocp</span>(factor, <span class="at">nfact =</span> <span class="st">"kaiser"</span>, <span class="at">cor =</span> <span class="cn">TRUE</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="estimation-par-maximum-de-vraisemblance" class="level4" data-number="3.5.1.2">
+<h4 data-number="3.5.1.2" class="anchored" data-anchor-id="estimation-par-maximum-de-vraisemblance"><span class="header-section-number">3.5.1.2</span> Estimation par maximum de vraisemblance</h4>
+<p>Si on suppose que les aléas et les facteurs suivent des lois Gaussiennes, alors on peut obtenir une forme explicite pour la fonction de vraisemblance de la matrice de covariance. L’estimation des paramètres requiert une optimisation numérique qui est souvent difficile et qui mène parfois à des solutions paradoxales. On obtient un cas de quasi-Heywood quand <span class="math inline">\(h_j=1\)</span> pour une variable <span class="math inline">\(j\)</span>, (on parle de cas de Heywood si <span class="math inline">\(h_j &gt; 1\)</span>). Si on modélise des variables explicatives centrées réduites, <span class="math inline">\(\mathsf{Va}(X_j)=1\)</span>, d’où un problème d’interprétation car le terme <span class="math inline">\(\psi_j\)</span> serait nul (cas de quasi-Heywood) ou négatif (cas de Heywood) alors même que ce terme représente la variance du <span class="math inline">\(j\)</span>e aléa. Les cas de quasi-Heywood ont plusieurs causes, lesquelles sont listées dans la <a href="https://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm#statug_factor_sect022.htm">documentation <strong>SAS</strong></a>. Souvent, c’est dû à l’utilisation d’un trop petit ou trop grand nombre de facteurs ou une taille d’échantillon trop petite, etc. Cela complique l’interprétation et nous amène à questionner la validité du modèle d’analyse factorielle comme simplification de la structure de covariance.</p>
+<p>Les chargements estimés pour la solution à quatre facteurs, suite à la rotation varimax, sont obtenus avec le code suivant:</p>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/factanal4_0ec5cf3ce41447c5a3d06d71a443ea51">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajuster le modèle factoriel par maximum de vraisemblance</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fa4 <span class="ot">&lt;-</span> <span class="fu">factanal</span>(<span class="at">x =</span> factor, </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">factors =</span> 4L)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprimer les chargements en omettant les valeurs inférieures à 0.3</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fa4<span class="sc">$</span>loadings, </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">cutoff =</span> <span class="fl">0.3</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/tbl-factanal4_5fc130322b88093ed5c2144af0bb3fd9">
+<div class="cell-output-display">
+<div id="tbl-factanal4" class="anchored">
+
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;3.4:  Estimés des chargements (multipliés par 100) pour le modèle à quatres facteurs avec rotation varimax estimé à l’aide de la méthode du maximum de vraisemblance. Les chargements inférieurs à 0.3 sont omis. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> F1 </th>
+   <th style="text-align:right;"> F2 </th>
+   <th style="text-align:right;"> F3 </th>
+   <th style="text-align:right;"> F4 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> x1 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 99 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x2 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 67 </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x3 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 75 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x4 </td>
+   <td style="text-align:right;"> 71 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x5 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 37 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x6 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 51 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x7 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 75 </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x8 </td>
+   <td style="text-align:right;"> 79 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x9 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 63 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x10 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 66 </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x11 </td>
+   <td style="text-align:right;"> 71 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x12 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 61 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>On constate à la lecture du <a href="#tbl-factanal4">Tableau&nbsp;<span>3.4</span></a> des chargements que le chargement associé à la première variable est de 0.992 pour le facteur 4: cela correspondrait à un facteur avec une corrélation de presque un, donc <span class="math inline">\(F_4 \approx X_1\)</span>. Le modèle obtenu avec la méthode du maximum de vraisemblance n’est donc pas adéquat puisque l’optimisation a convergée vers un cas de quasi-Heywood et que le facteur n’est pas une variable latente, mais une des variables de la base de données de départ. Pour diagnostiquer le tout, on peut aussi analyser les valeurs d’unicité: la minimum de <code>min(fa4$uniqueness)</code> est 0.005, ce qui correspond à la tolérance de l’algorithme (valeur minimale permise dans l’optimisation), voir <code>?factanal</code>. On retourne à la planche à dessin en réduisant le nombre de variables.</p>
+<p>En général, on associe une variable à un groupe (facteur) si son chargement est supérieur à 0.3 (en valeur absolue), ce qui donne</p>
+<ul>
+<li>Facteur 1: <span class="math inline">\(X_4\)</span>, <span class="math inline">\(X_8\)</span> et <span class="math inline">\(X_{11}\)</span></li>
+<li>Facteur 2: <span class="math inline">\(X_3\)</span>, <span class="math inline">\(X_6\)</span>, <span class="math inline">\(X_9\)</span> et <span class="math inline">\(X_{12}\)</span></li>
+<li>Facteur 3: <span class="math inline">\(X_2\)</span>, <span class="math inline">\(X_7\)</span> et <span class="math inline">\(X_{10}\)</span></li>
+<li>Facteur 4: <span class="math inline">\(X_1\)</span> et <span class="math inline">\(X_5\)</span>.</li>
+</ul>
+<p>Ce point de coupure est arbitraire et peut être augmenté si on note qu’il y a trop de variables disparates. Le signe des chargements est arbitraires.</p>
+<p>Ces facteurs sont interprétables:</p>
+<ul>
+<li>Le facteur 1 représente l’importance accordée au service.</li>
+<li>Le facteur 2 représente l’importance accordée aux produits.</li>
+<li>Le facteur 3 représente l’importance accordée à la facilité de paiement.</li>
+<li>Le facteur 4 représente l’importance accordée aux prix.</li>
+</ul>
+<p>Dans cet exemple, les choses se sont bien passées et le nombre de facteurs que nous avons spécifié semble être adéquat (hormis le cas de quasi-Heywood), mais ce n’est pas toujours aussi évident. Il est utile d’avoir des outils pour guider le choix du nombre de facteurs.</p>
+</section>
+</section>
+<section id="choix-du-nombre-de-facteurs" class="level3" data-number="3.5.2">
+<h3 data-number="3.5.2" class="anchored" data-anchor-id="choix-du-nombre-de-facteurs"><span class="header-section-number">3.5.2</span> Choix du nombre de facteurs</h3>
+<p>Il existe différentes méthodes pour se guider dans le nombre de facteurs, <span class="math inline">\(m\)</span>, à utiliser. Cependant, le point important à retenir est que, peu importe le nombre choisi, il faut que les facteurs soient <strong>interprétables</strong>. Par conséquent, les méthodes qui suivent ne devraient servir que de guide et non pas être suivies aveuglément. La méthode du maximum de vraisemblance que nous avons utilisée dans l’exemple possède l’avantage de fournir trois critères pour choisir le nombre de facteurs appropriés. Ces critères sont:</p>
+<ul>
+<li>le critère d’information d’Akaike (AIC)</li>
+<li>le critère d’information bayésien de Schwarz (BIC)</li>
+<li>le test du rapport de vraisemblance pour l’hypothèse nulle que le modèle de corrélation décrit le modèle factoriel avec <span class="math inline">\(m\)</span> facteurs est adéquat, contre l’alternative qu’il n’est pas adéquat.</li>
+</ul>
+<p>Les critères d’information servent à la sélection de modèles; ils seront traités plus en détail dans les chapitres qui suivent. Pour l’instant, il est suffisant de savoir que le modèle avec la valeur du critère AIC (ou BIC) la plus petite est considéré le « meilleur » (selon ce critère).</p>
+<p>Le paquet <code>hecmulti</code> contient des méthodes pour extraire la log-vraisemblance, les critères d’information pour un modèle d’analyse factorielle (objet de classe <code>factanal</code>). On peut extraire la valeur-<span class="math inline">\(p\)</span> pour le test du rapport de vraisemblance comparant le modèle à 12 variables (corrélation empirique) avec le modèle simplifié obtenu en utilisant quatre facteurs: une valeur-<span class="math inline">\(p\)</span> supérieur à un seuil prédéfini (typiquement <span class="math inline">\(\alpha=0.05\)</span>) indique que la simplification est adéquate puisqu’on ne rejette pas l’hypothèse nulle. La sortie suivante dans le <a href="#tbl-emvcrit">Tableau&nbsp;<span>3.5</span></a> présente les diagnostics du modèle en fonction du nombre de facteurs pour les modèles ajustés selon la méthode du maximum de vraisemblance.</p>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/emv-criteres_7e539078dc08a95505d4d9e0cd5c0556">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hecmulti)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ajustement_factanal</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">covmat =</span> <span class="fu">cov</span>(factor),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">factors =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">n.obs =</span> <span class="fu">nrow</span>(factor))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/tbl-emvcrit_a00534b47f87ede1c062ac0ad1ad790b">
+<div class="cell-output-display">
+<div id="tbl-emvcrit" class="anchored">
+
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;3.5:  Ajustement de modèles d’analyse factorielle par la méthode du maximum de vraisemblance pour différent nombres de facteurs: critères d’informations AIC et BIC, valeur-p du test de rapport de vraisemblance, nombre de paramètres estimés et indicateur pour les cas de (quasi)-Heywood </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> k </th>
+   <th style="text-align:right;"> AIC </th>
+   <th style="text-align:right;"> BIC </th>
+   <th style="text-align:left;"> valeur-p </th>
+   <th style="text-align:right;"> npar </th>
+   <th style="text-align:right;"> heywood </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 2267 </td>
+   <td style="text-align:right;"> 2346 </td>
+   <td style="text-align:left;"> &lt; 2e-16 </td>
+   <td style="text-align:right;"> 24 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 2138 </td>
+   <td style="text-align:right;"> 2253 </td>
+   <td style="text-align:left;"> &lt; 2e-16 </td>
+   <td style="text-align:right;"> 35 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 2017 </td>
+   <td style="text-align:right;"> 2166 </td>
+   <td style="text-align:left;"> 0.09604 </td>
+   <td style="text-align:right;"> 45 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 2003 </td>
+   <td style="text-align:right;"> 2181 </td>
+   <td style="text-align:left;"> 0.97262 </td>
+   <td style="text-align:right;"> 54 </td>
+   <td style="text-align:right;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 5 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 2013 </td>
+   <td style="text-align:right;"> 2217 </td>
+   <td style="text-align:left;"> 0.97445 </td>
+   <td style="text-align:right;"> 62 </td>
+   <td style="text-align:right;"> 1 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Le nombre de facteurs à utiliser selon le AIC est 4, versus 3 selon le BIC. Le nombre mimimal de critères selon le test du rapport de vraisemblance est NA. Ainsi, on retient la solution à trois facteurs dans tous les cas: cette adéquation entre les critères est l’exception plutôt que la règle.</p>
+<p>Il faut garder en tête que l’estimation par maximum de vraisemblance du modèle d’analyse factorielle est très sensible à l’initialisation: on peut aussi parfois obtenir des valeurs différentes selon les logiciels. Cette fragilité, couplée à la haute fréquence de cas de Heywood, fait en sorte que je préfère utiliser la méthode des composantes principales pour l’estimation.</p>
+<p>On peut considérer le modèle avec trois facteurs: les chargements (après rotation varimax) sont données dans le <a href="#tbl-factanal3">Tableau&nbsp;<span>3.6</span></a></p>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/tbl-factanal3_cdfc33c23b20bdeb6cd4ad7f93d491bc">
+<div class="cell-output-display">
+<div id="tbl-factanal3" class="anchored">
+
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;3.6:  Estimés des chargements (multipliés par 100) pour le modèle à trois facteurs avec rotation varimax estimé à l’aide de la méthode du maximum de vraisemblance. Les chargements inférieurs à 0.3 sont omis. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> F1 </th>
+   <th style="text-align:right;"> F2 </th>
+   <th style="text-align:right;"> F3 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> x1 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x2 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 67 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x3 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 76 </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x4 </td>
+   <td style="text-align:right;"> 71 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x5 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x6 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 50 </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x7 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 75 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x8 </td>
+   <td style="text-align:right;"> 79 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x9 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 63 </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x10 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 67 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x11 </td>
+   <td style="text-align:right;"> 72 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x12 </td>
+   <td style="text-align:right;">  </td>
+   <td style="text-align:right;"> 60 </td>
+   <td style="text-align:right;">  </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Cette solution récupère les trois facteurs <em>service</em>, <em>produits</em> et <em>paiement</em> de la solution précédente à quatre facteurs. Le facteur <em>prix</em> (qui était formé de <span class="math inline">\(X_1\)</span> et <span class="math inline">\(X_5\)</span>) n’est plus présent.</p>
+<p>On suggère d’utiliser les trois critères découlant de l’utilisation de la vraisemblance et de déterminer le nombre de facteurs à extraire selon différents critères avant d’examiner les modèles avec ce nombre de facteurs et ceux avec un facteur de moins ou de plus. Au final, le plus important est de pouvoir interpréter raisonnablement les facteurs: la configuration de facteurs choisie est logique et compréhensible.</p>
+</section>
+<section id="construction-déchelles-à-partir-des-facteurs" class="level3" data-number="3.5.3">
+<h3 data-number="3.5.3" class="anchored" data-anchor-id="construction-déchelles-à-partir-des-facteurs"><span class="header-section-number">3.5.3</span> Construction d’échelles à partir des facteurs</h3>
+<p>Si le seul but de l’analyse factorielle est de comprendre la structure de corrélation entre les variables, alors se limiter à l’interprétation des facteurs est suffisant.</p>
+<p>Si par contre, le but est de réduire le nombre de variables pour pouvoir par la suite procéder à d’autres analyses statistiques, l’analyse factorielle peut alors servir de guide pour construire de nouvelles variables (échelles). En supposant que l’analyse factorielle a produit des facteurs qui sont interprétables et satisfaisants, la méthode de construction d’échelles la plus couramment utilisée consiste à construire <span class="math inline">\(m\)</span> nouvelles variables, une par facteur. Pour un facteur donné, la nouvelle variable est simplement la moyenne des variables ayant des chargements élevés sur ce facteur. Une autre méthode, les scores factoriels, sera présentée plus loin. Il est important que les corrélations soient de même signe si on veut regrouper les variables dans les échelles pour que ce regroupement soit logique: certaines questions avec des échelles de Likert ont parfois un encodage inverse comme test d’attention.</p>
+<p>Est-il logique de calculer des échelles avec autre chose que des items de questionnaire ramenés sur une plage commune? Par forcément… Il faut aussi s’assurer que les variables ont la même plage ou étendue avant des les combiner, sinon certaines variables seront des poids plumes et seule la variable avec la plus grande étendue ressortira.</p>
+<p>Lorsqu’on construit une échelle, il est important d’examiner sa cohérence interne. Ceci peut être fait à l’aide du coefficient alpha de Cronbach. Ce coefficient mesure à quel point chaque variable faisant partie d’une échelle est corrélée avec le total de toutes les variables pour cette échelle. Plus le coefficient est élevé, plus les variables ont tendance à être corrélées entre elles. L’alpha de Cronbach est <span class="math display">\[\begin{align*}
+\alpha=\frac{k}{k-1} \frac{S^2-\sum_{i=1}^k S_i^2}{S^2},
+\end{align*}\]</span> où <span class="math inline">\(k\)</span> est le nombre de variables dans l’échelle, <span class="math inline">\(S^2\)</span> est la variance empirique de la somme des variables et <span class="math inline">\(S_i^2\)</span> est la variance empirique de la <span class="math inline">\(i\)</span>e variable. En pratique, on voudra que ce coefficient soit au moins égal à 0.6 pour être satisfait de la cohérence interne de l’échelle.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
+<p>Le paquet <code>hecmulti</code> contient une fonction, <code>alphaC</code>, pour faire l’estimation du <span class="math inline">\(\alpha\)</span> de Cronbach</p>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/alphaCronbach_2cb8d349b3b09a7ec5448fd5f7fc4e83">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Création des échelles</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ech_service <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(factor[,<span class="fu">c</span>(<span class="st">"x4"</span>,<span class="st">"x8"</span>,<span class="st">"x11"</span>)])</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>ech_produit <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(factor[,<span class="fu">c</span>(<span class="st">"x3"</span>,<span class="st">"x6"</span>,<span class="st">"x9"</span>,<span class="st">"x12"</span>)])</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>ech_paiement <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(factor[,<span class="fu">c</span>(<span class="st">"x2"</span>,<span class="st">"x7"</span>,<span class="st">"x10"</span>)])</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>ech_prix <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(factor[,<span class="fu">c</span>(<span class="st">"x1"</span>,<span class="st">"x5"</span>)])</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Cohérence interne (alpha de Cronbach)</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">alphaC</span>(factor[,<span class="fu">c</span>(<span class="st">"x4"</span>,<span class="st">"x8"</span>,<span class="st">"x11"</span>)])</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">alphaC</span>(factor[,<span class="fu">c</span>(<span class="st">"x3"</span>,<span class="st">"x6"</span>,<span class="st">"x9"</span>,<span class="st">"x12"</span>)])</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="fu">alphaC</span>(factor[,<span class="fu">c</span>(<span class="st">"x2"</span>,<span class="st">"x7"</span>,<span class="st">"x10"</span>)])</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">alphaC</span>(factor[,<span class="fu">c</span>(<span class="st">"x1"</span>,<span class="st">"x5"</span>)])</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/tbl-alphaCronbach_81f72d5b19f5b290e9348391f4de6732">
+<div class="cell-output-display">
+<div id="tbl-alphaCronbach" class="anchored">
+
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;3.7:  Coefficient alpha de Cronbach pour les quatre échelles formées. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> service </th>
+   <th style="text-align:right;"> produit </th>
+   <th style="text-align:right;"> paiement </th>
+   <th style="text-align:right;"> prix </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 0.781 </td>
+   <td style="text-align:right;"> 0.718 </td>
+   <td style="text-align:right;"> 0.727 </td>
+   <td style="text-align:right;"> 0.546 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Ainsi, les <span class="math inline">\(\alpha\)</span> de Cronbach sont tous satisfaisants (plus grand que 0.6) sauf pour le facteur <em>prix</em> (0.546). Tout est donc cohérent. Les échelles provenant des facteurs <em>service</em>, <em>produits</em> et <em>paiement</em>, sont satisfaisantes. Ces facteurs sont identifiés à la fois dans la solution à quatre, mais aussi dans la solution à trois facteurs. Le facteur <em>prix</em> est celui qui apparaît en plus dans la solution à quatre facteurs. Il a une interprétation claire (c’est essentiellement <code>x1</code>), mais son faible <span class="math inline">\(\alpha\)</span> ferait en sorte qu’il serait discutable de travailler avec l’échelle <em>prix</em> dans d’autres analyses (du moins avec selon l’usage habituel du <span class="math inline">\(\alpha\)</span>) plutôt que d’utiliser directement la variable <code>x1</code>.</p>
+</section>
+</section>
+<section id="compléments-dinformation" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="compléments-dinformation"><span class="header-section-number">3.6</span> Compléments d’information</h2>
+<section id="variables-ordinales" class="level3" data-number="3.6.1">
+<h3 data-number="3.6.1" class="anchored" data-anchor-id="variables-ordinales"><span class="header-section-number">3.6.1</span> Variables ordinales</h3>
+<p>Théoriquement, une analyse factorielle ne devrait être faite qu’avec des variables continues. Par contre, en pratique, on l’utilise souvent aussi avec des variables ordinales (comme pour l’exemple portant sur le questionnaire) et même avec des variables binaires (0-1).</p>
+<p>Dans ce genre de situation, on peut aussi utiliser d’autres mesures d’associations au lieu du coefficient de corrélation linéaire de Pearson. Par exemple, on peut utiliser la corrélation polychorique, qui est une mesure de corrélation entre deux variables ordinales. La corrélation tétrachorique correspond au cas spécial de deux variables binaires.</p>
+<p>Ma suggestion est d’utiliser la corrélation linéaire ordinaire avec des variables ordinales (même binaires). Si les résultats ne sont pas satisfaisants, on peut alors essayer avec d’autres mesures d’associations.</p>
+</section>
+<section id="autres-méthodes-de-rotation-des-facteurs" class="level3" data-number="3.6.2">
+<h3 data-number="3.6.2" class="anchored" data-anchor-id="autres-méthodes-de-rotation-des-facteurs"><span class="header-section-number">3.6.2</span> Autres méthodes de rotation des facteurs</h3>
+<p>Jusqu’à présent, nous avons utilisé la méthode de rotation orthogonale varimax. Il existe de nombreuses autres méthodes de rotations orthogonales fournies dans le paquet <code>psych</code>. Rappelez-vous que le modèle d’analyse factorielle de base suppose que les facteurs sont non corrélés. Les rotations de type obliques permettent d’introduire de la corrélation entre les facteurs: quelquefois, une telle rotation facilitera davantage l’interprétation des facteurs qu’une rotation orthogonale. Notez qu’il faut être prudent lorsqu’on utilise une méthode de rotation oblique car il y aura trois matrices de chargements après rotation (coefficients de régression normalisés, corrélations semi-partielles ou corrélations). On suggère l’utilisation de la première, soit la représentation avec <strong>coefficients de régression normalisés</strong>. Il s’agit des coefficients de régression si on voulait prédire les variables à l’aide des facteurs. Ils indiquent donc à quel point chaque facteur est associé à chaque variable. Dans le cas d’une rotation orthogonale, ces trois matrices sont les mêmes et il s’agit de trois interprétations valides des chargements.</p>
+</section>
+<section id="scores-factoriels" class="level3" data-number="3.6.3">
+<h3 data-number="3.6.3" class="anchored" data-anchor-id="scores-factoriels"><span class="header-section-number">3.6.3</span> Scores factoriels</h3>
+<p>Avec les données de l’exemple, en nous basant sur les résultats de l’analyse factorielle, nous avons créé quatre nouvelles échelles (une par facteur) que l’on peut calculer pour chaque individu:</p>
+<ul>
+<li><code>service</code> = <span class="math inline">\((X_4+X_8+X_{11})/3\)</span>,</li>
+<li><code>produit</code> = <span class="math inline">\((X_3+X_6+X_9+X_{12})/4\)</span>,</li>
+<li><code>paiement</code> = <span class="math inline">\((X_2+X_7+X_{10})/3\)</span>,</li>
+<li><code>prix</code> = <span class="math inline">\((X_1+X_5)/2\)</span>.</li>
+</ul>
+<p>Par exemple, la variable <em>prix</em> peut donc être vu comme une combinaison linéaire des 12 variables où seulement <span class="math inline">\(X_1\)</span> et <span class="math inline">\(X_5\)</span> reçoivent un poids (égal) différent de zéro. Une autre façon de créer de nouvelles variables consiste à calculer des scores factoriels (un pour chaque facteur) pour chaque individu à partir de la matrice de données centrées et réduite <span class="math inline">\(\mathbf{Z}\)</span> (de telle sorte que la moyenne de chaque colonne soit 0 et la variance 1). Les score factoriel <span class="math display">\[\begin{align*}
+\widehat{F}_{i, k} &amp;= \left[\mathbf{Z}\mathbf{R}^{-1}\widehat{\boldsymbol{\Gamma}}\right]_{ik}\\&amp;=
+\widehat{\beta}_{1, k} z_{i, 1} + \cdots + \widehat{\beta}_{12, k}z_{i, 12}
+\end{align*}\]</span> où <span class="math inline">\(\widehat{\boldsymbol{\Gamma}}\)</span> est la matrice <span class="math inline">\(p \times m\)</span> des chargements, <span class="math inline">\(\mathbf{R}\)</span> la matrice <span class="math inline">\(p \times p\)</span> des corrélation empirique et où <span class="math inline">\(z_{i, 1}, \ldots, z_{i, 12}\)</span> est la <span class="math inline">\(i\)</span>e ligne (observation) de <span class="math inline">\(\mathbf{Z}\)</span>. La matrice <span class="math inline">\(p \times m\)</span> de coefficients <span class="math inline">\(\boldsymbol{\beta} = \mathbf{R}^{-1}\widehat{\boldsymbol{\Gamma}}\)</span>.</p>
+<p>Ainsi, chacune des 12 variables originales contribue au calcul du score factoriel. Les variables ayant des chargements plus élevés sur ce facteur auront tendance à avoir des poids (<span class="math inline">\(\widehat{\gamma}\)</span>) plus élevés. Par contre, les scores factoriels ne sont pas uniques car ils dépendent des chargements utilisés (et donc à la fois de la méthode d’estimation et de la méthode de rotation). On peut également utiliser les scores factoriels au lieu des 12 variables originales dans des analyses subséquentes. Il est suggéré d’utiliser les nouvelles variables (échelles) obtenues en faisant les moyennes des variables identifiées comme faisant partie de chaque facteur pour les raisons suivantes:</p>
+<ul>
+<li>l’interprétation des scores factoriels est moins claire (chaque facteur dépend de toutes les variables)</li>
+<li>les scores factoriels ne sont pas uniques (ils dépendent de la méthode d’estimation et de rotation).</li>
+<li>les coefficients servant au calcul seront différents d’une étude à l’autre.</li>
+</ul>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/tbl-scores_974eb22b96421403e41439111443d9bd">
+<div class="cell-output-display">
+<div id="tbl-scores" class="anchored">
+
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;3.8:  Coefficients du score (modèle de régression, maximum de vraisemblance) pour le modèle d’analyse factorielle à quatre facteurs. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> facteur 1 </th>
+   <th style="text-align:right;"> facteur 2 </th>
+   <th style="text-align:right;"> facteur 3 </th>
+   <th style="text-align:right;"> facteur 4 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> x1 </td>
+   <td style="text-align:right;"> 0.03 </td>
+   <td style="text-align:right;"> 0.05 </td>
+   <td style="text-align:right;"> 0.04 </td>
+   <td style="text-align:right;"> 1.01 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x2 </td>
+   <td style="text-align:right;"> -0.05 </td>
+   <td style="text-align:right;"> 0.01 </td>
+   <td style="text-align:right;"> 0.31 </td>
+   <td style="text-align:right;"> 0.01 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x3 </td>
+   <td style="text-align:right;"> 0.01 </td>
+   <td style="text-align:right;"> 0.45 </td>
+   <td style="text-align:right;"> -0.02 </td>
+   <td style="text-align:right;"> 0.01 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x4 </td>
+   <td style="text-align:right;"> 0.30 </td>
+   <td style="text-align:right;"> 0.01 </td>
+   <td style="text-align:right;"> 0.01 </td>
+   <td style="text-align:right;"> 0.03 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x5 </td>
+   <td style="text-align:right;"> 0.00 </td>
+   <td style="text-align:right;"> -0.01 </td>
+   <td style="text-align:right;"> -0.01 </td>
+   <td style="text-align:right;"> 0.00 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x6 </td>
+   <td style="text-align:right;"> -0.01 </td>
+   <td style="text-align:right;"> 0.17 </td>
+   <td style="text-align:right;"> 0.02 </td>
+   <td style="text-align:right;"> 0.00 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x7 </td>
+   <td style="text-align:right;"> -0.01 </td>
+   <td style="text-align:right;"> -0.02 </td>
+   <td style="text-align:right;"> 0.44 </td>
+   <td style="text-align:right;"> 0.02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x8 </td>
+   <td style="text-align:right;"> 0.45 </td>
+   <td style="text-align:right;"> -0.05 </td>
+   <td style="text-align:right;"> 0.04 </td>
+   <td style="text-align:right;"> 0.04 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x9 </td>
+   <td style="text-align:right;"> -0.03 </td>
+   <td style="text-align:right;"> 0.27 </td>
+   <td style="text-align:right;"> -0.02 </td>
+   <td style="text-align:right;"> 0.00 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x10 </td>
+   <td style="text-align:right;"> 0.02 </td>
+   <td style="text-align:right;"> 0.01 </td>
+   <td style="text-align:right;"> 0.30 </td>
+   <td style="text-align:right;"> 0.02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x11 </td>
+   <td style="text-align:right;"> 0.30 </td>
+   <td style="text-align:right;"> 0.00 </td>
+   <td style="text-align:right;"> -0.07 </td>
+   <td style="text-align:right;"> 0.02 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> x12 </td>
+   <td style="text-align:right;"> 0.00 </td>
+   <td style="text-align:right;"> 0.24 </td>
+   <td style="text-align:right;"> 0.00 </td>
+   <td style="text-align:right;"> 0.01 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Les scores factoriels sont obtenus en spécifiant <code>scores = "regression"</code> dans les options de la fonction <code>factanal</code>. Les poids avec le modèle à quatre facteurs sont rapportés dans le <a href="#tbl-scores">Tableau&nbsp;<span>3.8</span></a>. On remarque que</p>
+<ul>
+<li>pour le premier facteur, trois variables ont des poids importants (<span class="math inline">\(X_4\)</span>, <span class="math inline">\(X_8\)</span> et <span class="math inline">\(X_{11}\)</span>). Il s’agit donc d’un facteur très proche du facteur <em>service</em>.</li>
+<li>pour le deuxième facteur, les variables <span class="math inline">\(X_3\)</span>, <span class="math inline">\(X_6\)</span>, <span class="math inline">\(X_9\)</span> et <span class="math inline">\(X_{12}\)</span> ont des poids importants. Il s’agit donc d’un facteur très proche du facteur <em>produits</em>.</li>
+<li>pour le troisième facteur, les variables <span class="math inline">\(X_2\)</span>, <span class="math inline">\(X_7\)</span>, <span class="math inline">\(X_{10}\)</span> ont des poids importants. Il s’agit donc d’un facteur très proche du facteur <em>paiement</em>.</li>
+<li>pour le quatrième facteur, seule la variable <span class="math inline">\(X_1\)</span> a un poids important. On aurait pu s’attendre à ce que ce soit également le cas pour <span class="math inline">\(X_5\)</span>, en lien avec le facteur <em>prix</em> — ce facteur était moins clair selon le alpha de Cronbach.</li>
+</ul>
+<p>Les corrélations entre les échelles (construites avec les moyennes) et les scores factoriels sont données dans le <a href="#tbl-corr-echelles-scores">Tableau&nbsp;<span>3.9</span></a>. On remarque la forte corrélation entre le score factoriel et les échelles construites avec les moyennes pour les facteurs <em>service</em>, <em>produits</em> et <em>paiement</em>. Cela veut dire qu’utiliser les échelles ou les scores factoriels ne devrait pas faire de différence dans des analyses subséquentes. Par contre, cette corrélation est plus faible (0.82) pour le facteur <em>prix</em>.</p>
+<div class="cell" data-layout-align="center" data-hash="02-analysefactorielle_cache/html/tbl-corr-echelles-scores_35043a323b8a6cdd165d6381e0ea6846">
+<div class="cell-output-display">
+<div id="tbl-corr-echelles-scores" class="anchored">
+
+<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;3.9:  Corrélation entre quatre premiers scores (modèle d’analyse factorielle à quatre facteurs) et échelles. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> score 1 </th>
+   <th style="text-align:right;"> score 2 </th>
+   <th style="text-align:right;"> score 3 </th>
+   <th style="text-align:right;"> score 4 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> échelle 1 </td>
+   <td style="text-align:right;"> 0.99 </td>
+   <td style="text-align:right;"> 0.05 </td>
+   <td style="text-align:right;"> 0.03 </td>
+   <td style="text-align:right;"> -0.05 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> échelle 2 </td>
+   <td style="text-align:right;"> 0.05 </td>
+   <td style="text-align:right;"> 0.98 </td>
+   <td style="text-align:right;"> 0.03 </td>
+   <td style="text-align:right;"> -0.04 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> échelle 3 </td>
+   <td style="text-align:right;"> 0.03 </td>
+   <td style="text-align:right;"> 0.05 </td>
+   <td style="text-align:right;"> 0.99 </td>
+   <td style="text-align:right;"> -0.07 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> échelle 4 </td>
+   <td style="text-align:right;"> -0.07 </td>
+   <td style="text-align:right;"> -0.04 </td>
+   <td style="text-align:right;"> -0.08 </td>
+   <td style="text-align:right;"> 0.82 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Étapes de l’analyse factorielle exploratoire
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Déterminer les variables à utiliser dans l’analyse</li>
+<li>Vérifier les prérequis</li>
+<li>Sélectionner une méthode d’estimation et extraire les facteurs</li>
+<li>Déterminer le nombre de facteurs</li>
+<li>Effectuer une rotation des facteurs</li>
+<li>Interpréter les facteurs</li>
+<li>Évaluer la validité du modèle</li>
+</ul>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+En résumé
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>L’analyse factorielle exploratoire fournit un modèle pour la matrice de corrélation
+<ul>
+<li>La solution du problème n’est pas unique: on choisit celle qui permet de mieux séparer les variables.</li>
+<li>Seules les variables numériques pour lesquelles on suspecte une dimension commune sont incluses dans l’analyse.</li>
+<li>On doit avoir beaucoup d’observations (au moins 100, 10 fois plus que de variables) pour estimer le modèle.</li>
+<li>On estime le modèle à l’aide de la méthode des composantes principales (modèle toujours valide et moins coûteux en calcul, mais critères pour la sélection du nombre de facteurs arbitraires) ou du maximum de vraisemblance (optimisation numérique avec solutions fréquemment problématique, critères d’information pour choix du nombre de facteurs).</li>
+<li>Le nombre de facteurs retenu doit donner des regroupements logiques (facteur <em>wow</em>).</li>
+<li>On utilise toujours une rotation orthogonale pour faciliter l’interprétation (varimax par défaut).</li>
+<li>L’interprétation se fait à partir des chargements (corrélation entre variables et facteurs).</li>
+<li>On crée des échelles en prenant la moyenne des variables qui ont un chargement élevés en lien avec un facteur donné (de même signe).</li>
+<li>Les échelles sont cohérentes si le <span class="math inline">\(\alpha\)</span> de Cronbach est supérieur à 0.6, faute de quoi elles sont rejetées.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+
+</section>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Les contraintes sur les poids sont nécessaires afin de standardiser le problème car il serait possible d’avoir des variances infinies sinon.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>La fonction <code>princomp</code> peut directement utiliser la base de données numériques, ou la matrice de covariance. Dans le premier cas, on peut spécifier que l’on veut la décomposition de la matrice de corrélation à l’aide de l’argument, <code>cor</code><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>La différence entre les deux sorties est due à deux choses: <code>princomp</code> utilise la décomposition en valeurs propres avec <span class="math inline">\(n^{-1}\mathbf{X}^\top\mathbf{X}\)</span> pour la matrice de covariance, tandis que <code>prcomp</code> utilise la décomposition en valeurs singulières avec un dénominateur de <span class="math inline">\(n-1\)</span>; cette dernière option est plus stable numériquement. On pourrait aussi utiliser <code>eigen(cor(factor))</code> pour extraire directement la décomposition en valeurs propres/vecteurs propres, mais on n’aurait pas accès aux méthodes pour la visualisation.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Soit les valeurs propres de la matrice de covariance ou corrélation<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Soit <span class="math inline">\(p\)</span> variances spécifiques et <span class="math inline">\(pm\)</span> chargements, moins les contraintes de diagonalisation dues à l’invariance du modèle à des rotations orthogonales.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Une transformation orthogonale est une transformation qui préserve le produit scalaire; elle préserve ainsi toutes les distances et les angles entre deux vecteurs.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>Bien que ce nombre soit arbitraire.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./01-analyseexploratoire.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Analyse exploratoire</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./03-regroupements.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Analyse de regroupements</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center">Tous droits réservés (Denis Larocque, Léo Belzile)</div>
+  </div>
+</footer>
+
+
+
+</body></html>
