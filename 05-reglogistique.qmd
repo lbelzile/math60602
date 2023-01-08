@@ -660,10 +660,12 @@ for(i in seq_len(n)){
    loocv_prob[i] <- predict(mod, newdata = train[i,], type = "response")
 }
 # Histogramme des probabilités prédites par validation croisée avec n groupes
-hist(loocv_prob, 
-     breaks = 25, 
-     xlab = "Probabilité d'achat prédite", 
-     ylab = "densité", main = "")
+ggplot(data = data.frame(x = loocv_prob), aes(x = x, y = after_stat(density))) +
+    geom_histogram(bins = 25) + 
+    labs(x = "probabilité d'achat prédite", 
+         y = "densité") + 
+    scale_y_continuous(expand = c(0,0)) +  
+    scale_x_continuous(expand = c(0,0))
 #  Modèle complet et valeurs prédites
 train_prob <- fitted(glm(data = train, 
                          formula = form, 
@@ -1469,7 +1471,7 @@ Nous reviendrons une dernière fois sur cet exemple dans le chapitre traitant de
 
 
 - La classification est une forme d'apprentissage supervisée.
-- On peut assigner l'observation à la classe la plus plausible, ou déterminer un point de coupure.
+- On peut assigner l'observation à la classe la plus plausible, ou déterminer un point de coupure optimal.
 - Si on a un objectif particulier (fonction de gain), on peut optimiser les profits en assignant une importance différente à chaque scénario.
 - On peut catégoriser les observations dans une matrice de confusion et on peut calculer le taux de bonne classification comme mesure d'adéquation.
 - Dans le cas binaire, on s'intéresse généralement à
@@ -1477,9 +1479,8 @@ Nous reviendrons une dernière fois sur cet exemple dans le chapitre traitant de
    - la sensibilité (proportion de succès correctement classifiés)
    - le taux de faux positifs ou faux négatifs
 - L'aire sous la courbe de la fonction d'efficacité du récepteur (courbe ROC) et le lift donnent une mesure de la qualité des prédictions.
-- L'erreur quadratique moyenne se réduit à calculer le taux de mauvaise classification, qu'on cherche à minimiser. On peut aussi utiliser la vraisemblance comme fonction objective.
-- Les outils pour la sélection de variables couverts précédemment (critères d'information, LASSO, estimation de l'erreur par validation externe ou croisée) sont toujours applicables.
-- Les modèles sont plus coûteux à estimer.
+- L'erreur quadratique moyenne et le taux de mauvaise classification sont équivalents avec des données binaires: on cherche à minimiser ce métrique. On peut aussi utiliser la vraisemblance comme fonction objective.
+- Les outils pour la sélection de variables couverts précédemment (critères d'information, LASSO, estimation de l'erreur par validation externe ou croisée) sont toujours applicables, mais les modèles sont plus coûteux à estimer.
 - Il y a moins d'information disponible avec une variable cible binaire, d'où une incertitude plus prononcée.
 
 :::
