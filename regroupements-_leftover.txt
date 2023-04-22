@@ -1,0 +1,149 @@
+
+### Mesures de similarité
+
+Certains algorithmes utilisent directement une matrice de similarité $\mathbf{S}$ qui encode plutôt l'information à propos des points avoisinants. 
+
+Cette approche sera utilisée lors de la présentation des regroupement spectraux.
+
+On peut transformer une matrice de dissemblance en matrice de similarité (et vice-versa, comme pour la distance de Gower). Il y a néanmoins des matrices et choix de mesures qui ont la particularité de donner des matrices de similarité creuses (c'est-à-dire, qui comporte beaucoup de zéros). Il y a également une relation entre matrices de similarité et graphes (chaque observation est un noeud et on trace une arête entre deux observations si la similarité est non-nulle).
+
+
+Parmi les exemples communs sont les graphes de voisinage $\epsilon$: toute paire d'observation à distance au plus $\epsilon$ se voit assigner un, zéro sinon. La matrice de similarité peut dans ce cas être assimilée à un graphe où chaque observation est un noeud et deux points sont connectés si leur distance est au plus $\epsilon$. 
+
+De la même manière, on pourrait considérer uniquement les $k$ plus proches voisins et mettre $S_{ij}=1$ si l'observation $\mathbf{X}_j$ est un des $k$ plus proches voisins d'observation $\mathbf{X}_i$. Puisque la relation n'est pas nécessairement réciproque (le point $i$ n'est pas nécessairement un des $k$ plus proches voisins de $\mathbf{X}_j$), on pourrait choisir de mettre $S_{ij}=S_{ji}=1$ si les deux sont dans les plus proches voisins, ou un seul des deux, afin d'obtenir une matrice symmétrique.
+
+
+### Regroupements spectraux
+
+Un des principaux problèmes avec les méthodes basées sur les centroïdes et les mélanges de modèles est qu'elle retourne des regroupements convexes. 
+
+Une autre méthode basée sur la dissemblance est celle des regroupements spectraux. L'idée est de construire une matrice de similarité et de considérer le graphe résultant. Cette technique est très coûteuse en calcul et donc réservée à un petit nombre d'observations.
+
+
+On peut considérer une matrice de similarité $\mathbf{S}$ comme base à notre analyse de regroupement. 
+
+
+Notre matrice de similarité représente un graphe, un arrangement où chaque observation est un point (noeud) et ce dernier est connecté à une autre si l'entrée correspondante dans la matrice de similarité est non-nulle. On peut ainsi étudier la connectivité du graphe.
+
+
+L'idée de l'algorithme des regroupements spectraux est qu'on peut découvrir à partir de ce graphe les composantes connectées: si le graphe a $D$ composantes connectées (regroupements), alors la Laplacienne a $D$ valeurs propres nulles. En pratique, les valeurs propres seront plutôt presque nulles; en choisissant un seuil $\epsilon>0$ presque nul, on pourra déterminer le nombre de composantes: il peut être nécessaire d'ordonner les valeurs propres et de chercher pour un point d'inflection. On sélectionnera alors uniquement les $D$ vecteurs propres associés, une étape de réduction de la dimension.
+
+
+1. Construire une matrice de similarité $\mathbf{S}$
+2. Calculer la somme des lignes de $\mathbf{S}$ et créer une matrice diagonale $\mathbf{R}$ à partir du vecteur résultant. Obtenir le Laplacien standardisé $\mathbf{L} = \mathbf{I}_n -\mathbf{R}^{-1/2}\mathbf{S}\mathbf{R}^{-1/2}$.
+3. Calculer la décomposition en valeurs propres et vecteurs propres de $\mathbf{L}$.^[Avec un algorithme adéquat qui exploite la structure si la matrice de similarité est creuse.]
+5. Déterminer le nombre de valeurs propres sous un seuil $\epsilon > 0$.
+6. Conserver les vecteurs propres du Laplacien associées aux petites valeurs propres inférieures au seuil $\varepsilon$.
+
+Une fois cette étape de réduction de la dimension complétée, on peut simplement utiliser la nouvelle base de données résultante et calculer les $K$-moyennes. 
+
+
+```{r}
+#| label: fig-spectclustgraphe
+#| eval: true
+#| echo: false
+#| fig-cap: "Matrice de similarité pour le mélange de données, ordonnées. On distingue clairement les trois regroupements."
+#| fig-width: 5
+#| fig-height: 5
+W <- sClust::compute.similarity.ZP(scale(DF[,1:2]))
+image(W, 
+      yaxt = 'n', 
+      xaxt ='n', 
+      ylim = c(1,0),
+      xlim = c(0,1),
+      col = gray.colors(100, 
+                        start = 1, 
+                        end = 0)
+      )
+```
+
+
+Voici quelques avantages et inconvénients de la méthode spectrale
+
+- le choix de la matrice de similarité (fonction du noyau, etc.) offre énormément de flexibilité et permet de capturer des effets nonlinéaires.
+- le coût du calcul est plus élevé et on transforme la matrice $n \times p$ en matrice $n \times n$ avant de la réduire en matrice $n \times D$: cette étape préliminaire nécessite le stockage d'une matrice carrée $n \times n$ et la décomposition en valeurs propres et vecteurs propres.
+
+
+Si la méthode des $K$-moyennes est populaire pour regrouper les observations avec leurs nouvelles coordonnées en raison du faible temps de calcul, tout algorithme pourrait être employé.
+
+Le paquet `sClust` sur **R** offre une implémentation avec plusieurs algorithmes subséquents. Le paquet `kernlab` et sa fonction `specc` permettent l'emploi de plusieurs types de noyaux.
+
+
+## Analyse exploratoire graphique
+
+Comme c'est le cas avec n'importe quelle analyse statistique, il est utile d'explorer les données graphiquement. On peut parfois réussir à visualiser les groupes d'observations, ce qui nous permettra une fois l'analyse de regroupement complétée de vérifier la qualité de cette dernière. 
+
+On pourrait produire un nuage de points pour chaque paire de variables mais cette idée est problématique pour deux raisons: il y aura beaucoup de graphes si le nombre de variables est grand et on examine seulement les relations bivariées.
+
+On peut utiliser les outils du chapitre précédent et réduire le nombre de variables en considérant plutôt les composantes principales. Dans notre exemple, on va seulement s'en servir comme outil graphique pour une analyse de regroupements en réduisant la dimension afin de permettre la visualisation des regroupements obtenus. Ces dernières pourraient aussi servir de variables pour l'analyse de regroupement: une fois les étiquettes obtenues, il suffirait de calculer les statistiques descriptives sur les variables originales. 
+
+
+```{r}
+#| label: fig-eboulis-cluster
+#| echo: false
+#| out-width: '100%'
+#| fig-align: "center"
+#| fig-cap: "Diagramme d'éboulis de la matrice de corrélation des données `dons` pour les donateurs multiples."
+data(dons, package = "hecmulti")
+dons |>
+  dplyr::filter(ndons > 1) |>
+  cor(use = "pairwise.complete.obs") |>
+  eigen() |>
+  hecmulti::eboulis()
+```
+
+
+# Regroupements spectraux
+# "kernlab", "Spectrum", "HyperG"
+
+# Matrices de similarité
+graphe <- HyperG::epsilon_hypergraph(
+  x = regroupements1,
+  epsilon = 1.2,
+  as.graph = TRUE)
+
+graphe2 <- HyperG::knn_hypergraph(
+  x = regroupements1,
+  k = 5, # nb de voisins
+  method = "Euclidean",
+  reduce = FALSE,
+  as.graph = TRUE)
+
+
+# Similarité vers distance exp(-S) = D
+# Pour Gower ou toute similarité telle que
+#  0 <= S_{ij} <= 1,
+# on peut aussi utiliser D = 1-S^(1/2)
+
+
+library(HyperG)
+graphe <- epsilon_hypergraph(
+  x = DF,
+  epsilon = 1.2,
+  as.graph = TRUE)
+
+graphe2 <- knn_hypergraph(x = DF,
+                          k = 5,
+                          method = "Euclidean",
+                          reduce = FALSE,
+                          as.graph = TRUE)
+# Regroupement spectraux,
+# suivis de mélange de modèles gaussiens via mclust
+rspec <- cluster_spectral(g = graphe2)
+
+# Ou manuellement
+embed <- ase(graphe, laplacian = TRUE)
+
+plot(DF, col = rspec$classification)
+
+library(Matrix)
+S <- as_adjacency_matrix(graphe2)
+n <- nrow(S)
+R <- rowSums(S)^(-0.5)
+Lstd <- diag(n) - diag(R) %*% S %*% diag(R)
+eigenLaplace <- eigen(Lstd)
+newdata <- eigenLaplace$vectors[,eigenLaplace$values < 1e-8]
+
+# Paquet Spectrum
+# Standardiser données, transformer en variables numériques
+test <- Spectrum(as.data.frame(t(as.matrix(DF))), method = 2)
