@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
+<meta name="generator" content="quarto-1.3.433">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -18,9 +18,10 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -47,48 +48,19 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+/* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
 }
-.hanging div.csl-entry {
+.hanging-indent div.csl-entry {
   margin-left:2em;
   text-indent:-2em;
 }
@@ -102,8 +74,7 @@ div.csl-right-inline {
 }
 div.csl-indent {
   margin-left: 2em;
-}
-</style>
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -140,13 +111,15 @@ div.csl-indent {
     "search-more-matches-text": "correspondances de plus dans ce document",
     "search-clear-button-title": "Effacer",
     "search-detached-cancel-button-title": "Annuler",
-    "search-submit-button-title": "Envoyer"
+    "search-submit-button-title": "Envoyer",
+    "search-label": "Search"
   }
 }</script>
 
 <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="css/style.css">
@@ -156,11 +129,16 @@ div.csl-indent {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Régression logistique</span></h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./reglogistique.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Régression logistique</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
   </nav>
@@ -168,103 +146,113 @@ div.csl-indent {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">MATH 60602 - Analyse multidimensionnelle appliquée</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/lbelzile/math60602/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
-    <a href="./MATH60602.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
+    <a href="https://github.com/lbelzile/math60602/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="./MATH60602.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
-      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
         </div>
-      </div>
+        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analyseexploratoire.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Analyse exploratoire</span></a>
+  <a href="./analyseexploratoire.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Analyse exploratoire</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./selectionmodeles.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Sélection de variables et de modèles</span></a>
+  <a href="./selectionmodeles.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Sélection de variables et de modèles</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./reglogistique.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Régression logistique</span></a>
+  <a href="./reglogistique.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Régression logistique</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./survie.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Analyse de survie</span></a>
+  <a href="./survie.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Analyse de survie</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./analysefactorielle.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Réduction de la dimension</span></a>
+  <a href="./analysefactorielle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Réduction de la dimension</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./regroupements.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Analyse de regroupements</span></a>
+  <a href="./regroupements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Analyse de regroupements</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./donneesmanquantes.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Données manquantes</span></a>
+  <a href="./donneesmanquantes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Données manquantes</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link">Références</a>
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Références</span></a>
   </div>
 </li>
     </ul>
     </div>
 </nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table des matières</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="toc-section-number">4.1</span>  Introduction</a></li>
-  <li><a href="#modèle-de-régression-logistique" id="toc-modèle-de-régression-logistique" class="nav-link" data-scroll-target="#modèle-de-régression-logistique"><span class="toc-section-number">4.2</span>  Modèle de régression logistique</a>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">4.1</span> Introduction</a></li>
+  <li><a href="#modèle-de-régression-logistique" id="toc-modèle-de-régression-logistique" class="nav-link" data-scroll-target="#modèle-de-régression-logistique"><span class="header-section-number">4.2</span> Modèle de régression logistique</a>
   <ul class="collapse">
-  <li><a href="#estimation-et-interprétation-des-paramètres" id="toc-estimation-et-interprétation-des-paramètres" class="nav-link" data-scroll-target="#estimation-et-interprétation-des-paramètres"><span class="toc-section-number">4.2.1</span>  Estimation et interprétation des paramètres</a></li>
-  <li><a href="#méthode-du-maximum-de-vraisemblance" id="toc-méthode-du-maximum-de-vraisemblance" class="nav-link" data-scroll-target="#méthode-du-maximum-de-vraisemblance"><span class="toc-section-number">4.2.2</span>  Méthode du maximum de vraisemblance</a></li>
-  <li><a href="#sec-cowboy" id="toc-sec-cowboy" class="nav-link" data-scroll-target="#sec-cowboy"><span class="toc-section-number">4.2.3</span>  Exemple du <em>Professional Rodeo Cowboys Association</em></a></li>
-  <li><a href="#modèle-avec-une-seule-variable-explicative" id="toc-modèle-avec-une-seule-variable-explicative" class="nav-link" data-scroll-target="#modèle-avec-une-seule-variable-explicative"><span class="toc-section-number">4.2.4</span>  Modèle avec une seule variable explicative</a></li>
-  <li><a href="#interprétation-du-paramètre" id="toc-interprétation-du-paramètre" class="nav-link" data-scroll-target="#interprétation-du-paramètre"><span class="toc-section-number">4.2.5</span>  Interprétation du paramètre</a></li>
-  <li><a href="#test-du-rapport-de-vraisemblance" id="toc-test-du-rapport-de-vraisemblance" class="nav-link" data-scroll-target="#test-du-rapport-de-vraisemblance"><span class="toc-section-number">4.2.6</span>  Test du rapport de vraisemblance</a></li>
-  <li><a href="#multicolinéarité" id="toc-multicolinéarité" class="nav-link" data-scroll-target="#multicolinéarité"><span class="toc-section-number">4.2.7</span>  Multicolinéarité</a></li>
+  <li><a href="#estimation-et-interprétation-des-paramètres" id="toc-estimation-et-interprétation-des-paramètres" class="nav-link" data-scroll-target="#estimation-et-interprétation-des-paramètres"><span class="header-section-number">4.2.1</span> Estimation et interprétation des paramètres</a></li>
+  <li><a href="#méthode-du-maximum-de-vraisemblance" id="toc-méthode-du-maximum-de-vraisemblance" class="nav-link" data-scroll-target="#méthode-du-maximum-de-vraisemblance"><span class="header-section-number">4.2.2</span> Méthode du maximum de vraisemblance</a></li>
+  <li><a href="#sec-cowboy" id="toc-sec-cowboy" class="nav-link" data-scroll-target="#sec-cowboy"><span class="header-section-number">4.2.3</span> Exemple du <em>Professional Rodeo Cowboys Association</em></a></li>
+  <li><a href="#modèle-avec-une-seule-variable-explicative" id="toc-modèle-avec-une-seule-variable-explicative" class="nav-link" data-scroll-target="#modèle-avec-une-seule-variable-explicative"><span class="header-section-number">4.2.4</span> Modèle avec une seule variable explicative</a></li>
+  <li><a href="#interprétation-du-paramètre" id="toc-interprétation-du-paramètre" class="nav-link" data-scroll-target="#interprétation-du-paramètre"><span class="header-section-number">4.2.5</span> Interprétation du paramètre</a></li>
+  <li><a href="#test-du-rapport-de-vraisemblance" id="toc-test-du-rapport-de-vraisemblance" class="nav-link" data-scroll-target="#test-du-rapport-de-vraisemblance"><span class="header-section-number">4.2.6</span> Test du rapport de vraisemblance</a></li>
+  <li><a href="#multicolinéarité" id="toc-multicolinéarité" class="nav-link" data-scroll-target="#multicolinéarité"><span class="header-section-number">4.2.7</span> Multicolinéarité</a></li>
   </ul></li>
-  <li><a href="#classification-et-prédiction" id="toc-classification-et-prédiction" class="nav-link" data-scroll-target="#classification-et-prédiction"><span class="toc-section-number">4.3</span>  Classification et prédiction</a>
+  <li><a href="#classification-et-prédiction" id="toc-classification-et-prédiction" class="nav-link" data-scroll-target="#classification-et-prédiction"><span class="header-section-number">4.3</span> Classification et prédiction</a>
   <ul class="collapse">
-  <li><a href="#fonction-defficacité-du-récepteur" id="toc-fonction-defficacité-du-récepteur" class="nav-link" data-scroll-target="#fonction-defficacité-du-récepteur"><span class="toc-section-number">4.3.1</span>  Fonction d’efficacité du récepteur</a></li>
-  <li><a href="#classification-avec-une-matrice-de-gain" id="toc-classification-avec-une-matrice-de-gain" class="nav-link" data-scroll-target="#classification-avec-une-matrice-de-gain"><span class="toc-section-number">4.3.2</span>  Classification avec une matrice de gain</a></li>
-  <li><a href="#courbe-lift" id="toc-courbe-lift" class="nav-link" data-scroll-target="#courbe-lift"><span class="toc-section-number">4.3.3</span>  Courbe lift</a></li>
-  <li><a href="#calibration-du-modèle-et-détection-du-surajustement" id="toc-calibration-du-modèle-et-détection-du-surajustement" class="nav-link" data-scroll-target="#calibration-du-modèle-et-détection-du-surajustement"><span class="toc-section-number">4.3.4</span>  Calibration du modèle et détection du surajustement</a></li>
-  <li><a href="#sélection-de-variables-en-régression-logistique" id="toc-sélection-de-variables-en-régression-logistique" class="nav-link" data-scroll-target="#sélection-de-variables-en-régression-logistique"><span class="toc-section-number">4.3.5</span>  Sélection de variables en régression logistique</a></li>
-  <li><a href="#modèle-heckit" id="toc-modèle-heckit" class="nav-link" data-scroll-target="#modèle-heckit"><span class="toc-section-number">4.3.6</span>  Modèle Heckit</a></li>
+  <li><a href="#fonction-defficacité-du-récepteur" id="toc-fonction-defficacité-du-récepteur" class="nav-link" data-scroll-target="#fonction-defficacité-du-récepteur"><span class="header-section-number">4.3.1</span> Fonction d’efficacité du récepteur</a></li>
+  <li><a href="#classification-avec-une-matrice-de-gain" id="toc-classification-avec-une-matrice-de-gain" class="nav-link" data-scroll-target="#classification-avec-une-matrice-de-gain"><span class="header-section-number">4.3.2</span> Classification avec une matrice de gain</a></li>
+  <li><a href="#courbe-lift" id="toc-courbe-lift" class="nav-link" data-scroll-target="#courbe-lift"><span class="header-section-number">4.3.3</span> Courbe lift</a></li>
+  <li><a href="#calibration-du-modèle-et-détection-du-surajustement" id="toc-calibration-du-modèle-et-détection-du-surajustement" class="nav-link" data-scroll-target="#calibration-du-modèle-et-détection-du-surajustement"><span class="header-section-number">4.3.4</span> Calibration du modèle et détection du surajustement</a></li>
+  <li><a href="#sélection-de-variables-en-régression-logistique" id="toc-sélection-de-variables-en-régression-logistique" class="nav-link" data-scroll-target="#sélection-de-variables-en-régression-logistique"><span class="header-section-number">4.3.5</span> Sélection de variables en régression logistique</a></li>
+  <li><a href="#modèle-heckit" id="toc-modèle-heckit" class="nav-link" data-scroll-target="#modèle-heckit"><span class="header-section-number">4.3.6</span> Modèle Heckit</a></li>
   <li><a href="#description-du-modèle-heckit" id="toc-description-du-modèle-heckit" class="nav-link" data-scroll-target="#description-du-modèle-heckit">Description du modèle Heckit</a></li>
   </ul></li>
-  <li><a href="#modèles-pour-données-multinomiales" id="toc-modèles-pour-données-multinomiales" class="nav-link" data-scroll-target="#modèles-pour-données-multinomiales"><span class="toc-section-number">4.4</span>  Modèles pour données multinomiales</a>
+  <li><a href="#modèles-pour-données-multinomiales" id="toc-modèles-pour-données-multinomiales" class="nav-link" data-scroll-target="#modèles-pour-données-multinomiales"><span class="header-section-number">4.4</span> Modèles pour données multinomiales</a>
   <ul class="collapse">
-  <li><a href="#données-multinomiales" id="toc-données-multinomiales" class="nav-link" data-scroll-target="#données-multinomiales"><span class="toc-section-number">4.4.1</span>  Données multinomiales</a></li>
-  <li><a href="#régression-logistique-multinomiale" id="toc-régression-logistique-multinomiale" class="nav-link" data-scroll-target="#régression-logistique-multinomiale"><span class="toc-section-number">4.4.2</span>  Régression logistique multinomiale</a></li>
-  <li><a href="#régression-logistique-cumulative-à-cotes-proportionnelles" id="toc-régression-logistique-cumulative-à-cotes-proportionnelles" class="nav-link" data-scroll-target="#régression-logistique-cumulative-à-cotes-proportionnelles"><span class="toc-section-number">4.4.3</span>  Régression logistique cumulative à cotes proportionnelles</a></li>
+  <li><a href="#données-multinomiales" id="toc-données-multinomiales" class="nav-link" data-scroll-target="#données-multinomiales"><span class="header-section-number">4.4.1</span> Données multinomiales</a></li>
+  <li><a href="#régression-logistique-multinomiale" id="toc-régression-logistique-multinomiale" class="nav-link" data-scroll-target="#régression-logistique-multinomiale"><span class="header-section-number">4.4.2</span> Régression logistique multinomiale</a></li>
+  <li><a href="#régression-logistique-cumulative-à-cotes-proportionnelles" id="toc-régression-logistique-cumulative-à-cotes-proportionnelles" class="nav-link" data-scroll-target="#régression-logistique-cumulative-à-cotes-proportionnelles"><span class="header-section-number">4.4.3</span> Régression logistique cumulative à cotes proportionnelles</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lbelzile/math60602/edit/master/reglogistique.qmd" class="toc-action">Éditer cette page</a></p></div></div></nav>
@@ -274,7 +262,7 @@ div.csl-indent {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="regression-logistique" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Régression logistique</span></span></h1>
+<h1 class="title"><span id="regression-logistique" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Régression logistique</span></span></h1>
 </div>
 
 
@@ -289,9 +277,6 @@ div.csl-indent {
 
 </header>
 
-<div class="cell" data-file="_common.R" data-hash="reglogistique_cache/html/setup_3bd018b20a58fecf0ae1b258aa7868d5">
-
-</div>
 <section id="introduction" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">4.1</span> Introduction</h2>
 <p>En régression linéaire, on cherche à expliquer le comportement d’une variable quantitative <span class="math inline">\(Y\)</span> que l’on peut traiter comme étant continue (elle peut prendre suffisamment de valeurs différentes).</p>
@@ -325,7 +310,7 @@ Y = \beta_0 + \beta_1\mathrm{X}_1 + \cdots + \beta_p \mathrm{X}_p + \varepsilon,
 <div id="fig-demandecredit" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="reglogistique_files/figure-html/fig-demandecredit-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.1: Données de la réserve de Boston sur l’approbation de prêts hypothécaires (1990); données tirées de Stock et Watson (2007).</figcaption><p></p>
+<figcaption class="figure-caption">Figure&nbsp;4.1: Données de la réserve de Boston sur l’approbation de prêts hypothécaires (1990); données tirées de Stock et Watson (2007).</figcaption>
 </figure>
 </div>
 </div>
@@ -345,7 +330,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
 <div id="fig-logitplot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="reglogistique_files/figure-html/fig-logitplot-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.2: Valeurs ajustées du modèle de régression logistique en fonction du prédicteur linéaire <span class="math inline">\(\eta\)</span>.</figcaption><p></p>
+<figcaption class="figure-caption">Figure&nbsp;4.2: Valeurs ajustées du modèle de régression logistique en fonction du prédicteur linéaire <span class="math inline">\(\eta\)</span>.</figcaption>
 </figure>
 </div>
 </div>
@@ -357,51 +342,52 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
 <div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-cotes_20db680729d19a810c7235fe1f02ee9d">
 <div class="cell-output-display">
 <div id="tbl-cotes" class="anchored">
-
-<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;4.1:  Cote et probabilité de succès </caption>
- <thead>
-  <tr>
-   <th style="text-align:left;"> \(\Pr(Y=1)\) </th>
-   <th style="text-align:center;"> 0.1 </th>
-   <th style="text-align:center;"> 0.2 </th>
-   <th style="text-align:center;"> 0.3 </th>
-   <th style="text-align:center;"> 0.4 </th>
-   <th style="text-align:center;"> 0.5 </th>
-   <th style="text-align:center;"> 0.6 </th>
-   <th style="text-align:center;"> 0.7 </th>
-   <th style="text-align:center;"> 0.8 </th>
-   <th style="text-align:center;"> 0.9 </th>
-  </tr>
- </thead>
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Tableau&nbsp;4.1: Cote et probabilité de succès</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">\(\Pr(Y=1)\)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">0.1</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">0.2</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">0.3</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">0.4</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">0.5</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">0.6</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">0.7</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">0.8</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">0.9</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> cote </td>
-   <td style="text-align:center;"> 0.11 </td>
-   <td style="text-align:center;"> 0.25 </td>
-   <td style="text-align:center;"> 0.43 </td>
-   <td style="text-align:center;"> 0.67 </td>
-   <td style="text-align:center;"> 1 </td>
-   <td style="text-align:center;"> 1.5 </td>
-   <td style="text-align:center;"> 2.3 </td>
-   <td style="text-align:center;"> 4 </td>
-   <td style="text-align:center;"> 9 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;">  </td>
-   <td style="text-align:center;"> \(\frac{1}{9}\) </td>
-   <td style="text-align:center;"> \(\frac{1}{4}\) </td>
-   <td style="text-align:center;"> \(\frac{3}{7}\) </td>
-   <td style="text-align:center;"> \(\frac{2}{3}\) </td>
-   <td style="text-align:center;"> \(1\) </td>
-   <td style="text-align:center;"> \(\frac{3}{2}\) </td>
-   <td style="text-align:center;"> \(\frac{7}{3}\) </td>
-   <td style="text-align:center;"> \(4\) </td>
-   <td style="text-align:center;"> \(9\) </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">cote</td>
+<td style="text-align: center;">0.11</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.43</td>
+<td style="text-align: center;">0.67</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1.5</td>
+<td style="text-align: center;">2.3</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: center;">\(\frac{1}{9}\)</td>
+<td style="text-align: center;">\(\frac{1}{4}\)</td>
+<td style="text-align: center;">\(\frac{3}{7}\)</td>
+<td style="text-align: center;">\(\frac{2}{3}\)</td>
+<td style="text-align: center;">\(1\)</td>
+<td style="text-align: center;">\(\frac{3}{2}\)</td>
+<td style="text-align: center;">\(\frac{7}{3}\)</td>
+<td style="text-align: center;">\(4\)</td>
+<td style="text-align: center;">\(9\)</td>
+</tr>
 </tbody>
 </table>
-
 </div>
+
+
 </div>
 </div>
 <section id="estimation-et-interprétation-des-paramètres" class="level3" data-number="4.2.1">
@@ -541,7 +527,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
 <div id="fig-logitplot2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="reglogistique_files/figure-html/fig-logitplot2-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.3: Probabilité de suivre les recommendations selon l’âge.</figcaption><p></p>
+<figcaption class="figure-caption">Figure&nbsp;4.3: Probabilité de suivre les recommendations selon l’âge.</figcaption>
 </figure>
 </div>
 </div>
@@ -1019,7 +1005,9 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false"><caption>Tableau&nbsp;4.2:  Coefficients (cote), intervalles de confiance profilée de 95 pourcent et valeurs-p pour le test de rapport de vraisemblance pour le modèle logistique avec toutes les variables catégorielles. </caption>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false"><caption>Tableau&nbsp;4.2:  <p>Coefficients (cote), intervalles de confiance profilée de 95 pourcent
+et valeurs-p pour le test de rapport de vraisemblance pour le modèle
+logistique avec toutes les variables catégorielles.</p> </caption>
   <thead>
     
     <tr class="gt_col_headings">
@@ -1139,7 +1127,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
 <div id="fig-confint-modele2-logist" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="reglogistique_files/figure-html/fig-confint-modele2-logist-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.4: Intervalles de confiance profilés de niveau 95% pour les coefficients du modèle logistique (échelle exponentielle).</figcaption><p></p>
+<figcaption class="figure-caption">Figure&nbsp;4.4: Intervalles de confiance profilés de niveau 95% pour les coefficients du modèle logistique (échelle exponentielle).</figcaption>
 </figure>
 </div>
 </div>
@@ -1147,33 +1135,34 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
 <div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-gof-logist1_c4fa78e50c04cc761864bfb71d3a22a8">
 <div class="cell-output-display">
 <div id="tbl-gof-logist1" class="anchored">
-
-<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;4.3:  Mesures d’ajustement du modèle avec toutes les variables explicatives, et du modèle nul (pour lequelle la probabilité de succès est la proportion de 1). </caption>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> AIC </th>
-   <th style="text-align:right;"> BIC </th>
-   <th style="text-align:right;"> log.vrais. </th>
-  </tr>
- </thead>
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Tableau&nbsp;4.3: Mesures d’ajustement du modèle avec toutes les variables explicatives, et du modèle nul (pour lequelle la probabilité de succès est la proportion de 1).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AIC</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">BIC</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">log.vrais.</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> modèle ajusté </td>
-   <td style="text-align:right;"> 544 </td>
-   <td style="text-align:right;"> 603 </td>
-   <td style="text-align:right;"> -258 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> modèle nul </td>
-   <td style="text-align:right;"> 691 </td>
-   <td style="text-align:right;"> 695 </td>
-   <td style="text-align:right;"> -258 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">modèle ajusté</td>
+<td style="text-align: right;">544</td>
+<td style="text-align: right;">603</td>
+<td style="text-align: right;">-258</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">modèle nul</td>
+<td style="text-align: right;">691</td>
+<td style="text-align: right;">695</td>
+<td style="text-align: right;">-258</td>
+</tr>
 </tbody>
 </table>
-
 </div>
+
+
 </div>
 </div>
 <p>L’interprétation se fait comme en régression linéaire multiple puisqu’il n’y a pas ni terme quadratique, ni interaction. Les paramètres estimés représentent donc l’effet de la variable correspondante sur le logit une fois que les autres variables sont dans le modèle, et demeurent fixes.</p>
@@ -1218,12 +1207,12 @@ D = -2\{\ell(\widehat{\boldsymbol{\beta}}_0)-\ell(\widehat{\boldsymbol{\beta}})\
 <p>En pratique, le problème est qu’il devient difficile de départager l’effet individuel d’une variable explicative lorsqu’elle est fortement corrélée avec d’autres variables explicatives.</p>
 <p>Comme la multicolinéarité est une propriété des variables explicatives (le <span class="math inline">\(Y\)</span> n’intervient pas) on peut utiliser les mêmes outils qu’en régression linéaire pour tenter de la détecter, par exemple, le facteur d’inflation de la variance (<em>variance inflation factor</em>), accessible via <code>car::vif</code> pour un modèle de régression. Cette quantité ne dépend que des variables explicatives <span class="math inline">\(\mathbf{X}\)</span>, pas du modèle ou de la variable réponse.</p>
 <p>La multicolinéarité est surtout un problème lorsque vient le temps d’interpréter et tester l’effet des paramètres individuels. Si le but est seulement de faire de la classification (prédiction) et que l’interprétation des paramètres individuels n’est pas cruciale alors il n’y a pas lieu de se soucier de la multicolinéarité. Il faut alors plutôt comparer correctement la performance de classification des modèles en utilisant des méthodes permettant d’obtenir un bon modèle tout en se protégeant contre le surajustement. Certaines de ces méthodes (division de l’échantillon, validation croisée) ont déjà été présentées.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 En résumé
 </div>
 </div>
@@ -1302,7 +1291,7 @@ En résumé
 <div id="fig-classification0" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="reglogistique_files/figure-html/fig-classification0-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.5: Répartition des probabilités de succès prédites par validation croisée à <span class="math inline">\(n\)</span> groupes.</figcaption><p></p>
+<figcaption class="figure-caption">Figure&nbsp;4.5: Répartition des probabilités de succès prédites par validation croisée à <span class="math inline">\(n\)</span> groupes.</figcaption>
 </figure>
 </div>
 </div>
@@ -1310,615 +1299,616 @@ En résumé
 <div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-classification-loocv_4cd1d8ac621e59f4bd0b36a85274f49a">
 <div class="cell-output-display">
 <div id="tbl-classification-loocv" class="anchored">
-
-<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;4.4:  Tableau de classification avec le nombre de vrais positifs (VP), vrais négatifs (VN), faux positifs (FP) et faux négatifs (FN), le taux de bonne classification, la sensibilité, la spécificité, le taux de vrais positifs (TVP) et le taux de vrais négatifs (TVN). </caption>
- <thead>
-  <tr>
-   <th style="text-align:right;"> coupe </th>
-   <th style="text-align:right;"> VP </th>
-   <th style="text-align:right;"> VN </th>
-   <th style="text-align:right;"> FP </th>
-   <th style="text-align:right;"> FN </th>
-   <th style="text-align:right;"> correct (%) </th>
-   <th style="text-align:right;"> sensibilité (%) </th>
-   <th style="text-align:right;"> spécificité (%) </th>
-   <th style="text-align:right;"> TVP </th>
-   <th style="text-align:right;"> TVN </th>
-  </tr>
- </thead>
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Tableau&nbsp;4.4: Tableau de classification avec le nombre de vrais positifs (VP), vrais négatifs (VN), faux positifs (FP) et faux négatifs (FN), le taux de bonne classification, la sensibilité, la spécificité, le taux de vrais positifs (TVP) et le taux de vrais négatifs (TVN).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">coupe</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">VP</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">VN</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">FP</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">FN</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">correct (%)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">sensibilité (%)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">spécificité (%)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">TVP</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">TVN</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:right;"> 0.02 </td>
-   <td style="text-align:right;"> 210 </td>
-   <td style="text-align:right;"> 209 </td>
-   <td style="text-align:right;"> 581 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 41.9 </td>
-   <td style="text-align:right;"> 100.0 </td>
-   <td style="text-align:right;"> 26.5 </td>
-   <td style="text-align:right;"> 26.5 </td>
-   <td style="text-align:right;"> 100.0 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.04 </td>
-   <td style="text-align:right;"> 207 </td>
-   <td style="text-align:right;"> 320 </td>
-   <td style="text-align:right;"> 470 </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 52.7 </td>
-   <td style="text-align:right;"> 98.6 </td>
-   <td style="text-align:right;"> 40.5 </td>
-   <td style="text-align:right;"> 30.6 </td>
-   <td style="text-align:right;"> 99.1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.06 </td>
-   <td style="text-align:right;"> 201 </td>
-   <td style="text-align:right;"> 398 </td>
-   <td style="text-align:right;"> 392 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 59.9 </td>
-   <td style="text-align:right;"> 95.7 </td>
-   <td style="text-align:right;"> 50.4 </td>
-   <td style="text-align:right;"> 33.9 </td>
-   <td style="text-align:right;"> 97.8 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.08 </td>
-   <td style="text-align:right;"> 199 </td>
-   <td style="text-align:right;"> 451 </td>
-   <td style="text-align:right;"> 339 </td>
-   <td style="text-align:right;"> 11 </td>
-   <td style="text-align:right;"> 65.0 </td>
-   <td style="text-align:right;"> 94.8 </td>
-   <td style="text-align:right;"> 57.1 </td>
-   <td style="text-align:right;"> 37.0 </td>
-   <td style="text-align:right;"> 97.6 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.10 </td>
-   <td style="text-align:right;"> 193 </td>
-   <td style="text-align:right;"> 480 </td>
-   <td style="text-align:right;"> 310 </td>
-   <td style="text-align:right;"> 17 </td>
-   <td style="text-align:right;"> 67.3 </td>
-   <td style="text-align:right;"> 91.9 </td>
-   <td style="text-align:right;"> 60.8 </td>
-   <td style="text-align:right;"> 38.4 </td>
-   <td style="text-align:right;"> 96.6 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.12 </td>
-   <td style="text-align:right;"> 191 </td>
-   <td style="text-align:right;"> 512 </td>
-   <td style="text-align:right;"> 278 </td>
-   <td style="text-align:right;"> 19 </td>
-   <td style="text-align:right;"> 70.3 </td>
-   <td style="text-align:right;"> 91.0 </td>
-   <td style="text-align:right;"> 64.8 </td>
-   <td style="text-align:right;"> 40.7 </td>
-   <td style="text-align:right;"> 96.4 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.14 </td>
-   <td style="text-align:right;"> 184 </td>
-   <td style="text-align:right;"> 547 </td>
-   <td style="text-align:right;"> 243 </td>
-   <td style="text-align:right;"> 26 </td>
-   <td style="text-align:right;"> 73.1 </td>
-   <td style="text-align:right;"> 87.6 </td>
-   <td style="text-align:right;"> 69.2 </td>
-   <td style="text-align:right;"> 43.1 </td>
-   <td style="text-align:right;"> 95.5 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.16 </td>
-   <td style="text-align:right;"> 176 </td>
-   <td style="text-align:right;"> 572 </td>
-   <td style="text-align:right;"> 218 </td>
-   <td style="text-align:right;"> 34 </td>
-   <td style="text-align:right;"> 74.8 </td>
-   <td style="text-align:right;"> 83.8 </td>
-   <td style="text-align:right;"> 72.4 </td>
-   <td style="text-align:right;"> 44.7 </td>
-   <td style="text-align:right;"> 94.4 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.18 </td>
-   <td style="text-align:right;"> 172 </td>
-   <td style="text-align:right;"> 598 </td>
-   <td style="text-align:right;"> 192 </td>
-   <td style="text-align:right;"> 38 </td>
-   <td style="text-align:right;"> 77.0 </td>
-   <td style="text-align:right;"> 81.9 </td>
-   <td style="text-align:right;"> 75.7 </td>
-   <td style="text-align:right;"> 47.3 </td>
-   <td style="text-align:right;"> 94.0 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.20 </td>
-   <td style="text-align:right;"> 164 </td>
-   <td style="text-align:right;"> 611 </td>
-   <td style="text-align:right;"> 179 </td>
-   <td style="text-align:right;"> 46 </td>
-   <td style="text-align:right;"> 77.5 </td>
-   <td style="text-align:right;"> 78.1 </td>
-   <td style="text-align:right;"> 77.3 </td>
-   <td style="text-align:right;"> 47.8 </td>
-   <td style="text-align:right;"> 93.0 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.22 </td>
-   <td style="text-align:right;"> 162 </td>
-   <td style="text-align:right;"> 626 </td>
-   <td style="text-align:right;"> 164 </td>
-   <td style="text-align:right;"> 48 </td>
-   <td style="text-align:right;"> 78.8 </td>
-   <td style="text-align:right;"> 77.1 </td>
-   <td style="text-align:right;"> 79.2 </td>
-   <td style="text-align:right;"> 49.7 </td>
-   <td style="text-align:right;"> 92.9 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.24 </td>
-   <td style="text-align:right;"> 158 </td>
-   <td style="text-align:right;"> 639 </td>
-   <td style="text-align:right;"> 151 </td>
-   <td style="text-align:right;"> 52 </td>
-   <td style="text-align:right;"> 79.7 </td>
-   <td style="text-align:right;"> 75.2 </td>
-   <td style="text-align:right;"> 80.9 </td>
-   <td style="text-align:right;"> 51.1 </td>
-   <td style="text-align:right;"> 92.5 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.26 </td>
-   <td style="text-align:right;"> 153 </td>
-   <td style="text-align:right;"> 645 </td>
-   <td style="text-align:right;"> 145 </td>
-   <td style="text-align:right;"> 57 </td>
-   <td style="text-align:right;"> 79.8 </td>
-   <td style="text-align:right;"> 72.9 </td>
-   <td style="text-align:right;"> 81.6 </td>
-   <td style="text-align:right;"> 51.3 </td>
-   <td style="text-align:right;"> 91.9 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.28 </td>
-   <td style="text-align:right;"> 150 </td>
-   <td style="text-align:right;"> 657 </td>
-   <td style="text-align:right;"> 133 </td>
-   <td style="text-align:right;"> 60 </td>
-   <td style="text-align:right;"> 80.7 </td>
-   <td style="text-align:right;"> 71.4 </td>
-   <td style="text-align:right;"> 83.2 </td>
-   <td style="text-align:right;"> 53.0 </td>
-   <td style="text-align:right;"> 91.6 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.30 </td>
-   <td style="text-align:right;"> 143 </td>
-   <td style="text-align:right;"> 667 </td>
-   <td style="text-align:right;"> 123 </td>
-   <td style="text-align:right;"> 67 </td>
-   <td style="text-align:right;"> 81.0 </td>
-   <td style="text-align:right;"> 68.1 </td>
-   <td style="text-align:right;"> 84.4 </td>
-   <td style="text-align:right;"> 53.8 </td>
-   <td style="text-align:right;"> 90.9 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.32 </td>
-   <td style="text-align:right;"> 138 </td>
-   <td style="text-align:right;"> 679 </td>
-   <td style="text-align:right;"> 111 </td>
-   <td style="text-align:right;"> 72 </td>
-   <td style="text-align:right;"> 81.7 </td>
-   <td style="text-align:right;"> 65.7 </td>
-   <td style="text-align:right;"> 85.9 </td>
-   <td style="text-align:right;"> 55.4 </td>
-   <td style="text-align:right;"> 90.4 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.34 </td>
-   <td style="text-align:right;"> 134 </td>
-   <td style="text-align:right;"> 695 </td>
-   <td style="text-align:right;"> 95 </td>
-   <td style="text-align:right;"> 76 </td>
-   <td style="text-align:right;"> 82.9 </td>
-   <td style="text-align:right;"> 63.8 </td>
-   <td style="text-align:right;"> 88.0 </td>
-   <td style="text-align:right;"> 58.5 </td>
-   <td style="text-align:right;"> 90.1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.36 </td>
-   <td style="text-align:right;"> 130 </td>
-   <td style="text-align:right;"> 699 </td>
-   <td style="text-align:right;"> 91 </td>
-   <td style="text-align:right;"> 80 </td>
-   <td style="text-align:right;"> 82.9 </td>
-   <td style="text-align:right;"> 61.9 </td>
-   <td style="text-align:right;"> 88.5 </td>
-   <td style="text-align:right;"> 58.8 </td>
-   <td style="text-align:right;"> 89.7 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.38 </td>
-   <td style="text-align:right;"> 126 </td>
-   <td style="text-align:right;"> 708 </td>
-   <td style="text-align:right;"> 82 </td>
-   <td style="text-align:right;"> 84 </td>
-   <td style="text-align:right;"> 83.4 </td>
-   <td style="text-align:right;"> 60.0 </td>
-   <td style="text-align:right;"> 89.6 </td>
-   <td style="text-align:right;"> 60.6 </td>
-   <td style="text-align:right;"> 89.4 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.40 </td>
-   <td style="text-align:right;"> 120 </td>
-   <td style="text-align:right;"> 715 </td>
-   <td style="text-align:right;"> 75 </td>
-   <td style="text-align:right;"> 90 </td>
-   <td style="text-align:right;"> 83.5 </td>
-   <td style="text-align:right;"> 57.1 </td>
-   <td style="text-align:right;"> 90.5 </td>
-   <td style="text-align:right;"> 61.5 </td>
-   <td style="text-align:right;"> 88.8 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.42 </td>
-   <td style="text-align:right;"> 115 </td>
-   <td style="text-align:right;"> 723 </td>
-   <td style="text-align:right;"> 67 </td>
-   <td style="text-align:right;"> 95 </td>
-   <td style="text-align:right;"> 83.8 </td>
-   <td style="text-align:right;"> 54.8 </td>
-   <td style="text-align:right;"> 91.5 </td>
-   <td style="text-align:right;"> 63.2 </td>
-   <td style="text-align:right;"> 88.4 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.44 </td>
-   <td style="text-align:right;"> 112 </td>
-   <td style="text-align:right;"> 731 </td>
-   <td style="text-align:right;"> 59 </td>
-   <td style="text-align:right;"> 98 </td>
-   <td style="text-align:right;"> 84.3 </td>
-   <td style="text-align:right;"> 53.3 </td>
-   <td style="text-align:right;"> 92.5 </td>
-   <td style="text-align:right;"> 65.5 </td>
-   <td style="text-align:right;"> 88.2 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.46 </td>
-   <td style="text-align:right;"> 109 </td>
-   <td style="text-align:right;"> 736 </td>
-   <td style="text-align:right;"> 54 </td>
-   <td style="text-align:right;"> 101 </td>
-   <td style="text-align:right;"> 84.5 </td>
-   <td style="text-align:right;"> 51.9 </td>
-   <td style="text-align:right;"> 93.2 </td>
-   <td style="text-align:right;"> 66.9 </td>
-   <td style="text-align:right;"> 87.9 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.48 </td>
-   <td style="text-align:right;"> 106 </td>
-   <td style="text-align:right;"> 739 </td>
-   <td style="text-align:right;"> 51 </td>
-   <td style="text-align:right;"> 104 </td>
-   <td style="text-align:right;"> 84.5 </td>
-   <td style="text-align:right;"> 50.5 </td>
-   <td style="text-align:right;"> 93.5 </td>
-   <td style="text-align:right;"> 67.5 </td>
-   <td style="text-align:right;"> 87.7 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.50 </td>
-   <td style="text-align:right;"> 100 </td>
-   <td style="text-align:right;"> 744 </td>
-   <td style="text-align:right;"> 46 </td>
-   <td style="text-align:right;"> 110 </td>
-   <td style="text-align:right;"> 84.4 </td>
-   <td style="text-align:right;"> 47.6 </td>
-   <td style="text-align:right;"> 94.2 </td>
-   <td style="text-align:right;"> 68.5 </td>
-   <td style="text-align:right;"> 87.1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.52 </td>
-   <td style="text-align:right;"> 98 </td>
-   <td style="text-align:right;"> 748 </td>
-   <td style="text-align:right;"> 42 </td>
-   <td style="text-align:right;"> 112 </td>
-   <td style="text-align:right;"> 84.6 </td>
-   <td style="text-align:right;"> 46.7 </td>
-   <td style="text-align:right;"> 94.7 </td>
-   <td style="text-align:right;"> 70.0 </td>
-   <td style="text-align:right;"> 87.0 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.54 </td>
-   <td style="text-align:right;"> 92 </td>
-   <td style="text-align:right;"> 750 </td>
-   <td style="text-align:right;"> 40 </td>
-   <td style="text-align:right;"> 118 </td>
-   <td style="text-align:right;"> 84.2 </td>
-   <td style="text-align:right;"> 43.8 </td>
-   <td style="text-align:right;"> 94.9 </td>
-   <td style="text-align:right;"> 69.7 </td>
-   <td style="text-align:right;"> 86.4 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.56 </td>
-   <td style="text-align:right;"> 87 </td>
-   <td style="text-align:right;"> 753 </td>
-   <td style="text-align:right;"> 37 </td>
-   <td style="text-align:right;"> 123 </td>
-   <td style="text-align:right;"> 84.0 </td>
-   <td style="text-align:right;"> 41.4 </td>
-   <td style="text-align:right;"> 95.3 </td>
-   <td style="text-align:right;"> 70.2 </td>
-   <td style="text-align:right;"> 86.0 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.58 </td>
-   <td style="text-align:right;"> 83 </td>
-   <td style="text-align:right;"> 761 </td>
-   <td style="text-align:right;"> 29 </td>
-   <td style="text-align:right;"> 127 </td>
-   <td style="text-align:right;"> 84.4 </td>
-   <td style="text-align:right;"> 39.5 </td>
-   <td style="text-align:right;"> 96.3 </td>
-   <td style="text-align:right;"> 74.1 </td>
-   <td style="text-align:right;"> 85.7 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.60 </td>
-   <td style="text-align:right;"> 80 </td>
-   <td style="text-align:right;"> 766 </td>
-   <td style="text-align:right;"> 24 </td>
-   <td style="text-align:right;"> 130 </td>
-   <td style="text-align:right;"> 84.6 </td>
-   <td style="text-align:right;"> 38.1 </td>
-   <td style="text-align:right;"> 97.0 </td>
-   <td style="text-align:right;"> 76.9 </td>
-   <td style="text-align:right;"> 85.5 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.62 </td>
-   <td style="text-align:right;"> 77 </td>
-   <td style="text-align:right;"> 769 </td>
-   <td style="text-align:right;"> 21 </td>
-   <td style="text-align:right;"> 133 </td>
-   <td style="text-align:right;"> 84.6 </td>
-   <td style="text-align:right;"> 36.7 </td>
-   <td style="text-align:right;"> 97.3 </td>
-   <td style="text-align:right;"> 78.6 </td>
-   <td style="text-align:right;"> 85.3 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.64 </td>
-   <td style="text-align:right;"> 74 </td>
-   <td style="text-align:right;"> 771 </td>
-   <td style="text-align:right;"> 19 </td>
-   <td style="text-align:right;"> 136 </td>
-   <td style="text-align:right;"> 84.5 </td>
-   <td style="text-align:right;"> 35.2 </td>
-   <td style="text-align:right;"> 97.6 </td>
-   <td style="text-align:right;"> 79.6 </td>
-   <td style="text-align:right;"> 85.0 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.66 </td>
-   <td style="text-align:right;"> 68 </td>
-   <td style="text-align:right;"> 772 </td>
-   <td style="text-align:right;"> 18 </td>
-   <td style="text-align:right;"> 142 </td>
-   <td style="text-align:right;"> 84.0 </td>
-   <td style="text-align:right;"> 32.4 </td>
-   <td style="text-align:right;"> 97.7 </td>
-   <td style="text-align:right;"> 79.1 </td>
-   <td style="text-align:right;"> 84.5 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.68 </td>
-   <td style="text-align:right;"> 62 </td>
-   <td style="text-align:right;"> 774 </td>
-   <td style="text-align:right;"> 16 </td>
-   <td style="text-align:right;"> 148 </td>
-   <td style="text-align:right;"> 83.6 </td>
-   <td style="text-align:right;"> 29.5 </td>
-   <td style="text-align:right;"> 98.0 </td>
-   <td style="text-align:right;"> 79.5 </td>
-   <td style="text-align:right;"> 83.9 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.70 </td>
-   <td style="text-align:right;"> 54 </td>
-   <td style="text-align:right;"> 775 </td>
-   <td style="text-align:right;"> 15 </td>
-   <td style="text-align:right;"> 156 </td>
-   <td style="text-align:right;"> 82.9 </td>
-   <td style="text-align:right;"> 25.7 </td>
-   <td style="text-align:right;"> 98.1 </td>
-   <td style="text-align:right;"> 78.3 </td>
-   <td style="text-align:right;"> 83.2 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.72 </td>
-   <td style="text-align:right;"> 51 </td>
-   <td style="text-align:right;"> 777 </td>
-   <td style="text-align:right;"> 13 </td>
-   <td style="text-align:right;"> 159 </td>
-   <td style="text-align:right;"> 82.8 </td>
-   <td style="text-align:right;"> 24.3 </td>
-   <td style="text-align:right;"> 98.4 </td>
-   <td style="text-align:right;"> 79.7 </td>
-   <td style="text-align:right;"> 83.0 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.74 </td>
-   <td style="text-align:right;"> 49 </td>
-   <td style="text-align:right;"> 778 </td>
-   <td style="text-align:right;"> 12 </td>
-   <td style="text-align:right;"> 161 </td>
-   <td style="text-align:right;"> 82.7 </td>
-   <td style="text-align:right;"> 23.3 </td>
-   <td style="text-align:right;"> 98.5 </td>
-   <td style="text-align:right;"> 80.3 </td>
-   <td style="text-align:right;"> 82.9 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.76 </td>
-   <td style="text-align:right;"> 46 </td>
-   <td style="text-align:right;"> 778 </td>
-   <td style="text-align:right;"> 12 </td>
-   <td style="text-align:right;"> 164 </td>
-   <td style="text-align:right;"> 82.4 </td>
-   <td style="text-align:right;"> 21.9 </td>
-   <td style="text-align:right;"> 98.5 </td>
-   <td style="text-align:right;"> 79.3 </td>
-   <td style="text-align:right;"> 82.6 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.78 </td>
-   <td style="text-align:right;"> 41 </td>
-   <td style="text-align:right;"> 781 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 169 </td>
-   <td style="text-align:right;"> 82.2 </td>
-   <td style="text-align:right;"> 19.5 </td>
-   <td style="text-align:right;"> 98.9 </td>
-   <td style="text-align:right;"> 82.0 </td>
-   <td style="text-align:right;"> 82.2 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.80 </td>
-   <td style="text-align:right;"> 35 </td>
-   <td style="text-align:right;"> 783 </td>
-   <td style="text-align:right;"> 7 </td>
-   <td style="text-align:right;"> 175 </td>
-   <td style="text-align:right;"> 81.8 </td>
-   <td style="text-align:right;"> 16.7 </td>
-   <td style="text-align:right;"> 99.1 </td>
-   <td style="text-align:right;"> 83.3 </td>
-   <td style="text-align:right;"> 81.7 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.82 </td>
-   <td style="text-align:right;"> 33 </td>
-   <td style="text-align:right;"> 783 </td>
-   <td style="text-align:right;"> 7 </td>
-   <td style="text-align:right;"> 177 </td>
-   <td style="text-align:right;"> 81.6 </td>
-   <td style="text-align:right;"> 15.7 </td>
-   <td style="text-align:right;"> 99.1 </td>
-   <td style="text-align:right;"> 82.5 </td>
-   <td style="text-align:right;"> 81.6 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.84 </td>
-   <td style="text-align:right;"> 32 </td>
-   <td style="text-align:right;"> 783 </td>
-   <td style="text-align:right;"> 7 </td>
-   <td style="text-align:right;"> 178 </td>
-   <td style="text-align:right;"> 81.5 </td>
-   <td style="text-align:right;"> 15.2 </td>
-   <td style="text-align:right;"> 99.1 </td>
-   <td style="text-align:right;"> 82.1 </td>
-   <td style="text-align:right;"> 81.5 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.86 </td>
-   <td style="text-align:right;"> 28 </td>
-   <td style="text-align:right;"> 784 </td>
-   <td style="text-align:right;"> 6 </td>
-   <td style="text-align:right;"> 182 </td>
-   <td style="text-align:right;"> 81.2 </td>
-   <td style="text-align:right;"> 13.3 </td>
-   <td style="text-align:right;"> 99.2 </td>
-   <td style="text-align:right;"> 82.4 </td>
-   <td style="text-align:right;"> 81.2 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.88 </td>
-   <td style="text-align:right;"> 25 </td>
-   <td style="text-align:right;"> 786 </td>
-   <td style="text-align:right;"> 4 </td>
-   <td style="text-align:right;"> 185 </td>
-   <td style="text-align:right;"> 81.1 </td>
-   <td style="text-align:right;"> 11.9 </td>
-   <td style="text-align:right;"> 99.5 </td>
-   <td style="text-align:right;"> 86.2 </td>
-   <td style="text-align:right;"> 80.9 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.90 </td>
-   <td style="text-align:right;"> 21 </td>
-   <td style="text-align:right;"> 787 </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 189 </td>
-   <td style="text-align:right;"> 80.8 </td>
-   <td style="text-align:right;"> 10.0 </td>
-   <td style="text-align:right;"> 99.6 </td>
-   <td style="text-align:right;"> 87.5 </td>
-   <td style="text-align:right;"> 80.6 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.92 </td>
-   <td style="text-align:right;"> 18 </td>
-   <td style="text-align:right;"> 787 </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 192 </td>
-   <td style="text-align:right;"> 80.5 </td>
-   <td style="text-align:right;"> 8.6 </td>
-   <td style="text-align:right;"> 99.6 </td>
-   <td style="text-align:right;"> 85.7 </td>
-   <td style="text-align:right;"> 80.4 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.94 </td>
-   <td style="text-align:right;"> 14 </td>
-   <td style="text-align:right;"> 788 </td>
-   <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 196 </td>
-   <td style="text-align:right;"> 80.2 </td>
-   <td style="text-align:right;"> 6.7 </td>
-   <td style="text-align:right;"> 99.7 </td>
-   <td style="text-align:right;"> 87.5 </td>
-   <td style="text-align:right;"> 80.1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.96 </td>
-   <td style="text-align:right;"> 6 </td>
-   <td style="text-align:right;"> 788 </td>
-   <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 204 </td>
-   <td style="text-align:right;"> 79.4 </td>
-   <td style="text-align:right;"> 2.9 </td>
-   <td style="text-align:right;"> 99.7 </td>
-   <td style="text-align:right;"> 75.0 </td>
-   <td style="text-align:right;"> 79.4 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> 0.98 </td>
-   <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 790 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 208 </td>
-   <td style="text-align:right;"> 79.2 </td>
-   <td style="text-align:right;"> 1.0 </td>
-   <td style="text-align:right;"> 100.0 </td>
-   <td style="text-align:right;"> 100.0 </td>
-   <td style="text-align:right;"> 79.2 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">210</td>
+<td style="text-align: right;">209</td>
+<td style="text-align: right;">581</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">41.9</td>
+<td style="text-align: right;">100.0</td>
+<td style="text-align: right;">26.5</td>
+<td style="text-align: right;">26.5</td>
+<td style="text-align: right;">100.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.04</td>
+<td style="text-align: right;">207</td>
+<td style="text-align: right;">320</td>
+<td style="text-align: right;">470</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">52.7</td>
+<td style="text-align: right;">98.6</td>
+<td style="text-align: right;">40.5</td>
+<td style="text-align: right;">30.6</td>
+<td style="text-align: right;">99.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.06</td>
+<td style="text-align: right;">201</td>
+<td style="text-align: right;">398</td>
+<td style="text-align: right;">392</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">59.9</td>
+<td style="text-align: right;">95.7</td>
+<td style="text-align: right;">50.4</td>
+<td style="text-align: right;">33.9</td>
+<td style="text-align: right;">97.8</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.08</td>
+<td style="text-align: right;">199</td>
+<td style="text-align: right;">451</td>
+<td style="text-align: right;">339</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">65.0</td>
+<td style="text-align: right;">94.8</td>
+<td style="text-align: right;">57.1</td>
+<td style="text-align: right;">37.0</td>
+<td style="text-align: right;">97.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.10</td>
+<td style="text-align: right;">193</td>
+<td style="text-align: right;">480</td>
+<td style="text-align: right;">310</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">67.3</td>
+<td style="text-align: right;">91.9</td>
+<td style="text-align: right;">60.8</td>
+<td style="text-align: right;">38.4</td>
+<td style="text-align: right;">96.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.12</td>
+<td style="text-align: right;">191</td>
+<td style="text-align: right;">512</td>
+<td style="text-align: right;">278</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">70.3</td>
+<td style="text-align: right;">91.0</td>
+<td style="text-align: right;">64.8</td>
+<td style="text-align: right;">40.7</td>
+<td style="text-align: right;">96.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">184</td>
+<td style="text-align: right;">547</td>
+<td style="text-align: right;">243</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">73.1</td>
+<td style="text-align: right;">87.6</td>
+<td style="text-align: right;">69.2</td>
+<td style="text-align: right;">43.1</td>
+<td style="text-align: right;">95.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.16</td>
+<td style="text-align: right;">176</td>
+<td style="text-align: right;">572</td>
+<td style="text-align: right;">218</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">74.8</td>
+<td style="text-align: right;">83.8</td>
+<td style="text-align: right;">72.4</td>
+<td style="text-align: right;">44.7</td>
+<td style="text-align: right;">94.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">172</td>
+<td style="text-align: right;">598</td>
+<td style="text-align: right;">192</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">77.0</td>
+<td style="text-align: right;">81.9</td>
+<td style="text-align: right;">75.7</td>
+<td style="text-align: right;">47.3</td>
+<td style="text-align: right;">94.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">164</td>
+<td style="text-align: right;">611</td>
+<td style="text-align: right;">179</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">77.5</td>
+<td style="text-align: right;">78.1</td>
+<td style="text-align: right;">77.3</td>
+<td style="text-align: right;">47.8</td>
+<td style="text-align: right;">93.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.22</td>
+<td style="text-align: right;">162</td>
+<td style="text-align: right;">626</td>
+<td style="text-align: right;">164</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">78.8</td>
+<td style="text-align: right;">77.1</td>
+<td style="text-align: right;">79.2</td>
+<td style="text-align: right;">49.7</td>
+<td style="text-align: right;">92.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.24</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">639</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">79.7</td>
+<td style="text-align: right;">75.2</td>
+<td style="text-align: right;">80.9</td>
+<td style="text-align: right;">51.1</td>
+<td style="text-align: right;">92.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.26</td>
+<td style="text-align: right;">153</td>
+<td style="text-align: right;">645</td>
+<td style="text-align: right;">145</td>
+<td style="text-align: right;">57</td>
+<td style="text-align: right;">79.8</td>
+<td style="text-align: right;">72.9</td>
+<td style="text-align: right;">81.6</td>
+<td style="text-align: right;">51.3</td>
+<td style="text-align: right;">91.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">150</td>
+<td style="text-align: right;">657</td>
+<td style="text-align: right;">133</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">80.7</td>
+<td style="text-align: right;">71.4</td>
+<td style="text-align: right;">83.2</td>
+<td style="text-align: right;">53.0</td>
+<td style="text-align: right;">91.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.30</td>
+<td style="text-align: right;">143</td>
+<td style="text-align: right;">667</td>
+<td style="text-align: right;">123</td>
+<td style="text-align: right;">67</td>
+<td style="text-align: right;">81.0</td>
+<td style="text-align: right;">68.1</td>
+<td style="text-align: right;">84.4</td>
+<td style="text-align: right;">53.8</td>
+<td style="text-align: right;">90.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.32</td>
+<td style="text-align: right;">138</td>
+<td style="text-align: right;">679</td>
+<td style="text-align: right;">111</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">81.7</td>
+<td style="text-align: right;">65.7</td>
+<td style="text-align: right;">85.9</td>
+<td style="text-align: right;">55.4</td>
+<td style="text-align: right;">90.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">134</td>
+<td style="text-align: right;">695</td>
+<td style="text-align: right;">95</td>
+<td style="text-align: right;">76</td>
+<td style="text-align: right;">82.9</td>
+<td style="text-align: right;">63.8</td>
+<td style="text-align: right;">88.0</td>
+<td style="text-align: right;">58.5</td>
+<td style="text-align: right;">90.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.36</td>
+<td style="text-align: right;">130</td>
+<td style="text-align: right;">699</td>
+<td style="text-align: right;">91</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">82.9</td>
+<td style="text-align: right;">61.9</td>
+<td style="text-align: right;">88.5</td>
+<td style="text-align: right;">58.8</td>
+<td style="text-align: right;">89.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.38</td>
+<td style="text-align: right;">126</td>
+<td style="text-align: right;">708</td>
+<td style="text-align: right;">82</td>
+<td style="text-align: right;">84</td>
+<td style="text-align: right;">83.4</td>
+<td style="text-align: right;">60.0</td>
+<td style="text-align: right;">89.6</td>
+<td style="text-align: right;">60.6</td>
+<td style="text-align: right;">89.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.40</td>
+<td style="text-align: right;">120</td>
+<td style="text-align: right;">715</td>
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">90</td>
+<td style="text-align: right;">83.5</td>
+<td style="text-align: right;">57.1</td>
+<td style="text-align: right;">90.5</td>
+<td style="text-align: right;">61.5</td>
+<td style="text-align: right;">88.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.42</td>
+<td style="text-align: right;">115</td>
+<td style="text-align: right;">723</td>
+<td style="text-align: right;">67</td>
+<td style="text-align: right;">95</td>
+<td style="text-align: right;">83.8</td>
+<td style="text-align: right;">54.8</td>
+<td style="text-align: right;">91.5</td>
+<td style="text-align: right;">63.2</td>
+<td style="text-align: right;">88.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.44</td>
+<td style="text-align: right;">112</td>
+<td style="text-align: right;">731</td>
+<td style="text-align: right;">59</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">84.3</td>
+<td style="text-align: right;">53.3</td>
+<td style="text-align: right;">92.5</td>
+<td style="text-align: right;">65.5</td>
+<td style="text-align: right;">88.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.46</td>
+<td style="text-align: right;">109</td>
+<td style="text-align: right;">736</td>
+<td style="text-align: right;">54</td>
+<td style="text-align: right;">101</td>
+<td style="text-align: right;">84.5</td>
+<td style="text-align: right;">51.9</td>
+<td style="text-align: right;">93.2</td>
+<td style="text-align: right;">66.9</td>
+<td style="text-align: right;">87.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.48</td>
+<td style="text-align: right;">106</td>
+<td style="text-align: right;">739</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">104</td>
+<td style="text-align: right;">84.5</td>
+<td style="text-align: right;">50.5</td>
+<td style="text-align: right;">93.5</td>
+<td style="text-align: right;">67.5</td>
+<td style="text-align: right;">87.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">744</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">110</td>
+<td style="text-align: right;">84.4</td>
+<td style="text-align: right;">47.6</td>
+<td style="text-align: right;">94.2</td>
+<td style="text-align: right;">68.5</td>
+<td style="text-align: right;">87.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.52</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">748</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">112</td>
+<td style="text-align: right;">84.6</td>
+<td style="text-align: right;">46.7</td>
+<td style="text-align: right;">94.7</td>
+<td style="text-align: right;">70.0</td>
+<td style="text-align: right;">87.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.54</td>
+<td style="text-align: right;">92</td>
+<td style="text-align: right;">750</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">118</td>
+<td style="text-align: right;">84.2</td>
+<td style="text-align: right;">43.8</td>
+<td style="text-align: right;">94.9</td>
+<td style="text-align: right;">69.7</td>
+<td style="text-align: right;">86.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.56</td>
+<td style="text-align: right;">87</td>
+<td style="text-align: right;">753</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">123</td>
+<td style="text-align: right;">84.0</td>
+<td style="text-align: right;">41.4</td>
+<td style="text-align: right;">95.3</td>
+<td style="text-align: right;">70.2</td>
+<td style="text-align: right;">86.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.58</td>
+<td style="text-align: right;">83</td>
+<td style="text-align: right;">761</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">127</td>
+<td style="text-align: right;">84.4</td>
+<td style="text-align: right;">39.5</td>
+<td style="text-align: right;">96.3</td>
+<td style="text-align: right;">74.1</td>
+<td style="text-align: right;">85.7</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.60</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">766</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">130</td>
+<td style="text-align: right;">84.6</td>
+<td style="text-align: right;">38.1</td>
+<td style="text-align: right;">97.0</td>
+<td style="text-align: right;">76.9</td>
+<td style="text-align: right;">85.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.62</td>
+<td style="text-align: right;">77</td>
+<td style="text-align: right;">769</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">133</td>
+<td style="text-align: right;">84.6</td>
+<td style="text-align: right;">36.7</td>
+<td style="text-align: right;">97.3</td>
+<td style="text-align: right;">78.6</td>
+<td style="text-align: right;">85.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.64</td>
+<td style="text-align: right;">74</td>
+<td style="text-align: right;">771</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">136</td>
+<td style="text-align: right;">84.5</td>
+<td style="text-align: right;">35.2</td>
+<td style="text-align: right;">97.6</td>
+<td style="text-align: right;">79.6</td>
+<td style="text-align: right;">85.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.66</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">772</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">142</td>
+<td style="text-align: right;">84.0</td>
+<td style="text-align: right;">32.4</td>
+<td style="text-align: right;">97.7</td>
+<td style="text-align: right;">79.1</td>
+<td style="text-align: right;">84.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.68</td>
+<td style="text-align: right;">62</td>
+<td style="text-align: right;">774</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">148</td>
+<td style="text-align: right;">83.6</td>
+<td style="text-align: right;">29.5</td>
+<td style="text-align: right;">98.0</td>
+<td style="text-align: right;">79.5</td>
+<td style="text-align: right;">83.9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.70</td>
+<td style="text-align: right;">54</td>
+<td style="text-align: right;">775</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">156</td>
+<td style="text-align: right;">82.9</td>
+<td style="text-align: right;">25.7</td>
+<td style="text-align: right;">98.1</td>
+<td style="text-align: right;">78.3</td>
+<td style="text-align: right;">83.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.72</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">777</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">159</td>
+<td style="text-align: right;">82.8</td>
+<td style="text-align: right;">24.3</td>
+<td style="text-align: right;">98.4</td>
+<td style="text-align: right;">79.7</td>
+<td style="text-align: right;">83.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.74</td>
+<td style="text-align: right;">49</td>
+<td style="text-align: right;">778</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">161</td>
+<td style="text-align: right;">82.7</td>
+<td style="text-align: right;">23.3</td>
+<td style="text-align: right;">98.5</td>
+<td style="text-align: right;">80.3</td>
+<td style="text-align: right;">82.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.76</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">778</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">164</td>
+<td style="text-align: right;">82.4</td>
+<td style="text-align: right;">21.9</td>
+<td style="text-align: right;">98.5</td>
+<td style="text-align: right;">79.3</td>
+<td style="text-align: right;">82.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.78</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;">781</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">169</td>
+<td style="text-align: right;">82.2</td>
+<td style="text-align: right;">19.5</td>
+<td style="text-align: right;">98.9</td>
+<td style="text-align: right;">82.0</td>
+<td style="text-align: right;">82.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">783</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">175</td>
+<td style="text-align: right;">81.8</td>
+<td style="text-align: right;">16.7</td>
+<td style="text-align: right;">99.1</td>
+<td style="text-align: right;">83.3</td>
+<td style="text-align: right;">81.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.82</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">783</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">177</td>
+<td style="text-align: right;">81.6</td>
+<td style="text-align: right;">15.7</td>
+<td style="text-align: right;">99.1</td>
+<td style="text-align: right;">82.5</td>
+<td style="text-align: right;">81.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.84</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">783</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">178</td>
+<td style="text-align: right;">81.5</td>
+<td style="text-align: right;">15.2</td>
+<td style="text-align: right;">99.1</td>
+<td style="text-align: right;">82.1</td>
+<td style="text-align: right;">81.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.86</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">784</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">182</td>
+<td style="text-align: right;">81.2</td>
+<td style="text-align: right;">13.3</td>
+<td style="text-align: right;">99.2</td>
+<td style="text-align: right;">82.4</td>
+<td style="text-align: right;">81.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.88</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">786</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">185</td>
+<td style="text-align: right;">81.1</td>
+<td style="text-align: right;">11.9</td>
+<td style="text-align: right;">99.5</td>
+<td style="text-align: right;">86.2</td>
+<td style="text-align: right;">80.9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.90</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">787</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">189</td>
+<td style="text-align: right;">80.8</td>
+<td style="text-align: right;">10.0</td>
+<td style="text-align: right;">99.6</td>
+<td style="text-align: right;">87.5</td>
+<td style="text-align: right;">80.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.92</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">787</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">192</td>
+<td style="text-align: right;">80.5</td>
+<td style="text-align: right;">8.6</td>
+<td style="text-align: right;">99.6</td>
+<td style="text-align: right;">85.7</td>
+<td style="text-align: right;">80.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.94</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">788</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">196</td>
+<td style="text-align: right;">80.2</td>
+<td style="text-align: right;">6.7</td>
+<td style="text-align: right;">99.7</td>
+<td style="text-align: right;">87.5</td>
+<td style="text-align: right;">80.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">788</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">204</td>
+<td style="text-align: right;">79.4</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">99.7</td>
+<td style="text-align: right;">75.0</td>
+<td style="text-align: right;">79.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.98</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">790</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">208</td>
+<td style="text-align: right;">79.2</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">100.0</td>
+<td style="text-align: right;">100.0</td>
+<td style="text-align: right;">79.2</td>
+</tr>
 </tbody>
 </table>
-
 </div>
+
+
 </div>
 </div>
 <p>Le <a href="#tbl-classification-loocv">Tableau&nbsp;<span>4.4</span></a> contient des estimations de plusieurs quantités intéressantes rattachées à la classification, en faisant varier le point de coupure. Pour chaque point de coupure, ces estimations ont été obtenues par validation croisée à <span class="math inline">\(n\)</span> groupes (en anglais, <em>leave-one-out cross-validation</em>, ou LOOCV). Ainsi, ces estimations sont meilleures que les estimés sans ajustement aucun car elles ne sont pas obtenues en utilisant les mêmes observations que celles qui ont servi à estimer le modèle.</p>
@@ -1928,30 +1918,31 @@ En résumé
 <div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-confumat_448efb989b554c43ebf6a85c252a790e">
 <div class="cell-output-display">
 <div id="tbl-confumat" class="anchored">
-
-<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;4.5:  Matrice de confusion avec point de coupure 0.465. </caption>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> \(Y=1\) </th>
-   <th style="text-align:right;"> \(Y=0\) </th>
-  </tr>
- </thead>
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Tableau&nbsp;4.5: Matrice de confusion avec point de coupure 0.465.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(Y=1\)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">\(Y=0\)</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> \(\widehat{Y}=1\) </td>
-   <td style="text-align:right;"> 109 </td>
-   <td style="text-align:right;"> 52 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> \(\widehat{Y}=0\) </td>
-   <td style="text-align:right;"> 101 </td>
-   <td style="text-align:right;"> 738 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">\(\widehat{Y}=1\)</td>
+<td style="text-align: right;">109</td>
+<td style="text-align: right;">52</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">\(\widehat{Y}=0\)</td>
+<td style="text-align: right;">101</td>
+<td style="text-align: right;">738</td>
+</tr>
 </tbody>
 </table>
-
 </div>
+
+
 </div>
 </div>
 <p>Quatre autres quantités, dérivées à partir de la matrice de confusion, sont parfois utilisées:</p>
@@ -1972,7 +1963,7 @@ En résumé
 <div id="fig-roccurve" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="reglogistique_files/figure-html/fig-roccurve-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.6: Fonction d’efficacité du récepteur avec probabilités de succès issues de la validation croisée à <span class="math inline">\(n\)</span> groupes.</figcaption><p></p>
+<figcaption class="figure-caption">Figure&nbsp;4.6: Fonction d’efficacité du récepteur avec probabilités de succès issues de la validation croisée à <span class="math inline">\(n\)</span> groupes.</figcaption>
 </figure>
 </div>
 </div>
@@ -2075,29 +2066,30 @@ En résumé
 <div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-dbm-ymontant-apprentissage_ed28bd522f993a441e6fc4e8e57bd9aa">
 <div class="cell-output-display">
 <div id="tbl-dbm-ymontant-apprentissage" class="anchored">
-
-<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;4.8:  Statistiques descriptives des montants d’achats pour la base de données marketing (échantillon d’apprentissage). </caption>
- <thead>
-  <tr>
-   <th style="text-align:right;"> n </th>
-   <th style="text-align:right;"> moyenne </th>
-   <th style="text-align:right;"> écart-type </th>
-   <th style="text-align:right;"> minimum </th>
-   <th style="text-align:right;"> maximum </th>
-  </tr>
- </thead>
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Tableau&nbsp;4.8: Statistiques descriptives des montants d’achats pour la base de données marketing (échantillon d’apprentissage).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">moyenne</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">écart-type</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">minimum</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">maximum</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:right;"> 210 </td>
-   <td style="text-align:right;"> 67.3 </td>
-   <td style="text-align:right;"> 13.2 </td>
-   <td style="text-align:right;"> 25 </td>
-   <td style="text-align:right;"> 109 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: right;">210</td>
+<td style="text-align: right;">67.3</td>
+<td style="text-align: right;">13.2</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">109</td>
+</tr>
 </tbody>
 </table>
-
 </div>
+
+
 </div>
 </div>
 <p>Nous allons travailler en termes de revenu net. Nous pouvons donc spécifier la matrice de gain du <a href="#tbl-03-gain3">Tableau&nbsp;<span>4.9</span></a> pour notre problème. Si on n’envoie pas de catalogue, notre gain est nul. Si on envoie le catalogue à un client qui n’achète pas, on perd 10$ (le coût de l’envoi). En revanche, notre revenu net est de 57$ (revenu moyen moins coût de l’envoi).</p>
@@ -2158,7 +2150,7 @@ En résumé
 <div id="fig-coupure-pondere" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="reglogistique_files/figure-html/fig-coupure-pondere-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.7: Estimation du gain moyen en fonction du point de coupure pour l’exemple de base de données marketing.</figcaption><p></p>
+<figcaption class="figure-caption">Figure&nbsp;4.7: Estimation du gain moyen en fonction du point de coupure pour l’exemple de base de données marketing.</figcaption>
 </figure>
 </div>
 </div>
@@ -2182,7 +2174,7 @@ En résumé
 <div id="fig-lift" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="reglogistique_files/figure-html/fig-lift-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.8: Courbe lift</figcaption><p></p>
+<figcaption class="figure-caption">Figure&nbsp;4.8: Courbe lift</figcaption>
 </figure>
 </div>
 </div>
@@ -2190,85 +2182,86 @@ En résumé
 <div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-lift_2a44e6bc6416617eeabbd3aed0046487">
 <div class="cell-output-display">
 <div id="tbl-lift" class="anchored">
-
-<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;4.10:  Tableau du lift (déciles). </caption>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> pourcent </th>
-   <th style="text-align:right;"> hasard </th>
-   <th style="text-align:right;"> modele </th>
-   <th style="text-align:right;"> lift </th>
-  </tr>
- </thead>
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Tableau&nbsp;4.10: Tableau du lift (déciles).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">pourcent</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">hasard</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">modele</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">lift</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> 10% </td>
-   <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 21 </td>
-   <td style="text-align:right;"> 78 </td>
-   <td style="text-align:right;"> 3.71 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 20% </td>
-   <td style="text-align:right;"> 20 </td>
-   <td style="text-align:right;"> 42 </td>
-   <td style="text-align:right;"> 120 </td>
-   <td style="text-align:right;"> 2.86 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 30% </td>
-   <td style="text-align:right;"> 30 </td>
-   <td style="text-align:right;"> 63 </td>
-   <td style="text-align:right;"> 157 </td>
-   <td style="text-align:right;"> 2.49 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 40% </td>
-   <td style="text-align:right;"> 40 </td>
-   <td style="text-align:right;"> 84 </td>
-   <td style="text-align:right;"> 180 </td>
-   <td style="text-align:right;"> 2.14 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 50% </td>
-   <td style="text-align:right;"> 50 </td>
-   <td style="text-align:right;"> 105 </td>
-   <td style="text-align:right;"> 195 </td>
-   <td style="text-align:right;"> 1.86 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 60% </td>
-   <td style="text-align:right;"> 60 </td>
-   <td style="text-align:right;"> 126 </td>
-   <td style="text-align:right;"> 201 </td>
-   <td style="text-align:right;"> 1.59 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 70% </td>
-   <td style="text-align:right;"> 70 </td>
-   <td style="text-align:right;"> 147 </td>
-   <td style="text-align:right;"> 208 </td>
-   <td style="text-align:right;"> 1.42 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 80% </td>
-   <td style="text-align:right;"> 80 </td>
-   <td style="text-align:right;"> 168 </td>
-   <td style="text-align:right;"> 210 </td>
-   <td style="text-align:right;"> 1.25 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 90% </td>
-   <td style="text-align:right;"> 90 </td>
-   <td style="text-align:right;"> 189 </td>
-   <td style="text-align:right;"> 210 </td>
-   <td style="text-align:right;"> 1.11 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">10%</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">78</td>
+<td style="text-align: right;">3.71</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">20%</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">120</td>
+<td style="text-align: right;">2.86</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">30%</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">63</td>
+<td style="text-align: right;">157</td>
+<td style="text-align: right;">2.49</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">40%</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">84</td>
+<td style="text-align: right;">180</td>
+<td style="text-align: right;">2.14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">50%</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">105</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">1.86</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">60%</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">126</td>
+<td style="text-align: right;">201</td>
+<td style="text-align: right;">1.59</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">70%</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">147</td>
+<td style="text-align: right;">208</td>
+<td style="text-align: right;">1.42</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">80%</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">168</td>
+<td style="text-align: right;">210</td>
+<td style="text-align: right;">1.25</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">90%</td>
+<td style="text-align: right;">90</td>
+<td style="text-align: right;">189</td>
+<td style="text-align: right;">210</td>
+<td style="text-align: right;">1.11</td>
+</tr>
 </tbody>
 </table>
-
 </div>
+
+
 </div>
 </div>
 <p>Le <a href="#tbl-lift">Tableau&nbsp;<span>4.10</span></a> présente les 10 déciles. Si on classifiait comme acheteurs les 10% qui ont la plus forte probabilité estimée d’achat, on détecterait 81 des 210 clients (37.6%). En comparaison, on s’attend que 21 clients soient sélectionnés en moyenne si on prend un échantillon aléatoire de 100 personnes. Le ratio 81/21 (dernière colonne) est le <em>lift</em> du modèle: il permet de détecter 3.86 fois plus de succès que le hasard.</p>
@@ -2283,9 +2276,6 @@ En résumé
 \mathsf{E}_0(\overline{B})&amp;= \frac{1}{n} \sum_{i=1}^n p_i(1-p_i) \\
 \mathsf{Va}_0(\overline{B})&amp;= \frac{1}{n^2} \sum_{i=1}^n p_i(1-p_i)(1-2p_i)^2
 \end{align*}\]</span></p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/calibration_c5c8220b1fdd1416a1f8bf305a6eb752">
-
-</div>
 <p>Sous l’hypothèse nulle de calibration parfaite, <span class="math inline">\(Z \sim \mathsf{No}(0,1)\)</span> en grand échantillon. Pour le modèle simple avec toutes les covariables, la valeur-<span class="math inline">\(p\)</span> approximative calculée avec les probabilités de succès obtenues par validation-croisée et les données de l’échantillon d’apprentissage est 0.22 et il n’y a pas de preuve ici que le modèle est mal calibré. Cette technique est utile pour vérifier s’il n’y a pas de surajustement (auquel cas le modèle tend à retourner des probabilités très près de 0/1, mais qui ne correspondent pas à la réalité).</p>
 <p>Ici, nous avons ajusté un seul modèle, celui contenant uniquement les 10 variables de base et nous nous sommes attardés au choix du point de coupure pour l’assignation aux classes. Il est possible qu’un autre modèle, contenant par exemple des termes d’interactions, des termes quadratiques ou d’autres transformations des variables, soit supérieur à celui-ci. Le choix du modèle de prévision se fait donc souvent en deux étapes:</p>
 <ol type="1">
@@ -2517,79 +2507,80 @@ En résumé
 <div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-03-summarylog_e7f9e39ee6814265f7126dabc2aa01eb">
 <div class="cell-output-display">
 <div id="tbl-03-summarylog" class="anchored">
-
-<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;4.11:  Résumé des caractéristiques des modèles logistiques avec (a) référence, soit l’envoi sans sélection à tous les clients; (b) 10 variables de base sans sélection; (c) toutes les variables, incluant les termes quadratiques et les interactions d’ordre 2; (d) sélection séquentielle avec AIC (e) sélection séquentielle avec BIC (f) recherche exhaustive avec variables de la procédure séquentielle AIC (sélection selon BIC) (g) LASSO avec pénalité optimale selon le critère de l’aire sous la courbe. Les points de coupure optimaux ont été déterminés par validation-croisée sur l’échantillon d’apprentissage (sauf LASSO), tandis que la performance du modèle (sensibilité et taux de bonne classification) ont été calculés à partir de l’échantillon test de 100 000 individus. </caption>
- <thead>
-  <tr>
-   <th style="text-align:left;"> modèle </th>
-   <th style="text-align:right;"> no. variables </th>
-   <th style="text-align:right;"> pt. coupure </th>
-   <th style="text-align:right;">  sensibilité </th>
-   <th style="text-align:right;"> taux bonne classif. </th>
-   <th style="text-align:right;"> profit </th>
-  </tr>
- </thead>
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Tableau&nbsp;4.11: Résumé des caractéristiques des modèles logistiques avec (a) référence, soit l’envoi sans sélection à tous les clients; (b) 10 variables de base sans sélection; (c) toutes les variables, incluant les termes quadratiques et les interactions d’ordre 2; (d) sélection séquentielle avec AIC (e) sélection séquentielle avec BIC (f) recherche exhaustive avec variables de la procédure séquentielle AIC (sélection selon BIC) (g) LASSO avec pénalité optimale selon le critère de l’aire sous la courbe. Les points de coupure optimaux ont été déterminés par validation-croisée sur l’échantillon d’apprentissage (sauf LASSO), tandis que la performance du modèle (sensibilité et taux de bonne classification) ont été calculés à partir de l’échantillon test de 100 000 individus.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">modèle</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">no. variables</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">pt. coupure</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">sensibilité</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">taux bonne classif.</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">profit</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> (a) </td>
-   <td style="text-align:right;">  </td>
-   <td style="text-align:right;">  </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0.232 </td>
-   <td style="text-align:right;"> 601212 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> (b) </td>
-   <td style="text-align:right;"> 14 </td>
-   <td style="text-align:right;"> 0.14 </td>
-   <td style="text-align:right;"> 0.4593 </td>
-   <td style="text-align:right;"> 0.733 </td>
-   <td style="text-align:right;"> 934986 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> (c) </td>
-   <td style="text-align:right;"> 104 </td>
-   <td style="text-align:right;"> 0.07 </td>
-   <td style="text-align:right;"> 0.4639 </td>
-   <td style="text-align:right;"> 0.737 </td>
-   <td style="text-align:right;"> 941476 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> (d) </td>
-   <td style="text-align:right;"> 28 </td>
-   <td style="text-align:right;"> 0.15 </td>
-   <td style="text-align:right;"> 0.526 </td>
-   <td style="text-align:right;"> 0.788 </td>
-   <td style="text-align:right;"> 970269 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> (e) </td>
-   <td style="text-align:right;"> 8 </td>
-   <td style="text-align:right;"> 0.17 </td>
-   <td style="text-align:right;"> 0.5265 </td>
-   <td style="text-align:right;"> 0.788 </td>
-   <td style="text-align:right;"> 978226 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> (f) </td>
-   <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 0.14 </td>
-   <td style="text-align:right;"> 0.4986 </td>
-   <td style="text-align:right;"> 0.767 </td>
-   <td style="text-align:right;"> 976332 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> (g) </td>
-   <td style="text-align:right;"> 13 </td>
-   <td style="text-align:right;"> 0.01 </td>
-   <td style="text-align:right;"> 0.237 </td>
-   <td style="text-align:right;"> 0.254 </td>
-   <td style="text-align:right;"> 623345 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">(a)</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.232</td>
+<td style="text-align: right;">601212</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">(b)</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">0.4593</td>
+<td style="text-align: right;">0.733</td>
+<td style="text-align: right;">934986</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">(c)</td>
+<td style="text-align: right;">104</td>
+<td style="text-align: right;">0.07</td>
+<td style="text-align: right;">0.4639</td>
+<td style="text-align: right;">0.737</td>
+<td style="text-align: right;">941476</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">(d)</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">0.526</td>
+<td style="text-align: right;">0.788</td>
+<td style="text-align: right;">970269</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">(e)</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0.17</td>
+<td style="text-align: right;">0.5265</td>
+<td style="text-align: right;">0.788</td>
+<td style="text-align: right;">978226</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">(f)</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">0.4986</td>
+<td style="text-align: right;">0.767</td>
+<td style="text-align: right;">976332</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">(g)</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.237</td>
+<td style="text-align: right;">0.254</td>
+<td style="text-align: right;">623345</td>
+</tr>
 </tbody>
 </table>
-
 </div>
+
+
 </div>
 </div>
 <p>Nous avons vu plus tôt, qu’avec les 10 variables de base, le meilleur point de coupure est de 0.11. En utilisant cette stratégie sur les 100 000 clients, le revenu net aurait été de 934986 dollars. C’est une énorme amélioration, de plus de 56%, par rapport à la stratégie de référence qui consiste à envoyer le catalogue à tout le monde (revenu net de 601 212$). Si on inclut tous les termes quadratiques et les termes les interactions d’ordre deux (104 variables en tout), le revenu net est inférieur avec une valeur de 941476$. Ici, le modèle est trop complexe et surajusté. Si on fait une sélection de variables (quasi méthodes sont présentées), suivie de la détermination du meilleur point de coupure, on fait alors toujours mieux qu’avec le modèle incluant les 10 variables de base seulement. L’approche la plus rentable parmi celles essayées aurait généré un profit de 978226 avec 8 variables explicatives: il s’agit d’un gain de 4.6% par rapport au modèle avec les 10 variables de base.</p>
@@ -2666,12 +2657,12 @@ Y_{2}^{\star} &amp;= \beta_{02} + \beta_{12} \mathrm{X}_{12} + \cdots + \beta_{1
 <p>Le modèle Heckit aurait produit un revenu net de 10007980$, un montant supérieur au revenu net de 978226$, qui était le meilleur trouvé à la sous-section précédente.</p>
 <p>Pour conclure cet exemple, il s’avère donc que la régression logistique permet d’effectuer un bon ciblage des clients potentiels afin de maximiser les revenus. L’approche générale consistant à obtenir des prévisions pour <span class="math inline">\(\Pr(\texttt{yachat}=1)\)</span> et ensuite trouver le meilleur point de coupure est très générale. D’autres types de modèles (arbre de classification, forêt aléatoire, réseau de neurones) pourraient être utilisés à la place de la régression logistique.</p>
 <p>Nous reviendrons une dernière fois sur cet exemple dans le chapitre traitant des données manquantes. Nous verrons alors comment procéder si des valeurs manquantes sont présentes dans les variables explicatives.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 En résumé
 </div>
 </div>
@@ -2732,7 +2723,7 @@ p_{ik} &amp;= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\eta_{ik})}{1+ \sum_{j=2
 <div id="fig-multinom_means-Ipsos" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="reglogistique_files/figure-html/fig-multinom_means-Ipsos-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.9: Proportion des modalités des variables sociodémographiques des données de participation électorale.</figcaption><p></p>
+<figcaption class="figure-caption">Figure&nbsp;4.9: Proportion des modalités des variables sociodémographiques des données de participation électorale.</figcaption>
 </figure>
 </div>
 </div>
@@ -2744,7 +2735,7 @@ p_{ik} &amp;= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\eta_{ik})}{1+ \sum_{j=2
 <div id="fig-vote-age" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="reglogistique_files/figure-html/fig-vote-age-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.10: Fréquence de vote selon l’âge.</figcaption><p></p>
+<figcaption class="figure-caption">Figure&nbsp;4.10: Fréquence de vote selon l’âge.</figcaption>
 </figure>
 </div>
 </div>
@@ -2780,63 +2771,71 @@ p_{ik} &amp;= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\eta_{ik})}{1+ \sum_{j=2
 </div>
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div id="tbl-multinom-coefs-1" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-multinom-coefs" style="flex-basis: 100.0%;justify-content: center;">
-
-<table class="table" style="margin-left: auto; margin-right: auto;">
-<caption>(a)  catégorie rarement/jamais vs toujours</caption>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> coefficient </th>
-   <th style="text-align:right;"> IC (2.5%) </th>
-   <th style="text-align:right;"> IC (97.5%) </th>
-  </tr>
- </thead>
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>(a) catégorie rarement/jamais vs toujours</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">coefficient</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">IC (2.5%)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">IC (97.5%)</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> cst </td>
-   <td style="text-align:right;"> 0.783 </td>
-   <td style="text-align:right;"> 0.709 </td>
-   <td style="text-align:right;"> 0.858 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> age </td>
-   <td style="text-align:right;"> 0.031 </td>
-   <td style="text-align:right;"> 0.025 </td>
-   <td style="text-align:right;"> 0.036 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">cst</td>
+<td style="text-align: right;">0.783</td>
+<td style="text-align: right;">0.709</td>
+<td style="text-align: right;">0.858</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">0.031</td>
+<td style="text-align: right;">0.025</td>
+<td style="text-align: right;">0.036</td>
+</tr>
 </tbody>
 </table>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+
 
 </div>
 </div>
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div id="tbl-multinom-coefs-2" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-multinom-coefs" style="flex-basis: 100.0%;justify-content: center;">
-
-<table class="table" style="margin-left: auto; margin-right: auto;">
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
 <caption>(b) catégorie occasionnellement vs toujours</caption>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> coefficient </th>
-   <th style="text-align:right;"> IC (2.5%) </th>
-   <th style="text-align:right;"> IC (97.5%) </th>
-  </tr>
- </thead>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">coefficient</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">IC (2.5%)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">IC (97.5%)</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> cst </td>
-   <td style="text-align:right;"> -0.128 </td>
-   <td style="text-align:right;"> -0.224 </td>
-   <td style="text-align:right;"> -0.032 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> age </td>
-   <td style="text-align:right;"> 0.082 </td>
-   <td style="text-align:right;"> 0.075 </td>
-   <td style="text-align:right;"> 0.089 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">cst</td>
+<td style="text-align: right;">-0.128</td>
+<td style="text-align: right;">-0.224</td>
+<td style="text-align: right;">-0.032</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">0.082</td>
+<td style="text-align: right;">0.075</td>
+<td style="text-align: right;">0.089</td>
+</tr>
 </tbody>
 </table>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+
 
 </div>
 </div>
@@ -2865,39 +2864,40 @@ p_{ik} &amp;= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\eta_{ik})}{1+ \sum_{j=2
 <div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-anova-multinom_1e36ab9ca00f2f0256c02a33f3516cd8">
 <div class="cell-output-display">
 <div id="tbl-anova-multinom" class="anchored">
-
-<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;4.13:  Analyse de déviance: test du rapport de vraisemblance pour la variable explicative dans le modèle multinomial logistique. </caption>
- <thead>
-  <tr>
-   <th style="text-align:left;"> modèle </th>
-   <th style="text-align:right;"> DL </th>
-   <th style="text-align:right;"> déviance </th>
-   <th style="text-align:right;"> DL </th>
-   <th style="text-align:right;"> rapport vrais. </th>
-   <th style="text-align:left;"> valeur-p </th>
-  </tr>
- </thead>
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Tableau&nbsp;4.13: Analyse de déviance: test du rapport de vraisemblance pour la variable explicative dans le modèle multinomial logistique.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">modèle</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">DL</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">déviance</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">DL</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">rapport vrais.</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">valeur-p</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> cst </td>
-   <td style="text-align:right;"> 9692 </td>
-   <td style="text-align:right;"> 9781 </td>
-   <td style="text-align:right;">  </td>
-   <td style="text-align:right;">  </td>
-   <td style="text-align:left;">  </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> age </td>
-   <td style="text-align:right;"> 9690 </td>
-   <td style="text-align:right;"> 9078 </td>
-   <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 703 </td>
-   <td style="text-align:left;"> &lt;0.0001 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">cst</td>
+<td style="text-align: right;">9692</td>
+<td style="text-align: right;">9781</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">9690</td>
+<td style="text-align: right;">9078</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">703</td>
+<td style="text-align: left;">&lt;0.0001</td>
+</tr>
 </tbody>
 </table>
-
 </div>
+
+
 </div>
 </div>
 <p>Cette valeur est donnée dans la dernière colonne du tableau. De plus, cet effet est significatif car la valeur-<span class="math inline">\(p\)</span> est inférieure à <span class="math inline">\(10^{-4}\)</span>.</p>
@@ -2970,35 +2970,36 @@ p_{ik} &amp;= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\eta_{ik})}{1+ \sum_{j=2
 <div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-ordered-logistic_fcf19f6e52e229a084765b73c7e73db7">
 <div class="cell-output-display">
 <div id="tbl-ordered-logistic" class="anchored">
-
-<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;4.14:  Tableau des estimations des coefficients du modèle pour réponses ordinales pour la régression logistique à cotes proportionnelles avec sexe. </caption>
- <thead>
-  <tr>
-   <th style="text-align:left;"> effet </th>
-   <th style="text-align:right;"> coefficient </th>
-   <th style="text-align:right;"> erreur-type </th>
-  </tr>
- </thead>
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Tableau&nbsp;4.14: Tableau des estimations des coefficients du modèle pour réponses ordinales pour la régression logistique à cotes proportionnelles avec sexe.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">effet</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">coefficient</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">erreur-type</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> sexe [homme] </td>
-   <td style="text-align:right;"> -0.166 </td>
-   <td style="text-align:right;"> 0.055 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> cst [rarement/jamais|occasionnellement] </td>
-   <td style="text-align:right;"> -1.297 </td>
-   <td style="text-align:right;"> 0.044 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> cst [occasionnellement|toujours] </td>
-   <td style="text-align:right;"> 0.865 </td>
-   <td style="text-align:right;"> 0.041 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">sexe [homme]</td>
+<td style="text-align: right;">-0.166</td>
+<td style="text-align: right;">0.055</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cst [rarement/jamais|occasionnellement]</td>
+<td style="text-align: right;">-1.297</td>
+<td style="text-align: right;">0.044</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cst [occasionnellement|toujours]</td>
+<td style="text-align: right;">0.865</td>
+<td style="text-align: right;">0.041</td>
+</tr>
 </tbody>
 </table>
-
 </div>
+
+
 </div>
 </div>
 <p>Si on écrit les équations pour la cote, on obtient <span class="math display">\[\begin{align*}
@@ -3017,25 +3018,26 @@ p_{ik} &amp;= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\eta_{ik})}{1+ \sum_{j=2
 <div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-predpolr_e9bd9c1707eab7db45097e1bb2a2056e">
 <div class="cell-output-display">
 <div id="tbl-predpolr" class="anchored">
-
-<table class="table" style="margin-left: auto; margin-right: auto;"><caption>Tableau&nbsp;4.15:  Probabilités de chaque classe pour une femme avec le modèle à cotes proportionnelles qui inclut uniquement le sexe. </caption>
- <thead>
-  <tr>
-   <th style="text-align:right;"> rarement/jamais </th>
-   <th style="text-align:right;"> occasionnellement </th>
-   <th style="text-align:right;"> toujours </th>
-  </tr>
- </thead>
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Tableau&nbsp;4.15: Probabilités de chaque classe pour une femme avec le modèle à cotes proportionnelles qui inclut uniquement le sexe.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">rarement/jamais</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">occasionnellement</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">toujours</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:right;"> 0.215 </td>
-   <td style="text-align:right;"> 0.489 </td>
-   <td style="text-align:right;"> 0.296 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: right;">0.215</td>
+<td style="text-align: right;">0.489</td>
+<td style="text-align: right;">0.296</td>
+</tr>
 </tbody>
 </table>
-
 </div>
+
+
 </div>
 </div>
 <p>Avant toute chose, il faut s’assurer que le modèle est approprié. Rappelez-vous que l’une des hypothèses de ce modèle est que les effets des variables explicatives sont les mêmes pour chaque équation.</p>
@@ -3048,19 +3050,19 @@ p_{ik} &amp;= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\eta_{ik})}{1+ \sum_{j=2
 <div id="fig-predmultinom" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="reglogistique_files/figure-html/fig-predmultinom-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4.11: Probabilités prédites pour chaque modalité selon le modèle de régression multinomiale logistique et le modèle de régression ordinales à cotes proportionnelles selon l’âge.</figcaption><p></p>
+<figcaption class="figure-caption">Figure&nbsp;4.11: Probabilités prédites pour chaque modalité selon le modèle de régression multinomiale logistique et le modèle de régression ordinales à cotes proportionnelles selon l’âge.</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>On a précédemment utilisé un test du rapport de vraisemblance pour valider l’hypothèse des cotes proportionnelles: il n’y avait aucune indication que la simplification n’était pas adéquate. Ce n’est pas le cas pour le modèle qui ne contient que la variable <code>age</code> ou plusieurs variables explicatives: la <a href="#fig-predmultinom">Figure&nbsp;<span>4.11</span></a> montre les différences de probabilités ajustées pour les deux modèles qui incluent uniquement l’âge comme variable explicative. Règle générale, on n’ajustera jamais un modèle avec une seule des variables: un test du rapport de vraisemblance indique que <strong>toutes</strong> les variables explicatives sont utiles pour expliquer le comportement.</p>
 <p>On peut également vérifier si le modèle est adéquat pour décrire les données en comparant le modèle pour les données ordinales avec un modèle saturé (qui contient autant de paramètres que d’observations/niveaux): la valeur-<span class="math inline">\(p\)</span>, infime, indique que le modèle plus complexe, soit le modèle saturé, est préférable. Cela nous indique que le modèle a un piètre pouvoir explicatif.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 En résumé
 </div>
 </div>
@@ -3077,8 +3079,8 @@ En résumé
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
-<div id="ref-McCullagh:1980" class="csl-entry" role="doc-biblioentry">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-McCullagh:1980" class="csl-entry" role="listitem">
 McCullagh, Peter. 1980. <span>“Regression Models for Ordinal Data.”</span> <em>Journal of the Royal Statistical Society: Series B (Methodological)</em> 42 (2): 109–27. <a href="https://doi.org/10.1111/j.2517-6161.1980.tb01109.x">https://doi.org/10.1111/j.2517-6161.1980.tb01109.x</a>.
 </div>
 </div>
@@ -3113,9 +3115,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -3180,6 +3196,92 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -3234,7 +3336,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-      <div class="nav-footer-center">Tous droits réservés (Denis Larocque, Léo Belzile)</div>
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">Tous droits réservés (Denis Larocque, Léo Belzile)</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
   </div>
 </footer>
 
