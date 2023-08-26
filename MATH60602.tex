@@ -285,12 +285,12 @@
 
 \title{MATH 60602 - Analyse multidimensionnelle appliquée}
 \author{Denis Larocque \and Léo Belzile}
-\date{2023-08-19}
+\date{2023-08-25}
 
 \begin{document}
 \includepdf{figures/pagecouverture.pdf}
 
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, sharp corners, enhanced, borderline west={3pt}{0pt}{shadecolor}, interior hidden, breakable, frame hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, interior hidden, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, sharp corners, enhanced, breakable]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table des matières}
 {
@@ -579,6 +579,34 @@ majeures sont:
 Dans un rapport, un résumé des caractéristiques les plus importantes
 devrait être inclut pour que le lecteur ou la lectrice puisse valider
 son interprétation des données.
+
+Généralement, l'analyse exploratoire sert aussi à vérifier
+
+\begin{itemize}
+\tightlist
+\item
+  que les variables catégorielles sont adéquatement traitées comme des
+  facteurs (\texttt{factor}).
+\item
+  que les valeurs manquantes sont adéquatement déclarées comme telles
+  (code d'erreur, 999 ou \(-1\), etc.)
+\item
+  s'il ne vaudrait mieux pas retirer certaines variables explicatives
+  avec beaucoup de valeurs manquantes.
+\item
+  s'il ne vaudrait mieux pas fusionner des modalités de variables
+  catégorielles si le nombre d'observation par modalité est trop faible.
+\item
+  qu'il n'y a pas de variable explicative dérivée de la variable réponse
+  (dans le cas d'une régression)
+\item
+  que le sous-ensemble des observations employé pour l'analyse
+  statistique est adéquat.
+\item
+  qu'il n'y a pas d'anomalies ou de valeurs aberrantes (par ex.,
+  \texttt{999} pour valeurs manquantes) qui viendraient fausser les
+  résultats.
+\end{itemize}
 
 \hypertarget{types-de-variables}{%
 \section{Types de variables}\label{types-de-variables}}
@@ -1141,7 +1169,7 @@ particulier, votre description devrait coïncider avec le rendu. Votre
 graphique raconte une histoire, aussi prenez-soin que cette dernière
 soit nécessaire et attrayante.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, left=2mm, arc=.35mm, opacityback=0, colback=white, toprule=.15mm, coltitle=black, toptitle=1mm, colframe=quarto-callout-note-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, opacitybacktitle=0.6, leftrule=.75mm, breakable, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, coltitle=black, opacitybacktitle=0.6, bottomrule=.15mm, breakable, colframe=quarto-callout-note-color-frame, leftrule=.75mm, arc=.35mm, toprule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, titlerule=0mm, toptitle=1mm, rightrule=.15mm, colback=white, colbacktitle=quarto-callout-note-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -1387,8 +1415,8 @@ simulées.}\begin{minipage}[t]{\linewidth}
 \toprule
   & coefficient & borne inf. & borne sup.\\
 \midrule
-(cst) & 20 & 19.74 & 20.31\\
-X1 & 2 & 1.91 & 2.08\\
+(cst) & 20.03 & 19.74 & 20.31\\
+X1 & 2.00 & 1.91 & 2.08\\
 \bottomrule
 \end{tabular}
 
@@ -1514,6 +1542,10 @@ correspond à un modèle linéaire simple, \(k=2\) à un modèle cubique,
 (\(k\)) du polynôme qui nous donnera un bon modèle. Voici d'abord le
 graphe de ces 100 observations de l'échantillon d'apprentissage et les
 valeurs ajustées de polynômes d'ordre 1, 4 et 10.
+
+\begin{verbatim}
+Warning: Removed 28 rows containing missing values (`geom_line()`).
+\end{verbatim}
 
 \begin{figure}[ht!]
 
@@ -1739,17 +1771,17 @@ en fonction de l'ordre du polynôme. }\tabularnewline
 \toprule
   & \(\mathsf{EQM}\) & \(\widehat{\mathsf{EQM}}_a\) & \(R^2\) & \(\mathsf{AIC}\) & \(\mathsf{BIC}\) & \(\mathsf{VC}_{10}\)\\
 \midrule
-1 & 3191 & 3674 & 0.65 & 1111 & 1119 & 3675\\
-2 & 3133 & 2879 & 0.73 & 1088 & 1099 & 2898\\
-3 & 2697 & 2620 & 0.75 & 1081 & 1094 & 2676\\
-4 & 2767 & 2582 & 0.75 & 1081 & 1097 & 2666\\
-5 & 2771 & 2581 & 0.75 & 1083 & 1102 & 2711\\
+1 & 3191.29 & 3674.20 & 0.65 & 1110.70 & 1118.51 & 3675.37\\
+2 & 3132.67 & 2879.24 & 0.73 & 1088.32 & 1098.74 & 2897.94\\
+3 & 2697.40 & 2620.05 & 0.75 & 1080.88 & 1093.91 & 2675.51\\
+4 & 2766.68 & 2581.70 & 0.75 & 1081.41 & 1097.04 & 2666.16\\
+5 & 2771.05 & 2580.86 & 0.75 & 1083.38 & 1101.61 & 2711.11\\
 \addlinespace
-6 & 2780 & 2578 & 0.75 & 1085 & 1106 & 2757\\
-7 & 2780 & 2577 & 0.75 & 1087 & 1111 & 2788\\
-8 & 2797 & 2531 & 0.76 & 1087 & 1113 & 2846\\
-9 & 2811 & 2528 & 0.76 & 1089 & 1118 & 2896\\
-10 & 2849 & 2519 & 0.76 & 1091 & 1122 & 2976\\
+6 & 2779.66 & 2577.60 & 0.75 & 1085.25 & 1106.09 & 2757.13\\
+7 & 2780.21 & 2577.49 & 0.75 & 1087.24 & 1110.69 & 2787.95\\
+8 & 2797.35 & 2531.00 & 0.76 & 1087.42 & 1113.48 & 2845.78\\
+9 & 2811.07 & 2527.85 & 0.76 & 1089.30 & 1117.96 & 2895.61\\
+10 & 2848.81 & 2519.14 & 0.76 & 1090.95 & 1122.22 & 2976.04\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -2144,22 +2176,25 @@ statistiques descriptives pour l'échantillon d'apprentissage.
 \begin{Highlighting}[]
 \FunctionTok{data}\NormalTok{(dbm, }\AttributeTok{package =} \StringTok{"hecmulti"}\NormalTok{)}
 \FunctionTok{str}\NormalTok{(dbm)}
-\CommentTok{\#\textgreater{} tibble [101,000 x 13] (S3: tbl\_df/tbl/data.frame)}
-\CommentTok{\#\textgreater{}  $ x1      : int [1:101000] 1 1 0 0 1 1 0 0 0 1 ...}
-\CommentTok{\#\textgreater{}  $ x2      : num [1:101000] 42 59 52 32 38 63 35 32 26 32 ...}
-\CommentTok{\#\textgreater{}  $ x3      : Factor w/ 3 levels "1","2","3": 1 2 3 1 2 2 2 1 3 1 ...}
-\CommentTok{\#\textgreater{}  $ x4      : Factor w/ 5 levels "1","2","3","4",..: 3 3 5 1 5 5 1 3 1 5 ...}
-\CommentTok{\#\textgreater{}  $ x5      : int [1:101000] 1 1 1 0 0 1 1 0 0 0 ...}
-\CommentTok{\#\textgreater{}  $ x6      : num [1:101000] 8.6 8.6 1.4 10.7 9.1 9.4 10.6 4.8 4 10.3 ...}
-\CommentTok{\#\textgreater{}  $ x7      : num [1:101000] 8 9 9 42 5 1 6 5 48 9 ...}
-\CommentTok{\#\textgreater{}  $ x8      : num [1:101000] 49 70 120 31 30 28 59 70 73 55 ...}
-\CommentTok{\#\textgreater{}  $ x9      : num [1:101000] 159 123 434 110 55 102 593 298 83 90 ...}
-\CommentTok{\#\textgreater{}  $ x10     : num [1:101000] 5 5 8 3 3 8 10 6 2 3 ...}
-\CommentTok{\#\textgreater{}  $ yachat  : int [1:101000] 0 0 0 0 0 0 0 1 1 1 ...}
-\CommentTok{\#\textgreater{}  $ ymontant: num [1:101000] NA NA NA NA NA NA NA 52 79 77 ...}
-\CommentTok{\#\textgreater{}  $ test    : Factor w/ 2 levels "0","1": 1 1 1 1 1 1 1 1 1 1 ...}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+tibble [101,000 x 13] (S3: tbl_df/tbl/data.frame)
+ $ x1      : int [1:101000] 1 1 0 0 1 1 0 0 0 1 ...
+ $ x2      : num [1:101000] 42 59 52 32 38 63 35 32 26 32 ...
+ $ x3      : Factor w/ 3 levels "1","2","3": 1 2 3 1 2 2 2 1 3 1 ...
+ $ x4      : Factor w/ 5 levels "1","2","3","4",..: 3 3 5 1 5 5 1 3 1 5 ...
+ $ x5      : int [1:101000] 1 1 1 0 0 1 1 0 0 0 ...
+ $ x6      : num [1:101000] 8.6 8.6 1.4 10.7 9.1 9.4 10.6 4.8 4 10.3 ...
+ $ x7      : num [1:101000] 8 9 9 42 5 1 6 5 48 9 ...
+ $ x8      : num [1:101000] 49 70 120 31 30 28 59 70 73 55 ...
+ $ x9      : num [1:101000] 159 123 434 110 55 102 593 298 83 90 ...
+ $ x10     : num [1:101000] 5 5 8 3 3 8 10 6 2 3 ...
+ $ yachat  : int [1:101000] 0 0 0 0 0 0 0 1 1 1 ...
+ $ ymontant: num [1:101000] NA NA NA NA NA NA NA 52 79 77 ...
+ $ test    : Factor w/ 2 levels "0","1": 1 1 1 1 1 1 1 1 1 1 ...
+\end{verbatim}
 
 \hypertarget{tbl-contingence-dbm}{}
 \begin{table}
@@ -2376,7 +2411,7 @@ l'origine englobera toutes les autres valeurs de \texttt{x3}, à savoir
   fois. La fonction \texttt{leaps::regsubsets} va quant à elle créer des
   indicateurs binaires.}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, bottomrule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, left=2mm, arc=.35mm, opacityback=0, colback=white, toprule=.15mm, coltitle=black, toptitle=1mm, colframe=quarto-callout-tip-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Danger de surajustement avec variables catégorielles}, opacitybacktitle=0.6, leftrule=.75mm, breakable, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, coltitle=black, opacitybacktitle=0.6, bottomrule=.15mm, breakable, colframe=quarto-callout-tip-color-frame, leftrule=.75mm, arc=.35mm, toprule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Danger de surajustement avec variables catégorielles}, titlerule=0mm, toptitle=1mm, rightrule=.15mm, colback=white, colbacktitle=quarto-callout-tip-color!10!white]
 
 La principale cause de mauvaise performance est le surajustement
 sélectif. Dans l'exemple que l'on considère avec la base de données
@@ -2490,21 +2525,21 @@ d'informations. }\tabularnewline
 \toprule
 variables & BIC & AIC\\
 \midrule
-x5 & -96 & -103\\
-x5 x6 & -196 & -206\\
-x31 x5 x6 & -311 & -324\\
-x31 x5 x6 x10 & -351 & -368\\
-x1 x31 x5 x6 x10 & -369 & -389\\
+x5 & -95.96 & -102.65\\
+x5 x6 & -196.41 & -206.45\\
+x31 x5 x6 & -311.09 & -324.48\\
+x31 x5 x6 x10 & -351.05 & -367.79\\
+x1 x31 x5 x6 x10 & -369.33 & -389.41\\
 \addlinespace
-x1 x31 x5 x6 x7 x10 & -387 & -411\\
-x1 x31 x5 x6 x7 x8 x10 & -392 & -419\\
-x1 x31 x44 x5 x6 x7 x8 x10 & -391 & -421\\
-x1 x2 x31 x44 x5 x6 x7 x8 x10 & -390 & -424\\
-x1 x2 x31 x44 x5 x6 x7 x8 x9 x10 & -387 & -424\\
+x1 x31 x5 x6 x7 x10 & -387.09 & -410.52\\
+x1 x31 x5 x6 x7 x8 x10 & -392.18 & -418.95\\
+x1 x31 x44 x5 x6 x7 x8 x10 & -390.68 & -420.80\\
+x1 x2 x31 x44 x5 x6 x7 x8 x10 & -390.05 & -423.53\\
+x1 x2 x31 x44 x5 x6 x7 x8 x9 x10 & -386.94 & -423.75\\
 \addlinespace
-x1 x2 x31 x43 x44 x5 x6 x7 x8 x9 x10 & -383 & -423\\
-x1 x2 x31 x41 x42 x43 x44 x5 x6 x7 x8 x10 & -378 & -422\\
-x1 x2 x31 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10 & -375 & -422\\
+x1 x2 x31 x43 x44 x5 x6 x7 x8 x9 x10 & -382.86 & -423.03\\
+x1 x2 x31 x41 x42 x43 x44 x5 x6 x7 x8 x10 & -378.39 & -421.91\\
+x1 x2 x31 x41 x42 x43 x44 x5 x6 x7 x8 x9 x10 & -374.76 & -421.62\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -2515,8 +2550,8 @@ sous-ensembles. Dans l'exemple, on voit que le modèle avec les variables
 \texttt{x1} \texttt{x2} \texttt{x31} \texttt{x44} \texttt{x5}
 \texttt{x6} \texttt{x7} \texttt{x8} \texttt{x9} et \texttt{x10} est
 celui qui minimise le \(\mathsf{AIC}\) globalement (\(\mathsf{AIC}\) de
--423.754). Le modèle choisi par le \(\mathsf{BIC}\) contient seulement
-sept variables explicatives (plutôt que 10), soit \texttt{x1}
+-423.7539583). Le modèle choisi par le \(\mathsf{BIC}\) contient
+seulement sept variables explicatives (plutôt que 10), soit \texttt{x1}
 \texttt{x31} \texttt{x5} \texttt{x6} \texttt{x7} \texttt{x8}
 \texttt{x10}.
 
@@ -2820,9 +2855,14 @@ l'intérieur d'un budget alloué (losange). La forme de la région fait en
 sorte que la solution, qui se trouve sur la bordure du losange,
 intervient dans un coin avec certaines coordonnées nulles.
 
+\begin{verbatim}
+Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+i Please use `linewidth` instead.
+\end{verbatim}
+
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{selectionmodeles_files/figure-pdf/fig-lassopenalty-1.pdf}
+{\centering \includegraphics{selectionmodeles_files/figure-pdf/fig-lassopenalty-1.pdf}
 
 }
 
@@ -3196,7 +3236,7 @@ des parties d'effet par le rétrécissement (\emph{shrinkage}). De récents
 développements théoriques permettent aussi de corriger les
 valeurs-\emph{p} pour faire de l'inférence post-sélection avec le LASSO.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, left=2mm, arc=.35mm, opacityback=0, colback=white, toprule=.15mm, coltitle=black, toptitle=1mm, colframe=quarto-callout-note-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, opacitybacktitle=0.6, leftrule=.75mm, breakable, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, coltitle=black, opacitybacktitle=0.6, bottomrule=.15mm, breakable, colframe=quarto-callout-note-color-frame, leftrule=.75mm, arc=.35mm, toprule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, titlerule=0mm, toptitle=1mm, rightrule=.15mm, colback=white, colbacktitle=quarto-callout-note-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -3941,8 +3981,8 @@ proportion de 1). }\tabularnewline
 \toprule
   & AIC & BIC & log.vrais.\\
 \midrule
-modèle ajusté & 544 & 603 & -258\\
-modèle nul & 691 & 695 & -258\\
+modèle ajusté & 544.20 & 603.20 & -258.1\\
+modèle nul & 691.27 & 695.48 & -258.1\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -4107,7 +4147,7 @@ modèles en utilisant des méthodes permettant d'obtenir un bon modèle
 tout en se protégeant contre le surajustement. Certaines de ces méthodes
 (division de l'échantillon, validation croisée) ont déjà été présentées.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, left=2mm, arc=.35mm, opacityback=0, colback=white, toprule=.15mm, coltitle=black, toptitle=1mm, colframe=quarto-callout-note-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, opacitybacktitle=0.6, leftrule=.75mm, breakable, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, coltitle=black, opacitybacktitle=0.6, bottomrule=.15mm, breakable, colframe=quarto-callout-note-color-frame, leftrule=.75mm, arc=.35mm, toprule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, titlerule=0mm, toptitle=1mm, rightrule=.15mm, colback=white, colbacktitle=quarto-callout-note-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -4296,7 +4336,7 @@ de classification. Tel que nous l'avons vu au chapitre précédent, il y a
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{reglogistique_files/figure-pdf/fig-classification0-1.pdf}
+{\centering \includegraphics{reglogistique_files/figure-pdf/fig-classification0-1.pdf}
 
 }
 
@@ -4612,7 +4652,7 @@ marketing (échantillon d'apprentissage). }\tabularnewline
 \toprule
 n & moyenne & écart-type & minimum & maximum\\
 \midrule
-210 & 67.3 & 13.2 & 25 & 109\\
+210 & 67.29 & 13.24 & 25 & 109\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -4667,13 +4707,16 @@ validation croisée à \(K=10\) groupes (la mesure affichée correspondant
   \AttributeTok{c11 =} \DecValTok{57}\NormalTok{,}
   \AttributeTok{plot =} \ConstantTok{TRUE}\NormalTok{)}
 \NormalTok{coupe}
-\CommentTok{\#\textgreater{} Point de coupure optimal: 0.14}
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+Point de coupure optimal: 0.13 
+\end{verbatim}
+
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{reglogistique_files/figure-pdf/fig-coupure-pondere-1.pdf}
+{\centering \includegraphics{reglogistique_files/figure-pdf/fig-coupure-pondere-1.pdf}
 
 }
 
@@ -4690,7 +4733,7 @@ effectué ici la validation croisée avec 10 groupes et fait la moyenne
 des 10 répétitions afin d'avoir plus de précision.
 
 On voit dans la Figure~\ref{fig-coupure-pondere} que le meilleur point
-de coupure, celui qui maximise le gain est 0.14. Avec ce point de
+de coupure, celui qui maximise le gain est 0.13. Avec ce point de
 coupure, et selon le Tableau~\ref{tbl-classification-loocv}, on estime
 que le taux de bonne classification est de 70.3 et que la sensibilité
 est de 90.95. Ainsi, on estime qu'on va détecter environ 91\% des
@@ -4727,7 +4770,7 @@ positifs sur le nombre de succès).
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{reglogistique_files/figure-pdf/fig-lift-1.pdf}
+{\centering \includegraphics{reglogistique_files/figure-pdf/fig-lift-1.pdf}
 
 }
 
@@ -4744,16 +4787,16 @@ positifs sur le nombre de succès).
 \toprule
   & pourcent & hasard & modele & lift\\
 \midrule
-10\% & 10 & 21 & 78 & 3.71\\
-20\% & 20 & 42 & 120 & 2.86\\
-30\% & 30 & 63 & 157 & 2.49\\
-40\% & 40 & 84 & 180 & 2.14\\
-50\% & 50 & 105 & 195 & 1.86\\
+10\% & 10 & 21 & 78 & 3.714286\\
+20\% & 20 & 42 & 120 & 2.857143\\
+30\% & 30 & 63 & 157 & 2.492063\\
+40\% & 40 & 84 & 180 & 2.142857\\
+50\% & 50 & 105 & 195 & 1.857143\\
 \addlinespace
-60\% & 60 & 126 & 201 & 1.59\\
-70\% & 70 & 147 & 208 & 1.42\\
-80\% & 80 & 168 & 210 & 1.25\\
-90\% & 90 & 189 & 210 & 1.11\\
+60\% & 60 & 126 & 201 & 1.595238\\
+70\% & 70 & 147 & 208 & 1.414966\\
+80\% & 80 & 168 & 210 & 1.250000\\
+90\% & 90 & 189 & 210 & 1.111111\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -5086,12 +5129,20 @@ spécifier la transformation à l'intérieur de \texttt{I()}, par exemple
   \AttributeTok{plotty =} \ConstantTok{FALSE}\NormalTok{, }
   \AttributeTok{report =} \ConstantTok{FALSE}\NormalTok{,  }\CommentTok{\# sans graphique ou rapport}
   \AttributeTok{fitfunction =} \StringTok{"glm"}\NormalTok{) }
-\CommentTok{\#\textgreater{} }\AlertTok{TASK}\CommentTok{: Genetic algorithm in the candidate set.}
-\CommentTok{\#\textgreater{} Initialization...}
-\CommentTok{\#\textgreater{} Algorithm started...}
-\CommentTok{\#\textgreater{} Improvements in best and average IC have bebingo en below the specified goals.}
-\CommentTok{\#\textgreater{} Algorithm is declared to have converged.}
-\CommentTok{\#\textgreater{} Completed.}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+TASK: Genetic algorithm in the candidate set.
+Initialization...
+Algorithm started...
+Improvements in best and average IC have bebingo en below the specified goals.
+Algorithm is declared to have converged.
+Completed.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \CommentTok{\# Redéfinir le modèle via "glm"}
 \NormalTok{exgen\_modele }\OtherTok{\textless{}{-}} 
   \FunctionTok{glm}\NormalTok{(exgen}\SpecialCharTok{@}\NormalTok{objects[[}\DecValTok{1}\NormalTok{]]}\SpecialCharTok{$}\NormalTok{formula,}
@@ -5171,7 +5222,7 @@ modèle & no. variables & pt. coupure &  sensibilité & taux bonne classif. & pr
 (d) & 28 & 0.15 & 0.526 & 0.788 & 970269\\
 (e) & 8 & 0.17 & 0.5265 & 0.788 & 978226\\
 \addlinespace
-(f) & 10 & 0.14 & 0.4986 & 0.767 & 976332\\
+(f) & 9 & 0.19 & 0.5455 & 0.8 & 960225\\
 (g) & 13 & 0.01 & 0.237 & 0.254 & 623345\\
 \bottomrule
 \end{tabular}
@@ -5346,7 +5397,7 @@ Nous reviendrons une dernière fois sur cet exemple dans le chapitre
 traitant des données manquantes. Nous verrons alors comment procéder si
 des valeurs manquantes sont présentes dans les variables explicatives.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, left=2mm, arc=.35mm, opacityback=0, colback=white, toprule=.15mm, coltitle=black, toptitle=1mm, colframe=quarto-callout-note-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, opacitybacktitle=0.6, leftrule=.75mm, breakable, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, coltitle=black, opacitybacktitle=0.6, bottomrule=.15mm, breakable, colframe=quarto-callout-note-color-frame, leftrule=.75mm, arc=.35mm, toprule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, titlerule=0mm, toptitle=1mm, rightrule=.15mm, colback=white, colbacktitle=quarto-callout-note-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -5547,7 +5598,7 @@ cet artefact, on considère les personnes de plus de 30 ans uniquement.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{reglogistique_files/figure-pdf/fig-vote-age-1.pdf}
+{\centering \includegraphics{reglogistique_files/figure-pdf/fig-vote-age-1.pdf}
 
 }
 
@@ -5679,8 +5730,8 @@ explicative dans le modèle multinomial logistique. }\tabularnewline
 \toprule
 modèle & DL & déviance & DL & rapport vrais. & valeur-p\\
 \midrule
-cst & 9692 & 9781 &  &  & \\
-age & 9690 & 9078 & 2 & 703 & <0.0001\\
+cst & 9692 & 9781.07 &  &  & \\
+age & 9690 & 9077.63 & 2 & 703.44 & < 0.0001\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -5911,7 +5962,7 @@ route.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{reglogistique_files/figure-pdf/fig-predmultinom-1.pdf}
+{\centering \includegraphics{reglogistique_files/figure-pdf/fig-predmultinom-1.pdf}
 
 }
 
@@ -5939,7 +5990,7 @@ la valeur-\(p\), infime, indique que le modèle plus complexe, soit le
 modèle saturé, est préférable. Cela nous indique que le modèle a un
 piètre pouvoir explicatif.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, left=2mm, arc=.35mm, opacityback=0, colback=white, toprule=.15mm, coltitle=black, toptitle=1mm, colframe=quarto-callout-note-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, opacitybacktitle=0.6, leftrule=.75mm, breakable, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, coltitle=black, opacitybacktitle=0.6, bottomrule=.15mm, breakable, colframe=quarto-callout-note-color-frame, leftrule=.75mm, arc=.35mm, toprule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, titlerule=0mm, toptitle=1mm, rightrule=.15mm, colback=white, colbacktitle=quarto-callout-note-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -5992,7 +6043,7 @@ calendrier) et l'axe des ordonnées (\(y\)) la durée observée.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.55\textwidth,height=\textheight]{figures/Lexis_censure.pdf}
+{\centering \includegraphics[width=0.55\textwidth,height=\textheight]{figures/Lexis_censure.png}
 
 }
 
@@ -6068,7 +6119,7 @@ représenté dans la Figure~\ref{fig-troncatureintervalle}.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=1\textwidth,height=\textheight]{figures/lexis_troncationintervalle.pdf}
+{\centering \includegraphics[width=1\textwidth,height=\textheight]{figures/lexis_troncationintervalle.png}
 
 }
 
@@ -6375,6 +6426,17 @@ temps & nb à risque & nb échecs & nb cumul. & survie & erreur-type\\
 \end{tabular}
 \end{table}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ggsurv }\OtherTok{\textless{}{-}}\NormalTok{ survminer}\SpecialCharTok{::}\FunctionTok{ggsurvplot}\NormalTok{(kapm, }\AttributeTok{palette =} \DecValTok{1}\NormalTok{)}
+\NormalTok{ggsurv}\SpecialCharTok{$}\NormalTok{plot }\SpecialCharTok{+} \CommentTok{\# objet de class \textquotesingle{}ggplot\textquotesingle{}}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"none"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"temps"}\NormalTok{, }
+       \AttributeTok{subtitle =} \StringTok{"Fonction de survie"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{""}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{figure}[ht!]
 
 {\centering \includegraphics[width=0.9\textwidth,height=\textheight]{survie_files/figure-pdf/fig-km-survie1-1.pdf}
@@ -6587,7 +6649,7 @@ gardant en tête que cela réduit la taille de l'échantillon disponible et
 que l'estimation résultante est possiblement trop incertaine pour être
 utile.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, left=2mm, arc=.35mm, opacityback=0, colback=white, toprule=.15mm, coltitle=black, toptitle=1mm, colframe=quarto-callout-note-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, opacitybacktitle=0.6, leftrule=.75mm, breakable, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, coltitle=black, opacitybacktitle=0.6, bottomrule=.15mm, breakable, colframe=quarto-callout-note-color-frame, leftrule=.75mm, arc=.35mm, toprule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, titlerule=0mm, toptitle=1mm, rightrule=.15mm, colback=white, colbacktitle=quarto-callout-note-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -6863,10 +6925,10 @@ modèle de Cox avec toutes les variables explicatives. }\tabularnewline
 \toprule
 terme & statistique & ddl & valeur-p\\
 \midrule
-age & 68.07 & 1 & <0.0001\\
-sexe & 32.82 & 1 & <0.0001\\
+age & 68.07 & 1 & <1e-04\\
+sexe & 32.82 & 1 & <1e-04\\
 region & 7.67 & 4 & 0.1\\
-service & 159.31 & 3 & <0.0001\\
+service & 159.31 & 3 & <1e-04\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -6992,7 +7054,7 @@ fenêtre sera de la censure à droite.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.35\textwidth,height=\textheight]{figures/Lexis_censure_modif.pdf}
+{\centering \includegraphics[width=0.35\textwidth,height=\textheight]{figures/Lexis_censure_modif.png}
 
 }
 
@@ -7105,7 +7167,7 @@ graphique des résidus en fonction du temps.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{survie_files/figure-pdf/fig-coxphhypothese-1.pdf}
+{\centering \includegraphics{survie_files/figure-pdf/fig-coxphhypothese-1.pdf}
 
 }
 
@@ -7311,15 +7373,15 @@ service). }\tabularnewline
 \toprule
 terme & exp(coef) & test de Wald & valeur-p\\
 \midrule
-age & 0.953 & -7.37 & <0.001\\
-sexe & 0.543 & -5.24 & <0.001\\
-service1 & 0.144 & -4.29 & <0.001\\
-service2 & 0.072 & -3.76 & <0.001\\
-service3 & 0.010 & -4.14 & <0.001\\
+age & 0.953 & -7.368 & <0.001\\
+sexe & 0.543 & -5.241 & <0.001\\
+service1 & 0.144 & -4.293 & <0.001\\
+service2 & 0.072 & -3.762 & <0.001\\
+service3 & 0.010 & -4.139 & <0.001\\
 \addlinespace
-tt(service1) & 1.010 & 2.17 & 0.0298\\
-tt(service2) & 1.010 & 1.58 & 0.1132\\
-tt(service3) & 1.023 & 2.48 & 0.0133\\
+tt(service1) & 1.010 & 2.173 & 0.0298\\
+tt(service2) & 1.010 & 1.584 & 0.1132\\
+tt(service3) & 1.023 & 2.476 & 0.0133\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -7356,8 +7418,8 @@ d'abonnement (en semaines) passe, d'où
 \end{Highlighting}
 \end{Shaded}
 
-Ici, on inclut uniquement la variable transformée \texttt{tt(age)} et
-son effet est toujours fortement significatif pour expliquer le
+On inclut uniquement la variable transformée \texttt{tt(age)} et son
+effet est toujours fortement significatif pour expliquer le
 désabonnement potentiel: les personnes plus âgées sont moins
 susceptibles de résilier leur abonnement.
 
@@ -7428,7 +7490,7 @@ l'événement survienne.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.65\textwidth,height=\textheight]{figures/transition_etats_modele_risque_competitifs.pdf}
+{\centering \includegraphics[width=0.65\textwidth,height=\textheight]{figures/transition_etats_modele_risque_competitifs.png}
 
 }
 
@@ -7611,7 +7673,7 @@ du paquet \texttt{survival} offre des détails sur l'implémentation des
 méthodes qui traitent de l'inclusion de variables explicatives dont la
 valeur change dans le temps et sur les risques compétitifs.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, left=2mm, arc=.35mm, opacityback=0, colback=white, toprule=.15mm, coltitle=black, toptitle=1mm, colframe=quarto-callout-note-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, opacitybacktitle=0.6, leftrule=.75mm, breakable, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, coltitle=black, opacitybacktitle=0.6, bottomrule=.15mm, breakable, colframe=quarto-callout-note-color-frame, leftrule=.75mm, arc=.35mm, toprule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, titlerule=0mm, toptitle=1mm, rightrule=.15mm, colback=white, colbacktitle=quarto-callout-note-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -8144,9 +8206,15 @@ Figure~\ref{fig-screeplot}, qui peut être produit avec la fonction
 \texttt{hecmulti::eboulis(eigen(cor(factor))} suggère quant à lui cinq
 composantes.
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{hecmulti}\SpecialCharTok{::}\FunctionTok{eboulis}\NormalTok{(}\FunctionTok{eigen}\NormalTok{(}\FunctionTok{cor}\NormalTok{(factor)))}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{analysefactorielle_files/figure-pdf/fig-screeplot-1.pdf}
+{\centering \includegraphics{analysefactorielle_files/figure-pdf/fig-screeplot-1.pdf}
 
 }
 
@@ -8187,7 +8255,7 @@ contenant les vecteurs propres. La meilleure approximation de rang
 \(\boldsymbol{q}_1, \ldots, \boldsymbol{q}_k \in \mathbb{R}^p\) non
 corrélés.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, left=2mm, arc=.35mm, opacityback=0, colback=white, toprule=.15mm, coltitle=black, toptitle=1mm, colframe=quarto-callout-note-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, opacitybacktitle=0.6, leftrule=.75mm, breakable, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, coltitle=black, opacitybacktitle=0.6, bottomrule=.15mm, breakable, colframe=quarto-callout-note-color-frame, leftrule=.75mm, arc=.35mm, toprule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, titlerule=0mm, toptitle=1mm, rightrule=.15mm, colback=white, colbacktitle=quarto-callout-note-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -8561,11 +8629,11 @@ de (quasi)-Heywood }\tabularnewline
 \toprule
   & k & AIC & BIC & valeur-p & npar & heywood\\
 \midrule
-1 & 1 & 2267 & 2346 & < 2e-16 & 24 & 0\\
-2 & 2 & 2138 & 2253 & < 2e-16 & 35 & 0\\
-3 & 3 & 2017 & 2166 & 0.09604 & 45 & 0\\
-4 & 4 & 2003 & 2181 & 0.97262 & 54 & 1\\
-5 & 5 & 2013 & 2217 & 0.97445 & 62 & 1\\
+1 & 1 & 2267.14 & 2346.30 & < 2e-16 & 24 & 0\\
+2 & 2 & 2137.87 & 2253.31 & < 2e-16 & 35 & 0\\
+3 & 3 & 2017.19 & 2165.61 & 0.09604 & 45 & 0\\
+4 & 4 & 2002.56 & 2180.67 & 0.97262 & 54 & 1\\
+5 & 5 & 2012.70 & 2217.19 & 0.97445 & 62 & 1\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -8903,7 +8971,7 @@ quatre facteurs) et échelles. }\tabularnewline
 \end{tabular}
 \end{table}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, bottomrule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, left=2mm, arc=.35mm, opacityback=0, colback=white, toprule=.15mm, coltitle=black, toptitle=1mm, colframe=quarto-callout-tip-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes de l'analyse factorielle exploratoire}, opacitybacktitle=0.6, leftrule=.75mm, breakable, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, coltitle=black, opacitybacktitle=0.6, bottomrule=.15mm, breakable, colframe=quarto-callout-tip-color-frame, leftrule=.75mm, arc=.35mm, toprule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes de l'analyse factorielle exploratoire}, titlerule=0mm, toptitle=1mm, rightrule=.15mm, colback=white, colbacktitle=quarto-callout-tip-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -8925,7 +8993,7 @@ quatre facteurs) et échelles. }\tabularnewline
 
 \end{tcolorbox}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, left=2mm, arc=.35mm, opacityback=0, colback=white, toprule=.15mm, coltitle=black, toptitle=1mm, colframe=quarto-callout-note-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, opacitybacktitle=0.6, leftrule=.75mm, breakable, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, coltitle=black, opacitybacktitle=0.6, bottomrule=.15mm, breakable, colframe=quarto-callout-note-color-frame, leftrule=.75mm, arc=.35mm, toprule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, titlerule=0mm, toptitle=1mm, rightrule=.15mm, colback=white, colbacktitle=quarto-callout-note-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -9007,7 +9075,7 @@ Pour créer les regroupements, on utilisera \(p\) variables explicatives
 dénotera la valeur de la \(j\)e variable explicative pour le \(i\)e
 sujet.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, bottomrule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, left=2mm, arc=.35mm, opacityback=0, colback=white, toprule=.15mm, coltitle=black, toptitle=1mm, colframe=quarto-callout-tip-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes d'une analyse de regroupements}, opacitybacktitle=0.6, leftrule=.75mm, breakable, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, coltitle=black, opacitybacktitle=0.6, bottomrule=.15mm, breakable, colframe=quarto-callout-tip-color-frame, leftrule=.75mm, arc=.35mm, toprule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes d'une analyse de regroupements}, titlerule=0mm, toptitle=1mm, rightrule=.15mm, colback=white, colbacktitle=quarto-callout-tip-color!10!white]
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -9193,25 +9261,25 @@ montants tourne autour de 5\$, 10\$, 20\$, etc.
 \toprule
 variable & moyenne & écart-type & min & max & manquant\\
 \midrule
-ndons & 5.13 & 5.21 & 1 & 27.0 & 0\\
-recence & 86.41 & 81.80 & 2 & 299.0 & 0\\
-anciennete & 168.72 & 95.77 & 2 & 302.0 & 0\\
-vdons & 117.66 & 431.08 & 1 & 19260.0 & 0\\
-vdonsmax & 30.72 & 88.13 & 1 & 2460.0 & 0\\
+ndons & 5.13 & 5.21 & 1 & 27.00 & 0\\
+recence & 86.41 & 81.80 & 2 & 299.00 & 0\\
+anciennete & 168.72 & 95.77 & 2 & 302.00 & 0\\
+vdons & 117.66 & 431.08 & 1 & 19260.00 & 0\\
+vdonsmax & 30.72 & 88.13 & 1 & 2460.00 & 0\\
 \addlinespace
-vdonsmin & 10.98 & 28.79 & 1 & 1570.0 & 0\\
-npromesse & 1.72 & 2.37 & 0 & 15.0 & 0\\
-vpromesse & 61.32 & 282.07 & 0 & 12680.0 & 0\\
-nradiations & 0.52 & 0.89 & 0 & 10.0 & 0\\
-vradiations & 28.09 & 141.47 & 0 & 11815.0 & 7142\\
+vdonsmin & 10.98 & 28.79 & 1 & 1570.00 & 0\\
+npromesse & 1.72 & 2.37 & 0 & 15.00 & 0\\
+vpromesse & 61.32 & 282.07 & 0 & 12680.00 & 0\\
+nradiations & 0.52 & 0.89 & 0 & 10.00 & 0\\
+vradiations & 28.09 & 141.47 & 0 & 11815.00 & 7142\\
 \addlinespace
-ddons & 2.13 & 1.94 & 0 & 23.9 & 5736\\
-ddonsmax & 3.85 & 3.24 & 0 & 23.9 & 5736\\
-ddonsmin & 1.32 & 1.83 & 0 & 23.9 & 5736\\
-nrefus & 2.18 & 2.26 & 0 & 11.0 & 0\\
-nrefusconsec & 1.56 & 2.06 & 0 & 11.0 & 0\\
+ddons & 2.13 & 1.94 & 0 & 23.92 & 5736\\
+ddonsmax & 3.85 & 3.24 & 0 & 23.92 & 5736\\
+ddonsmin & 1.32 & 1.83 & 0 & 23.92 & 5736\\
+nrefus & 2.18 & 2.26 & 0 & 11.00 & 0\\
+nrefusconsec & 1.56 & 2.06 & 0 & 11.00 & 0\\
 \addlinespace
-nindecis & 0.47 & 0.93 & 0 & 8.0 & 0\\
+nindecis & 0.47 & 0.93 & 0 & 8.00 & 0\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -9317,7 +9385,7 @@ observations aberrances.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-regroupements-bidons-1.pdf}
+{\centering \includegraphics{regroupements_files/figure-pdf/fig-regroupements-bidons-1.pdf}
 
 }
 
@@ -9635,7 +9703,7 @@ Voici quelques forces et faiblesses de la méthode des \(K\)-moyennes
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/kmoyperfo-1.pdf}
+{\centering \includegraphics{regroupements_files/figure-pdf/kmoyperfo-1.pdf}
 
 }
 
@@ -9690,7 +9758,7 @@ de leurs prototypes.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-kmoyenne-mauvais-1.pdf}
+{\centering \includegraphics{regroupements_files/figure-pdf/fig-kmoyenne-mauvais-1.pdf}
 
 }
 
@@ -9797,7 +9865,7 @@ dont deux rapprochés.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-coudekmoy-1.pdf}
+{\centering \includegraphics{regroupements_files/figure-pdf/fig-coudekmoy-1.pdf}
 
 }
 
@@ -9825,7 +9893,7 @@ et un prototype est calculée avec la distance Euclidienne au carré.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-voronoikmoy-1.pdf}
+{\centering \includegraphics{regroupements_files/figure-pdf/fig-voronoikmoy-1.pdf}
 
 }
 
@@ -9902,9 +9970,12 @@ si on ne se trouve pas avec des regroupements fortements débalancés.
 \NormalTok{kmoy5 }\OtherTok{\textless{}{-}}\NormalTok{ kmoy[[}\DecValTok{5}\NormalTok{]]}
 \CommentTok{\# Regarder la répartition}
 \NormalTok{kmoy5}\SpecialCharTok{$}\NormalTok{size}
-\CommentTok{\#\textgreater{} [1]  993   64 3812 4496 4252}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+[1]  993   64 3812 4496 4252
+\end{verbatim}
 
 On peut étudier les coordonnées des prototypes (par exemple, avec
 \texttt{kmoy5\$centers}), mais ici les données standardisées ne sont pas
@@ -9979,7 +10050,7 @@ premières composantes principales avec les deux mesures de dissemblance.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-acpkmoy5-1.pdf}
+{\centering \includegraphics{regroupements_files/figure-pdf/fig-acpkmoy5-1.pdf}
 
 }
 
@@ -10011,7 +10082,7 @@ intra-groupes.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-homogeneite-1.pdf}
+{\centering \includegraphics{regroupements_files/figure-pdf/fig-homogeneite-1.pdf}
 
 }
 
@@ -10027,7 +10098,7 @@ trop.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-bickmoy-1.pdf}
+{\centering \includegraphics{regroupements_files/figure-pdf/fig-bickmoy-1.pdf}
 
 }
 
@@ -10100,7 +10171,7 @@ plus élevée.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-silhouette-1.pdf}
+{\centering \includegraphics{regroupements_files/figure-pdf/fig-silhouette-1.pdf}
 
 }
 
@@ -10141,17 +10212,20 @@ bonnes valeurs de départ. On peut tracer le profil des silhouettes
 \begin{Highlighting}[]
 \FunctionTok{plot}\NormalTok{(factoextra}\SpecialCharTok{::}\FunctionTok{fviz\_silhouette}\NormalTok{(kmedoide[[}\DecValTok{4}\NormalTok{]]),}
      \AttributeTok{print.summary =} \ConstantTok{FALSE}\NormalTok{)}
-\CommentTok{\#\textgreater{}   cluster size ave.sil.width}
-\CommentTok{\#\textgreater{} 1       1  146          0.29}
-\CommentTok{\#\textgreater{} 2       2  190          0.25}
-\CommentTok{\#\textgreater{} 3       3   90          0.33}
-\CommentTok{\#\textgreater{} 4       4   74          0.26}
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+  cluster size ave.sil.width
+1       1  146          0.29
+2       2  190          0.25
+3       3   90          0.33
+4       4   74          0.26
+\end{verbatim}
+
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-clarasilhouette-1.pdf}
+{\centering \includegraphics{regroupements_files/figure-pdf/fig-clarasilhouette-1.pdf}
 
 }
 
@@ -10267,7 +10341,7 @@ Tableau 3 de Scrucca et al. (\protect\hyperlink{ref-mclust5}{2016}).
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{figures/mclust5-parametrization.png}
+{\centering \includegraphics[width=3.35in,height=\textheight]{figures/mclust5-parametrization.png}
 
 }
 
@@ -10375,7 +10449,7 @@ covariance et le nombre qui maximise \(-\mathsf{BIC}\).
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-mclustbic-1.pdf}
+{\centering \includegraphics{regroupements_files/figure-pdf/fig-mclustbic-1.pdf}
 
 }
 
@@ -10397,7 +10471,15 @@ réduction de la dimension pour obtenir une représentation graphique.
 \NormalTok{reduc\_dim\_mmg }\OtherTok{\textless{}{-}}\NormalTok{ mclust}\SpecialCharTok{::}\FunctionTok{MclustDR}\NormalTok{(mmg)}
 \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{)) }\CommentTok{\# graphiques côte{-}à{-}côte}
 \FunctionTok{plot}\NormalTok{(reduc\_dim\_mmg, }\AttributeTok{what =} \StringTok{"contour"}\NormalTok{)}
-\CommentTok{\#\textgreater{} Error in parameters$variance$sigma[, , k]: indice hors limites}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Error in parameters$variance$sigma[, , k]: subscript out of bounds
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \FunctionTok{plot}\NormalTok{(reduc\_dim\_mmg, }\AttributeTok{what =} \StringTok{"scatterplot"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -10541,7 +10623,7 @@ profondeur.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-dendrogramme-1.pdf}
+{\centering \includegraphics{regroupements_files/figure-pdf/fig-dendrogramme-1.pdf}
 
 }
 
@@ -10681,7 +10763,7 @@ Voici quelques caractéristiques de DBSCAN:
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-dbscan1-1.pdf}
+{\centering \includegraphics{regroupements_files/figure-pdf/fig-dbscan1-1.pdf}
 
 }
 
@@ -10722,7 +10804,7 @@ prenant une distance où la plupart des observations ne sont pas voisines
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-dbscan2-1.pdf}
+{\centering \includegraphics{regroupements_files/figure-pdf/fig-dbscan2-1.pdf}
 
 }
 
@@ -10761,7 +10843,7 @@ d'observations). Si la segmentation n'est pas satisfaisante, on retourne
 calibration des hyperparamètres jusqu'à ce qu'on soit satisfaits du
 résultat.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, left=2mm, arc=.35mm, opacityback=0, colback=white, toprule=.15mm, coltitle=black, toptitle=1mm, colframe=quarto-callout-note-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, opacitybacktitle=0.6, leftrule=.75mm, breakable, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, coltitle=black, opacitybacktitle=0.6, bottomrule=.15mm, breakable, colframe=quarto-callout-note-color-frame, leftrule=.75mm, arc=.35mm, toprule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, titlerule=0mm, toptitle=1mm, rightrule=.15mm, colback=white, colbacktitle=quarto-callout-note-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -10998,7 +11080,12 @@ Considérons le cas d'une régression logistique pour une variable
 explicative binaire. Plutôt que d'assigner à la classe la plus probable,
 une prédiction aléatoire simule une variable 0/1 avec probabilité
 \((1-\widehat{p}_i, \widehat{p}_i)\). Pour un modèle de régression
-linéaire, la prédiction
+linéaire par moindres carrés ordinaires avec vecteur ligne de
+prédicteurs \(\mathbf{x}_i\) et matrice de modèle \(\mathbf{X}\), la
+prédiction sera tirée de la loi prédictive normale\footnote{Spécifiquement,
+  une loi normale avec moyenne
+  \(\widehat{y}_i=\mathbf{x}_i\widehat{\boldsymbol{\beta}}\) et variance
+  \(\widehat{\sigma}^2\{\mathbf{x}_i\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{x}_i^\top + 1\}\)}.
 
 Il existe d'autres façons d'imputer les valeurs manquantes mais le
 problème de toutes ces approches est que l'on ne tient pas compte du
@@ -11029,7 +11116,7 @@ fois et on combine les résultats obtenus.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.7\textwidth,height=\textheight]{figures/donnees_manquantes_workflow.pdf}
+{\centering \includegraphics[width=0.7\textwidth,height=\textheight]{figures/donnees_manquantes_workflow.png}
 
 }
 
@@ -11364,7 +11451,7 @@ aussi significatif, alors qu'il ne l'était plus si on retirait les
 manquantes. Il est peu probable que les données soit \(\mathsf{MCAR}\)
 et donc les résultats de l'analyse des cas complets seraient biaisés.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, bottomrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, left=2mm, arc=.35mm, opacityback=0, colback=white, toprule=.15mm, coltitle=black, toptitle=1mm, colframe=quarto-callout-note-color-frame, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, opacitybacktitle=0.6, leftrule=.75mm, breakable, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, bottomtitle=1mm, coltitle=black, opacitybacktitle=0.6, bottomrule=.15mm, breakable, colframe=quarto-callout-note-color-frame, leftrule=.75mm, arc=.35mm, toprule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, titlerule=0mm, toptitle=1mm, rightrule=.15mm, colback=white, colbacktitle=quarto-callout-note-color!10!white]
 
 \begin{itemize}
 \tightlist

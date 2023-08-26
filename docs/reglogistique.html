@@ -118,6 +118,8 @@ div.csl-indent {
 
 <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="site_libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet">
+<script src="site_libs/bsTable-3.3.7/bootstrapTable.js"></script>
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -305,7 +307,7 @@ Y = \beta_0 + \beta_1\mathrm{X}_1 + \cdots + \beta_p \mathrm{X}_p + \varepsilon,
 <p>À première vue, on peut se demander pourquoi ne pas utiliser le même modèle que la régression linéaire, c’est-à-dire <span class="math display">\[\begin{align*}
 \eta=\beta_0 + \beta_1\mathrm{X}_1 + \cdots + \beta_p \mathrm{X}_p.
 \end{align*}\]</span></p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/fig-demandecredit_3f767594a5a582d789d4130b7c0464dd">
+<div class="cell" data-hash="reglogistique_cache/html/fig-demandecredit_6cdebec5d01f82e4ba89a0ff148dd025">
 <div class="cell-output-display">
 <div id="fig-demandecredit" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -325,7 +327,7 @@ Y = \beta_0 + \beta_1\mathrm{X}_1 + \cdots + \beta_p \mathrm{X}_p + \varepsilon,
 p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
 = \frac{1}{1+\exp(-\eta)}.
 \end{align*}\]</span> On peut voir qu’à mesure que le prédicteur linéaire <span class="math inline">\(\eta=\beta_0+\beta_1\mathrm{X}_1 + \cdots + \beta_p\mathrm{X}_p\)</span> augmente, la probabilité augmente. Si le coefficient <span class="math inline">\(\beta_j\)</span> est négatif, <span class="math inline">\(p\)</span> diminuera à mesure que <span class="math inline">\(\mathrm{X}_j\)</span> augmente.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/fig-logitplot_7a52441e97e314abeeae954b02b8e9a3">
+<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/fig-logitplot_dca2e7a14d14359d669c66b8f798eff9">
 <div class="cell-output-display">
 <div id="fig-logitplot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -339,7 +341,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
 \mathsf{cote}(p) = \frac{p}{1-p} = \frac{\Pr(Y=1 \mid \mathbf{X})}{\Pr(Y=0 \mid \mathbf{X})}.
 \end{align*}\]</span></p>
 <p>Par exemple, une cote de 4 veut dire qu’il y a 4 fois plus de chance que <span class="math inline">\(Y\)</span> soit égale à <span class="math inline">\(1\)</span> par rapport à <span class="math inline">\(0\)</span>. Une cote de 0.25 veut dire le contraire, il y a 4 fois moins de chance que <span class="math inline">\(Y=1\)</span> par rapport à <span class="math inline">\(0\)</span> ou bien, de manière équivalente, il y a 4 fois plus de chance que <span class="math inline">\(Y=0\)</span> par rapport à <span class="math inline">\(1\)</span>. Le <a href="#tbl-cotes">Tableau&nbsp;<span>4.1</span></a> donne un aperçu de cotes pour quelques probabilités <span class="math inline">\(p\)</span>.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-cotes_20db680729d19a810c7235fe1f02ee9d">
+<div class="cell" data-hash="reglogistique_cache/html/tbl-cotes_b3bd0fc3c41477b7560a587415db11d8">
 <div class="cell-output-display">
 <div id="tbl-cotes" class="anchored">
 <table class="table table-sm table-striped small" data-quarto-postprocess="true">
@@ -476,7 +478,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
 <section id="modèle-avec-une-seule-variable-explicative" class="level3" data-number="4.2.4">
 <h3 data-number="4.2.4" class="anchored" data-anchor-id="modèle-avec-une-seule-variable-explicative"><span class="header-section-number">4.2.4</span> Modèle avec une seule variable explicative</h3>
 <p>Faisons tout d’abord une analyse en utilisant seulement <span class="math inline">\(\mathrm{X}_5\)</span> (âge) comme variable explicative. L’ajustement du modèle de régression incluant uniquement <span class="math inline">\(\mathrm{X}_5\)</span> sera effectuée en exécutant le programme</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/logistique-init_ed0ec424ec8466a88c1ceab4cd7f4d73">
+<div class="cell" data-hash="reglogistique_cache/html/logistique-init_5096f089c9f154678f3eb5487f02ad95">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(logit1, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Nombre d'observations par groupe</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(logit1, <span class="fu">table</span>(y))</span>
@@ -506,7 +508,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co"># -2*logLik(modele1) + log(n)*np</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Par défaut, pour des variables <span class="math inline">\(0/1\)</span>, le modèle décrit la probabilité de succès. On peut transformer la variable réponse en facteur (<code>factor</code>) et changer la catégorie de référence via <code>relevel</code> pour obtenir le modèle <span class="math inline">\(\Pr(Y=0 \mid \mathrm{X}_5)\)</span>.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/categ-dep_b500a1844275ed2c35f692b548239233">
+<div class="cell" data-hash="reglogistique_cache/html/categ-dep_af83e572161013f5571f389a3045510e">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nlogit1 <span class="ot">&lt;-</span> logit1 <span class="sc">|&gt;</span> </span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">y =</span> <span class="fu">relevel</span>(<span class="fu">factor</span>(y), <span class="st">"1"</span>))</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">glm</span>(<span class="at">formula =</span> y <span class="sc">~</span> x5,</span>
@@ -522,7 +524,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
 \Pr(Y=1 \mid \mathrm{X}_5=x_5) &amp;= \textrm{expit}(-3.05 + 0.0749 x_5) \\&amp;= \frac{1}{1+\exp(-3.05 - 0.0749 x_5)}
 \end{align*}\]</span> Le graphe de cette fonction (<a href="#fig-logitplot2">Figure&nbsp;<span>4.3</span></a>) pour <span class="math inline">\(\mathrm{X}_5\)</span> allant de 18 à 59 ans, respectivement les valeurs minimales et maximales observées dans l’échantillon, montre que le lien entre l’âge et <span class="math inline">\(p\)</span> est presque linéaire entre 20 et 60 ans. On décèle tout de même la forme sigmoide de la fonction <span class="math inline">\(\textrm{logit}\)</span> aux deux extrémités.</li>
 </ul>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/fig-logitplot2_6c1ee67825cb766c84d5f1be749e606a">
+<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/fig-logitplot2_9219c4710afc3f461b6d2a4e806a64c2">
 <div class="cell-output-display">
 <div id="fig-logitplot2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -549,7 +551,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
 <p>Comme l’exponentielle est une transformation monotone croissante, on a <span class="math inline">\(\beta&gt;0\)</span> si et seulement si <span class="math inline">\(\exp(\beta)&gt;1\)</span>, etc. On peut ainsi utiliser les intervalles de confiance pour tester l’hypothèse <span class="math inline">\(\mathscr{H}_0: \beta_j=0\)</span> ou de façon équivalente <span class="math inline">\(\mathscr{H}_0: \exp(\beta_j)=1\)</span> à niveau 95%.</p>
 <p>Ajustons à présent le modèle avec toutes les variables explicatives. Rappelez-vous que la variable <span class="math inline">\(\mathrm{X}_1\)</span> (quel genre d’emploi occupez-vous) a cinq catégories, <span class="math inline">\(\mathrm{X}_2\)</span> (revenu familial annuel) a cinq catégories, et <span class="math inline">\(\mathrm{X}_6\)</span> (combien de fois avez-vous assisté à un rodéo au cours de la dernière année) a trois catégories. Notez qu’on pourrait aussi traiter <span class="math inline">\(\mathrm{X}_2\)</span> comme continue car elle est ordinale et possède tout de même cinq modalités, mais on la traitera comme variable nominale.</p>
 <p>Les variables de type <code>factor</code> sont modélisées par défaut à l’aide d’un ensemble de variables indicatrices, la catégorie de référence étant celle qui apparaît en dernier en ordre alphabétique.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/logistic-complet_05bc0dc0b30c9876f9ddab253e266b49">
+<div class="cell" data-hash="reglogistique_cache/html/logistic-complet_4a1d6daff72327e6c5d6f6d22b9a1730">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(logit1)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>modele2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x4 <span class="sc">+</span> x5 <span class="sc">+</span> x6,</span>
@@ -561,27 +563,27 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Tests de rapport de vraisemblance</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(modele2, <span class="at">type =</span> <span class="st">"3"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell tbl-cap-location-bottom" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-logit1-complet_49df996039d99eddde39d1d6047a85bb">
+<div class="cell tbl-cap-location-bottom" data-hash="reglogistique_cache/html/tbl-logit1-complet_1d6ed977b028297f159ef8a8206c001e">
 <div class="cell-output-display">
 <div id="tbl-logit1-complet" class="anchored">
 
-<div id="pofzatkldd" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#pofzatkldd table {
+<div id="djhfuqfjyw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#djhfuqfjyw table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#pofzatkldd thead, #pofzatkldd tbody, #pofzatkldd tfoot, #pofzatkldd tr, #pofzatkldd td, #pofzatkldd th {
+#djhfuqfjyw thead, #djhfuqfjyw tbody, #djhfuqfjyw tfoot, #djhfuqfjyw tr, #djhfuqfjyw td, #djhfuqfjyw th {
   border-style: none;
 }
 
-#pofzatkldd p {
+#djhfuqfjyw p {
   margin: 0;
   padding: 0;
 }
 
-#pofzatkldd .gt_table {
+#djhfuqfjyw .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -607,12 +609,12 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   border-left-color: #D3D3D3;
 }
 
-#pofzatkldd .gt_caption {
+#djhfuqfjyw .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#pofzatkldd .gt_title {
+#djhfuqfjyw .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -624,7 +626,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   border-bottom-width: 0;
 }
 
-#pofzatkldd .gt_subtitle {
+#djhfuqfjyw .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -636,7 +638,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   border-top-width: 0;
 }
 
-#pofzatkldd .gt_heading {
+#djhfuqfjyw .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -648,13 +650,13 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   border-right-color: #D3D3D3;
 }
 
-#pofzatkldd .gt_bottom_border {
+#djhfuqfjyw .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#pofzatkldd .gt_col_headings {
+#djhfuqfjyw .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -669,7 +671,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   border-right-color: #D3D3D3;
 }
 
-#pofzatkldd .gt_col_heading {
+#djhfuqfjyw .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -689,7 +691,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   overflow-x: hidden;
 }
 
-#pofzatkldd .gt_column_spanner_outer {
+#djhfuqfjyw .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -701,15 +703,15 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   padding-right: 4px;
 }
 
-#pofzatkldd .gt_column_spanner_outer:first-child {
+#djhfuqfjyw .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#pofzatkldd .gt_column_spanner_outer:last-child {
+#djhfuqfjyw .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#pofzatkldd .gt_column_spanner {
+#djhfuqfjyw .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -721,11 +723,11 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   width: 100%;
 }
 
-#pofzatkldd .gt_spanner_row {
+#djhfuqfjyw .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#pofzatkldd .gt_group_heading {
+#djhfuqfjyw .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -751,7 +753,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   text-align: left;
 }
 
-#pofzatkldd .gt_empty_group_heading {
+#djhfuqfjyw .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -766,15 +768,15 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   vertical-align: middle;
 }
 
-#pofzatkldd .gt_from_md > :first-child {
+#djhfuqfjyw .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#pofzatkldd .gt_from_md > :last-child {
+#djhfuqfjyw .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#pofzatkldd .gt_row {
+#djhfuqfjyw .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -793,7 +795,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   overflow-x: hidden;
 }
 
-#pofzatkldd .gt_stub {
+#djhfuqfjyw .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -806,7 +808,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   padding-right: 5px;
 }
 
-#pofzatkldd .gt_stub_row_group {
+#djhfuqfjyw .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -820,15 +822,15 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   vertical-align: top;
 }
 
-#pofzatkldd .gt_row_group_first td {
+#djhfuqfjyw .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#pofzatkldd .gt_row_group_first th {
+#djhfuqfjyw .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#pofzatkldd .gt_summary_row {
+#djhfuqfjyw .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -838,16 +840,16 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   padding-right: 5px;
 }
 
-#pofzatkldd .gt_first_summary_row {
+#djhfuqfjyw .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#pofzatkldd .gt_first_summary_row.thick {
+#djhfuqfjyw .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#pofzatkldd .gt_last_summary_row {
+#djhfuqfjyw .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -857,7 +859,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   border-bottom-color: #D3D3D3;
 }
 
-#pofzatkldd .gt_grand_summary_row {
+#djhfuqfjyw .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -867,7 +869,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   padding-right: 5px;
 }
 
-#pofzatkldd .gt_first_grand_summary_row {
+#djhfuqfjyw .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -877,7 +879,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   border-top-color: #D3D3D3;
 }
 
-#pofzatkldd .gt_last_grand_summary_row_top {
+#djhfuqfjyw .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -887,11 +889,11 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   border-bottom-color: #D3D3D3;
 }
 
-#pofzatkldd .gt_striped {
+#djhfuqfjyw .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#pofzatkldd .gt_table_body {
+#djhfuqfjyw .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -900,7 +902,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   border-bottom-color: #D3D3D3;
 }
 
-#pofzatkldd .gt_footnotes {
+#djhfuqfjyw .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -914,7 +916,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   border-right-color: #D3D3D3;
 }
 
-#pofzatkldd .gt_footnote {
+#djhfuqfjyw .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -923,7 +925,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   padding-right: 5px;
 }
 
-#pofzatkldd .gt_sourcenotes {
+#djhfuqfjyw .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -937,7 +939,7 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   border-right-color: #D3D3D3;
 }
 
-#pofzatkldd .gt_sourcenote {
+#djhfuqfjyw .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -945,63 +947,63 @@ p &amp;= \textrm{expit}(\eta) = \frac{\exp(\eta)}{1+\exp(\eta)}
   padding-right: 5px;
 }
 
-#pofzatkldd .gt_left {
+#djhfuqfjyw .gt_left {
   text-align: left;
 }
 
-#pofzatkldd .gt_center {
+#djhfuqfjyw .gt_center {
   text-align: center;
 }
 
-#pofzatkldd .gt_right {
+#djhfuqfjyw .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#pofzatkldd .gt_font_normal {
+#djhfuqfjyw .gt_font_normal {
   font-weight: normal;
 }
 
-#pofzatkldd .gt_font_bold {
+#djhfuqfjyw .gt_font_bold {
   font-weight: bold;
 }
 
-#pofzatkldd .gt_font_italic {
+#djhfuqfjyw .gt_font_italic {
   font-style: italic;
 }
 
-#pofzatkldd .gt_super {
+#djhfuqfjyw .gt_super {
   font-size: 65%;
 }
 
-#pofzatkldd .gt_footnote_marks {
+#djhfuqfjyw .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#pofzatkldd .gt_asterisk {
+#djhfuqfjyw .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#pofzatkldd .gt_indent_1 {
+#djhfuqfjyw .gt_indent_1 {
   text-indent: 5px;
 }
 
-#pofzatkldd .gt_indent_2 {
+#djhfuqfjyw .gt_indent_2 {
   text-indent: 10px;
 }
 
-#pofzatkldd .gt_indent_3 {
+#djhfuqfjyw .gt_indent_3 {
   text-indent: 15px;
 }
 
-#pofzatkldd .gt_indent_4 {
+#djhfuqfjyw .gt_indent_4 {
   text-indent: 20px;
 }
 
-#pofzatkldd .gt_indent_5 {
+#djhfuqfjyw .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1122,7 +1124,7 @@ logistique avec toutes les variables catégorielles.</p> </caption>
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-fit-height="4" data-hash="reglogistique_cache/html/fig-confint-modele2-logist_c10f8e4e85cfc681d7cf294eddacaf03">
+<div class="cell" data-fit-height="4" data-hash="reglogistique_cache/html/fig-confint-modele2-logist_19181a9aa59a26a8b5edc4929a22812f">
 <div class="cell-output-display">
 <div id="fig-confint-modele2-logist" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -1132,7 +1134,7 @@ logistique avec toutes les variables catégorielles.</p> </caption>
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-gof-logist1_c4fa78e50c04cc761864bfb71d3a22a8">
+<div class="cell" data-hash="reglogistique_cache/html/tbl-gof-logist1_e42817b7401157f8889d9c9ee789bbc5">
 <div class="cell-output-display">
 <div id="tbl-gof-logist1" class="anchored">
 <table class="table table-sm table-striped small" data-quarto-postprocess="true">
@@ -1148,15 +1150,15 @@ logistique avec toutes les variables catégorielles.</p> </caption>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">modèle ajusté</td>
-<td style="text-align: right;">544</td>
-<td style="text-align: right;">603</td>
-<td style="text-align: right;">-258</td>
+<td style="text-align: right;">544.20</td>
+<td style="text-align: right;">603.20</td>
+<td style="text-align: right;">-258.1</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">modèle nul</td>
-<td style="text-align: right;">691</td>
-<td style="text-align: right;">695</td>
-<td style="text-align: right;">-258</td>
+<td style="text-align: right;">691.27</td>
+<td style="text-align: right;">695.48</td>
+<td style="text-align: right;">-258.1</td>
 </tr>
 </tbody>
 </table>
@@ -1183,7 +1185,7 @@ logistique avec toutes les variables catégorielles.</p> </caption>
 D = -2\{\ell(\widehat{\boldsymbol{\beta}}_0)-\ell(\widehat{\boldsymbol{\beta}})\}.
 \end{align*}\]</span> Cette différence <span class="math inline">\(D\)</span>, lorsque l’hypothèse <span class="math inline">\(\mathscr{H}_0\)</span> est vraie suit approximativement une loi khi-deux avec un nombre de degrés de liberté égal au nombre de paramètre testé (le nombre de restrictions sous <span class="math inline">\(\mathscr{H}_0\)</span>). On peut donc calculer la valeur-<span class="math inline">\(p\)</span> en utilisant la distribution du khi-deux.</p>
 <p>Prenons comme exemple le test de la significativité de <span class="math inline">\(\mathrm{X}_6\)</span>, qui est modélisée à l’aide deux variables binaires et dont les paramètres correspondants sont <span class="math inline">\(\beta_{6_{\texttt{2}}}\)</span> et <span class="math inline">\(\beta_{6_{\texttt{3}}}\)</span>. Pour effectuer le test du rapport de vraisemblance, il suffit de retirer la variable <span class="math inline">\(\mathrm{X}_6\)</span> et de réajuster le modèle à nouveau avec toutes les autres variables.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/test-rapport-vraisemblance_364f562f4e98e1cbbf2bfbef2c122fa6">
+<div class="cell" data-hash="reglogistique_cache/html/test-rapport-vraisemblance_47cf66848a04707163cdad197d97bb62">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajuster modèle sous H0 (sans X6)</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>modeleH0 <span class="ot">&lt;-</span> <span class="fu">update</span>(modele2, <span class="at">formula. =</span>  <span class="st">". ~ . - x6"</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(modeleH0, modele2, <span class="at">test =</span> <span class="st">"LRT"</span>)</span>
@@ -1264,7 +1266,7 @@ En résumé
 </ul>
 <p>Dans le chapitre précédent, nous avons cherché à développer un modèle pour prévoir <code>ymontant</code>, le montant dépensé, étant donné que le client achète quelque chose. Cette fois-ci, nous allons travailler avec la variable <code>yachat</code>, qui est binaire, à l’aide de la régression logistique.</p>
 <p>Afin d’introduire différentes notions, nous allons, dans un premier temps, utiliser les 10 variables de base. À partir de la section suivante, nous chercherons à optimiser le modèle en considérant les interactions d’ordre deux.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/score_c714e894b7740704a5a1b13a74a5a9b9">
+<div class="cell" data-hash="reglogistique_cache/html/score_e5be9a5892c22c50e18eb5806e8a66d9">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(dbm, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>formule <span class="ot">&lt;-</span> <span class="fu">formula</span>(<span class="st">"yachat ~ x1 + x2 + x3 +</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="st">                x4 + x5 + x6 + x7 + x8 + x9 + x10"</span>)</span>
@@ -1286,17 +1288,17 @@ En résumé
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">resp =</span> classif)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Le modèle utilise seulement les 10 variables de base. Des prévisions pour les clients restants seront exportées dans le fichier. La méthode <code>predict</code> permet d’obtenir les prédictions des probabilités et la fonction maison <code>hecmulti::perfo_logistique</code> retourne un tableau de classification. Tel que nous l’avons vu au chapitre précédent, il y a 210 clients qui ont acheté quelque chose parmi les 1000.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/fig-classification0_681536de095b00dac6b93f058ec049fb">
+<div class="cell" data-hash="reglogistique_cache/html/fig-classification0_f4e2b027088db6a7fbb05e064941ecd8">
 <div class="cell-output-display">
 <div id="fig-classification0" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="reglogistique_files/figure-html/fig-classification0-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
+<p><img src="reglogistique_files/figure-html/fig-classification0-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption class="figure-caption">Figure&nbsp;4.5: Répartition des probabilités de succès prédites par validation croisée à <span class="math inline">\(n\)</span> groupes.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-classification-loocv_4cd1d8ac621e59f4bd0b36a85274f49a">
+<div class="cell" data-hash="reglogistique_cache/html/tbl-classification-loocv_1c36a4fd2405599e048a31c686a8f339">
 <div class="cell-output-display">
 <div id="tbl-classification-loocv" class="anchored">
 <table class="table table-sm table-striped small" data-quarto-postprocess="true">
@@ -1915,7 +1917,7 @@ En résumé
 <p>La colonne <code>Correct</code> donne le taux de bonne classification, <span class="math inline">\(\Pr(Y = \widehat{Y})\)</span>: avec un point de coupure de <span class="math inline">\(0\)</span>, on classifie toutes les observations à la classe achat (<span class="math inline">\(1\)</span>), car <span class="math inline">\(\widehat{p}\)</span> est forcément plus grande que zéro. Le taux de bonne classification dans ce cas de figure sera de <span class="math inline">\(21\)</span>%, puisque 210 individus ont acheté un produit dans le catalogue dans l’échantillon d’apprentissage. L’autre extrême, avec un point de coupure <span class="math inline">\(c=1\)</span>, donne un taux de bonne classification de <span class="math inline">\(79\)</span>%.</p>
 <p>On peut chercher dans le tableau les points de coupure qui donnent le meilleur taux de bonne classification. Ce dernier, à savoir 84.6%, est atteint par trois points de coupure, soit 0.52, soit 0.6, soit 0.62. Une recherche plus fine donne 0.465 comme point de coupure optimal, avec un taux de mauvaise classification de 15.3%.</p>
 <p>Avec une variable réponse binaire, il y a deux classifications possibles et le tableau de confusion contient, en partant du coin supérieur gauche et dans le sens des aiguilles d’une montre, le nombre de vrai positif (<span class="math inline">\(Y=1\)</span>, <span class="math inline">\(\widehat{Y}=1\)</span>), de faux positif (<span class="math inline">\(Y=0\)</span>, <span class="math inline">\(\widehat{Y}=1\)</span>), de vrai négatif (<span class="math inline">\(Y=0\)</span>, <span class="math inline">\(\widehat{Y}=0\)</span>) et finalement de faux négatif (<span class="math inline">\(Y=1\)</span>, <span class="math inline">\(\widehat{Y}=0\)</span>). La <strong>matrice de confusion</strong>, qui compare les vraies valeurs avec les prédictions, peut être construite à partir des colonnes <code>VP</code>, <code>VN</code>, <code>FP</code> et <code>FN</code>. Ces nombres proviennent de la validation croisée à <span class="math inline">\(n\)</span> groupes et ne sont pas ceux qu’on obtiendrait si on appliquait directement le modèle ajusté à notre échantillon. Le taux de mauvaise classification est <span class="math inline">\((\mathsf{FP}+\mathsf{FN})/n\)</span>; une estimation plus fiable serait obtenue en utilisant la validation croisée à 10 groupes.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-confumat_448efb989b554c43ebf6a85c252a790e">
+<div class="cell" data-hash="reglogistique_cache/html/tbl-confumat_684b377b53177ca6e7e424f7b988f214">
 <div class="cell-output-display">
 <div id="tbl-confumat" class="anchored">
 <table class="table table-sm table-striped small" data-quarto-postprocess="true">
@@ -1958,7 +1960,7 @@ En résumé
 <h3 data-number="4.3.1" class="anchored" data-anchor-id="fonction-defficacité-du-récepteur"><span class="header-section-number">4.3.1</span> Fonction d’efficacité du récepteur</h3>
 <p>La <strong>fonction d’efficacité du récepteur</strong>, parfois appelée courbe ROC (<em>receiver operating characteristic</em>) est parfois utilisée pour représenter globalement la performance du modèle. Il s’agit du graphe de la sensibilité en fonction de un moins la spécificité, en faisant varier le point de coupure. Un modèle parfait aurait une sensibilité et une spécificité égales à 1 (correspondant au coin supérieur gauche de la fonction d’efficacité du récepteur). Ainsi, plus le couple (<span class="math inline">\(1-\)</span>spécificité, sensibilité) est près de (<span class="math inline">\(0\)</span>, <span class="math inline">\(1\)</span>), meilleur est le modèle. Par conséquent, plus la courbe ROC tend vers (<span class="math inline">\(0\)</span>, <span class="math inline">\(1\)</span>) meilleur est le pouvoir prévisionnel des variables. L’<strong>aire sous la courbe</strong> (<em>area under the curve</em>, ou AUC) est souvent utilisée en parallèle comme mesure de la qualité: comme son nom l’indique, c’est l’aire sous la courbe de la fonction d’efficacité du récepteur.</p>
 <p>La fonction <code>courbe_roc</code> permet de tracer la courbe et de calculer l’aire sous la courbe. Plus cette valeur est près de 1, mieux c’est: une probabilité de 0.5 correspond à une allocation aléatoire, représentée sur la fonction d’efficacité du récepteur par la ligne diagonale.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/fig-roccurve_2cbd1d16eefaed9ff156ee5d34d5a5e4">
+<div class="cell" data-hash="reglogistique_cache/html/fig-roccurve_d88661d976814050deec5e92e4b9661f">
 <div class="cell-output-display">
 <div id="fig-roccurve" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -1968,7 +1970,7 @@ En résumé
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/courbe-roc-code_59b5219f8bca79855ae609295724ac89">
+<div class="cell" data-hash="reglogistique_cache/html/courbe-roc-code_af19bda65ed9663661e630bd06807ee3">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fonction d'efficacité du récepteur</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>roc <span class="ot">&lt;-</span> hecmulti<span class="sc">::</span><span class="fu">courbe_roc</span>(</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">resp =</span> classif,</span>
@@ -2063,7 +2065,7 @@ En résumé
 \end{align*}\]</span></p>
 <p>Le meilleur modèle est alors celui qui maximise le gain moyen.</p>
 <p>Nous allons encore une fois seulement utiliser les 10 variables de base. Mais nous allons intégrer des revenus et coûts afin de trouver le meilleur point de coupure. Rappelez-vous que le coût de l’envoi d’un catalogue est de 10$. Le tableau des variables descriptives qui suit montre que, pour les 210 clients qui ont acheté quelque chose, le revenu moyen est de 67.29$ (moyenne de la variable <code>ymontant</code>).</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-dbm-ymontant-apprentissage_ed28bd522f993a441e6fc4e8e57bd9aa">
+<div class="cell" data-hash="reglogistique_cache/html/tbl-dbm-ymontant-apprentissage_26e8ee9f47cf2229d5015021b64a3e5c">
 <div class="cell-output-display">
 <div id="tbl-dbm-ymontant-apprentissage" class="anchored">
 <table class="table table-sm table-striped small" data-quarto-postprocess="true">
@@ -2080,8 +2082,8 @@ En résumé
 <tbody>
 <tr class="odd">
 <td style="text-align: right;">210</td>
-<td style="text-align: right;">67.3</td>
-<td style="text-align: right;">13.2</td>
+<td style="text-align: right;">67.29</td>
+<td style="text-align: right;">13.24</td>
 <td style="text-align: right;">25</td>
 <td style="text-align: right;">109</td>
 </tr>
@@ -2127,7 +2129,7 @@ En résumé
 </table>
 </div>
 <p>On peut calculer la performance du modèle et le gain moyen en faisant varier le point de coupure. Pour avoir une mesure fidèle, on utilise la validation croisée à <span class="math inline">\(K=10\)</span> groupes (la mesure affichée correspondant à la moyenne de 10 réplications)</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/fig-coupure-pondere_2b5b7a2977f4e1afa0bbfd575682803b">
+<div class="cell" data-hash="reglogistique_cache/html/fig-coupure-pondere_a2a320e100eb6fcea503f07dd2c53088">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(dbm, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>donnees <span class="ot">&lt;-</span> dbm <span class="sc">|&gt;</span> </span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(test <span class="sc">==</span> <span class="dv">0</span>)</span>
@@ -2144,12 +2146,14 @@ En résumé
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">c10 =</span> <span class="sc">-</span><span class="dv">10</span>, </span>
 <span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">c11 =</span> <span class="dv">57</span>,</span>
 <span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>coupe</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Point de coupure optimal: 0.12</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>coupe</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Point de coupure optimal: 0.12 </code></pre>
+</div>
 <div class="cell-output-display">
 <div id="fig-coupure-pondere" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="reglogistique_files/figure-html/fig-coupure-pondere-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
+<p><img src="reglogistique_files/figure-html/fig-coupure-pondere-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption class="figure-caption">Figure&nbsp;4.7: Estimation du gain moyen en fonction du point de coupure pour l’exemple de base de données marketing.</figcaption>
 </figure>
 </div>
@@ -2162,24 +2166,24 @@ En résumé
 <section id="courbe-lift" class="level3" data-number="4.3.3">
 <h3 data-number="4.3.3" class="anchored" data-anchor-id="courbe-lift"><span class="header-section-number">4.3.3</span> Courbe lift</h3>
 <p>Un autre type de graphe qui est souvent utilisé dans des contextes de gestion est la courbe lift (sic) (en anglais, <em>lift chart</em>). Cette courbe est obtenue en ordonnant les probabilités de succès estimées par le modèle, <span class="math inline">\(\widehat{p}\)</span>, en ordre croissant et en regardant quelle pourcentage de ces derniers seraient bien classifiés (le nombre de vrais positifs sur le nombre de succès).</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/fig-courbe-lift_34aa2067f1fae1301e2822f36d1b4c8c">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>tab_lift <span class="ot">&lt;-</span> hecmulti<span class="sc">::</span><span class="fu">courbe_lift</span>(</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">prob =</span> predprob, <span class="co"># probabilité de succès (Y=1)</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">resp =</span> classif, <span class="co"># variable binaire réponse 0/1</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>tab_lift</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="reglogistique_cache/html/fig-courbe-lift_c5b1b43872b9d25ca7ed1a310c826607">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>tab_lift <span class="ot">&lt;-</span> hecmulti<span class="sc">::</span><span class="fu">courbe_lift</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">prob =</span> predprob, <span class="co"># probabilité de succès (Y=1)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">resp =</span> classif, <span class="co"># variable binaire réponse 0/1</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>tab_lift</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/fig-lift_3e4a565d04a2c83387651b9329c251f0">
+<div class="cell" data-hash="reglogistique_cache/html/fig-lift_1f0c6714df5ecdd80e404e2d99196141">
 <div class="cell-output-display">
 <div id="fig-lift" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="reglogistique_files/figure-html/fig-lift-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
+<p><img src="reglogistique_files/figure-html/fig-lift-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption class="figure-caption">Figure&nbsp;4.8: Courbe lift</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-lift_2a44e6bc6416617eeabbd3aed0046487">
+<div class="cell" data-hash="reglogistique_cache/html/tbl-lift_66af0d90e4047b18446307481a6d24ec">
 <div class="cell-output-display">
 <div id="tbl-lift" class="anchored">
 <table class="table table-sm table-striped small" data-quarto-postprocess="true">
@@ -2199,63 +2203,63 @@ En résumé
 <td style="text-align: right;">10</td>
 <td style="text-align: right;">21</td>
 <td style="text-align: right;">78</td>
-<td style="text-align: right;">3.71</td>
+<td style="text-align: right;">3.714286</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">20%</td>
 <td style="text-align: right;">20</td>
 <td style="text-align: right;">42</td>
 <td style="text-align: right;">120</td>
-<td style="text-align: right;">2.86</td>
+<td style="text-align: right;">2.857143</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">30%</td>
 <td style="text-align: right;">30</td>
 <td style="text-align: right;">63</td>
 <td style="text-align: right;">157</td>
-<td style="text-align: right;">2.49</td>
+<td style="text-align: right;">2.492063</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">40%</td>
 <td style="text-align: right;">40</td>
 <td style="text-align: right;">84</td>
 <td style="text-align: right;">180</td>
-<td style="text-align: right;">2.14</td>
+<td style="text-align: right;">2.142857</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">50%</td>
 <td style="text-align: right;">50</td>
 <td style="text-align: right;">105</td>
 <td style="text-align: right;">195</td>
-<td style="text-align: right;">1.86</td>
+<td style="text-align: right;">1.857143</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">60%</td>
 <td style="text-align: right;">60</td>
 <td style="text-align: right;">126</td>
 <td style="text-align: right;">201</td>
-<td style="text-align: right;">1.59</td>
+<td style="text-align: right;">1.595238</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">70%</td>
 <td style="text-align: right;">70</td>
 <td style="text-align: right;">147</td>
 <td style="text-align: right;">208</td>
-<td style="text-align: right;">1.42</td>
+<td style="text-align: right;">1.414966</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">80%</td>
 <td style="text-align: right;">80</td>
 <td style="text-align: right;">168</td>
 <td style="text-align: right;">210</td>
-<td style="text-align: right;">1.25</td>
+<td style="text-align: right;">1.250000</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">90%</td>
 <td style="text-align: right;">90</td>
 <td style="text-align: right;">189</td>
 <td style="text-align: right;">210</td>
-<td style="text-align: right;">1.11</td>
+<td style="text-align: right;">1.111111</td>
 </tr>
 </tbody>
 </table>
@@ -2288,22 +2292,22 @@ En résumé
 <h3 data-number="4.3.5" class="anchored" data-anchor-id="sélection-de-variables-en-régression-logistique"><span class="header-section-number">4.3.5</span> Sélection de variables en régression logistique</h3>
 <p>Les principes généraux, concernant la sélection de variables et de modèles, que nous avons vus au chapitre précédent sont toujours valides. Les critères <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span> sont toujours disponibles puisqu’on estime le modèle par maximum de vraisemblance et les techniques générales de division de l’échantillon et de validation-croisée sont toujours valides. La principale différence est le coût d’estimation numérique des différents modèles: parce qu’il n’y a pas de solution explicite pour les estimateurs du maximum de vraisemblance du modèle logistique, ajuster chacun de ces modèles est coûteux.</p>
 <p>À la section précédente, nous avons inclus les 10 variables de base dans notre exemple d’envoi ciblé. Nous allons ici faire une recherche de type exhaustive parmi ces variables. La fonction <code>glmbb</code> du paquet éponyme fait une recherche à l’aide de l’algorithme de recherche arborescente dite par méthode de séparation et d’évaluation, qui ne nécessite pas de tester tous les modèles emboîtés. La sortie inclut les modèles qui sont à distance au plus <code>cutoff</code> du modèle optimal en ordre décroissant du critère d’information, avec une pondération associée qui peut servir comme succédané au mélange de modèle. La fonction permet de choisir entre les critères <span class="math inline">\(\mathsf{AIC}\)</span> et <span class="math inline">\(\mathsf{BIC}\)</span> et inclut toutes les modalités des variables explicatives pour les facteurs.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/select-bic-branchandbound_9f331dc817b6cf4d01068e8e8a666c7b">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(dbm, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>donnees <span class="ot">&lt;-</span> dbm <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(test <span class="sc">==</span> <span class="dv">0</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>formule <span class="ot">&lt;-</span> <span class="fu">formula</span>(yachat <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>               x4 <span class="sc">+</span> x5 <span class="sc">+</span> x6 <span class="sc">+</span> x7 <span class="sc">+</span> </span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>               x8 <span class="sc">+</span> x9 <span class="sc">+</span> x10)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>select_BIC <span class="ot">&lt;-</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  glmbb<span class="sc">::</span><span class="fu">glmbb</span>(formule, </span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> donnees,</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">criterion =</span> <span class="st">"BIC"</span>, </span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>resultat_BIC <span class="ot">&lt;-</span> <span class="fu">summary</span>(select_BIC)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Formule du meilleur modèle</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>resultat_BIC<span class="sc">$</span>results<span class="sc">$</span>formula</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Valeurs de BIC des modèles</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>resultat_BIC<span class="sc">$</span>results<span class="sc">$</span>criterion</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="reglogistique_cache/html/select-bic-branchandbound_d08e883b79babb98c984bbcd4e6dfa9a">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(dbm, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>donnees <span class="ot">&lt;-</span> dbm <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(test <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>formule <span class="ot">&lt;-</span> <span class="fu">formula</span>(yachat <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>               x4 <span class="sc">+</span> x5 <span class="sc">+</span> x6 <span class="sc">+</span> x7 <span class="sc">+</span> </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>               x8 <span class="sc">+</span> x9 <span class="sc">+</span> x10)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>select_BIC <span class="ot">&lt;-</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  glmbb<span class="sc">::</span><span class="fu">glmbb</span>(formule, </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> donnees,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">criterion =</span> <span class="st">"BIC"</span>, </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>resultat_BIC <span class="ot">&lt;-</span> <span class="fu">summary</span>(select_BIC)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Formule du meilleur modèle</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>resultat_BIC<span class="sc">$</span>results<span class="sc">$</span>formula</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Valeurs de BIC des modèles</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>resultat_BIC<span class="sc">$</span>results<span class="sc">$</span>criterion</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Ceci n’est qu’un exemple de stratégie de sélection de modèle parmi tant d’autre: le code qui suit explorera d’autres alternatives. Nous allons évaluer la performance de ces différentes stratégies avec comme critère de performance le revenu net de la stratégie si elle était appliquée aux 100 000 clients restants. Pour chacun des 100 000 clients à catégoriser, nous allons calculer la quantité suivante :</p>
 <ul>
@@ -2324,187 +2328,189 @@ En résumé
 <li>On calcule ensuite le revenu en soustrayant 10$ pour chaque envoi et en additionnant les montants d’achats des personnes qui ont reçu le catalogue.</li>
 </ul>
 <p>Quelques commentaires sur des raccourcis syntaxiques propres à <strong>R</strong>: dans une formule, spécifier <code>~.</code> indique que l’on ajoute au modèle de régression toutes les variables explicatives de la base de données, moins la variable réponse. On peut aussi utiliser <code>.^2</code> ou de manière équivalent <code>.*.</code> pour spécifier tous ces termes, ainsi que leurs interactions. Si on veut ajouter un terme quadratique pour une variable <code>x</code>, il faudra spécifier la transformation à l’intérieur de <code>I()</code>, par exemple <code>I(x^2)</code>.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/selection-variable-logistique-dbm_b93b434537e64070df426c9a7cb85bd4">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diviser les bases de données </span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># en échantillons d'apprentissage</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># et de validation</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(dbm, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>valid <span class="ot">&lt;-</span> dbm[dbm<span class="sc">$</span>test <span class="sc">==</span> <span class="dv">1</span>,] <span class="sc">|&gt;</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!</span> <span class="fu">c</span>(ymontant, test))</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>appr <span class="ot">&lt;-</span> dbm[dbm<span class="sc">$</span>test <span class="sc">==</span> <span class="dv">0</span>, ] <span class="sc">|&gt;</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!</span> <span class="fu">c</span>(ymontant, test))</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Formule du modèle avec toutes les interactions </span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co"># d'ordre 2 (.^2) et les termes quadratiques I(x^2)</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>formule <span class="ot">&lt;-</span> <span class="fu">formula</span>(yachat <span class="sc">~</span> .<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> </span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">I</span>(x2<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x6<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> </span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">I</span>(x7<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x8<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> </span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">I</span>(x9<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x10<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Nouvelles bases de données avec toutes ces variables</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co"># On retire la première colonne (1, ordonnée à l'origine)</span></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>appr_c <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(<span class="fu">model.matrix</span>(formule, <span class="at">data =</span> appr)[,<span class="sc">-</span><span class="dv">1</span>]),</span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">as.integer</span>(appr<span class="sc">$</span>yachat))</span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>valid_c <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(<span class="fu">model.matrix</span>(formule, <span class="at">data =</span> valid)[,<span class="sc">-</span><span class="dv">1</span>]),</span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">as.integer</span>(valid<span class="sc">$</span>yachat))</span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>valid_ymontant <span class="ot">&lt;-</span> <span class="fu">with</span>(dbm, ymontant[test <span class="sc">==</span> 1L])</span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustement des différents modèles</span></span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Modèle avec toutes les variables principales</span></span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>base <span class="ot">&lt;-</span> <span class="fu">glm</span>(yachat <span class="sc">~</span> ., </span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> appr, </span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>            <span class="at">family =</span> binomial)</span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcul du point de coupe optimal</span></span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="co">#  (par validation croisée)</span></span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>base_coupe <span class="ot">&lt;-</span> hecmulti<span class="sc">::</span><span class="fu">select_pcoupe</span>(</span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">modele =</span> base, </span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">c00 =</span> <span class="dv">0</span>, </span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">c01 =</span> <span class="dv">0</span>, </span>
-<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">c10 =</span> <span class="sc">-</span><span class="dv">10</span>, </span>
-<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">c11 =</span> <span class="dv">57</span>)</span>
-<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Performance sur données de validation</span></span>
-<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>base_pred <span class="ot">&lt;-</span> </span>
-<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(<span class="at">object =</span> base, </span>
-<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>          <span class="at">newdata =</span> valid, </span>
-<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>          <span class="at">type =</span> <span class="st">"response"</span>) <span class="sc">&gt;</span> base_coupe<span class="sc">$</span>optim</span>
-<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>base_perfo <span class="ot">&lt;-</span> </span>
-<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="dv">10</span><span class="sc">*</span><span class="fu">sum</span>(base_pred) <span class="sc">+</span> </span>
-<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(valid_ymontant[base_pred], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a><span class="co"># Modèle avec toutes les variables + interactions</span></span>
-<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustement</span></span>
-<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>complet <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> formule, </span>
-<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> appr, </span>
-<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>               <span class="at">family =</span> binomial)</span>
-<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Sélection du point de coupure</span></span>
-<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>complet_coupe <span class="ot">&lt;-</span> hecmulti<span class="sc">::</span><span class="fu">select_pcoupe</span>(</span>
-<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>  <span class="at">modele =</span> complet, <span class="at">c00 =</span> <span class="dv">0</span>, </span>
-<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a>  <span class="at">c01 =</span> <span class="dv">0</span>, <span class="at">c10 =</span> <span class="sc">-</span><span class="dv">10</span>, <span class="at">c11 =</span> <span class="dv">57</span>)</span>
-<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a><span class="co"># Performance sur données de validation</span></span>
-<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>complet_pred <span class="ot">&lt;-</span> </span>
-<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(<span class="at">object =</span> complet, </span>
-<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a>          <span class="at">newdata =</span> valid, </span>
-<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a>          <span class="at">type =</span> <span class="st">"response"</span>) <span class="sc">&gt;</span> complet_coupe<span class="sc">$</span>optim</span>
-<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a><span class="co"># Revenu</span></span>
-<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>complet_perfo <span class="ot">&lt;-</span> </span>
-<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="dv">10</span><span class="sc">*</span><span class="fu">sum</span>(complet_pred) <span class="sc">+</span> </span>
-<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(valid_ymontant[complet_pred], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a><span class="co"># Sélection de modèle avec algorithme glouton</span></span>
-<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a><span class="co"># Recherche séquentielle (AIC)</span></span>
-<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a>seqAIC <span class="ot">&lt;-</span> <span class="fu">step</span>(<span class="at">object =</span> complet, </span>
-<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a>                <span class="at">direction =</span> <span class="st">"both"</span>, <span class="co"># séquentielle</span></span>
-<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a>                <span class="at">k =</span> <span class="dv">2</span>, <span class="co"># AIC </span></span>
-<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a>                <span class="at">trace =</span> <span class="dv">0</span>) </span>
-<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a>seqAIC_coupe <span class="ot">&lt;-</span> </span>
-<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a>  hecmulti<span class="sc">::</span><span class="fu">select_pcoupe</span>(</span>
-<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a>  <span class="at">modele =</span> seqAIC, <span class="at">c00 =</span> <span class="dv">0</span>, </span>
-<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a>  <span class="at">c01 =</span> <span class="dv">0</span>, <span class="at">c10 =</span> <span class="sc">-</span><span class="dv">10</span>, <span class="at">c11 =</span> <span class="dv">57</span>)</span>
-<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a>seqAIC_pred <span class="ot">&lt;-</span> </span>
-<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict.glm</span>(<span class="at">object =</span> seqAIC, </span>
-<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a>              <span class="at">newdata =</span> valid, </span>
-<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a>              <span class="at">type =</span> <span class="st">"response"</span>) <span class="sc">&gt;</span> </span>
-<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a>  seqAIC_coupe<span class="sc">$</span>optim</span>
-<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a>seqAIC_perfo <span class="ot">&lt;-</span> </span>
-<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="dv">10</span><span class="sc">*</span><span class="fu">sum</span>(seqAIC_pred) <span class="sc">+</span> </span>
-<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(valid_ymontant[seqAIC_pred], </span>
-<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a><span class="co"># Recherche séquentielle (BIC)</span></span>
-<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a>seqBIC <span class="ot">&lt;-</span> <span class="fu">step</span>(<span class="at">object =</span> complet,</span>
-<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a>                <span class="at">direction =</span> <span class="st">"both"</span>, <span class="co"># séquentielle</span></span>
-<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a>                <span class="at">k =</span> <span class="fu">log</span>(<span class="fu">nobs</span>(complet)), <span class="co">#BIC</span></span>
-<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a>                <span class="at">trace =</span> <span class="dv">0</span>)  </span>
-<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a>seqBIC_coupe <span class="ot">&lt;-</span> hecmulti<span class="sc">::</span><span class="fu">select_pcoupe</span>(</span>
-<span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a>  <span class="at">modele =</span> seqBIC, <span class="at">c00 =</span> <span class="dv">0</span>,</span>
-<span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a>  <span class="at">c01 =</span> <span class="dv">0</span>, <span class="at">c10 =</span> <span class="sc">-</span><span class="dv">10</span>, <span class="at">c11 =</span> <span class="dv">57</span>)</span>
-<span id="cb10-94"><a href="#cb10-94" aria-hidden="true" tabindex="-1"></a>seqBIC_pred <span class="ot">&lt;-</span> </span>
-<span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict.glm</span>(<span class="at">object =</span> seqBIC, </span>
-<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a>              <span class="at">newdata =</span> valid, </span>
-<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a>              <span class="at">type =</span> <span class="st">"response"</span>) <span class="sc">&gt;</span> </span>
-<span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a>  seqBIC_coupe<span class="sc">$</span>optim</span>
-<span id="cb10-99"><a href="#cb10-99" aria-hidden="true" tabindex="-1"></a>seqBIC_perfo <span class="ot">&lt;-</span> </span>
-<span id="cb10-100"><a href="#cb10-100" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="dv">10</span><span class="sc">*</span><span class="fu">sum</span>(seqBIC_pred) <span class="sc">+</span> </span>
-<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(valid_ymontant[seqBIC_pred], </span>
-<span id="cb10-102"><a href="#cb10-102" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb10-103"><a href="#cb10-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-104"><a href="#cb10-104" aria-hidden="true" tabindex="-1"></a><span class="co"># Recherche exhaustive par algorithm génétique</span></span>
-<span id="cb10-105"><a href="#cb10-105" aria-hidden="true" tabindex="-1"></a><span class="co"># avec moins de variables</span></span>
-<span id="cb10-106"><a href="#cb10-106" aria-hidden="true" tabindex="-1"></a>appr_r <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb10-107"><a href="#cb10-107" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(<span class="fu">model.matrix</span>(seqAIC)[,<span class="sc">-</span><span class="dv">1</span>], </span>
-<span id="cb10-108"><a href="#cb10-108" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> appr<span class="sc">$</span>yachat))</span>
-<span id="cb10-109"><a href="#cb10-109" aria-hidden="true" tabindex="-1"></a>valid_r <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb10-110"><a href="#cb10-110" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model.matrix</span>(<span class="fu">formula</span>(seqAIC), </span>
-<span id="cb10-111"><a href="#cb10-111" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> valid)[,<span class="sc">-</span><span class="dv">1</span>])</span>
-<span id="cb10-112"><a href="#cb10-112" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmulti)</span>
-<span id="cb10-113"><a href="#cb10-113" aria-hidden="true" tabindex="-1"></a>exgen <span class="ot">&lt;-</span> glmulti<span class="sc">::</span><span class="fu">glmulti</span>(</span>
-<span id="cb10-114"><a href="#cb10-114" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y <span class="sc">~</span> .,</span>
-<span id="cb10-115"><a href="#cb10-115" aria-hidden="true" tabindex="-1"></a>  <span class="co">#nombre de variables limitées</span></span>
-<span id="cb10-116"><a href="#cb10-116" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> appr_r,  </span>
-<span id="cb10-117"><a href="#cb10-117" aria-hidden="true" tabindex="-1"></a>  <span class="at">level =</span> <span class="dv">1</span>,           <span class="co"># sans interaction</span></span>
-<span id="cb10-118"><a href="#cb10-118" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"g"</span>,        <span class="co"># recherche génétique</span></span>
-<span id="cb10-119"><a href="#cb10-119" aria-hidden="true" tabindex="-1"></a>  <span class="at">crit =</span> <span class="st">"bic"</span>,            <span class="co"># critère (AIC, BIC, ...)</span></span>
-<span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a>  <span class="at">confsetsize =</span> <span class="dv">1</span>,         <span class="co"># meilleur modèle uniquement</span></span>
-<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a>  <span class="at">plotty =</span> <span class="cn">FALSE</span>, </span>
-<span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a>  <span class="at">report =</span> <span class="cn">FALSE</span>,  <span class="co"># sans graphique ou rapport</span></span>
-<span id="cb10-123"><a href="#cb10-123" aria-hidden="true" tabindex="-1"></a>  <span class="at">fitfunction =</span> <span class="st">"glm"</span>) </span>
-<span id="cb10-124"><a href="#cb10-124" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span><span class="al">TASK</span><span class="co">: Genetic algorithm in the candidate set.</span></span>
-<span id="cb10-125"><a href="#cb10-125" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Initialization...</span></span>
-<span id="cb10-126"><a href="#cb10-126" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Algorithm started...</span></span>
-<span id="cb10-127"><a href="#cb10-127" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Improvements in best and average IC have bebingo en below the specified goals.</span></span>
-<span id="cb10-128"><a href="#cb10-128" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Algorithm is declared to have converged.</span></span>
-<span id="cb10-129"><a href="#cb10-129" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Completed.</span></span>
-<span id="cb10-130"><a href="#cb10-130" aria-hidden="true" tabindex="-1"></a><span class="co"># Redéfinir le modèle via "glm"</span></span>
-<span id="cb10-131"><a href="#cb10-131" aria-hidden="true" tabindex="-1"></a>exgen_modele <span class="ot">&lt;-</span> </span>
-<span id="cb10-132"><a href="#cb10-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm</span>(exgen<span class="sc">@</span>objects[[<span class="dv">1</span>]]<span class="sc">$</span>formula,</span>
-<span id="cb10-133"><a href="#cb10-133" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> appr_r,</span>
-<span id="cb10-134"><a href="#cb10-134" aria-hidden="true" tabindex="-1"></a>      <span class="at">family =</span> binomial)</span>
-<span id="cb10-135"><a href="#cb10-135" aria-hidden="true" tabindex="-1"></a>exgen_coupe <span class="ot">&lt;-</span> </span>
-<span id="cb10-136"><a href="#cb10-136" aria-hidden="true" tabindex="-1"></a>  hecmulti<span class="sc">::</span><span class="fu">select_pcoupe</span>(</span>
-<span id="cb10-137"><a href="#cb10-137" aria-hidden="true" tabindex="-1"></a>    <span class="at">modele =</span> exgen_modele, </span>
-<span id="cb10-138"><a href="#cb10-138" aria-hidden="true" tabindex="-1"></a>    <span class="at">c00 =</span> <span class="dv">0</span>, <span class="at">c01 =</span> <span class="dv">0</span>, <span class="at">c10 =</span> <span class="sc">-</span><span class="dv">10</span>, <span class="at">c11 =</span> <span class="dv">57</span>)</span>
-<span id="cb10-139"><a href="#cb10-139" aria-hidden="true" tabindex="-1"></a>exgen_pred <span class="ot">&lt;-</span> </span>
-<span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(exgen_modele, </span>
-<span id="cb10-141"><a href="#cb10-141" aria-hidden="true" tabindex="-1"></a>        <span class="at">newdata =</span> valid_r, </span>
-<span id="cb10-142"><a href="#cb10-142" aria-hidden="true" tabindex="-1"></a>        <span class="at">type =</span> <span class="st">"response"</span>) <span class="sc">&gt;</span> exgen_coupe<span class="sc">$</span>optim</span>
-<span id="cb10-143"><a href="#cb10-143" aria-hidden="true" tabindex="-1"></a>exgen_perfo <span class="ot">&lt;-</span>  </span>
-<span id="cb10-144"><a href="#cb10-144" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="dv">10</span><span class="sc">*</span><span class="fu">sum</span>(exgen_pred) <span class="sc">+</span> </span>
-<span id="cb10-145"><a href="#cb10-145" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(valid_ymontant[exgen_pred], </span>
-<span id="cb10-146"><a href="#cb10-146" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb10-147"><a href="#cb10-147" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb10-148"><a href="#cb10-148" aria-hidden="true" tabindex="-1"></a><span class="co"># LASSO</span></span>
-<span id="cb10-149"><a href="#cb10-149" aria-hidden="true" tabindex="-1"></a><span class="co"># Trouver le paramètre de pénalisation par</span></span>
-<span id="cb10-150"><a href="#cb10-150" aria-hidden="true" tabindex="-1"></a><span class="co"># validation croisée (10 groupes)</span></span>
-<span id="cb10-151"><a href="#cb10-151" aria-hidden="true" tabindex="-1"></a>cvfit <span class="ot">&lt;-</span> glmnet<span class="sc">::</span><span class="fu">cv.glmnet</span>(</span>
-<span id="cb10-152"><a href="#cb10-152" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">as.matrix</span>(appr_c[, <span class="sc">-</span><span class="fu">ncol</span>(appr_c)]), </span>
-<span id="cb10-153"><a href="#cb10-153" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> appr_c<span class="sc">$</span>y, </span>
-<span id="cb10-154"><a href="#cb10-154" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span>, </span>
-<span id="cb10-155"><a href="#cb10-155" aria-hidden="true" tabindex="-1"></a>  <span class="at">type.measure =</span> <span class="st">"auc"</span>) <span class="co"># aire sous courbe</span></span>
-<span id="cb10-156"><a href="#cb10-156" aria-hidden="true" tabindex="-1"></a><span class="co"># Le critère par défaut est la déviance (-2ll)</span></span>
-<span id="cb10-157"><a href="#cb10-157" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajuster modèle avec pénalisation </span></span>
-<span id="cb10-158"><a href="#cb10-158" aria-hidden="true" tabindex="-1"></a>lasso <span class="ot">&lt;-</span> glmnet<span class="sc">::</span><span class="fu">glmnet</span>(</span>
-<span id="cb10-159"><a href="#cb10-159" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">as.matrix</span>(appr_c[,<span class="sc">-</span><span class="fu">ncol</span>(appr_c)]), </span>
-<span id="cb10-160"><a href="#cb10-160" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> appr_c<span class="sc">$</span>y, </span>
-<span id="cb10-161"><a href="#cb10-161" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span>, </span>
-<span id="cb10-162"><a href="#cb10-162" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> cvfit<span class="sc">$</span>lambda<span class="fl">.1</span>se)</span>
-<span id="cb10-163"><a href="#cb10-163" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculer performance selon les points de coupure</span></span>
-<span id="cb10-164"><a href="#cb10-164" aria-hidden="true" tabindex="-1"></a>probs_lasso <span class="ot">&lt;-</span> </span>
-<span id="cb10-165"><a href="#cb10-165" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(lasso, </span>
-<span id="cb10-166"><a href="#cb10-166" aria-hidden="true" tabindex="-1"></a>          <span class="at">newx =</span> <span class="fu">as.matrix</span>(appr_c[,<span class="sc">-</span><span class="fu">ncol</span>(appr_c)]), </span>
-<span id="cb10-167"><a href="#cb10-167" aria-hidden="true" tabindex="-1"></a>          <span class="at">type =</span> <span class="st">"resp"</span>)</span>
-<span id="cb10-168"><a href="#cb10-168" aria-hidden="true" tabindex="-1"></a>lasso_coupe <span class="ot">&lt;-</span> <span class="fu">with</span>(</span>
-<span id="cb10-169"><a href="#cb10-169" aria-hidden="true" tabindex="-1"></a>  hecmulti<span class="sc">::</span><span class="fu">perfo_logistique</span>(</span>
-<span id="cb10-170"><a href="#cb10-170" aria-hidden="true" tabindex="-1"></a>     <span class="at">prob =</span> probs_lasso,</span>
-<span id="cb10-171"><a href="#cb10-171" aria-hidden="true" tabindex="-1"></a>     <span class="at">resp =</span> appr_c<span class="sc">$</span>y),</span>
-<span id="cb10-172"><a href="#cb10-172" aria-hidden="true" tabindex="-1"></a>  coupe[<span class="fu">which.max</span>(VP<span class="sc">*</span><span class="dv">57</span> <span class="sc">-</span> FN<span class="sc">*</span><span class="dv">10</span>)])</span>
-<span id="cb10-173"><a href="#cb10-173" aria-hidden="true" tabindex="-1"></a>lasso_pred <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">predict</span>(lasso, </span>
-<span id="cb10-174"><a href="#cb10-174" aria-hidden="true" tabindex="-1"></a>        <span class="at">newx =</span> <span class="fu">as.matrix</span>(valid_c[,<span class="sc">-</span><span class="fu">ncol</span>(valid_c)]), </span>
-<span id="cb10-175"><a href="#cb10-175" aria-hidden="true" tabindex="-1"></a>        <span class="at">type =</span> <span class="st">"resp"</span>)) <span class="sc">&gt;</span> lasso_coupe</span>
-<span id="cb10-176"><a href="#cb10-176" aria-hidden="true" tabindex="-1"></a>lasso_perfo <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">10</span><span class="sc">*</span><span class="fu">sum</span>(lasso_pred) <span class="sc">+</span> </span>
-<span id="cb10-177"><a href="#cb10-177" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(valid_ymontant[lasso_pred], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="reglogistique_cache/html/selection-variable-logistique-dbm_9dd623f6b54266fa7f607b38dd840380">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diviser les bases de données </span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># en échantillons d'apprentissage</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># et de validation</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(dbm, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>valid <span class="ot">&lt;-</span> dbm[dbm<span class="sc">$</span>test <span class="sc">==</span> <span class="dv">1</span>,] <span class="sc">|&gt;</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!</span> <span class="fu">c</span>(ymontant, test))</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>appr <span class="ot">&lt;-</span> dbm[dbm<span class="sc">$</span>test <span class="sc">==</span> <span class="dv">0</span>, ] <span class="sc">|&gt;</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!</span> <span class="fu">c</span>(ymontant, test))</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Formule du modèle avec toutes les interactions </span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co"># d'ordre 2 (.^2) et les termes quadratiques I(x^2)</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>formule <span class="ot">&lt;-</span> <span class="fu">formula</span>(yachat <span class="sc">~</span> .<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">I</span>(x2<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x6<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">I</span>(x7<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x8<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">I</span>(x9<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x10<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Nouvelles bases de données avec toutes ces variables</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="co"># On retire la première colonne (1, ordonnée à l'origine)</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>appr_c <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(<span class="fu">model.matrix</span>(formule, <span class="at">data =</span> appr)[,<span class="sc">-</span><span class="dv">1</span>]),</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">as.integer</span>(appr<span class="sc">$</span>yachat))</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>valid_c <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(<span class="fu">model.matrix</span>(formule, <span class="at">data =</span> valid)[,<span class="sc">-</span><span class="dv">1</span>]),</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">as.integer</span>(valid<span class="sc">$</span>yachat))</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>valid_ymontant <span class="ot">&lt;-</span> <span class="fu">with</span>(dbm, ymontant[test <span class="sc">==</span> 1L])</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustement des différents modèles</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Modèle avec toutes les variables principales</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>base <span class="ot">&lt;-</span> <span class="fu">glm</span>(yachat <span class="sc">~</span> ., </span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> appr, </span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>            <span class="at">family =</span> binomial)</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcul du point de coupe optimal</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a><span class="co">#  (par validation croisée)</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>base_coupe <span class="ot">&lt;-</span> hecmulti<span class="sc">::</span><span class="fu">select_pcoupe</span>(</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">modele =</span> base, </span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">c00 =</span> <span class="dv">0</span>, </span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">c01 =</span> <span class="dv">0</span>, </span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">c10 =</span> <span class="sc">-</span><span class="dv">10</span>, </span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">c11 =</span> <span class="dv">57</span>)</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Performance sur données de validation</span></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>base_pred <span class="ot">&lt;-</span> </span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(<span class="at">object =</span> base, </span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>          <span class="at">newdata =</span> valid, </span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>          <span class="at">type =</span> <span class="st">"response"</span>) <span class="sc">&gt;</span> base_coupe<span class="sc">$</span>optim</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>base_perfo <span class="ot">&lt;-</span> </span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="dv">10</span><span class="sc">*</span><span class="fu">sum</span>(base_pred) <span class="sc">+</span> </span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(valid_ymontant[base_pred], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a><span class="co"># Modèle avec toutes les variables + interactions</span></span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustement</span></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>complet <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> formule, </span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> appr, </span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a>               <span class="at">family =</span> binomial)</span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Sélection du point de coupure</span></span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a>complet_coupe <span class="ot">&lt;-</span> hecmulti<span class="sc">::</span><span class="fu">select_pcoupe</span>(</span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a>  <span class="at">modele =</span> complet, <span class="at">c00 =</span> <span class="dv">0</span>, </span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a>  <span class="at">c01 =</span> <span class="dv">0</span>, <span class="at">c10 =</span> <span class="sc">-</span><span class="dv">10</span>, <span class="at">c11 =</span> <span class="dv">57</span>)</span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a><span class="co"># Performance sur données de validation</span></span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a>complet_pred <span class="ot">&lt;-</span> </span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(<span class="at">object =</span> complet, </span>
+<span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a>          <span class="at">newdata =</span> valid, </span>
+<span id="cb11-61"><a href="#cb11-61" aria-hidden="true" tabindex="-1"></a>          <span class="at">type =</span> <span class="st">"response"</span>) <span class="sc">&gt;</span> complet_coupe<span class="sc">$</span>optim</span>
+<span id="cb11-62"><a href="#cb11-62" aria-hidden="true" tabindex="-1"></a><span class="co"># Revenu</span></span>
+<span id="cb11-63"><a href="#cb11-63" aria-hidden="true" tabindex="-1"></a>complet_perfo <span class="ot">&lt;-</span> </span>
+<span id="cb11-64"><a href="#cb11-64" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="dv">10</span><span class="sc">*</span><span class="fu">sum</span>(complet_pred) <span class="sc">+</span> </span>
+<span id="cb11-65"><a href="#cb11-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(valid_ymontant[complet_pred], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-66"><a href="#cb11-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-67"><a href="#cb11-67" aria-hidden="true" tabindex="-1"></a><span class="co"># Sélection de modèle avec algorithme glouton</span></span>
+<span id="cb11-68"><a href="#cb11-68" aria-hidden="true" tabindex="-1"></a><span class="co"># Recherche séquentielle (AIC)</span></span>
+<span id="cb11-69"><a href="#cb11-69" aria-hidden="true" tabindex="-1"></a>seqAIC <span class="ot">&lt;-</span> <span class="fu">step</span>(<span class="at">object =</span> complet, </span>
+<span id="cb11-70"><a href="#cb11-70" aria-hidden="true" tabindex="-1"></a>                <span class="at">direction =</span> <span class="st">"both"</span>, <span class="co"># séquentielle</span></span>
+<span id="cb11-71"><a href="#cb11-71" aria-hidden="true" tabindex="-1"></a>                <span class="at">k =</span> <span class="dv">2</span>, <span class="co"># AIC </span></span>
+<span id="cb11-72"><a href="#cb11-72" aria-hidden="true" tabindex="-1"></a>                <span class="at">trace =</span> <span class="dv">0</span>) </span>
+<span id="cb11-73"><a href="#cb11-73" aria-hidden="true" tabindex="-1"></a>seqAIC_coupe <span class="ot">&lt;-</span> </span>
+<span id="cb11-74"><a href="#cb11-74" aria-hidden="true" tabindex="-1"></a>  hecmulti<span class="sc">::</span><span class="fu">select_pcoupe</span>(</span>
+<span id="cb11-75"><a href="#cb11-75" aria-hidden="true" tabindex="-1"></a>  <span class="at">modele =</span> seqAIC, <span class="at">c00 =</span> <span class="dv">0</span>, </span>
+<span id="cb11-76"><a href="#cb11-76" aria-hidden="true" tabindex="-1"></a>  <span class="at">c01 =</span> <span class="dv">0</span>, <span class="at">c10 =</span> <span class="sc">-</span><span class="dv">10</span>, <span class="at">c11 =</span> <span class="dv">57</span>)</span>
+<span id="cb11-77"><a href="#cb11-77" aria-hidden="true" tabindex="-1"></a>seqAIC_pred <span class="ot">&lt;-</span> </span>
+<span id="cb11-78"><a href="#cb11-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict.glm</span>(<span class="at">object =</span> seqAIC, </span>
+<span id="cb11-79"><a href="#cb11-79" aria-hidden="true" tabindex="-1"></a>              <span class="at">newdata =</span> valid, </span>
+<span id="cb11-80"><a href="#cb11-80" aria-hidden="true" tabindex="-1"></a>              <span class="at">type =</span> <span class="st">"response"</span>) <span class="sc">&gt;</span> </span>
+<span id="cb11-81"><a href="#cb11-81" aria-hidden="true" tabindex="-1"></a>  seqAIC_coupe<span class="sc">$</span>optim</span>
+<span id="cb11-82"><a href="#cb11-82" aria-hidden="true" tabindex="-1"></a>seqAIC_perfo <span class="ot">&lt;-</span> </span>
+<span id="cb11-83"><a href="#cb11-83" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="dv">10</span><span class="sc">*</span><span class="fu">sum</span>(seqAIC_pred) <span class="sc">+</span> </span>
+<span id="cb11-84"><a href="#cb11-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(valid_ymontant[seqAIC_pred], </span>
+<span id="cb11-85"><a href="#cb11-85" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-86"><a href="#cb11-86" aria-hidden="true" tabindex="-1"></a><span class="co"># Recherche séquentielle (BIC)</span></span>
+<span id="cb11-87"><a href="#cb11-87" aria-hidden="true" tabindex="-1"></a>seqBIC <span class="ot">&lt;-</span> <span class="fu">step</span>(<span class="at">object =</span> complet,</span>
+<span id="cb11-88"><a href="#cb11-88" aria-hidden="true" tabindex="-1"></a>                <span class="at">direction =</span> <span class="st">"both"</span>, <span class="co"># séquentielle</span></span>
+<span id="cb11-89"><a href="#cb11-89" aria-hidden="true" tabindex="-1"></a>                <span class="at">k =</span> <span class="fu">log</span>(<span class="fu">nobs</span>(complet)), <span class="co">#BIC</span></span>
+<span id="cb11-90"><a href="#cb11-90" aria-hidden="true" tabindex="-1"></a>                <span class="at">trace =</span> <span class="dv">0</span>)  </span>
+<span id="cb11-91"><a href="#cb11-91" aria-hidden="true" tabindex="-1"></a>seqBIC_coupe <span class="ot">&lt;-</span> hecmulti<span class="sc">::</span><span class="fu">select_pcoupe</span>(</span>
+<span id="cb11-92"><a href="#cb11-92" aria-hidden="true" tabindex="-1"></a>  <span class="at">modele =</span> seqBIC, <span class="at">c00 =</span> <span class="dv">0</span>,</span>
+<span id="cb11-93"><a href="#cb11-93" aria-hidden="true" tabindex="-1"></a>  <span class="at">c01 =</span> <span class="dv">0</span>, <span class="at">c10 =</span> <span class="sc">-</span><span class="dv">10</span>, <span class="at">c11 =</span> <span class="dv">57</span>)</span>
+<span id="cb11-94"><a href="#cb11-94" aria-hidden="true" tabindex="-1"></a>seqBIC_pred <span class="ot">&lt;-</span> </span>
+<span id="cb11-95"><a href="#cb11-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict.glm</span>(<span class="at">object =</span> seqBIC, </span>
+<span id="cb11-96"><a href="#cb11-96" aria-hidden="true" tabindex="-1"></a>              <span class="at">newdata =</span> valid, </span>
+<span id="cb11-97"><a href="#cb11-97" aria-hidden="true" tabindex="-1"></a>              <span class="at">type =</span> <span class="st">"response"</span>) <span class="sc">&gt;</span> </span>
+<span id="cb11-98"><a href="#cb11-98" aria-hidden="true" tabindex="-1"></a>  seqBIC_coupe<span class="sc">$</span>optim</span>
+<span id="cb11-99"><a href="#cb11-99" aria-hidden="true" tabindex="-1"></a>seqBIC_perfo <span class="ot">&lt;-</span> </span>
+<span id="cb11-100"><a href="#cb11-100" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="dv">10</span><span class="sc">*</span><span class="fu">sum</span>(seqBIC_pred) <span class="sc">+</span> </span>
+<span id="cb11-101"><a href="#cb11-101" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(valid_ymontant[seqBIC_pred], </span>
+<span id="cb11-102"><a href="#cb11-102" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-103"><a href="#cb11-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-104"><a href="#cb11-104" aria-hidden="true" tabindex="-1"></a><span class="co"># Recherche exhaustive par algorithm génétique</span></span>
+<span id="cb11-105"><a href="#cb11-105" aria-hidden="true" tabindex="-1"></a><span class="co"># avec moins de variables</span></span>
+<span id="cb11-106"><a href="#cb11-106" aria-hidden="true" tabindex="-1"></a>appr_r <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb11-107"><a href="#cb11-107" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(<span class="fu">model.matrix</span>(seqAIC)[,<span class="sc">-</span><span class="dv">1</span>], </span>
+<span id="cb11-108"><a href="#cb11-108" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> appr<span class="sc">$</span>yachat))</span>
+<span id="cb11-109"><a href="#cb11-109" aria-hidden="true" tabindex="-1"></a>valid_r <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb11-110"><a href="#cb11-110" aria-hidden="true" tabindex="-1"></a>  <span class="fu">model.matrix</span>(<span class="fu">formula</span>(seqAIC), </span>
+<span id="cb11-111"><a href="#cb11-111" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> valid)[,<span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb11-112"><a href="#cb11-112" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmulti)</span>
+<span id="cb11-113"><a href="#cb11-113" aria-hidden="true" tabindex="-1"></a>exgen <span class="ot">&lt;-</span> glmulti<span class="sc">::</span><span class="fu">glmulti</span>(</span>
+<span id="cb11-114"><a href="#cb11-114" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> y <span class="sc">~</span> .,</span>
+<span id="cb11-115"><a href="#cb11-115" aria-hidden="true" tabindex="-1"></a>  <span class="co">#nombre de variables limitées</span></span>
+<span id="cb11-116"><a href="#cb11-116" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> appr_r,  </span>
+<span id="cb11-117"><a href="#cb11-117" aria-hidden="true" tabindex="-1"></a>  <span class="at">level =</span> <span class="dv">1</span>,           <span class="co"># sans interaction</span></span>
+<span id="cb11-118"><a href="#cb11-118" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"g"</span>,        <span class="co"># recherche génétique</span></span>
+<span id="cb11-119"><a href="#cb11-119" aria-hidden="true" tabindex="-1"></a>  <span class="at">crit =</span> <span class="st">"bic"</span>,            <span class="co"># critère (AIC, BIC, ...)</span></span>
+<span id="cb11-120"><a href="#cb11-120" aria-hidden="true" tabindex="-1"></a>  <span class="at">confsetsize =</span> <span class="dv">1</span>,         <span class="co"># meilleur modèle uniquement</span></span>
+<span id="cb11-121"><a href="#cb11-121" aria-hidden="true" tabindex="-1"></a>  <span class="at">plotty =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb11-122"><a href="#cb11-122" aria-hidden="true" tabindex="-1"></a>  <span class="at">report =</span> <span class="cn">FALSE</span>,  <span class="co"># sans graphique ou rapport</span></span>
+<span id="cb11-123"><a href="#cb11-123" aria-hidden="true" tabindex="-1"></a>  <span class="at">fitfunction =</span> <span class="st">"glm"</span>) </span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>TASK: Genetic algorithm in the candidate set.
+Initialization...
+Algorithm started...
+Improvements in best and average IC have bebingo en below the specified goals.
+Algorithm is declared to have converged.
+Completed.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Redéfinir le modèle via "glm"</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>exgen_modele <span class="ot">&lt;-</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm</span>(exgen<span class="sc">@</span>objects[[<span class="dv">1</span>]]<span class="sc">$</span>formula,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> appr_r,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">family =</span> binomial)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>exgen_coupe <span class="ot">&lt;-</span> </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  hecmulti<span class="sc">::</span><span class="fu">select_pcoupe</span>(</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">modele =</span> exgen_modele, </span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">c00 =</span> <span class="dv">0</span>, <span class="at">c01 =</span> <span class="dv">0</span>, <span class="at">c10 =</span> <span class="sc">-</span><span class="dv">10</span>, <span class="at">c11 =</span> <span class="dv">57</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>exgen_pred <span class="ot">&lt;-</span> </span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(exgen_modele, </span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">newdata =</span> valid_r, </span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">type =</span> <span class="st">"response"</span>) <span class="sc">&gt;</span> exgen_coupe<span class="sc">$</span>optim</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>exgen_perfo <span class="ot">&lt;-</span>  </span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="dv">10</span><span class="sc">*</span><span class="fu">sum</span>(exgen_pred) <span class="sc">+</span> </span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(valid_ymontant[exgen_pred], </span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co"># LASSO</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Trouver le paramètre de pénalisation par</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co"># validation croisée (10 groupes)</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>cvfit <span class="ot">&lt;-</span> glmnet<span class="sc">::</span><span class="fu">cv.glmnet</span>(</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">as.matrix</span>(appr_c[, <span class="sc">-</span><span class="fu">ncol</span>(appr_c)]), </span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> appr_c<span class="sc">$</span>y, </span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span>, </span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">type.measure =</span> <span class="st">"auc"</span>) <span class="co"># aire sous courbe</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Le critère par défaut est la déviance (-2ll)</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajuster modèle avec pénalisation </span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>lasso <span class="ot">&lt;-</span> glmnet<span class="sc">::</span><span class="fu">glmnet</span>(</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">as.matrix</span>(appr_c[,<span class="sc">-</span><span class="fu">ncol</span>(appr_c)]), </span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> appr_c<span class="sc">$</span>y, </span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span>, </span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> cvfit<span class="sc">$</span>lambda<span class="fl">.1</span>se)</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculer performance selon les points de coupure</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>probs_lasso <span class="ot">&lt;-</span> </span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(lasso, </span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>          <span class="at">newx =</span> <span class="fu">as.matrix</span>(appr_c[,<span class="sc">-</span><span class="fu">ncol</span>(appr_c)]), </span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>          <span class="at">type =</span> <span class="st">"resp"</span>)</span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>lasso_coupe <span class="ot">&lt;-</span> <span class="fu">with</span>(</span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>  hecmulti<span class="sc">::</span><span class="fu">perfo_logistique</span>(</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>     <span class="at">prob =</span> probs_lasso,</span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>     <span class="at">resp =</span> appr_c<span class="sc">$</span>y),</span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>  coupe[<span class="fu">which.max</span>(VP<span class="sc">*</span><span class="dv">57</span> <span class="sc">-</span> FN<span class="sc">*</span><span class="dv">10</span>)])</span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>lasso_pred <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">predict</span>(lasso, </span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>        <span class="at">newx =</span> <span class="fu">as.matrix</span>(valid_c[,<span class="sc">-</span><span class="fu">ncol</span>(valid_c)]), </span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>        <span class="at">type =</span> <span class="st">"resp"</span>)) <span class="sc">&gt;</span> lasso_coupe</span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>lasso_perfo <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">10</span><span class="sc">*</span><span class="fu">sum</span>(lasso_pred) <span class="sc">+</span> </span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(valid_ymontant[lasso_pred], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Table:</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-03-summarylog_e7f9e39ee6814265f7126dabc2aa01eb">
+<div class="cell" data-hash="reglogistique_cache/html/tbl-03-summarylog_783df6168c2b013d82bed84582960378">
 <div class="cell-output-display">
 <div id="tbl-03-summarylog" class="anchored">
 <table class="table table-sm table-striped small" data-quarto-postprocess="true">
@@ -2562,11 +2568,11 @@ En résumé
 </tr>
 <tr class="even">
 <td style="text-align: left;">(f)</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">0.14</td>
-<td style="text-align: right;">0.4986</td>
-<td style="text-align: right;">0.767</td>
-<td style="text-align: right;">976332</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">0.5455</td>
+<td style="text-align: right;">0.8</td>
+<td style="text-align: right;">960225</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">(g)</td>
@@ -2613,45 +2619,45 @@ Y_{2}^{\star} &amp;= \beta_{02} + \beta_{12} \mathrm{X}_{12} + \cdots + \beta_{1
 <p>On pourrait faire une sélection de variables pour chaque modèle: pour faire simple, nous allons sélectionner les variables de la procédure séquentielle et choisir les variables qui donnent le modèle avec le plus petit BIC pour la partie de régression linéaire et la régression logistique.</p>
 <p>Pour obtenir les prévisions, nous allons estimer conjointement les modèles pour <span class="math inline">\(\mathsf{E}(\texttt{ymontant} \mid \texttt{yachat}=1)\)</span> et pour <span class="math inline">\(\Pr(\texttt{yachat}=1)\)</span> avec un modèle Tobit de type 2 (aussi appelé modèle Heckit), dont une brève description est donnée à la fin de la section.</p>
 <p>L’avantage de l’estimation simultanée est que l’on a pas à sélectionner le point de coupure, puisque l’on enverra le catalogue uniquement si le montant prédit pour <span class="math inline">\(\mathsf{E}(\texttt{ymontant})\)</span> (non-conditionnel) est supérieur à 10$.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tobit-model_e30aea93dc5004ac8db347f10ddb9f11">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sampleSelection)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>formule_complet <span class="ot">&lt;-</span> <span class="fu">formula</span>(ymontant <span class="sc">~</span> </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>          (x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x4 <span class="sc">+</span> x5 <span class="sc">+</span> </span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>             x6 <span class="sc">+</span> x7 <span class="sc">+</span> x8 <span class="sc">+</span> x9 <span class="sc">+</span> x10)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> </span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">I</span>(x2<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x6<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x7<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>            <span class="fu">I</span>(x8<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x9<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x10<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>select_modlin <span class="ot">&lt;-</span> </span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  MASS<span class="sc">::</span><span class="fu">stepAIC</span>(</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> <span class="fu">lm</span>(formule_complet,</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> dbm[dbm<span class="sc">$</span>test <span class="sc">==</span> <span class="dv">0</span>,]),</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">scope =</span> <span class="fu">formula</span>(ymontant <span class="sc">~</span> <span class="dv">1</span>),</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> <span class="fu">log</span>(<span class="fu">sum</span>(dbm<span class="sc">$</span>test <span class="sc">==</span> <span class="dv">0</span>)),</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">trace =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>fachat <span class="ot">&lt;-</span> <span class="fu">formula</span>(seqBIC)</span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>fmontant <span class="ot">&lt;-</span> <span class="fu">formula</span>(select_modlin)</span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>heckit.ml <span class="ot">&lt;-</span> sampleSelection<span class="sc">::</span><span class="fu">heckit</span>(</span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">selection =</span> fachat,</span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> fmontant, </span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"ml"</span>, </span>
-<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dbm[dbm<span class="sc">$</span>test <span class="sc">==</span> <span class="dv">0</span>,])</span>
-<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>sortie_heckit <span class="ot">&lt;-</span> <span class="fu">summary</span>(heckit.ml)</span>
-<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>pred_achat <span class="ot">&lt;-</span> </span>
-<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(heckit.ml, </span>
-<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>          <span class="at">part =</span> <span class="st">"selection"</span>, </span>
-<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>          <span class="at">newdata =</span> dbm[dbm<span class="sc">$</span>test <span class="sc">==</span> <span class="dv">1</span>,], </span>
-<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>          <span class="at">type =</span> <span class="st">"response"</span>) <span class="sc">*</span> </span>
-<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(<span class="at">object =</span> heckit.ml,</span>
-<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>          <span class="at">part =</span> <span class="st">"outcome"</span>, </span>
-<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>          <span class="at">newdata =</span> dbm[dbm<span class="sc">$</span>test <span class="sc">==</span> <span class="dv">1</span>,])</span>
-<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a><span class="co">#Remplacer valeurs manquantes par zéros</span></span>
-<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>valid_ymontant[<span class="fu">is.na</span>(valid_ymontant)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a><span class="co"># On envoie le catalogue seulement si le montant d'achat prédit est supérieur à 10$</span></span>
-<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Revenu total avec cette stratégie</span></span>
-<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>heckit_perfo <span class="ot">&lt;-</span> </span>
-<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(valid_ymontant[<span class="fu">which</span>(pred_achat <span class="sc">&gt;</span> <span class="dv">10</span>)] <span class="sc">-</span> <span class="dv">10</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="reglogistique_cache/html/tobit-model_d00d3304463a5248f332841448cc8f54">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sampleSelection)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>formule_complet <span class="ot">&lt;-</span> <span class="fu">formula</span>(ymontant <span class="sc">~</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>          (x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3 <span class="sc">+</span> x4 <span class="sc">+</span> x5 <span class="sc">+</span> </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>             x6 <span class="sc">+</span> x7 <span class="sc">+</span> x8 <span class="sc">+</span> x9 <span class="sc">+</span> x10)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">I</span>(x2<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x6<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x7<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>            <span class="fu">I</span>(x8<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x9<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x10<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>select_modlin <span class="ot">&lt;-</span> </span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  MASS<span class="sc">::</span><span class="fu">stepAIC</span>(</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> <span class="fu">lm</span>(formule_complet,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> dbm[dbm<span class="sc">$</span>test <span class="sc">==</span> <span class="dv">0</span>,]),</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">scope =</span> <span class="fu">formula</span>(ymontant <span class="sc">~</span> <span class="dv">1</span>),</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> <span class="fu">log</span>(<span class="fu">sum</span>(dbm<span class="sc">$</span>test <span class="sc">==</span> <span class="dv">0</span>)),</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">trace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>fachat <span class="ot">&lt;-</span> <span class="fu">formula</span>(seqBIC)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>fmontant <span class="ot">&lt;-</span> <span class="fu">formula</span>(select_modlin)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>heckit.ml <span class="ot">&lt;-</span> sampleSelection<span class="sc">::</span><span class="fu">heckit</span>(</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">selection =</span> fachat,</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> fmontant, </span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"ml"</span>, </span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dbm[dbm<span class="sc">$</span>test <span class="sc">==</span> <span class="dv">0</span>,])</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>sortie_heckit <span class="ot">&lt;-</span> <span class="fu">summary</span>(heckit.ml)</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>pred_achat <span class="ot">&lt;-</span> </span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(heckit.ml, </span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>          <span class="at">part =</span> <span class="st">"selection"</span>, </span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>          <span class="at">newdata =</span> dbm[dbm<span class="sc">$</span>test <span class="sc">==</span> <span class="dv">1</span>,], </span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>          <span class="at">type =</span> <span class="st">"response"</span>) <span class="sc">*</span> </span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(<span class="at">object =</span> heckit.ml,</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>          <span class="at">part =</span> <span class="st">"outcome"</span>, </span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>          <span class="at">newdata =</span> dbm[dbm<span class="sc">$</span>test <span class="sc">==</span> <span class="dv">1</span>,])</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a><span class="co">#Remplacer valeurs manquantes par zéros</span></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>valid_ymontant[<span class="fu">is.na</span>(valid_ymontant)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a><span class="co"># On envoie le catalogue seulement si le montant d'achat prédit est supérieur à 10$</span></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Revenu total avec cette stratégie</span></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>heckit_perfo <span class="ot">&lt;-</span> </span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(valid_ymontant[<span class="fu">which</span>(pred_achat <span class="sc">&gt;</span> <span class="dv">10</span>)] <span class="sc">-</span> <span class="dv">10</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="tbl-03-tobit" class="cell tbl-parent quarto-layout-panel anchored" data-tbl-cap="Matrice de gain pour l'envoi de catalogue avec des modèle Tobit de type II: sensibilité, taux de faux positifs et de bonne classification et gain net de la stratégie." data-hash="reglogistique_cache/html/tbl-03-tobit_bee672265f681e4d9ab8322aca2cefc0">
+<div id="tbl-03-tobit" class="cell tbl-parent quarto-layout-panel anchored" data-tbl-cap="Matrice de gain pour l'envoi de catalogue avec des modèle Tobit de type II: sensibilité, taux de faux positifs et de bonne classification et gain net de la stratégie." data-hash="reglogistique_cache/html/tbl-03-tobit_b74e6b9d565b72d5b32b307b8ffa1234">
 
 </div>
 <p>Le modèle Heckit aurait produit un revenu net de 10007980$, un montant supérieur au revenu net de 978226$, qui était le meilleur trouvé à la sous-section précédente.</p>
@@ -2718,7 +2724,7 @@ p_{ik} &amp;= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\eta_{ik})}{1+ \sum_{j=2
 \end{align*}\]</span> On voit facilement que la somme des probabilités égale 1, c’est-à-dire <span class="math inline">\(p_{i1} + \cdots + p_{iK} = 1\)</span>, ce qui fait que connaître la probabilité de <span class="math inline">\(K-1\)</span> des catégories nous permet de déduire la dernière. En fait, le modèle logit multinomial ne fait que combiner plusieurs logit dans un seul modèle. L’interprétation des paramètres se fait comme en régression logistique sauf qu’il faut y aller équation par équation.</p>
 <p>L’exemple qui suit traite du taux de participation lors des élections américaines et des facteurs expliquant qu’un électeur ou une électrice se prévaut de son droit de vote, ainsi que la fréquence de participation. Les <a href="https://github.com/fivethirtyeight/data/tree/master/non-voters">données</a> sont tirées d’un sondage Ipsos réalisé pour le site de nouvelles <em>FiveThirtyEight</em>. Les données sont accompagnées de pondérations provenant du recensement permettant de corriger la représentativité du sondage et de refléter l’électorat américain dans sa globalité.</p>
 <p>La base de données <code>vote</code> contient 5837 observations obtenues par voie de sondage. Nous allons modéliser l’intention de vote, <code>catvote</code> à l’aide d’une régression logistique multinomiale.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/fig-multinom_means-Ipsos_baf37063ae6d317dac2af5d8f62972b8">
+<div class="cell" data-hash="reglogistique_cache/html/fig-multinom_means-Ipsos_d1dee9b4909326e3f6f7b5a4498227a1">
 <div class="cell-output-display">
 <div id="fig-multinom_means-Ipsos" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -2730,42 +2736,42 @@ p_{ik} &amp;= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\eta_{ik})}{1+ \sum_{j=2
 </div>
 <p>On voit que les personnes plus fortunées, plus éduquées, plus âgées et celles qui s’associent à un parti politique principal (Républicains et Démocrates), votent davantage. L’écart selon l’âge est particulièrement édifiant, avec près de 50% des jeunes qui n’ont pas participé. Il faut garder en tête que le revenu, l’âge et le niveau d’éducation sont fortement associés et que les personnes plus jeunes ont eu moins d’occasions de voter (ce qui pourrait expliquer la plus grande propension pour les catégories de vote).</p>
 <p>Une étude plus attentive révèle que la distribution conditionnelle de ceux qui votent toujours est bimodale. La <a href="#fig-vote-age">Figure&nbsp;<span>4.10</span></a> montre clairement que les très jeunes et les personnes âgées en font partie. Ainsi, le modèle est potentiellement mal spécifié car le vrai effet de l’âge n’est visiblement pas linéaire au niveau du log de la cote. Cela dit, les primovotant(e)s n’ont souvent eu qu’une seule occasion de voter, ce qui peut expliquer le comportement sur le graphique et l’absence de réponses pour occasionnellement. Pour éviter cet artefact, on considère les personnes de plus de 30 ans uniquement.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/fig-vote-age_d2ba99c808ac840a8466f6d613ffb86a">
+<div class="cell" data-hash="reglogistique_cache/html/fig-vote-age_d4440e8a440210e066ae03425eacf31a">
 <div class="cell-output-display">
 <div id="fig-vote-age" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="reglogistique_files/figure-html/fig-vote-age-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
+<p><img src="reglogistique_files/figure-html/fig-vote-age-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption class="figure-caption">Figure&nbsp;4.10: Fréquence de vote selon l’âge.</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>Pour le modèle logit multinomial, nous allons prendre <code>rarement/jamais</code> comme catégorie de référence pour la variable réponse <code>catvote</code>. Notez qu’il est d’usage et préférable, pour réduire le risque de problèmes numériques et accélérer l’optimisation, de centrer et réduire les variables explicatives.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/mullogit_9c95e9aa64cce208c8406a7dc7e7c127">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(vote, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Modèle multinomial</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>multi1 <span class="ot">&lt;-</span> nnet<span class="sc">::</span><span class="fu">multinom</span>(</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  catvote <span class="sc">~</span> <span class="fu">scale</span>(age, <span class="at">scale =</span> <span class="cn">FALSE</span>), <span class="co"># centrer</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> vote, </span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">subset =</span> age <span class="sc">&gt;</span> <span class="dv">30</span>,</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> poids,</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">Hess =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">trace =</span> <span class="cn">FALSE</span>) </span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Tableau résumé de l'ajustement</span></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(multi1)</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimations des coefficients</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(multi1)</span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Intervalles de confiance (Wald)</span></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(multi1)</span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Critères d'information</span></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(multi1)</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(multi1)</span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Prédictions: probabilité de chaque scénario</span></span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(multi1, <span class="at">type =</span> <span class="st">"probs"</span>)</span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Prédictions: classe la plus susceptible</span></span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(multi1, <span class="at">type =</span> <span class="st">"class"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="reglogistique_cache/html/mullogit_b427d4bd3357db67abdd455e08703e21">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(vote, <span class="at">package =</span> <span class="st">"hecmulti"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Modèle multinomial</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>multi1 <span class="ot">&lt;-</span> nnet<span class="sc">::</span><span class="fu">multinom</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  catvote <span class="sc">~</span> <span class="fu">scale</span>(age, <span class="at">scale =</span> <span class="cn">FALSE</span>), <span class="co"># centrer</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> vote, </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">subset =</span> age <span class="sc">&gt;</span> <span class="dv">30</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> poids,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">Hess =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">trace =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Tableau résumé de l'ajustement</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(multi1)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimations des coefficients</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(multi1)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Intervalles de confiance (Wald)</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(multi1)</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Critères d'information</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(multi1)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(multi1)</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Prédictions: probabilité de chaque scénario</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(multi1, <span class="at">type =</span> <span class="st">"probs"</span>)</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Prédictions: classe la plus susceptible</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(multi1, <span class="at">type =</span> <span class="st">"class"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="tbl-multinom-coefs" class="cell tbl-parent quarto-layout-panel anchored" data-hash="reglogistique_cache/html/tbl-multinom-coefs_00d2fe4979bcde7bc301d7045dd4daa2">
+<div id="tbl-multinom-coefs" class="cell tbl-parent quarto-layout-panel anchored" data-hash="reglogistique_cache/html/tbl-multinom-coefs_0b598fbbaea66a0126d1450fe95ac966">
 <div class="panel-caption table-caption">
 <p>Tableau&nbsp;4.12: Estimation des coefficients et intervalles de confiance à 95 pourcent pour le modèle multinomial logistique avec les données de vote.</p>
 </div>
@@ -2849,19 +2855,19 @@ p_{ik} &amp;= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\eta_{ik})}{1+ \sum_{j=2
 \end{align*}\]</span></p>
 <p>Plus l’âge du répondant augmente, plus la probabilité que la personne votre toujours augmente. Ainsi, la cote moyenne pour toujours versus la référence rarement/jamais est multipliée par <span class="math inline">\(1.031=\exp(0.031)\)</span> pour chaque année de plus. Pour faire simple, on a employé une seule variable explicative, mais il est clair au vu de l’analyse exploratoire que d’autres variables sont utiles pour comprendre le comportement des électeurs et électrices. Qui est plus, la taille de la base de données nous permettrait de mesurer d’autres effets.</p>
 <p>On peut comparer les modèles emboîtés à l’aide de tests de rapport de vraisemblance.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/lrt-test_c2f927eb6519cf3203315f99b2b912fe">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajuster modèle sous H0: les</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># prédictions correspondent à la</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># proportion empirique de chaque catégorie</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>multi0 <span class="ot">&lt;-</span> nnet<span class="sc">::</span><span class="fu">multinom</span>(catvote <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">weights =</span> poids,</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">data =</span> vote,</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>                         <span class="at">subset =</span> age <span class="sc">&gt;</span> <span class="dv">30</span>,</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>                         <span class="at">trace =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Test de rapport de vraisemblance</span></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(multi0, multi1)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="reglogistique_cache/html/lrt-test_9982dc6a51f7d29a1e0b0bc3ddd3a819">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajuster modèle sous H0: les</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># prédictions correspondent à la</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># proportion empirique de chaque catégorie</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>multi0 <span class="ot">&lt;-</span> nnet<span class="sc">::</span><span class="fu">multinom</span>(catvote <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">weights =</span> poids,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">data =</span> vote,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>                         <span class="at">subset =</span> age <span class="sc">&gt;</span> <span class="dv">30</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>                         <span class="at">trace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Test de rapport de vraisemblance</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(multi0, multi1)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-anova-multinom_1e36ab9ca00f2f0256c02a33f3516cd8">
+<div class="cell" data-hash="reglogistique_cache/html/tbl-anova-multinom_024885b41eb9c34262f08a6fc1588130">
 <div class="cell-output-display">
 <div id="tbl-anova-multinom" class="anchored">
 <table class="table table-sm table-striped small" data-quarto-postprocess="true">
@@ -2880,7 +2886,7 @@ p_{ik} &amp;= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\eta_{ik})}{1+ \sum_{j=2
 <tr class="odd">
 <td style="text-align: left;">cst</td>
 <td style="text-align: right;">9692</td>
-<td style="text-align: right;">9781</td>
+<td style="text-align: right;">9781.07</td>
 <td style="text-align: right;"></td>
 <td style="text-align: right;"></td>
 <td style="text-align: left;"></td>
@@ -2888,10 +2894,10 @@ p_{ik} &amp;= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\eta_{ik})}{1+ \sum_{j=2
 <tr class="even">
 <td style="text-align: left;">age</td>
 <td style="text-align: right;">9690</td>
-<td style="text-align: right;">9078</td>
+<td style="text-align: right;">9077.63</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: right;">703</td>
-<td style="text-align: left;">&lt;0.0001</td>
+<td style="text-align: right;">703.44</td>
+<td style="text-align: left;">&lt; 0.0001</td>
 </tr>
 </tbody>
 </table>
@@ -2916,58 +2922,58 @@ p_{ik} &amp;= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\eta_{ik})}{1+ \sum_{j=2
 &amp;\Pr(Y_i = k \mid \mathbf{X}_{i}) =\Pr(Y_i &gt; k \mid \mathbf{X}_{i}) - \Pr(Y_i &gt; k-1 \mid \mathbf{X}_{i}).
 \end{align*}\]</span></p>
 <p>On peut répéter le même modèle que précédemment pour les données de sondage, même s’il est peu susceptible que l’hypothèse de cotes proportionnelles soit valide. Dans <strong>R</strong>, la variable réponse doit être de classe <code>ordered</code>, une forme particulière de facteur dont les niveaux sont ordonnés en ordre croissant. On ajuste un modèle, cette fois avec sexe pour nous permettre de pratiquer l’interprétation d’une variable catégorielle.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/ordinal-logistique_f723d558969e4006151c187cdfadd548">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modèle de régression logistique </span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># multinomiale ordinale à cote proportionnelle</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(vote, <span class="fu">is.ordered</span>(catvote))</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>multi2a <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">polr</span>(</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  catvote <span class="sc">~</span> sexe, </span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> vote, </span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">subset =</span> age <span class="sc">&gt;</span> <span class="dv">30</span>,</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> poids,</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"logistic"</span>, </span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">Hess =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>multi2b <span class="ot">&lt;-</span> nnet<span class="sc">::</span><span class="fu">multinom</span>(</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  catvote <span class="sc">~</span> sexe, </span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> vote,</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">subset =</span> age <span class="sc">&gt;</span> <span class="dv">30</span>, </span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> poids,</span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">Hess =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">trace =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Le modèle est paramétré en terme</span></span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="co">#  du rapport de cote, ascendant</span></span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(multi2a)</span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Test du rapport de vraisemblance pour </span></span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="co"># modèle à cote proportionnelle</span></span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="co"># deviance = -2*ll</span></span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="fu">pchisq</span>(<span class="fu">deviance</span>(multi2a) <span class="sc">-</span> <span class="fu">deviance</span>(multi2b),</span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">df =</span> <span class="fu">length</span>(<span class="fu">coef</span>(multi2a)), </span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>       <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Intervalles de confiance pour beta_x</span></span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a><span class="co">#  - vraisemblance profilée</span></span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(multi2a)</span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Critères d'information</span></span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(multi2a)</span>
-<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(multi2a)</span>
-<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Tableau des coefficients </span></span>
-<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Négatif de l'ordonnée à l'origine:</span></span>
-<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>multi2a<span class="sc">$</span>zeta</span>
-<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Uniquement pour variables explicatives</span></span>
-<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a><span class="co"># exp(beta) avec l'IC de vraisemblance profilée</span></span>
-<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">c</span>(<span class="fu">coef</span>(multi2a), <span class="fu">confint</span>(multi2a)))</span>
-<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a><span class="co"># On peut obtenir les intervalles de Wald </span></span>
-<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a><span class="co"># avec confint.default</span></span>
-<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Test d'adéquation </span></span>
-<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a><span class="co"># (rapport de vraisemblance, comparaison avec modèle saturé)</span></span>
-<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a><span class="fu">pchisq</span>(<span class="at">q =</span> <span class="fu">deviance</span>(multi2a),</span>
-<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>       <span class="at">df =</span> <span class="fu">df.residual</span>(multi2a),</span>
-<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>       <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Petite valeur-p = modèle inadéquat</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="reglogistique_cache/html/ordinal-logistique_9494dc086c3afe9b096c91c0c1d4a776">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modèle de régression logistique </span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># multinomiale ordinale à cote proportionnelle</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(vote, <span class="fu">is.ordered</span>(catvote))</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>multi2a <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">polr</span>(</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  catvote <span class="sc">~</span> sexe, </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> vote, </span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">subset =</span> age <span class="sc">&gt;</span> <span class="dv">30</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> poids,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"logistic"</span>, </span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">Hess =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>multi2b <span class="ot">&lt;-</span> nnet<span class="sc">::</span><span class="fu">multinom</span>(</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  catvote <span class="sc">~</span> sexe, </span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> vote,</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">subset =</span> age <span class="sc">&gt;</span> <span class="dv">30</span>, </span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> poids,</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">Hess =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">trace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Le modèle est paramétré en terme</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="co">#  du rapport de cote, ascendant</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(multi2a)</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Test du rapport de vraisemblance pour </span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="co"># modèle à cote proportionnelle</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="co"># deviance = -2*ll</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a><span class="fu">pchisq</span>(<span class="fu">deviance</span>(multi2a) <span class="sc">-</span> <span class="fu">deviance</span>(multi2b),</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">df =</span> <span class="fu">length</span>(<span class="fu">coef</span>(multi2a)), </span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>       <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Intervalles de confiance pour beta_x</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a><span class="co">#  - vraisemblance profilée</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(multi2a)</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Critères d'information</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(multi2a)</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(multi2a)</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Tableau des coefficients </span></span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Négatif de l'ordonnée à l'origine:</span></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>multi2a<span class="sc">$</span>zeta</span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Uniquement pour variables explicatives</span></span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a><span class="co"># exp(beta) avec l'IC de vraisemblance profilée</span></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">c</span>(<span class="fu">coef</span>(multi2a), <span class="fu">confint</span>(multi2a)))</span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a><span class="co"># On peut obtenir les intervalles de Wald </span></span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a><span class="co"># avec confint.default</span></span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Test d'adéquation </span></span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a><span class="co"># (rapport de vraisemblance, comparaison avec modèle saturé)</span></span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a><span class="fu">pchisq</span>(<span class="at">q =</span> <span class="fu">deviance</span>(multi2a),</span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>       <span class="at">df =</span> <span class="fu">df.residual</span>(multi2a),</span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>       <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Petite valeur-p = modèle inadéquat</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-ordered-logistic_fcf19f6e52e229a084765b73c7e73db7">
+<div class="cell" data-hash="reglogistique_cache/html/tbl-ordered-logistic_1fe19ea9545eaeb7b37136cb5157e2d3">
 <div class="cell-output-display">
 <div id="tbl-ordered-logistic" class="anchored">
 <table class="table table-sm table-striped small" data-quarto-postprocess="true">
@@ -3010,12 +3016,12 @@ p_{ik} &amp;= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\eta_{ik})}{1+ \sum_{j=2
 <p>Ainsi, les hommes sont moins susceptibles de voter fréquemment que les femmes. Plus précisément, la cote d’être dans une catégorie plus élevée de <code>catvote</code>, par rapport à une catégorie plus basse, est multipliée par <span class="math inline">\(\exp(-0.166) = 0.847\)</span>, ce qui correspond à une diminution de la cote <span class="math inline">\(15\)</span>% (et donc la probabilité estimée que la personne vote plus fréquemment est plus faible).</p>
 <p>Considérons pour illustrer le rôle des paramètres <span class="math inline">\(\zeta_1, \ldots, \zeta_{k-1}\)</span> pour la prédiction pour une femme (valeur de la référence). Soit <span class="math inline">\(p_1\)</span>, <span class="math inline">\(p_2\)</span> et <span class="math inline">\(p_3\)</span> les probabilités pour respectivement rarement/jamais, occasionnellement et toujours. <!-- On obtient les rapports de cote $(p_2+p_3)/p_1 = \exp(-\zeta_1)$, $p_3/(p_1 + p_2) = \exp(-\zeta_2)$ avec la contrainte d'identifiabilité $p_1 + p_2 + p_3 = 1$. On déduit de ce système d'équation que $p_1 =\mathrm{expit}(\zeta_1)$ et $p_3 = \mathrm{expit}(-\zeta_2)$.
 --> On peut calculer <span class="math inline">\(\mathrm{expit}(\zeta_k)\)</span> (<span class="math inline">\(k=0, \ldots, K\)</span>) qui donne <span class="math inline">\(0\)</span>, <span class="math inline">\(0.215\)</span>, <span class="math inline">\(0.704\)</span> et <span class="math inline">\(1\)</span> et les différences donnent <span class="math inline">\(\widehat{p}_1 = 0.215\)</span>, <span class="math inline">\(\widehat{p}_2 = 0.489\)</span> et <span class="math inline">\(\widehat{p}_3 = 0.296\)</span>. Un rapide calcul numérique montre que c’est bien ce que retourne les prédictions dans le <a href="#tbl-predpolr">Tableau&nbsp;<span>4.15</span></a>.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/unnamed-chunk-38_5dca7f5b1ff9d8fe89f0354a72a89eea">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(multi2a, </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">sexe =</span> <span class="fu">factor</span>(<span class="st">"femme"</span>)), </span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">type =</span> <span class="st">"probs"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="reglogistique_cache/html/unnamed-chunk-38_0816481a5bbbe30ea527ea4fe15f0127">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(multi2a, </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">sexe =</span> <span class="fu">factor</span>(<span class="st">"femme"</span>)), </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">type =</span> <span class="st">"probs"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/tbl-predpolr_e9bd9c1707eab7db45097e1bb2a2056e">
+<div class="cell" data-hash="reglogistique_cache/html/tbl-predpolr_2f9cc233a00801cf3e01b49168aee6ce">
 <div class="cell-output-display">
 <div id="tbl-predpolr" class="anchored">
 <table class="table table-sm table-striped small" data-quarto-postprocess="true">
@@ -3045,11 +3051,11 @@ p_{ik} &amp;= \Pr(Y_i=k \mid \mathrm{X}_i) = \frac{\exp(\eta_{ik})}{1+ \sum_{j=2
 <li><span class="math inline">\(\mathscr{H}_0\)</span> : l’effet de chaque variable est le même pour les <span class="math inline">\(K\)</span> logit du modèle multinomial logistique, soit <span class="math inline">\(\beta_{11} = \cdots =\beta_{1K}\)</span>, <span class="math inline">\(\ldots\)</span>, <span class="math inline">\(\beta_{p1} = \cdots =\beta_{pK}\)</span>.</li>
 </ul>
 <p>Une très petite valeur-<span class="math inline">\(p\)</span> (rejet de <span class="math inline">\(\mathscr{H}_0\)</span>) pour ce test serait une indication que le modèle de régression multinomiale ordinale n’est pas approprié et que le modèle multinomial logistique serait préférable. Comme la valeur-<span class="math inline">\(p\)</span> est négligeable, on rejette pas <span class="math inline">\(\mathscr{H}_0\)</span> et l’hypothèse de cote proportionnelle ne tient pas la route.</p>
-<div class="cell" data-layout-align="center" data-hash="reglogistique_cache/html/fig-predmultinom_d59dfb2fdcf3769058708dfe09912824">
+<div class="cell" data-hash="reglogistique_cache/html/fig-predmultinom_61dedc1d8ef30409d63b0943a7ca55dc">
 <div class="cell-output-display">
 <div id="fig-predmultinom" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="reglogistique_files/figure-html/fig-predmultinom-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
+<p><img src="reglogistique_files/figure-html/fig-predmultinom-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption class="figure-caption">Figure&nbsp;4.11: Probabilités prédites pour chaque modalité selon le modèle de régression multinomiale logistique et le modèle de régression ordinales à cotes proportionnelles selon l’âge.</figcaption>
 </figure>
 </div>

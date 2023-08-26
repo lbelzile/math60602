@@ -685,7 +685,8 @@ g1 <- ggplot(data = dbm_sub,
                      bins = 30) + 
   labs(#fill = "achat",
        y = "densité",
-       x = "âge")
+       x = "âge") +
+  theme_classic()
 g2 <- ggplot(data = dbm_sub,
              aes(#fill = factor(yachat),
                  x = x8 
@@ -695,7 +696,8 @@ g2 <- ggplot(data = dbm_sub,
                      bins = 30) + 
   labs(#fill = "achat",
        y = "densité",
-       x = "montant du dernier achat (en dollar)")
+       x = "montant du dernier achat (en dollar)") + 
+  theme_classic()
 g3 <- ggplot(data = dbm_sub,
              aes(#fill = factor(yachat),
                  x = x9)) +
@@ -704,7 +706,8 @@ g3 <- ggplot(data = dbm_sub,
                      bins = 30) + 
   labs(#fill = "achat",
        y = "densité",
-       x = "montant total dépensé depuis un an (en dollars)")
+       x = "montant total dépensé depuis un an (en dollars)") +
+  theme_classic()
 g4 <- ggplot(data = dbm_sub,
              aes(#fill = factor(yachat),
                  x = x7 )) +
@@ -713,7 +716,8 @@ g4 <- ggplot(data = dbm_sub,
                      bins = 30) + 
   labs(#fill = "achat",
        y = "densité",
-       x = "nombre de semaines depuis le dernier achat")
+       x = "nombre de semaines depuis le dernier achat") + 
+  theme_classic()
 g5 <- ggplot(data = dbm_sub,
              aes(#fill = factor(yachat),
                  x = x6)) +
@@ -722,7 +726,8 @@ g5 <- ggplot(data = dbm_sub,
                      bins = 30) + 
   labs(#fill = "achat",
        y = "densité",
-       x = "ancienneté comme client")  
+       x = "ancienneté comme client") + 
+  theme_classic()
 g6 <- ggplot(data = dbm_sub,
              aes(#fill = factor(yachat),
                  x = x10 
@@ -732,7 +737,8 @@ g6 <- ggplot(data = dbm_sub,
                      bins = 30) + 
   labs(#fill = "achat",
        y = "densité",
-       x = "nombre d'achats différents depuis un an")  
+       x = "nombre d'achats différents depuis un an")  + 
+  theme_classic()
 library(patchwork)
 (g1 + g2)/(g3 + g4) / (g5 + g6) +
   patchwork::plot_layout(guides = 'collect') & theme(legend.position = "bottom")
@@ -1710,7 +1716,7 @@ Il y aurait plusieurs autres approches/combinaisons qui pourraient être testée
 - Si un modèle est mal spécifié (variables importantes manquantes), alors les estimations sont biaisées. Si le modèle est surspécifié, les coefficients correspondants aux variables superflues incluses sont en moyenne nuls, mais contribuent à l'augmentation de la variance (compromis *biais/variance*).
 - La taille du modèle ($p$, le nombre de variables explicatives) est restreinte par le nombre d'observations disponibles, $n$. 
     - En général, il faut s'assurer d'avoir suffisamment d'observations pour estimer de manière fiable les coefficients (le rapport $n/p$ donne le budget moyen par paramètre).
-    - Porter une attention particulière aux variables binaires et aux interactions avec ces dernières: si les effectifs de certaines modalités sont faibles, il y a possible de surajustement.
+    - Porter une attention particulière aux variables binaires et aux interactions avec ces dernières: si les effectifs de certaines modalités sont faibles, il y a possibilité de surajustement.
 - Le principal critère pour juger de la qualité d'un modèle linéaire est l'erreur quadratique moyenne.
     - L'estimation de l'erreur quadratique moyenne obtenue à partir de l'échantillon d'apprentissage (qui sert à estimer les paramètres) est trompeuse et mène au surajustement:
     - plus le modèle est compliqué, plus cette erreur décroît.
