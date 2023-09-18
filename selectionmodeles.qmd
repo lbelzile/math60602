@@ -603,12 +603,22 @@ ggplot(data = EQMdat, aes(x=ordre, y=EQM)) +
 
 ```
 
-Il arrive que la performance soit très similaire pour plusieurs modèles, auquel cas on pourrait être tenté de prendre le modèle le plus parsimonieux (c'est-à-dire, celui qui a le moins de paramètres). Si on a calculé la performance avec la validation croisée et qu'on a obtenu une mesure d'incertitude pour notre performance, on peut utiliser la règle du « 1 écart-type». Cette dernière veut qu'on choisisse le modèle le plus simple parmi un ensemble $\mathcal{M}_0 \subset\cdots \subset \mathcal{M}_m$ qui satisfasse
+Il arrive que la performance soit très similaire pour plusieurs modèles, auquel cas on pourrait être tenté de prendre le modèle le plus parsimonieux (c'est-à-dire, celui qui a le moins de paramètres). Si on a calculé la performance avec la validation croisée et qu'on a obtenu une mesure d'incertitude pour notre performance, on peut utiliser la règle du « 1 erreur-type». Cette dernière veut qu'on choisisse le modèle le plus simple parmi un ensemble $\mathcal{M}_0 \subset\cdots \subset \mathcal{M}_m$ qui satisfasse
 \begin{align*}
-\widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_i) \leq \min_{m = i+1}^M \widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_m) + \mathsf{sd}\{\widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_m)\}.
+\widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_i) \leq \min_{m = i+1}^M \widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_m) + \mathsf{se}\{\widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_m)\}.
 \end{align*}
-Autrement dit, on trouve le modèle qui minimise notre critère d'erreur et on choisit ensuite le modèle le plus simple qui soit à au plus un écart-type de ce modèle. On verra ainsi souvent des barres d'erreurs à $\pm$ un écart-type, comme dans la @fig-lassopath.
+Autrement dit, on trouve le modèle qui minimise notre critère d'erreur et on choisit ensuite le modèle le plus simple qui soit à au plus une erreur-type de ce modèle, comme dans la @fig-vc-1erreurtype. On verra ainsi souvent des barres d'erreurs à $\pm$ une erreur-type, comme dans la @fig-lassopath.
 
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-vc-1erreurtype
+#| fig-cap: "Erreur quadratique moyenne estimée par validation croisée à 10 plis, avec une erreur-type. La bande jaune indique la zone pour l'estimation de l'erreur quadratique moyenne à au plus une erreur-type du modèle qui minimise le critère."
+knitr::include_graphics("figures/fig-validationcroisee-une-erreur-type.png")
+```
+Pour rappel, le terme écart-type désigne typiquement la variabilé d'une observation, tandis que l'erreur-type d'une statistique représente la variabilité de cette quantitée créée en regroupant des observations. L'erreur-type de la moyenne de $K$ observations indépendantes qui ont toutes écart-type $\sigma$ est ainsi $\sigma/\sqrt{K}$: c'est logique puisque la moyenne, basée sur plusieurs observations, est moins variable qu'une observation.
+
+Ainsi, si on calcule l'écart-type de l'erreur quadratique moyenne d'un des $K$ plis avec $n/K$ observations en moyenne, l'erreur-type de l'erreur quadratique moyenne globale des $n$ observations sera inférieure d'un facteur $\sqrt{K}$. Si on réplique la validation croisée plusieurs fois avec des divisions aléatoires différentes, l'incertitude décroîtra d'autant même si les mesures obtenues ne seront pas indépendantes puisqu'elles réutilisent les mêmes observations.
 
 
 ## Présentation des données
