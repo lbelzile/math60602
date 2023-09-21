@@ -492,7 +492,7 @@ div.csl-indent {
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(mtdons)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Le champ des applications de l’analyse de regroupements est parfois surprenant. Par exemple, <a href="https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/">cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais</a> ou des <a href="https://fivethirtyeight.com/features/the-6-political-neighborhoods-of-los-angeles/">quartiers de Los Angeles</a>. Un autre exemple incongru est la compression d’images: la <a href="#fig-decelles">Figure&nbsp;<span>7.1</span></a> montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l’algorithme des <span class="math inline">\(K\)</span>-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l’image.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/fig-decelles_6b7e59d35c5321f58c3d3a34c4b9b8fb">
+<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/fig-decelles_f29846c49df4a9f0ef44e43ac284f3f1">
 <div class="cell-output-display">
 <div id="fig-decelles" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -547,7 +547,7 @@ S_{ij} = \frac{\sum_{k=1}^p s_{ijk} \delta_{ijk}}{\sum_{k=1}^p \delta_{ijk}}
 <p>Dans plusieurs cas, on se trouvera en présence de valeurs manquantes dans le jeu de données. Cela peut arriver pour plusieurs raisons valables (aucune candidature ne représente un partir dans une circonscription donnée pour un parti lors d’une élection, l’information est manquante, une femme ne peut avoir de cancer de la prostate, etc.) Il faut bien penser à vérifier si l’algorithme de votre choix peut gérer ces valeurs manquantes. Sinon, ces dernières devront être imputées préalablement à l’analyse de regroupements ou vous devrez faire sans les variables explicatives correspondantes.</p>
 <p>Les définitions des distances révèlent que chaque variable explicative a le même poids. En revanche, plus une variable a une grande variance, plus elle aura de l’influence sur le calcul de la distance, ce qui peut être bon ou mauvais selon la structure des groupes. Règle générale, il est préférable d’éviter qu’une variable domine dans la segmentation. La standardisation des variables et les transformations préalables effectuées sur les variables (log, arcsin, etc.) impacteront le résultat.</p>
 <p>On peut standardiser au préalable les variables avant de faire l’analyse. Par défaut, les variables continues seront centrées et réduites, ou standardisées, afin d’avoir une moyenne de zéro et une variance de un (<code>scale</code>). On peut ensuite faire les analyses comme précédemment. Si on a des valeurs aberrantes, cela peut impacter le calcul des moyennes et variances; d’autres estimateurs de localisation et d’échelles plus robustes, par exemple la médiane et la déviation absolue par rapport à la médiane (<code>mad</code>) peuvent alors être plus adéquats pour diminuer l’impact des valeurs aberrantes même si le coût de calcul associé est plus conséquent. Notez qu’il est illogique de standardiser les variables binaires et catégorielles.</p>
-<div class="cell" data-hash="regroupements_cache/html/standardisation_dc8aa2dbbccefea0c8b0207244480665">
+<div class="cell" data-hash="regroupements_cache/html/standardisation_5177b2bb1753146aa2ec9242c5aab8d2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Standardisation usuelle </span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (soustraire moyenne, diviser par écart-type)</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>donsmult_std <span class="ot">&lt;-</span> <span class="fu">scale</span>(donsmult)</span>
@@ -593,7 +593,7 @@ S_{ij} = \frac{\sum_{k=1}^p s_{ijk} \delta_{ijk}}{\sum_{k=1}^p \delta_{ijk}}
 <p>En pratique, l’algorithme convergera rapidement vers une solution locale. Cette dernière est simplement une assignation pour laquelle, d’une itération à l’autre, aucune observation ne change de groupe.</p>
 <p>L’algorithme des <span class="math inline">\(K\)</span>-moyennes présenté offre une forme de partitionnement dite rigide: chaque observation est assignée à un seul regroupement. Si cette appartenance unique peut être logique pour les points à proximité du barycentre, ceux situés à l’intersection des frontières qui définissent les différents regroupements pourraient parfois légitimement faire partie d’un ou l’autre de ces derniers. On pourrait plutôt assigner un poids représentant la probabilité d’être dans un des <span class="math inline">\(K\)</span> regroupements, appelé responsabilité et dénotée <span class="math inline">\(r_{ik}\)</span>. Avec une assignation rigide, <span class="math inline">\(r_{ik}=1\)</span> si l’observation <span class="math inline">\(i\)</span> est dans le regroupement <span class="math inline">\(k\)</span> et <span class="math inline">\(r_{ik}=0\)</span> sinon.</p>
 <p>La <a href="#fig-kmoy-animation">Figure&nbsp;<span>7.3</span></a> montre une animation avec un jeu de données fictif et <span class="math inline">\(K=3\)</span> regroupements.</p>
-<div class="cell" data-fig.format="png" data-animation.hook="gifski" data-hash="regroupements_cache/html/fig-kmoy-animation_f6090862b8c9d59c1af7a7fe5b40777a">
+<div class="cell" data-animation.hook="gifski" data-hash="regroupements_cache/html/fig-kmoy-animation_0d218aa56b4dcc370d7966112fc56e46">
 <div class="cell-output-display">
 <div id="fig-kmoy-animation" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -613,7 +613,7 @@ S_{ij} = \frac{\sum_{k=1}^p s_{ijk} \delta_{ijk}}{\sum_{k=1}^p \delta_{ijk}}
 <li>Comme toutes les observations font partie des <span class="math inline">\(K\)</span> groupes, les valeurs aberrantes ne sont pas traitées à part. Or, la présence de valeurs aberrantes impacte le barycentre des observations du groupe. Comme ce dernier donne le prototype du groupe, l’algorithme manque de robustesse.</li>
 <li>L’algorithme est sensible aux valeurs initiales des prototypes et retourne des solutions différentes selon ces dernières.</li>
 </ul>
-<div class="cell" data-hash="regroupements_cache/html/kmoyperfo_e9209cb5dd0a97e5424844d309647dde">
+<div class="cell" data-hash="regroupements_cache/html/kmoyperfo_7ea4f7458ba7912cad22d0bba09f1acc">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -635,7 +635,7 @@ S_{ij} = \frac{\sum_{k=1}^p s_{ijk} \delta_{ijk}}{\sum_{k=1}^p \delta_{ijk}}
 <section id="valeurs-initiales-des-prototypes" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="valeurs-initiales-des-prototypes">Valeurs initiales des prototypes</h4>
 <p>Comme mentionné précédemment, les regroupements obtenus peuvent varier fortement en fonction des valeurs de départ: la <a href="#fig-kmoyenne-mauvais">Figure&nbsp;<span>7.4</span></a> montre trois regroupements visibles avec une segmentation qui fusionne deux groupes apparents (gauche), et une solution plus sensée à droite. Une segmentation sera supérieure à une autre si elle a une plus petite valeur de la fonction objective de l’<a href="#eq-fobjKmoy">Équation&nbsp;<span>7.1</span></a>: les points seront moins dispersés autour de leurs prototypes.</p>
-<div class="cell" data-hash="regroupements_cache/html/fig-kmoyenne-mauvais_8ea82a212b15be752941bf2eeee4bb37">
+<div class="cell" data-hash="regroupements_cache/html/fig-kmoyenne-mauvais_ce202f76593bfb8c31550188adca81be">
 <div class="cell-output-display">
 <div id="fig-kmoyenne-mauvais" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -667,7 +667,7 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 <p>On peut calculer un coefficient de détermination, qui mesure pourcentage de variance expliquée, soit <span class="math inline">\(R^2_K = 1-\mathsf{SCD}_K/\mathsf{SCT}\)</span>. De la même manière, on s’attend à une diminution du critère et on pourrait calculer le <span class="math inline">\(R^2\)</span> semi-partiel <span class="math inline">\((\mathsf{SCD}_{k} - \mathsf{SCD}_{k-1})/\mathsf{SCT}\)</span> pour <span class="math inline">\(k \geq 2\)</span>.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
 <p>On pourrait aussi tracer un diagramme de la somme du carré des distances en fonction de <span class="math inline">\(K\)</span> en ajoutant une pénalité à notre fonction objective. En effet, avec la distance Euclidienne carrée, il y a une analogie à faire avec un modèle de régression et on peut légitimement utiliser un critère d’information pour guider notre choix de <span class="math inline">\(K\)</span>: le nombre de paramètres est <span class="math inline">\(Kp\)</span>, soit les valeurs des <span class="math inline">\(p\)</span> coordonnées des <span class="math inline">\(K\)</span> barycentres. On utilisera donc un critère d’information de type BIC.</p>
 <p>Il est possible que ces critères donne beaucoup plus de regroupements que ce que l’analyste est prêt(e) à envisager. Il faut garder en tête que, davantage qu’un critère mathématique, l’interprétabilité des regroupements est notre principale critère. Les critères d’information peuvent retourner trop ou pas assez de groupe: à titre d’exemple, le panneau de gauche de la <a href="#fig-coudekmoy">Figure&nbsp;<span>7.5</span></a> montre la somme du carré des distances pour la <a href="#fig-kmoyenne-mauvais">Figure&nbsp;<span>7.4</span></a>; on voit un coude à <span class="math inline">\(K=2\)</span>, mais il y avait visiblement trois regroupements, dont deux rapprochés.</p>
-<div class="cell" data-hash="regroupements_cache/html/fig-coudekmoy_16d6f2151e3c86251ee837ca736d8e5e">
+<div class="cell" data-hash="regroupements_cache/html/fig-coudekmoy_5f909ec3d6270def5ebd4674d2d4f012">
 <div class="cell-output-display">
 <div id="fig-coudekmoy" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -681,7 +681,7 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 <section id="mesure-de-distance" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="mesure-de-distance">Mesure de distance</h4>
 <p>Toutes les distances <span class="math inline">\(l_q\)</span> peuvent être utilisées, mais le choix de la distance Euclidienne carrée est particulièrement commode et populaire<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> entraîne une partition linéaire de l’espace, comme l’illustre la <a href="#fig-voronoikmoy">Figure&nbsp;<span>7.6</span></a>. La solution du problème d’optimisation est explicite, ce qui accélère les calculs (les prototypes correspondent aux barycentres). Sauf indication contraire, on supposera dans ce qui suit que la distance entre un point et un prototype est calculée avec la distance Euclidienne au carré.</p>
-<div class="cell" data-hash="regroupements_cache/html/fig-voronoikmoy_2437500c8e162dd25035144004eae890">
+<div class="cell" data-hash="regroupements_cache/html/fig-voronoikmoy_7f9f8dede19ca33f54468eef37918a56">
 <div class="cell-output-display">
 <div id="fig-voronoikmoy" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -737,7 +737,7 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="at">groupe =</span> kmoy5<span class="sc">$</span>cluster) <span class="sc">|&gt;</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_all</span>(mean)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-hash="regroupements_cache/html/tbl-kmoy5resume_5e836123513b0946a643081b5199711f">
+<div class="cell" data-hash="regroupements_cache/html/tbl-kmoy5resume_737fd1d2e0a8a20dc47277982d32294b">
 <div class="cell-output-display">
 <div id="tbl-kmoy5resume" class="anchored">
 <table class="table table-sm table-striped small" data-quarto-postprocess="true">
@@ -849,7 +849,7 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 <li>Groupe 5: Petits donateurs inactifs. Plutôt anciens, plusieurs refus.</li>
 </ul>
 <p>On peut représenter graphiquement les regroupements obtenus sur les premières composantes principales avec les deux mesures de dissemblance.</p>
-<div class="cell" data-hash="regroupements_cache/html/fig-acpkmoy5_81333764481d5cb967e2e1ea05d28514">
+<div class="cell" data-hash="regroupements_cache/html/fig-acpkmoy5_17d512c4cb471ffa3c1ff6ccd1a968fa">
 <div class="cell-output-display">
 <div id="fig-acpkmoy5" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -861,7 +861,7 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 </div>
 <p>Avec les <span class="math inline">\(K\)</span>-médianes, les personnes qui ont fait des dons plus élevés sont fusionnés avec d’autres personnes qui ont fait des dons moins élevés et les groupes sont plus de taille comparable. Selon l’objectif des regroupements, cela peut être avantageux, mais cibler les donateurs les plus généreux semble plus logique dans le contexte.</p>
 <p>On peut étudier l’impact de l’augmentation du nombre de groupes à l’aide de différents critères. Le premier est la somme des carrés des distances intra-groupes.</p>
-<div class="cell" data-hash="regroupements_cache/html/fig-homogeneite_b05a559f5a52191b538f5c67861755d9">
+<div class="cell" data-hash="regroupements_cache/html/fig-homogeneite_28830794df0c98d2c2c65e45122a7688">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>scd <span class="ot">&lt;-</span> <span class="fu">sapply</span>(kmoy, <span class="cf">function</span>(x){x<span class="sc">$</span>tot.withinss})</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Graphiques</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>homogene <span class="ot">&lt;-</span> <span class="fu">homogeneite</span>(scd)</span>
@@ -876,7 +876,7 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 </div>
 </div>
 <p>On peut aussi observer directement la diminution de la somme du carré des erreurs en incluant une pénalité. Ici, tous les critères pointent vers un nombre de regroupements plus élevé que 10, mais ce peut être trop.</p>
-<div class="cell" data-hash="regroupements_cache/html/fig-bickmoy_419b63af6b649e58c7f45a2e96e63864">
+<div class="cell" data-hash="regroupements_cache/html/fig-bickmoy_d17229ea97e7f5635ead58de036e0ee3">
 <div class="cell-output-display">
 <div id="fig-bickmoy" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -903,7 +903,7 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 <p>L’algorithme CLARA, décrit dans <span class="citation" data-cites="Kaufman.Rousseeuw:1990">Kaufman and Rousseeuw (<a href="references.html#ref-Kaufman.Rousseeuw:1990" role="doc-biblioref">1990</a>)</span>, réduit le coût de calcul et de stockage en divisant l’échantillon en <span class="math inline">\(S\)</span> sous-échantillons de taille approximativement égale (par défaut 5) et en utilisant l’algorithme PAM sur chacun. Une fois les médoïdes obtenus, le reste de toutes les observations de l’échantillon sont assignées au regroupement du médoïde le plus près. La qualité de la segmentation est pour chacune des <span class="math inline">\(S\)</span> segmentations est calculée en obtenant la distance moyenne entre les médoïdes et les observations; on retourne la solution qui a la plus petite distance moyenne.</p>
 <p>La qualité des regroupements est obtenue en utilisant la moyenne des distances entre les regroupements et leurs médoïdes. On peut également tracer un graphique des silhouettes: pour chaque observation, on calcule la moyenne des dissimilarités entre l’observation <span class="math inline">\(\mathrm{X}_i\)</span> et celles de chaque regroupement, disons <span class="math inline">\(a_i\)</span>. On calcule de la même manière la distance moyenne entre <span class="math inline">\(\mathrm{X}_i\)</span> et chaque autre regroupement et on retient le minimum de ces distances, <span class="math inline">\(b_i\)</span>.</p>
 <p>La valeur de la silhouette est simplement <span class="math inline">\(s_i=(b_i-a_i)/\max\{a_i, b_i\}\)</span>. Il est possible que la silhouette <span class="math inline">\(s_i\)</span> soit négative: cela indique généralement des observations mal regroupées. De bons regroupements seront obtenus si la silhouette est élevée: on s’attend, si les groupes sont très éloignées les uns des autres, à avoir des profils plus uniformes et une silhouette moyenne plus élevée.</p>
-<div class="cell" data-hash="regroupements_cache/html/fig-silhouette_c38b6ab4f3a19f4189f873952a3fffda">
+<div class="cell" data-hash="regroupements_cache/html/fig-silhouette_90ce261b78008172a9770646a42e9bc7">
 <div class="cell-output-display">
 <div id="fig-silhouette" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -930,7 +930,7 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 <span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Comme les <span class="math inline">\(K\)</span>-moyennes, on fera plusieurs essais pour trouver de bonnes valeurs de départ. On peut tracer le profil des silhouettes (<a href="#fig-clarasilhouette">Figure&nbsp;<span>7.11</span></a>)</p>
-<div class="cell" data-hash="regroupements_cache/html/fig-clarasilhouette_6b8d54f4530f0bfca05848276665772b">
+<div class="cell" data-hash="regroupements_cache/html/fig-clarasilhouette_a4b875b4f00c8021c552d268f80c36bf">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(factoextra<span class="sc">::</span><span class="fu">fviz_silhouette</span>(kmedoide[[<span class="dv">4</span>]]),</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">print.summary =</span> <span class="cn">FALSE</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -980,7 +980,7 @@ f_{k}(\boldsymbol{X}_i,
 <p>Si <span class="math inline">\(p\)</span> est élevé, la structure de covariance non structurée possède trop de paramètres pour être utile. On limitera ce nombre en choisissant plutôt une paramétrisation plus parsimonieuse qui impose des contraintes sur la forme des ellipsoïdes, propres ou communes à tous les groupes.</p>
 <p>La matrice de covariance dans <code>mclust</code> est paramétrisée en fonction de <span class="math inline">\(\lambda\)</span>, qui contrôle le volume, une matrice diagonale <span class="math inline">\(\mathbf{A}\)</span> qui contrôle les variances de chaque observation et <span class="math inline">\(\mathbf{D}\)</span> une matrice orthogonale qui permet de créer de la corrélation entre observations. Un index <span class="math inline">\(k\)</span> spécifie que cette composante varie d’un regroupement à l’autre.</p>
 <p>Les trois lettres de l’identifiant pour volume/forme/orientation déterminent si cette composante est égale (<code>E</code>), si elle varie d’un regroupement à l’autre (<code>V</code>) ou si elle est indéterminée (<code>I</code>). Par exemple, <code>EII</code> spécifie une matrice de covariance où chaque composante a variance <span class="math inline">\(\lambda\)</span> et où les composantes sont indépendantes. Voir <code>mclust.options("emModelNames")</code> et la documentation dans le Tableau 3 de <span class="citation" data-cites="mclust5">Scrucca et al. (<a href="references.html#ref-mclust5" role="doc-biblioref">2016</a>)</span>.</p>
-<div class="cell" data-hash="regroupements_cache/html/fig-modeles_adbd8f2503dc87750a2f1e5ae47cc30c">
+<div class="cell" data-hash="regroupements_cache/html/fig-modeles_ab330ea9becaaa3a391efaf1716c5b8f">
 <div class="cell-output-display">
 <div id="fig-modeles" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -1021,7 +1021,7 @@ f_{k}(\boldsymbol{X}_i,
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mmg)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>On peut obtenir les étiquettes (avec <code>0</code> pour le bruit) avec <code>mmg$classification</code>. Le graphique du critère d’information Bayésien (BIC) montre le négatif: on cherche donc la structure de covariance et le nombre qui maximise <span class="math inline">\(-\mathsf{BIC}\)</span>.</p>
-<div class="cell" data-hash="regroupements_cache/html/fig-mclustbic_a76c8c853d675f241d6ba3b844d5ef23">
+<div class="cell" data-hash="regroupements_cache/html/fig-mclustbic_b9a5b7758956a33533862bc342257dad">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mmg, <span class="at">what =</span> <span class="st">"BIC"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-mclustbic" class="quarto-figure quarto-figure-center anchored">
@@ -1033,7 +1033,7 @@ f_{k}(\boldsymbol{X}_i,
 </div>
 </div>
 <p>Avec notre grande base de données, le modèle identifie neuf regroupements et un volume variable. On peut utiliser des techniques de réduction de la dimension pour obtenir une représentation graphique.</p>
-<div class="cell" data-hash="regroupements_cache/html/fig-classifreducmclust_342cf7a3f9beac6655a03a8e71d133b8">
+<div class="cell" data-hash="regroupements_cache/html/fig-classifreducmclust_0ba4ee83c363afaa4e0392f1ed39336c">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Matrice des nuage de points (paires de variables)</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(mmg, what = "classification")</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Réduction de la dimension</span></span>
@@ -1072,7 +1072,7 @@ f_{k}(\boldsymbol{X}_i,
 <li>liaison moyenne: utilise la moyenne des distances entre toutes les paires de sujets (un pour chaque groupe) provenant des deux groupes.</li>
 <li>méthode de Ward: calcul de l’homogénéité globale</li>
 </ul>
-<div class="cell" data-hash="regroupements_cache/html/fig-distances_1d78f16c2fe617a55d478b85c0855c0f">
+<div class="cell" data-hash="regroupements_cache/html/fig-distances_94072dad08cd706f6c1662d55fa3a3c2">
 <div class="cell-output-display">
 <div id="fig-distances" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -1086,7 +1086,7 @@ f_{k}(\boldsymbol{X}_i,
 <p>En général, les algorithmes de regroupement hiérarchiques stockent une matrice de dissemblance <span class="math inline">\(n \times n\)</span>, et donc un coût de stockage quadratique et un coût de calcul <span class="math inline">\(\Omega(n^2)\)</span> avec <span class="math inline">\(\mathrm{O}(n^3)\)</span>. Il faut réaliser que ce coût de calcul est <strong>prohibitif</strong> en haute dimension. Certains algorithmique efficaces pour la méthode de liaison simple permettent un temps de calcul quadratique sans calcul de toutes les distances, à coût <span class="math inline">\(\mathrm{O}(n)\)</span>. Si la méthode de liaison simple est la moins coûteuse du lot, elle n’est pas aussi populaire car elle fonctionne bien si l’écart entre deux regroupements est suffisamment grand. S’il y a du bruit entre deux regroupements, la qualité des regroupements en sera affectée. La méthode de liaison complète est moins sensible au bruit et aux faibles écarts entre regroupements, mais a tendance à casser les regroupements globulaires. Puisque le critère d’homogénéité de Ward ressemble à celui des <span class="math inline">\(K\)</span>-moyennes, la sortie aura tendance à bien regrouper les amas globulaires.</p>
 <p>Généralement, le résultat de la procédure agglomérative avec la méthode de liaison simple inclura quelques valeurs isolées et un seul grand regroupement. Une alternative récente <span class="citation" data-cites="Gagolewski:2016">(<a href="references.html#ref-Gagolewski:2016" role="doc-biblioref">Gagolewski, Bartoszuk, and Cena 2016</a>)</span>, appelée Genie, modifie la fonction objective de la méthode de liaison simple en retenant son efficacité de calcul. Plutôt que de simplement trouver la paire de regroupements à distance minimale, cette fusion n’est appliquée que si une mesure d’inéquité est inférieur à un seuil spécifié par l’utilisateur. Si les regroupements sont fortement inéquitables, la fusion survient entre les regroupements dont un de la taille minimale courante. L’implémentation <strong>R</strong> <span class="citation" data-cites="Gagolewski:2021">(<a href="references.html#ref-Gagolewski:2021" role="doc-biblioref">Gagolewski 2021</a>)</span> dans le paquet <code>genieclust</code> est nettement plus rapide que les autres alternatives et ne nécessite pas de calculer la matrice de dissimilarité.</p>
 <p>On peut comparer les performances des regroupements hiérarchiques selon la méthode de groupement. La page web de <a href="https://scikit-learn.org/stable/auto_examples/cluster/plot_linkage_comparison.html">scikit-learn developers</a> montre la performance sur des exemples jouets très artificiels, qui montre que selon la structure des données, l’impact de la fonction de liaison. Ici, aucun approche hiérarchique ne performe mieux que les autres dans tous les exemples.</p>
-<div class="cell" data-hash="regroupements_cache/html/fig-animation-ward_0cea4cede7a5428be3a8f61242e34bde">
+<div class="cell" data-hash="regroupements_cache/html/fig-animation-ward_f939948897605d5badb28a42d85dfb40">
 <div class="cell-output-display">
 <div id="fig-animation-ward" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -1101,7 +1101,7 @@ f_{k}(\boldsymbol{X}_i,
 <h4 data-number="7.5.4.1" class="anchored" data-anchor-id="sélection-des-hyperparamètres"><span class="header-section-number">7.5.4.1</span> Sélection des hyperparamètres</h4>
 <p>Outre le choix de la fonction de liaison qui déterminera la distance entre les regroupements à chaque étape, on devra choisir le nombre de regroupements.</p>
 <p>On peut représenter le modèle à l’aide d’un <strong>dendrogramme</strong>, un arbre dont les feuilles indiquent les regroupements à chaque étape jusqu’à la racine à la dernière étape. La distance entre chaque embranchement est déterminée par notre critère: cela nous permet de sélectionner un nombre de regroupements <span class="math inline">\(K\)</span> après inspection du dendrogramme et d’extraire la solution en élaguer l’arbre à cette profondeur.</p>
-<div class="cell" data-hash="regroupements_cache/html/fig-dendrogramme_5df0085433a9fe042fd8458ac1e23341">
+<div class="cell" data-hash="regroupements_cache/html/fig-dendrogramme_40cfac42164d0b9599982d761676f86a">
 <div class="cell-output-display">
 <div id="fig-dendrogramme" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -1154,7 +1154,7 @@ Avec une mesure de dissemblance, on peut créer une matrice qui pour chaque pair
 <li>DBSCAN ne permet pas de traiter le cas où la densité des regroupements change et risque de fusionner des regroupements s’il y a une série d’observations qui permet de relier deux regroupements.</li>
 <li>comme la plupart des algorithmes, le voisinage des points devient épars quand <span class="math inline">\(p\)</span> augmente en raison du fléau de la dimension.</li>
 </ul>
-<div class="cell" data-hash="regroupements_cache/html/fig-dbscan1_c70d7347eeeb6fc6a2ec1068d0c33f51">
+<div class="cell" data-hash="regroupements_cache/html/fig-dbscan1_8418af57bfd21e857d2bf071a076e60d">
 <div class="cell-output-display">
 <div id="fig-dbscan1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -1169,7 +1169,7 @@ Avec une mesure de dissemblance, on peut créer une matrice qui pour chaque pair
 <p>Les deux paramètres, <span class="math inline">\(M\)</span> et <span class="math inline">\(\epsilon\)</span>, sont positivement corrélés: si on augmente le nombre minimal de point <span class="math inline">\(M\)</span> par regroupement, il faudra également augmenter le rayon <span class="math inline">\(\epsilon\)</span> pour éviter d’avoir un nombre trop élevé de points isolés étiquetés comme points isolés ou comme aberrances.</p>
 <p>Pour spécifier le nombre minimal d’observations voisines <span class="math inline">\(M\)</span> pour créer un point central, il faut aussi considérer la dimension <span class="math inline">\(p\)</span> des variables explicatives: la recommandation est de requérir au moins <span class="math inline">\(p+1\)</span> points dans le voisinage. Le choix du rayon peut être plus difficile à déterminer: . Une option est de fixer le nombre de plus proches voisins <span class="math inline">\(M\)</span> et de considérer la distance entre chaque observation et ses plus proches voisins: au sein d’un regroupement, on s’attend à ce que cette distance soit petite. Cela permettra également de déterminer un seuil acceptable pour <span class="math inline">\(\epsilon\)</span> pour éviter que trop d’observations soient isolées.</p>
 <p>La fonction <code>kNNdistplot</code> du paquet <code>dbscan</code> permet de tracer un graphique de la distance moyenne des <span class="math inline">\(k\)</span> plus proches voisins pour chaque observation: en prenant <span class="math inline">\(k=M-1\)</span>, on peut calculer la distance entre le <span class="math inline">\(k\)</span> plus proche voisin de chaque observation et ordonner ces distances. La recommandation est de choisir <span class="math inline">\(\epsilon\)</span> en prenant une distance où la plupart des observations ne sont pas voisines (critère du coude).</p>
-<div class="cell" data-hash="regroupements_cache/html/fig-dbscan2_d44061958fe1c10e742037bdf0e71b85">
+<div class="cell" data-hash="regroupements_cache/html/fig-dbscan2_397391a85712aab61e1a08c992d929e2">
 <div class="cell-output-display">
 <div id="fig-dbscan2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">

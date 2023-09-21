@@ -188,6 +188,7 @@ Nous disposons de 100 observations sur une variable cible $Y$ et d'une seule var
 #| fig-align: 'center'
 #| out-width: '100%'
 #| message: false
+#| warning: false
 #| fig-cap: "Nuage de points de 100 observations simulées d'un modèle polynomial de degré inconnu (gauche) et ajustement de différents polynômes de degré variable (droite)."
 data(polynome, package = "hecmulti")
 g1 <- ggplot(data = polynome, 
@@ -426,11 +427,13 @@ ggplot(data = EQM_graph,
   geom_point(aes(shape=methode, color=methode)) +
   labs(x = "ordre du polynôme",
        y = "critère d'information") +
-  theme(legend.position="bottom",
-        legend.title=element_blank()) +
-  scale_color_manual(values=MetBrewer::met.brewer("Hiroshige", 2)) +
+    scale_color_manual(values=MetBrewer::met.brewer("Hiroshige", 2)) +
   scale_x_continuous(breaks = 0:10,
-                     labels = as.character(0:10))
+                     labels = as.character(0:10)) +
+  theme_classic() +
+  theme(legend.position="bottom",
+        legend.title=element_blank())
+
 
 ```
 
@@ -594,12 +597,13 @@ ggplot(data = EQMdat, aes(x=ordre, y=EQM)) +
   #geom_line(aes(color=color=echantillon)) +
   geom_point(aes(shape=echantillon, color=echantillon)) +
   labs( x = "ordre du polynôme",
-     y = "erreur quadratique moyenne") +
-  theme(legend.position="bottom",
-        legend.title=element_blank()) +
+     y = "erreur quadratique moyenne")  +
   scale_color_manual(values=c("#E69F00", "#56B4E9")) +
   scale_x_continuous(breaks = 0:10,
-                     labels = as.character(0:10))
+                     labels = as.character(0:10)) +
+  theme_classic() +
+  theme(legend.position="bottom",
+        legend.title=element_blank())
 
 ```
 
@@ -1551,6 +1555,8 @@ plot(cv_output,
      xlab= expression(log(lambda)))
 ```
 
+<!--
+
 ### Moyenne de modèles
 
 Il est souvent préférable de combiner plusieurs modèles plutôt que d'en choisir un seul. La technique des forêts aléatoires (_random forests_) est une des meilleures techniques de prédiction disponibles de nos jours. Elle est basée sur cette idée, en combinant plusieurs arbres de classification (ou de régression) individuels. C'est une des techniques de base en exploitation de données.
@@ -1675,7 +1681,7 @@ Chaque modèle est construit à l'aide d'un échantillon aléatoire avec remise.
 
 Toutes les méthodes employées jusqu'à maintenant utilise une méthode de pénalisation pour déterminer le meilleur modèle. Une alternative avec serait de répéter la sélection en utilisant directement l'erreur quadratique moyenne estimée à l'aide de la validation croisée comme critère de sélection: pour cela, il faudrait ajuster l'ensemble des modèles candidats retournés par une procédure exhaustive ou séquentielle.
 
-
+-->
 
 ## Évaluation de la performance
 
@@ -1743,5 +1749,5 @@ Il y aurait plusieurs autres approches/combinaisons qui pourraient être testée
     - Une recherche exhaustive garantie le survol du plus grand nombre de modèles possibles, mais est coûteuse et limitée à moins de 50 variables.
     - Les algorithmes gloutons de recherche séquentielle sont sous-optimaux, mais rapides
 - On applique le critère de sélection sur la liste de modèles candidats pour retenir celui qui donne la meilleure performance.
-- Pour éviter une sélection rigide, on peut perturber les données et répéter la procédure pour calculer une moyenne de modèles. Cette approche est très coûteuse en calcul.
+<!-- - Pour éviter une sélection rigide, on peut perturber les données et répéter la procédure pour calculer une moyenne de modèles. Cette approche est très coûteuse en calcul. -->
 :::

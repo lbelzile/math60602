@@ -193,7 +193,6 @@
 \usepackage{makecell}
 \usepackage{xcolor}
 \usepackage{caption}
-\usepackage{animate}
 \makeatletter
 \@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
 \@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
@@ -285,12 +284,12 @@
 
 \title{MATH 60602 - Analyse multidimensionnelle appliquée}
 \author{Denis Larocque \and Léo Belzile}
-\date{2023-09-17}
+\date{2023-09-21}
 
 \begin{document}
 \includepdf{figures/pagecouverture.pdf}
 
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, frame hidden, enhanced, breakable, interior hidden, boxrule=0pt, sharp corners]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, interior hidden, enhanced, breakable, sharp corners, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table des matières}
 {
@@ -1169,7 +1168,7 @@ particulier, votre description devrait coïncider avec le rendu. Votre
 graphique raconte une histoire, aussi prenez-soin que cette dernière
 soit nécessaire et attrayante.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, colframe=quarto-callout-note-color-frame, colbacktitle=quarto-callout-note-color!10!white, toptitle=1mm, arc=.35mm, colback=white, bottomrule=.15mm, opacityback=0, opacitybacktitle=0.6, toprule=.15mm, coltitle=black, left=2mm, bottomtitle=1mm, breakable, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -1336,8 +1335,8 @@ estimées seront un peu plus élevées car on estime des paramètres pour
 des variables superflues.
 
 Pour illustrer ce point, j'ai simulé des données avec deux variables
-explicatives corrélées et \(\beta_0 = 20\), \(\beta_1=5\) et
-\(\beta_2 = 0\).
+explicatives corrélées. Les vrais coefficients du modèle linéaire sont
+\(\beta_0 = 20\), \(\beta_1=2\) et \(\beta_2 = 0\).
 
 \begin{table}
 
@@ -1386,8 +1385,11 @@ X2 & 5.06 & 4.74 & 5.38\\
 
 Une fois qu'on a obtenu l'estimation des coefficients et les intervalles
 de confiance, on peut les comparer aux vraies valeurs (soit
-\(\beta_0 = 20\), \(\beta_1=5\) et \(\beta_2 = 0\)) et vérifier si ces
-dernières se trouvent dans l'intervalle de confiance. Le
+\(\beta_0 = 20\), \(\beta_1=2\) et \(\beta_2 = 0\)) et vérifier si ces
+dernières se trouvent dans l'intervalle de confiance. Cela risque en
+général de ne pas être le cas si les variables explicatives sont
+corrélées, puisqu'elles partagent alors le pouvoir explicatif. Cela,
+heureusement, n'a que peu d'incidence sur les prédictions. Le
 Tableau~\ref{tbl-specification} indique l'effet pour l'inférence de ces
 spécifications (avec des différences d'estimation, mais non de
 prédictions, qui sont dues à la colinéarité entre variables).
@@ -1398,8 +1400,8 @@ vrai modèle est \(Y=\beta_0+\beta_1X_1+\beta_2X_2+\varepsilon\), mais
 que c'est le modèle \(Y=\beta_0+\beta_1X_1+\varepsilon\) qui est ajusté.
 Dans ce cas, généralement, les estimateurs des paramètres et les
 prédictions sont biaisés. Le Tableau~\ref{tbl-specification} montre les
-estimations du modèle: les vraies valeurs sont \(\beta_0=20\),
-\(\beta_1 = 2\) et \(\beta_2 = 5\).
+estimations du modèle: les vraies valeurs sont cette fois
+\(\beta_0=20\), \(\beta_1 = 2\) et \(\beta_2 = 5\).
 
 \begin{table}
 
@@ -1542,10 +1544,6 @@ correspond à un modèle linéaire simple, \(k=2\) à un modèle cubique,
 (\(k\)) du polynôme qui nous donnera un bon modèle. Voici d'abord le
 graphe de ces 100 observations de l'échantillon d'apprentissage et les
 valeurs ajustées de polynômes d'ordre 1, 4 et 10.
-
-\begin{verbatim}
-Warning: Removed 28 rows containing missing values (`geom_line()`).
-\end{verbatim}
 
 \begin{figure}[ht!]
 
@@ -2080,16 +2078,46 @@ auquel cas on pourrait être tenté de prendre le modèle le plus
 parsimonieux (c'est-à-dire, celui qui a le moins de paramètres). Si on a
 calculé la performance avec la validation croisée et qu'on a obtenu une
 mesure d'incertitude pour notre performance, on peut utiliser la règle
-du « 1 écart-type». Cette dernière veut qu'on choisisse le modèle le
+du « 1 erreur-type». Cette dernière veut qu'on choisisse le modèle le
 plus simple parmi un ensemble
 \(\mathcal{M}_0 \subset\cdots \subset \mathcal{M}_m\) qui satisfasse
 \begin{align*}
-\widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_i) \leq \min_{m = i+1}^M \widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_m) + \mathsf{sd}\{\widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_m)\}.
+\widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_i) \leq \min_{m = i+1}^M \widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_m) + \mathsf{se}\{\widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_m)\}.
 \end{align*} Autrement dit, on trouve le modèle qui minimise notre
 critère d'erreur et on choisit ensuite le modèle le plus simple qui soit
-à au plus un écart-type de ce modèle. On verra ainsi souvent des barres
-d'erreurs à \(\pm\) un écart-type, comme dans la
+à au plus une erreur-type de ce modèle, comme dans la
+Figure~\ref{fig-vc-1erreurtype}. On verra ainsi souvent des barres
+d'erreurs à \(\pm\) une erreur-type, comme dans la
 Figure~\ref{fig-lassopath}.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics[width=6in,height=\textheight]{figures/fig-validationcroisee-une-erreur-type.png}
+
+}
+
+\caption{\label{fig-vc-1erreurtype}Erreur quadratique moyenne estimée
+par validation croisée à 10 plis, avec une erreur-type. La bande jaune
+indique la zone pour l'estimation de l'erreur quadratique moyenne à au
+plus une erreur-type du modèle qui minimise le critère.}
+
+\end{figure}
+
+Pour rappel, le terme écart-type désigne typiquement la variabilé d'une
+observation, tandis que l'erreur-type d'une statistique représente la
+variabilité de cette quantitée créée en regroupant des observations.
+L'erreur-type de la moyenne de \(K\) observations indépendantes qui ont
+toutes écart-type \(\sigma\) est ainsi \(\sigma/\sqrt{K}\): c'est
+logique puisque la moyenne, basée sur plusieurs observations, est moins
+variable qu'une observation.
+
+Ainsi, si on calcule l'écart-type de l'erreur quadratique moyenne d'un
+des \(K\) plis avec \(n/K\) observations en moyenne, l'erreur-type de
+l'erreur quadratique moyenne globale des \(n\) observations sera
+inférieure d'un facteur \(\sqrt{K}\). Si on réplique la validation
+croisée plusieurs fois avec des divisions aléatoires différentes,
+l'incertitude décroîtra d'autant même si les mesures obtenues ne seront
+pas indépendantes puisqu'elles réutilisent les mêmes observations.
 
 \hypertarget{pruxe9sentation-des-donnuxe9es}{%
 \section{Présentation des
@@ -2411,7 +2439,7 @@ l'origine englobera toutes les autres valeurs de \texttt{x3}, à savoir
   fois. La fonction \texttt{leaps::regsubsets} va quant à elle créer des
   indicateurs binaires.}
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, colframe=quarto-callout-tip-color-frame, colbacktitle=quarto-callout-tip-color!10!white, toptitle=1mm, arc=.35mm, colback=white, bottomrule=.15mm, opacityback=0, opacitybacktitle=0.6, toprule=.15mm, coltitle=black, left=2mm, bottomtitle=1mm, breakable, titlerule=0mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Danger de surajustement avec variables catégorielles}, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-tip-color!10!white, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Danger de surajustement avec variables catégorielles}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-tip-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
 
 La principale cause de mauvaise performance est le surajustement
 sélectif. Dans l'exemple que l'on considère avec la base de données
@@ -2931,184 +2959,6 @@ en fonction de la pénalité (échelle log).}
 
 \end{figure}
 
-\hypertarget{moyenne-de-moduxe8les}{%
-\subsection{Moyenne de modèles}\label{moyenne-de-moduxe8les}}
-
-Il est souvent préférable de combiner plusieurs modèles plutôt que d'en
-choisir un seul. La technique des forêts aléatoires (\emph{random
-forests}) est une des meilleures techniques de prédiction disponibles de
-nos jours. Elle est basée sur cette idée, en combinant plusieurs arbres
-de classification (ou de régression) individuels. C'est une des
-techniques de base en exploitation de données.
-
-Ici, nous allons voir comment cette idée peut être appliquée à notre
-contexte. Toutes les méthodes que nous avons vues jusqu'à maintenant
-font une sélection « rigide » de variables, dans le sens que chaque
-variable est soit sélectionnée pour faire partie du modèle, soit elle ne
-l'est pas. C'est donc tout ou rien pour chaque variable. Il y a beaucoup
-de variabilité associée à une telle forme de sélection. Une variable
-peut avoir été très près d'être choisie, mais elle ne l'a pas été et est
-éliminée complètement. Construire plusieurs modèles et en faire la
-moyenne permet d'adoucir le processus de sélection car une variable peut
-alors être partiellement sélectionnée.
-
-Supposons qu'on dispose de deux échantillons et qu'on fasse une
-sélection de variables séparément pour les deux échantillons, avec l'une
-des approches que nous avons vues jusqu'à maintenant. Il est alors très
-probable qu'on ne va pas avoir exactement les mêmes variables
-sélectionnées pour les deux échantillons. Supposons ensuite qu'on fasse
-la moyenne des coefficients pour les deux modèles. Si une variable,
-disons \(X_1\), a été choisie les deux fois, alors la moyenne des deux
-coefficients devrait estimer en quelque sorte un effet global pour cette
-variable. Si une autre variable, disons \(X_2\), n'a pas été choisie du
-tout pour les deux échantillons, alors la moyenne de ses deux
-coefficients est nulle. Mais si une variable, disons, \(X_3\), a été
-choisie pour seulement l'un des deux échantillons, alors la moyenne de
-ses deux coefficients est la moitié du coefficient pour le modèle dans
-lequel elle a été choisie (car l'autre est zéro). Ainsi, cette variable
-est donc représentée par une « moitié » d'effet dans la moyenne des
-modèles. Donc au lieu d'être totalement là ou totalement absente, elle
-est présente en fonction de sa probabilité d'être sélectionnée. Ceci
-diminue de beaucoup la variabilité engendrée par une sélection « rigide
-» de variables et permet souvent de produire un modèle fort raisonnable.
-
-Le problème est que l'on n'a pas plusieurs échantillons mais un seul.
-Une solution possible est de générer nous-mêmes des échantillons
-différents à partir de l`échantillon original. Cela peut être fait avec
-l'autoamorçage (\emph{bootstrap}). Un échantillon d'autoamorçage est
-tout simplement un échantillon choisi au hasard et \textbf{avec remise}
-dans l'échantillon original. Ainsi, une même observation peut être
-sélectionnée plus d'une fois tandis qu'une autre peut ne pas être
-sélectionnée du tout.
-
-L'idée est alors la suivante :
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi})}
-\tightlist
-\item
-  Générer plusieurs échantillons par autoamorçage nonparamétrique à
-  partir de l`échantillon original.
-\item
-  Faire une sélection de variables pour chaque échantillon.
-\item
-  Faire la moyenne des paramètres de ces modèles.
-\end{enumerate}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Moyenne de modèles}
-\NormalTok{moyenne\_modeles }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(}
-\NormalTok{    data, }
-\NormalTok{    form, }
-    \AttributeTok{aic =} \ConstantTok{FALSE}\NormalTok{, }
-    \AttributeTok{B =}\NormalTok{ 100L,}
-    \AttributeTok{ks =} \DecValTok{2}\NormalTok{)\{}
-\NormalTok{  B }\OtherTok{\textless{}{-}} \FunctionTok{as.integer}\NormalTok{(B)}
-  \FunctionTok{stopifnot}\NormalTok{(}\FunctionTok{is.logical}\NormalTok{(aic),}
-            \FunctionTok{length}\NormalTok{(aic) }\SpecialCharTok{==}\NormalTok{ 1L,}
-            \FunctionTok{inherits}\NormalTok{(form, }\StringTok{"formula"}\NormalTok{),}
-\NormalTok{            B }\SpecialCharTok{\textgreater{}} \DecValTok{1}\NormalTok{,}
-\NormalTok{            ks }\SpecialCharTok{\textgreater{}=} \DecValTok{0}\NormalTok{,}
-            \FunctionTok{inherits}\NormalTok{(data, }\StringTok{"data.frame"}\NormalTok{))}
-\NormalTok{  N }\OtherTok{\textless{}{-}} \FunctionTok{nrow}\NormalTok{(data)}
-  \CommentTok{\# Faire une expansion pour obtenir colonnes}
-\NormalTok{  matmod }\OtherTok{\textless{}{-}} \FunctionTok{model.matrix}\NormalTok{(form, }\AttributeTok{data =}\NormalTok{ data)}
-  \CommentTok{\# Nombre de variables explicatives}
-\NormalTok{  p }\OtherTok{\textless{}{-}} \FunctionTok{ncol}\NormalTok{(matmod) }\SpecialCharTok{{-}}\NormalTok{ 1L}
-  \CommentTok{\# Formule du modèle complet}
-\NormalTok{  fmod }\OtherTok{\textless{}{-}} \FunctionTok{formula}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"y \textasciitilde{}"}\NormalTok{, }\FunctionTok{paste0}\NormalTok{(}\StringTok{"x"}\NormalTok{, }\FunctionTok{seq\_len}\NormalTok{(p), }\AttributeTok{collapse =} \StringTok{"+"}\NormalTok{)))}
-  \CommentTok{\# Sauvegarder les noms}
-\NormalTok{  noms }\OtherTok{\textless{}{-}} \FunctionTok{colnames}\NormalTok{(matmod)}
-\NormalTok{  xnoms }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(}\StringTok{"x"}\NormalTok{, }\FunctionTok{seq\_len}\NormalTok{(p))}
-  \CommentTok{\# Extraire le nom de la variable réponse}
-\NormalTok{  nom\_reponse }\OtherTok{\textless{}{-}} \FunctionTok{all.vars}\NormalTok{(form)[}\FunctionTok{attr}\NormalTok{(}\FunctionTok{terms}\NormalTok{(form), }\StringTok{"response"}\NormalTok{)]}
-  \CommentTok{\# Créer une base de données avec la réponse}
-  \CommentTok{\# moins l\textquotesingle{}ordonnée à l\textquotesingle{}origine}
-\NormalTok{  matmod }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\FunctionTok{cbind}\NormalTok{(}
-    \AttributeTok{y =} \FunctionTok{get}\NormalTok{(nom\_reponse, data), }
-\NormalTok{    matmod[,}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]))}
-  \FunctionTok{colnames}\NormalTok{(matmod) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"y"}\NormalTok{, xnoms)}
-    \CommentTok{\# Contenant pour params/ nb de sélections}
-\NormalTok{  params }\OtherTok{\textless{}{-}}\NormalTok{ nselect }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, p }\SpecialCharTok{+} \DecValTok{1}\NormalTok{)}
-  \FunctionTok{names}\NormalTok{(params) }\OtherTok{\textless{}{-}} 
-    \FunctionTok{names}\NormalTok{(nselect) }\OtherTok{\textless{}{-}} 
-    \FunctionTok{c}\NormalTok{(}\StringTok{"(Intercept)"}\NormalTok{, xnoms)}
-
-  \CommentTok{\# Boucle}
-  \ControlFlowTok{for}\NormalTok{(b }\ControlFlowTok{in} \FunctionTok{seq\_len}\NormalTok{(B))\{}
-    \CommentTok{\# Procédure de sélection avec AIC ou BIC}
-\NormalTok{  modselect }\OtherTok{\textless{}{-}}\NormalTok{ MASS}\SpecialCharTok{::}\FunctionTok{stepAIC}\NormalTok{(}
-    \CommentTok{\# Valeurs de départ}
-    \AttributeTok{object =} \FunctionTok{lm}\NormalTok{(}\AttributeTok{formula =}\NormalTok{ y }\SpecialCharTok{\textasciitilde{}} \DecValTok{1}\NormalTok{,}
-   \CommentTok{\# Rééchantillonner données (avec remplacement)}
-       \AttributeTok{data =}\NormalTok{ matmod[}\FunctionTok{sample.int}\NormalTok{(}\AttributeTok{n =}\NormalTok{ N, }
-                             \AttributeTok{size =}\NormalTok{ N, }
-                             \AttributeTok{replace =} \ConstantTok{TRUE}\NormalTok{),]),}
-    \CommentTok{\# Modèle maximal additif considéré}
-    \AttributeTok{scope =}\NormalTok{ fmod, }
-    \CommentTok{\# pénalité pour critère d\textquotesingle{}information}
-    \CommentTok{\# k = ifelse(aic, 2, log(N)), }
-    \AttributeTok{direction =} \StringTok{"both"}\NormalTok{, }
-    \AttributeTok{trace =} \ConstantTok{FALSE}\NormalTok{,}
-   \AttributeTok{keep =} \ControlFlowTok{function}\NormalTok{(mod, AIC, ...)\{ }
-      \CommentTok{\# autres sorties des modèles à conserver}
-      \FunctionTok{list}\NormalTok{(}\AttributeTok{IC =} \FunctionTok{AIC}\NormalTok{(mod, }\AttributeTok{k =} \FunctionTok{ifelse}\NormalTok{(aic, }\DecValTok{2}\NormalTok{, }\FunctionTok{log}\NormalTok{(N))),}
-           \AttributeTok{coef =} \FunctionTok{coef}\NormalTok{(mod))\},}
-   \AttributeTok{k =}\NormalTok{ ks)}
-\NormalTok{  min\_IC }\OtherTok{\textless{}{-}} \FunctionTok{which.min}\NormalTok{(}\FunctionTok{unlist}\NormalTok{(modselect}\SpecialCharTok{$}\NormalTok{keep[}\StringTok{\textquotesingle{}IC\textquotesingle{}}\NormalTok{,]))}
-\NormalTok{  coefsv }\OtherTok{\textless{}{-}}\NormalTok{ modselect}\SpecialCharTok{$}\NormalTok{keep[}\DecValTok{2}\NormalTok{,min\_IC]}\SpecialCharTok{$}\NormalTok{coef}
-  \CommentTok{\# Trouver quelles colonnes représentent}
-  \CommentTok{\#  un coefficient non{-}nul}
-\NormalTok{  colind }\OtherTok{\textless{}{-}} \FunctionTok{match}\NormalTok{(}\FunctionTok{names}\NormalTok{(coefsv),}
-                  \FunctionTok{names}\NormalTok{(params))}
-  \CommentTok{\# Incrémenter paramètres non{-}nuls}
-\NormalTok{  params[colind] }\OtherTok{\textless{}{-}}\NormalTok{ params[colind] }\SpecialCharTok{+}
-    \FunctionTok{as.numeric}\NormalTok{(coefsv)}
-\NormalTok{  nselect[colind] }\OtherTok{\textless{}{-}}\NormalTok{ nselect[colind] }\SpecialCharTok{+}\NormalTok{ 1L}
-\NormalTok{  \}}
-  
-  \FunctionTok{names}\NormalTok{(nselect) }\OtherTok{\textless{}{-}}\NormalTok{ noms}
-  \FunctionTok{names}\NormalTok{(params) }\OtherTok{\textless{}{-}}\NormalTok{ noms}
-  \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}\AttributeTok{coefs =}\NormalTok{ params }\SpecialCharTok{/}\NormalTok{ B,}
-              \AttributeTok{nselect =}\NormalTok{ nselect[}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{] }\SpecialCharTok{/}\NormalTok{ B))}
-\NormalTok{\}}
-
-
-\CommentTok{\# Moyenne de modèles}
-\CommentTok{\#  procédure séquentielle ascendante (AIC) }
-\CommentTok{\#  sélection de modèle selon BIC}
-\NormalTok{mmodeles }\OtherTok{\textless{}{-}} 
-  \FunctionTok{moyenne\_modeles}\NormalTok{(}
-    \AttributeTok{data =}\NormalTok{ dbm\_a, }
-    \AttributeTok{form =}\NormalTok{ formule,}
-    \AttributeTok{B =}\NormalTok{ 10L,}
-    \AttributeTok{aic =} \ConstantTok{FALSE}\NormalTok{)}
-
-\CommentTok{\# Proportion des variables }
-\CommentTok{\# sélectionnées dans plus d\textquotesingle{}un modèle}
-\FunctionTok{sum}\NormalTok{(mmodeles}\SpecialCharTok{$}\NormalTok{nselect }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{)}
-\CommentTok{\# Nombre moyen de coefficients}
-\FunctionTok{sum}\NormalTok{(mmodeles}\SpecialCharTok{$}\NormalTok{nselect)}
-\CommentTok{\# variables retenues plus de 20\% du temps}
-\FunctionTok{names}\NormalTok{(}\FunctionTok{which}\NormalTok{(mmodeles}\SpecialCharTok{$}\NormalTok{nselect }\SpecialCharTok{\textgreater{}} \FloatTok{0.2}\NormalTok{))}
-\CommentTok{\# moyenne des coefficients}
-\NormalTok{mmodeles}\SpecialCharTok{$}\NormalTok{coefs}
-\end{Highlighting}
-\end{Shaded}
-
-Chaque modèle est construit à l'aide d'un échantillon aléatoire avec
-remise. Utilisez \texttt{set.seed} pour fixer le générateur de nombre
-aléatoire et permettre la reproductibilité
-
-Toutes les méthodes employées jusqu'à maintenant utilise une méthode de
-pénalisation pour déterminer le meilleur modèle. Une alternative avec
-serait de répéter la sélection en utilisant directement l'erreur
-quadratique moyenne estimée à l'aide de la validation croisée comme
-critère de sélection: pour cela, il faudrait ajuster l'ensemble des
-modèles candidats retournés par une procédure exhaustive ou
-séquentielle.
-
 \hypertarget{uxe9valuation-de-la-performance}{%
 \section{Évaluation de la
 performance}\label{uxe9valuation-de-la-performance}}
@@ -3236,7 +3086,7 @@ des parties d'effet par le rétrécissement (\emph{shrinkage}). De récents
 développements théoriques permettent aussi de corriger les
 valeurs-\emph{p} pour faire de l'inférence post-sélection avec le LASSO.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, colframe=quarto-callout-note-color-frame, colbacktitle=quarto-callout-note-color!10!white, toptitle=1mm, arc=.35mm, colback=white, bottomrule=.15mm, opacityback=0, opacitybacktitle=0.6, toprule=.15mm, coltitle=black, left=2mm, bottomtitle=1mm, breakable, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -3263,7 +3113,7 @@ valeurs-\emph{p} pour faire de l'inférence post-sélection avec le LASSO.
   \item
     Porter une attention particulière aux variables binaires et aux
     interactions avec ces dernières: si les effectifs de certaines
-    modalités sont faibles, il y a possible de surajustement.
+    modalités sont faibles, il y a possibilité de surajustement.
   \end{itemize}
 \item
   Le principal critère pour juger de la qualité d'un modèle linéaire est
@@ -3327,10 +3177,6 @@ valeurs-\emph{p} pour faire de l'inférence post-sélection avec le LASSO.
 \item
   On applique le critère de sélection sur la liste de modèles candidats
   pour retenir celui qui donne la meilleure performance.
-\item
-  Pour éviter une sélection rigide, on peut perturber les données et
-  répéter la procédure pour calculer une moyenne de modèles. Cette
-  approche est très coûteuse en calcul.
 \end{itemize}
 
 \end{tcolorbox}
@@ -4147,7 +3993,7 @@ modèles en utilisant des méthodes permettant d'obtenir un bon modèle
 tout en se protégeant contre le surajustement. Certaines de ces méthodes
 (division de l'échantillon, validation croisée) ont déjà été présentées.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, colframe=quarto-callout-note-color-frame, colbacktitle=quarto-callout-note-color!10!white, toptitle=1mm, arc=.35mm, colback=white, bottomrule=.15mm, opacityback=0, opacitybacktitle=0.6, toprule=.15mm, coltitle=black, left=2mm, bottomtitle=1mm, breakable, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -5222,7 +5068,7 @@ modèle & no. variables & pt. coupure &  sensibilité & taux bonne classif. & pr
 (d) & 28 & 0.15 & 0.526 & 0.788 & 970269\\
 (e) & 8 & 0.17 & 0.5265 & 0.788 & 978226\\
 \addlinespace
-(f) & 9 & 0.19 & 0.5455 & 0.8 & 960225\\
+(f) & 10 & 0.14 & 0.4986 & 0.767 & 976332\\
 (g) & 13 & 0.01 & 0.237 & 0.254 & 623345\\
 \bottomrule
 \end{tabular}
@@ -5397,7 +5243,7 @@ Nous reviendrons une dernière fois sur cet exemple dans le chapitre
 traitant des données manquantes. Nous verrons alors comment procéder si
 des valeurs manquantes sont présentes dans les variables explicatives.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, colframe=quarto-callout-note-color-frame, colbacktitle=quarto-callout-note-color!10!white, toptitle=1mm, arc=.35mm, colback=white, bottomrule=.15mm, opacityback=0, opacitybacktitle=0.6, toprule=.15mm, coltitle=black, left=2mm, bottomtitle=1mm, breakable, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -5990,7 +5836,7 @@ la valeur-\(p\), infime, indique que le modèle plus complexe, soit le
 modèle saturé, est préférable. Cela nous indique que le modèle a un
 piètre pouvoir explicatif.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, colframe=quarto-callout-note-color-frame, colbacktitle=quarto-callout-note-color!10!white, toptitle=1mm, arc=.35mm, colback=white, bottomrule=.15mm, opacityback=0, opacitybacktitle=0.6, toprule=.15mm, coltitle=black, left=2mm, bottomtitle=1mm, breakable, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -6649,7 +6495,7 @@ gardant en tête que cela réduit la taille de l'échantillon disponible et
 que l'estimation résultante est possiblement trop incertaine pour être
 utile.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, colframe=quarto-callout-note-color-frame, colbacktitle=quarto-callout-note-color!10!white, toptitle=1mm, arc=.35mm, colback=white, bottomrule=.15mm, opacityback=0, opacitybacktitle=0.6, toprule=.15mm, coltitle=black, left=2mm, bottomtitle=1mm, breakable, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -7673,7 +7519,7 @@ du paquet \texttt{survival} offre des détails sur l'implémentation des
 méthodes qui traitent de l'inclusion de variables explicatives dont la
 valeur change dans le temps et sur les risques compétitifs.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, colframe=quarto-callout-note-color-frame, colbacktitle=quarto-callout-note-color!10!white, toptitle=1mm, arc=.35mm, colback=white, bottomrule=.15mm, opacityback=0, opacitybacktitle=0.6, toprule=.15mm, coltitle=black, left=2mm, bottomtitle=1mm, breakable, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -8255,7 +8101,7 @@ contenant les vecteurs propres. La meilleure approximation de rang
 \(\boldsymbol{q}_1, \ldots, \boldsymbol{q}_k \in \mathbb{R}^p\) non
 corrélés.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, colframe=quarto-callout-note-color-frame, colbacktitle=quarto-callout-note-color!10!white, toptitle=1mm, arc=.35mm, colback=white, bottomrule=.15mm, opacityback=0, opacitybacktitle=0.6, toprule=.15mm, coltitle=black, left=2mm, bottomtitle=1mm, breakable, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -8971,7 +8817,7 @@ quatre facteurs) et échelles. }\tabularnewline
 \end{tabular}
 \end{table}
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, colframe=quarto-callout-tip-color-frame, colbacktitle=quarto-callout-tip-color!10!white, toptitle=1mm, arc=.35mm, colback=white, bottomrule=.15mm, opacityback=0, opacitybacktitle=0.6, toprule=.15mm, coltitle=black, left=2mm, bottomtitle=1mm, breakable, titlerule=0mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes de l'analyse factorielle exploratoire}, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-tip-color!10!white, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes de l'analyse factorielle exploratoire}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-tip-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -8993,7 +8839,7 @@ quatre facteurs) et échelles. }\tabularnewline
 
 \end{tcolorbox}
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, colframe=quarto-callout-note-color-frame, colbacktitle=quarto-callout-note-color!10!white, toptitle=1mm, arc=.35mm, colback=white, bottomrule=.15mm, opacityback=0, opacitybacktitle=0.6, toprule=.15mm, coltitle=black, left=2mm, bottomtitle=1mm, breakable, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -9075,7 +8921,7 @@ Pour créer les regroupements, on utilisera \(p\) variables explicatives
 dénotera la valeur de la \(j\)e variable explicative pour le \(i\)e
 sujet.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, colframe=quarto-callout-tip-color-frame, colbacktitle=quarto-callout-tip-color!10!white, toptitle=1mm, arc=.35mm, colback=white, bottomrule=.15mm, opacityback=0, opacitybacktitle=0.6, toprule=.15mm, coltitle=black, left=2mm, bottomtitle=1mm, breakable, titlerule=0mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes d'une analyse de regroupements}, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-tip-color!10!white, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes d'une analyse de regroupements}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-tip-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -10843,7 +10689,7 @@ d'observations). Si la segmentation n'est pas satisfaisante, on retourne
 calibration des hyperparamètres jusqu'à ce qu'on soit satisfaits du
 résultat.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, colframe=quarto-callout-note-color-frame, colbacktitle=quarto-callout-note-color!10!white, toptitle=1mm, arc=.35mm, colback=white, bottomrule=.15mm, opacityback=0, opacitybacktitle=0.6, toprule=.15mm, coltitle=black, left=2mm, bottomtitle=1mm, breakable, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -11451,7 +11297,7 @@ aussi significatif, alors qu'il ne l'était plus si on retirait les
 manquantes. Il est peu probable que les données soit \(\mathsf{MCAR}\)
 et donc les résultats de l'analyse des cas complets seraient biaisés.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, colframe=quarto-callout-note-color-frame, colbacktitle=quarto-callout-note-color!10!white, toptitle=1mm, arc=.35mm, colback=white, bottomrule=.15mm, opacityback=0, opacitybacktitle=0.6, toprule=.15mm, coltitle=black, left=2mm, bottomtitle=1mm, breakable, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -11547,10 +11393,7 @@ Proportional Hazards?}''} \emph{JAMA} 323 (14): 1401--2.
 \bookmarksetup{startatroot}
 
 \hypertarget{regression-lineaire}{%
-\chapter*{Régression linéaire}\label{regression-lineaire}}
-\addcontentsline{toc}{chapter}{Régression linéaire}
-
-\markboth{Régression linéaire}{Régression linéaire}
+\chapter{Régression linéaire}\label{regression-lineaire}}
 
 Les modèles de régression servent à modéliser la moyenne\footnote{Formellement,
   on parle d'espérance conditionnelle, ou moyenne théorique, en
