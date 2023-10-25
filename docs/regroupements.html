@@ -249,7 +249,6 @@ div.csl-indent {
   <li><a href="#k-médoides" id="toc-k-médoides" class="nav-link" data-scroll-target="#k-médoides"><span class="header-section-number">7.5.2</span> <span class="math inline">\(K\)</span>-médoides</a></li>
   <li><a href="#mélange-de-modèles" id="toc-mélange-de-modèles" class="nav-link" data-scroll-target="#mélange-de-modèles"><span class="header-section-number">7.5.3</span> Mélange de modèles</a></li>
   <li><a href="#regroupements-hiérarchiques" id="toc-regroupements-hiérarchiques" class="nav-link" data-scroll-target="#regroupements-hiérarchiques"><span class="header-section-number">7.5.4</span> Regroupements hiérarchiques</a></li>
-  <li><a href="#méthodes-basées-sur-la-densité" id="toc-méthodes-basées-sur-la-densité" class="nav-link" data-scroll-target="#méthodes-basées-sur-la-densité"><span class="header-section-number">7.5.5</span> Méthodes basées sur la densité</a></li>
   </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">7.6</span> Conclusion</a></li>
   </ul>
@@ -1122,64 +1121,75 @@ f_{k}(\boldsymbol{X}_i,
 <li>le nombre de groupes n’a pas à être spécifié apriori (une seule estimation)</li>
 <li>le coût de calcul est prohibitif, avec une complexité quadratique de <span class="math inline">\(\mathrm{O}(n^2)\)</span> pour la méthode de liaison simple et autrement <span class="math inline">\(\mathrm{O}(n^3)\)</span> pour la plupart des autres fonctions de liaison.</li>
 </ul>
-</section>
-</section>
-<section id="méthodes-basées-sur-la-densité" class="level3" data-number="7.5.5">
-<h3 data-number="7.5.5" class="anchored" data-anchor-id="méthodes-basées-sur-la-densité"><span class="header-section-number">7.5.5</span> Méthodes basées sur la densité</h3>
-<p>L’algorithme DBSCAN (<em>density-based spatial clustering of applications with noise</em>) est une méthode de partitionnement basée sur la densité des points. L’idée de base de l’algorithme est de tracer une boule de rayon <span class="math inline">\(\epsilon\)</span> autour de chaque observation et de voir si elle inclut d’autres observations. L’algorithme contient deux hyperparamètres: le rayon <span class="math inline">\(\epsilon\)</span> et <span class="math inline">\(M\)</span>, le nombre minimal de points pour former un regroupement. L’algorithme classe les observations en trois catégories: aberrance, point central et point frontière.</p>
-<ul>
-<li>Un point central est une observation qui possède <span class="math inline">\(M-1\)</span> voisins à distance <span class="math inline">\(\epsilon\)</span>.</li>
-<li>Un point périphérique est un point qui est distant de moins de <span class="math inline">\(\epsilon\)</span> d’un point central, sans en être un.</li>
-<li>Un point isolé est une observation qui n’est pas rattachée à aucun regroupement.</li>
-</ul>
-<p>L’algorithme répète les étapes suivantes jusqu’à ce que chaque observation ait été visitée.</p>
-<ol type="1">
-<li>Choisir un point aléatoirement parmi ceux qui n’ont pas été visités.</li>
-<li>Si le point n’est pas étiqueté, calculer le nombre de points voisins qui se trouvent dans un rayon <span class="math inline">\(\epsilon\)</span>: s’il y a moins de <span class="math inline">\(M\)</span> observations, provisoirement étiqueter l’observation comme point isolé, sinon comme point central.</li>
-<li>Si l’observation est un point central avec <span class="math inline">\(M-1\)</span> voisins ou plus, créer un regroupement.</li>
-<li>Étiqueter chaque point à distance <span class="math inline">\(\epsilon\)</span> créé et l’ajouter au regroupement s’il a un point central comme voisin.</li>
-</ol>
-<p><a href="https://www.naftaliharris.com/blog/visualizing-dbscan-clustering/">Ce site web</a> offre une visualisation interactive des différentes étapes de l’algorithme et de comparer la performance de DBSCAN selon le type de regroupements.</p>
+
 <!--
-Avec une mesure de dissemblance, on peut créer une matrice qui pour chaque paire de points indique si l'observation est à distance au plus $\epsilon$: cela permet de créer un graphe où chaque observation est un noeud et où il y a une arête entre deux noeuds si la distance entre les deux observations est inférieure à $\epsilon$.
+
+### Méthodes basées sur la densité
+
+L'algorithme DBSCAN (*density-based spatial clustering of applications with noise*) est une méthode de partitionnement basée sur la densité des points. L'idée de base de l'algorithme est de tracer une boule de rayon $\epsilon$ autour de chaque observation et de voir si elle inclut d'autres observations. L'algorithme contient deux hyperparamètres: le rayon $\epsilon$ et $M$, le  nombre minimal de points pour former un regroupement.
+L'algorithme classe les observations en trois catégories: aberrance, point central et point frontière. 
+
+- Un point central est une observation qui possède $M-1$ voisins à distance $\epsilon$.
+- Un point périphérique est un point qui est distant de moins de $\epsilon$ d'un point central, sans en être un. 
+- Un point isolé est une observation qui n'est pas rattachée à aucun regroupement. 
+
+
+L'algorithme répète les étapes suivantes jusqu'à ce que chaque observation ait été visitée.
+
+1. Choisir un point aléatoirement parmi ceux qui n'ont pas été visités.
+2. Si le point n'est pas étiqueté, calculer le nombre de points voisins qui se trouvent dans un rayon $\epsilon$: s'il y a moins de $M$ observations, provisoirement étiqueter l'observation comme point isolé, sinon comme point central.
+3. Si l'observation est un point central avec $M-1$ voisins ou plus, créer un regroupement.
+4. Étiqueter chaque point à distance $\epsilon$ créé et l'ajouter au regroupement s'il a un point central comme voisin.
+
+[Ce site web](https://www.naftaliharris.com/blog/visualizing-dbscan-clustering/) offre une visualisation interactive des différentes étapes de  l'algorithme et de comparer la performance de DBSCAN selon le type de regroupements.
+
+
+Puisque chaque point est visité à tour de rôle et comparé aux autres pour trouver les plus proches voisins, la complexité brute est $\mathrm{O}(n^2)$ mais une implémentation efficace permet de réduire ce coût. Le coût pour l'allocation de la mémoire linéaire de $\mathrm{O}(n)$.
+
+Voici quelques caractéristiques de DBSCAN:
+
+- le traitement des aberrances est automatique et l'algorithme est robuste.
+- le nombre de regroupements n'a pas à être spécifié apriori. 
+- la forme des regroupements est arbitraire, peut être non convexe et de taille différente.
+- la complexité de l'algorithme est d'au mieux $\Omega(n^{4/3})$.
+- les hyperparamètres ont une interprétation physique, mais leur choix n'est pas aisé
+- DBSCAN ne permet pas de traiter le cas où la densité des regroupements change et risque de fusionner des regroupements s'il y a une série d'observations qui permet de relier deux regroupements.
+- comme la plupart des algorithmes, le voisinage des points devient épars quand $p$ augmente en raison du fléau de la dimension.
+
+
+
+::: {.cell hash='regroupements_cache/html/fig-dbscan1_8418af57bfd21e857d2bf071a076e60d'}
+::: {.cell-output-display}
+![Illustration de la classification des points avec DBSCAN: toutes les observations sont assignées à un regroupement, moins une aberrance.](regroupements_files/figure-html/fig-dbscan1-1.png){#fig-dbscan1 width=576}
+:::
+:::
+
+::: {.cell hash='regroupements_cache/html/unnamed-chunk-32_93c989973b7369592d1ad044e0304134'}
+
+:::
+
+
+#### Choix des hyperparamètres
+
+
+Les deux paramètres, $M$ et $\epsilon$, sont positivement corrélés: si on augmente le nombre minimal de point $M$ par regroupement, il faudra également augmenter le rayon $\epsilon$ pour éviter d'avoir un nombre trop élevé de points isolés étiquetés comme points isolés ou comme aberrances.
+
+Pour spécifier le nombre minimal d'observations voisines $M$ pour créer un point central, il faut aussi considérer la dimension $p$ des variables explicatives: la recommandation est de requérir au moins $p+1$ points dans le voisinage. Le choix du rayon peut être plus difficile à déterminer: . Une option est de fixer le nombre de plus proches voisins $M$ et de considérer la distance entre chaque observation et ses plus proches voisins: au sein d'un regroupement, on s'attend à ce que cette distance soit petite. Cela permettra également de déterminer un seuil acceptable pour $\epsilon$ pour éviter que trop d'observations soient isolées. 
+
+
+La fonction `kNNdistplot` du paquet `dbscan` permet de tracer un graphique de la distance moyenne des $k$ plus proches voisins pour chaque observation: en prenant $k=M-1$, on peut calculer la distance entre le $k$ plus proche voisin de chaque observation et ordonner ces distances. La recommandation est de choisir $\epsilon$ en prenant une distance où la plupart des observations ne sont pas voisines (critère du coude).
+
+
+::: {.cell hash='regroupements_cache/html/fig-dbscan2_397391a85712aab61e1a08c992d929e2'}
+::: {.cell-output-display}
+![Graphique des distances entre chaque observation et son troisième plus proche voisin (gauche), en fonction du pourcentage d'observations à moins de cette distance et regroupements obtenus avec DBSCAN avec $M=10$ et $\epsilon=1.1$ (droite).](regroupements_files/figure-html/fig-dbscan2-1.png){#fig-dbscan2 width=672}
+:::
+:::
+
+
+Une variante de l'algorithme DBSCAN, intitulée OPTICS, est plus coûteuse mais permet de gérer le cas de regroupements de densités variables en évitant la spécification de $\epsilon$.
+
 -->
-<p>Puisque chaque point est visité à tour de rôle et comparé aux autres pour trouver les plus proches voisins, la complexité brute est <span class="math inline">\(\mathrm{O}(n^2)\)</span> mais une implémentation efficace permet de réduire ce coût. Le coût pour l’allocation de la mémoire linéaire de <span class="math inline">\(\mathrm{O}(n)\)</span>.</p>
-<p>Voici quelques caractéristiques de DBSCAN:</p>
-<ul>
-<li>le traitement des aberrances est automatique et l’algorithme est robuste.</li>
-<li>le nombre de regroupements n’a pas à être spécifié apriori.</li>
-<li>la forme des regroupements est arbitraire, peut être non convexe et de taille différente.</li>
-<li>la complexité de l’algorithme est d’au mieux <span class="math inline">\(\Omega(n^{4/3})\)</span>.</li>
-<li>les hyperparamètres ont une interprétation physique, mais leur choix n’est pas aisé</li>
-<li>DBSCAN ne permet pas de traiter le cas où la densité des regroupements change et risque de fusionner des regroupements s’il y a une série d’observations qui permet de relier deux regroupements.</li>
-<li>comme la plupart des algorithmes, le voisinage des points devient épars quand <span class="math inline">\(p\)</span> augmente en raison du fléau de la dimension.</li>
-</ul>
-<div class="cell" data-hash="regroupements_cache/html/fig-dbscan1_8418af57bfd21e857d2bf071a076e60d">
-<div class="cell-output-display">
-<div id="fig-dbscan1" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="regroupements_files/figure-html/fig-dbscan1-1.png" class="img-fluid figure-img" width="576"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.18: Illustration de la classification des points avec DBSCAN: toutes les observations sont assignées à un regroupement, moins une aberrance.</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<section id="choix-des-hyperparamètres-1" class="level4" data-number="7.5.5.1">
-<h4 data-number="7.5.5.1" class="anchored" data-anchor-id="choix-des-hyperparamètres-1"><span class="header-section-number">7.5.5.1</span> Choix des hyperparamètres</h4>
-<p>Les deux paramètres, <span class="math inline">\(M\)</span> et <span class="math inline">\(\epsilon\)</span>, sont positivement corrélés: si on augmente le nombre minimal de point <span class="math inline">\(M\)</span> par regroupement, il faudra également augmenter le rayon <span class="math inline">\(\epsilon\)</span> pour éviter d’avoir un nombre trop élevé de points isolés étiquetés comme points isolés ou comme aberrances.</p>
-<p>Pour spécifier le nombre minimal d’observations voisines <span class="math inline">\(M\)</span> pour créer un point central, il faut aussi considérer la dimension <span class="math inline">\(p\)</span> des variables explicatives: la recommandation est de requérir au moins <span class="math inline">\(p+1\)</span> points dans le voisinage. Le choix du rayon peut être plus difficile à déterminer: . Une option est de fixer le nombre de plus proches voisins <span class="math inline">\(M\)</span> et de considérer la distance entre chaque observation et ses plus proches voisins: au sein d’un regroupement, on s’attend à ce que cette distance soit petite. Cela permettra également de déterminer un seuil acceptable pour <span class="math inline">\(\epsilon\)</span> pour éviter que trop d’observations soient isolées.</p>
-<p>La fonction <code>kNNdistplot</code> du paquet <code>dbscan</code> permet de tracer un graphique de la distance moyenne des <span class="math inline">\(k\)</span> plus proches voisins pour chaque observation: en prenant <span class="math inline">\(k=M-1\)</span>, on peut calculer la distance entre le <span class="math inline">\(k\)</span> plus proche voisin de chaque observation et ordonner ces distances. La recommandation est de choisir <span class="math inline">\(\epsilon\)</span> en prenant une distance où la plupart des observations ne sont pas voisines (critère du coude).</p>
-<div class="cell" data-hash="regroupements_cache/html/fig-dbscan2_397391a85712aab61e1a08c992d929e2">
-<div class="cell-output-display">
-<div id="fig-dbscan2" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="regroupements_files/figure-html/fig-dbscan2-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.19: Graphique des distances entre chaque observation et son troisième plus proche voisin (gauche), en fonction du pourcentage d’observations à moins de cette distance et regroupements obtenus avec DBSCAN avec <span class="math inline">\(M=10\)</span> et <span class="math inline">\(\epsilon=1.1\)</span> (droite).</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>Une variante de l’algorithme DBSCAN, intitulée OPTICS, est plus coûteuse mais permet de gérer le cas de regroupements de densités variables en évitant la spécification de <span class="math inline">\(\epsilon\)</span>.</p>
 </section>
 </section>
 </section>

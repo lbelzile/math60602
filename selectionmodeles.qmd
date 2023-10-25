@@ -308,6 +308,7 @@ ggplot(data = EQMdat, aes(x=ordre, y=EQM, color=echantillon)) +
                      
 ```
 
+
 On voit clairement dans la @fig-plotEQMa que l'$\widehat{\mathsf{EQM}}_a$ diminue en fonction de l'ordre sur l'échantillon d'apprentissage: plus le modèle est complexe, plus l'erreur observée sur l'échantillon d'apprentissage est petite. La courbe $\mathsf{EQM}$ donne l'heure juste, car il s'agit d'une estimation de la performance réelle des modèles sur de nouvelles données. On voit que le meilleur modèle est donc le modèle cubique ($k=3$),  ce qui n'est pas surprenant puisqu'il s'agit du modèle que utilisé pour générer les données. On peut aussi remarquer d'autres éléments intéressants. Premièrement, on obtient un bon gain en performance ($\mathsf{EQM}$) en passant de l'ordre $2$ à l'ordre $3$. Ensuite, la perte de performance en passant de l'ordre $3$ à $4$, et ensuite à des ordres supérieurs n'est pas si sévère, même si elle est présente. Cela illustre empiriquement qu'il est préférable d'avoir un modèle un peu trop complexe que d'avoir un modèle trop simple. Il serait beaucoup plus grave pour la performance de choisir le modèle avec $k=2$ que celui avec $k=4$.
 
 En pratique par contre, on n'a pas accès à la population : les 100 000 observations qui ont servi à estimer l'$\mathsf{EQM}$ théorique ne seront pas disponible. Si on a seulement l'échantillon d'apprentissage, soit 100 observations dans notre exemple, comment faire alors pour choisir le bon modèle? C'est ce que nous verrons à partir de la section suivante.
@@ -537,7 +538,7 @@ lmkfold <- function(formula, data, k, ...){
       # Extraire les indices des observations de la portion validation
       g <- as.integer(unlist(folds[i]))
       # Ajuster le modèles à toutes les données, 
-      moins celles de la portion validation
+      #  moins celles de la portion validation
       fitlm <- lm(formula, data = data[-g,])
       # ajouter l'erreur quadratique du pli de validation
       accu <- accu + 
@@ -573,7 +574,9 @@ Revenons à notre exemple où une seule variable explicative est disponible et o
 
 
 
-Le modèle cubique (ordre 3) est aussi choisi par la validation croisée, en moyenne (comme il l'était par le $\mathsf{AIC}$ et le $\mathsf{BIC}$). Le graphe qui suit trace les valeurs de l'estimation par validation croisée (courbe de validation croisée) et aussi le $\mathsf{EQM}$. On voit que l'estimation par validation croisée suit assez bien la forme du $\mathsf{EQM}$ (qu'il est supposé estimer). Les boîtes à moustache de la @fig-plotcv permettent d'apprécier la variabilité des estimés de l'erreur quadratique moyenne telles qu'estimée par validation croisée avec 10 groupes.
+Le modèle cubique (ordre 3) est aussi choisi par la validation croisée, en moyenne (comme il l'était par le $\mathsf{AIC}$ et le $\mathsf{BIC}$). Le graphe qui suit trace les valeurs de l'estimation par validation croisée (courbe de validation croisée) et aussi le $\mathsf{EQM}$. On voit que l'estimation par validation croisée suit assez bien la forme du $\mathsf{EQM}$ (qu'il est supposé estimer). 
+
+Pour obtenir la @fig-plotcv, j'ai répété 100 fois la procédure de validation croisée, ce qui me permet d'obtenir 100 estimations pour chaque value de $k$. Les boîtes à moustache donnent une idée de la répartition et permettent d'apprécier la variabilité des estimés de l'erreur quadratique moyenne. 
 
 ```{r}
 #| label: fig-plotcv
@@ -595,7 +598,7 @@ ggplot(data = EQMdat, aes(x=ordre, y=EQM)) +
                show.legend = FALSE,
                outlier.shape=NA) +
   #geom_line(aes(color=color=echantillon)) +
-  geom_point(aes(shape=echantillon, color=echantillon)) +
+  # geom_point(aes(shape=echantillon, color=echantillon)) +
   labs( x = "ordre du polynôme",
      y = "erreur quadratique moyenne")  +
   scale_color_manual(values=c("#E69F00", "#56B4E9")) +
@@ -617,13 +620,14 @@ Autrement dit, on trouve le modèle qui minimise notre critère d'erreur et on c
 #| eval: true
 #| echo: false
 #| label: fig-vc-1erreurtype
-#| fig-cap: "Erreur quadratique moyenne estimée par validation croisée à 10 plis, avec une erreur-type. La bande jaune indique la zone pour l'estimation de l'erreur quadratique moyenne à au plus une erreur-type du modèle qui minimise le critère."
+#| fig-cap: "Erreur quadratique moyenne estimée par validation croisée à 10 plis, avec une erreur-type. La bande jaune indique les valeurs de l'erreur quadratique moyenne à une erreur-type du modèle qui minimise le critère pour les modèles plus simples."
 knitr::include_graphics("figures/fig-validationcroisee-une-erreur-type.png")
 ```
-Pour rappel, le terme écart-type désigne typiquement la variabilé d'une observation, tandis que l'erreur-type d'une statistique représente la variabilité de cette quantitée créée en regroupant des observations. L'erreur-type de la moyenne de $K$ observations indépendantes qui ont toutes écart-type $\sigma$ est ainsi $\sigma/\sqrt{K}$: c'est logique puisque la moyenne, basée sur plusieurs observations, est moins variable qu'une observation.
+Pour rappel, le terme écart-type désigne typiquement la variabilité d'une observation, tandis que l'erreur-type d'une statistique représente la variabilité de cette quantitée créée en regroupant des observations. L'erreur-type de la moyenne de $K$ observations indépendantes qui ont toutes écart-type $\sigma$ est ainsi $\sigma/\sqrt{K}$: c'est logique puisque la moyenne, basée sur plusieurs observations, est moins variable qu'une observation.
 
 Ainsi, si on calcule l'écart-type de l'erreur quadratique moyenne d'un des $K$ plis avec $n/K$ observations en moyenne, l'erreur-type de l'erreur quadratique moyenne globale des $n$ observations sera inférieure d'un facteur $\sqrt{K}$. Si on réplique la validation croisée plusieurs fois avec des divisions aléatoires différentes, l'incertitude décroîtra d'autant même si les mesures obtenues ne seront pas indépendantes puisqu'elles réutilisent les mêmes observations.
 
+Si on veut appliquer la règle d'une , on commence par trouver la modèle avec la meilleure performance, puis on considère tous les modèles plus simples (ici avec moins de coefficients, à gauche dans la @fig-vc-1erreurtype). On sélectionne le plus simple parmi cet ensemble pourvu que son estimation soit dans la bande jaune qui représente un surenchérissement sur la valeur la plus petite pour l'erreur quadratique moyenne.
 
 ## Présentation des données
 
@@ -1066,7 +1070,7 @@ npars_c[1:3] <- with(resume_rec_ex,
              c(
   sum(which[nrow(which),]),
   sum(which[min_AIC,]),
-  sum(which[min_BIC,])))
+  sum(which[min_BIC,]))-1)
 
 eval_EQM_valid <- function(
     model, 
@@ -1448,7 +1452,7 @@ La pénalité $q_1(\lambda)$ a un rôle particulier parce qu'elle a deux effets:
 \min_{\boldsymbol{\beta}} \{\mathsf{SCE} + q_1(\lambda)\} = \min_{\boldsymbol{\beta}}  \left\{\sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^pX_{ij}\beta_{j}\right)^2 +
 \lambda \sum_{j=1}^p |\beta_j|\right\}
 \end{align*}
-laquelle est appelée LASSO. La  @fig-lassopenalty montre la fonction objective dans le cas où on a deux paramètres, $\beta_1$ et $\beta_2$. La solution des moindres carrés ordinaires, qui minimisent l'erreur quadratique moyenne, est au centre des ellipses de contour et correspond à la solution du modèle avec $\lambda=0$. À mesure que l'on augmente la pénalité $\lambda$, les coefficients rétrécissent vers $(0, 0)$. On peut interpréter la pénalité $l_1$ comme une contraire budgétaire: les coefficients estimés pour une valeur de $\lambda$ donnée sont ceux qui minimisent la somme du carré des erreurs, mais doivent être à l'intérieur d'un budget alloué (losange). La forme de la région fait en sorte que la solution, qui se trouve sur la bordure du losange, intervient dans un coin avec certaines coordonnées nulles.
+laquelle est appelée LASSO. La  @fig-lassopenalty montre la fonction objective (lignes de contour) dans le cas où on a deux paramètres, $\beta_1$ et $\beta_2$: chaque point représente une solution différente au problème, selon la valeur de la pénalité, allant de la solution des moindres carrés ordinaires, qui minimisent l'erreur quadratique moyenne, au centre des ellipses et correspondant à la solution du modèle avec $\lambda=0$, à la pénalité infinie qui réduit le modèle à l'ordonnée à l'origine. À mesure que l'on augmente la pénalité $\lambda$, les coefficients rétrécissent vers $(0, 0)$. On peut interpréter la pénalité $l_1$ comme une contraire budgétaire: les coefficients estimés pour une valeur de $\lambda$ donnée sont ceux qui minimisent la somme du carré des erreurs, mais doivent être à l'intérieur d'un budget alloué (losange). La forme de la région fait en sorte que la solution, qui se trouve sur la bordure du losange, intervient souvent dans un coin avec certaines coordonnées nulles. Par analogie, pensez à une course qui démarre à l'origine et dont l'objectif est d'atteindre, en le moins de temps possible, le point le plus élevé possible. Si le temps est limité (contrainte due à la pénalité), nous aurons moins de temps pour parcourir et on coupera au plus court. Sans contrainte de temps, on peut atteindra le sommet de la montagne correspond à la solution optimale. Les points représentent le tracé qui permet d'obtenir le gain en dénivelé le plus rapide, en quelque sorte. Les losanges représentent la distance maximale qu'on peut parcourir selon la valeur de $\lambda$.
 
 
 ```{r}
@@ -1482,7 +1486,7 @@ a <- glmnet::glmnet(x = X, y = y, lambda = seq(0, 1, by = 0.05))
 ggplot(df) + theme_classic() +
   stat_contour(aes(beta1, beta2, z = sse),
                breaks = round(quantile(df$sse, seq(0, 0.5, 0.05)), 0),
-               size = 0.5, color = "grey", alpha = 0.8
+               linewidth = 0.5, color = "grey", alpha = 0.8
   ) +
   scale_x_continuous(limits = c(-0.5, 1.5)) +
   scale_y_continuous(limits = c(-0.5, 1.5)) +
@@ -1542,7 +1546,7 @@ pred <- predict(lasso_best,
 eqm_lasso <- mean((pred - dbm_a$ymontant)^2)
 ```
 
-Le graphique de la @fig-lassopath montre l'évolution de l'erreur quadratique moyenne estimée en fonction du logarithme naturel de la pénalité (axe des abscisses). Comme plusieurs pénalités sont dans la marge d'erreurs, on choisit le première modèle à un erreur-type de la valeur minimale.
+Le graphique de la @fig-lassopath montre l'évolution de l'erreur quadratique moyenne estimée en fonction du logarithme naturel de la pénalité (axe des abscisses). Pour chaque valeur de la pénalité, le diagramme donne le nombre de coefficients non-nuls (en haut sur le graphique) et la valeur estimée par validation croisée à 10 groupes de l'erreur quadratique moyenne, plus ou moins une erreur-type. Contrairement aux graphiques précédents, les modèles plus simples correspondent à des valeurs de pénalité plus élevée (vers la droite sur le graphique): ainsi, la règle d'une erreur-type revient à prendre un modèle avec une pénalité plus élevée que le modèle qui minimise l'erreur quadratique moyenne, donc à diminuer les coefficients et potentiellement le nombre de coefficients non-nuls.
 
 ```{r}
 #| label: fig-lassopath

@@ -699,7 +699,7 @@ R^2=\{\mathsf{cor}(\boldsymbol{y}, \widehat{\boldsymbol{y}})\}^2 = 1-\frac{\math
 </div>
 </div>
 <p>La validation croisée est coûteuse parce qu’on doit ajuster <span class="math inline">\(K\)</span> fois le modèles. On recommande habituellement de prendre <span class="math inline">\(K=\min\{n^{1/2}, 10\}\)</span> groupes (le choix de cinq ou 10 groupes sont ceux qui revient le plus souvent en pratique). Si on prend <span class="math inline">\(K=10\)</span> groupes, alors chaque modèle est estimé avec 90% des données et on prédit ensuite le 10% restant. Comme on passe en boucle les 10 parties, chaque observation est prédite une et une seule fois à la fin. Il est important de souligner que les groupes sont formés de façon aléatoire et donc que l’estimé que l’on obtient peut être très variable, surtout si la taille de l’échantillon d’apprentissage est petite. Il arrive également que le modèle ajusté sur un groupe ne puisse pas être utilisé pour prédire les observations mises de côté, notamment si des variables catégorielles sont présentes mais qu’une modalité n’est présente que dans un des groupes; ce problème se présente en pratique si certaines classes ont peu d’observations. Un échantillonnage stratifié permet de pallier à cette lacune et de s’assurer d’une répartition plus homogène des variables catégorielles.</p>
-<div class="cell" data-hash="selectionmodeles_cache/html/validation-croisée_0633a9e4527799d0ee872b48c9dd1902">
+<div class="cell" data-hash="selectionmodeles_cache/html/validation-croisée_ccefef85abbcf94dfc3de5ff8d59f315">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Validation croisée avec k groupes</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>lmkfold <span class="ot">&lt;-</span> <span class="cf">function</span>(formula, data, k, ...){</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Créer un accumulateur pour le calcul de l'EQM</span></span>
@@ -714,7 +714,7 @@ R^2=\{\mathsf{cor}(\boldsymbol{y}, \widehat{\boldsymbol{y}})\}^2 = 1-\frac{\math
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Extraire les indices des observations de la portion validation</span></span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>      g <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">unlist</span>(folds[i]))</span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Ajuster le modèles à toutes les données, </span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>      moins celles de la portion validation</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>      <span class="co">#  moins celles de la portion validation</span></span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>      fitlm <span class="ot">&lt;-</span> <span class="fu">lm</span>(formula, <span class="at">data =</span> data[<span class="sc">-</span>g,])</span>
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>      <span class="co"># ajouter l'erreur quadratique du pli de validation</span></span>
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>      accu <span class="ot">&lt;-</span> accu <span class="sc">+</span> </span>
@@ -742,8 +742,9 @@ R^2=\{\mathsf{cor}(\boldsymbol{y}, \widehat{\boldsymbol{y}})\}^2 = 1-\frac{\math
 \mathsf{sd}(\widehat{\mathsf{EQM}}_{\text{VC}}) = \frac{1}{K-1} \sum_{k=1}^{K} (\widehat{\mathsf{EQM}}_{\text{VC}, k}-\widehat{\mathsf{EQM}}_{\text{VC}})^2.
 \end{align*}\]</span></p>
 <p>Revenons à notre exemple où une seule variable explicative est disponible et où l’on cherche à déterminer un bon modèle polynomial. La dernière colonne de <a href="#tbl-polynome-ajustement">Tableau&nbsp;<span>3.3</span></a>, <span class="math inline">\(\mathsf{VC}_{10}\)</span>, donne les moyennes de 100 réplications de estimations de l’<span class="math inline">\(\mathsf{EQM}\)</span> obtenues avec la validation croisée à 10 groupes. Notez que si vous exécutez le programme, vous n’obtiendrez pas les mêmes valeurs car il y a un élément aléatoire dans ce processus.</p>
-<p>Le modèle cubique (ordre 3) est aussi choisi par la validation croisée, en moyenne (comme il l’était par le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span>). Le graphe qui suit trace les valeurs de l’estimation par validation croisée (courbe de validation croisée) et aussi le <span class="math inline">\(\mathsf{EQM}\)</span>. On voit que l’estimation par validation croisée suit assez bien la forme du <span class="math inline">\(\mathsf{EQM}\)</span> (qu’il est supposé estimer). Les boîtes à moustache de la <a href="#fig-plotcv">Figure&nbsp;<span>3.5</span></a> permettent d’apprécier la variabilité des estimés de l’erreur quadratique moyenne telles qu’estimée par validation croisée avec 10 groupes.</p>
-<div class="cell" data-layout-align="center" data-hash="selectionmodeles_cache/html/fig-plotcv_c53bd6640f76c867dbf5ada9e1e2dcda">
+<p>Le modèle cubique (ordre 3) est aussi choisi par la validation croisée, en moyenne (comme il l’était par le <span class="math inline">\(\mathsf{AIC}\)</span> et le <span class="math inline">\(\mathsf{BIC}\)</span>). Le graphe qui suit trace les valeurs de l’estimation par validation croisée (courbe de validation croisée) et aussi le <span class="math inline">\(\mathsf{EQM}\)</span>. On voit que l’estimation par validation croisée suit assez bien la forme du <span class="math inline">\(\mathsf{EQM}\)</span> (qu’il est supposé estimer).</p>
+<p>Pour obtenir la <a href="#fig-plotcv">Figure&nbsp;<span>3.5</span></a>, j’ai répété 100 fois la procédure de validation croisée, ce qui me permet d’obtenir 100 estimations pour chaque value de <span class="math inline">\(k\)</span>. Les boîtes à moustache donnent une idée de la répartition et permettent d’apprécier la variabilité des estimés de l’erreur quadratique moyenne.</p>
+<div class="cell" data-layout-align="center" data-hash="selectionmodeles_cache/html/fig-plotcv_cf01d45661373134f20568a72a196c30">
 <div class="cell-output-display">
 <div id="fig-plotcv" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -756,18 +757,19 @@ R^2=\{\mathsf{cor}(\boldsymbol{y}, \widehat{\boldsymbol{y}})\}^2 = 1-\frac{\math
 <p>Il arrive que la performance soit très similaire pour plusieurs modèles, auquel cas on pourrait être tenté de prendre le modèle le plus parsimonieux (c’est-à-dire, celui qui a le moins de paramètres). Si on a calculé la performance avec la validation croisée et qu’on a obtenu une mesure d’incertitude pour notre performance, on peut utiliser la règle du « 1 erreur-type». Cette dernière veut qu’on choisisse le modèle le plus simple parmi un ensemble <span class="math inline">\(\mathcal{M}_0 \subset\cdots \subset \mathcal{M}_m\)</span> qui satisfasse <span class="math display">\[\begin{align*}
 \widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_i) \leq \min_{m = i+1}^M \widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_m) + \mathsf{se}\{\widehat{\mathsf{EQM}}_{\text{VC}}(\mathcal{M}_m)\}.
 \end{align*}\]</span> Autrement dit, on trouve le modèle qui minimise notre critère d’erreur et on choisit ensuite le modèle le plus simple qui soit à au plus une erreur-type de ce modèle, comme dans la <a href="#fig-vc-1erreurtype">Figure&nbsp;<span>3.6</span></a>. On verra ainsi souvent des barres d’erreurs à <span class="math inline">\(\pm\)</span> une erreur-type, comme dans la <a href="#fig-lassopath">Figure&nbsp;<span>3.10</span></a>.</p>
-<div class="cell" data-hash="selectionmodeles_cache/html/fig-vc-1erreurtype_ed0c643b157c305fb79b025c9cb950e3">
+<div class="cell" data-hash="selectionmodeles_cache/html/fig-vc-1erreurtype_dbe1d115ec9f8e7a1df36f94a3d840de">
 <div class="cell-output-display">
 <div id="fig-vc-1erreurtype" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="figures/fig-validationcroisee-une-erreur-type.png" class="img-fluid figure-img" width="900"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.6: Erreur quadratique moyenne estimée par validation croisée à 10 plis, avec une erreur-type. La bande jaune indique la zone pour l’estimation de l’erreur quadratique moyenne à au plus une erreur-type du modèle qui minimise le critère.</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.6: Erreur quadratique moyenne estimée par validation croisée à 10 plis, avec une erreur-type. La bande jaune indique les valeurs de l’erreur quadratique moyenne à une erreur-type du modèle qui minimise le critère pour les modèles plus simples.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>Pour rappel, le terme écart-type désigne typiquement la variabilé d’une observation, tandis que l’erreur-type d’une statistique représente la variabilité de cette quantitée créée en regroupant des observations. L’erreur-type de la moyenne de <span class="math inline">\(K\)</span> observations indépendantes qui ont toutes écart-type <span class="math inline">\(\sigma\)</span> est ainsi <span class="math inline">\(\sigma/\sqrt{K}\)</span>: c’est logique puisque la moyenne, basée sur plusieurs observations, est moins variable qu’une observation.</p>
+<p>Pour rappel, le terme écart-type désigne typiquement la variabilité d’une observation, tandis que l’erreur-type d’une statistique représente la variabilité de cette quantitée créée en regroupant des observations. L’erreur-type de la moyenne de <span class="math inline">\(K\)</span> observations indépendantes qui ont toutes écart-type <span class="math inline">\(\sigma\)</span> est ainsi <span class="math inline">\(\sigma/\sqrt{K}\)</span>: c’est logique puisque la moyenne, basée sur plusieurs observations, est moins variable qu’une observation.</p>
 <p>Ainsi, si on calcule l’écart-type de l’erreur quadratique moyenne d’un des <span class="math inline">\(K\)</span> plis avec <span class="math inline">\(n/K\)</span> observations en moyenne, l’erreur-type de l’erreur quadratique moyenne globale des <span class="math inline">\(n\)</span> observations sera inférieure d’un facteur <span class="math inline">\(\sqrt{K}\)</span>. Si on réplique la validation croisée plusieurs fois avec des divisions aléatoires différentes, l’incertitude décroîtra d’autant même si les mesures obtenues ne seront pas indépendantes puisqu’elles réutilisent les mêmes observations.</p>
+<p>Si on veut appliquer la règle d’une , on commence par trouver la modèle avec la meilleure performance, puis on considère tous les modèles plus simples (ici avec moins de coefficients, à gauche dans la <a href="#fig-vc-1erreurtype">Figure&nbsp;<span>3.6</span></a>). On sélectionne le plus simple parmi cet ensemble pourvu que son estimation soit dans la bande jaune qui représente un surenchérissement sur la valeur la plus petite pour l’erreur quadratique moyenne.</p>
 </section>
 </section>
 <section id="présentation-des-données" class="level2" data-number="3.3">
@@ -1333,12 +1335,8 @@ q_1(\lambda) = \lambda \sum_{j=1}^p |\beta_j|.
 <p>La pénalité <span class="math inline">\(q_1(\lambda)\)</span> a un rôle particulier parce qu’elle a deux effets: elle réduit la taille des paramètres, mais elle force également certains paramètres très proches de zéro à être exactement égaux à zéro, ce qui fait que la régression pénalité agit également comme outil de sélection de variables. Des algorithmes efficaces permettent de trouver la solution du problème d’optimisation <span class="math display">\[\begin{align*}
 \min_{\boldsymbol{\beta}} \{\mathsf{SCE} + q_1(\lambda)\} = \min_{\boldsymbol{\beta}}  \left\{\sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^pX_{ij}\beta_{j}\right)^2 +
 \lambda \sum_{j=1}^p |\beta_j|\right\}
-\end{align*}\]</span> laquelle est appelée LASSO. La <a href="#fig-lassopenalty">Figure&nbsp;<span>3.9</span></a> montre la fonction objective dans le cas où on a deux paramètres, <span class="math inline">\(\beta_1\)</span> et <span class="math inline">\(\beta_2\)</span>. La solution des moindres carrés ordinaires, qui minimisent l’erreur quadratique moyenne, est au centre des ellipses de contour et correspond à la solution du modèle avec <span class="math inline">\(\lambda=0\)</span>. À mesure que l’on augmente la pénalité <span class="math inline">\(\lambda\)</span>, les coefficients rétrécissent vers <span class="math inline">\((0, 0)\)</span>. On peut interpréter la pénalité <span class="math inline">\(l_1\)</span> comme une contraire budgétaire: les coefficients estimés pour une valeur de <span class="math inline">\(\lambda\)</span> donnée sont ceux qui minimisent la somme du carré des erreurs, mais doivent être à l’intérieur d’un budget alloué (losange). La forme de la région fait en sorte que la solution, qui se trouve sur la bordure du losange, intervient dans un coin avec certaines coordonnées nulles.</p>
-<div class="cell" data-hash="selectionmodeles_cache/html/fig-lassopenalty_bfb1ebc4c7748cb9235f7ec3b812afc5">
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-ℹ Please use `linewidth` instead.</code></pre>
-</div>
+\end{align*}\]</span> laquelle est appelée LASSO. La <a href="#fig-lassopenalty">Figure&nbsp;<span>3.9</span></a> montre la fonction objective (lignes de contour) dans le cas où on a deux paramètres, <span class="math inline">\(\beta_1\)</span> et <span class="math inline">\(\beta_2\)</span>: chaque point représente une solution différente au problème, selon la valeur de la pénalité, allant de la solution des moindres carrés ordinaires, qui minimisent l’erreur quadratique moyenne, au centre des ellipses et correspondant à la solution du modèle avec <span class="math inline">\(\lambda=0\)</span>, à la pénalité infinie qui réduit le modèle à l’ordonnée à l’origine. À mesure que l’on augmente la pénalité <span class="math inline">\(\lambda\)</span>, les coefficients rétrécissent vers <span class="math inline">\((0, 0)\)</span>. On peut interpréter la pénalité <span class="math inline">\(l_1\)</span> comme une contraire budgétaire: les coefficients estimés pour une valeur de <span class="math inline">\(\lambda\)</span> donnée sont ceux qui minimisent la somme du carré des erreurs, mais doivent être à l’intérieur d’un budget alloué (losange). La forme de la région fait en sorte que la solution, qui se trouve sur la bordure du losange, intervient souvent dans un coin avec certaines coordonnées nulles. Par analogie, pensez à une course qui démarre à l’origine et dont l’objectif est d’atteindre, en le moins de temps possible, le point le plus élevé possible. Si le temps est limité (contrainte due à la pénalité), nous aurons moins de temps pour parcourir et on coupera au plus court. Sans contrainte de temps, on peut atteindra le sommet de la montagne correspond à la solution optimale. Les points représentent le tracé qui permet d’obtenir le gain en dénivelé le plus rapide, en quelque sorte. Les losanges représentent la distance maximale qu’on peut parcourir selon la valeur de <span class="math inline">\(\lambda\)</span>.</p>
+<div class="cell" data-hash="selectionmodeles_cache/html/fig-lassopenalty_7fde00541868a50e92a7250b8263e8b2">
 <div class="cell-output-display">
 <div id="fig-lassopenalty" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -1350,38 +1348,38 @@ q_1(\lambda) = \lambda \sum_{j=1}^p |\beta_j|.
 </div>
 <p>Plusieurs variantes existent dans la littérature qui généralisent le modèle à des contextes plus compliqués. Le choix des variables à inclure dans la sélection dépend du choix de la pénalité <span class="math inline">\(\lambda\)</span>, qui est règle générale estimée par validation croisée à cinq ou 10 groupes.</p>
 <div class="cell" data-hash="selectionmodeles_cache/html/lasso_8c3e6cd8aeb8f94def2c6073d7e8ebc2">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sélection par LASSO</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Paramètre de pénalité déterminé par </span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># validation croisée à partir d'un vecteur</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># de valeurs candidates</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>lambda_seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="fl">0.1</span>,</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">to =</span> <span class="dv">10</span>, </span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">by =</span> <span class="fl">0.01</span>)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>cv_output <span class="ot">&lt;-</span> </span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  glmnet<span class="sc">::</span><span class="fu">cv.glmnet</span>(<span class="at">x =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]), </span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> dbm_a<span class="sc">$</span>ymontant, </span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="dv">1</span>, </span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">lambda =</span> lambda_seq)</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cv_output)</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co"># On réestime le modèle avec la pénalité</span></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>lambopt <span class="ot">&lt;-</span> cv_output<span class="sc">$</span>lambda.min <span class="co"># ou lambda.1se</span></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>lasso_best <span class="ot">&lt;-</span> </span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  glmnet<span class="sc">::</span><span class="fu">glmnet</span>(</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]),</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> dbm_a<span class="sc">$</span>ymontant,</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="dv">1</span>, </span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda =</span> lambopt)</span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Prédictions et calcul de l'EQM</span></span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co"># On pourrait remplacer `newx` par </span></span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co"># d'autres données (validation externe)</span></span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(lasso_best, </span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>                <span class="at">s =</span> lambopt, </span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>                <span class="at">newx =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="sc">-</span><span class="dv">1</span>]))</span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>eqm_lasso <span class="ot">&lt;-</span> <span class="fu">mean</span>((pred <span class="sc">-</span> dbm_a<span class="sc">$</span>ymontant)<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sélection par LASSO</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Paramètre de pénalité déterminé par </span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># validation croisée à partir d'un vecteur</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># de valeurs candidates</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>lambda_seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="fl">0.1</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">to =</span> <span class="dv">10</span>, </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">by =</span> <span class="fl">0.01</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>cv_output <span class="ot">&lt;-</span> </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  glmnet<span class="sc">::</span><span class="fu">cv.glmnet</span>(<span class="at">x =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]), </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> dbm_a<span class="sc">$</span>ymontant, </span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="dv">1</span>, </span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">lambda =</span> lambda_seq)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cv_output)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># On réestime le modèle avec la pénalité</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>lambopt <span class="ot">&lt;-</span> cv_output<span class="sc">$</span>lambda.min <span class="co"># ou lambda.1se</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>lasso_best <span class="ot">&lt;-</span> </span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  glmnet<span class="sc">::</span><span class="fu">glmnet</span>(</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]),</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> dbm_a<span class="sc">$</span>ymontant,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="dv">1</span>, </span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda =</span> lambopt)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Prédictions et calcul de l'EQM</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="co"># On pourrait remplacer `newx` par </span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="co"># d'autres données (validation externe)</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(lasso_best, </span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>                <span class="at">s =</span> lambopt, </span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>                <span class="at">newx =</span> <span class="fu">as.matrix</span>(dbm_a[,<span class="sc">-</span><span class="dv">1</span>]))</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>eqm_lasso <span class="ot">&lt;-</span> <span class="fu">mean</span>((pred <span class="sc">-</span> dbm_a<span class="sc">$</span>ymontant)<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Le graphique de la <a href="#fig-lassopath">Figure&nbsp;<span>3.10</span></a> montre l’évolution de l’erreur quadratique moyenne estimée en fonction du logarithme naturel de la pénalité (axe des abscisses). Comme plusieurs pénalités sont dans la marge d’erreurs, on choisit le première modèle à un erreur-type de la valeur minimale.</p>
+<p>Le graphique de la <a href="#fig-lassopath">Figure&nbsp;<span>3.10</span></a> montre l’évolution de l’erreur quadratique moyenne estimée en fonction du logarithme naturel de la pénalité (axe des abscisses). Pour chaque valeur de la pénalité, le diagramme donne le nombre de coefficients non-nuls (en haut sur le graphique) et la valeur estimée par validation croisée à 10 groupes de l’erreur quadratique moyenne, plus ou moins une erreur-type. Contrairement aux graphiques précédents, les modèles plus simples correspondent à des valeurs de pénalité plus élevée (vers la droite sur le graphique): ainsi, la règle d’une erreur-type revient à prendre un modèle avec une pénalité plus élevée que le modèle qui minimise l’erreur quadratique moyenne, donc à diminuer les coefficients et potentiellement le nombre de coefficients non-nuls.</p>
 <div class="cell" data-hash="selectionmodeles_cache/html/fig-lassopath_a4926a1d2beaf359a026ffcbbca011e5">
 <div class="cell-output-display">
 <div id="fig-lassopath" class="quarto-figure quarto-figure-center anchored">
@@ -1544,17 +1542,17 @@ Toutes les méthodes employées jusqu'à maintenant utilise une méthode de pén
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;">15</td>
+<td style="text-align: center;">14</td>
 <td style="text-align: center;">25.69</td>
 <td style="text-align: left;">toutes les variables</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">12</td>
+<td style="text-align: center;">11</td>
 <td style="text-align: center;">25.53</td>
 <td style="text-align: left;">exhaustive - <span class="math inline">\(\mathsf{AIC}\)</span></td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">10</td>
+<td style="text-align: center;">9</td>
 <td style="text-align: center;">25.04</td>
 <td style="text-align: left;">exhaustive - <span class="math inline">\(\mathsf{BIC}\)</span></td>
 </tr>

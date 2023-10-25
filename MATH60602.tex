@@ -284,12 +284,12 @@
 
 \title{MATH 60602 - Analyse multidimensionnelle appliquée}
 \author{Denis Larocque \and Léo Belzile}
-\date{2023-09-21}
+\date{2023-10-24}
 
 \begin{document}
 \includepdf{figures/pagecouverture.pdf}
 
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, interior hidden, enhanced, breakable, sharp corners, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, borderline west={3pt}{0pt}{shadecolor}, frame hidden, interior hidden, boxrule=0pt, breakable, enhanced]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table des matières}
 {
@@ -1044,6 +1044,21 @@ Promo, mais disponibles avec PromoPlus moyennant une pénalité équivalent
 est disponible au même prix que les billets réguliers, avec des
 bénéfices additionnels.
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{renfe }\SpecialCharTok{|\textgreater{}} 
+  \FunctionTok{subset}\NormalTok{(tarif  }\SpecialCharTok{!=} \StringTok{"AdultoIda"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ prix, }
+             \AttributeTok{x =}\NormalTok{ classe, }
+             \AttributeTok{col =}\NormalTok{ tarif)) }\SpecialCharTok{+} 
+    \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+} 
+    \FunctionTok{labs}\NormalTok{(}\AttributeTok{y =} \StringTok{"prix (en euros)"}\NormalTok{,}
+         \AttributeTok{x =} \StringTok{"classe"}\NormalTok{,}
+         \AttributeTok{color =} \StringTok{"tarif"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{figure}[ht!]
 
 {\centering \includegraphics[width=1\textwidth,height=\textheight]{analyseexploratoire_files/figure-pdf/fig-renfe-aed6-1.pdf}
@@ -1054,6 +1069,19 @@ bénéfices additionnels.
 tarif et de la classe de billets de trains à haute vitesse de la Renfe.}
 
 \end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ renfe, }
+       \AttributeTok{mapping =} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ prix, }
+                     \AttributeTok{y =} \FunctionTok{after\_stat}\NormalTok{(density), }
+                     \AttributeTok{fill =}\NormalTok{ tarif)) }\SpecialCharTok{+}
+    \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{binwidth =} \DecValTok{5}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"prix (en euros)"}\NormalTok{, }
+         \AttributeTok{y =} \StringTok{"densité"}\NormalTok{) }\SpecialCharTok{+} 
+    \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{figure}[ht!]
 
@@ -1083,16 +1111,16 @@ de billets de trains de la Renfe.}
 \toprule
 prix & classe & n\\
 \midrule
-108 & Turista & 1050\\
-108 & TuristaSolo & 67\\
-127 & Turista & 285\\
-127 & TuristaSolo & 9\\
-129 & TuristaPlus & 31\\
+107.7 & Turista & 1050\\
+107.7 & TuristaSolo & 67\\
+127.1 & Turista & 285\\
+127.1 & TuristaSolo & 9\\
+129.3 & TuristaPlus & 31\\
 \addlinespace
-140 & Preferente & 2\\
-152 & TuristaPlus & 10\\
-182 & Preferente & 78\\
-214 & Preferente & 12\\
+140.0 & Preferente & 2\\
+152.5 & TuristaPlus & 10\\
+181.5 & Preferente & 78\\
+214.2 & Preferente & 12\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1168,7 +1196,7 @@ particulier, votre description devrait coïncider avec le rendu. Votre
 graphique raconte une histoire, aussi prenez-soin que cette dernière
 soit nécessaire et attrayante.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, toptitle=1mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white, bottomrule=.15mm, opacityback=0, colback=white, titlerule=0mm, left=2mm, bottomtitle=1mm, leftrule=.75mm, coltitle=black, rightrule=.15mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, breakable, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}]
 
 \begin{itemize}
 \tightlist
@@ -1995,7 +2023,7 @@ des variables catégorielles.
       \CommentTok{\# Extraire les indices des observations de la portion validation}
 \NormalTok{      g }\OtherTok{\textless{}{-}} \FunctionTok{as.integer}\NormalTok{(}\FunctionTok{unlist}\NormalTok{(folds[i]))}
       \CommentTok{\# Ajuster le modèles à toutes les données, }
-\NormalTok{      moins celles de la portion validation}
+      \CommentTok{\#  moins celles de la portion validation}
 \NormalTok{      fitlm }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(formula, }\AttributeTok{data =}\NormalTok{ data[}\SpecialCharTok{{-}}\NormalTok{g,])}
       \CommentTok{\# ajouter l\textquotesingle{}erreur quadratique du pli de validation}
 \NormalTok{      accu }\OtherTok{\textless{}{-}}\NormalTok{ accu }\SpecialCharTok{+} 
@@ -2056,10 +2084,13 @@ en moyenne (comme il l'était par le \(\mathsf{AIC}\) et le
 \(\mathsf{BIC}\)). Le graphe qui suit trace les valeurs de l'estimation
 par validation croisée (courbe de validation croisée) et aussi le
 \(\mathsf{EQM}\). On voit que l'estimation par validation croisée suit
-assez bien la forme du \(\mathsf{EQM}\) (qu'il est supposé estimer). Les
-boîtes à moustache de la Figure~\ref{fig-plotcv} permettent d'apprécier
-la variabilité des estimés de l'erreur quadratique moyenne telles
-qu'estimée par validation croisée avec 10 groupes.
+assez bien la forme du \(\mathsf{EQM}\) (qu'il est supposé estimer).
+
+Pour obtenir la Figure~\ref{fig-plotcv}, j'ai répété 100 fois la
+procédure de validation croisée, ce qui me permet d'obtenir 100
+estimations pour chaque value de \(k\). Les boîtes à moustache donnent
+une idée de la répartition et permettent d'apprécier la variabilité des
+estimés de l'erreur quadratique moyenne.
 
 \begin{figure}[ht!]
 
@@ -2098,14 +2129,14 @@ Figure~\ref{fig-lassopath}.
 
 \caption{\label{fig-vc-1erreurtype}Erreur quadratique moyenne estimée
 par validation croisée à 10 plis, avec une erreur-type. La bande jaune
-indique la zone pour l'estimation de l'erreur quadratique moyenne à au
-plus une erreur-type du modèle qui minimise le critère.}
+indique les valeurs de l'erreur quadratique moyenne à une erreur-type du
+modèle qui minimise le critère pour les modèles plus simples.}
 
 \end{figure}
 
-Pour rappel, le terme écart-type désigne typiquement la variabilé d'une
-observation, tandis que l'erreur-type d'une statistique représente la
-variabilité de cette quantitée créée en regroupant des observations.
+Pour rappel, le terme écart-type désigne typiquement la variabilité
+d'une observation, tandis que l'erreur-type d'une statistique représente
+la variabilité de cette quantitée créée en regroupant des observations.
 L'erreur-type de la moyenne de \(K\) observations indépendantes qui ont
 toutes écart-type \(\sigma\) est ainsi \(\sigma/\sqrt{K}\): c'est
 logique puisque la moyenne, basée sur plusieurs observations, est moins
@@ -2118,6 +2149,14 @@ inférieure d'un facteur \(\sqrt{K}\). Si on réplique la validation
 croisée plusieurs fois avec des divisions aléatoires différentes,
 l'incertitude décroîtra d'autant même si les mesures obtenues ne seront
 pas indépendantes puisqu'elles réutilisent les mêmes observations.
+
+Si on veut appliquer la règle d'une , on commence par trouver la modèle
+avec la meilleure performance, puis on considère tous les modèles plus
+simples (ici avec moins de coefficients, à gauche dans la
+Figure~\ref{fig-vc-1erreurtype}). On sélectionne le plus simple parmi
+cet ensemble pourvu que son estimation soit dans la bande jaune qui
+représente un surenchérissement sur la valeur la plus petite pour
+l'erreur quadratique moyenne.
 
 \hypertarget{pruxe9sentation-des-donnuxe9es}{%
 \section{Présentation des
@@ -2439,7 +2478,7 @@ l'origine englobera toutes les autres valeurs de \texttt{x3}, à savoir
   fois. La fonction \texttt{leaps::regsubsets} va quant à elle créer des
   indicateurs binaires.}
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-tip-color!10!white, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Danger de surajustement avec variables catégorielles}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-tip-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, toptitle=1mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-tip-color!10!white, bottomrule=.15mm, opacityback=0, colback=white, titlerule=0mm, left=2mm, bottomtitle=1mm, leftrule=.75mm, coltitle=black, rightrule=.15mm, colframe=quarto-callout-tip-color-frame, toprule=.15mm, breakable, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Danger de surajustement avec variables catégorielles}]
 
 La principale cause de mauvaise performance est le surajustement
 sélectif. Dans l'exemple que l'on considère avec la base de données
@@ -2870,23 +2909,30 @@ la solution du problème d'optimisation \begin{align*}
 \min_{\boldsymbol{\beta}} \{\mathsf{SCE} + q_1(\lambda)\} = \min_{\boldsymbol{\beta}}  \left\{\sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^pX_{ij}\beta_{j}\right)^2 +
 \lambda \sum_{j=1}^p |\beta_j|\right\}
 \end{align*} laquelle est appelée LASSO. La
-Figure~\ref{fig-lassopenalty} montre la fonction objective dans le cas
-où on a deux paramètres, \(\beta_1\) et \(\beta_2\). La solution des
+Figure~\ref{fig-lassopenalty} montre la fonction objective (lignes de
+contour) dans le cas où on a deux paramètres, \(\beta_1\) et
+\(\beta_2\): chaque point représente une solution différente au
+problème, selon la valeur de la pénalité, allant de la solution des
 moindres carrés ordinaires, qui minimisent l'erreur quadratique moyenne,
-est au centre des ellipses de contour et correspond à la solution du
-modèle avec \(\lambda=0\). À mesure que l'on augmente la pénalité
-\(\lambda\), les coefficients rétrécissent vers \((0, 0)\). On peut
-interpréter la pénalité \(l_1\) comme une contraire budgétaire: les
-coefficients estimés pour une valeur de \(\lambda\) donnée sont ceux qui
-minimisent la somme du carré des erreurs, mais doivent être à
-l'intérieur d'un budget alloué (losange). La forme de la région fait en
-sorte que la solution, qui se trouve sur la bordure du losange,
-intervient dans un coin avec certaines coordonnées nulles.
-
-\begin{verbatim}
-Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-i Please use `linewidth` instead.
-\end{verbatim}
+au centre des ellipses et correspondant à la solution du modèle avec
+\(\lambda=0\), à la pénalité infinie qui réduit le modèle à l'ordonnée à
+l'origine. À mesure que l'on augmente la pénalité \(\lambda\), les
+coefficients rétrécissent vers \((0, 0)\). On peut interpréter la
+pénalité \(l_1\) comme une contraire budgétaire: les coefficients
+estimés pour une valeur de \(\lambda\) donnée sont ceux qui minimisent
+la somme du carré des erreurs, mais doivent être à l'intérieur d'un
+budget alloué (losange). La forme de la région fait en sorte que la
+solution, qui se trouve sur la bordure du losange, intervient souvent
+dans un coin avec certaines coordonnées nulles. Par analogie, pensez à
+une course qui démarre à l'origine et dont l'objectif est d'atteindre,
+en le moins de temps possible, le point le plus élevé possible. Si le
+temps est limité (contrainte due à la pénalité), nous aurons moins de
+temps pour parcourir et on coupera au plus court. Sans contrainte de
+temps, on peut atteindra le sommet de la montagne correspond à la
+solution optimale. Les points représentent le tracé qui permet d'obtenir
+le gain en dénivelé le plus rapide, en quelque sorte. Les losanges
+représentent la distance maximale qu'on peut parcourir selon la valeur
+de \(\lambda\).
 
 \begin{figure}[ht!]
 
@@ -2943,9 +2989,16 @@ règle générale estimée par validation croisée à cinq ou 10 groupes.
 
 Le graphique de la Figure~\ref{fig-lassopath} montre l'évolution de
 l'erreur quadratique moyenne estimée en fonction du logarithme naturel
-de la pénalité (axe des abscisses). Comme plusieurs pénalités sont dans
-la marge d'erreurs, on choisit le première modèle à un erreur-type de la
-valeur minimale.
+de la pénalité (axe des abscisses). Pour chaque valeur de la pénalité,
+le diagramme donne le nombre de coefficients non-nuls (en haut sur le
+graphique) et la valeur estimée par validation croisée à 10 groupes de
+l'erreur quadratique moyenne, plus ou moins une erreur-type.
+Contrairement aux graphiques précédents, les modèles plus simples
+correspondent à des valeurs de pénalité plus élevée (vers la droite sur
+le graphique): ainsi, la règle d'une erreur-type revient à prendre un
+modèle avec une pénalité plus élevée que le modèle qui minimise l'erreur
+quadratique moyenne, donc à diminuer les coefficients et potentiellement
+le nombre de coefficients non-nuls.
 
 \begin{figure}[ht!]
 
@@ -3024,9 +3077,9 @@ méthode
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-15 & 25.69 & toutes les variables \\
-12 & 25.53 & exhaustive - \(\mathsf{AIC}\) \\
-10 & 25.04 & exhaustive - \(\mathsf{BIC}\) \\
+14 & 25.69 & toutes les variables \\
+11 & 25.53 & exhaustive - \(\mathsf{AIC}\) \\
+9 & 25.04 & exhaustive - \(\mathsf{BIC}\) \\
 \end{longtable}
 
 \hypertarget{tbl-02-modelcomparaisonfull}{}
@@ -3086,7 +3139,7 @@ des parties d'effet par le rétrécissement (\emph{shrinkage}). De récents
 développements théoriques permettent aussi de corriger les
 valeurs-\emph{p} pour faire de l'inférence post-sélection avec le LASSO.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, toptitle=1mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white, bottomrule=.15mm, opacityback=0, colback=white, titlerule=0mm, left=2mm, bottomtitle=1mm, leftrule=.75mm, coltitle=black, rightrule=.15mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, breakable, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}]
 
 \begin{itemize}
 \tightlist
@@ -3437,7 +3490,7 @@ conséquent, les estimations des paramètres \(\boldsymbol{\beta}\)
 provenant de la méthode des moindres carrés peuvent être vues comme
 étant des estimateurs du maximum de vraisemblance sous l'hypothèse de
 normalité et d'homoscédasticité des observations; il est même possible
-d'obtenir une formule explicite pour le calcul dest estimateurs.
+d'obtenir une formule explicite pour le calcul des estimateurs.
 
 Dans le cas de la régression logistique, la fonction de
 log-vraisemblance s'écrit \begin{align*}
@@ -3855,19 +3908,20 @@ fois que les autres variables sont dans le modèle.
 
 L'interprétation des variables catégorielles est analogue à celle faite
 en régression linéaire. On peut aussi interpréter individuellement les
-paramètres des indicatrices: pour \(\mathrm{I}(\mathrm{X}_6=2)\),
-lorsque les autres variables demeurent fixes, les personnes ayant
-assisté entre six et 10 fois à un rodéo au cours de la dernière année
-voient leur cote multipliée par \(\exp(-1.370)=0.255\) par rapport aux
-personnes ayant assisté plus de di fois. Ce paramètre est
-significativement différent de zéro car sa valeur-\(p\) est négligeable;
-l'intervalle de confiance à 95\% pour le rapport de cotes, basé sur la
-vraisemblance profilée, est {[}0.13; 0.49{]} et la valeur 1 (qui
-correspond à un rapport de cote constant) n'est pas dans l'intervalle.
-Ainsi, il y a une différence significative entre les gens qui ont
-assisté à 10 rodéos ou plus et les gens qui ont assisté à 5 rodéos ou
-moins, pour ce qui est de l'intérêt à acheter un produit recommandé par
-le PRCA.
+paramètres des indicatrices: pour la variable binaire
+\(\mathrm{I}(\mathrm{X}_6=2)\), qui vaut un lorsque \(\mathrm{X}_6=2\)
+et zéro sinon, lorsque les autres variables demeurent fixes, les
+personnes ayant assisté entre six et 10 fois à un rodéo au cours de la
+dernière année voient leur cote multipliée par \(\exp(-1.370)=0.255\)
+par rapport aux personnes ayant assisté plus de dix fois. Ce paramètre
+est significativement différent de zéro car sa valeur-\(p\) est
+négligeable; l'intervalle de confiance à 95\% pour le rapport de cotes,
+basé sur la vraisemblance profilée, est {[}0.13; 0.49{]} et la valeur 1
+(qui correspond à un rapport de cote constant) n'est pas dans
+l'intervalle. Ainsi, il y a une différence significative entre les gens
+qui ont assisté à 10 rodéos ou plus et les gens qui ont assisté à 5
+rodéos ou moins, pour ce qui est de l'intérêt à acheter un produit
+recommandé par le PRCA.
 
 Si on désire comparer les deux modalités \(\mathrm{X}_6=2\) et
 \(\mathrm{X}_6=3\), il suffit de changer la modalité de référence de
@@ -3993,7 +4047,7 @@ modèles en utilisant des méthodes permettant d'obtenir un bon modèle
 tout en se protégeant contre le surajustement. Certaines de ces méthodes
 (division de l'échantillon, validation croisée) ont déjà été présentées.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, toptitle=1mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white, bottomrule=.15mm, opacityback=0, colback=white, titlerule=0mm, left=2mm, bottomtitle=1mm, leftrule=.75mm, coltitle=black, rightrule=.15mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, breakable, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}]
 
 \begin{itemize}
 \tightlist
@@ -5243,7 +5297,7 @@ Nous reviendrons une dernière fois sur cet exemple dans le chapitre
 traitant des données manquantes. Nous verrons alors comment procéder si
 des valeurs manquantes sont présentes dans les variables explicatives.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, toptitle=1mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white, bottomrule=.15mm, opacityback=0, colback=white, titlerule=0mm, left=2mm, bottomtitle=1mm, leftrule=.75mm, coltitle=black, rightrule=.15mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, breakable, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}]
 
 \begin{itemize}
 \tightlist
@@ -5836,7 +5890,7 @@ la valeur-\(p\), infime, indique que le modèle plus complexe, soit le
 modèle saturé, est préférable. Cela nous indique que le modèle a un
 piètre pouvoir explicatif.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, toptitle=1mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white, bottomrule=.15mm, opacityback=0, colback=white, titlerule=0mm, left=2mm, bottomtitle=1mm, leftrule=.75mm, coltitle=black, rightrule=.15mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, breakable, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}]
 
 \begin{itemize}
 \tightlist
@@ -6495,7 +6549,7 @@ gardant en tête que cela réduit la taille de l'échantillon disponible et
 que l'estimation résultante est possiblement trop incertaine pour être
 utile.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, toptitle=1mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white, bottomrule=.15mm, opacityback=0, colback=white, titlerule=0mm, left=2mm, bottomtitle=1mm, leftrule=.75mm, coltitle=black, rightrule=.15mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, breakable, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}]
 
 \begin{itemize}
 \tightlist
@@ -7519,7 +7573,7 @@ du paquet \texttt{survival} offre des détails sur l'implémentation des
 méthodes qui traitent de l'inclusion de variables explicatives dont la
 valeur change dans le temps et sur les risques compétitifs.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, toptitle=1mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white, bottomrule=.15mm, opacityback=0, colback=white, titlerule=0mm, left=2mm, bottomtitle=1mm, leftrule=.75mm, coltitle=black, rightrule=.15mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, breakable, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}]
 
 \begin{itemize}
 \tightlist
@@ -8101,7 +8155,7 @@ contenant les vecteurs propres. La meilleure approximation de rang
 \(\boldsymbol{q}_1, \ldots, \boldsymbol{q}_k \in \mathbb{R}^p\) non
 corrélés.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, toptitle=1mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white, bottomrule=.15mm, opacityback=0, colback=white, titlerule=0mm, left=2mm, bottomtitle=1mm, leftrule=.75mm, coltitle=black, rightrule=.15mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, breakable, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}]
 
 \begin{itemize}
 \tightlist
@@ -8817,7 +8871,7 @@ quatre facteurs) et échelles. }\tabularnewline
 \end{tabular}
 \end{table}
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-tip-color!10!white, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes de l'analyse factorielle exploratoire}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-tip-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, toptitle=1mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-tip-color!10!white, bottomrule=.15mm, opacityback=0, colback=white, titlerule=0mm, left=2mm, bottomtitle=1mm, leftrule=.75mm, coltitle=black, rightrule=.15mm, colframe=quarto-callout-tip-color-frame, toprule=.15mm, breakable, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes de l'analyse factorielle exploratoire}]
 
 \begin{itemize}
 \tightlist
@@ -8839,7 +8893,7 @@ quatre facteurs) et échelles. }\tabularnewline
 
 \end{tcolorbox}
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, toptitle=1mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white, bottomrule=.15mm, opacityback=0, colback=white, titlerule=0mm, left=2mm, bottomtitle=1mm, leftrule=.75mm, coltitle=black, rightrule=.15mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, breakable, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}]
 
 \begin{itemize}
 \tightlist
@@ -8921,7 +8975,7 @@ Pour créer les regroupements, on utilisera \(p\) variables explicatives
 dénotera la valeur de la \(j\)e variable explicative pour le \(i\)e
 sujet.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-tip-color!10!white, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes d'une analyse de regroupements}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-tip-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, toptitle=1mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-tip-color!10!white, bottomrule=.15mm, opacityback=0, colback=white, titlerule=0mm, left=2mm, bottomtitle=1mm, leftrule=.75mm, coltitle=black, rightrule=.15mm, colframe=quarto-callout-tip-color-frame, toprule=.15mm, breakable, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes d'une analyse de regroupements}]
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -10523,148 +10577,6 @@ Voici quelques particularités des méthodes de regroupement hiérarchique.
   \(\mathrm{O}(n^3)\) pour la plupart des autres fonctions de liaison.
 \end{itemize}
 
-\hypertarget{muxe9thodes-basuxe9es-sur-la-densituxe9}{%
-\subsection{Méthodes basées sur la
-densité}\label{muxe9thodes-basuxe9es-sur-la-densituxe9}}
-
-L'algorithme DBSCAN (\emph{density-based spatial clustering of
-applications with noise}) est une méthode de partitionnement basée sur
-la densité des points. L'idée de base de l'algorithme est de tracer une
-boule de rayon \(\epsilon\) autour de chaque observation et de voir si
-elle inclut d'autres observations. L'algorithme contient deux
-hyperparamètres: le rayon \(\epsilon\) et \(M\), le nombre minimal de
-points pour former un regroupement. L'algorithme classe les observations
-en trois catégories: aberrance, point central et point frontière.
-
-\begin{itemize}
-\tightlist
-\item
-  Un point central est une observation qui possède \(M-1\) voisins à
-  distance \(\epsilon\).
-\item
-  Un point périphérique est un point qui est distant de moins de
-  \(\epsilon\) d'un point central, sans en être un.
-\item
-  Un point isolé est une observation qui n'est pas rattachée à aucun
-  regroupement.
-\end{itemize}
-
-L'algorithme répète les étapes suivantes jusqu'à ce que chaque
-observation ait été visitée.
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Choisir un point aléatoirement parmi ceux qui n'ont pas été visités.
-\item
-  Si le point n'est pas étiqueté, calculer le nombre de points voisins
-  qui se trouvent dans un rayon \(\epsilon\): s'il y a moins de \(M\)
-  observations, provisoirement étiqueter l'observation comme point
-  isolé, sinon comme point central.
-\item
-  Si l'observation est un point central avec \(M-1\) voisins ou plus,
-  créer un regroupement.
-\item
-  Étiqueter chaque point à distance \(\epsilon\) créé et l'ajouter au
-  regroupement s'il a un point central comme voisin.
-\end{enumerate}
-
-\href{https://www.naftaliharris.com/blog/visualizing-dbscan-clustering/}{Ce
-site web} offre une visualisation interactive des différentes étapes de
-l'algorithme et de comparer la performance de DBSCAN selon le type de
-regroupements.
-
-Puisque chaque point est visité à tour de rôle et comparé aux autres
-pour trouver les plus proches voisins, la complexité brute est
-\(\mathrm{O}(n^2)\) mais une implémentation efficace permet de réduire
-ce coût. Le coût pour l'allocation de la mémoire linéaire de
-\(\mathrm{O}(n)\).
-
-Voici quelques caractéristiques de DBSCAN:
-
-\begin{itemize}
-\tightlist
-\item
-  le traitement des aberrances est automatique et l'algorithme est
-  robuste.
-\item
-  le nombre de regroupements n'a pas à être spécifié apriori.
-\item
-  la forme des regroupements est arbitraire, peut être non convexe et de
-  taille différente.
-\item
-  la complexité de l'algorithme est d'au mieux \(\Omega(n^{4/3})\).
-\item
-  les hyperparamètres ont une interprétation physique, mais leur choix
-  n'est pas aisé
-\item
-  DBSCAN ne permet pas de traiter le cas où la densité des regroupements
-  change et risque de fusionner des regroupements s'il y a une série
-  d'observations qui permet de relier deux regroupements.
-\item
-  comme la plupart des algorithmes, le voisinage des points devient
-  épars quand \(p\) augmente en raison du fléau de la dimension.
-\end{itemize}
-
-\begin{figure}[ht!]
-
-{\centering \includegraphics{regroupements_files/figure-pdf/fig-dbscan1-1.pdf}
-
-}
-
-\caption{\label{fig-dbscan1}Illustration de la classification des points
-avec DBSCAN: toutes les observations sont assignées à un regroupement,
-moins une aberrance.}
-
-\end{figure}
-
-\hypertarget{choix-des-hyperparamuxe8tres-1}{%
-\subsubsection{Choix des
-hyperparamètres}\label{choix-des-hyperparamuxe8tres-1}}
-
-Les deux paramètres, \(M\) et \(\epsilon\), sont positivement corrélés:
-si on augmente le nombre minimal de point \(M\) par regroupement, il
-faudra également augmenter le rayon \(\epsilon\) pour éviter d'avoir un
-nombre trop élevé de points isolés étiquetés comme points isolés ou
-comme aberrances.
-
-Pour spécifier le nombre minimal d'observations voisines \(M\) pour
-créer un point central, il faut aussi considérer la dimension \(p\) des
-variables explicatives: la recommandation est de requérir au moins
-\(p+1\) points dans le voisinage. Le choix du rayon peut être plus
-difficile à déterminer: . Une option est de fixer le nombre de plus
-proches voisins \(M\) et de considérer la distance entre chaque
-observation et ses plus proches voisins: au sein d'un regroupement, on
-s'attend à ce que cette distance soit petite. Cela permettra également
-de déterminer un seuil acceptable pour \(\epsilon\) pour éviter que trop
-d'observations soient isolées.
-
-La fonction \texttt{kNNdistplot} du paquet \texttt{dbscan} permet de
-tracer un graphique de la distance moyenne des \(k\) plus proches
-voisins pour chaque observation: en prenant \(k=M-1\), on peut calculer
-la distance entre le \(k\) plus proche voisin de chaque observation et
-ordonner ces distances. La recommandation est de choisir \(\epsilon\) en
-prenant une distance où la plupart des observations ne sont pas voisines
-(critère du coude).
-
-\begin{figure}[ht!]
-
-{\centering \includegraphics{regroupements_files/figure-pdf/fig-dbscan2-1.pdf}
-
-}
-
-\caption{\label{fig-dbscan2}Graphique des distances entre chaque
-observation et son troisième plus proche voisin (gauche), en fonction du
-pourcentage d'observations à moins de cette distance et regroupements
-obtenus avec DBSCAN avec \(M=10\) et \(\epsilon=1.1\) (droite).}
-
-\end{figure}
-
-Une variante de l'algorithme DBSCAN, intitulée OPTICS, est plus coûteuse
-mais permet de gérer le cas de regroupements de densités variables en
-évitant la spécification de \(\epsilon\).
-
 \hypertarget{conclusion}{%
 \section{Conclusion}\label{conclusion}}
 
@@ -10689,7 +10601,7 @@ d'observations). Si la segmentation n'est pas satisfaisante, on retourne
 calibration des hyperparamètres jusqu'à ce qu'on soit satisfaits du
 résultat.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, toptitle=1mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white, bottomrule=.15mm, opacityback=0, colback=white, titlerule=0mm, left=2mm, bottomtitle=1mm, leftrule=.75mm, coltitle=black, rightrule=.15mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, breakable, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}]
 
 \begin{itemize}
 \tightlist
@@ -11182,11 +11094,12 @@ pour la base de données \texttt{manquantes}.}
 La Figure~\ref{fig-manquantes2} donne une indication sur les différentes
 combinaisons de données complètes (cases bleues) et les observations
 manquantes (cases roses) avec leur fréquence. Les variables sont
-indiquées au dessus, les effectifs manquants en dessous, le nombre de
-cas de chaque combinaisons à gauche et le nombre de variables avec des
-valeurs manquantes à droite. Ainsi, il y a 180 sujets (36\% de
-l'échantillon) avec aucune observation manquante. Il y en a 99 avec
-seulement \(X_4\) manquante et ainsi de suite. On voit donc, par
+indiquées au dessus, le nombre total de valeurs manquantes par variable
+en dessous, le nombre d'observations pour chaque configuration de
+valeurs manquantes à gauche à gauche et le nombre de variables avec des
+valeurs manquantes par configuration à droite. Ainsi, il y a 180 sujets
+(36\% de l'échantillon) avec aucune observation manquante. Il y en a 99
+avec seulement \(X_4\) manquante et ainsi de suite. On voit donc, par
 exemple, que pour 14 sujets, à la fois \(X_1\) et \(X_2\) sont
 manquantes.
 
@@ -11297,7 +11210,7 @@ aussi significatif, alors qu'il ne l'était plus si on retirait les
 manquantes. Il est peu probable que les données soit \(\mathsf{MCAR}\)
 et donc les résultats de l'analyse des cas complets seraient biaisés.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-note-color!10!white, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, bottomtitle=1mm, opacityback=0, rightrule=.15mm, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, left=2mm, bottomrule=.15mm, titlerule=0mm, toptitle=1mm, colback=white, toprule=.15mm, leftrule=.75mm, breakable, arc=.35mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, toptitle=1mm, arc=.35mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-note-color!10!white, bottomrule=.15mm, opacityback=0, colback=white, titlerule=0mm, left=2mm, bottomtitle=1mm, leftrule=.75mm, coltitle=black, rightrule=.15mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, breakable, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}]
 
 \begin{itemize}
 \tightlist
