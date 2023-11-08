@@ -736,7 +736,7 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="at">groupe =</span> kmoy5<span class="sc">$</span>cluster) <span class="sc">|&gt;</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_all</span>(mean)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-hash="regroupements_cache/html/tbl-kmoy5resume_737fd1d2e0a8a20dc47277982d32294b">
+<div class="cell" data-hash="regroupements_cache/html/tbl-kmoy5resume_b9e932ed76a5849b6210a67b7148bc4c">
 <div class="cell-output-display">
 <div id="tbl-kmoy5resume" class="anchored">
 <table class="table table-sm table-striped small" data-quarto-postprocess="true">
@@ -966,14 +966,19 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 <h3 data-number="7.5.3" class="anchored" data-anchor-id="mélange-de-modèles"><span class="header-section-number">7.5.3</span> Mélange de modèles</h3>
 <p>L’algorithme des <span class="math inline">\(K\)</span>-moyennes fait une allocation rigide: chaque observation est assignée à un seul regroupement, ignorant de ce fait l’incertitude rattachée à l’étiquetage des observations. Les frontières de la région, obtenue en calculant l’intersection des courbes sphériques de regroupement, sont linéaires.</p>
 <p>Peut-être plus problématique, la distance Euclidienne non pondérée impose des regroupements convexes et sphériques de taille semblable: la qualité des regroupements des <span class="math inline">\(K\)</span> moyennes est donc mauvaise si les regroupements ne sont pas sphériques ou globulaires, ou sont de concentrations inégales.</p>
-<p>Une approche plus générale considère que <span class="math inline">\(X_1, \ldots, X_p\)</span> sont tirées d’un mélange à <span class="math inline">\(K\)</span> composantes de lois spécifiées. Généralement, on choisit une loi normale multidimensionnelle pour le <span class="math inline">\(k\)</span>e groupe <span class="math inline">\(G\)</span>, <span class="math display">\[\begin{align*}
+<p>Une approche plus générale considère que <span class="math inline">\(X_1, \ldots, X_p\)</span> sont tirées d’un mélange à <span class="math inline">\(K\)</span> composantes de lois spécifiées. Généralement, on choisit une loi normale multidimensionnelle pour le <span class="math inline">\(k\)</span>e groupe <span class="math inline">\(G\)</span> de moyenne <span class="math inline">\(\boldsymbol{\mu}_k\)</span> et de variance <span class="math inline">\(\boldsymbol{\Sigma}_k\)</span>. <!--
+\begin{align*}
 \boldsymbol{X} \mid G=k \sim \mathsf{No}_p(\boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k)
-\end{align*}\]</span> On suppose qu’on a <span class="math inline">\(K\)</span> groupes, chacun caractérisé par une densité de dimension <span class="math inline">\(p\)</span>, soit <span class="math inline">\(f_k(\boldsymbol{X}_i;\boldsymbol{\theta}_k)\)</span> si <span class="math inline">\(\boldsymbol{X}_i\)</span> provient du groupe <span class="math inline">\(k\)</span> pour <span class="math inline">\(k=1, \ldots, K\)</span>.</p>
-<p>On réécrit la vraisemblance en fonction de <span class="math inline">\(\pi_k\)</span>, la probabilité qu’une observation <span class="math inline">\(\mathbf{X}_i\)</span> tombe dans le groupe <span class="math inline">\(k\)</span>, <span class="math display">\[\begin{align*}
-L_i(\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_K; \pi_1, \ldots, \pi_K, \mathbf{X}_i)= \sum_{k=1}^K\pi_k
+\end{align*}
+On suppose qu'on a $K$ groupes, chacun caractérisé par une densité de dimension $p$, soit $f_k(\boldsymbol{X}_i;\boldsymbol{\theta}_k)$ si $\boldsymbol{X}_i$ provient du groupe $k$ pour $k=1, \ldots, K$.
+
+On réécrit la vraisemblance en fonction de $\pi_k$, la probabilité qu'une observation $\mathbf{X}_i$ tombe dans le groupe $k$,
+\begin{align*}
+ L_i(\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_K; \pi_1, \ldots, \pi_K, \mathbf{X}_i)= \sum_{k=1}^K\pi_k
 f_{k}(\boldsymbol{X}_i,
 \boldsymbol{\theta}_{k}).
-\end{align*}\]</span></p>
+\end{align*}
+--></p>
 <p>Si on savait de quelle composante l’observation originait, on pourrait simplement obtenir les estimation du maximum de vraisemblance pour les paramètres de moyenne et de variance. Inversement, si on avait les valeurs des paramètres, on pourrait déterminer de quel composante l’observation est la plus susceptible de parvenir à l’aide des poids. Le modèle est estimé à l’aide de l’algorithme d’espérance-maximisation, qui itère entre l’estimation des probabilités, et celles des autres composantes. Le paramètres retournés correspondent à un maximum local, et on peut également obtenir un estimé de la variabilité de ces paramètres. Ainsi, le mélange de modèle nous donne accès à la fois à l’incertitude des paramètres et à la probabilité <span class="math inline">\(\pi_k\)</span> qu’une observation appartiennent au groupe <span class="math inline">\(G_k\)</span>.</p>
 <p>La loi multinormale est caractérisée par une moyenne (qui peut servir de prototype) et par une matrice de covariance <span class="math inline">\(\boldsymbol{\Sigma}_k\)</span>. Si on paramétrise cette dernière, on peut obtenir plus de flexiblité selon que les variances soient différentes d’une variable à l’autre, ou que les variables soient corrélées. On peut également spécifier que certains éléments (structure de corrélation, variances) de <span class="math inline">\(\boldsymbol{\Sigma}_k\)</span> sont communes à tous les regroupements. En laissant les paramètres varier, on peut capturer l’effet de regroupements de tailles et de densité différente au prix de plus de paramètres et d’un plus petit nombre d’observations pour estimer chacun d’entre eux.</p>
 <p>Si <span class="math inline">\(p\)</span> est élevé, la structure de covariance non structurée possède trop de paramètres pour être utile. On limitera ce nombre en choisissant plutôt une paramétrisation plus parsimonieuse qui impose des contraintes sur la forme des ellipsoïdes, propres ou communes à tous les groupes.</p>
@@ -1210,17 +1215,17 @@ En résumé
 <ul>
 <li>L’objectif d’une analyse de regroupement est de mettre en commun des observations de telle sorte que les observations d’un même groupe soient le plus semblables possible, et que les groupes soient le plus différent possible les uns des autres.</li>
 <li>Chaque observation se voit assigner une étiquette de groupe.</li>
-<li>On procède ensuite à une analyse descriptive, segment par segment, à l’aide de prototypes</li>
+<li>On procède ensuite à une analyse descriptive, segment par segment, à l’aide de prototypes.</li>
 <li>L’analyse de regroupement est une méthode d’apprentissage non-supervisée: il n’y a pas de véritable séparation.</li>
-<li>La segmentation n’est utile que si elle a une valeurs ajoutée.</li>
+<li>La segmentation n’est utile que si elle a une valeur ajoutée.</li>
 <li>Plusieurs choix de l’analyste (mesure de dissemblance, algorithme ou méthode de regroupement, choix des hyperparamètres) peuvent donner une segmentation différente. L’analyste a une grande marge de manoeuvre.</li>
 <li>Chaque algorithme de segmentation a des avantages et inconvénients.</li>
 <li>L’algorithme des <span class="math inline">\(K\)</span>-moyennes est le plus employé et son faible coût permet son utilisation avec des mégadonnées.</li>
 <li>Aucun algorithme ne performe uniformément mieux, mais certains sont plus faciles à employer que d’autres.
 <ul>
-<li>avec des mégadonnées, la complexité est un facteur important à considérer pour le choix de la méthode.</li>
-<li>la plupart du temps, le choix des hyperparamètres nécessite un peu d’essai-erreur.</li>
-<li>la segmentation peut être médiocre parce que les hyperparamètres sont mal choisis.</li>
+<li>Avec des mégadonnées, la complexité est un facteur important à considérer pour le choix de la méthode.</li>
+<li>La plupart du temps, le choix des hyperparamètres nécessite un peu d’essai et erreur.</li>
+<li>La segmentation peut être médiocre parce que les hyperparamètres sont mal choisis.</li>
 </ul></li>
 <li>Le nombre de groupes peut être guidé par le contexte: les formules et indicateurs de qualité servent de balises.</li>
 </ul>

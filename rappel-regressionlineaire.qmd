@@ -1,4 +1,4 @@
-# Régression linéaire { .appendix #regression-lineaire}
+# Régression linéaire {.appendix #regression-lineaire}
 
 ```{r}
 #| label: setup
@@ -62,7 +62,7 @@ Il est important de remarquer que ce modèle est linéaire dans les coefficients
 Le modèle linéaire est sans conteste le modèle statistique le plus couramment employé. Une grande panoplie de tests statistiques (tests-*t*, analyse de variance) sont des cas particuliers de régression linéaire.
 
 
-Afin de rendre plus tangible le concept et les notions qui touchent aux modèles linéaires, on présentera ces notions dans le cadre d'un exemple. On s'intéresse à la discrimination salariale dans un collège américain, au sein duquel une étude a été réalisée pour investiguer s'il existait des inégalités salariales entre hommes et femmes. Le jeu de données `college` contient les variables suivantes
+Afin de rendre plus tangible le concept et les notions qui touchent aux modèles linéaires, on présentera ces notions dans le cadre d'un exemple. On s'intéresse à la discrimination salariale dans un collège américain, au sein duquel une étude a été réalisée pour investiguer s'il existait des inégalités salariales entre hommes et femmes. Le jeu de données `salaireprof` contient les variables suivantes
 
 -   `salaire`: salaire de professeurs pendant l'année académique 2008--2009 (en milliers de dollars USD).
 -   `echelon`: échelon académique, soit adjoint (`adjoint`), aggrégé (`aggrege`) ou titulaire (`titulaire`).
@@ -79,14 +79,14 @@ Une analyse exploratoire des données est de mise avant d'ébaucher un modèle. 
 #| echo: false
 #| cache: true
 #| out-width: '90%'
-#| fig-cap: "Analyse exploratoire des données $\\texttt{college}$: répartition des salaires en fonction de l'échelon et du nombre d'années de service"
-data(college, package = "hecmodstat")
-p1 <- ggplot(college, aes(y = salaire, x = echelon)) +
+#| fig-cap: "Analyse exploratoire des données $\\texttt{salaireprof}$: répartition des salaires en fonction de l'échelon et du nombre d'années de service"
+data(salaireprof, package = "hecmulti")
+p1 <- ggplot(salaireprof, aes(y = salaire, x = echelon)) +
 geom_boxplot() +
 xlab("échelon académique") +
 ylab("salaire (en milliers de dollars USD)") +
   theme_classic()
-p2 <- ggplot(college, aes(x = service, y = salaire, col = sexe)) +
+p2 <- ggplot(salaireprof, aes(x = service, y = salaire, col = sexe)) +
 geom_point() +
 facet_wrap(~ echelon, scales = "free") +
 xlab("années de service") +
@@ -100,7 +100,7 @@ Ainsi, le salaire augmente avec les années, mais la variabilité croît égalem
 #| eval: true
 #| echo: false
 #| tbl-cap: "Tableau de contingence donnant le nombre de professeurs du collège par sexe et par échelon académique."
-knitr::kable(table(college$sexe, college$echelon),
+knitr::kable(table(salaireprof$sexe, salaireprof$echelon),
        booktabs = TRUE)
 ```
 
@@ -109,8 +109,8 @@ Le modèle linéaire simple n'inclut qu'une variable explicative et consiste en 
 **Programmation**: Pour ajuster un modèle linéaire avec **R**, on utilise la fonction `lm`. Le premier argument est une formule, sous la forme `y ~ x` où `y` est la variable réponse et `x` la variable explicative. La fonction utilisera (si disponible) les variables disponibles dans la base de données spécifiée via l'argument `data`. Ici, notre variable réponse est le `salaire` et nous tentons d'expliquer ce dernier en fonction du nombre d'années de service, ici représenté par la variable continue `service`.
 
 ```{r}
-data(college, package = "hecmodstat")
-modlin1 <- lm(salaire ~ service, data = college)
+data(salaireprof, package = "hecmulti")
+modlin1 <- lm(salaire ~ service, data = salaireprof)
 summary(modlin1)
 ```
 
@@ -129,8 +129,8 @@ Notez qu'on ignore systématiquement les valeurs-$p$ pour la première ligne qui
 #| eval: true
 #| echo: false
 #| fig-cap: "Régression linéaire simple pour le salaire en fonction des années de service; la droite satisfait le critère des moindres carrés."
-modlin1 <- lm(salaire ~ service, data = college)
-ggplot(data = college, aes(x = service, y = salaire)) +
+modlin1 <- lm(salaire ~ service, data = salaireprof)
+ggplot(data = salaireprof, aes(x = service, y = salaire)) +
 geom_point() +
 geom_smooth(method = "lm", formula = "y ~ x",  se = FALSE, col = "black") +
 labs(x = "années de service",
@@ -158,10 +158,10 @@ Que représente les moindres carrés en deux dimensions? L'estimateur est celui 
 #| message: false
 #| warning: false
 #| fig-cap: "Illustration des résidus ordinaires ajoutés à la droite de régression."
-ols <- lm(salaire ~ service, data = college)
+ols <- lm(salaire ~ service, data = salaireprof)
 res <- resid(ols)
-vlines <- data.frame(x1 = college$service, y1 = fitted(ols), y2 = fitted(ols)+ res)
-ggg <- ggplot2::ggplot(data = college, aes(x = service, y = salaire)) +
+vlines <- data.frame(x1 = salaireprof$service, y1 = fitted(ols), y2 = fitted(ols)+ res)
+ggg <- ggplot2::ggplot(data = salaireprof, aes(x = service, y = salaire)) +
   geom_point() +
 geom_smooth(method = "lm", se = FALSE, col ="black") +
 labs(x = "années de service",
@@ -188,8 +188,8 @@ Il est d'usage d'inclure une colonne de uns pour capturer l'ordonnée à l'origi
 mean(resid(modlin1))
 # Modèle de base avec uniquement l'ordonnée à l'origine
 # beta0 estimée comme moyenne
-coef(lm(salaire ~ 1, data = college))
-mean(college$salaire)
+coef(lm(salaire ~ 1, data = salaireprof))
+mean(salaireprof$salaire)
 ```
 
 
@@ -223,10 +223,10 @@ Un modèle linéaire qui contient uniquement une variable binaire $\mathrm{X}$ c
 #| message: false
 #| warning: false
 #| cache: true
-#| fig-cap: "Modèle linéaire simple pour les données $\\texttt{college}$ en fonction de la variable binaire sexe: bien que le modèle définisse une ligne, seule la valeur en $0$ et $1$ est réalisable."
-college$sexebin <- as.integer(relevel(college$sexe, ref = "homme")) - 1L
-coefs <- coef(lm(data = college, salaire ~ sexebin))
-ggplot(data = college, aes(x = sexebin, y = salaire, group = sexe)) +
+#| fig-cap: "Modèle linéaire simple pour les données $\\texttt{salaireprof}$ en fonction de la variable binaire sexe: bien que le modèle définisse une ligne, seule la valeur en $0$ et $1$ est réalisable."
+salaireprof$sexebin <- as.integer(relevel(salaireprof$sexe, ref = "homme")) - 1L
+coefs <- coef(lm(data = salaireprof, salaire ~ sexebin))
+ggplot(data = salaireprof, aes(x = sexebin, y = salaire, group = sexe)) +
 see::geom_violindot(aes(col = sexe), position_dots = position_jitter(width = 0.05)) +
 geom_abline(intercept = coefs[1], slope = coefs[2]) +
 theme(legend.position = c(.95, .95),
@@ -241,12 +241,12 @@ theme_classic()
 
 ```{r}
 # Catégorie de base: femme (première en ordre alphanumérique)
-levels(college$sexe)
+levels(salaireprof$sexe)
 # Coefficients du modèle: moyenne des femmes et différentiel homme vs ref
-coef(lm(salaire ~ sexe, data = college))
+coef(lm(salaire ~ sexe, data = salaireprof))
 ```
 
-Si on ajuste un modèle de régression linéaire pour les données `college`, on obtient un salaire moyen de $\widehat{\beta}_0=`r round(1000*mean(college$salaire[college$sexe == "femme"]),0)`$ dollars USD pour les femmes et une différence moyenne de salaire entre hommes et femmes  de $\widehat{\beta}_1=`r round(-1000*(mean(college$salaire[college$sexe == "homme"]) -mean(college$salaire[college$sexe == "femme"])), 0) `$ dollars US. Puisque l'estimé est positif, les femmes sont moins payés: ce modèle n'est en revanche pas suffisant pour déterminer s'il y a inéquité salariale: la @fig-droitenuage montre que le nombre d'années de service et l'échelon académique impactent fortement le salaire, or il n'est pas dit que la répartition des sexes au sein des échelons est comparable (et ce n'est pas le cas).
+Si on ajuste un modèle de régression linéaire pour les données `salaireprof`, on obtient un salaire moyen de $\widehat{\beta}_0=`r round(1000*mean(salaireprof$salaire[salaireprof$sexe == "femme"]),0)`$ dollars USD pour les femmes et une différence moyenne de salaire entre hommes et femmes  de $\widehat{\beta}_1=`r round(-1000*(mean(salaireprof$salaire[salaireprof$sexe == "homme"]) -mean(salaireprof$salaire[salaireprof$sexe == "femme"])), 0) `$ dollars US. Puisque l'estimé est positif, les femmes sont moins payés: ce modèle n'est en revanche pas suffisant pour déterminer s'il y a inéquité salariale: la @fig-droitenuage montre que le nombre d'années de service et l'échelon académique impactent fortement le salaire, or il n'est pas dit que la répartition des sexes au sein des échelons est comparable (et ce n'est pas le cas).
 
 Même si le modèle linéaire simple définit une droite, cette dernière n'a de sens qu'en $0$ ou $1$; la @fig-graphcollegesexe montre un estimé de la densité et la répartition des points (décalés) dans l'échantillon selon le sexe, avec la moyenne de chacun. On voit bien que la droite passe par la moyenne de chaque groupe.
 
@@ -407,7 +407,7 @@ knitr::include_graphics('figures/hyperplan_auto.png')
 :::{#exm-inequite-salariale}
 
 ## Inéquité salariale dans un collège américain"
-On considère les données `college` et un modèle de régression qui inclut le sexe, l'échelon académique, le nombre d'années de service et le domaine d'expertise (appliquée ou théorique).
+On considère les données `salaireprof` et un modèle de régression qui inclut le sexe, l'échelon académique, le nombre d'années de service et le domaine d'expertise (appliquée ou théorique).
 
 Si on multiplie le salaire par mille, la moyenne théorique de notre modèle linéaire  s'écrit
 \begin{align*}
@@ -419,9 +419,9 @@ Si on multiplie le salaire par mille, la moyenne théorique de notre modèle lin
 #| label: tbl-collegecoefs
 #| eval: true
 #| echo: false
-#| tbl-cap: "Estimés des coefficients du modèle linéaire pour les données $\\texttt{college}$ (en dollars USD, arrondis à l'unité)."
-college$sexe <- relevel(x = college$sexe, ref = "homme")
-modlin2 <- lm(salaire ~  sexe + domaine + echelon + service , data = college)
+#| tbl-cap: "Estimés des coefficients du modèle linéaire pour les données $\\texttt{salaireprof}$ (en dollars USD, arrondis à l'unité)."
+salaireprof$sexe <- relevel(x = salaireprof$sexe, ref = "homme")
+modlin2 <- lm(salaire ~  sexe + domaine + echelon + service , data = salaireprof)
 coefs_modlin2 <- round(coef(modlin2)*1000,0)
 names(coefs_modlin2) <- paste0("\\(\\widehat{\\beta}_",0:5,"\\)")
 knitr::kable(t(coefs_modlin2), booktabs = TRUE, escape = FALSE)
@@ -430,7 +430,7 @@ knitr::kable(t(coefs_modlin2), booktabs = TRUE, escape = FALSE)
 
 ```{r}
 modlin2 <- lm(salaire ~  sexe + domaine + echelon + service,
-              data = college)
+              data = salaireprof)
 summary(modlin2)
 ```
 

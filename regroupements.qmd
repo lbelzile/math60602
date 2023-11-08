@@ -666,6 +666,7 @@ rownames(kmoy5_tab)[1] <- "décompte"
 kmoy5_tab[1,] <- as.character(table(kmoy5$cluster))
 knitr::kable(kmoy5_tab, 
              align = "r", 
+             booktabs = TRUE,
              row.names = TRUE, 
              col.names = 1:5) |>
       kableExtra::kable_styling()
@@ -861,12 +862,12 @@ L'algorithme des $K$-moyennes fait une allocation rigide: chaque observation est
 Peut-être plus problématique, la distance Euclidienne non pondérée impose des regroupements convexes et sphériques de taille semblable: la qualité des regroupements des $K$ moyennes est donc mauvaise si les regroupements ne sont pas sphériques ou globulaires, ou sont de concentrations inégales.
 
 
-Une approche plus générale considère que $X_1, \ldots, X_p$ sont tirées d'un mélange à $K$ composantes de lois spécifiées. Généralement, on choisit une loi normale multidimensionnelle pour le $k$e groupe $G$,
+Une approche plus générale considère que $X_1, \ldots, X_p$ sont tirées d'un mélange à $K$ composantes de lois spécifiées. Généralement, on choisit une loi normale multidimensionnelle pour le $k$e groupe $G$ de moyenne $\boldsymbol{\mu}_k$ et de variance $\boldsymbol{\Sigma}_k$.
+<!--
 \begin{align*}
 \boldsymbol{X} \mid G=k \sim \mathsf{No}_p(\boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k)
 \end{align*}
 On suppose qu'on a $K$ groupes, chacun caractérisé par une densité de dimension $p$, soit $f_k(\boldsymbol{X}_i;\boldsymbol{\theta}_k)$ si $\boldsymbol{X}_i$ provient du groupe $k$ pour $k=1, \ldots, K$.
-
 
 On réécrit la vraisemblance en fonction de $\pi_k$, la probabilité qu'une observation $\mathbf{X}_i$ tombe dans le groupe $k$,
 \begin{align*}
@@ -874,7 +875,7 @@ On réécrit la vraisemblance en fonction de $\pi_k$, la probabilité qu'une obs
 f_{k}(\boldsymbol{X}_i,
 \boldsymbol{\theta}_{k}).
 \end{align*}
-
+-->
 
 Si on savait de quelle composante l'observation originait, on pourrait simplement obtenir les estimation du maximum de vraisemblance pour les paramètres de moyenne et de variance. Inversement, si on avait les valeurs des paramètres, on pourrait déterminer de quel composante l'observation est la plus susceptible de parvenir à l'aide des poids. Le modèle est estimé à l'aide de l'algorithme d'espérance-maximisation, qui itère entre l'estimation des probabilités, et celles des autres composantes. Le paramètres retournés correspondent à un maximum local, et on peut également obtenir un estimé de la variabilité de ces paramètres. Ainsi, le mélange de modèle nous donne accès à la fois à l'incertitude des paramètres et à la probabilité $\pi_k$ qu'une observation appartiennent au groupe $G_k$.
 
@@ -1276,16 +1277,16 @@ est de déduire la structure présente dans un ensemble de points sans étiquett
 - L'objectif d'une analyse de regroupement est de mettre en commun des observations de telle sorte que
 les observations d’un même groupe soient le plus semblables possible, et que les groupes soient le plus différent possible les uns des autres.
 - Chaque observation se voit assigner une étiquette de groupe.
-- On procède ensuite à une analyse descriptive, segment par segment, à l'aide de prototypes
+- On procède ensuite à une analyse descriptive, segment par segment, à l'aide de prototypes.
 - L’analyse de regroupement est une méthode d’apprentissage non-supervisée: il n'y a pas de véritable séparation.
-- La segmentation n'est utile que si elle a une valeurs ajoutée.
+- La segmentation n'est utile que si elle a une valeur ajoutée.
 - Plusieurs choix de l’analyste (mesure de dissemblance, algorithme ou méthode de regroupement, choix des hyperparamètres) peuvent donner une segmentation différente. L’analyste a une grande marge de manoeuvre.
 - Chaque algorithme de segmentation a des avantages et inconvénients.
 - L'algorithme des $K$-moyennes est le plus employé et son faible coût permet son utilisation avec des mégadonnées.
 - Aucun algorithme ne performe uniformément mieux, mais certains sont plus faciles à employer que d’autres.
-   - avec des mégadonnées, la complexité est un facteur important à considérer pour le choix de la méthode.
-   - la plupart du temps, le choix des hyperparamètres nécessite un peu d’essai-erreur.
-   - la segmentation peut être médiocre parce que les hyperparamètres sont mal choisis.
+   - Avec des mégadonnées, la complexité est un facteur important à considérer pour le choix de la méthode.
+   - La plupart du temps, le choix des hyperparamètres nécessite un peu d’essai et erreur.
+   - La segmentation peut être médiocre parce que les hyperparamètres sont mal choisis.
 - Le nombre de groupes peut être guidé par le contexte: les formules et indicateurs de qualité servent de balises.
 
 

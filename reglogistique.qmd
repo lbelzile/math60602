@@ -5,8 +5,9 @@
 ```{r}
 #| label: setup
 #| file: "_common.R"
-#| include: true
+#| include: false
 #| message: false
+#| eval: true
 #| warning: false
 #| echo: false
 ```
@@ -204,7 +205,7 @@ Dans le cas d'un modèle de régression linéaire multiple de la forme $Y_i \sim
 \begin{align*}
  \ell(\boldsymbol{\beta}, \sigma^2) =- \frac{n}{2} \ln(2\pi\sigma^2) - \frac{1}{2\sigma^2}\sum_{i=1}^n (Y_i- \beta_0 - \beta_1 \mathrm{X}_{1i} - \cdots - \beta_p\mathrm{X}_{ip})^2.
 \end{align*}
-Puisque le premier terme ne dépend pas des paramètres $\boldsymbol{\beta}$, il est clair que maximiser cette fonction de $\boldsymbol{\beta}$ revient à minimiser $\sum_{i=1}^n (Y_i- \beta_0 - \beta_1 \mathrm{X}_{1i} - \cdots - \beta_p\mathrm{X}_{ip})^2$:  ce critère est exactement le même que celui des moindres carrés. Par conséquent, les estimations des paramètres $\boldsymbol{\beta}$ provenant de la méthode des moindres carrés peuvent être vues comme étant des estimateurs du maximum de vraisemblance sous l'hypothèse de normalité et d'homoscédasticité des observations; il est même possible d'obtenir une formule explicite pour le calcul des estimateurs.
+Puisque le premier terme ne dépend pas des paramètres $\boldsymbol{\beta}$, il est clair que maximiser cette fonction de $\boldsymbol{\beta}$ revient à minimiser $\sum_{i=1}^n (Y_i- \beta_0 - \beta_1 \mathrm{X}_{1i} - \cdots - \beta_p\mathrm{X}_{ip})^2$:  ce critère est exactement le même que celui des moindres carrés. Par conséquent, les estimations des paramètres $\boldsymbol{\beta}$ provenant de la méthode des moindres carrés peuvent être vues comme étant des estimateurs du maximum de vraisemblance sous l'hypothèse de normalité et d'homoscédasticité des observations; il est même possible d'obtenir une formule explicite pour le calcul dest estimateurs.
 
 Dans le cas de la régression logistique, la fonction de log-vraisemblance s'écrit
 \begin{align*}
@@ -477,7 +478,7 @@ Prenons le coefficient associé à l'âge ($\mathrm{X}_5$) comme exemple. Le par
 N'oubliez pas la nuance suivante concernant l'interprétation d'un test lorsque plusieurs variables explicatives font partie du modèle. Si un paramètre n'est pas significativement différent de zéro, cela ne veut pas dire qu'il n'y a pas de lien entre la variable correspondante et $Y$. Cela veut seulement dire qu'il n'y a pas de lien significatif une fois que les autres variables sont dans le modèle. 
 
 
-L'interprétation des variables catégorielles est analogue à celle faite en régression linéaire. On peut aussi interpréter individuellement les paramètres des indicatrices: pour la variable binaire $\mathrm{I}(\mathrm{X}_6=2)$, qui vaut un lorsque $\mathrm{X}_6=2$ et zéro sinon, lorsque les autres variables demeurent fixes, les personnes ayant assisté entre six et 10 fois à un rodéo au cours de la dernière année voient leur cote multipliée par $\exp(`r sprintf(fmt = "%.3f", round(as.numeric(modele2$coefficients['x62']), 2))`)=`r sprintf(round(exp(as.numeric(modele2$coefficients['x62'])),3), fmt = "%.3f")`$ par rapport aux personnes ayant assisté plus de dix fois. Ce paramètre est significativement différent de zéro car sa valeur-$p$ est négligeable; l'intervalle de confiance à 95\% pour le  rapport de cotes, basé sur la vraisemblance profilée, est [`r round(as.numeric(exp(ci2["x62",1])), 2)`; `r round(as.numeric(exp(ci2["x62",2])), 2)`] et la valeur 1 (qui correspond à un rapport de cote constant) n'est pas dans l'intervalle.  Ainsi, il y a une différence significative entre les gens qui ont assisté à 10 rodéos ou plus et les gens qui ont assisté à 5 rodéos ou moins, pour ce qui est de l'intérêt à acheter un produit recommandé par le PRCA.
+L'interprétation des variables catégorielles est analogue à celle faite en régression linéaire. On peut aussi interpréter individuellement les paramètres des indicatrices: pour $\mathrm{I}(\mathrm{X}_6=2)$, lorsque les autres variables demeurent fixes, les personnes ayant assisté entre six et 10 fois à un rodéo au cours de la dernière année voient leur cote multipliée par $\exp(`r sprintf(fmt = "%.3f", round(as.numeric(modele2$coefficients['x62']), 2))`)=`r sprintf(round(exp(as.numeric(modele2$coefficients['x62'])),3), fmt = "%.3f")`$ par rapport aux personnes ayant assisté plus de di fois. Ce paramètre est significativement différent de zéro car sa valeur-$p$ est négligeable; l'intervalle de confiance à 95\% pour le  rapport de cotes, basé sur la vraisemblance profilée, est [`r round(as.numeric(exp(ci2["x62",1])), 2)`; `r round(as.numeric(exp(ci2["x62",2])), 2)`] et la valeur 1 (qui correspond à un rapport de cote constant) n'est pas dans l'intervalle.  Ainsi, il y a une différence significative entre les gens qui ont assisté à 10 rodéos ou plus et les gens qui ont assisté à 5 rodéos ou moins, pour ce qui est de l'intérêt à acheter un produit recommandé par le PRCA.
 
 
 Si on désire comparer les deux modalités $\mathrm{X}_6=2$ et $\mathrm{X}_6=3$, il suffit de changer la modalité de référence de `x6` et d'exécuter le modèle à nouveau. Une alternative est de calculer le rapport de cotes pour ces deux modalités.
@@ -665,8 +666,7 @@ ggplot(data = data.frame(x = loocv_prob), aes(x = x, y = after_stat(density))) +
     labs(x = "probabilité d'achat prédite", 
          y = "densité") + 
     scale_y_continuous(expand = c(0,0)) +  
-    scale_x_continuous(expand = c(0,0)) + 
-  theme_classic()
+    scale_x_continuous(expand = c(0,0))
 #  Modèle complet et valeurs prédites
 train_prob <- fitted(glm(data = train, 
                          formula = form, 
