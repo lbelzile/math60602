@@ -25,7 +25,7 @@ Pour déterminer les mécanismes de survie en présence, il peut être utile de 
 knitr::include_graphics("figures/Lexis_censure.png")
 ```
 
-La @fig-lexis montre des courbes fictives. On trace une droite de pente 1 représentant la durée en fonction du temps (date au calendrier) etl a fenêtre définit la période de collecte de donnée. 
+La @fig-lexis montre des courbes fictives. On trace une droite de pente 1 représentant la durée en fonction du temps (date au calendrier) et la fenêtre définit la période de collecte de donnée. 
 La censure est indiquée par des cercles, les événements par des croix.
 
 On parle de censure lorsque le temps réel de l'événement n'est pas observé (information partielle).
@@ -368,7 +368,7 @@ Soit $h(t; \boldsymbol{x})$ la valeur de la fonction de risque au temps  pour un
 \begin{align*}
 h(t; \boldsymbol{x}) = h_0(t)\exp(\beta_1x_1 + \cdots + \beta_p x_p)
 \end{align*}
-où $h_0(t)$ est la fonction de risque de base; il n'est pas nécessaire de spécifier cette dernière, d'où la nature semiparamétrique du modèle de Cox. Le postulat de risques proportionnels implique que le terme de droite $\exp(\mathbf{X}\boldsymbol{\beta})$ ne dépend pas du temps, et plus particulièrement $\beta_1, \ldots, \beta_p$ ne dépend pas du temps. Nous verrons subséquemment une extension qui permet de prendre en compte les variables explicatives dont la valeur change dans le temps en scindant ces observations.
+où $h_0(t)$ est la fonction de risque de base; il n'est pas nécessaire de spécifier cette dernière, d'où la nature semiparamétrique du modèle de Cox. Le postulat de risques proportionnels implique que le terme de droite $\exp(\mathbf{X}\boldsymbol{\beta})$ ne dépend pas du temps, et plus particulièrement $\beta_1, \ldots, \beta_p$ ne varie pas en fonction de $t$. Nous verrons subséquemment une extension pour accomoder ce cas de figure. 
 
 Lorsque toutes les variables explicatives prennent la valeur zéro, $\boldsymbol{X}=\boldsymbol{0}$, on recouvre $h(t; \boldsymbol{0})= h_0(t)$. Par conséquent, la fonction $h_0(t)$ peut être interprétée comme  la fonction de risque lorsque toutes les variables explicatives valent zéro. Toutefois, tout comme la valeur de l'ordonnée à l'origine dans un modèle de régression linéaire, cette interprétation n'est pas nécessairement valide si la situation où toutes les variables explicatives valent zéro n'est pas possible ou si elle ne survient pas dans notre échantillon.
 
@@ -398,7 +398,7 @@ summary(cox1)
 car::Anova(cox1, type = 3)
 ```
 
-La sortie inclut notamment des tests de significativité globale basés sur la vraisemblance comparant le modèle sans variable explicative avec celui ajusté (rapport de vraisemblance, score et Wald). Ces trois statistiques ciblent la même hypothèse, aussi on peut ne s'attarder qu'au test du rapport de vraisemblance, qui est plus fiable et généralement plus puissant. Le tableau des coefficients donne les estimations $\widehat{\beta}$. Le rapport de risque pour `sexe=1` versus `sexe=0` est $\exp(\widehat{\beta})$, tandis qu<on obtiendrait le rapport de risque pour `sexe=0` versus `sexe=1`, soit $\exp(-\widehat{\beta})$. Les statistiques de test et la valeur-$p$ associée sont basées sur la statistique de Wald, soit $\widehat{\beta}/\mathsf{se}(\widehat{\beta})$, tandis que les intervalles de confiance à 95% pour le rapport de risque sont des intervalles de Wald de la forme $\exp\{\widehat{\beta} \pm 1.96 \cdot \mathsf{se}(\widehat{\beta})\}$ pour le rapport de risque. Un rapport de risque de 1 signifie que le risque n'est pas affecté par la variable explicative. Ici, le test correspondant à l'hypothèse nulle $\beta=0$ ne mène pas au rejet de l'hypothèse qui veut que la variable n'impacte pas le risque. On pourrait obtenir les intervalle
+La sortie inclut notamment des tests de significativité globale basés sur la vraisemblance comparant le modèle sans variable explicative avec celui ajusté (rapport de vraisemblance, score et Wald). Ces trois statistiques ciblent la même hypothèse, aussi on peut ne s'attarder qu'au test du rapport de vraisemblance, qui est plus fiable et généralement plus puissant. Le tableau des coefficients donne les estimations $\widehat{\beta}$. Le rapport de risque pour `sexe=1` versus `sexe=0` est $\exp(\widehat{\beta})$, tandis qu'on obtiendrait le rapport de risque pour `sexe=0` versus `sexe=1`, soit $\exp(-\widehat{\beta})$. Les statistiques de test et la valeur-$p$ associée sont basées sur la statistique de Wald, soit $\widehat{\beta}/\mathsf{se}(\widehat{\beta})$, tandis que les intervalles de confiance à 95% pour le rapport de risque sont des intervalles de Wald de la forme $\exp\{\widehat{\beta} \pm 1.96 \cdot \mathsf{se}(\widehat{\beta})\}$ pour le rapport de risque. Un rapport de risque de 1 signifie que le risque n'est pas affecté par la variable explicative. Ici, le test correspondant à l'hypothèse nulle $\beta=0$ ne mène pas au rejet de l'hypothèse qui veut que la variable n'impacte pas le risque. On pourrait obtenir les intervalle
 
 ```{r}
 #| label: tbl-cox1 
