@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.5.21">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="description" content="MATH 60602 - Analyse multidimensionnelle appliquée, HEC Montréal.">
 
-<title>MATH 60602 - Analyse multidimensionnelle appliquée - 6&nbsp; Réduction de la dimension</title>
+<title>MATH 60602 - Analyse multidimensionnelle appliquée – 6&nbsp; Réduction de la dimension</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,7 +23,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -82,7 +82,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "Pas de résultats",
     "search-matching-documents-text": "documents trouvés",
@@ -91,12 +97,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "correspondance de plus dans ce document",
     "search-more-matches-text": "correspondances de plus dans ce document",
     "search-clear-button-title": "Effacer",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Annuler",
     "search-submit-button-title": "Envoyer",
     "search-label": "Search"
   }
 }</script>
-
 <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 <link href="site_libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet">
@@ -104,6 +110,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -114,12 +147,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./analysefactorielle.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Réduction de la dimension</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./analysefactorielle.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Réduction de la dimension</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -129,13 +162,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">MATH 60602 - Analyse multidimensionnelle appliquée</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/lbelzile/math60602/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="./MATH60602.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="https://github.com/lbelzile/math60602/" title="Code source" class="quarto-navigation-tool px-1" aria-label="Code source"><i class="bi bi-github"></i></a>
+    <a href="./MATH60602.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -209,7 +242,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -237,7 +270,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#scores-factoriels" id="toc-scores-factoriels" class="nav-link" data-scroll-target="#scores-factoriels"><span class="header-section-number">6.6.3</span> Scores factoriels</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lbelzile/math60602/edit/master/analysefactorielle.qmd" class="toc-action">Éditer cette page</a></p></div></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/math60602/edit/master/analysefactorielle.qmd" class="toc-action"><i class="bi bi-github"></i>Éditer cette page</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -257,7 +290,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
+
 
 <section id="introduction" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">6.1</span> Introduction</h2>
@@ -287,14 +322,18 @@ r_{j, k} &amp;= \frac{\widehat{\mathsf{Co}}(X_j, X_k)}{\{\widehat{\mathsf{Va}}(X
 <ul>
 <li>Le signe de la corrélation détermine l’orientation de la pente (négative ou positive)</li>
 <li>Plus la corrélation est près de 1 en valeur absolue, plus les points auront tendance à être alignés autour d’une droite.</li>
-<li>Lorsque la corrélation est presque nulle, les points n’auront pas tendance à être alignés autour d’une droite. Il est très important de noter que cela n’implique pas qu’il n’y a pas de relation entre les deux variables. Cela implique seulement qu’il n’y a pas de <strong>relation linéaire</strong> entre les deux variables. La <a href="#fig-datasaurus">Figure&nbsp;<span>6.1</span></a> montre bien ce point: ces jeux de données ont la même corrélation linéaire (quasi-nulle), mais ne sont pas clairement pas indépendantes puisqu’elles permettent de dessiner un dinosaure ou une étoile.</li>
+<li>Lorsque la corrélation est presque nulle, les points n’auront pas tendance à être alignés autour d’une droite. Il est très important de noter que cela n’implique pas qu’il n’y a pas de relation entre les deux variables. Cela implique seulement qu’il n’y a pas de <strong>relation linéaire</strong> entre les deux variables. La <a href="#fig-datasaurus" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-datasaurus</span></a> montre bien ce point: ces jeux de données ont la même corrélation linéaire (quasi-nulle), mais ne sont pas clairement pas indépendantes puisqu’elles permettent de dessiner un dinosaure ou une étoile.</li>
 </ul>
 <div class="cell" data-layout-align="center" data-hash="analysefactorielle_cache/html/fig-datasaurus_123937698f0381490aaf11464bfbd2b7">
 <div class="cell-output-display">
-<div id="fig-datasaurus" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="figures/DataSaurusDozen.gif" class="img-fluid figure-img" style="width:80.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;6.1: Datasaurus (Alberto Cairo): une douzaine de jeux de données qui ont les mêmes statistiques descriptives (à deux décimales près) et dont les deux variables sont très faiblement corrélées.</figcaption>
+<div id="fig-datasaurus" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-datasaurus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/DataSaurusDozen.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-datasaurus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.1: Datasaurus (Alberto Cairo): une douzaine de jeux de données qui ont les mêmes statistiques descriptives (à deux décimales près) et dont les deux variables sont très faiblement corrélées.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -335,10 +374,15 @@ r_{j, k} &amp;= \frac{\widehat{\mathsf{Co}}(X_j, X_k)}{\{\widehat{\mathsf{Va}}(X
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(factor)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-layout-align="center" data-hash="analysefactorielle_cache/html/tbl-corrmat_e824efbb2e22200fe6d3e4751a446d1f">
+<div id="tbl-corrmat" class="cell quarto-float anchored" data-hash="analysefactorielle_cache/html/tbl-corrmat_e824efbb2e22200fe6d3e4751a446d1f" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-corrmat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;6.1: Matrice de corrélation de <code>factor</code>.
+</figcaption>
+<div aria-describedby="tbl-corrmat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-corrmat" class="anchored">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Tableau&nbsp;6.1: Matrice de corrélation de <code>factor</code>.</caption>
+<div>
+<table class="table do-not-create-environment cell table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th"></th>
@@ -539,26 +583,38 @@ r_{j, k} &amp;= \frac{\widehat{\mathsf{Co}}(X_j, X_k)}{\{\widehat{\mathsf{Va}}(X
 </tr>
 </tbody>
 </table>
+
+
 </div>
-
-
+</div>
+</div>
+</figure>
 </div>
 </div>
 <div class="cell" data-hash="analysefactorielle_cache/html/fig-corrmat_f200d64c6dbbfb5a176cc8181cb23291">
 <div class="cell-output-display">
-<div id="fig-corrmat" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="analysefactorielle_files/figure-html/fig-corrmat-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;6.2: Corrélogramme de la base de données <code>factor</code>.</figcaption>
+<div id="fig-corrmat" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-corrmat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="analysefactorielle_files/figure-html/fig-corrmat-1.png" class="img-fluid figure-img" style="width:80.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-corrmat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.2: Corrélogramme de la base de données <code>factor</code>.
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell" data-hash="analysefactorielle_cache/html/tbl-statdescriptfactorhtml_13a94be9a88ae4dcf24c33ef88e089c1">
+<div id="tbl-statdescriptfactorhtml" class="cell quarto-float anchored" data-hash="analysefactorielle_cache/html/tbl-statdescriptfactorhtml_13a94be9a88ae4dcf24c33ef88e089c1">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-statdescriptfactorhtml-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;6.2: Statistiques descriptives des 12 variables du jeu de données factor.
+</figcaption>
+<div aria-describedby="tbl-statdescriptfactorhtml-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-statdescriptfactorhtml" class="anchored">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Tableau&nbsp;6.2: Statistiques descriptives des 12 variables du jeu de données factor.</caption>
+<div>
+<table class="table do-not-create-environment cell table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th style="text-align: right;" data-quarto-table-cell-role="th">moyenne</th>
@@ -655,12 +711,15 @@ r_{j, k} &amp;= \frac{\widehat{\mathsf{Co}}(X_j, X_k)}{\{\widehat{\mathsf{Va}}(X
 </tr>
 </tbody>
 </table>
-</div>
 
 
 </div>
 </div>
-<p>On voit dans la <a href="#fig-corrmat">Figure&nbsp;<span>6.2</span></a> que quelques groupes de variables sont corrélés entre eux. On peut également regrouper certaines questions sous des thèmes manuellement: le but de l’analyse factorielle sera d’automatiser ce regroupement.</p>
+</div>
+</figure>
+</div>
+</div>
+<p>On voit dans la <a href="#fig-corrmat" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-corrmat</span></a> que quelques groupes de variables sont corrélés entre eux. On peut également regrouper certaines questions sous des thèmes manuellement: le but de l’analyse factorielle sera d’automatiser ce regroupement.</p>
 </section>
 <section id="analyse-en-composantes-principales" class="level2" data-number="6.4">
 <h2 data-number="6.4" class="anchored" data-anchor-id="analyse-en-composantes-principales"><span class="header-section-number">6.4</span> Analyse en composantes principales</h2>
@@ -678,15 +737,19 @@ C_j &amp;= \underset{\text{somme de poids fois variables explicatives}}{w_{j1} X
 <p>Si on conserve toutes les composantes principales, cela revient à changer le système de coordonnées dans lequel sont exprimées nos observations en effectuant une rotation: avec deux variables, on on trouve la direction dans le système 2D dans lequel l’étendue est la plus grande. Si une simple rotation peut sembler inutile, la méthode est fort utile en haute dimension. On espère en général qu’un petit nombre de composantes principales réussira à expliquer la plus grande partie de la variance totale.</p>
 <div class="cell" data-layout-align="center" data-hash="analysefactorielle_cache/html/fig-acprotation_8b94f7a2d8fc3ab606c01aa10b555bea">
 <div class="cell-output-display">
-<div id="fig-acprotation" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="analysefactorielle_files/figure-html/fig-acprotation-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;6.3: Nuage de points avant (gauche) et après (droite) analyse en composantes principales. Les directions des composantes principales (lignes pleines et traitillés), qui forment un angle droit, sont ajoutées au nuage de points à gauche. On peut constater que la corrélation entre les deux composantes principales est nulle.</figcaption>
+<div id="fig-acprotation" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-acprotation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="analysefactorielle_files/figure-html/fig-acprotation-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-acprotation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.3: Nuage de points avant (gauche) et après (droite) analyse en composantes principales. Les directions des composantes principales (lignes pleines et traitillés), qui forment un angle droit, sont ajoutées au nuage de points à gauche. On peut constater que la corrélation entre les deux composantes principales est nulle.
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>La <a href="#fig-acprotation">Figure&nbsp;<span>6.3</span></a> démontre cette décomposition sur des données bidimensionnelles simulées. La variance des données dans le premier panneau est 13.51 pour l’axe des abscisse et 6.43 pour l’axe des ordonnées avec une corrélation de 0.86, à comparer avec des variances de 18.65 et 1.21 et une corrélation nulle entre les deux composantes principales.</p>
+<p>La <a href="#fig-acprotation" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-acprotation</span></a> démontre cette décomposition sur des données bidimensionnelles simulées. La variance des données dans le premier panneau est 13.51 pour l’axe des abscisse et 6.43 pour l’axe des ordonnées avec une corrélation de 0.86, à comparer avec des variances de 18.65 et 1.21 et une corrélation nulle entre les deux composantes principales.</p>
 <p>Dans une analyse en composantes principales, on conservera un nombre <span class="math inline">\(k&lt;p\)</span> de variables explicatives pour résumer les données. Ce outil est utilisé à des fins exploratoires, puisqu’on n’implique pas de variable réponse dans le modèle. L’analyse en composantes principales est utilisé pour réduire la dimension afin de faire de la classification, de l’analyse de regroupements et aussi réduire les coûts associés à ces méthodes en projetant les données dans un sous-espace de dimension plus faible.</p>
 <p>En <strong>R</strong>, on effectue l’analyse en composantes principales avec la fonction <code>princomp</code> ou <code>prcomp</code><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
 <p>La sortie contient</p>
@@ -695,7 +758,7 @@ C_j &amp;= \underset{\text{somme de poids fois variables explicatives}}{w_{j1} X
 <li>l’écart-type de chaque composante, <code>acp$sdev</code>. Chaque écart-type est la racine carrée d’une des valeurs propres.</li>
 <li>les poids <span class="math inline">\(w_{ij}\)</span>, appelés chargements (<em>loadings</em>), qui donnent la correspondance entre le système de coordonnées des composantes principales et celui des variables <span class="math inline">\(\boldsymbol{X}\)</span> originales.</li>
 </ul>
-<p>On peut représenter les données à l’aide d’un bigramme: c’est une nuage de points de chaque observations dans l’espace des deux premières composantes principales. Si on couple cela avec les directions offertes par les chargements pour chacune des variables explicatives <span class="math inline">\(X_1, \ldots, X_p\)</span>, il en ressort que certaines variables augmentent/diminuent de pair. Ainsi, on voit dans la <a href="#fig-biplot">Figure&nbsp;<span>6.4</span></a> que les variables <code>x3</code>, <code>x6</code>, <code>x9</code> et <code>x12</code> tendent dans la même direction, comme <code>x4</code>, <code>x8</code> et <code>x11</code>. On reviendra sur ce point dans une section subséquente.</p>
+<p>On peut représenter les données à l’aide d’un bigramme: c’est une nuage de points de chaque observations dans l’espace des deux premières composantes principales. Si on couple cela avec les directions offertes par les chargements pour chacune des variables explicatives <span class="math inline">\(X_1, \ldots, X_p\)</span>, il en ressort que certaines variables augmentent/diminuent de pair. Ainsi, on voit dans la <a href="#fig-biplot" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-biplot</span></a> que les variables <code>x3</code>, <code>x6</code>, <code>x9</code> et <code>x12</code> tendent dans la même direction, comme <code>x4</code>, <code>x8</code> et <code>x11</code>. On reviendra sur ce point dans une section subséquente.</p>
 <p>Une fois qu’on a choisit le nombre de composantes, on pourrait ne conserver que les <span class="math inline">\(k\)</span> premières colonnes de la matrice des composantes principales <code>acp$scores</code> pour faire les graphiques ou pour approximer la matrice de covariance. Il faut garder en tête qu’il faudra néanmoins collecter les mêmes questions pour recréer les composantes principales avec de nouvelles observations, ce qui est peu commode si on veut réduire le coût de la collecte.</p>
 <div class="cell" data-hash="analysefactorielle_cache/html/acpfactor_712fca95fc60fbd1bea4fda1843d033e">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyse en composantes principales</span></span>
@@ -706,20 +769,29 @@ C_j &amp;= \underset{\text{somme de poids fois variables explicatives}}{w_{j1} X
 </div>
 <div class="cell" data-hash="analysefactorielle_cache/html/fig-biplot_bf8490d97738ff71edd7f9c059da1180">
 <div class="cell-output-display">
-<div id="fig-biplot" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="analysefactorielle_files/figure-html/fig-biplot-1.png" class="img-fluid figure-img" style="width:60.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;6.4: Bigramme: nuage de point des coordonnées des deux premières composantes principales et direction selon chargements des variables explicatives originales.</figcaption>
+<div id="fig-biplot" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-biplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="analysefactorielle_files/figure-html/fig-biplot-1.png" class="img-fluid figure-img" style="width:60.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-biplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.4: Bigramme: nuage de point des coordonnées des deux premières composantes principales et direction selon chargements des variables explicatives originales.
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>On peut étudier la sortie pour vérifier les propriétés de notre décomposition. Le <a href="#tbl-eigenvalues">Tableau&nbsp;<span>6.3</span></a> montre la variance de chaque composante principale. Si on additionne l’ensemble des variances (sans arrondir), on obtient une variance cumulative des 12 composantes principales, 12, soit le même que le nombre de variables explicatives puisque les variables standardisées ont variance unitaire. Si on calcule la matrice de corrélation, <code>cor(acp$scores)</code>, on remarquera que la corrélation est nulle entre les variables.</p>
+<p>On peut étudier la sortie pour vérifier les propriétés de notre décomposition. Le <a href="#tbl-eigenvalues" class="quarto-xref">Tableau&nbsp;<span class="quarto-unresolved-ref">tbl-eigenvalues</span></a> montre la variance de chaque composante principale. Si on additionne l’ensemble des variances (sans arrondir), on obtient une variance cumulative des 12 composantes principales, 12, soit le même que le nombre de variables explicatives puisque les variables standardisées ont variance unitaire. Si on calcule la matrice de corrélation, <code>cor(acp$scores)</code>, on remarquera que la corrélation est nulle entre les variables.</p>
 <div class="cell" data-tbl-align="center" data-hash="analysefactorielle_cache/html/tbl-eigenvalues_3dbe85b6afe44ee3d709d8e2cfeb554d">
+<div id="tbl-eigenvalues" class="cell quarto-float anchored" data-hash="analysefactorielle_cache/html/tbl-eigenvalues_3dbe85b6afe44ee3d709d8e2cfeb554d" data-tbl-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-eigenvalues-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;6.3: Variance des composantes principales
+</figcaption>
+<div aria-describedby="tbl-eigenvalues-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-eigenvalues" class="anchored">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Tableau&nbsp;6.3: Variance des composantes principales</caption>
+<div>
+<table class="table do-not-create-environment cell table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th style="text-align: center;" data-quarto-table-cell-role="th">C1</th>
@@ -753,9 +825,12 @@ C_j &amp;= \underset{\text{somme de poids fois variables explicatives}}{w_{j1} X
 </tr>
 </tbody>
 </table>
+
+
 </div>
-
-
+</div>
+</div>
+</figure>
 </div>
 </div>
 <section id="sec-acp-choix" class="level3" data-number="6.4.1">
@@ -766,17 +841,21 @@ C_j &amp;= \underset{\text{somme de poids fois variables explicatives}}{w_{j1} X
 <li><strong>critère du coude de Cattell</strong>: ce critère consiste à sélectionner un nombre de composantes dans le diagramme d’éboulis (<code>screeplot</code>), un graphique des variances des composantes principales<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Habituellement, il y a une décroissance rapide de la variance suivie d’un plateau: on prendra le nombre de composantes qui correspond au <span class="math inline">\(k\)</span> juste avant l’apparition du plateau (le début du coude, où il a stabilisation apparente). C’est un critère très subjectif, puisqu’il y a souvent plusieurs plateaux et que la variance peut décroître très lentement. On peut utiliser la fonction <code>screeplot</code> pour obtenir le diagramme d’éboulis mais il est facile de le créer manuellement et le résultat est esthétiquement plus réussi.</li>
 <li><strong>critère des valeurs propres de Kaiser</strong>: un critère basé sur les valeurs propres de la matrice de corrélation. Le nombre de facteurs choisis est le nombre de composantes principales dont la variance est supérieures à 1. L’idée est de garder seulement les facteurs qui expliquent plus de variance qu’une variable individuelle.</li>
 </ul>
-<p>Si on utilise le critère de Kaiser avec les données <code>factor</code>, on conservera 4 composantes principales qui expliqueront 63.9 pourcent de la variance totale des variables originales - voir le <a href="#tbl-eigenvalues">Tableau&nbsp;<span>6.3</span></a>. Le diagramme d’éboulis de la <a href="#fig-screeplot">Figure&nbsp;<span>6.5</span></a>, qui peut être produit avec la fonction <code>hecmulti::eboulis(eigen(cor(factor))</code> suggère quant à lui cinq composantes.</p>
+<p>Si on utilise le critère de Kaiser avec les données <code>factor</code>, on conservera 4 composantes principales qui expliqueront 63.9 pourcent de la variance totale des variables originales - voir le <a href="#tbl-eigenvalues" class="quarto-xref">Tableau&nbsp;<span class="quarto-unresolved-ref">tbl-eigenvalues</span></a>. Le diagramme d’éboulis de la <a href="#fig-screeplot" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-screeplot</span></a>, qui peut être produit avec la fonction <code>hecmulti::eboulis(eigen(cor(factor))</code> suggère quant à lui cinq composantes.</p>
 <div class="cell" data-hash="analysefactorielle_cache/html/fig-screeplot_fe8ef42706918df4f0d76c70d046769d">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>hecmulti<span class="sc">::</span><span class="fu">eboulis</span>(<span class="fu">eigen</span>(<span class="fu">cor</span>(factor)))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="fig-screeplot" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="analysefactorielle_files/figure-html/fig-screeplot-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;6.5: Diagramme d’éboulis (gauche) représentant la variance des composantes principales (en ordonnée) en fonction du nombre composantes principales (en abscisse). Variance cumulative en fonction du nombre de composantes principales (droite).</figcaption>
+<div id="fig-screeplot" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-screeplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="analysefactorielle_files/figure-html/fig-screeplot-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-screeplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.5: Diagramme d’éboulis (gauche) représentant la variance des composantes principales (en ordonnée) en fonction du nombre composantes principales (en abscisse). Variance cumulative en fonction du nombre de composantes principales (droite).
+</figcaption>
 </figure>
 </div>
 </div>
@@ -849,7 +928,7 @@ X_p &amp;= \mu_p + \gamma_{p1}F_1 + \gamma_{p2} F_2 + \cdots + \gamma_{pm}F_m + 
 \widehat{\boldsymbol{\Gamma}} = \boldsymbol{Q}_{1:m} \mathrm{diag}(\lambda_1^{1/2}, \ldots, \lambda_m^{1/2}),
 \end{align*}\]</span> où <span class="math inline">\(\lambda_j\)</span> est la <span class="math inline">\(j\)</span>e plus grande valeur propre de la matrice de covariance empirique <span class="math inline">\(\mathbf{S}\)</span> et <span class="math inline">\(\boldsymbol{Q}_{1:m}\)</span> est la sous-matrice formée par les <span class="math inline">\(m\)</span> premières colonnes de vecteurs propres de <span class="math inline">\(\boldsymbol{Q}\)</span>. On peut estimer les variances des aléas à travers <span class="math display">\[\begin{align*}
 \widehat{\boldsymbol{\psi}} = \mathrm{diag}\left(\mathbf{S} - \widehat{\boldsymbol{\Gamma}}\widehat{\boldsymbol{\Gamma}}^\top\right).
-\end{align*}\]</span> L’avantage de cette approche est que l’on peut utiliser la même décomposition en valeurs propres et vecteurs propres pour chaque valeur de <span class="math inline">\(m\)</span>: seule la rotation dépend de la dimension choisie. La solution est également toujours valide avec la garantie que <span class="math inline">\(\widehat{\psi}_j&gt;0\)</span>. On peut utiliser la discussion de la <a href="#sec-acp-choix"><span>Section&nbsp;6.4.1</span></a> pour choisir le nombre de variables.</p>
+\end{align*}\]</span> L’avantage de cette approche est que l’on peut utiliser la même décomposition en valeurs propres et vecteurs propres pour chaque valeur de <span class="math inline">\(m\)</span>: seule la rotation dépend de la dimension choisie. La solution est également toujours valide avec la garantie que <span class="math inline">\(\widehat{\psi}_j&gt;0\)</span>. On peut utiliser la discussion de la <a href="#sec-acp-choix" class="quarto-xref"><span class="quarto-unresolved-ref">sec-acp-choix</span></a> pour choisir le nombre de variables.</p>
 <div class="cell" data-hash="analysefactorielle_cache/html/acp-factor_b727087043ec53561fbd533c240561ff">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Solution (chargements) avec rotation varimax</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>facto_cp <span class="ot">&lt;-</span> hecmulti<span class="sc">::</span><span class="fu">factocp</span>(factor, <span class="at">nfact =</span> <span class="st">"kaiser"</span>, <span class="at">cor =</span> <span class="cn">TRUE</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -862,16 +941,21 @@ X_p &amp;= \mu_p + \gamma_{p1}F_1 + \gamma_{p2} F_2 + \cdots + \gamma_{pm}F_m + 
 <div class="cell" data-hash="analysefactorielle_cache/html/factanal4_96135c07751b5e73221305bca41fc38d">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajuster le modèle factoriel par maximum de vraisemblance</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>fa4 <span class="ot">&lt;-</span> <span class="fu">factanal</span>(<span class="at">x =</span> factor, </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">factors =</span> 4L)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">factors =</span> <span class="dv">4</span>L)</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Imprimer les chargements en omettant les valeurs inférieures à 0.3</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fa4<span class="sc">$</span>loadings, </span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">cutoff =</span> <span class="fl">0.3</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-hash="analysefactorielle_cache/html/tbl-factanal4_462099f3dba887a88f6f4550dcaa48bd">
+<div id="tbl-factanal4" class="cell quarto-float anchored" data-hash="analysefactorielle_cache/html/tbl-factanal4_462099f3dba887a88f6f4550dcaa48bd">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-factanal4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;6.4: Estimés des chargements (multipliés par 100) pour le modèle à quatres facteurs avec rotation varimax estimé à l’aide de la méthode du maximum de vraisemblance. Les chargements inférieurs à 0.3 sont omis.
+</figcaption>
+<div aria-describedby="tbl-factanal4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-factanal4" class="anchored">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Tableau&nbsp;6.4: Estimés des chargements (multipliés par 100) pour le modèle à quatres facteurs avec rotation varimax estimé à l’aide de la méthode du maximum de vraisemblance. Les chargements inférieurs à 0.3 sont omis.</caption>
+<div>
+<table class="table do-not-create-environment cell table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th"></th>
@@ -968,12 +1052,15 @@ X_p &amp;= \mu_p + \gamma_{p1}F_1 + \gamma_{p2} F_2 + \cdots + \gamma_{pm}F_m + 
 </tr>
 </tbody>
 </table>
-</div>
 
 
 </div>
 </div>
-<p>On constate à la lecture du <a href="#tbl-factanal4">Tableau&nbsp;<span>6.4</span></a> des chargements que le chargement associé à la première variable est de 0.992 pour le facteur 4: cela correspondrait à un facteur avec une corrélation de presque un, donc <span class="math inline">\(F_4 \approx X_1\)</span>. Le modèle obtenu avec la méthode du maximum de vraisemblance n’est donc pas adéquat puisque l’optimisation a convergée vers un cas de quasi-Heywood et que le facteur n’est pas une variable latente, mais une des variables de la base de données de départ. Pour diagnostiquer le tout, on peut aussi analyser les valeurs d’unicité: la minimum de <code>min(fa4$uniqueness)</code> est 0.005, ce qui correspond à la tolérance de l’algorithme (valeur minimale permise dans l’optimisation), voir <code>?factanal</code>. On retourne à la planche à dessin en réduisant le nombre de variables.</p>
+</div>
+</figure>
+</div>
+</div>
+<p>On constate à la lecture du <a href="#tbl-factanal4" class="quarto-xref">Tableau&nbsp;<span class="quarto-unresolved-ref">tbl-factanal4</span></a> des chargements que le chargement associé à la première variable est de 0.992 pour le facteur 4: cela correspondrait à un facteur avec une corrélation de presque un, donc <span class="math inline">\(F_4 \approx X_1\)</span>. Le modèle obtenu avec la méthode du maximum de vraisemblance n’est donc pas adéquat puisque l’optimisation a convergée vers un cas de quasi-Heywood et que le facteur n’est pas une variable latente, mais une des variables de la base de données de départ. Pour diagnostiquer le tout, on peut aussi analyser les valeurs d’unicité: la minimum de <code>min(fa4$uniqueness)</code> est 0.005, ce qui correspond à la tolérance de l’algorithme (valeur minimale permise dans l’optimisation), voir <code>?factanal</code>. On retourne à la planche à dessin en réduisant le nombre de variables.</p>
 <p>En général, on associe une variable à un groupe (facteur) si son chargement est supérieur à 0.3 (en valeur absolue), ce qui donne</p>
 <ul>
 <li>Facteur 1: <span class="math inline">\(X_4\)</span>, <span class="math inline">\(X_8\)</span> et <span class="math inline">\(X_{11}\)</span></li>
@@ -1001,7 +1088,7 @@ X_p &amp;= \mu_p + \gamma_{p1}F_1 + \gamma_{p2} F_2 + \cdots + \gamma_{pm}F_m + 
 <li>le test du rapport de vraisemblance pour l’hypothèse nulle que le modèle de corrélation décrit le modèle factoriel avec <span class="math inline">\(m\)</span> facteurs est adéquat, contre l’alternative qu’il n’est pas adéquat.</li>
 </ul>
 <p>Les critères d’information servent à la sélection de modèles; ils seront traités plus en détail dans les chapitres qui suivent. Pour l’instant, il est suffisant de savoir que le modèle avec la valeur du critère AIC (ou BIC) la plus petite est considéré le « meilleur » (selon ce critère).</p>
-<p>Le paquet <code>hecmulti</code> contient des méthodes pour extraire la log-vraisemblance, les critères d’information pour un modèle d’analyse factorielle (objet de classe <code>factanal</code>). On peut extraire la valeur-<span class="math inline">\(p\)</span> pour le test du rapport de vraisemblance comparant le modèle à 12 variables (corrélation empirique) avec le modèle simplifié obtenu en utilisant quatre facteurs: une valeur-<span class="math inline">\(p\)</span> supérieur à un seuil prédéfini (typiquement <span class="math inline">\(\alpha=0.05\)</span>) indique que la simplification est adéquate puisqu’on ne rejette pas l’hypothèse nulle. La sortie suivante dans le <a href="#tbl-emvcrit">Tableau&nbsp;<span>6.5</span></a> présente les diagnostics du modèle en fonction du nombre de facteurs pour les modèles ajustés selon la méthode du maximum de vraisemblance.</p>
+<p>Le paquet <code>hecmulti</code> contient des méthodes pour extraire la log-vraisemblance, les critères d’information pour un modèle d’analyse factorielle (objet de classe <code>factanal</code>). On peut extraire la valeur-<span class="math inline">\(p\)</span> pour le test du rapport de vraisemblance comparant le modèle à 12 variables (corrélation empirique) avec le modèle simplifié obtenu en utilisant quatre facteurs: une valeur-<span class="math inline">\(p\)</span> supérieur à un seuil prédéfini (typiquement <span class="math inline">\(\alpha=0.05\)</span>) indique que la simplification est adéquate puisqu’on ne rejette pas l’hypothèse nulle. La sortie suivante dans le <a href="#tbl-emvcrit" class="quarto-xref">Tableau&nbsp;<span class="quarto-unresolved-ref">tbl-emvcrit</span></a> présente les diagnostics du modèle en fonction du nombre de facteurs pour les modèles ajustés selon la méthode du maximum de vraisemblance.</p>
 <div class="cell" data-hash="analysefactorielle_cache/html/emv-criteres_22ca8b9794e64090945f29b81bed811c">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hecmulti)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ajustement_factanal</span>(</span>
@@ -1010,10 +1097,15 @@ X_p &amp;= \mu_p + \gamma_{p1}F_1 + \gamma_{p2} F_2 + \cdots + \gamma_{pm}F_m + 
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">n.obs =</span> <span class="fu">nrow</span>(factor))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-hash="analysefactorielle_cache/html/tbl-emvcrit_f5f7be78fe05e11b5b5818587c670844">
+<div id="tbl-emvcrit" class="cell quarto-float anchored" data-hash="analysefactorielle_cache/html/tbl-emvcrit_f5f7be78fe05e11b5b5818587c670844">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-emvcrit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;6.5: Ajustement de modèles d’analyse factorielle par la méthode du maximum de vraisemblance pour différent nombres de facteurs: critères d’informations AIC et BIC, valeur-<em>p</em> du test de rapport de vraisemblance, nombre de paramètres estimés et indicateur pour les cas de (quasi)-Heywood
+</figcaption>
+<div aria-describedby="tbl-emvcrit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-emvcrit" class="anchored">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Tableau&nbsp;6.5: Ajustement de modèles d’analyse factorielle par la méthode du maximum de vraisemblance pour différent nombres de facteurs: critères d’informations AIC et BIC, valeur-<em>p</em> du test de rapport de vraisemblance, nombre de paramètres estimés et indicateur pour les cas de (quasi)-Heywood</caption>
+<div>
+<table class="table do-not-create-environment cell table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th"></th>
@@ -1073,19 +1165,27 @@ X_p &amp;= \mu_p + \gamma_{p1}F_1 + \gamma_{p2} F_2 + \cdots + \gamma_{pm}F_m + 
 </tr>
 </tbody>
 </table>
+
+
 </div>
-
-
+</div>
+</div>
+</figure>
 </div>
 </div>
 <p>Le nombre de facteurs à utiliser selon le AIC est 4, versus 3 selon le BIC. Le nombre mimimal de critères selon le test du rapport de vraisemblance est NA. Ainsi, on retient la solution à trois facteurs dans tous les cas: cette adéquation entre les critères est l’exception plutôt que la règle.</p>
 <p>Il faut garder en tête que l’estimation par maximum de vraisemblance du modèle d’analyse factorielle est très sensible à l’initialisation: on peut aussi parfois obtenir des valeurs différentes selon les logiciels. Cette fragilité, couplée à la haute fréquence de cas de Heywood, fait en sorte que je préfère utiliser la méthode des composantes principales pour l’estimation.</p>
-<p>On peut considérer le modèle avec trois facteurs: les chargements (après rotation varimax) sont données dans le <a href="#tbl-factanal3">Tableau&nbsp;<span>6.6</span></a></p>
+<p>On peut considérer le modèle avec trois facteurs: les chargements (après rotation varimax) sont données dans le <a href="#tbl-factanal3" class="quarto-xref">Tableau&nbsp;<span class="quarto-unresolved-ref">tbl-factanal3</span></a></p>
 <div class="cell" data-hash="analysefactorielle_cache/html/tbl-factanal3_74f9f9f3f0da94c5bae047d8c7454d09">
+<div id="tbl-factanal3" class="cell quarto-float anchored" data-hash="analysefactorielle_cache/html/tbl-factanal3_74f9f9f3f0da94c5bae047d8c7454d09">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-factanal3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;6.6: Estimés des chargements (multipliés par 100) pour le modèle à trois facteurs avec rotation varimax estimé à l’aide de la méthode du maximum de vraisemblance. Les chargements inférieurs à 0.3 sont omis.
+</figcaption>
+<div aria-describedby="tbl-factanal3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-factanal3" class="anchored">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Tableau&nbsp;6.6: Estimés des chargements (multipliés par 100) pour le modèle à trois facteurs avec rotation varimax estimé à l’aide de la méthode du maximum de vraisemblance. Les chargements inférieurs à 0.3 sont omis.</caption>
+<div>
+<table class="table do-not-create-environment cell table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th"></th>
@@ -1169,9 +1269,12 @@ X_p &amp;= \mu_p + \gamma_{p1}F_1 + \gamma_{p2} F_2 + \cdots + \gamma_{pm}F_m + 
 </tr>
 </tbody>
 </table>
+
+
 </div>
-
-
+</div>
+</div>
+</figure>
 </div>
 </div>
 <p>Cette solution récupère les trois facteurs <em>service</em>, <em>produits</em> et <em>paiement</em> de la solution précédente à quatre facteurs. Le facteur <em>prix</em> (qui était formé de <span class="math inline">\(X_1\)</span> et <span class="math inline">\(X_5\)</span>) n’est plus présent.</p>
@@ -1200,10 +1303,15 @@ X_p &amp;= \mu_p + \gamma_{p1}F_1 + \gamma_{p2} F_2 + \cdots + \gamma_{pm}F_m + 
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="fu">alphaC</span>(factor[,<span class="fu">c</span>(<span class="st">"x1"</span>,<span class="st">"x5"</span>)])</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-hash="analysefactorielle_cache/html/tbl-alphaCronbach_6629fa4a358d22d98d025e98dea7429c">
+<div id="tbl-alphaCronbach" class="cell quarto-float anchored" data-hash="analysefactorielle_cache/html/tbl-alphaCronbach_6629fa4a358d22d98d025e98dea7429c">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-alphaCronbach-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;6.7: Coefficient alpha de Cronbach pour les quatre échelles formées.
+</figcaption>
+<div aria-describedby="tbl-alphaCronbach-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-alphaCronbach" class="anchored">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Tableau&nbsp;6.7: Coefficient alpha de Cronbach pour les quatre échelles formées.</caption>
+<div>
+<table class="table do-not-create-environment cell table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th style="text-align: right;" data-quarto-table-cell-role="th">service</th>
@@ -1221,9 +1329,12 @@ X_p &amp;= \mu_p + \gamma_{p1}F_1 + \gamma_{p2} F_2 + \cdots + \gamma_{pm}F_m + 
 </tr>
 </tbody>
 </table>
+
+
 </div>
-
-
+</div>
+</div>
+</figure>
 </div>
 </div>
 <p>Ainsi, les <span class="math inline">\(\alpha\)</span> de Cronbach sont tous satisfaisants (plus grand que 0.6) sauf pour le facteur <em>prix</em> (0.546). Tout est donc cohérent. Les échelles provenant des facteurs <em>service</em>, <em>produits</em> et <em>paiement</em>, sont satisfaisantes. Ces facteurs sont identifiés à la fois dans la solution à quatre, mais aussi dans la solution à trois facteurs. Le facteur <em>prix</em> est celui qui apparaît en plus dans la solution à quatre facteurs. Il a une interprétation claire (c’est essentiellement <code>x1</code>), mais son faible <span class="math inline">\(\alpha\)</span> ferait en sorte qu’il serait discutable de travailler avec l’échelle <em>prix</em> dans d’autres analyses (du moins avec selon l’usage habituel du <span class="math inline">\(\alpha\)</span>) plutôt que d’utiliser directement la variable <code>x1</code>.</p>
@@ -1261,10 +1372,15 @@ X_p &amp;= \mu_p + \gamma_{p1}F_1 + \gamma_{p2} F_2 + \cdots + \gamma_{pm}F_m + 
 <li>les coefficients servant au calcul seront différents d’une étude à l’autre.</li>
 </ul>
 <div class="cell" data-hash="analysefactorielle_cache/html/tbl-scores_14aed9a765f5a622bf278f21790c834b">
+<div id="tbl-scores" class="cell quarto-float anchored" data-hash="analysefactorielle_cache/html/tbl-scores_14aed9a765f5a622bf278f21790c834b">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-scores-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;6.8: Coefficients du score (modèle de régression, maximum de vraisemblance) pour le modèle d’analyse factorielle à quatre facteurs.
+</figcaption>
+<div aria-describedby="tbl-scores-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-scores" class="anchored">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Tableau&nbsp;6.8: Coefficients du score (modèle de régression, maximum de vraisemblance) pour le modèle d’analyse factorielle à quatre facteurs.</caption>
+<div>
+<table class="table do-not-create-environment cell table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th"></th>
@@ -1361,24 +1477,32 @@ X_p &amp;= \mu_p + \gamma_{p1}F_1 + \gamma_{p2} F_2 + \cdots + \gamma_{pm}F_m + 
 </tr>
 </tbody>
 </table>
-</div>
 
 
 </div>
 </div>
-<p>Les scores factoriels sont obtenus en spécifiant <code>scores = "regression"</code> dans les options de la fonction <code>factanal</code>. Les poids avec le modèle à quatre facteurs sont rapportés dans le <a href="#tbl-scores">Tableau&nbsp;<span>6.8</span></a>. On remarque que</p>
+</div>
+</figure>
+</div>
+</div>
+<p>Les scores factoriels sont obtenus en spécifiant <code>scores = "regression"</code> dans les options de la fonction <code>factanal</code>. Les poids avec le modèle à quatre facteurs sont rapportés dans le <a href="#tbl-scores" class="quarto-xref">Tableau&nbsp;<span class="quarto-unresolved-ref">tbl-scores</span></a>. On remarque que</p>
 <ul>
 <li>pour le premier facteur, trois variables ont des poids importants (<span class="math inline">\(X_4\)</span>, <span class="math inline">\(X_8\)</span> et <span class="math inline">\(X_{11}\)</span>). Il s’agit donc d’un facteur très proche du facteur <em>service</em>.</li>
 <li>pour le deuxième facteur, les variables <span class="math inline">\(X_3\)</span>, <span class="math inline">\(X_6\)</span>, <span class="math inline">\(X_9\)</span> et <span class="math inline">\(X_{12}\)</span> ont des poids importants. Il s’agit donc d’un facteur très proche du facteur <em>produits</em>.</li>
 <li>pour le troisième facteur, les variables <span class="math inline">\(X_2\)</span>, <span class="math inline">\(X_7\)</span>, <span class="math inline">\(X_{10}\)</span> ont des poids importants. Il s’agit donc d’un facteur très proche du facteur <em>paiement</em>.</li>
 <li>pour le quatrième facteur, seule la variable <span class="math inline">\(X_1\)</span> a un poids important. On aurait pu s’attendre à ce que ce soit également le cas pour <span class="math inline">\(X_5\)</span>, en lien avec le facteur <em>prix</em> — ce facteur était moins clair selon le alpha de Cronbach.</li>
 </ul>
-<p>Les corrélations entre les échelles (construites avec les moyennes) et les scores factoriels sont données dans le <a href="#tbl-corr-echelles-scores">Tableau&nbsp;<span>6.9</span></a>. On remarque la forte corrélation entre le score factoriel et les échelles construites avec les moyennes pour les facteurs <em>service</em>, <em>produits</em> et <em>paiement</em>. Cela veut dire qu’utiliser les échelles ou les scores factoriels ne devrait pas faire de différence dans des analyses subséquentes. Par contre, cette corrélation est plus faible (0.82) pour le facteur <em>prix</em>.</p>
+<p>Les corrélations entre les échelles (construites avec les moyennes) et les scores factoriels sont données dans le <a href="#tbl-corr-echelles-scores" class="quarto-xref">Tableau&nbsp;<span class="quarto-unresolved-ref">tbl-corr-echelles-scores</span></a>. On remarque la forte corrélation entre le score factoriel et les échelles construites avec les moyennes pour les facteurs <em>service</em>, <em>produits</em> et <em>paiement</em>. Cela veut dire qu’utiliser les échelles ou les scores factoriels ne devrait pas faire de différence dans des analyses subséquentes. Par contre, cette corrélation est plus faible (0.82) pour le facteur <em>prix</em>.</p>
 <div class="cell" data-hash="analysefactorielle_cache/html/tbl-corr-echelles-scores_57567133a2a700aa36f6295068ba90a3">
+<div id="tbl-corr-echelles-scores" class="cell quarto-float anchored" data-hash="analysefactorielle_cache/html/tbl-corr-echelles-scores_57567133a2a700aa36f6295068ba90a3">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-corr-echelles-scores-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;6.9: Corrélation entre quatre premiers scores (modèle d’analyse factorielle à quatre facteurs) et échelles.
+</figcaption>
+<div aria-describedby="tbl-corr-echelles-scores-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-corr-echelles-scores" class="anchored">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Tableau&nbsp;6.9: Corrélation entre quatre premiers scores (modèle d’analyse factorielle à quatre facteurs) et échelles.</caption>
+<div>
+<table class="table do-not-create-environment cell table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th"></th>
@@ -1419,9 +1543,12 @@ X_p &amp;= \mu_p + \gamma_{p1}F_1 + \gamma_{p2} F_2 + \cdots + \gamma_{pm}F_m + 
 </tr>
 </tbody>
 </table>
+
+
 </div>
-
-
+</div>
+</div>
+</figure>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -1568,10 +1695,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/lbelzile\.github\.io\/math60602\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -1581,8 +1725,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1594,7 +1747,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -1638,6 +1914,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1663,6 +1940,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1724,12 +2027,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./survie.html" class="pagination-link">
+      <a href="./survie.html" class="pagination-link" aria-label="Analyse de survie">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Analyse de survie</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./regroupements.html" class="pagination-link">
+      <a href="./regroupements.html" class="pagination-link" aria-label="Analyse de regroupements">
         <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Analyse de regroupements</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -1740,12 +2043,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <div class="nav-footer-left">
       &nbsp;
     </div>   
-    <div class="nav-footer-center">Tous droits réservés (Denis Larocque, Léo Belzile)</div>
+    <div class="nav-footer-center">
+<p>Tous droits réservés (Denis Larocque, Léo Belzile)</p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/lbelzile/math60602/edit/master/analysefactorielle.qmd" class="toc-action"><i class="bi bi-github"></i>Éditer cette page</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+
 
 
 
