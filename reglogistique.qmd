@@ -1117,7 +1117,7 @@ Quelques commentaires sur des raccourcis syntaxiques propres à **R**: dans une 
 #| message: false
 #| warning: false
 #| error: false
-
+set.seed(60602)
 # Diviser les bases de données 
 # en échantillons d'apprentissage
 # et de validation
@@ -1300,7 +1300,7 @@ Table:
 #| echo: false
 #| tbl-cap: "Résumé des caractéristiques des modèles logistiques avec (a) référence, soit l'envoi sans sélection à tous les clients; (b) 10 variables de base sans sélection; (c) toutes les variables, incluant les termes quadratiques et les interactions d'ordre 2; (d) sélection séquentielle avec AIC (e) sélection séquentielle avec BIC (f) recherche exhaustive avec variables de la procédure séquentielle AIC (sélection selon BIC) (g) LASSO avec pénalité optimale selon le critère de l'aire sous la courbe. Les points de coupure optimaux ont été déterminés par validation-croisée sur l'échantillon d'apprentissage (sauf LASSO), tandis que la performance du modèle (sensibilité et taux de bonne classification) ont été calculés à partir de l'échantillon test de 100 000 individus."
 datf <- matrix("", nrow = 7, ncol = 6)
-colnames <- c("modèle","no. variables","pt. coupure"," sensibilité", "taux bonne classif.", "profit")
+colnames <- c("modèle","no. variables","pt. coupure","sensibilité", "taux bonne classif.", "profit")
 datf[,1] <- c("(a)","(b)","(c)","(d)", "(e)","(f)","(g)")
 datf[,2] <- c(NA,
               sprintf("%0.f",
@@ -1349,7 +1349,7 @@ knitr::kable(datf, col.names = colnames,
 options(scipen = 100)
 ```
 
-Nous avons vu plus tôt, qu'avec les 10 variables de base, le meilleur point de coupure est de 0.11. En utilisant cette stratégie sur les 100 000 clients, le revenu net aurait été de `r sprintf(as.character(base_perfo))` dollars. C'est une énorme amélioration, de plus de 56%, par rapport à la stratégie de référence qui consiste à envoyer le catalogue à tout le monde (revenu net de 601 212\$). Si on inclut tous les termes quadratiques et les termes les interactions d'ordre deux (104 variables en tout), le revenu net est inférieur avec une valeur de `r sprintf(as.character(complet_perfo))`\$. Ici, le modèle est trop complexe et surajusté.  Si on fait une sélection de variables (quasi méthodes sont présentées), suivie de la détermination du meilleur point de coupure, on fait alors toujours mieux qu'avec le modèle incluant les 10 variables de base seulement. L'approche la plus rentable parmi celles essayées aurait généré un profit de `r sprintf(as.character(max(datf[,6])))` avec `r datf[which.max(datf[,6]),2]` variables explicatives: il s'agit d'un gain de `r round(100*(as.integer(max(datf[,6]))/as.integer(datf[2,6])-1),1)`% par rapport au modèle avec les 10 variables de base.
+Nous avons vu plus tôt, qu'avec les 10 variables de base, le meilleur point de coupure est d'environ 0.11. En utilisant cette stratégie sur les 100 000 clients, le revenu net aurait été de `r sprintf(as.character(base_perfo))` dollars. C'est une énorme amélioration, de plus de 56%, par rapport à la stratégie de référence qui consiste à envoyer le catalogue à tout le monde (revenu net de 601 212\$). Si on inclut tous les termes quadratiques et les termes les interactions d'ordre deux (104 variables en tout), le revenu net est inférieur avec une valeur de `r sprintf(as.character(complet_perfo))`\$. Ici, le modèle est trop complexe et surajusté.  Si on fait une sélection de variables (quasi méthodes sont présentées), suivie de la détermination du meilleur point de coupure, on fait alors toujours mieux qu'avec le modèle incluant les 10 variables de base seulement. L'approche la plus rentable parmi celles essayées aurait généré un profit de `r sprintf(as.character(max(datf[,6])))` avec `r datf[which.max(datf[,6]),2]` variables explicatives: il s'agit d'un gain de `r round(100*(as.integer(max(datf[,6]))/as.integer(datf[2,6])-1),1)`% par rapport au modèle avec les 10 variables de base.
 
 ### Modèle Heckit
 
