@@ -165,7 +165,7 @@ plot(kapm,
      xlab = "temps") 
 ```
 
-La fonction résumé (`summary`) renvoit l'estimation de la fonction de survie pour chaque temps d'échec (événement): l'estimateur est indéfini à ces valeurs. Le @tbl-survie1-tableau offre une sortie (tronquée) du résumé, modifié pour mieux illustrer les changements. L'estimation de la probabilité que le temps d'abonnement soit supérieur à 30 semaines est $\widehat{S}(30)=0.986$.
+La fonction résumé (`summary`) renvoit l'estimation de la fonction de survie pour chaque temps d'échec (événement). La convention veut que la fonction escalier soit continue à gauche, limite à droite (caglad) et constante entre deux temps d'événements observés. Le @tbl-survie1-tableau offre une sortie (tronquée) du résumé, modifié pour mieux illustrer les changements. L'estimation de la probabilité que le temps d'abonnement soit supérieur à 30 semaines est $\widehat{S}(30)=0.986$.
 
 ```{r}
 #| label: tbl-survie1-tableau
@@ -821,7 +821,7 @@ g6 <- ggplot(data = fsurvie2,
 
 Si ce n'est pas le cas, alors les résultats du modèle ne sont pas nécessairement fiables.Comme pour un modèle de régression, il est possible de créer des résidus du modèles et de faire des graphiques diagnostics pour potentiellement infirmer le postulat de risques proportionnels [@Grambsch.Therneau:1994]. Si l'hypothèse tient la route, alors il ne devrait pas y avoir de tendance temporelle dans les résidus.
 
-La commande `cox.zph` permet de tester le postulat de risques proportionnels à l'aide d'un test du score pour voir si la pente $\beta(t)$ associée à une covariable est nulle en fonction du temps $t$; si la valeur-$p$ est grande, cela indique une absence de preuve. La fonction `plot` permet également d'obtenir un graphique des résidus en fonction du temps.
+La commande `cox.zph` permet de tester le postulat de risques proportionnels à l'aide d'un test du score pour voir si la pente $\beta(t)$ associée à une covariable est constante en fonction du temps $t$ pour tout temps; si la valeur-$p$ est grande, cela indique une absence de preuve contre l'hypothèse nulle $\mathscr{H}_0$: $\{\beta(t)=c$ pour tout $t\}$. La fonction `plot` permet également d'obtenir un graphique des résidus en fonction du temps.
 
 
 ```{r}
