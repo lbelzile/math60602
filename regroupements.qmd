@@ -766,7 +766,7 @@ L'algorithme de partition autour des médoïdes (PAM) procède comme suit:
 
 Puisque qu'on considère chaque observation comme candidat à devenir un médoïde à chaque étape, le coût de calcul est prohibitif.
 
-L'algorithme CLARA, décrit dans @Kaufman.Rousseeuw:1990, réduit le coût de calcul et de stockage en divisant l'échantillon en $S$ sous-échantillons de taille approximativement égale (par défaut 5) et en utilisant l'algorithme PAM sur chacun. Une fois les médoïdes obtenus, le reste de toutes les observations de l'échantillon sont assignées au regroupement du médoïde le plus près. La qualité de la segmentation est  pour chacune des $S$ segmentations est calculée en obtenant la distance moyenne entre les médoïdes et les observations; on retourne la solution qui a la plus petite distance moyenne.
+L'algorithme CLARA, décrit dans @Kaufman.Rousseeuw:1990, réduit le coût de calcul et de stockage en utilisant PAM sur de petits sous-échantillons de taille $n_S$. On tire au hasard $n_S$ observations, qu'on regroupe à l'aide de PAM pour obtenir $K$ médoïdes. On assigne ensuite les observations résiduelles au médoïde le plus près et on calcule la dissimilarité totale: la qualité de la segmentation est calculée en obtenant la distance moyenne entre les médoïdes et les observations. CLARA répète la procédure $S$ fois et retourne la solution parmi les $S$ dissimilarité.
 
 
 
