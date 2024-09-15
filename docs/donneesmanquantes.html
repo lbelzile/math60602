@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.5.56">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="description" content="MATH 60602 - Analyse multidimensionnelle appliquée, HEC Montréal.">
 
-<title>MATH 60602 - Analyse multidimensionnelle appliquée - 8&nbsp; Données manquantes</title>
+<title>8&nbsp; Données manquantes – MATH 60602 - Analyse multidimensionnelle appliquée</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,7 +23,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -34,7 +34,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -59,6 +59,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -101,7 +102,13 @@ div.csl-indent {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "Pas de résultats",
     "search-matching-documents-text": "documents trouvés",
@@ -110,19 +117,44 @@ div.csl-indent {
     "search-more-match-text": "correspondance de plus dans ce document",
     "search-more-matches-text": "correspondances de plus dans ce document",
     "search-clear-button-title": "Effacer",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Annuler",
     "search-submit-button-title": "Envoyer",
     "search-label": "Search"
   }
 }</script>
-
 <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
-<link href="site_libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet">
-<script src="site_libs/bsTable-3.3.7/bootstrapTable.js"></script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -133,13 +165,13 @@ div.csl-indent {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./donneesmanquantes.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Données manquantes</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./donneesmanquantes.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Données manquantes</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -148,13 +180,13 @@ div.csl-indent {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">MATH 60602 - Analyse multidimensionnelle appliquée</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/lbelzile/math60602/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="./MATH60602.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="https://github.com/lbelzile/math60602/" title="Code source" class="quarto-navigation-tool px-1" aria-label="Code source"><i class="bi bi-github"></i></a>
+    <a href="./MATH60602.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -228,7 +260,7 @@ div.csl-indent {
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -244,7 +276,7 @@ div.csl-indent {
   </ul></li>
   <li><a href="#example-dapplication-de-limputation" id="toc-example-dapplication-de-limputation" class="nav-link" data-scroll-target="#example-dapplication-de-limputation"><span class="header-section-number">8.3</span> Example d’application de l’imputation</a></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lbelzile/math60602/edit/master/donneesmanquantes.qmd" class="toc-action">Éditer cette page</a></p></div></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/math60602/edit/master/donneesmanquantes.qmd" class="toc-action"><i class="bi bi-github"></i>Éditer cette page</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -264,7 +296,9 @@ div.csl-indent {
   </div>
   
 
+
 </header>
+
 
 <p>Il arrive fréquemment d’avoir des valeurs manquantes dans notre échantillon. Ces valeurs peuvent être manquantes pour diverses raisons. Si on prélève nous-mêmes nos données, un répondant peut refuser de répondre à certaines questions. Si on acquiert nos données d’une source externe, les valeurs de certaines variables peuvent être manquantes directement dans le fichier obtenu. Si on ne prend pas en compte le méchanisme générant les valeurs manquantes, ces dernières peuvent également biaiser nos analyses. Le but de ce chapitre est de faire un bref survol de ce sujet.</p>
 <section id="principes-de-base" class="level2" data-number="8.1">
@@ -305,13 +339,17 @@ div.csl-indent {
 <p>Le concept d’imputation est à la fois séduisant et dangereux.</p>
 </blockquote>
 <p>Avec l’<strong>imputation simple</strong>, on remplace les valeurs manquantes par des ersatz raisonnables. Par exemple, on peut remplacer les valeurs manquantes d’une variable par la moyenne de cette variable dans notre échantillon. On peut aussi ajuster un modèle de régression avec cette variable comme variable dépendante et d’autres variables explicatives comme variables indépendantes et utiliser les valeurs prédites comme remplacement. Une fois que les valeurs manquantes ont été remplacées, on fait l’analyse avec toutes les observations.</p>
-<p>L’imputation par le mode ou la moyenne n’est pas recommandée parce qu’elle dilue la corrélation entre les variables explicatives et elle réduit la variabilité. Les modèles de régression mènent également à une-sous estimation de l’incertitude en raison cette fois-ci de l’augmentation de la corrélation, ce qui augmente mécaniquement la significativité des tests, contrairement à l’imputation aléatoire (droite). Le <a href="#fig-imputation">Figure&nbsp;<span>8.1</span></a> montre clairement cet état de fait.</p>
-<div class="cell" data-layout-align="center" data-hash="donneesmanquantes_cache/html/fig-imputation_7ad0e7ecd13c34f03f308bcff76dfa04">
+<p>L’imputation par le mode ou la moyenne n’est pas recommandée parce qu’elle dilue la corrélation entre les variables explicatives et elle réduit la variabilité. Les modèles de régression mènent également à une-sous estimation de l’incertitude en raison cette fois-ci de l’augmentation de la corrélation, ce qui augmente mécaniquement la significativité des tests, contrairement à l’imputation aléatoire (droite). Le <a href="#fig-imputation" class="quarto-xref">Figure&nbsp;<span>8.1</span></a> montre clairement cet état de fait.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-imputation" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="donneesmanquantes_files/figure-html/fig-imputation-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;8.1: Différences entre méthodes d’imputation, avec imputation par la moyenne, par le biais d’une régression linéaire et par un modèle aléatoire de régression, de gauche à droite.</figcaption>
+<div id="fig-imputation" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-imputation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="donneesmanquantes_files/figure-html/fig-imputation-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-imputation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.1: Différences entre méthodes d’imputation, avec imputation par la moyenne, par le biais d’une régression linéaire et par un modèle aléatoire de régression, de gauche à droite.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -324,11 +362,11 @@ div.csl-indent {
 <h3 data-number="8.2.3" class="anchored" data-anchor-id="imputation-multiple"><span class="header-section-number">8.2.3</span> Imputation multiple</h3>
 <p>Cette méthode peut être appliquée dans à peu près n’importe quelle situation et permet d’ajuster les écarts-type des paramètres estimés. Elle peut être appliquée lorsque le processus est MAR (et donc aussi MCAR).</p>
 <p>L’idée consiste à procéder à une imputation aléatoire, selon une certaine technique, pour obtenir un échantillon complet et à ajuster le modèle d’intérêt avec cet échantillon. On répète ce processus plusieurs fois et on combine les résultats obtenus.</p>
-<div class="cell" data-layout-align="center" data-hash="donneesmanquantes_cache/html/unnamed-chunk-3_45835b4b535806e15546683955a575c8">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="figures/donnees_manquantes_workflow.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<p><img src="figures/donnees_manquantes_workflow.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
 </figure>
 </div>
 </div>
@@ -364,22 +402,26 @@ B &amp;= \frac{1}{K-1} \sum_{k=1}^K (\widehat{\theta}_k - \widehat{\theta})^2.
 </section>
 <section id="example-dapplication-de-limputation" class="level2" data-number="8.3">
 <h2 data-number="8.3" class="anchored" data-anchor-id="example-dapplication-de-limputation"><span class="header-section-number">8.3</span> Example d’application de l’imputation</h2>
-<p>On examine l’exemple de recommandations de l’association professionnelle des vachers de la section <a href="reglogistique.html#sec-cowboy"><span>Section&nbsp;4.2.3</span></a>.</p>
+<p>On examine l’exemple de recommandations de l’association professionnelle des vachers de la section <a href="reglogistique.html#sec-cowboy" class="quarto-xref"><span>Section 4.2.3</span></a>.</p>
 <p>Le but est d’examiner les effets des variables <span class="math inline">\(X_1\)</span> à <span class="math inline">\(X_6\)</span> sur les intentions d’achat; la base de données <code>manquantes</code> contient les observations. Il s’agit des mêmes données que celles du fichier <code>logit1</code> mais avec des valeurs manquantes.</p>
-<div class="cell" data-hash="donneesmanquantes_cache/html/tbl-missing1r_58c740f855fbcd89db4101724c354d59">
+<div class="cell" data-layout-align="center">
+<div id="tbl-missing1r" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-missing1r-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;8.1: Tableau de la configuration des données manquantes.
+</figcaption>
+<div aria-describedby="tbl-missing1r-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-missing1r" class="anchored">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Tableau&nbsp;8.1: Tableau de la configuration des données manquantes.</caption>
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th style="text-align: right;" data-quarto-table-cell-role="th">\(X_1\)</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">\(X_2\)</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">\(X_3\)</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">\(X_4\)</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">\(X_5\)</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">\(X_6\)</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">\(y\)</th>
+<th style="text-align: right;"><span class="math inline">\(X_1\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(X_2\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(X_3\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(X_4\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(X_5\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(X_6\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(y\)</span></th>
 </tr>
 </thead>
 <tbody>
@@ -476,27 +518,31 @@ B &amp;= \frac{1}{K-1} \sum_{k=1}^K (\widehat{\theta}_k - \widehat{\theta})^2.
 </tbody>
 </table>
 </div>
-
-
+</div>
+</figure>
 </div>
 </div>
 <p>Les points (<code>.</code>) indiquent des valeurs manquantes. Le premier sujet n’a pas de valeur manquante. Le deuxième a une valeur manquante pour <span class="math inline">\(X_1\)</span> (emploi) et <span class="math inline">\(X_4\)</span> (éducation), etc.</p>
 <p>Une première façon de voir combien il y a de valeurs manquantes consiste à faire sortir les statistiques descriptives avec <code>summary</code>. Ainsi, il y 192 valeurs manquantes pour <span class="math inline">\(X_1\)</span>, 48 pour <span class="math inline">\(X_2\)</span> et 184 pour <span class="math inline">\(X_4\)</span>. Les autres variables n’ont pas de valeurs manquantes, incluant la variable dépendante <span class="math inline">\(Y\)</span>. La procédure unidimensionnelle nous permet seulement de voir combien il y a de valeurs manquantes variable par variable.</p>
-<div class="cell" data-hash="donneesmanquantes_cache/html/tbl-manquantes-univ_5308e84f7ec9e7f8b4a69dc7e4006627">
+<div class="cell" data-layout-align="center">
+<div id="tbl-manquantes-univ" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-manquantes-univ-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;8.2: Pourcentage de valeurs manquantes par variable.
+</figcaption>
+<div aria-describedby="tbl-manquantes-univ-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-manquantes-univ" class="anchored">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Tableau&nbsp;8.2: Pourcentage de valeurs manquantes par variable.</caption>
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">x1</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">x2</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">x3</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">x4</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">x5</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">x6</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">y</th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"><span class="math inline">\(X_1\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(X_2\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(X_3\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(X_4\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(X_5\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(X_6\)</span></th>
+<th style="text-align: left;"><span class="math inline">\(y\)</span></th>
 </tr>
 </thead>
 <tbody>
@@ -523,11 +569,11 @@ B &amp;= \frac{1}{K-1} \sum_{k=1}^K (\widehat{\theta}_k - \widehat{\theta})^2.
 </tbody>
 </table>
 </div>
-
-
+</div>
+</figure>
 </div>
 </div>
-<div class="cell" data-hash="donneesmanquantes_cache/html/manquantes-summary-uni_88744d7e5f1dc9705f855a280499391f">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(manquantes, <span class="at">package =</span> <span class="st">'hecmulti'</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(manquantes)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Pourcentage de valeurs manquantes</span></span>
@@ -540,22 +586,26 @@ B &amp;= \frac{1}{K-1} \sum_{k=1}^K (\widehat{\theta}_k - \widehat{\theta})^2.
 <li>Procéder à plusieurs imputations <strong>aléatoires</strong> pour obtenir un échantillon complet (<code>mice</code>)</li>
 <li>Ajuster le modèle d’intérêt avec chaque échantillon (<code>with</code>). 3. Combiner les résultats obtenus (<code>pool</code> et <code>summary</code>)</li>
 </ol>
-<div class="cell" data-hash="donneesmanquantes_cache/html/fig-manquantes2_a98783cbe6ece3080a2971dcd471966c">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-manquantes2" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="donneesmanquantes_files/figure-html/fig-manquantes2-1.png" class="img-fluid figure-img" style="width:70.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;8.2: Configurations des valeurs manquantes pour la base de données <code>manquantes</code>.</figcaption>
+<div id="fig-manquantes2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-manquantes2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="donneesmanquantes_files/figure-html/fig-manquantes2-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-manquantes2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.2: Configurations des valeurs manquantes pour la base de données <code>manquantes</code>.
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>La <a href="#fig-manquantes2">Figure&nbsp;<span>8.2</span></a> donne une indication sur les différentes combinaisons de données complètes (cases bleues) et les observations manquantes (cases roses) avec leur fréquence. Les variables sont indiquées au dessus, le nombre total de valeurs manquantes par variable en dessous, le nombre d’observations pour chaque configuration de valeurs manquantes à gauche à gauche et le nombre de variables avec des valeurs manquantes par configuration à droite. Ainsi, il y a 180 sujets (36% de l’échantillon) avec aucune observation manquante. Il y en a 99 avec seulement <span class="math inline">\(X_4\)</span> manquante et ainsi de suite. On voit donc, par exemple, que pour 14 sujets, à la fois <span class="math inline">\(X_1\)</span> et <span class="math inline">\(X_2\)</span> sont manquantes.</p>
+<p>La <a href="#fig-manquantes2" class="quarto-xref">Figure&nbsp;<span>8.2</span></a> donne une indication sur les différentes combinaisons de données complètes (cases bleues) et les observations manquantes (cases roses) avec leur fréquence. Les variables sont indiquées au dessus, le nombre total de valeurs manquantes par variable en dessous, le nombre d’observations pour chaque configuration de valeurs manquantes à gauche à gauche et le nombre de variables avec des valeurs manquantes par configuration à droite. Ainsi, il y a 180 sujets (36% de l’échantillon) avec aucune observation manquante. Il y en a 99 avec seulement <span class="math inline">\(X_4\)</span> manquante et ainsi de suite. On voit donc, par exemple, que pour 14 sujets, à la fois <span class="math inline">\(X_1\)</span> et <span class="math inline">\(X_2\)</span> sont manquantes.</p>
 <p>La recommandation d’usage est d’imputer au moins le pourcentage de cas incomplet, ici 64% donc 64 imputations. Si la procédure est trop coûteuse en calcul, on peut diminuer le nombre d’imputations, mais il faut au minimum 10 réplications pour avoir une bonne idée de la variabilité.</p>
-<p>On peut comparer l’inférence avec toutes les variables explicatives pour les données sans valeurs manquantes (<span class="math inline">\(n=500\)</span> observations), avec les cas complets uniquement (<span class="math inline">\(n=180\)</span> observations). Le <a href="#tbl-missing3r">Tableau&nbsp;<span>8.3</span></a> présente les estimations des paramètres du modèle de régression logistique s’il n’y avait pas eu de valeurs manquantes, avec les cas complets et les résultats de l’imputation multiple.</p>
-<p>Si on ajuste un modèle à une base de données qui contient des valeurs manquantes, le comportement par défaut est de retirer les observations qui ont au moins une valeur manquante pour une des variables nécessaires à l’analyse (voir la sortie de <code>glm(y ~ ., data = manquantes)</code>). Il ne serait pas raisonnable de faire l’analyse avec seulement 180 observations et de laisser tomber les 320 autres. De plus, comme nous l’avons vu plus haut, ce n’est pas valide à moins que le processus ne soit MCAR. La partie du milieu du <a href="#tbl-missing3r">Tableau&nbsp;<span>8.3</span></a> présente les estimations obtenues. Plusieurs variables significatives à niveau <span class="math inline">\(\alpha=0.05\)</span> ne le sont plus (puisqu’il y a moins d’information quand on réduit le nombre d’observations). Il y a même pire: non seulement la variable <span class="math inline">\(\mathsf{I}(X_2=1)\)</span> est passée de significative à non significative, mais en plus l’estimé de son paramètre a changé de signe.</p>
+<p>On peut comparer l’inférence avec toutes les variables explicatives pour les données sans valeurs manquantes (<span class="math inline">\(n=500\)</span> observations), avec les cas complets uniquement (<span class="math inline">\(n=180\)</span> observations). Le <a href="#tbl-missing3r" class="quarto-xref">Tableau&nbsp;<span>8.3</span></a> présente les estimations des paramètres du modèle de régression logistique s’il n’y avait pas eu de valeurs manquantes, avec les cas complets et les résultats de l’imputation multiple.</p>
+<p>Si on ajuste un modèle à une base de données qui contient des valeurs manquantes, le comportement par défaut est de retirer les observations qui ont au moins une valeur manquante pour une des variables nécessaires à l’analyse (voir la sortie de <code>glm(y ~ ., data = manquantes)</code>). Il ne serait pas raisonnable de faire l’analyse avec seulement 180 observations et de laisser tomber les 320 autres. De plus, comme nous l’avons vu plus haut, ce n’est pas valide à moins que le processus ne soit MCAR. La partie du milieu du <a href="#tbl-missing3r" class="quarto-xref">Tableau&nbsp;<span>8.3</span></a> présente les estimations obtenues. Plusieurs variables significatives à niveau <span class="math inline">\(\alpha=0.05\)</span> ne le sont plus (puisqu’il y a moins d’information quand on réduit le nombre d’observations). Il y a même pire: non seulement la variable <span class="math inline">\(\mathsf{I}(X_2=1)\)</span> est passée de significative à non significative, mais en plus l’estimé de son paramètre a changé de signe.</p>
 <p>Nous allons donc faire l’analyse avec l’imputation multiple, en prenant la méthode d’imputation par défaut</p>
-<div class="cell" data-hash="donneesmanquantes_cache/html/manquante2_acf9640014a6adcc6e98db5dfc402279">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mice)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Imputation multiple avec équations enchaînées</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Intensif en calcul, réduire `m` si nécessaire</span></span>
@@ -577,11 +627,15 @@ B &amp;= \frac{1}{K-1} \sum_{k=1}^K (\widehat{\theta}_k - \widehat{\theta})^2.
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>La procédure <code>mice</code> du paquet éponyme crée les copies complètes du jeu de données. On peut ensuite appliquer une procédure quelconque et combiner les estimations avec <code>pool</code>.</p>
-<div class="cell" data-hash="donneesmanquantes_cache/html/tbl-missing3r_868818ea56bfc0a3d725aec6f610bb2c">
+<div class="cell" data-layout-align="center">
+<div id="tbl-missing3r" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-missing3r-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;8.3: Estimés, erreurs-type et valeurs-p des paramètres avec les 500 données complètes (gauche), avec les 180 cas complets (milieu) et avec l’imputation multiple (droite).
+</figcaption>
+<div aria-describedby="tbl-missing3r-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-missing3r" class="anchored">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Tableau&nbsp;8.3: Estimés, erreurs-type et valeurs-p des paramètres avec les 500 données complètes (gauche), avec les 180 cas complets (milieu) et avec l’imputation multiple (droite).</caption>
+<table class="table do-not-create-environment cell caption-top table-sm table-striped small" data-quarto-postprocess="true">
 <colgroup>
 <col style="width: 10%">
 <col style="width: 10%">
@@ -609,15 +663,15 @@ Imputation multiple
 </tr>
 <tr class="odd">
 <th style="text-align: left;" data-quarto-table-cell-role="th"></th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">\(\widehat{\boldsymbol{\beta}}\)</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">\(\mathrm{se}(\widehat{\boldsymbol{\beta}})\)</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">valeur-\(p\)</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">\(\widehat{\boldsymbol{\beta}}\)</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">\(\mathrm{se}(\widehat{\boldsymbol{\beta}})\)</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">valeur-\(p\)</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">\(\widehat{\boldsymbol{\beta}}\)</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">\(\mathrm{se}(\widehat{\boldsymbol{\beta}})\)</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">valeur-\(p\)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">$\widehat{\boldsymbol{\beta}}$</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">$\mathrm{se}(\widehat{\boldsymbol{\beta}})$</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">valeur-$p$</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">$\widehat{\boldsymbol{\beta}}$</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">$\mathrm{se}(\widehat{\boldsymbol{\beta}})$</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">valeur-$p$</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">$\widehat{\boldsymbol{\beta}}$</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">$\mathrm{se}(\widehat{\boldsymbol{\beta}})$</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">valeur-$p$</th>
 </tr>
 </thead>
 <tbody>
@@ -634,7 +688,7 @@ Imputation multiple
 <td style="text-align: center;">0.00</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">\(x_1=1\)</td>
+<td style="text-align: left;">$x_1=1$</td>
 <td style="text-align: right;">0.36</td>
 <td style="text-align: center;">0.48</td>
 <td style="text-align: center;">0.46</td>
@@ -646,7 +700,7 @@ Imputation multiple
 <td style="text-align: center;">0.31</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">\(x_1=2\)</td>
+<td style="text-align: left;">$x_1=2$</td>
 <td style="text-align: right;">-0.47</td>
 <td style="text-align: center;">0.37</td>
 <td style="text-align: center;">0.21</td>
@@ -658,7 +712,7 @@ Imputation multiple
 <td style="text-align: center;">0.78</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">\(x_1=3\)</td>
+<td style="text-align: left;">$x_1=3$</td>
 <td style="text-align: right;">-0.31</td>
 <td style="text-align: center;">0.35</td>
 <td style="text-align: center;">0.37</td>
@@ -670,7 +724,7 @@ Imputation multiple
 <td style="text-align: center;">0.87</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">\(x_1=4\)</td>
+<td style="text-align: left;">$x_1=4$</td>
 <td style="text-align: right;">-0.32</td>
 <td style="text-align: center;">0.40</td>
 <td style="text-align: center;">0.43</td>
@@ -682,7 +736,7 @@ Imputation multiple
 <td style="text-align: center;">0.93</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">\(x_2=1\)</td>
+<td style="text-align: left;">$x_2=1$</td>
 <td style="text-align: right;">1.33</td>
 <td style="text-align: center;">0.60</td>
 <td style="text-align: center;">0.03</td>
@@ -694,7 +748,7 @@ Imputation multiple
 <td style="text-align: center;">0.09</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">\(x_2=2\)</td>
+<td style="text-align: left;">$x_2=2$</td>
 <td style="text-align: right;">1.15</td>
 <td style="text-align: center;">0.50</td>
 <td style="text-align: center;">0.02</td>
@@ -706,7 +760,7 @@ Imputation multiple
 <td style="text-align: center;">0.06</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">\(x_2=3\)</td>
+<td style="text-align: left;">$x_2=3$</td>
 <td style="text-align: right;">0.77</td>
 <td style="text-align: center;">0.48</td>
 <td style="text-align: center;">0.11</td>
@@ -718,7 +772,7 @@ Imputation multiple
 <td style="text-align: center;">0.31</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">\(x_2=4\)</td>
+<td style="text-align: left;">$x_2=4$</td>
 <td style="text-align: right;">-1.11</td>
 <td style="text-align: center;">0.54</td>
 <td style="text-align: center;">0.04</td>
@@ -730,7 +784,7 @@ Imputation multiple
 <td style="text-align: center;">0.07</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">\(x_3\)</td>
+<td style="text-align: left;">$x_3$</td>
 <td style="text-align: right;">1.35</td>
 <td style="text-align: center;">0.26</td>
 <td style="text-align: center;">0.00</td>
@@ -742,7 +796,7 @@ Imputation multiple
 <td style="text-align: center;">0.00</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">\(x_4\)</td>
+<td style="text-align: left;">$x_4$</td>
 <td style="text-align: right;">1.83</td>
 <td style="text-align: center;">0.30</td>
 <td style="text-align: center;">0.00</td>
@@ -754,7 +808,7 @@ Imputation multiple
 <td style="text-align: center;">0.00</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">\(x_5\)</td>
+<td style="text-align: left;">$x_5$</td>
 <td style="text-align: right;">0.11</td>
 <td style="text-align: center;">0.02</td>
 <td style="text-align: center;">0.00</td>
@@ -766,7 +820,7 @@ Imputation multiple
 <td style="text-align: center;">0.00</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">\(x_6=1\)</td>
+<td style="text-align: left;">$x_6=1$</td>
 <td style="text-align: right;">2.41</td>
 <td style="text-align: center;">0.38</td>
 <td style="text-align: center;">0.00</td>
@@ -778,7 +832,7 @@ Imputation multiple
 <td style="text-align: center;">0.00</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">\(x_6=2\)</td>
+<td style="text-align: left;">$x_6=2$</td>
 <td style="text-align: right;">1.04</td>
 <td style="text-align: center;">0.25</td>
 <td style="text-align: center;">0.00</td>
@@ -791,9 +845,11 @@ Imputation multiple
 </tr>
 </tbody>
 </table>
+
+
 </div>
-
-
+</div>
+</figure>
 </div>
 </div>
 <p>On peut remarquer que la précision est systématiquement meilleure avec l’imputation multiple; les erreurs-type pour l’imputation multiple sont plus petits que celle du modèle qui retire les données incomplètes.</p>
@@ -820,7 +876,7 @@ En résumé
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-Little.Rubin:2019" class="csl-entry" role="listitem">
 Little, Roderick J. A., and Donald B Rubin. 2019. <span>“Statistical Analysis with Missing Data.”</span> Edited by Wiley. <a href="https://doi.org/10.1002/9781119482260">https://doi.org/10.1002/9781119482260</a>.
 </div>
@@ -869,18 +925,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -912,11 +957,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/lbelzile\.github\.io\/math60602\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -926,8 +1010,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -939,7 +1032,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -983,6 +1199,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1008,6 +1225,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1069,12 +1312,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./regroupements.html" class="pagination-link">
+      <a href="./regroupements.html" class="pagination-link" aria-label="Analyse de regroupements">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Analyse de regroupements</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./references.html" class="pagination-link">
+      <a href="./references.html" class="pagination-link" aria-label="Références">
         <span class="nav-page-text">Références</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -1085,12 +1328,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <div class="nav-footer-left">
       &nbsp;
     </div>   
-    <div class="nav-footer-center">Tous droits réservés (Denis Larocque, Léo Belzile)</div>
+    <div class="nav-footer-center">
+<p>Tous droits réservés (Denis Larocque, Léo Belzile)</p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/lbelzile/math60602/edit/master/donneesmanquantes.qmd" class="toc-action"><i class="bi bi-github"></i>Éditer cette page</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+
 
 
 

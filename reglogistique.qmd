@@ -157,16 +157,15 @@ Par exemple, une cote de 4 veut dire qu'il y a 4 fois plus de chance que $Y$ soi
 #| echo: false
 #| tbl-cap: "Cote et probabilité de succès"
 datf <- matrix("", nrow = 3, ncol = 10)
-datf[1,] <- c("\\(\\Pr(Y=1)\\)", sprintf(seq(0.1,0.9, by = 0.1),fmt = "%.1f"))
+datf[1,] <- c("$\\Pr(Y=1)$", sprintf(seq(0.1,0.9, by = 0.1),fmt = "%.1f"))
 datf[2,] <- c("cote", sprintf("%.2g",round(sapply(1:9, function(i){i/(10-i)}),2)))
-datf[3,] <- c("", paste0("\\(",c("\\frac{1}{9}","\\frac{1}{4}","\\frac{3}{7}","\\frac{2}{3}","1","\\frac{3}{2}","\\frac{7}{3}","4","9"),"\\)"))
+datf[3,] <- c("", paste0("$",c("\\frac{1}{9}","\\frac{1}{4}","\\frac{3}{7}","\\frac{2}{3}","1","\\frac{3}{2}","\\frac{7}{3}","4","9"),"$"))
 knitr::kable(datf[-1,], col.names = datf[1,],
              row.names = FALSE,
              booktabs = TRUE,
              longtable = FALSE,
              align =  paste0(c("l",rep("c", 9)),collapse = ""),
-             escape = FALSE) |>
-  kableExtra::kable_styling()
+             escape = FALSE)
 
 ```
 
@@ -460,8 +459,7 @@ rownames(gof_df) <- c("modèle ajusté", "modèle nul")
 knitr::kable(gof_df,
                 digits = 2,
                 row.names = TRUE, 
-                booktabs = TRUE) |>
-  kableExtra::kable_styling()
+                booktabs = TRUE)
 ci2 <- confint(modele2)
 modeleH0 <- update(modele2, formula. =  ". ~ . - x6")
 rvrais <- modeleH0$deviance - modele2$deviance
@@ -736,8 +734,7 @@ knitr::kable(
              row.names = FALSE,
              booktabs = TRUE,
              longtable = TRUE,
-             escape = TRUE) |>
-  kableExtra::kable_styling()
+             escape = TRUE)
 
 # La fonction cv.glm permet aussi de faire la validation croisée, 
 # Définir une fonction de coût, mais pour un seul point de coupure
@@ -764,13 +761,12 @@ Avec une variable réponse binaire, il y a deux classifications possibles et le 
 #| echo: false
 #| tbl-cap: "Matrice de confusion avec point de coupure 0.465."
 confumat <- perfo1$confusion
-rownames(confumat) <- c("\\(\\widehat{Y}=1\\)","\\(\\widehat{Y}=0\\)")
-colnames(confumat) <- c("\\(Y=1\\)","\\(Y=0\\)")
+rownames(confumat) <- c("$\\widehat{Y}=1$","$\\widehat{Y}=0$")
+colnames(confumat) <- c("$Y=1$","$Y=0$")
 knitr::kable(x = confumat, 
                 align = "r",
                 escape = FALSE,
-                booktabs = TRUE) |>
-  kableExtra::kable_styling()
+                booktabs = TRUE)
 ```
 
 Quatre autres quantités, dérivées à partir de la matrice de confusion, sont parfois utilisées: 
@@ -911,8 +907,7 @@ dbm |>
             "écart-type" =round(sd(ymontant),2), 
             "minimum" = min(ymontant), 
             "maximum" = max(ymontant)) |>
-knitr::kable(booktabs = TRUE) |>
-    kableExtra::kable_styling()
+knitr::kable(booktabs = TRUE)
 ```
 
 
@@ -963,7 +958,7 @@ Comme il est très coûteux de rater un client qui aurait acheté quelque chose,
 ### Courbe lift
 
 Un autre type de graphe qui est souvent utilisé dans des contextes de gestion
-est la courbe lift (sic) (en anglais, _lift chart_). Cette courbe est obtenue en ordonnant les probabilités de succès estimées par le modèle, $\widehat{p}$, en ordre croissant et en regardant quelle pourcentage de ces derniers seraient bien classifiés (le nombre de vrais positifs sur le nombre de succès).
+est la courbe lift (sic) (en anglais, _lift chart_). Cette courbe est obtenue en ordonnant les probabilités de succès estimées par le modèle, $\widehat{p}$, en ordre croissant et en regardant quelle pourcentage de ces derniers seraient bien classifiés (le nombre de vrais positifs sur le nombre de succès). Elle sert dans le contexte où on a un budget fixe, par exemple de publicité, et que l'on veut établir comment une sélection (envoi ciblé) aurait performé par rapport à un envoi systématique au même nombre de personnes.
 
 
 ```{r}
@@ -1009,11 +1004,10 @@ tab_lift <- hecmulti::courbe_lift(
 #| eval: true
 #| tbl-cap: "Tableau du lift (déciles)."
 knitr::kable(tab_lift, 
-                booktabs = TRUE) |>
-  kableExtra::kable_styling()
+                booktabs = TRUE)
 ```
 
-Le @tbl-lift présente les 10 déciles. Si on classifiait comme acheteurs les 10\% qui ont la plus forte probabilité estimée d'achat, on détecterait 81 des 210 clients (37.6\%). En comparaison, on s'attend que 21 clients soient sélectionnés en moyenne si on prend un échantillon aléatoire de 100 personnes. Le ratio 81/21 (dernière colonne) est le _lift_ du modèle: il permet de détecter 3.86 fois plus de succès que le hasard.
+Le @tbl-lift présente les 10 déciles, mais on n'utilisera en pratique qu'une seule valeur (correspondant à la fraction de clients que l'on veut joindre). Si on classifiait comme acheteurs les 10\% qui ont la plus forte probabilité estimée d'achat, on détecterait 81 des 210 clients (37.6\%). En comparaison, on s'attend que 21 clients soient sélectionnés en moyenne si on prend un échantillon aléatoire de 100 personnes. Le ratio 81/21 (dernière colonne) est le _lift_ du modèle: il permet de détecter 3.86 fois plus de succès que le hasard.
 
 La @fig-lift présente le pourcentage d'observations bien classées parmi les variables (pourcentage des probabilités prédites qui correspondent à un succès parmi les $k$ plus susceptibles selon le modèle). La référence est la ligne diagonale, qui correspond à une détection aléatoire.
 
@@ -1344,8 +1338,7 @@ knitr::kable(datf, col.names = colnames,
              booktabs = TRUE,
              longtable = FALSE,
              align =  paste0(c("l",rep("r", 5)),collapse = ""),
-             escape = FALSE )   |>
-  kableExtra::kable_styling()
+             escape = FALSE )
 options(scipen = 100)
 ```
 
@@ -1433,33 +1426,17 @@ pred_achat <-
           newdata = dbm[dbm$test == 1,])
 #Remplacer valeurs manquantes par zéros
 valid_ymontant[is.na(valid_ymontant)] <- 0
-# On envoie le catalogue seulement si le montant d'achat prédit est supérieur à 10$
+# On envoie le catalogue seulement si la
+# prédiction du montant d'achat est supérieure à 10$
 
 # Revenu total avec cette stratégie
-heckit_perfo <- 
+heckit_perfo <-
   sum(valid_ymontant[which(pred_achat > 10)] - 10)
 ```
 
 
-```{r}
-#| label: tbl-03-tobit
-#| eval: false
-#| echo: false
-#| tbl-cap: "Matrice de gain pour l'envoi de catalogue avec des modèle Tobit de type II: sensibilité, taux de faux positifs et de bonne classification et gain net de la stratégie."
-colnames <- c("modèle","sensibilité","FP (\\%)","bonne classification (\\%)","revenu net")
-datf <- rbind(c("(1)","88.3","50.9","76.1","997 238"),
-              c("(2)","86.3","49.9","76,9","977 422"))
 
-knitr::kable(datf, col.names = colnames,
-             row.names = FALSE,
-             booktabs = TRUE,
-             longtable = FALSE,
-             align =  paste0(c("l",rep("r", 5)),collapse = ""),
-             escape = FALSE)  |>
-  kableExtra::kable_styling()
-```
-
-Le modèle Heckit aurait produit un revenu net de `r sprintf(heckit_perfo, fmt = "%i0")`\$, un montant supérieur au revenu net de `r max(datf[,6])`\$, qui était le meilleur trouvé à la sous-section précédente. 
+Le modèle Heckit aurait produit un revenu net de `r sprintf(round(heckit_perfo, 0), fmt = "%0.f")`\$, un montant supérieur au revenu net de `r max(datf[,6])`\$, qui était le meilleur trouvé à la sous-section précédente.
 
 Pour conclure cet exemple, il s'avère donc que la régression logistique permet d'effectuer un bon ciblage des clients potentiels afin de maximiser les revenus. L'approche générale consistant à obtenir des prévisions pour $\Pr(\texttt{yachat}=1)$ et ensuite trouver le meilleur point de coupure est très générale. D'autres types de modèles (arbre de classification, forêt aléatoire, réseau de neurones) pourraient être utilisés à la place de la régression logistique.
 
@@ -1728,13 +1705,11 @@ colnames(tab1) <- colnames(tab2) <-
 knitr::kable(tab1, 
                 digits = 3,
                 caption = " catégorie rarement/jamais vs toujours", 
-                booktabs = TRUE) |>
-  kableExtra::kable_styling()
+                booktabs = TRUE)
 knitr::kable(tab2, 
                 digits = 3, 
                 caption = "catégorie occasionnellement vs toujours", 
-                booktabs = TRUE) |>
-  kableExtra::kable_styling()
+                booktabs = TRUE)
 expcoefm1 <- sprintf(
   exp(as.numeric(coef(multi1)[1,2])),
   fmt = "%.3f")
@@ -1800,8 +1775,7 @@ knitr::kable(tab, digits = 2,
                 "déviance",
                 "DL",
                 "rapport vrais.",
-                "valeur-p")) |>
-  kableExtra::kable_styling()
+                "valeur-p"))
 
 ```
 
@@ -1919,8 +1893,7 @@ kableExtra::kbl(tabcoef,
 	        longtable = FALSE, 
 	        booktabs = TRUE,
                 col.names = c("effet","coefficient","erreur-type"),
-                digits = 3) |>
-  kableExtra::kable_styling()
+                digits = 3)
 pval_lrt_multi2a_drop1 <- sprintf(round(drop1(multi2a, test = "Chisq")[2,4],3), fmt = "%.3f")
 ```
 
@@ -1956,8 +1929,7 @@ predict(multi2a,
 knitr::kable(t(predict(multi2a, 
                      newdata = data.frame(sexe = factor("femme")), 
                      type = "probs")),digits = 3,
-                     booktabs = TRUE) |> 
- kableExtra::kable_styling()
+                     booktabs = TRUE)
 ```
 
 

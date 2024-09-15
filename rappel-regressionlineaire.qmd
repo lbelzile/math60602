@@ -423,7 +423,7 @@ Si on multiplie le salaire par mille, la moyenne théorique de notre modèle lin
 salaireprof$sexe <- relevel(x = salaireprof$sexe, ref = "homme")
 modlin2 <- lm(salaire ~  sexe + domaine + echelon + service , data = salaireprof)
 coefs_modlin2 <- round(coef(modlin2)*1000,0)
-names(coefs_modlin2) <- paste0("\\(\\widehat{\\beta}_",0:5,"\\)")
+names(coefs_modlin2) <- paste0("$\\widehat{\\beta}_",0:5,"$")
 knitr::kable(t(coefs_modlin2), booktabs = TRUE, escape = FALSE)
 # car::avPlots(model = modlin2, "service", xlab= "années de service | reste", ylab = "salaire | reste", bty = "l", pch = 19, col = scales::alpha("black", 0.3))
 ```
@@ -436,7 +436,7 @@ summary(modlin2)
 
 L'interprétation des coefficients est la suivante:
 
-                                                                                        - L'ordonnée à l'origine $\beta_0$ correspond au salaire moyen d'une professeure adjointe (une femme) qui vient de compléter ses études et qui travaille dans un domaine appliqué: on estime ce salaire à $\widehat{\beta}_0=`r coefs_modlin2[1]`$ dollars.
+- L'ordonnée à l'origine $\beta_0$ correspond au salaire moyen d'une professeure adjointe (une femme) qui vient de compléter ses études et qui travaille dans un domaine appliqué: on estime ce salaire à $\widehat{\beta}_0=`r coefs_modlin2[1]`$ dollars.
 - toutes choses étant égales par ailleurs (même domaine, échelon et années depuis le dernier diplôme), l'écart de salaire entre une femme et un homme est estimé à  $\widehat{\beta}_1=`r coefs_modlin2[2]`$ dollars.
 - *ceteris paribus*, un(e) professeur(e) qui oeuvre dans un domaine théorique gagne $\beta_2$ dollars de plus qu'une personne du même sexe dans un domaine appliqué; on estime cette différence à $`r coefs_modlin2[3]`$ dollars.
 - *ceteris paribus*, la différence moyenne de salaire entre professeurs adjoints et aggrégés est estimée à  $\widehat{\beta}_3=`r coefs_modlin2[4]`$ dollars.

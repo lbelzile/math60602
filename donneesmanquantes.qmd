@@ -116,7 +116,7 @@ g1 <- ggplot(data = manquants1,
            shape = factor(manquant))) + 
   geom_point(size = 2) + 
     scale_shape_manual(values = c(1,20)) +
-  scale_colour_discrete(palette = mice::mdc) +
+  scale_colour_discrete(mice::mdc(1:2)) +
   labs(y = "ventes",
        x = "nombre de clients") +
   theme_classic() +
@@ -146,7 +146,7 @@ g2 <- ggplot(data = manquants2,
            shape = factor(manquant))) + 
   geom_point(size = 2) + 
     scale_shape_manual(values = c(1,20)) +
-  scale_colour_discrete(palette = mice::mdc) +
+  scale_colour_discrete(mice::mdc(1:2)) +
   labs(y = "ventes",
        x = "nombre de clients") +
   theme_classic() +
@@ -173,7 +173,7 @@ g3 <- ggplot(data = data.frame(cbind(
            color = factor(1-manquant),
            shape = factor(manquant))) + 
   geom_point(size = 2) + 
-  scale_colour_discrete(palette = mice::mdc) +
+  scale_colour_discrete(mice::mdc(1:2)) +
     scale_shape_manual(values = c(1,20)) +
   labs(y = "ventes",
        x = "nombre de clients") +
@@ -268,10 +268,9 @@ smallmisst[is.na(smallmiss)] <- "."
 knitr::kable(smallmisst, row.names = FALSE,
              booktabs = TRUE,
              longtable = FALSE,
-             col.names = c(paste0("\\(X_",1:6,"\\)"),"\\(y\\)"),
+             col.names = c(paste0("$X_",1:6,"$"),"$y$"),
              align =  paste0(c(rep("r", 7)),collapse = ""),
-             escape = FALSE) |>
-  kableExtra::kable_styling()
+             escape = FALSE)
 ```
 
 
@@ -291,8 +290,8 @@ manq <- formatC(apply(manquantes, 2,
                       function(x){c(sum(is.na(x)), mean(is.na(x)))}))
 rownames(manq) <- c("nombre", "pourcentage")
 knitr::kable(manq,
-                booktabs = TRUE) |>
-  kableExtra::kable_styling()
+             col.names = c(paste0("$X_",1:6,"$"),"$y$"),
+             booktabs = TRUE)
 ```
 
 
@@ -406,15 +405,15 @@ summar_comp <- summary(glm(formula = form,
 url <- "https://lbelzile.bitbucket.io/MATH60602/mi.sas7bdat"
 summar_mi <- haven::read_sas(url)
 combi <- cbind(summar_full, summar_comp, summar_mi, 
-               row.names = c("cste","\\(x_1=1\\)","\\(x_1=2\\)","\\(x_1=3\\)",
-                             "\\(x_1=4\\)","\\(x_2=1\\)","\\(x_2=2\\)","\\(x_2=3\\)","\\(x_2=4\\)",
-                             "\\(x_3\\)","\\(x_4\\)","\\(x_5\\)","\\(x_6=1\\)","\\(x_6=2\\)"))
+               row.names = c("cste","$x_1=1$","$x_1=2$","$x_1=3$",
+                             "$x_1=4$","$x_2=1$","$x_2=2$","$x_2=3$","$x_2=4$",
+                             "$x_3$","$x_4$","$x_5$","$x_6=1$","$x_6=2$"))
 combif <- apply(combi, c(1,2), function(x){
-  paste0(#"\\(",
+  paste0(#"$",
          formatC(x, digits = 2, format = "f",) #, 
-         #"\\)"
+         #"$"
          )} )
-knitr::kable(combif, col.names = rep(c("\\(\\widehat{\\boldsymbol{\\beta}}\\)", "\\(\\mathrm{se}(\\widehat{\\boldsymbol{\\beta}})\\)","valeur-\\(p\\)"), 3),
+knitr::kable(combif, col.names = rep(c("$\\widehat{\\boldsymbol{\\beta}}$", "$\\mathrm{se}(\\widehat{\\boldsymbol{\\beta}})$","valeur-$p$"), 3),
              booktabs = TRUE,
              longtable = FALSE,	escape = FALSE,	
                 align = 'rccrccrcc') |>
