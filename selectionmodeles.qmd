@@ -561,9 +561,9 @@ eqm_cv <- cv_caret$results$RMSE^2
 
 Le cas particulier $K=n$ (en anglais _leave-one-out cross validation_, ou $\mathsf{LOOCV}$) consiste à enlever une seule observation, à estimer le modèle avec les $n-1$ autres et à valider à l'aide de l'observation laissée de côté: on répète cette procédure pour chaque observation. Pour les modèles linéaires, il existe des formules explicites qui nous permettent d'éviter d'ajuster $n$ régressions par moindre carrés. Cette forme de validation croisée tend à être trop optimiste.
 
-Il faut garder en tête que le résultat de la validation croisée est aléatoire parce que la séparation des données en plis l'est également.  La figure @fig-plotcv, obtenue en répétant 100 fois la procédure et en calculant à chaque fois la performance de différents modèles polynomiaux, montre la variabilité des estimations. Plutôt que de répéter le calcul, si on a un nombre de groupes $K$ suffisamment grand et assez d'observations par pli, on pourrait estimer la variabilité de la procédure directement. Posons $\widehat{\mathsf{EQM}}_{\text{VC}, k}$ ($k=1, \ldots, K$) calculer l'erreur quadratique moyenne de chaque pli. On peut estimer l'écart-type empirique de cette moyenne via
+Il faut garder en tête que le résultat de la validation croisée est aléatoire parce que la séparation des données en plis l'est également.  La figure @fig-plotcv, obtenue en répétant 100 fois la procédure et en calculant à chaque fois la performance de différents modèles polynomiaux, montre la variabilité des estimations. Plutôt que de répéter le calcul, si on a un nombre de groupes $K$ suffisamment grand et assez d'observations par pli, on pourrait estimer la variabilité de la procédure directement. Posons $\widehat{\mathsf{EQM}}_{\text{VC}, k}$ ($k=1, \ldots, K$) calculer l'erreur quadratique moyenne de chaque pli. On peut estimer l'erreur-type empirique de cette moyenne via la racine carrée de
 \begin{align*}
-\mathsf{sd}(\widehat{\mathsf{EQM}}_{\text{VC}}) = \frac{1}{K-1} \sum_{k=1}^{K} (\widehat{\mathsf{EQM}}_{\text{VC}, k}-\widehat{\mathsf{EQM}}_{\text{VC}})^2.
+\mathsf{Var}(\widehat{\mathsf{EQM}}_{\text{VC}}) = \frac{1}{K-1} \sum_{k=1}^{K} (\widehat{\mathsf{EQM}}_{\text{VC}, k}-\widehat{\mathsf{EQM}}_{\text{VC}})^2.
 \end{align*}
 
 
