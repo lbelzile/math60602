@@ -405,17 +405,34 @@ summar_comp <- summary(glm(formula = form,
 url <- "https://lbelzile.bitbucket.io/MATH60602/mi.sas7bdat"
 summar_mi <- haven::read_sas(url)
 combi <- cbind(summar_full, summar_comp, summar_mi, 
-               row.names = c("cste","$x_1=1$","$x_1=2$","$x_1=3$",
-                             "$x_1=4$","$x_2=1$","$x_2=2$","$x_2=3$","$x_2=4$",
-                             "$x_3$","$x_4$","$x_5$","$x_6=1$","$x_6=2$"))
+               row.names = c("cste",
+                             "\\(x_1=1\\)",
+                             "\\(x_1=2\\)",
+                             "\\(x_1=3\\)",
+                             "\\(x_1=4\\)",
+                             "\\(x_2=1\\)",
+                             "\\(x_2=2\\)",
+                             "\\(x_2=3\\)",
+                             "\\(x_2=4\\)",
+                             "\\(x_3\\)",
+                             "\\(x_4\\)",
+                             "\\(x_5\\)",
+                             "\\(x_6=1\\)",
+                             "\\(x_6=2\\)"))
 combif <- apply(combi, c(1,2), function(x){
   paste0(#"$",
          formatC(x, digits = 2, format = "f",) #, 
          #"$"
          )} )
-knitr::kable(combif, col.names = rep(c("$\\widehat{\\boldsymbol{\\beta}}$", "$\\mathrm{se}(\\widehat{\\boldsymbol{\\beta}})$","valeur-$p$"), 3),
+knitr::kable(combif, 
+             col.names = rep(
+               c("\\(\\widehat{\\boldsymbol{\\beta}}\\)",
+                 "\\(\\mathrm{se}(\\widehat{\\boldsymbol{\\beta}})\\)",
+                 "valeur-\\(p\\)"), 
+               3),
              booktabs = TRUE,
-             longtable = FALSE,	escape = FALSE,	
+             longtable = FALSE,
+             escape = FALSE,	
                 align = 'rccrccrcc') |>
   kableExtra::kable_styling() |>
   kableExtra::add_header_above(
