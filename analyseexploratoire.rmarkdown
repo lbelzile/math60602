@@ -1,5 +1,12 @@
 # Analyse exploratoire {#analyse-exploratoire}
 
+
+
+
+
+
+
+
 ```{r}
 #| label: setup
 #| file: "_common.R"
@@ -8,6 +15,13 @@
 #| message: false
 #| warning: false
 ```
+
+
+
+
+
+
+
 
 L'analyse exploratoire, comme son nom l'indique, est une étape préliminaire à la modélisation servant à l'acquisition d'une meilleure compréhension des données. 
 L'analyse exploratoire sert à nous assurer que notre analyse ou notre traitement de ces dernières est cohérent. Le but de l'analyse exploratoire graphique est d'extraire des informations utiles, le plus souvent par le biais d'une série de questions qui sont raffinées au fur et à mesure que progresse l'analyse. On s'intéresse particulièrement aux relations et interactions entre différentes variables et la distribution empirique de chaque variable. Les étapes majeures sont:
@@ -72,6 +86,13 @@ Avant de regarder les données, il est souvent utile de se plonger dans la descr
 
 Le principal type de graphique pour représenter la distribution d'une variable catégorielle est le diagramme en bâtons, dans lequel la fréquence de chaque catégorie est présentée sur l'axe des ordonnées ($y$) en fonction de la modalité, sur l'axe des abscisses ($x$), et ordonnées pour des variables ordinales. Cette représentation est en tout point supérieur au [diagramme en camembert](http://www.perceptualedge.com/articles/08-21-07.pdf), une engeance répandue qui devrait être honnie (notamment parce que l'humain juge mal les différences d'aires, qu'une simple rotation change la perception du graphique et qu'il est difficile de mesurer les proportions) --- ce n'est pas de la tarte!
 
+
+
+
+
+
+
+
 ```{r}
 #| label: barplotrenfe-code
 #| echo: true
@@ -126,9 +147,23 @@ ggplot(mapping = aes(y = type, x = n)) +
          y = "")
 g1 + g2
 ```
+
+
+
+
+
+
+
 Puisque les variables continues peuvent prendre autant de valeurs distinctes qu'il y a d'observations, on ne peut simplement compter le nombre d'occurrence par valeur unique. On regroupera plutôt dans un certain nombre d'intervalle, en discrétisant l'ensemble des valeurs en classes pour obtenir un histogramme. Le nombre de classes dépendra du nombre d'observations si on veut que l'estimation ne soit pas impactée par le faible nombre d'observations par classe: règle générale, le nombre de classes ne devrait pas dépasser $\sqrt{n}$, où $n$ est le nombre d'observations de l'échantillon. On obtiendra la fréquence de chaque classe, mais si on normalise l'histogramme (de façon à ce que l'aire sous les bandes verticales égale un), on obtient une approximation discrète de la fonction de densité. Faire varier le nombre de classes permet parfois de faire apparaître des caractéristiques de la variable (notamment la  multimodalité, l'asymmétrie et les arrondis). 
 
 Puisque qu'on groupe les observations en classe pour tracer l'histogramme, il est difficile de voir l'étendue des valeurs que prenne la variable: on peut rajouter des traits sous l'histogramme pour représenter les valeurs uniques prises par la variable, tandis que la hauteur de l'histogramme nous renseigne sur leur fréquence relative.
+
+
+
+
+
+
+
 
 ```{r}
 #| label: fig-histrenfe
@@ -147,11 +182,25 @@ renfe |>
          y = "densité") 
 ```
 
+
+
+
+
+
+
+
 Une boîte à moustaches représente graphiquement cinq statistiques descriptives.
 
 - La boîte donne les 1e, 2e et 3e quartiles $q_1, q_2, q_3$. Il y a donc 50\% des observations sont au-dessus/en-dessous de la médiane $q_2$ qui sépare en deux la boîte.
 - La longueur des moustaches est moins de $1.5$ fois l'écart interquartile $q_3-q_1$ (tracée entre 3e quartile et le dernier point plus petit que $q_3+1.5(q_3-q_1)$, etc.)
 - Les observations au-delà des moustaches sont encerclées. Notez que plus le nombre d'observations est élevé, plus le nombres de valeurs extrême augmente. C'est un défaut de la boîte à moustache, qui a été conçue pour des jeux de données qui passeraient pour petits selon les standards actuels.
+
+
+
+
+
+
+
 
 ```{r }
 #| label: fig-boiteamoustache
@@ -161,7 +210,21 @@ Une boîte à moustaches représente graphiquement cinq statistiques descriptive
 knitr::include_graphics('figures/01-intro-boiteamoustache.png')
 ```
 
+
+
+
+
+
+
+
 On peut représenter la distribution d'une variable réponse continue en fonction d'une variable catégorielle en traçant une boîte à moustaches pour chaque catégorie et en les disposant côte-à-côte. Une troisième variable catégorielle peut être ajoutée par le biais de couleurs, comme dans la @fig-histboxplot.
+
+
+
+
+
+
+
 
 ```{r}
 #| label: fig-histboxplot
@@ -178,6 +241,13 @@ renfe |>
          col = "type de train") + 
     theme(legend.position = "bottom")
 ```
+
+
+
+
+
+
+
 
 Si on veut représenter la covariabilité de deux variables continues, on utilise un nuage de points où chaque variable est représentée sur un axe et chaque observation donne la coordonnée des points. Si la représentation graphique est dominée par quelques valeurs très grandes, une transformation des données peut être utile: vous verrez souvent des données positives à l'échelle logarithmique. 
 
@@ -211,6 +281,13 @@ On remarque également que seulement 17 temps de parcours sont affichés sur les
 
 Aller de Madrid à Barcelone à l'aide d'un train régulier prend 18 minutes de plus. Avec plus de 9h de trajet, pas étonnant donc que ces billets soient peu courus. Encore plus frappant, on note que le prix des billets est fixe: 43.25 euros peu importe que le trajet soit aller ou retour. C'est probablement la trouvaille la plus importante jusqu'à maintenant, car les billets de train de type RegioExpress ne forment pas un échantillon: il n'y a aucune variabilité! On aurait également pu découvrir cette anomalie en traçant une boîte à moustaches du prix en fonction du type de train.
 
+
+
+
+
+
+
+
 ```{r}
 #| label: fig-renfe-aed4
 #| cache: true 
@@ -227,6 +304,13 @@ ggplot(data = renfe,
   theme(legend.position = "bottom")
 ```
 
+
+
+
+
+
+
+
 On pourrait soupçonner que les trains étiquetés `AVE` sont plus rapides, sachant que c'est l'acronyme de *Alta Velocidad Española*, littéralement haute vitesse espagnole. Qu'en est-il des distinctions entre les deux types de trains étiquetés AVE? Selon [le site de la SNCF](https://web.archive.org/web/20200608072559/https://www.renfe-sncf.com/rw-en/services/a-unique-experience/Pages/services.aspx), les trains AVE-TGV sont des partenariats entre la Renfe et la SNCF et effectuent des liaisons entre la France et l'Espagne. 
 
 
@@ -236,6 +320,13 @@ Les prix sont beaucoup plus élevés, en moyenne plus de deux fois plus que les 
 On n'a pas encore considéré le tarif et la classe des billets, hormis pour les trains RegioExpress. On voit dans la @fig-renfe-aed7 une forte différente dans l'hétérogénéité des prix selon le tarif; le tarif Promo prend plusieurs valeurs distinctes, tandis que les tarifs AdultoIda et Flexible semblent ne prendre que quelques valeurs. La première classe (`Preferente`) est plus chère et il y a moins d'observations dans ce groupe. La classe Turista est la classe la moins dispendieuse et la plus populaire. [`TuristaPlus`](http://web.archive.org/web/20161111134241/http://www.renfe.com/viajeros/tarifas/billete_promo.html) offre plus de confort, tandis que `TuristaSolo` permet d'obtenir un siège individuel. 
 
 Côté tarif, [Promo](http://web.archive.org/web/20161111134241/http://www.renfe.com/viajeros/tarifas/billete_promo.html) et [PromoPlus](http://web.archive.org/web/20161110220249/http://www.renfe.com/viajeros/tarifas/billete_promoplus.html) permette d'obtenir des rabais pouvant aller jusqu'à respectivement 70\% et 65\%. Les annulations et changements ne sont pas possibles avec Promo, mais disponibles avec PromoPlus moyennant une pénalité équivalent à 30-20\% du prix du billet. Le tarif [Flexible](http://web.archive.org/web/20161108192609/http://www.renfe.com/viajeros/tarifas/billete_flexible.html) est disponible au même prix que les billets réguliers, avec des bénéfices additionnels.
+
+
+
+
+
+
+
 
 ```{r}
 #| label: fig-renfe-aed6
@@ -271,7 +362,6 @@ ggplot(data = renfe,
     theme(legend.position = "bottom")
 ```
 
-
 ```{r}
 #| label: renfeadrep
 #| echo: true
@@ -281,7 +371,6 @@ renfe |>
   dplyr::subset(tarif  == "Flexible") |>
   dplyr::count(prix, classe)
 ```
-
 
 ```{r}
 #| label: tbl-renfeaedrep
@@ -296,6 +385,13 @@ kableExtra::kbl(a,
              longtable = FALSE, 
              booktabs = TRUE)
 ```
+
+
+
+
+
+
+
 
 On note que la répartition des prix pour les billets de classe Flexible est inhabituelle. Notre boîte à moustaches est écrasée et l'écart interquartile semble nul, même si quelques valeurs inexpliquées sont aussi présentes. L'écrasante majorité des billets Flexibles sont en classe Turista, donc ça pourrait être dû à un (trop) faible nombre de billets dans chaque catégorie. On peut rejeter cette hypothèse en calculant le nombre de trains au tarif Flexible pour les différents types de billets, comme dans le @tbl-renfeaedrep.  Ni la durée, ni le type de train, ni la destination n'expliquent pas pourquoi le prix de certains billets Flexibles est plus faible ou élevés. Le prix des billets Promo est plus faible, et les billets au tarif Preferente (la première classe) sont plus élevés. 
 
@@ -337,4 +433,5 @@ Si vous incluez un graphique (ou un tableau), il est important d'ajouter une lé
 - Une analyse exploratoire inclut un résumé des principales trouvailles.
 
 :::
+
 
