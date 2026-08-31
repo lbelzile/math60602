@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.5.56">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="description" content="MATH 60602 - Analyse multidimensionnelle appliquée, HEC Montréal.">
 
-<title>MATH 60602 - Analyse multidimensionnelle appliquée - 7&nbsp; Analyse de regroupements</title>
+<title>7&nbsp; Analyse de regroupements – MATH 60602 - Analyse multidimensionnelle appliquée</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,7 +23,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -34,7 +34,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -59,6 +59,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -101,7 +102,13 @@ div.csl-indent {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "Pas de résultats",
     "search-matching-documents-text": "documents trouvés",
@@ -110,19 +117,42 @@ div.csl-indent {
     "search-more-match-text": "correspondance de plus dans ce document",
     "search-more-matches-text": "correspondances de plus dans ce document",
     "search-clear-button-title": "Effacer",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Annuler",
     "search-submit-button-title": "Envoyer",
     "search-label": "Search"
   }
 }</script>
 
-<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
-<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
-<link href="site_libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet">
-<script src="site_libs/bsTable-3.3.7/bootstrapTable.js"></script>
-
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -133,13 +163,13 @@ div.csl-indent {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./regroupements.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Analyse de regroupements</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./regroupements.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Analyse de regroupements</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -148,13 +178,13 @@ div.csl-indent {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">MATH 60602 - Analyse multidimensionnelle appliquée</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/lbelzile/math60602/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="./MATH60602.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="https://github.com/lbelzile/math60602/" title="Code source" class="quarto-navigation-tool px-1" aria-label="Code source"><i class="bi bi-github"></i></a>
+    <a href="./MATH60602.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -228,7 +258,7 @@ div.csl-indent {
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -252,7 +282,7 @@ div.csl-indent {
   </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">7.6</span> Conclusion</a></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lbelzile/math60602/edit/master/regroupements.qmd" class="toc-action">Éditer cette page</a></p></div></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/math60602/edit/master/regroupements.qmd" class="toc-action"><i class="bi bi-github"></i>Éditer cette page</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -272,7 +302,9 @@ div.csl-indent {
   </div>
   
 
+
 </header>
+
 
 <section id="introduction" class="level2" data-number="7.1">
 <h2 data-number="7.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">7.1</span> Introduction</h2>
@@ -319,20 +351,24 @@ div.csl-indent {
 <p>Malheureusement, il n’est pas évident de prime abord de déterminer quelles variables inclure dans la base de données pas plus qu’il n’est facile de juger de la qualité d’une segmentation ou du nombre de regroupements à effectuer. Les choix individuels auront un impact certain sur les regroupements obtenus: on recommande d’essayer plusieurs alternatives et de vérifier graphiquement ou à l’aide de critères d’ajustement si les regroupements obtenus sont homogènes et compacts.</p>
 <p>Si certaines variables définissent naturellement des groupes, par exemple l’âge des personnes, et fait qu’ils et elles ont des caractéristiques intrinsèquement différentes, il peut être utile de faire une segmentation indépendamment pour chacun de ces sous-groupes.</p>
 <p>Dans ce chapitre, nous utiliserons des données simulées inspirées de campagnes de financement d’organismes de charité. Ces dernières font souvent du démarchage publicitaire auprès de donateurs ou envoient par publipostage des demandes de dons à toutes les adresses postales. Ces efforts ont un coût important: nous essaierons de créer des catégories de donateurs afin de mieux cibler les donateurs et donatrices et le moment adéquat pour ce démarchage. Plusieurs grandes compagnies sont associées à ces organismes et les parrainent: notre base de données contiendra le profil de toutes ces personnes, qu’elles fassent un don ou pas.</p>
-<p>La base de données <code>dons</code> contient 19353 observations pour 16 variables: le <a href="#tbl-statdescriptdons">Tableau&nbsp;<span>7.1</span></a> fournit les statistiques descriptives. Elle a été crée en regroupement les identifiants: de nombreuses variables explicatives sont dérivées des données brutes, notamment le temps entre dons, les statistiques descriptives (montant moyen, minimum maximum) pour les dons monétaires. Ces choix de variables sont loins d’être anodins et peuvent influencer la segmentation décrite dans ce chapitre. Une rapide exploration des données révèle que près de 0% des employé(e)s n’ont pas donné à l’organisme. Une poignée de dons sont très élevés, mais la plupart des montants tourne autour de 5$, 10$, 20$, etc.</p>
+<p>La base de données <code>dons</code> contient 19353 observations pour 16 variables: le <a href="#tbl-statdescriptdons" class="quarto-xref">Tableau&nbsp;<span>7.1</span></a> fournit les statistiques descriptives. Elle a été crée en regroupement les identifiants: de nombreuses variables explicatives sont dérivées des données brutes, notamment le temps entre dons, les statistiques descriptives (montant moyen, minimum maximum) pour les dons monétaires. Ces choix de variables sont loins d’être anodins et peuvent influencer la segmentation décrite dans ce chapitre. Une rapide exploration des données révèle que près de 0% des employé(e)s n’ont pas donné à l’organisme. Une poignée de dons sont très élevés, mais la plupart des montants tourne autour de 5$, 10$, 20$, etc.</p>
 <div class="cell" data-layout-align="center">
+<div id="tbl-statdescriptdons" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-statdescriptdons-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;7.1: Statistiques descriptives des variables du jeu de données dons.
+</figcaption>
+<div aria-describedby="tbl-statdescriptdons-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-statdescriptdons" class="anchored">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Tableau&nbsp;7.1: Statistiques descriptives des variables du jeu de données dons.</caption>
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">moyenne</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">écart-type</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">min</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">max</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">manquant</th>
+<th style="text-align: left;">variable</th>
+<th style="text-align: right;">moyenne</th>
+<th style="text-align: right;">écart-type</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">manquant</th>
 </tr>
 </thead>
 <tbody>
@@ -467,17 +503,17 @@ div.csl-indent {
 </tbody>
 </table>
 </div>
-
-
+</div>
+</figure>
 </div>
 </div>
 <p>La grande proportion de données manquantes pose un problème immédiat pour la segmentation, puisque la plupart des procédures ne permettent pas de traiter ces dernières et éliminent d’office les observations correspondantes de la base des données. Ici, plusieurs valeurs manquantes (<code>NA</code>) peuvent être logiquement remplacées par des valeurs numériques: par exemple, la valeur cumulative des dons (<code>vdons</code>) d’une personne qui n’a jamais donné est nulle.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> En revanche, le temps d’attente entre deux dons pour une personne qui a fait un don ou moins n’est pas bien défini.</p>
 <p>Si on essaie de créer manuellement des groupes, il apparaît logique de séparer en trois segments initiaux la base de données: les personnes qui n’ont jamais donné à l’organisme de charité mais dont les caractéristiques sont connues, les personnes qui ont fait un seul don et celles qui ont fait des dons multiples. Un algorithme ferait de toute façon vraisemblablement ressortir cette information, mais nous empêcherait d’exploiter pleinement l’ensemble des variables explicatives et de ses dérivées. On pourra effectuer la segmentation séparément sur chaque groupe avec en intrant des variables explicatives différentes.</p>
 <p>Les intrants de l’analyse de regroupement (soit le choix des variables) est laissé à la discrétion de l’analyste. Dans notre exemple, on pourrait aisément créer de nouvelles variables pour faire ressortir des informations jugées pertinentes. Est-ce qu’on s’intéresse au montant moyen des dons, soit <code>vdons/ndons</code>? Est-ce que la valeur des radiations nous intéresse, ou bien devrait-on plutôt considérer le pourcentage de la valeur promise réalisée?</p>
 <p>On considère ci-dessous l’ensemble des personnes qui ont fait plusieurs dons. On modifie certaines variables explicatives pour réduire la corrélation entre variables et obtenir des variables plus évocatrices: le montant moyen de dons, le nombre de refus relatif à l’ancienneté du donateur ou de la donatrice et finalement la valeur de la promesse moyenne, si applicable (zéro sinon). Plusieurs variables (délais minimum et maximum entre dons, valeurs minimum, radiations, etc.) sont également abandonnées pour simplifier l’exposition et pour éviter qu’elles ne ressortent indûment. On voit également que plusieurs valeurs de radiations sont manquantes: cette variables est éliminée d’office.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/unnamed-chunk-3_78619d8ba0ec0734a02a50b0400897b6">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>donsmult <span class="ot">&lt;-</span> dons <span class="sc">|&gt;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ndons <span class="sc">&gt;</span> 1L) <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ndons <span class="sc">&gt;</span> <span class="dv">1</span>L) <span class="sc">|&gt;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mtdons =</span> vdons<span class="sc">/</span>ndons,</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">snrefus =</span> nrefus<span class="sc">/</span>anciennete<span class="sc">*</span><span class="fu">mean</span>(anciennete),</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">mpromesse =</span> <span class="fu">case_when</span>(</span>
@@ -490,13 +526,17 @@ div.csl-indent {
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    vpromesse, nrefus, nradiations)) <span class="sc">|&gt;</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(mtdons)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Le champ des applications de l’analyse de regroupements est parfois surprenant. Par exemple, <a href="https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/">cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais</a> ou des <a href="https://fivethirtyeight.com/features/the-6-political-neighborhoods-of-los-angeles/">quartiers de Los Angeles</a>. Un autre exemple incongru est la compression d’images: la <a href="#fig-decelles">Figure&nbsp;<span>7.1</span></a> montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l’algorithme des <span class="math inline">\(K\)</span>-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l’image.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/fig-decelles_9ce4e59636b129e68dd9f607799830fe">
+<p>Le champ des applications de l’analyse de regroupements est parfois surprenant. Par exemple, <a href="https://fivethirtyeight.com/features/the-5-political-boroughs-of-new-york-city/">cet article de FiveThirtyEight propose une segmentation des électeurs démocrates new-yorkais</a> ou des <a href="https://fivethirtyeight.com/features/the-6-political-neighborhoods-of-los-angeles/">quartiers de Los Angeles</a>. Un autre exemple incongru est la compression d’images: la <a href="#fig-decelles" class="quarto-xref">Figure&nbsp;<span>7.1</span></a> montre une image du bâtiment Decelles (coin supérieur gauche) et la reconstruction avec trois, quatre et 10 couleurs obtenues en appliquant l’algorithme des <span class="math inline">\(K\)</span>-moyennes sur la matrice formée par les valeurs des canaux (rouge, vert, bleu) de l’image.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-decelles" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="figures/kmoyennes_decelles.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.1: Compression d’image avec l’algorithme des <span class="math inline">\(K\)</span>-moyennes: image originale (en haut à gauche), compression avec trois (en haut à droite), quatre (en bas à gauche) et 10 (en bas à droite) couleurs.</figcaption>
+<div id="fig-decelles" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-decelles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/kmoyennes_decelles.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-decelles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.1: Compression d’image avec l’algorithme des <span class="math inline">\(K\)</span>-moyennes: image originale (en haut à gauche), compression avec trois (en haut à droite), quatre (en bas à gauche) et 10 (en bas à droite) couleurs.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -504,13 +544,17 @@ div.csl-indent {
 </section>
 <section id="mesures-de-dissemblance" class="level2" data-number="7.4">
 <h2 data-number="7.4" class="anchored" data-anchor-id="mesures-de-dissemblance"><span class="header-section-number">7.4</span> Mesures de dissemblance</h2>
-<p>Comment mesurer si deux observations appartiennent à un même regroupement et sont similaires? Idéalement, on aimerait avoir une situation comme dans la <a href="#fig-regroupements-bidons">Figure&nbsp;<span>7.2</span></a> où les regroupements sont clairement visibles. On aimerait que la similarité entre observations d’un même groupe, ou intra-groupe, soit élevée et que la similarité entre groupe soit faible. Les regroupements devraient être éloignés les uns des autres, tandis que les observations au sein de ces regroupements devraient être proches. Dans la plupart des cas, il y aura des observations isolées qui n’appartiennent pas nécessairement logiquement à l’un ou l’autre des groupes: on appelle parfois ces observations aberrances.</p>
+<p>Comment mesurer si deux observations appartiennent à un même regroupement et sont similaires? Idéalement, on aimerait avoir une situation comme dans la <a href="#fig-regroupements-bidons" class="quarto-xref">Figure&nbsp;<span>7.2</span></a> où les regroupements sont clairement visibles. On aimerait que la similarité entre observations d’un même groupe, ou intra-groupe, soit élevée et que la similarité entre groupe soit faible. Les regroupements devraient être éloignés les uns des autres, tandis que les observations au sein de ces regroupements devraient être proches. Dans la plupart des cas, il y aura des observations isolées qui n’appartiennent pas nécessairement logiquement à l’un ou l’autre des groupes: on appelle parfois ces observations aberrances.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-regroupements-bidons" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="regroupements_files/figure-html/fig-regroupements-bidons-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.2: Données simulées avec deux regroupements hypothétiques.</figcaption>
+<div id="fig-regroupements-bidons" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-regroupements-bidons-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regroupements_files/figure-html/fig-regroupements-bidons-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-regroupements-bidons-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.2: Données simulées avec deux regroupements hypothétiques.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -546,7 +590,7 @@ S_{ij} = \frac{\sum_{k=1}^p s_{ijk} \delta_{ijk}}{\sum_{k=1}^p \delta_{ijk}}
 <p>Dans plusieurs cas, on se trouvera en présence de valeurs manquantes dans le jeu de données. Cela peut arriver pour plusieurs raisons valables (aucune candidature ne représente un partir dans une circonscription donnée pour un parti lors d’une élection, l’information est manquante, une femme ne peut avoir de cancer de la prostate, etc.) Il faut bien penser à vérifier si l’algorithme de votre choix peut gérer ces valeurs manquantes. Sinon, ces dernières devront être imputées préalablement à l’analyse de regroupements ou vous devrez faire sans les variables explicatives correspondantes.</p>
 <p>Les définitions des distances révèlent que chaque variable explicative a le même poids. En revanche, plus une variable a une grande variance, plus elle aura de l’influence sur le calcul de la distance, ce qui peut être bon ou mauvais selon la structure des groupes. Règle générale, il est préférable d’éviter qu’une variable domine dans la segmentation. La standardisation des variables et les transformations préalables effectuées sur les variables (log, arcsin, etc.) impacteront le résultat.</p>
 <p>On peut standardiser au préalable les variables avant de faire l’analyse. Par défaut, les variables continues seront centrées et réduites, ou standardisées, afin d’avoir une moyenne de zéro et une variance de un (<code>scale</code>). On peut ensuite faire les analyses comme précédemment. Si on a des valeurs aberrantes, cela peut impacter le calcul des moyennes et variances; d’autres estimateurs de localisation et d’échelles plus robustes, par exemple la médiane et la déviation absolue par rapport à la médiane (<code>mad</code>) peuvent alors être plus adéquats pour diminuer l’impact des valeurs aberrantes même si le coût de calcul associé est plus conséquent. Notez qu’il est illogique de standardiser les variables binaires et catégorielles.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/standardisation_a013ecaab8c3102a9c4d817fb8eb0b60">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Standardisation usuelle </span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (soustraire moyenne, diviser par écart-type)</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>donsmult_std <span class="ot">&lt;-</span> <span class="fu">scale</span>(donsmult)</span>
@@ -591,13 +635,17 @@ S_{ij} = \frac{\sum_{k=1}^p s_{ijk} \delta_{ijk}}{\sum_{k=1}^p \delta_{ijk}}
 </ol>
 <p>En pratique, l’algorithme convergera rapidement vers une solution locale. Cette dernière est simplement une assignation pour laquelle, d’une itération à l’autre, aucune observation ne change de groupe.</p>
 <p>L’algorithme des <span class="math inline">\(K\)</span>-moyennes présenté offre une forme de partitionnement dite rigide: chaque observation est assignée à un seul regroupement. Si cette appartenance unique peut être logique pour les points à proximité du barycentre, ceux situés à l’intersection des frontières qui définissent les différents regroupements pourraient parfois légitimement faire partie d’un ou l’autre de ces derniers. On pourrait plutôt assigner un poids représentant la probabilité d’être dans un des <span class="math inline">\(K\)</span> regroupements, appelé responsabilité et dénotée <span class="math inline">\(r_{ik}\)</span>. Avec une assignation rigide, <span class="math inline">\(r_{ik}=1\)</span> si l’observation <span class="math inline">\(i\)</span> est dans le regroupement <span class="math inline">\(k\)</span> et <span class="math inline">\(r_{ik}=0\)</span> sinon.</p>
-<p>La <a href="#fig-kmoy-animation">Figure&nbsp;<span>7.3</span></a> montre une animation avec un jeu de données fictif et <span class="math inline">\(K=3\)</span> regroupements.</p>
-<div class="cell" data-layout-align="center" data-animation.hook="gifski" data-hash="regroupements_cache/html/fig-kmoy-animation_6299fc60c0c9bdf9ddc1cee552177b95">
+<p>La <a href="#fig-kmoy-animation" class="quarto-xref">Figure&nbsp;<span>7.3</span></a> montre une animation avec un jeu de données fictif et <span class="math inline">\(K=3\)</span> regroupements.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-kmoy-animation" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="regroupements_files/figure-html/fig-kmoy-animation-.gif" class="img-fluid figure-img" style="width:100.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.3: Animation de l’algorithme des <span class="math inline">\(K\)</span>-moyennes avec <span class="math inline">\(K=3\)</span> regroupements.</figcaption>
+<div id="fig-kmoy-animation" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-kmoy-animation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regroupements_files/figure-html/fig-kmoy-animation-.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-kmoy-animation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.3: Animation de l’algorithme des <span class="math inline">\(K\)</span>-moyennes avec <span class="math inline">\(K=3\)</span> regroupements.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -607,17 +655,17 @@ S_{ij} = \frac{\sum_{k=1}^p s_{ijk} \delta_{ijk}}{\sum_{k=1}^p \delta_{ijk}}
 <ul>
 <li>L’algorithme des <span class="math inline">\(K\)</span>-moyennes a une complexité <strong>linéaire</strong> dans la dimension et dans le nombre de variables, soit <span class="math inline">\(\mathsf{O}(np)\)</span>. Ce faible coût de calcul est un avantage avec des mégadonnées (<span class="math inline">\(n\)</span> grand) et en haute dimension <span class="math inline">\(p\)</span> grand).</li>
 <li>L’algorithme converge rapidement vers une solution et on a des garanties que la solution est un maximum local, puisque l’algorithme minimise les répartitions et les prototypes tour à tour.</li>
-<li>Les <span class="math inline">\(K\)</span>-moyennes créent des regroupements globulaires d’apparence sphérique si on utilise la distance Euclidienne: cela revient à faire une séparation linéaire de l’espace (voir <a href="#fig-voronoikmoy">Figure&nbsp;<span>7.6</span></a>).</li>
+<li>Les <span class="math inline">\(K\)</span>-moyennes créent des regroupements globulaires d’apparence sphérique si on utilise la distance Euclidienne: cela revient à faire une séparation linéaire de l’espace (voir <a href="#fig-voronoikmoy" class="quarto-xref">Figure&nbsp;<span>7.6</span></a>).</li>
 <li>Chaque observation est assignée à un seul des <span class="math inline">\(K\)</span> regroupements (assignation rigide).</li>
 <li>Comme toutes les observations font partie des <span class="math inline">\(K\)</span> groupes, les valeurs aberrantes ne sont pas traitées à part. Or, la présence de valeurs aberrantes impacte le barycentre des observations du groupe. Comme ce dernier donne le prototype du groupe, l’algorithme manque de robustesse.</li>
 <li>L’algorithme est sensible aux valeurs initiales des prototypes et retourne des solutions différentes selon ces dernières.</li>
 </ul>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/kmoyperfo_a74717240d4a2a18dda2ead3fa830db0">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="regroupements_files/figure-html/kmoyperfo-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<figcaption class="figure-caption">Performance de l’algorithme des <span class="math inline">\(K\)</span>-moyennes en fonction de différents scénarios: (haut, à gauche) nombre incorrect de classe et données normales de même variance, bien séparées, (haut, à droite) données avec excès de zéro, un cas où les <span class="math inline">\(K\)</span>-moyennes ignorent la topologie des regroupements, et ne segmente pas adéquatement les regroupements connectés (bas, à gauche) données elliptiques de même variance, mais fortement corrélées. Comme le critère minimise la distance intra-groupe sans pondération, les points regroupés appartiennent à différentes classes et (bas, à droite) données sphériques de variances différentes. L’algorithme des <span class="math inline">\(K\)</span>-moyennes réussit une bonne segmentation si les groupements sont compacts et bien séparés.</figcaption>
+<figcaption>Performance de l’algorithme des <span class="math inline">\(K\)</span>-moyennes en fonction de différents scénarios: (haut, à gauche) nombre incorrect de classe et données normales de même variance, bien séparées, (haut, à droite) données avec excès de zéro, un cas où les <span class="math inline">\(K\)</span>-moyennes ignorent la topologie des regroupements, et ne segmente pas adéquatement les regroupements connectés (bas, à gauche) données elliptiques de même variance, mais fortement corrélées. Comme le critère minimise la distance intra-groupe sans pondération, les points regroupés appartiennent à différentes classes et (bas, à droite) données sphériques de variances différentes. L’algorithme des <span class="math inline">\(K\)</span>-moyennes réussit une bonne segmentation si les groupements sont compacts et bien séparés.</figcaption>
 </figure>
 </div>
 </div>
@@ -633,13 +681,17 @@ S_{ij} = \frac{\sum_{k=1}^p s_{ijk} \delta_{ijk}}{\sum_{k=1}^p \delta_{ijk}}
 </section>
 <section id="valeurs-initiales-des-prototypes" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="valeurs-initiales-des-prototypes">Valeurs initiales des prototypes</h4>
-<p>Comme mentionné précédemment, les regroupements obtenus peuvent varier fortement en fonction des valeurs de départ: la <a href="#fig-kmoyenne-mauvais">Figure&nbsp;<span>7.4</span></a> montre trois regroupements visibles avec une segmentation qui fusionne deux groupes apparents (gauche), et une solution plus sensée à droite. Une segmentation sera supérieure à une autre si elle a une plus petite valeur de la fonction objective de l’<a href="#eq-fobjKmoy">Équation&nbsp;<span>7.1</span></a>: les points seront moins dispersés autour de leurs prototypes.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/fig-kmoyenne-mauvais_34c9b1837d501829c03671f94fdb7527">
+<p>Comme mentionné précédemment, les regroupements obtenus peuvent varier fortement en fonction des valeurs de départ: la <a href="#fig-kmoyenne-mauvais" class="quarto-xref">Figure&nbsp;<span>7.4</span></a> montre trois regroupements visibles avec une segmentation qui fusionne deux groupes apparents (gauche), et une solution plus sensée à droite. Une segmentation sera supérieure à une autre si elle a une plus petite valeur de la fonction objective de l’<a href="#eq-fobjKmoy" class="quarto-xref">Équation&nbsp;<span>7.1</span></a>: les points seront moins dispersés autour de leurs prototypes.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-kmoyenne-mauvais" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="regroupements_files/figure-html/fig-kmoyenne-mauvais-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.4: Résultat d’une analyse de regroupement avec <span class="math inline">\(K=3\)</span> groupes avec une mauvaise initialisation principale (gauche) et une bonne initialisation (droite).</figcaption>
+<div id="fig-kmoyenne-mauvais" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-kmoyenne-mauvais-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regroupements_files/figure-html/fig-kmoyenne-mauvais-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-kmoyenne-mauvais-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.4: Résultat d’une analyse de regroupement avec <span class="math inline">\(K=3\)</span> groupes avec une mauvaise initialisation principale (gauche) et une bonne initialisation (droite).
+</figcaption>
 </figure>
 </div>
 </div>
@@ -656,8 +708,8 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 </section>
 <section id="nombre-de-regroupements" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="nombre-de-regroupements">Nombre de regroupements</h4>
-<p>L’autre paramètre crucial des <span class="math inline">\(K\)</span>-moyennes est le nombre de regroupements, <span class="math inline">\(K\)</span>. Il est difficile de savoir combien de regroupements sélectionner apriori, puisque la visualisation en haute dimension est difficile et on est souvent loin de la situation présentée dans la <a href="#fig-kmoyenne-mauvais">Figure&nbsp;<span>7.4</span></a>. On pourrait envisager de rouler l’algorithme avec plusieurs valeurs de <span class="math inline">\(K\)</span> et de comparer les résultats, mais sur quelle base?</p>
-<p>La fonction objective de l’<a href="#eq-fobjKmoy">Équation&nbsp;<span>7.1</span></a> avec la distance Euclidienne représente la somme du carré des distances (SCD) entres les observations d’un groupe et leur barycentre, soit la variabilité totale des observations des <span class="math inline">\(K\)</span> différents groupes autour de leur barycentre, <span class="math display">\[\begin{align*}
+<p>L’autre paramètre crucial des <span class="math inline">\(K\)</span>-moyennes est le nombre de regroupements, <span class="math inline">\(K\)</span>. Il est difficile de savoir combien de regroupements sélectionner apriori, puisque la visualisation en haute dimension est difficile et on est souvent loin de la situation présentée dans la <a href="#fig-kmoyenne-mauvais" class="quarto-xref">Figure&nbsp;<span>7.4</span></a>. On pourrait envisager de rouler l’algorithme avec plusieurs valeurs de <span class="math inline">\(K\)</span> et de comparer les résultats, mais sur quelle base?</p>
+<p>La fonction objective de l’<a href="#eq-fobjKmoy" class="quarto-xref">Équation&nbsp;<span>7.1</span></a> avec la distance Euclidienne représente la somme du carré des distances (SCD) entres les observations d’un groupe et leur barycentre, soit la variabilité totale des observations des <span class="math inline">\(K\)</span> différents groupes autour de leur barycentre, <span class="math display">\[\begin{align*}
 \mathsf{SCD}_K = \mathsf{SCD}_{1,K} + \cdots + \mathsf{SCD}_{K,K}
 \end{align*}\]</span> où la somme du carré des distances des observations du groupe <span class="math inline">\(k\)</span> (pour lesquelles <span class="math inline">\(r_{.k}=1\)</span>) <span class="math display">\[\begin{align*}
 \mathsf{SCD}_{k,K} &amp;= \underset{\mbox{distance $l_2$ entre obs. du groupe $k$ et barycentre $k$}}{\sum_{i=1}^n r_{ik}\|\mathbf{X}_i -  \boldsymbol{\mu}_{k}\|_2}.
@@ -665,13 +717,17 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 <p>La valeur optimale de la somme du carré des distances mesure va mécaniquement diminuer à mesure que le nombre de regroupements augmente parce que le modèle aura plus d’opportunités pour réduire la variabilité intra-groupe, donc <span class="math inline">\(\mathsf{SCD}_1 &gt; \mathsf{SCD}_2 \cdots\)</span>. En pratique, cela peut ne pas être le cas si le minimum local est sous-optimal. Si la réduction de la somme du carré des distances est négligeable, on pourrait penser que la valeur ajoutée d’un groupe supplémentaire (qui implique plus de paramètres à estimer et plus de segments à interpréter) est faible.</p>
 <p>On peut calculer un coefficient de détermination, qui mesure pourcentage de variance expliquée, soit <span class="math inline">\(R^2(K) = 1-\mathsf{SCD}_K/\mathsf{SCT}\)</span>. De la même manière, on s’attend à une diminution du critère et on pourrait calculer le <span class="math inline">\(R^2\)</span> semi-partiel <span class="math inline">\(R^2_{\mathrm{sp}}(k) = (\mathsf{SCD}_{k-1} - \mathsf{SCD}_{k})/\mathsf{SCT}\)</span> pour <span class="math inline">\(k \geq 2\)</span>.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
 <p>On pourrait aussi tracer un diagramme de la somme du carré des distances en fonction de <span class="math inline">\(K\)</span> en ajoutant une pénalité à notre fonction objective. En effet, avec la distance Euclidienne carrée, il y a une analogie à faire avec un modèle de régression et on peut légitimement utiliser un critère d’information pour guider notre choix de <span class="math inline">\(K\)</span>: le nombre de paramètres est <span class="math inline">\(Kp\)</span>, soit les valeurs des <span class="math inline">\(p\)</span> coordonnées des <span class="math inline">\(K\)</span> barycentres. On utilisera donc un critère d’information de type BIC.</p>
-<p>Il est possible que ces critères donne beaucoup plus de regroupements que ce que l’analyste est prêt(e) à envisager. Il faut garder en tête que, davantage qu’un critère mathématique, l’interprétabilité des regroupements est notre principale critère. Les critères d’information peuvent retourner trop ou pas assez de groupe: à titre d’exemple, le panneau de gauche de la <a href="#fig-coudekmoy">Figure&nbsp;<span>7.5</span></a> montre la somme du carré des distances pour la <a href="#fig-kmoyenne-mauvais">Figure&nbsp;<span>7.4</span></a>; on voit un coude à <span class="math inline">\(K=2\)</span>, mais il y avait visiblement trois regroupements, dont deux rapprochés.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/fig-coudekmoy_3413557caf682d60ec82a84490b25444">
+<p>Il est possible que ces critères donne beaucoup plus de regroupements que ce que l’analyste est prêt(e) à envisager. Il faut garder en tête que, davantage qu’un critère mathématique, l’interprétabilité des regroupements est notre principale critère. Les critères d’information peuvent retourner trop ou pas assez de groupe: à titre d’exemple, le panneau de gauche de la <a href="#fig-coudekmoy" class="quarto-xref">Figure&nbsp;<span>7.5</span></a> montre la somme du carré des distances pour la <a href="#fig-kmoyenne-mauvais" class="quarto-xref">Figure&nbsp;<span>7.4</span></a>; on voit un coude à <span class="math inline">\(K=2\)</span>, mais il y avait visiblement trois regroupements, dont deux rapprochés.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-coudekmoy" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="regroupements_files/figure-html/fig-coudekmoy-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.5: Valeur de la fonction objective (somme du carré des distances) en fonction du nombre de regroupements <span class="math inline">\(K\)</span>.</figcaption>
+<div id="fig-coudekmoy" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-coudekmoy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regroupements_files/figure-html/fig-coudekmoy-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-coudekmoy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.5: Valeur de la fonction objective (somme du carré des distances) en fonction du nombre de regroupements <span class="math inline">\(K\)</span>.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -679,13 +735,17 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 </section>
 <section id="mesure-de-distance" class="level4 unnumbered">
 <h4 class="unnumbered anchored" data-anchor-id="mesure-de-distance">Mesure de distance</h4>
-<p>Toutes les distances <span class="math inline">\(l_q\)</span> peuvent être utilisées, mais le choix de la distance Euclidienne carrée est particulièrement commode et populaire<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> entraîne une partition linéaire de l’espace, comme l’illustre la <a href="#fig-voronoikmoy">Figure&nbsp;<span>7.6</span></a>. La solution du problème d’optimisation est explicite, ce qui accélère les calculs (les prototypes correspondent aux barycentres). Sauf indication contraire, on supposera dans ce qui suit que la distance entre un point et un prototype est calculée avec la distance Euclidienne au carré.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/fig-voronoikmoy_cd088ee091be29a78a8cb491bc78c5d2">
+<p>Toutes les distances <span class="math inline">\(l_q\)</span> peuvent être utilisées, mais le choix de la distance Euclidienne carrée est particulièrement commode et populaire<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> entraîne une partition linéaire de l’espace, comme l’illustre la <a href="#fig-voronoikmoy" class="quarto-xref">Figure&nbsp;<span>7.6</span></a>. La solution du problème d’optimisation est explicite, ce qui accélère les calculs (les prototypes correspondent aux barycentres). Sauf indication contraire, on supposera dans ce qui suit que la distance entre un point et un prototype est calculée avec la distance Euclidienne au carré.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-voronoikmoy" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="regroupements_files/figure-html/fig-voronoikmoy-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.6: Partitions de Voronoï pour les barycentres (cercles) obtenus dans la solution des <span class="math inline">\(K\)</span>-moyennes. La ligne de démarcation qui sépare les groupes est linéaire.</figcaption>
+<div id="fig-voronoikmoy" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-voronoikmoy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regroupements_files/figure-html/fig-voronoikmoy-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-voronoikmoy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.6: Partitions de Voronoï pour les barycentres (cercles) obtenus dans la solution des <span class="math inline">\(K\)</span>-moyennes. La ligne de démarcation qui sépare les groupes est linéaire.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -695,10 +755,10 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 <h4 data-number="7.5.1.1" class="anchored" data-anchor-id="application-en-r"><span class="header-section-number">7.5.1.1</span> Application en <strong>R</strong></h4>
 <p>Dans <strong>R</strong>, la fonction <code>kmeans</code> dans le paquet de base <code>stat</code> permet de faire l’analyse de regroupement. Elle ne prend pas en charge les valeurs manquantes. La fonction a plusieurs arguments, dont les coordonnées initiales des prototypes (<code>center</code>; cet argument peut également être un entier qui dicte le nombre de groupes), le nombre maximum d’itération de l’algorithme EM (<code>iter.max</code>) et le nombre de fois qu’on redémarre l’algorithme avec des valeurs aléatoires (<code>nstart</code>).</p>
 <p>On va estimer le modèle en faisant varier le nombre de regroupements avec pour chaque valeur de <span class="math inline">\(K\)</span> 10 ensembles de valeurs de départ aléatoires.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/unnamed-chunk-12_55ed4a98099bfe12d0059dc15981cccc">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">60602</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>kmoy <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ngmax <span class="ot">&lt;-</span> 10L</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ngmax <span class="ot">&lt;-</span> <span class="dv">10</span>L</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_len</span>(ngmax)){</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a> kmoy[[i]] <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(donsmult_std,</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">centers =</span> i,</span>
@@ -707,7 +767,7 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 </div>
 <p>Il suffit ensuite de choisir le nombre de regroupements voulus. Rappelez-vous que le résultat des k-moyennes est aléatoire (parce que les valeurs initiales des prototypes le sont) et les étiquettes peuvent être permutées d’une fois à l’autre même si les regroupements sont les identiques.</p>
 <p>À des fins d’illustration, regardons la solution avec <span class="math inline">\(K=5\)</span> regroupements. On pourrait également utiliser l’algorithme <span class="math inline">\(K\)</span>-moyennes<span class="math inline">\({}^{++}\)</span> avec <code>kcca</code> du paquet <code>flexclust</code>. Le code ci-dessous montre le résultat avec la distance de Manhattan (<span class="math inline">\(K\)</span>-médianes)</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/unnamed-chunk-13_c13300904c82e7ec97edef192a201793">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">60602</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>kmed5 <span class="ot">&lt;-</span> flexclust<span class="sc">::</span><span class="fu">kcca</span>(</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> donsmult_std,</span>
@@ -722,31 +782,35 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>kmed5<span class="sc">@</span>cluster</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Il est toujours utile de regarder la taille des regroupements pour voir si on ne se trouve pas avec des regroupements fortements débalancés.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/unnamed-chunk-14_abec0839e0ec5496bf3327d21dcf8ee1">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>kmoy5 <span class="ot">&lt;-</span> kmoy[[<span class="dv">5</span>]]</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Regarder la répartition</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>kmoy5<span class="sc">$</span>size</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1]  993   64 3812 4496 4252</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>On peut étudier les coordonnées des prototypes (par exemple, avec <code>kmoy5$centers</code>), mais ici les données standardisées ne sont pas directement interprétables. On procède plutôt au calcul des statistiques descriptives des profils rapportées dans le <a href="#tbl-kmoy5resume">Tableau&nbsp;<span>7.2</span></a>.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/unnamed-chunk-15_54a3df8fe855ead0f53961d845f933f0">
+<p>On peut étudier les coordonnées des prototypes (par exemple, avec <code>kmoy5$centers</code>), mais ici les données standardisées ne sont pas directement interprétables. On procède plutôt au calcul des statistiques descriptives des profils rapportées dans le <a href="#tbl-kmoy5resume" class="quarto-xref">Tableau&nbsp;<span>7.2</span></a>.</p>
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>donsmult <span class="sc">|&gt;</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="at">groupe =</span> kmoy5<span class="sc">$</span>cluster) <span class="sc">|&gt;</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_all</span>(mean)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/tbl-kmoy5resume_35430c0a0ba02bcc6bdecb61c3e70f6f">
+<div class="cell" data-layout-align="center">
+<div id="tbl-kmoy5resume" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-kmoy5resume-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;7.2: Moyenne des variables explicatives par segment (segmentation avec <span class="math inline">\(K\)</span>-moyennes et cinq regroupements).
+</figcaption>
+<div aria-describedby="tbl-kmoy5resume-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-kmoy5resume" class="anchored">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Tableau&nbsp;7.2: Moyenne des variables explicatives par segment (segmentation avec <span class="math inline">\(K\)</span>-moyennes et cinq regroupements).</caption>
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">1</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">2</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">3</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">4</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">5</th>
+<th style="text-align: left;"></th>
+<th style="text-align: right;">1</th>
+<th style="text-align: right;">2</th>
+<th style="text-align: right;">3</th>
+<th style="text-align: right;">4</th>
+<th style="text-align: right;">5</th>
 </tr>
 </thead>
 <tbody>
@@ -833,8 +897,8 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 </tbody>
 </table>
 </div>
-
-
+</div>
+</figure>
 </div>
 </div>
 <p>Les regroupements obtenus sont interprétables:</p>
@@ -846,39 +910,51 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 <li>Groupe 5: Petits donateurs inactifs. Plutôt anciens, plusieurs refus.</li>
 </ul>
 <p>On peut représenter graphiquement les regroupements obtenus sur les premières composantes principales avec les deux mesures de dissemblance.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/fig-acpkmoy5_1caa393496d7665db0a5242e1603b944">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-acpkmoy5" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="regroupements_files/figure-html/fig-acpkmoy5-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.7: Nuage de points des deux premières composantes principales des observations de dons multiples avec les étiquettes des regroupements obtenus selon la méthode des <span class="math inline">\(K\)</span>-moyennes et <span class="math inline">\(K\)</span>-médianes avec <span class="math inline">\(K=5\)</span> regroupements.</figcaption>
+<div id="fig-acpkmoy5" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-acpkmoy5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regroupements_files/figure-html/fig-acpkmoy5-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-acpkmoy5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.7: Nuage de points des deux premières composantes principales des observations de dons multiples avec les étiquettes des regroupements obtenus selon la méthode des <span class="math inline">\(K\)</span>-moyennes et <span class="math inline">\(K\)</span>-médianes avec <span class="math inline">\(K=5\)</span> regroupements.
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>Avec les <span class="math inline">\(K\)</span>-médianes, les personnes qui ont fait des dons plus élevés sont fusionnés avec d’autres personnes qui ont fait des dons moins élevés et les groupes sont plus de taille comparable. Selon l’objectif des regroupements, cela peut être avantageux, mais cibler les donateurs les plus généreux semble plus logique dans le contexte.</p>
 <p>On peut étudier l’impact de l’augmentation du nombre de groupes à l’aide de différents critères. Le premier est la somme des carrés des distances intra-groupes.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/fig-homogeneite_c729a5c9df8163dafe2909f11395c357">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>scd <span class="ot">&lt;-</span> <span class="fu">sapply</span>(kmoy, <span class="cf">function</span>(x){x<span class="sc">$</span>tot.withinss})</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Graphiques</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>homogene <span class="ot">&lt;-</span> <span class="fu">homogeneite</span>(scd)</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>bic_kmoy <span class="ot">&lt;-</span> <span class="fu">sapply</span>(kmoy, BIC)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-homogeneite" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="regroupements_files/figure-html/fig-homogeneite-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.8: Graphiques de l’homogénéité (<span class="math inline">\(R\)</span> carré et <span class="math inline">\(R\)</span> carré semi-partiel).</figcaption>
+<div id="fig-homogeneite" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-homogeneite-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regroupements_files/figure-html/fig-homogeneite-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-homogeneite-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.8: Graphiques de l’homogénéité (<span class="math inline">\(R\)</span> carré et <span class="math inline">\(R\)</span> carré semi-partiel).
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>On peut aussi observer directement la diminution de la somme du carré des erreurs en incluant une pénalité. Ici, tous les critères pointent vers un nombre de regroupements plus élevé que 10, mais ce peut être trop.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/fig-bickmoy_c2ab90a2ae5143274ae3c322d1602328">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-bickmoy" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="regroupements_files/figure-html/fig-bickmoy-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.9: Coefficient BIC pour les <span class="math inline">\(K\)</span>-moyennes en fonction du nombre de regroupements.</figcaption>
+<div id="fig-bickmoy" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-bickmoy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regroupements_files/figure-html/fig-bickmoy-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bickmoy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.9: Coefficient BIC pour les <span class="math inline">\(K\)</span>-moyennes en fonction du nombre de regroupements.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -900,18 +976,22 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 <p>L’algorithme CLARA, décrit dans <span class="citation" data-cites="Kaufman.Rousseeuw:1990">Kaufman and Rousseeuw (<a href="references.html#ref-Kaufman.Rousseeuw:1990" role="doc-biblioref">1990</a>)</span>, réduit le coût de calcul et de stockage en utilisant PAM sur de petits sous-échantillons de taille <span class="math inline">\(n_S\)</span>. On tire au hasard <span class="math inline">\(n_S\)</span> observations, qu’on regroupe à l’aide de PAM pour obtenir <span class="math inline">\(K\)</span> médoïdes. On assigne ensuite les observations résiduelles au médoïde le plus près et on calcule la dissimilarité totale: la qualité de la segmentation est calculée en obtenant la distance moyenne entre les médoïdes et les observations. CLARA répète la procédure <span class="math inline">\(S\)</span> fois et retourne la solution parmi les <span class="math inline">\(S\)</span> dissimilarité.</p>
 <p>La qualité des regroupements est obtenue en utilisant la moyenne des distances entre les regroupements et leurs médoïdes. On peut également tracer un graphique des silhouettes: pour chaque observation, on calcule la moyenne des dissimilarités entre l’observation <span class="math inline">\(\mathrm{X}_i\)</span> et celles de chaque regroupement, disons <span class="math inline">\(a_i\)</span>. On calcule de la même manière la distance moyenne entre <span class="math inline">\(\mathrm{X}_i\)</span> et chaque autre regroupement et on retient le minimum de ces distances, <span class="math inline">\(b_i\)</span>.</p>
 <p>La valeur de la silhouette est simplement <span class="math inline">\(s_i=(b_i-a_i)/\max\{a_i, b_i\}\)</span>. Il est possible que la silhouette <span class="math inline">\(s_i\)</span> soit négative: cela indique généralement des observations mal regroupées. De bons regroupements seront obtenus si la silhouette est élevée: on s’attend, si les groupes sont très éloignées les uns des autres, à avoir des profils plus uniformes et une silhouette moyenne plus élevée.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/fig-silhouette_23287bf57b9929c6cd33265657b4dd97">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-silhouette" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="regroupements_files/figure-html/fig-silhouette-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.10: Profil des silhouettes pour deux regroupements d’un jeu de données: la segmentation de droite est supérieure parce que les regroupements sont plus homogènes et mieux équilibrés.</figcaption>
+<div id="fig-silhouette" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-silhouette-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regroupements_files/figure-html/fig-silhouette-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-silhouette-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.10: Profil des silhouettes pour deux regroupements d’un jeu de données: la segmentation de droite est supérieure parce que les regroupements sont plus homogènes et mieux équilibrés.
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>On estime avec nos données de dons multiples les regroupements. Étant donné la taille conséquente de la base de données, il est préférable d’utiliser l’algorithme CLARA (<em>Clustering large applications</em>).</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/unnamed-chunk-21_99f123221605945c0c5b6775a19424dd">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>kmedoide <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">60602</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(k <span class="cf">in</span> <span class="fu">seq_len</span>(ngmax)){</span>
@@ -926,8 +1006,8 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">samples =</span> <span class="dv">10</span>) <span class="co">#nombre de répétitions</span></span>
 <span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Comme les <span class="math inline">\(K\)</span>-moyennes, on fera plusieurs essais pour trouver de bonnes valeurs de départ. On peut tracer le profil des silhouettes (<a href="#fig-clarasilhouette">Figure&nbsp;<span>7.11</span></a>)</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/fig-clarasilhouette_2a9e8dc5d84f448b0fcfed83fa3b1cd8">
+<p>Comme les <span class="math inline">\(K\)</span>-moyennes, on fera plusieurs essais pour trouver de bonnes valeurs de départ. On peut tracer le profil des silhouettes (<a href="#fig-clarasilhouette" class="quarto-xref">Figure&nbsp;<span>7.11</span></a>)</p>
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(factoextra<span class="sc">::</span><span class="fu">fviz_silhouette</span>(kmedoide[[<span class="dv">4</span>]]),</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">print.summary =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   cluster size ave.sil.width</span></span>
@@ -936,16 +1016,20 @@ p_i = \min \{d(\mathbf{X}_i, \boldsymbol{\mu}_1; l_2)^2, \ldots, d(\mathbf{X}_i,
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3       3   90          0.33</span></span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4       4   74          0.26</span></span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-clarasilhouette" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="regroupements_files/figure-html/fig-clarasilhouette-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.11: Silhouettes pour les données de dons multiples avec l’algorithme CLARA pour <span class="math inline">\(K=4\)</span> regroupements.</figcaption>
+<div id="fig-clarasilhouette" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-clarasilhouette-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regroupements_files/figure-html/fig-clarasilhouette-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-clarasilhouette-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.11: Silhouettes pour les données de dons multiples avec l’algorithme CLARA pour <span class="math inline">\(K=4\)</span> regroupements.
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>Puisque les prototypes (médoïdes) sont des observations, on peut simplement extraire leur identifiant. La sortie inclut plusieurs éléments dont la taille des regroupements, la valeur du critère PAM, etc.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/unnamed-chunk-23_8832b34e212ca79424d4f72552fe6099">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>medoides_orig <span class="ot">&lt;-</span> donsmult[kmedoide[[<span class="dv">4</span>]]<span class="sc">$</span>i.med,]</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>medoides_orig</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Taille des regroupements</span></span>
@@ -980,12 +1064,16 @@ f_{k}(\boldsymbol{X}_i,
 <p>Si <span class="math inline">\(p\)</span> est élevé, la structure de covariance non structurée possède trop de paramètres pour être utile. On limitera ce nombre en choisissant plutôt une paramétrisation plus parsimonieuse qui impose des contraintes sur la forme des ellipsoïdes, propres ou communes à tous les groupes.</p>
 <p>La matrice de covariance dans <code>mclust</code> est paramétrisée en fonction de <span class="math inline">\(\lambda\)</span>, qui contrôle le volume, une matrice diagonale <span class="math inline">\(\mathbf{A}\)</span> qui contrôle les variances de chaque observation et <span class="math inline">\(\mathbf{D}\)</span> une matrice orthogonale qui permet de créer de la corrélation entre observations. Un index <span class="math inline">\(k\)</span> spécifie que cette composante varie d’un regroupement à l’autre.</p>
 <p>Les trois lettres de l’identifiant pour volume/forme/orientation déterminent si cette composante est égale (<code>E</code>), si elle varie d’un regroupement à l’autre (<code>V</code>) ou si elle est indéterminée (<code>I</code>). Par exemple, <code>EII</code> spécifie une matrice de covariance où chaque composante a variance <span class="math inline">\(\lambda\)</span> et où les composantes sont indépendantes. Voir <code>mclust.options("emModelNames")</code> et la documentation dans le Tableau 3 de <span class="citation" data-cites="mclust5">Scrucca et al. (<a href="references.html#ref-mclust5" role="doc-biblioref">2016</a>)</span>.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/fig-modeles_99925426b6a0208ac5a44e8f7331358c">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-modeles" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="figures/mclust5-parametrization.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.12: Forme des ellipsoïdes pour le mélange de modèle selon la forme de la structure de covariance. Image extraite de <span class="citation" data-cites="mclust5">Scrucca et al. (<a href="references.html#ref-mclust5" role="doc-biblioref">2016</a>)</span> (Figure 2) partagée sous licence <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</figcaption>
+<div id="fig-modeles" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-modeles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/mclust5-parametrization.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-modeles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.12: Forme des ellipsoïdes pour le mélange de modèle selon la forme de la structure de covariance. Image extraite de <span class="citation" data-cites="mclust5">Scrucca et al. (<a href="references.html#ref-mclust5" role="doc-biblioref">2016</a>)</span> (Figure 2) partagée sous licence <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -1008,7 +1096,7 @@ f_{k}(\boldsymbol{X}_i,
 <h4 data-number="7.5.3.2" class="anchored" data-anchor-id="paquet-mclust"><span class="header-section-number">7.5.3.2</span> Paquet <code>mclust</code></h4>
 <p>La stratégie de base du paquet <code>mclust</code> <span class="citation" data-cites="mclust5">(<a href="references.html#ref-mclust5" role="doc-biblioref">Scrucca et al. 2016</a>)</span> est d’ajuster des mélanges de modèles gaussiens avec plusieurs structures de covariance en faisant varier le nombre de regroupements. Le modèle sélectionné parmi tous les candidats est celui qui a la plus petite valeur du critère BIC: ce dernier dépend de la qualité de l’ajustement et la pénalité prend en compte le nombre de paramètres de covariance, en plus des moyennes. Il est possible d’ajouter une composantes pour le bruit, de manière à éviter que les valeurs aberrantes impactent négativement la segmentation.</p>
 <p>Une fois le modèle obtenu, plusieurs fonctionalités sont disponibles pour représenter graphiquement les ellipses des modèle pour chaque paire de variable, les nuages de points des paires de variables avec différents symboles et couleurs pour les regroupements, etc.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/unnamed-chunk-25_b19136b825825c889febe08685c9f624">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Mélanges de modèles gaussiens</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">60602</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mclust)</span>
@@ -1021,32 +1109,40 @@ f_{k}(\boldsymbol{X}_i,
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mmg)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>On peut obtenir les étiquettes (avec <code>0</code> pour le bruit) avec <code>mmg$classification</code>. Le graphique du critère d’information Bayésien (BIC) montre le négatif: on cherche donc la structure de covariance et le nombre qui maximise <span class="math inline">\(-\mathsf{BIC}\)</span>.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/fig-mclustbic_93a333e52c8935b38dd51cdb2b683efa">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mmg, <span class="at">what =</span> <span class="st">"BIC"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-mclustbic" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="regroupements_files/figure-html/fig-mclustbic-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.13: Valeur du négatif du critère d’information Bayésien pour les mélanges de modèles gaussiens selon le nombre de regroupements et la structure de covariance.</figcaption>
+<div id="fig-mclustbic" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mclustbic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regroupements_files/figure-html/fig-mclustbic-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mclustbic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.13: Valeur du négatif du critère d’information Bayésien pour les mélanges de modèles gaussiens selon le nombre de regroupements et la structure de covariance.
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>Avec notre grande base de données, le modèle identifie neuf regroupements et un volume variable. On peut utiliser des techniques de réduction de la dimension pour obtenir une représentation graphique.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/fig-classifreducmclust_b474ad7ebf9e6d8c337c74ffd8880993">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Matrice des nuage de points (paires de variables)</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(mmg, what = "classification")</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Réduction de la dimension</span></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>reduc_dim_mmg <span class="ot">&lt;-</span> mclust<span class="sc">::</span><span class="fu">MclustDR</span>(mmg)</span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)) <span class="co"># graphiques côte-à-côte</span></span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(reduc_dim_mmg, <span class="at">what =</span> <span class="st">"contour"</span>)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in parameters$variance$sigma[, , k]: subscript out of bounds</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in parameters$variance$sigma[, , k]: indice hors limites</span></span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(reduc_dim_mmg, <span class="at">what =</span> <span class="st">"scatterplot"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-classifreducmclust" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="regroupements_files/figure-html/fig-classifreducmclust-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.14: Projection des observations, colorées par regroupement (gauche) et structure des regroupements avec ellipsoides de confiance (droite).</figcaption>
+<div id="fig-classifreducmclust" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-classifreducmclust-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regroupements_files/figure-html/fig-classifreducmclust-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-classifreducmclust-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.14: Projection des observations, colorées par regroupement (gauche) et structure des regroupements avec ellipsoides de confiance (droite).
+</figcaption>
 </figure>
 </div>
 </div>
@@ -1070,12 +1166,16 @@ f_{k}(\boldsymbol{X}_i,
 <li>liaison moyenne: utilise la moyenne des distances entre toutes les paires de sujets (un pour chaque groupe) provenant des deux groupes.</li>
 <li>méthode de Ward: calcul de l’homogénéité globale</li>
 </ul>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/fig-distances_29beba28eb0d1a4a2dc623c69b177ff4">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-distances" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="regroupements_files/figure-html/fig-distances-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.15: Distances entre regroupements selon la liaison (simple, complète, barycentre, homogenéité de Ward).</figcaption>
+<div id="fig-distances" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-distances-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regroupements_files/figure-html/fig-distances-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-distances-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.15: Distances entre regroupements selon la liaison (simple, complète, barycentre, homogenéité de Ward).
+</figcaption>
 </figure>
 </div>
 </div>
@@ -1084,27 +1184,35 @@ f_{k}(\boldsymbol{X}_i,
 <p>En général, les algorithmes de regroupement hiérarchiques stockent une matrice de dissemblance <span class="math inline">\(n \times n\)</span>, et donc un coût de stockage quadratique et un coût de calcul <span class="math inline">\(\Omega(n^2)\)</span> avec <span class="math inline">\(\mathrm{O}(n^3)\)</span>. Il faut réaliser que ce coût de calcul est <strong>prohibitif</strong> en haute dimension. Certains algorithmique efficaces pour la méthode de liaison simple permettent un temps de calcul quadratique sans calcul de toutes les distances, à coût <span class="math inline">\(\mathrm{O}(n)\)</span>. Si la méthode de liaison simple est la moins coûteuse du lot, elle n’est pas aussi populaire car elle fonctionne bien si l’écart entre deux regroupements est suffisamment grand. S’il y a du bruit entre deux regroupements, la qualité des regroupements en sera affectée. La méthode de liaison complète est moins sensible au bruit et aux faibles écarts entre regroupements, mais a tendance à casser les regroupements globulaires. Puisque le critère d’homogénéité de Ward ressemble à celui des <span class="math inline">\(K\)</span>-moyennes, la sortie aura tendance à bien regrouper les amas globulaires.</p>
 <p>Généralement, le résultat de la procédure agglomérative avec la méthode de liaison simple inclura quelques valeurs isolées et un seul grand regroupement. Une alternative récente <span class="citation" data-cites="Gagolewski:2016">(<a href="references.html#ref-Gagolewski:2016" role="doc-biblioref">Gagolewski, Bartoszuk, and Cena 2016</a>)</span>, appelée Genie, modifie la fonction objective de la méthode de liaison simple en retenant son efficacité de calcul. Plutôt que de simplement trouver la paire de regroupements à distance minimale, cette fusion n’est appliquée que si une mesure d’inéquité est inférieur à un seuil spécifié par l’utilisateur. Si les regroupements sont fortement inéquitables, la fusion survient entre les regroupements dont un de la taille minimale courante. L’implémentation <strong>R</strong> <span class="citation" data-cites="Gagolewski:2021">(<a href="references.html#ref-Gagolewski:2021" role="doc-biblioref">Gagolewski 2021</a>)</span> dans le paquet <code>genieclust</code> est nettement plus rapide que les autres alternatives et ne nécessite pas de calculer la matrice de dissimilarité.</p>
 <p>On peut comparer les performances des regroupements hiérarchiques selon la méthode de groupement. La page web de <a href="https://scikit-learn.org/stable/auto_examples/cluster/plot_linkage_comparison.html">scikit-learn developers</a> montre la performance sur des exemples jouets très artificiels, qui montre que selon la structure des données, l’impact de la fonction de liaison. Ici, aucun approche hiérarchique ne performe mieux que les autres dans tous les exemples.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/fig-animation-ward_0e203f705d5e5d3fd6095f2a960c293f">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-animation-ward" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="figures/ward_animation.gif" class="img-fluid figure-img" style="width:70.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.16: Animation du regroupement hiérarchique (procédure agglomérative) avec la distance de Ward.</figcaption>
+<div id="fig-animation-ward" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-animation-ward-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/ward_animation.gif" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-animation-ward-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.16: Animation du regroupement hiérarchique (procédure agglomérative) avec la distance de Ward.
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>La <a href="#fig-animation-ward">Figure&nbsp;<span>7.16</span></a> montre les différentes étapes de l’algorithme avec les regroupements étapes par étape, jusqu’à ce qu’on obtienne deux groupes. À l’étape 1, les observations (14, 19) sont regroupées, puis (2, 15), (10, 17). Ce n’est qu’à l’étape 7 qu’on ajoute une observation à un regroupement de deux existants.</p>
+<p>La <a href="#fig-animation-ward" class="quarto-xref">Figure&nbsp;<span>7.16</span></a> montre les différentes étapes de l’algorithme avec les regroupements étapes par étape, jusqu’à ce qu’on obtienne deux groupes. À l’étape 1, les observations (14, 19) sont regroupées, puis (2, 15), (10, 17). Ce n’est qu’à l’étape 7 qu’on ajoute une observation à un regroupement de deux existants.</p>
 <section id="sélection-des-hyperparamètres" class="level4" data-number="7.5.4.1">
 <h4 data-number="7.5.4.1" class="anchored" data-anchor-id="sélection-des-hyperparamètres"><span class="header-section-number">7.5.4.1</span> Sélection des hyperparamètres</h4>
 <p>Outre le choix de la fonction de liaison qui déterminera la distance entre les regroupements à chaque étape, on devra choisir le nombre de regroupements.</p>
 <p>On peut représenter le modèle à l’aide d’un <strong>dendrogramme</strong>, un arbre dont les feuilles indiquent les regroupements à chaque étape jusqu’à la racine à la dernière étape. La distance entre chaque embranchement est déterminée par notre critère: cela nous permet de sélectionner un nombre de regroupements <span class="math inline">\(K\)</span> après inspection du dendrogramme et d’extraire la solution en élaguer l’arbre à cette profondeur.</p>
-<div class="cell" data-layout-align="center" data-hash="regroupements_cache/html/fig-dendrogramme_e80f36755dced3b36769c855734f523e">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-dendrogramme" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="regroupements_files/figure-html/fig-dendrogramme-1.png" class="img-fluid figure-img" style="width:85.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.17: Dendrogramme pour l’exemple de regroupement hiérarchique avec la méthode de Ward et 20 observations.</figcaption>
+<div id="fig-dendrogramme" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dendrogramme-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regroupements_files/figure-html/fig-dendrogramme-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dendrogramme-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.17: Dendrogramme pour l’exemple de regroupement hiérarchique avec la méthode de Ward et 20 observations.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -1120,7 +1228,6 @@ f_{k}(\boldsymbol{X}_i,
 <li>le nombre de groupes n’a pas à être spécifié apriori (une seule estimation)</li>
 <li>le coût de calcul est prohibitif, avec une complexité quadratique de <span class="math inline">\(\mathrm{O}(n^2)\)</span> pour la méthode de liaison simple et autrement <span class="math inline">\(\mathrm{O}(n^3)\)</span> pour la plupart des autres fonctions de liaison.</li>
 </ul>
-
 <!--
 
 ### Méthodes basées sur la densité
@@ -1157,15 +1264,23 @@ Voici quelques caractéristiques de DBSCAN:
 
 
 
-::: {.cell layout-align="center" hash='regroupements_cache/html/fig-dbscan1_775e3eb9b9c278ee19edfbc12a304e96'}
+
+
+
+
+::: {.cell layout-align="center"}
 ::: {.cell-output-display}
 ![Illustration de la classification des points avec DBSCAN: toutes les observations sont assignées à un regroupement, moins une aberrance.](regroupements_files/figure-html/fig-dbscan1-1.png){#fig-dbscan1 fig-align='center' width=85%}
 :::
 :::
 
-::: {.cell layout-align="center" hash='regroupements_cache/html/unnamed-chunk-32_ad947412d5a926e57e3a9d8deb77b146'}
+::: {.cell layout-align="center"}
 
 :::
+
+
+
+
 
 
 #### Choix des hyperparamètres
@@ -1179,11 +1294,19 @@ Pour spécifier le nombre minimal d'observations voisines $M$ pour créer un poi
 La fonction `kNNdistplot` du paquet `dbscan` permet de tracer un graphique de la distance moyenne des $k$ plus proches voisins pour chaque observation: en prenant $k=M-1$, on peut calculer la distance entre le $k$ plus proche voisin de chaque observation et ordonner ces distances. La recommandation est de choisir $\epsilon$ en prenant une distance où la plupart des observations ne sont pas voisines (critère du coude).
 
 
-::: {.cell layout-align="center" hash='regroupements_cache/html/fig-dbscan2_b02b8bc189c3a3349e4e5e64d3335624'}
+
+
+
+
+::: {.cell layout-align="center"}
 ::: {.cell-output-display}
 ![Graphique des distances entre chaque observation et son troisième plus proche voisin (gauche), en fonction du pourcentage d'observations à moins de cette distance et regroupements obtenus avec DBSCAN avec $M=10$ et $\epsilon=1.1$ (droite).](regroupements_files/figure-html/fig-dbscan2-1.png){#fig-dbscan2 fig-align='center' width=85%}
 :::
 :::
+
+
+
+
 
 
 Une variante de l'algorithme DBSCAN, intitulée OPTICS, est plus coûteuse mais permet de gérer le cas de regroupements de densités variables en évitant la spécification de $\epsilon$.
@@ -1227,7 +1350,7 @@ En résumé
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-Gagolewski:2021" class="csl-entry" role="listitem">
 Gagolewski, Marek. 2021. <span>“<code>genieclust</code>: Fast and Robust Hierarchical Clustering.”</span> <em>SoftwareX</em> 15 (July). <a href="https://doi.org/10.1016/j.softx.2021.100722">https://doi.org/10.1016/j.softx.2021.100722</a>.
 </div>
@@ -1294,18 +1417,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1337,11 +1449,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/lbelzile\.github\.io\/math60602\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -1351,8 +1502,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1364,7 +1524,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -1408,6 +1691,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1433,6 +1717,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1494,12 +1804,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./analysefactorielle.html" class="pagination-link">
+      <a href="./analysefactorielle.html" class="pagination-link" aria-label="Réduction de la dimension">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Réduction de la dimension</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./donneesmanquantes.html" class="pagination-link">
+      <a href="./donneesmanquantes.html" class="pagination-link" aria-label="Données manquantes">
         <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Données manquantes</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -1510,12 +1820,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <div class="nav-footer-left">
       &nbsp;
     </div>   
-    <div class="nav-footer-center">Tous droits réservés (Denis Larocque, Léo Belzile)</div>
+    <div class="nav-footer-center">
+<p>Tous droits réservés (Denis Larocque, Léo Belzile)</p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/lbelzile/math60602/edit/master/regroupements.qmd" class="toc-action"><i class="bi bi-github"></i>Éditer cette page</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+
 
 
 

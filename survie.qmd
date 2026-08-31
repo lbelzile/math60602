@@ -258,7 +258,7 @@ Pour un temps $t$ donné, on multiplie tous les termes ($1-\widehat{h}_i$) des t
 \begin{align*}
  \widehat{S}(t) &= \prod_{i: t_{(i)} < t} \left( 1- \widehat{h}_i\right) \\ &= \left( 1- \frac{d_1}{r_1}\right) \times \cdots \times \left( 1- \frac{d_{i(t)}}{r_{i(t)}}\right).
 \end{align*}
-où $i(t) =\max(j \in \{1, \ldots, m\}:  t \geq t_{j})$, soit le plus grand indice parmi $1, \ldots, m$ tel que $t \geq t_{i(t)}$. Par convention, si $t < t_{(1)}$, on fixe $\widehat{S}(t)=1$. La fonction de survie n'est pas définie aux temps de défaillance observée, mais la convention veut qu'elle soit continue à gauche.
+où $i(t) =\max(j \in \{1, \ldots, m\}:  t \geq t_{j})$, soit le plus grand indice parmi $1, \ldots, m$ tel que $t \geq t_{i(t)}$. Par convention, si $t < t_{(1)}$, on fixe $\widehat{S}(t)=1$. La fonction de survie est par convention continue à gauche aux temps de défaillance observés.
 
 
 Ainsi, l'estimation de la survie estimée ne change qu'aux valeurs de $t_{(i)}$ ($i=1, \ldots, m$). Les contre-marches de l'escalier ainsi défini interviennent uniquement aux temps observés d'échecs. Si à un moment donné toutes les personnes à risque expérimentent l'événement, la courbe descend à zéro. Si on a uniquement de la censure à droite, la courbe de survie n'atteindra jamais zéro si la plus grande observation est censurée à droite. Avec la troncation à gauche, la même logique s'applique mais les personnes ne sont à risque qu'à partir du temps minimum observé.
@@ -278,13 +278,21 @@ Testons l'hypothèse que la courbe de survie des clients masculins est la même 
 #| label: test-lograng
 #| eval: true
 #| echo: true
+# Modèle de régression (avec réponse de survie) en fonction (~) d'une variable catégorielle
 strat_sexe <- survfit(Surv(temps, censure) ~ sexe, data = survie1)
 lograng <- survdiff(Surv(temps, censure) ~ sexe, data = survie1)
 ```
 
-Si on utilise les méthodes (`print`, `summary`, `plot`, `quantile`) pour la sortie de `survfit`, on obtiendra les résultats pour chaque strate (ou niveaux de la variable catégorielle). Par exemple, il y a 309 hommes et 191 femmes et l'estimation du temps de survie médian est de 110 semaines pour les hommes et de 123 semaines pour les femmes. 
+Si on utilise les méthodes sur l'objet `strat_sexe`, on obtiendra pour chaque niveau de la variable catégorielle `sexe`:
 
-La fonction `survdiff` avec la formule retourne le résultat du test asymptotique du log-rang pour l'hypothèse d'égalité des fonctions de survie. La statistique du khi-deux vaut `r round(lograng$chisq, 2)` et la valeur-$p$ du test est inférieure à $10^{-4}$: on rejette donc $\mathscr{H}_0$ pour conclure qu'il y a donc une différence significative entre les deux courbes de survie.
+- quelques statistiques descriptives  (`print`), 
+- la fonction de survie (`summary`), 
+- un graphique des courbes de survie (`plot`) ou
+- les quantiles (`quantile`, par défaut les quartiles avec des intervalles de confiance à 95%). 
+
+Par exemple, il y a 309 hommes et 191 femmes et l'estimation du temps de survie médian est de 110 semaines pour les hommes et de 123 semaines pour les femmes. 
+
+La fonction `survdiff` retourne le résultat du test asymptotique du log-rang pour l'hypothèse d'égalité des fonctions de survie. La statistique du khi-deux vaut `r round(lograng$chisq, 2)` et la valeur-$p$ du test est inférieure à $10^{-4}$: on rejette donc $\mathscr{H}_0$ pour conclure qu'il y a une différence significative entre les deux courbes de survie.
 
 
 Les courbes de survie selon le sexe sont représentées dans la @fig-survie-comparaison-courbes. On voit que la courbe des femmes est systématiquement au-dessus de celle des hommes. Les femmes ont donc tendance à rester abonnées plus longtemps que les hommes, et cette différence est significative. 
@@ -393,12 +401,13 @@ cox1 <- coxph(Surv(temps, censure) ~ sexe,
               data = survie1,
               ties = "exact")
 # Coefficients, tests et IC 95% de Wald
+# Les dernières lignes indiquent le test où tous les coefficients sont nuls
 summary(cox1)
 # Test du rapport de vraisemblance
 car::Anova(cox1, type = 3)
 ```
 
-La sortie inclut notamment des tests de significativité globale basés sur la vraisemblance comparant le modèle sans variable explicative avec celui ajusté (rapport de vraisemblance, score et Wald). Ces trois statistiques ciblent la même hypothèse, aussi on peut ne s'attarder qu'au test du rapport de vraisemblance, qui est plus fiable et généralement plus puissant. Le tableau des coefficients donne les estimations $\widehat{\beta}$. Le rapport de risque pour `sexe=1` versus `sexe=0` est $\exp(\widehat{\beta})$, tandis qu'on obtiendrait le rapport de risque pour `sexe=0` versus `sexe=1`, soit $\exp(-\widehat{\beta})$. Les statistiques de test et la valeur-$p$ associée sont basées sur la statistique de Wald, soit $\widehat{\beta}/\mathsf{se}(\widehat{\beta})$, tandis que les intervalles de confiance à 95% pour le rapport de risque sont des intervalles de Wald de la forme $\exp\{\widehat{\beta} \pm 1.96 \cdot \mathsf{se}(\widehat{\beta})\}$ pour le rapport de risque. Un rapport de risque de 1 signifie que le risque n'est pas affecté par la variable explicative. Ici, le test correspondant à l'hypothèse nulle $\beta=0$ ne mène pas au rejet de l'hypothèse qui veut que la variable n'impacte pas le risque. On pourrait obtenir les intervalle
+La sortie inclut notamment des tests de significativité globale basés sur la vraisemblance comparant le modèle sans variable explicative avec celui ajusté (rapport de vraisemblance, score et Wald). Ces trois statistiques ciblent la même hypothèse, aussi on peut ne s'attarder qu'au test du rapport de vraisemblance, qui est plus fiable et généralement plus puissant. Le tableau des coefficients donne les estimations $\widehat{\beta}$. Le rapport de risque pour `sexe=1` versus `sexe=0` est $\exp(\widehat{\beta})$, tandis qu'on obtiendrait le rapport de risque pour `sexe=0` versus `sexe=1`, soit $\exp(-\widehat{\beta})$. Les statistiques de test et la valeur-$p$ associée sont basées sur la statistique de Wald, soit $\widehat{\beta}/\mathsf{se}(\widehat{\beta})$, tandis que les intervalles de confiance à 95% pour le rapport de risque sont des intervalles de Wald de la forme $\exp\{\widehat{\beta} \pm 1.96 \cdot \mathsf{se}(\widehat{\beta})\}$ pour le rapport de risque. Un rapport de risque de 1 signifie que le risque n'est pas affecté par la variable explicative. Ici, le test correspondant à l'hypothèse nulle $\beta=0$ mène au rejet de l'hypothèse qui veut que la variable n'impacte pas le risque (les deux courbes de survie diffèrent). 
 
 ```{r}
 #| label: tbl-cox1 

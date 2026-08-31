@@ -1,4 +1,5 @@
 # Analyse exploratoire {#analyse-exploratoire}
+
 ```{r}
 #| label: setup
 #| file: "_common.R"
@@ -226,7 +227,7 @@ ggplot(data = renfe,
   theme(legend.position = "bottom")
 ```
 
-On pourrait soupçonner que les trains étiquetés `AVE` sont plus rapides, sachant que c'est l'acronyme de *Alta Velocidad Española*, littéralement haute vitesse espagnole. Qu'en est-il des distinctions entre les deux types de trains étiquetés AVE? Selon [le site de la SNCF](https://www.renfe-sncf.com/rw-en/services/a-unique-experience/Pages/services.aspx), les trains AVE-TGV sont des partenariats entre la Renfe et la SNCF et effectuent des liaisons entre la France et l'Espagne. 
+On pourrait soupçonner que les trains étiquetés `AVE` sont plus rapides, sachant que c'est l'acronyme de *Alta Velocidad Española*, littéralement haute vitesse espagnole. Qu'en est-il des distinctions entre les deux types de trains étiquetés AVE? Selon [le site de la SNCF](https://web.archive.org/web/20200608072559/https://www.renfe-sncf.com/rw-en/services/a-unique-experience/Pages/services.aspx), les trains AVE-TGV sont des partenariats entre la Renfe et la SNCF et effectuent des liaisons entre la France et l'Espagne. 
 
 
 
@@ -293,8 +294,7 @@ a <- renfe |>
   dplyr::count(prix, classe)
 kableExtra::kbl(a,
              longtable = FALSE, 
-             booktabs = TRUE) |>
-  kableExtra::kable_styling()
+             booktabs = TRUE)
 ```
 
 On note que la répartition des prix pour les billets de classe Flexible est inhabituelle. Notre boîte à moustaches est écrasée et l'écart interquartile semble nul, même si quelques valeurs inexpliquées sont aussi présentes. L'écrasante majorité des billets Flexibles sont en classe Turista, donc ça pourrait être dû à un (trop) faible nombre de billets dans chaque catégorie. On peut rejeter cette hypothèse en calculant le nombre de trains au tarif Flexible pour les différents types de billets, comme dans le @tbl-renfeaedrep.  Ni la durée, ni le type de train, ni la destination n'expliquent pas pourquoi le prix de certains billets Flexibles est plus faible ou élevés. Le prix des billets Promo est plus faible, et les billets au tarif Preferente (la première classe) sont plus élevés. 

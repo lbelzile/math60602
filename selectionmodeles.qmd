@@ -74,6 +74,7 @@ mod_2b <- lm(y_b ~ X1 + X2) # surspécifié
 #| eval: true
 #| echo: false
 #| label: tbl-specification
+#| layout-ncol: 2
 #| tbl-cap: "Surspécification de modèle de régression linéaire pour des données simulées."
 tab1 <- cbind(coef(mod_1a),
           confint(mod_1a))
@@ -86,19 +87,17 @@ kable(
     tab1,
     booktabs = TRUE, 
     digits = 2, 
-    col.names = c("coefficient", 
+    col.names = c("coef.", 
                   "borne inf.",
                   "borne sup."), 
-    caption = "modèle correct") |>
-    kableExtra::kable_styling()
+    caption = "modèle correct")
 kable(tab2, 
   booktabs = TRUE, 
   digits = 2, 
-  col.names = c("coefficient", 
+  col.names = c("coef.", 
                 "borne inf.", 
                 "borne sup."), 
-  caption = "modèle surspécifié") |>
-    kableExtra::kable_styling()
+  caption = "modèle surspécifié") 
 ```
 
 
@@ -112,6 +111,7 @@ Supposons à l'inverse qu'il manque des variables dans le modèle ajusté et que
 #| eval: true
 #| echo: false
 #| label: tbl-specification2
+#| layout-ncol: 2
 #| tbl-cap: "Sous-spécification de modèle de régression linéaire pour des données simulées."
 tab1 <- cbind(coef(mod_1b),
           confint(mod_1b))
@@ -127,16 +127,14 @@ kable(
     col.names = c("coefficient", 
                   "borne inf.",
                   "borne sup."), 
-    caption = "modèle sous-spécifié") |>
-    kableExtra::kable_styling()
+    caption = "modèle sous-spécifié")
 kable(tab2, 
   booktabs = TRUE, 
   digits = 2, 
   col.names = c("coefficient", 
                 "borne inf.", 
                 "borne sup."), 
-  caption = "modèle correct")|>
-    kableExtra::kable_styling()
+  caption = "modèle correct")
 ```
 
 
@@ -388,16 +386,15 @@ Le @tbl-polynome-ajustement résume ces quantités pour tous les modèles de l'o
 knitr::kable(x = as.data.frame(cbind(EQM[,c(2,1,3,5:6)], rowMeans(EQMcv))),
              digits = 2,
              row.names = TRUE,
-            col.names = c("\\(\\mathsf{EQM}\\)",
-                          "\\(\\widehat{\\mathsf{EQM}}_a\\)",
-                          "\\(R^2\\)",
-                          # "\\(R^2_a\\)",
-                          "\\(\\mathsf{AIC}\\)",
-                          "\\(\\mathsf{BIC}\\)",
-                          "\\(\\mathsf{VC}_{10}\\)"),
+            col.names = c("$\\mathsf{EQM}$",
+                          "$\\widehat{\\mathsf{EQM}}_a$",
+                          "$R^2$",
+                          # "$R^2_a$",
+                          "$\\mathsf{AIC}$",
+                          "$\\mathsf{BIC}$",
+                          "$\\mathsf{VC}_{10}$"),
             escape = FALSE,
-             booktabs = TRUE) |>
-    kableExtra::kable_styling()
+             booktabs = TRUE)
   
 ```
 
@@ -564,9 +561,9 @@ eqm_cv <- cv_caret$results$RMSE^2
 
 Le cas particulier $K=n$ (en anglais _leave-one-out cross validation_, ou $\mathsf{LOOCV}$) consiste à enlever une seule observation, à estimer le modèle avec les $n-1$ autres et à valider à l'aide de l'observation laissée de côté: on répète cette procédure pour chaque observation. Pour les modèles linéaires, il existe des formules explicites qui nous permettent d'éviter d'ajuster $n$ régressions par moindre carrés. Cette forme de validation croisée tend à être trop optimiste.
 
-Il faut garder en tête que le résultat de la validation croisée est aléatoire parce que la séparation des données en plis l'est également.  La figure @fig-plotcv, obtenue en répétant 100 fois la procédure et en calculant à chaque fois la performance de différents modèles polynomiaux, montre la variabilité des estimations. Plutôt que de répéter le calcul, si on a un nombre de groupes $K$ suffisamment grand et assez d'observations par pli, on pourrait estimer la variabilité de la procédure directement. Posons $\widehat{\mathsf{EQM}}_{\text{VC}, k}$ ($k=1, \ldots, K$) calculer l'erreur quadratique moyenne de chaque pli. On peut estimer l'écart-type empirique de cette moyenne via
+Il faut garder en tête que le résultat de la validation croisée est aléatoire parce que la séparation des données en plis l'est également.  La figure @fig-plotcv, obtenue en répétant 100 fois la procédure et en calculant à chaque fois la performance de différents modèles polynomiaux, montre la variabilité des estimations. Plutôt que de répéter le calcul, si on a un nombre de groupes $K$ suffisamment grand et assez d'observations par pli, on pourrait estimer la variabilité de la procédure directement. Posons $\widehat{\mathsf{EQM}}_{\text{VC}, k}$ ($k=1, \ldots, K$) calculer l'erreur quadratique moyenne de chaque pli. On peut estimer l'erreur-type empirique de cette moyenne via la racine carrée de
 \begin{align*}
-\mathsf{sd}(\widehat{\mathsf{EQM}}_{\text{VC}}) = \frac{1}{K-1} \sum_{k=1}^{K} (\widehat{\mathsf{EQM}}_{\text{VC}, k}-\widehat{\mathsf{EQM}}_{\text{VC}})^2.
+\mathsf{Var}(\widehat{\mathsf{EQM}}_{\text{VC}}) = \frac{1}{K-1} \sum_{k=1}^{K} (\widehat{\mathsf{EQM}}_{\text{VC}, k}-\widehat{\mathsf{EQM}}_{\text{VC}})^2.
 \end{align*}
 
 
@@ -674,20 +671,19 @@ str(dbm)
 #| eval: true
 #| echo: false
 #| warning: false
+#| layout-ncol: 4
 dbm_sub <- dbm |>
   dplyr::filter(test == 0) |>
   dplyr::select(!test)
-knitr::kables(list(
 knitr::kable(table(dbm_sub$x1), 
              booktabs = TRUE, 
-             col.names = c("sexe", "décompte")),
+             col.names = c("sexe", "$n$"))
 knitr::kable(table(dbm_sub$x3), booktabs = TRUE, 
-             col.names = c("revenu", "décompte")),
+             col.names = c("revenu", "$n$"))
 knitr::kable(table(dbm_sub$x5), booktabs = TRUE, 
-             col.names = c("couple", "décompte")),
+             col.names = c("couple", "$n$"))
 knitr::kable(table(dbm_sub$x4), booktabs = TRUE, 
-             col.names = c("région", "décompte")))) |>
-       kableExtra::kable_styling()
+             col.names = c("région", "$n$"))
 
 ```
 
@@ -852,7 +848,7 @@ npar <- 2^p
 options(scipen=100)
 knitr::kable(x = data.frame(p = p, npar = npar),
              digits = 0,
-             col.names = c("\\(p\\)",
+             col.names = c("$p$",
                           "nombre de paramètres"),
             escape = FALSE,
              booktabs = TRUE) |>
