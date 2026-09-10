@@ -664,7 +664,8 @@ ggplot(data = data.frame(x = loocv_prob), aes(x = x, y = after_stat(density))) +
     labs(x = "probabilité d'achat prédite", 
          y = "densité") + 
     scale_y_continuous(expand = c(0,0)) +  
-    scale_x_continuous(expand = c(0,0))
+    scale_x_continuous(expand = c(0,0)) +
+    theme_classic()
 #  Modèle complet et valeurs prédites
 train_prob <- fitted(glm(data = train, 
                          formula = form, 
@@ -1484,7 +1485,7 @@ Dans les deux premiers exemples, la variable réponse $Y$ est nominale (elle n'a
 On parle de modèle multinomial quand on suppose que les $K$ catégories étudiées sont mutuellement exclusives et qu'elles représentent les seuls choix possible. Mathématiquement, le modèle multinomial suppose que la probabilité de la catégorie $j$ est $p_j$ et que $p_1 + \cdots + p_K=1$. On peut également considérer chaque catégorie à tour de rôle (catégorie $j$ ou pas), ce qui revient à créer une variable binaire de distribution binomiale. On pourra créer un modèle de régression pour capturer le fait que des personnes différentes ont des opinions différentes et tenter d'expliquer ces dernières à l'aide de covariables.
 
 
-Il est fréquent de voir rapportés dans la presse les résultats de sondage d'opinion. Dans le cas binomial (deux options), on modélise la probabilité de succès et la variance associée à cette prédiction est $p(1-p)/n$, qui est maximale quand $p=0.5$ --- c'est souvent cette  marge d'erreur associée à la taille de l'échantillon qui est rapportée. Cette dernière permet de déterminer la précision du sondage et des résultats. Plus il y a de répondant(e)s, plus les résultats se rapprochent de la réalité pourvu que l'échantillonage soit adéquate.
+Il est fréquent de voir rapportés dans la presse les résultats de sondage d'opinion. Dans le cas binomial (deux options), on modélise la probabilité de succès et la variance associée à cette prédiction est $p(1-p)/n$, qui est maximale quand $p=0.5$ --- c'est souvent cette  marge d'erreur associée à la taille de l'échantillon qui est rapportée. Cette dernière permet de déterminer la précision du sondage et des résultats. Plus il y a de répondant(e)s, plus les résultats se rapprochent de la réalité pourvu que l'échantillonage soit adéquat.
 
 Considérons maintenant un sondage avec plus de deux choix de réponse: si l'option $j$ reçoit $p_j$ pourcentage d'appui, alors l'estimation rapportée est simplement la proportion des répondant(e)s $\widehat{p}_j$ et l'écart-type associé est $\sqrt{p_j(1-p_j)/n}$. Ceci veut dire que l'incertitude est moindre pour les options qui recueillent des suffrages marginaux.
 
