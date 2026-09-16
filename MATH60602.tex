@@ -119,15 +119,17 @@
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
 % Set default figure placement to htbp
-\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 % definitions for citeproc citations
@@ -203,22 +205,22 @@
 \newcommand{\Hy}{\mathcal{H}}
 \renewcommand{\d}{\mathrm{d}}
 \usepackage{booktabs}
+\usepackage{caption}
 \usepackage{longtable}
+\usepackage{colortbl}
 \usepackage{array}
+\usepackage{anyfontsize}
 \usepackage{multirow}
 \usepackage{wrapfig}
 \usepackage{float}
-\usepackage{colortbl}
 \usepackage{pdflscape}
-\usepackage{tabu}
+\usepackage{tabularx}
+\usepackage{xltabular}
 \usepackage{threeparttable}
 \usepackage{threeparttablex}
 \usepackage[normalem]{ulem}
 \usepackage{makecell}
 \usepackage{xcolor}
-\usepackage{caption}
-\usepackage{anyfontsize}
-\usepackage{animate}
 \makeatletter
 \@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
 \@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
@@ -289,9 +291,6 @@
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
 
-\ifLuaTeX
-  \usepackage{selnolig}  % disable illegal ligatures
-\fi
 \usepackage{bookmark}
 
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
@@ -305,7 +304,7 @@
 
 \title{MATH 60602 - Analyse multidimensionnelle appliquée}
 \author{Denis Larocque \and Léo Belzile}
-\date{2024-09-18}
+\date{2026-09-16}
 
 \begin{document}
 
@@ -618,6 +617,15 @@ Généralement, l'analyse exploratoire sert aussi à vérifier
   résultats.
 \end{itemize}
 
+Une autre forme de validation (dans d'autres contextes) est de vérifier
+si les données avec lesquelles sont simulées. Plusieurs exemples de
+données sur Kaggle, comme les données sur le diabète sur Kaggle
+utilisées dans certains articles qui développent des modèles prédictifs,
+alors que les données, après analyse approfondie, montrent de clairs
+signes d'avoir été simulées (\citeproc{ref-Gibson:2026}{Gibson et al.
+2026}). Seule une vérification minutieuse permet de détecter ce genre de
+problèmes.
+
 \section{Types de variables}\label{types-de-variables}
 
 \begin{itemize}
@@ -642,10 +650,10 @@ sont décrites par un adjectif; je préfère le terme catégorielle, plus
 \begin{figure}[ht!]
 
 \begin{minipage}{0.45\linewidth}
-\includegraphics{figures/continuous_discrete.png}\end{minipage}%
+\pandocbounded{\includegraphics[keepaspectratio]{figures/continuous_discrete.png}}\end{minipage}%
 %
 \begin{minipage}{0.55\linewidth}
-\includegraphics{figures/nominal_ordinal_binary.png}\end{minipage}%
+\pandocbounded{\includegraphics[keepaspectratio]{figures/nominal_ordinal_binary.png}}\end{minipage}%
 
 \caption{\label{fig-types-variables}Illustrations par Allison Horst de
 variables numériques (gauche) et catégorielles (droite).}
@@ -752,7 +760,7 @@ mesurer les proportions) --- ce n'est pas de la tarte!
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{analyseexploratoire_files/figure-pdf/fig-barplotrenfe-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{analyseexploratoire_files/figure-pdf/fig-barplotrenfe-1.pdf}
 
 }
 
@@ -799,7 +807,7 @@ hauteur de l'histogramme nous renseigne sur leur fréquence relative.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{analyseexploratoire_files/figure-pdf/fig-histrenfe-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{analyseexploratoire_files/figure-pdf/fig-histrenfe-1.pdf}
 
 }
 
@@ -833,7 +841,7 @@ descriptives.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{figures/01-intro-boiteamoustache.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{figures/01-intro-boiteamoustache.png}
 
 }
 
@@ -863,7 +871,7 @@ dans la Figure~\ref{fig-histboxplot}.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{analyseexploratoire_files/figure-pdf/fig-histboxplot-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{analyseexploratoire_files/figure-pdf/fig-histboxplot-1.pdf}
 
 }
 
@@ -987,7 +995,7 @@ fonction du type de train.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{analyseexploratoire_files/figure-pdf/fig-renfe-aed4-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{analyseexploratoire_files/figure-pdf/fig-renfe-aed4-1.pdf}
 
 }
 
@@ -1000,7 +1008,7 @@ On pourrait soupçonner que les trains étiquetés \texttt{AVE} sont plus
 rapides, sachant que c'est l'acronyme de \emph{Alta Velocidad Española},
 littéralement haute vitesse espagnole. Qu'en est-il des distinctions
 entre les deux types de trains étiquetés AVE? Selon
-\href{https://www.renfe-sncf.com/rw-en/services/a-unique-experience/Pages/services.aspx}{le
+\href{https://web.archive.org/web/20200608072559/https://www.renfe-sncf.com/rw-en/services/a-unique-experience/Pages/services.aspx}{le
 site de la SNCF}, les trains AVE-TGV sont des partenariats entre la
 Renfe et la SNCF et effectuent des liaisons entre la France et
 l'Espagne.
@@ -1039,11 +1047,26 @@ Promo, mais disponibles avec PromoPlus moyennant une pénalité équivalent
 est disponible au même prix que les billets réguliers, avec des
 bénéfices additionnels.
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{renfe }\SpecialCharTok{|\textgreater{}} 
+  \FunctionTok{subset}\NormalTok{(tarif  }\SpecialCharTok{!=} \StringTok{"AdultoIda"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ prix, }
+             \AttributeTok{x =}\NormalTok{ classe, }
+             \AttributeTok{col =}\NormalTok{ tarif)) }\SpecialCharTok{+} 
+    \FunctionTok{geom\_boxplot}\NormalTok{() }\SpecialCharTok{+} 
+    \FunctionTok{labs}\NormalTok{(}\AttributeTok{y =} \StringTok{"prix (en euros)"}\NormalTok{,}
+         \AttributeTok{x =} \StringTok{"classe"}\NormalTok{,}
+         \AttributeTok{color =} \StringTok{"tarif"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{figure}[ht!]
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{analyseexploratoire_files/figure-pdf/fig-renfe-aed6-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{analyseexploratoire_files/figure-pdf/fig-renfe-aed6-1.pdf}
 
 }
 
@@ -1052,11 +1075,24 @@ tarif et de la classe de billets de trains à haute vitesse de la Renfe.}
 
 \end{figure}%
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ renfe, }
+       \AttributeTok{mapping =} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ prix, }
+                     \AttributeTok{y =} \FunctionTok{after\_stat}\NormalTok{(density), }
+                     \AttributeTok{fill =}\NormalTok{ tarif)) }\SpecialCharTok{+}
+    \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{binwidth =} \DecValTok{5}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"prix (en euros)"}\NormalTok{, }
+         \AttributeTok{y =} \StringTok{"densité"}\NormalTok{) }\SpecialCharTok{+} 
+    \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{figure}[ht!]
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{analyseexploratoire_files/figure-pdf/fig-renfe-aed7-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{analyseexploratoire_files/figure-pdf/fig-renfe-aed7-1.pdf}
 
 }
 
@@ -1084,16 +1120,16 @@ selon le prix de vente.}
 \toprule
 prix & classe & n\\
 \midrule
-108 & Turista & 1050\\
-108 & TuristaSolo & 67\\
-127 & Turista & 285\\
-127 & TuristaSolo & 9\\
-129 & TuristaPlus & 31\\
+107.7 & Turista & 1050\\
+107.7 & TuristaSolo & 67\\
+127.1 & Turista & 285\\
+127.1 & TuristaSolo & 9\\
+129.3 & TuristaPlus & 31\\
 \addlinespace
-140 & Preferente & 2\\
-152 & TuristaPlus & 10\\
-182 & Preferente & 78\\
-214 & Preferente & 12\\
+140.0 & Preferente & 2\\
+152.5 & TuristaPlus & 10\\
+181.5 & Preferente & 78\\
+214.2 & Preferente & 12\\
 \bottomrule
 \end{tabular}
 
@@ -1171,7 +1207,7 @@ particulier, votre description devrait coïncider avec le rendu. Votre
 graphique raconte une histoire, aussi prenez-soin que cette dernière
 soit nécessaire et attrayante.
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, toptitle=1mm, bottomtitle=1mm, arc=.35mm, toprule=.15mm, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, breakable, opacitybacktitle=0.6, coltitle=black, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-note-color-frame, left=2mm, opacityback=0]
+\begin{tcolorbox}[enhanced jigsaw, coltitle=black, left=2mm, opacitybacktitle=0.6, colback=white, leftrule=.75mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, colbacktitle=quarto-callout-note-color!10!white, opacityback=0, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, breakable, titlerule=0mm, arc=.35mm, bottomrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -1295,12 +1331,17 @@ allons voir concernent essentiellement ce contexte.
 \end{itemize}
 
 Dans ce cas, il est préférable de spécifier le modèle dès le départ
-selon des considérations scientifiques et de s'en tenir à lui. Faire une
-sélection de variables dans ce cas est dangereux car on ne peut pas
-utiliser directement les valeurs-\emph{p} des tests d'hypothèses (ou les
-intervalles de confiance sur les paramètres) concernant les paramètres
-du modèle final car elles ne tiennent pas compte de la variabilité due
-au processus de sélection de variables.
+selon des considérations scientifiques et de s'en tenir à lui. Par
+exemple, un plan d'expérience a souvent un ou plusieurs facteurs
+(sous-groupes) avec des traitements différents: si notre échantillon
+aléatoire est représentatif de la population, on peut directement
+estimer à l'aide d'un modèle les différences de moyennes entre groupes
+et voir si les différences entre ces dernières sont significatives.
+Faire une sélection de variables dans ce cas est dangereux car on ne
+peut pas utiliser directement les valeurs-\emph{p} des tests
+d'hypothèses (ou les intervalles de confiance sur les paramètres)
+concernant les paramètres du modèle final car elles ne tiennent pas
+compte de la variabilité due au processus de sélection de variables.
 
 Une bonne planification de l'étude est alors cruciale afin de collecter
 les bonnes variables, de spécifier le ou les bons modèles, et de
@@ -1357,8 +1398,8 @@ régression linéaire pour des données simulées.}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-(cst) & 19.95 & 19.28 & 20.62 \\
-X1 & 2.74 & 2.55 & 2.94 \\
+(cst) & 20.03 & 19.74 & 20.31 \\
+X1 & 2.00 & 1.91 & 2.08 \\
 \end{longtable}
 
 \end{minipage}%
@@ -1377,9 +1418,9 @@ X1 & 2.74 & 2.55 & 2.94 \\
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-(cst) & 20.16 & 19.88 & 20.44 \\
-X1 & 1.93 & 1.84 & 2.03 \\
-X2 & 5.06 & 4.74 & 5.38 \\
+(cst) & 20.05 & 19.77 & 20.33 \\
+X1 & 1.92 & 1.83 & 2.02 \\
+X2 & 0.47 & 0.14 & 0.79 \\
 \end{longtable}
 
 \end{minipage}%
@@ -1425,8 +1466,8 @@ régression linéaire pour des données simulées.}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-(cst) & 20.03 & 19.74 & 20.31 \\
-X1 & 2.00 & 1.91 & 2.08 \\
+(cst) & 19.95 & 19.28 & 20.62 \\
+X1 & 2.74 & 2.55 & 2.94 \\
 \end{longtable}
 
 \end{minipage}%
@@ -1445,9 +1486,9 @@ X1 & 2.00 & 1.91 & 2.08 \\
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-(cst) & 20.05 & 19.77 & 20.33 \\
-X1 & 1.92 & 1.83 & 2.02 \\
-X2 & 0.47 & 0.14 & 0.79 \\
+(cst) & 20.16 & 19.88 & 20.44 \\
+X1 & 1.93 & 1.84 & 2.03 \\
+X2 & 5.06 & 4.74 & 5.38 \\
 \end{longtable}
 
 \end{minipage}%
@@ -1552,7 +1593,7 @@ valeurs ajustées de polynômes d'ordre 1, 4 et 10.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{selectionmodeles_files/figure-pdf/fig-donneestest-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{selectionmodeles_files/figure-pdf/fig-donneestest-1.pdf}
 
 }
 
@@ -1583,7 +1624,7 @@ quadratique moyenne par la suite.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{selectionmodeles_files/figure-pdf/fig-plotEQMa-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{selectionmodeles_files/figure-pdf/fig-plotEQMa-1.pdf}
 
 }
 
@@ -1623,37 +1664,43 @@ la régression linéaire et d'une mesure très connue, le coefficient de
 détermination (\(R^2\)). Supposons que l'on a ajusté un modèle de
 régression linéaire \begin{align*}
 \widehat{f}(X_1, \ldots, X_p) = \widehat{Y}=\widehat{\beta}_0 + \widehat{\beta}_1X_1+ \cdots + \widehat{\beta}_p X_p.
-\end{align*} La somme du carré des erreurs (\(\mathsf{SCE}\)) pour notre
-échantillon est \begin{align*}
-\mathsf{SCE}=\sum_{i=1}^n (Y_i - \widehat{\beta}_0 - \widehat{\beta}_1X_1 - \cdots - \widehat{\beta}_p X_p)^2 = \sum_{i=1}^n (Y_i-\widehat{Y}_i)^2.
+\end{align*} L'erreur quadratique moyenne pour notre échantillon est
+\begin{align*}
+\mathsf{EQM}=\frac{1}{n}\sum_{i=1}^n (Y_i - \widehat{\beta}_0 - \widehat{\beta}_1X_1 - \cdots - \widehat{\beta}_p X_p)^2 = \sum_{i=1}^n (Y_i-\widehat{Y}_i)^2.
  \end{align*} On peut démontrer que si on ajoute une variable quelconque
-au modèle, la valeur de la somme du carré des erreurs va nécessairement
+au modèle, la valeur de l'erreur quadratique moyenne va nécessairement
 baisser. Il est facile de se convaincre de cela. En régression linéaire,
 les estimations sont obtenues par la méthode des moindres carrés qui
-consiste justement à minimiser la \(\mathsf{SCE}\). Ainsi, en ajoutant
-une variable \(X_{p+1}\) au modèle, la \(\mathsf{SCE}\) ne peut que
-baisser car, dans le pire des cas, le paramètre de la nouvelle variable
-sera \(\widehat{\beta}_{p+1}=0\) et on retombera sur le modèle sans
-cette variable. C'est pourquoi, la quantité
-\(\widehat{\mathsf{EQM}}_a=\mathsf{SCE}/n\) ne peut être utilisée comme
-outil de sélection de modèles en régression linéaire.
+consiste justement à minimiser l'\(\mathsf{EQM}\). Ainsi, en ajoutant
+une variable \(X_{p+1}\) au modèle, l'erreur quadratique moyenne ne peut
+que baisser car, dans le pire des cas, le paramètre de la nouvelle
+variable sera \(\widehat{\beta}_{p+1}=0\) et on retombera sur le modèle
+sans cette variable. C'est pourquoi, la quantité
+\(\widehat{\mathsf{EQM}}_a\) ne peut être utilisée comme outil de
+sélection de modèles en régression linéaire.
 
 Nous venons d'ailleurs d'illustrer cela avec notre exemple sur les
 modèles polynomiaux. En effet, augmenter l'ordre du polynôme de \(1\)
 revient à ajouter une variable. Le coefficient de détermination
 (\(R^2\)) est souvent utilisé, à tort, comme mesure de qualité du
 modèle. Il peut s'interpréter comme étant la proportion de la variance
-de \(Y\) qui est expliquée par le modèle.
+de \(Y\) qui est expliquée par le modèle, ou comme un score relatif par
+rapport à l'erreur quadratique moyenne du modèle nul qui n'inclut que
+l'ordonnée à l'origine, et pour lequel la prédiction de chaque
+observation est la moyenne empirique de la variable cible,
+\(\overline{Y}\).
 
 Le coefficient de détermination est \begin{align*}
-R^2=\{\mathsf{cor}(\boldsymbol{y}, \widehat{\boldsymbol{y}})\}^2 = 1-\frac{\mathsf{SCE}}{\mathsf{SCT}},
-\end{align*} où \(\mathsf{SCT}=\sum_{i=1}^n (Y_i-\overline{Y})^2\) est
-la somme des carrés totale calculée en centrant les observations. La
-somme des carrés totale, \(\mathsf{SCT}\), ne varie pas en fonction du
-modèle. Ainsi, on voit que le \(R^2\) va méchaniquement augmenter
-lorsqu'on ajoute une variable au modèle (car la \(\mathsf{SCE}\)
-diminue). C'est pourquoi on ne peut pas l'utiliser comme outil de
-sélection de variables.
+R^2=\{\mathsf{cor}(\boldsymbol{y}, \widehat{\boldsymbol{y}})\}^2 = 1-\frac{\mathsf{EQM}}{\mathsf{EQM}_0},
+\end{align*} où
+\(\mathsf{EQM}_0=n^{-1}\sum_{i=1}^n (Y_i-\overline{Y})^2\) est la somme
+des carrés totale calculée en centrant les observations. La référence
+globale \(\mathsf{EQM}_0\) ne varie pas en fonction du modèle. Ainsi, on
+voit que le \(R^2\) va méchaniquement augmenter lorsqu'on ajoute une
+variable au modèle. C'est pourquoi on ne peut pas l'utiliser comme outil
+de sélection de variables, à moins de l'estimer sur un échantillon de
+validation, auquel cas la valeur du \(R^2\) pourrait être négative si le
+modèle prédit moins bien que la référence.
 
 Le problème principal que nous avons identifié jusqu'à présent afin
 d'être en mesure de bien estimer la performance d'un modèle est le
@@ -1709,13 +1756,13 @@ critère d'information d'Akaike, \(\mathsf{AIC}\), est \begin{align*}
 est petite, meilleur est l'adéquation. Que se passe-t-il lorsqu'on
 ajoute un paramètre à un modèle? D'une part, la somme du carré des
 erreurs va méchaniquement diminuer tout comme l'erreur quadratique
-moyenne \(\textsf{EQM} = \textsf{SCE}/n\), donc la quantité
-\(n \ln (\mathsf{EQM})\) va diminuer. D'autre part, la valeur de \(p\)
-augmente de \(1\). Ainsi, le \(\mathsf{AIC}\) peut soit augmenter, soit
-diminuer, lorsqu'on ajoute un paramètre; idem pour le \(\mathsf{BIC}\).
-Par exemple, le \(\mathsf{AIC}\) va diminuer seulement si la baisse de
-la somme du carré des erreurs est suffisante pour compenser le fait que
-le terme \(2p\) augmente à \(2 (p+1)\).
+moyenne \(\textsf{EQM}\), donc la quantité \(n \ln (\mathsf{EQM})\) va
+diminuer. D'autre part, la valeur de \(p\) augmente de \(1\). Ainsi, le
+\(\mathsf{AIC}\) peut soit augmenter, soit diminuer, lorsqu'on ajoute un
+paramètre; idem pour le \(\mathsf{BIC}\). Par exemple, le
+\(\mathsf{AIC}\) va diminuer seulement si la baisse de la somme du carré
+des erreurs est suffisante pour compenser le fait que le terme \(2p\)
+augmente à \(2 (p+1)\).
 
 Ces critères pénalisent l'ajout de variables afin de se prémunir contre
 le surajustement. De plus, le \(\mathsf{BIC}\) pénalise plus que le
@@ -1766,13 +1813,13 @@ Le Tableau~\ref{tbl-polynome-ajustement} résume ces quantités pour tous
 les modèles de l'ordre 1 à l'ordre 10.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0300}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1500}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.2700}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0600}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1500}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1500}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1900}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0300}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1500}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.2700}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0600}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1500}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1500}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1900}}@{}}
 
 \caption{\label{tbl-polynome-ajustement}Mesures de la qualité de
 l'ajustement d'un modèle polynomial aux données en fonction de l'ordre
@@ -1816,7 +1863,7 @@ du polynôme.}
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{selectionmodeles_files/figure-pdf/fig-polynome-ajustement-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{selectionmodeles_files/figure-pdf/fig-polynome-ajustement-1.pdf}
 
 }
 
@@ -1966,8 +2013,8 @@ groupes (\emph{\(K\)-fold cross-validation}) :
   Combiner les \(K\) estimations de performance pour obtenir une mesure
   de performance finale.\footnote{Le fait d'utiliser \(K \neq n\) mène à
     une estimation biaisée de la quantité d'intérêt et ce biais peut
-    être important si \(n\) est petit; un ajustement simple est possible
-    pour réduire ce dernier est présenté dans Davison et Hinkley (1997),
+    être important si \(n\) est petit; un ajustement simple pour réduire
+    ce dernier est présenté dans Davison et Hinkley (1997),
     \emph{Bootstrap Methods and their Application}, Cambridge University
     Press à l'équation 6.48.}
 \end{enumerate}
@@ -1980,7 +2027,7 @@ de l'échantillon totale.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{selectionmodeles_files/figure-pdf/fig-validationcroiseeillust-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{selectionmodeles_files/figure-pdf/fig-validationcroiseeillust-1.pdf}
 
 }
 
@@ -2099,7 +2146,7 @@ estimés de l'erreur quadratique moyenne.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{selectionmodeles_files/figure-pdf/fig-plotcv-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{selectionmodeles_files/figure-pdf/fig-plotcv-1.pdf}
 
 }
 
@@ -2130,7 +2177,7 @@ Figure~\ref{fig-lassopath}.
 
 \centering{
 
-\includegraphics[width=6in,height=\textheight]{figures/fig-validationcroisee-une-erreur-type.png}
+\includegraphics[width=6in,height=\textheight,keepaspectratio]{figures/fig-validationcroisee-une-erreur-type.png}
 
 }
 
@@ -2343,7 +2390,7 @@ région & \(n\) \\
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{selectionmodeles_files/figure-pdf/fig-histogrammes-eda-dbm-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{selectionmodeles_files/figure-pdf/fig-histogrammes-eda-dbm-1.pdf}
 
 }
 
@@ -2512,7 +2559,7 @@ l'origine englobera toutes les autres valeurs de \texttt{x3}, à savoir
   fois. La fonction \texttt{leaps::regsubsets} va quant à elle créer des
   indicateurs binaires.}
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, toptitle=1mm, bottomtitle=1mm, arc=.35mm, toprule=.15mm, rightrule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, breakable, opacitybacktitle=0.6, coltitle=black, titlerule=0mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Danger de surajustement avec variables catégorielles}, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-tip-color-frame, left=2mm, opacityback=0]
+\begin{tcolorbox}[enhanced jigsaw, coltitle=black, left=2mm, opacitybacktitle=0.6, colback=white, leftrule=.75mm, colframe=quarto-callout-tip-color-frame, toprule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, opacityback=0, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Danger de surajustement avec variables catégorielles}, breakable, titlerule=0mm, arc=.35mm, bottomrule=.15mm]
 
 La principale cause de mauvaise performance est le surajustement
 sélectif. Dans l'exemple que l'on considère avec la base de données
@@ -2595,10 +2642,10 @@ est aussi le meilleur selon les critères d'information \(\mathsf{AIC}\)
 et \(\mathsf{BIC}\), pour ce nombre fixé de variables. Pour vous
 convaincre de cette affirmation, fixons le nombre de variables et
 restreignons-nous seulement aux modèles avec ce nombre de variables.
-Comme \(R^2=1 - \mathsf{SCE}/\mathsf{SCT}\) et que \(\mathsf{SCT}\) est
-une constante indépendante du modèle, le modèle avec le plus grand
+Comme \(R^2=1 - \mathsf{EQM}/\mathsf{EQM}_0\) et que \(\mathsf{EQM}_0\)
+est une constante indépendante du modèle, le modèle avec le plus grand
 coefficient de détermination, \(R^2\), est aussi celui avec la plus
-petite somme du carré des erreurs (\(\mathsf{SCE}\)). Comme
+petite erreur quadratique moyenne. Comme
 \(\mathsf{AIC}=n \ln (\mathsf{EQM}) + 2p\), ce sera aussi celui avec le
 plus petit \(\mathsf{AIC}\) car la pénalité \(2p\) est la même si on
 fixe le nombre de variables; la même remarque est valide pour le
@@ -2867,7 +2914,7 @@ plus petit \(\mathsf{BIC}\).
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{selectionmodeles_files/figure-pdf/fig-perfo-sequentiel-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{selectionmodeles_files/figure-pdf/fig-perfo-sequentiel-1.pdf}
 
 }
 
@@ -2917,17 +2964,17 @@ dépendra de l'unité de mesure, d'où l'importance d'utiliser les données
 centrées et réduites pour que la solution reste la même.
 
 Les estimateurs des moindres carrés ordinaires pour la régression
-linéaire représentent la combinaison qui minimise la somme du carré des
-erreurs, \begin{align*}
-\mathsf{SCE} = \sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^pX_{ij}\beta_{j}\right)^2.
-\end{align*} On peut ajouter à cette fonction objective \(\mathsf{SCE}\)
+linéaire représentent la combinaison qui minimise l'erreur quadratique
+moyenne, \begin{align*}
+\mathsf{EQM} = \frac{1}{n}\sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^pX_{ij}\beta_{j}\right)^2.
+\end{align*} On peut ajouter à cette fonction objective \(\mathsf{EQM}\)
 un terme additionnel de pénalité qui va contraindre les paramètres à ne
 pas être trop grand. On considère une pénalité additionnelle pour la
 valeur absolue des coefficients, \begin{align*}
 q_1(\lambda) = \lambda \sum_{j=1}^p |\beta_j|.
 \end{align*} Pour chaque valeur de \(\lambda\) donnée, on obtiendra une
 solution différente pour les estimés car on minimisera désormais
-\(\mathsf{SCE} + q_1(\lambda)\). On ne pénalise pas l'ordonnée à
+\(n\mathsf{EQM} + q_1(\lambda)\). On ne pénalise pas l'ordonnée à
 l'origine \(\beta_0\), parce que ce coefficient sert à recentrer les
 observations et a une signification particulière: si on standardise les
 données, de manière à ce que leur moyenne empirique soit zéro et leur
@@ -2939,7 +2986,7 @@ certains paramètres très proches de zéro à être exactement égaux à zéro,
 ce qui fait que la régression pénalité agit également comme outil de
 sélection de variables. Des algorithmes efficaces permettent de trouver
 la solution du problème d'optimisation \begin{align*}
-\min_{\boldsymbol{\beta}} \{\mathsf{SCE} + q_1(\lambda)\} = \min_{\boldsymbol{\beta}}  \left\{\sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^pX_{ij}\beta_{j}\right)^2 +
+\min_{\boldsymbol{\beta}} \{n\mathsf{EQM} + q_1(\lambda)\} = \min_{\boldsymbol{\beta}}  \left\{\sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^pX_{ij}\beta_{j}\right)^2 +
 \lambda \sum_{j=1}^p |\beta_j|\right\}
 \end{align*} laquelle est appelée LASSO. La
 Figure~\ref{fig-lassopenalty} montre la fonction objective (lignes de
@@ -2971,7 +3018,7 @@ de \(\lambda\).
 
 \centering{
 
-\includegraphics{selectionmodeles_files/figure-pdf/fig-lassopenalty-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{selectionmodeles_files/figure-pdf/fig-lassopenalty-1.pdf}}
 
 }
 
@@ -3039,7 +3086,7 @@ le nombre de coefficients non-nuls.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{selectionmodeles_files/figure-pdf/fig-lassopath-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{selectionmodeles_files/figure-pdf/fig-lassopath-1.pdf}
 
 }
 
@@ -3083,9 +3130,9 @@ variables de base ne permettent pas de capturer les effets présents dans
 les données et ce manque de flexibilité coûte cher.
 
 \begin{longtable}[]{@{}
-  >{\centering\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3158}}
-  >{\centering\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3684}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3158}}@{}}
+  >{\centering\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3158}}
+  >{\centering\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3684}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3158}}@{}}
 \caption{Estimation de l'erreur quadratique moyenne sur l'échantillon
 test avec les variables de base. Les meilleurs modèles selon les
 critères d'informations découlent d'une recherche exhaustive de tous les
@@ -3112,9 +3159,9 @@ méthode
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-14 & 25.69 & toutes les variables \\
-11 & 25.53 & exhaustive - \(\mathsf{AIC}\) \\
-9 & 25.04 & exhaustive - \(\mathsf{BIC}\) \\
+14 & 25.686 & toutes les variables \\
+11 & 25.526 & exhaustive - \(\mathsf{AIC}\) \\
+9 & 25.038 & exhaustive - \(\mathsf{BIC}\) \\
 \end{longtable}
 
 \begin{longtable}[]{@{}ccl@{}}
@@ -3131,12 +3178,12 @@ nombre de variables & \(\mathsf{EQM}\) & méthode \\
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-104 & 19.63 & toutes les variables \\
-21 & 12 & séquentielle ascendante, choix selon \(\mathsf{AIC}\) \\
-15 & 12.31 & séquentielle ascendante, choix selon \(\mathsf{BIC}\) \\
-23 & 12.75 & séquentielle ascendante avec critère \(\mathsf{AIC}\) \\
-20 & 12.4 & séquentielle descendante avec critère \(\mathsf{BIC}\) \\
-30 & 12 & LASSO, validation croisée avec 10 groupes \\
+104 & 19.628 & toutes les variables \\
+21 & 12.003 & séquentielle ascendante, choix selon \(\mathsf{AIC}\) \\
+15 & 12.305 & séquentielle ascendante, choix selon \(\mathsf{BIC}\) \\
+23 & 12.745 & séquentielle ascendante avec critère \(\mathsf{AIC}\) \\
+20 & 12.397 & séquentielle descendante avec critère \(\mathsf{BIC}\) \\
+30 & 12.002 & LASSO, validation croisée avec 10 groupes \\
 \end{longtable}
 
 Le Tableau~\ref{tbl-02-modelcomparaisonfull} présente la performance de
@@ -3173,7 +3220,7 @@ des parties d'effet par le rétrécissement (\emph{shrinkage}). De récents
 développements théoriques permettent aussi de corriger les
 valeurs-\emph{p} pour faire de l'inférence post-sélection avec le LASSO.
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, toptitle=1mm, bottomtitle=1mm, arc=.35mm, toprule=.15mm, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, breakable, opacitybacktitle=0.6, coltitle=black, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-note-color-frame, left=2mm, opacityback=0]
+\begin{tcolorbox}[enhanced jigsaw, coltitle=black, left=2mm, opacitybacktitle=0.6, colback=white, leftrule=.75mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, colbacktitle=quarto-callout-note-color!10!white, opacityback=0, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, breakable, titlerule=0mm, arc=.35mm, bottomrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -3343,7 +3390,7 @@ modèle que la régression linéaire, c'est-à-dire \begin{align*}
 
 \centering{
 
-\includegraphics[width=0.8\textwidth,height=\textheight]{reglogistique_files/figure-pdf/fig-demandecredit-1.pdf}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{reglogistique_files/figure-pdf/fig-demandecredit-1.pdf}
 
 }
 
@@ -3398,7 +3445,7 @@ négatif, \(p\) diminuera à mesure que \(\mathrm{X}_j\) augmente.
 
 \centering{
 
-\includegraphics[width=0.8\textwidth,height=\textheight]{reglogistique_files/figure-pdf/fig-logitplot-1.pdf}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{reglogistique_files/figure-pdf/fig-logitplot-1.pdf}
 
 }
 
@@ -3421,16 +3468,16 @@ le contraire, il y a 4 fois moins de chance que \(Y=1\) par rapport à
 de cotes pour quelques probabilités \(p\).
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.0948}}
-  >{\centering\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1293}}
-  >{\centering\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1293}}
-  >{\centering\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1293}}
-  >{\centering\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1293}}
-  >{\centering\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.0431}}
-  >{\centering\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1293}}
-  >{\centering\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1293}}
-  >{\centering\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.0431}}
-  >{\centering\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.0431}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0948}}
+  >{\centering\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1293}}
+  >{\centering\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1293}}
+  >{\centering\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1293}}
+  >{\centering\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1293}}
+  >{\centering\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0431}}
+  >{\centering\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1293}}
+  >{\centering\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1293}}
+  >{\centering\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0431}}
+  >{\centering\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0431}}@{}}
 
 \caption{\label{tbl-cotes}Cote et probabilité de succès}
 
@@ -3778,7 +3825,7 @@ Quelques observations sur l'échantillon et les données:
 
 \centering{
 
-\includegraphics[width=0.8\textwidth,height=\textheight]{reglogistique_files/figure-pdf/fig-logitplot2-1.pdf}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{reglogistique_files/figure-pdf/fig-logitplot2-1.pdf}
 
 }
 
@@ -3883,15 +3930,14 @@ référence étant celle qui apparaît en dernier en ordre alphabétique.
 \end{Highlighting}
 \end{Shaded}
 
-\begingroup
-\setlength\LTleft{0\linewidth}
-\setlength\LTright{0\linewidth}\fontsize{12.0pt}{14.4pt}\selectfont
-\setlength{\LTpost}{0mm}
+\begin{table}
 
-\begin{longtable}{@{\extracolsep{\fill}}lccc}
+\centering{
 
+\fontsize{12.0pt}{14.0pt}\selectfont
+\begin{tabular*}{1\linewidth}{@{\extracolsep{\fill}}lccc}
 \toprule
-variables & cote\textsuperscript{\textit{1}} & \textbf{95\% CI}\textsuperscript{\textit{1}} & valeur-p \\ 
+variables & cote & \textbf{95\% CI} & valeur-p \\ 
 \midrule\addlinespace[2.5pt]
 {\bfseries x1} &  &  & 0.4 \\ 
     1 & — & — &  \\ 
@@ -3917,26 +3963,26 @@ variables & cote\textsuperscript{\textit{1}} & \textbf{95\% CI}\textsuperscript{
     2 & 0.25 & 0.13, 0.49 &  \\ 
     3 & 0.09 & 0.04, 0.18 &  \\ 
 \bottomrule
+\end{tabular*}
+\begin{minipage}{\linewidth}
+\vspace{.05em}
+Abbreviations: CI = Confidence Interval, OR = Odds Ratio\\
+\end{minipage}
+
+}
 
 \caption{\label{tbl-logit1-complet}Coefficients (cote), intervalles de
 confiance profilée de 95 pourcent et valeurs-p pour le test de rapport
 de vraisemblance pour le modèle logistique avec toutes les variables
 catégorielles.}
 
-\tabularnewline
-
-\end{longtable}
-
-\begin{minipage}{\linewidth}
-\textsuperscript{\textit{1}}cote = rapport de cote, IC = intervalle de confiance\\
-\end{minipage}
-\endgroup
+\end{table}%
 
 \begin{figure}[ht!]
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{reglogistique_files/figure-pdf/fig-confint-modele2-logist-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{reglogistique_files/figure-pdf/fig-confint-modele2-logist-1.pdf}
 
 }
 
@@ -3960,8 +4006,8 @@ probabilité de succès est la proportion de 1).}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-modèle ajusté & 544 & 603 & -258 \\
-modèle nul & 691 & 695 & -258 \\
+modèle ajusté & 544.20 & 603.20 & -258.1 \\
+modèle nul & 691.27 & 695.48 & -258.1 \\
 
 \end{longtable}
 
@@ -4123,7 +4169,7 @@ modèles en utilisant des méthodes permettant d'obtenir un bon modèle
 tout en se protégeant contre le surajustement. Certaines de ces méthodes
 (division de l'échantillon, validation croisée) ont déjà été présentées.
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, toptitle=1mm, bottomtitle=1mm, arc=.35mm, toprule=.15mm, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, breakable, opacitybacktitle=0.6, coltitle=black, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-note-color-frame, left=2mm, opacityback=0]
+\begin{tcolorbox}[enhanced jigsaw, coltitle=black, left=2mm, opacitybacktitle=0.6, colback=white, leftrule=.75mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, colbacktitle=quarto-callout-note-color!10!white, opacityback=0, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, breakable, titlerule=0mm, arc=.35mm, bottomrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -4313,7 +4359,7 @@ de classification. Tel que nous l'avons vu au chapitre précédent, il y a
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{reglogistique_files/figure-pdf/fig-classification0-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{reglogistique_files/figure-pdf/fig-classification0-1.pdf}}
 
 }
 
@@ -4323,16 +4369,16 @@ succès prédites par validation croisée à \(n\) groupes.}
 \end{figure}%
 
 \begin{longtable}[]{@{}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.0769}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.0513}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.0513}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.0513}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.0513}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.1538}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.2051}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.2051}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.0769}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 18\tabcolsep) * \real{0.0769}}@{}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0769}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0513}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0513}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0513}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0513}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.1538}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.2051}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.2051}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0769}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 18\tabcolsep) * \real{0.0769}}@{}}
 
 \caption{\label{tbl-classification-loocv}Tableau de classification avec
 le nombre de vrais positifs (VP), vrais négatifs (VN), faux positifs
@@ -4536,7 +4582,7 @@ diagonale.
 
 \centering{
 
-\includegraphics[width=0.8\textwidth,height=\textheight]{reglogistique_files/figure-pdf/fig-roccurve-1.pdf}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{reglogistique_files/figure-pdf/fig-roccurve-1.pdf}
 
 }
 
@@ -4661,7 +4707,7 @@ n & moyenne & écart-type & minimum & maximum \\
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-210 & 67.3 & 13.2 & 25 & 109 \\
+210 & 67.29 & 13.24 & 25 & 109 \\
 
 \end{longtable}
 
@@ -4714,15 +4760,18 @@ validation croisée à \(K=10\) groupes (la mesure affichée correspondant
   \AttributeTok{c11 =} \DecValTok{57}\NormalTok{,}
   \AttributeTok{plot =} \ConstantTok{TRUE}\NormalTok{)}
 \NormalTok{coupe}
-\CommentTok{\#\textgreater{} Point de coupure optimal: 0.12}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+Point de coupure optimal: 0.13 
+\end{verbatim}
 
 \begin{figure}[ht!]
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{reglogistique_files/figure-pdf/fig-coupure-pondere-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{reglogistique_files/figure-pdf/fig-coupure-pondere-1.pdf}}
 
 }
 
@@ -4739,7 +4788,7 @@ effectué ici la validation croisée avec 10 groupes et fait la moyenne
 des 10 répétitions afin d'avoir plus de précision.
 
 On voit dans la Figure~\ref{fig-coupure-pondere} que le meilleur point
-de coupure, celui qui maximise le gain est 0.12. Avec ce point de
+de coupure, celui qui maximise le gain est 0.13. Avec ce point de
 coupure, et selon le Tableau~\ref{tbl-classification-loocv}, on estime
 que le taux de bonne classification est de 70.3 et que la sensibilité
 est de 90.95. Ainsi, on estime qu'on va détecter environ 91\% des
@@ -4780,7 +4829,7 @@ systématique au même nombre de personnes.
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{reglogistique_files/figure-pdf/fig-lift-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{reglogistique_files/figure-pdf/fig-lift-1.pdf}}
 
 }
 
@@ -4800,15 +4849,15 @@ systématique au même nombre de personnes.
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-10\% & 10 & 21 & 78 & 3.71 \\
-20\% & 20 & 42 & 120 & 2.86 \\
-30\% & 30 & 63 & 157 & 2.49 \\
-40\% & 40 & 84 & 180 & 2.14 \\
-50\% & 50 & 105 & 195 & 1.86 \\
-60\% & 60 & 126 & 201 & 1.59 \\
-70\% & 70 & 147 & 208 & 1.42 \\
-80\% & 80 & 168 & 210 & 1.25 \\
-90\% & 90 & 189 & 210 & 1.11 \\
+10\% & 10 & 21 & 78 & 3.714286 \\
+20\% & 20 & 42 & 120 & 2.857143 \\
+30\% & 30 & 63 & 157 & 2.492063 \\
+40\% & 40 & 84 & 180 & 2.142857 \\
+50\% & 50 & 105 & 195 & 1.857143 \\
+60\% & 60 & 126 & 201 & 1.595238 \\
+70\% & 70 & 147 & 208 & 1.414966 \\
+80\% & 80 & 168 & 210 & 1.250000 \\
+90\% & 90 & 189 & 210 & 1.111111 \\
 
 \end{longtable}
 
@@ -5140,12 +5189,20 @@ spécifier la transformation à l'intérieur de \texttt{I()}, par exemple
   \AttributeTok{plotty =} \ConstantTok{FALSE}\NormalTok{, }
   \AttributeTok{report =} \ConstantTok{FALSE}\NormalTok{,  }\CommentTok{\# sans graphique ou rapport}
   \AttributeTok{fitfunction =} \StringTok{"glm"}\NormalTok{) }
-\CommentTok{\#\textgreater{} }\AlertTok{TASK}\CommentTok{: Genetic algorithm in the candidate set.}
-\CommentTok{\#\textgreater{} Initialization...}
-\CommentTok{\#\textgreater{} Algorithm started...}
-\CommentTok{\#\textgreater{} Improvements in best and average IC have bebingo en below the specified goals.}
-\CommentTok{\#\textgreater{} Algorithm is declared to have converged.}
-\CommentTok{\#\textgreater{} Completed.}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+TASK: Genetic algorithm in the candidate set.
+Initialization...
+Algorithm started...
+Improvements in best and average IC have bebingo en below the specified goals.
+Algorithm is declared to have converged.
+Completed.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \CommentTok{\# Redéfinir le modèle via "glm"}
 \NormalTok{exgen\_modele }\OtherTok{\textless{}{-}} 
   \FunctionTok{glm}\NormalTok{(exgen}\SpecialCharTok{@}\NormalTok{objects[[}\DecValTok{1}\NormalTok{]]}\SpecialCharTok{$}\NormalTok{formula,}
@@ -5200,12 +5257,12 @@ spécifier la transformation à l'intérieur de \texttt{I()}, par exemple
 Table:
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0972}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1944}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2778}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0972}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.0972}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1944}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2778}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.0972}}@{}}
 
 \caption{\label{tbl-03-summarylog}Résumé des caractéristiques des
 modèles logistiques avec (a) référence, soit l'envoi sans sélection à
@@ -5245,7 +5302,7 @@ profit
 (c) & 104 & 0.10 & 0.4915 & 0.761 & 925263 \\
 (d) & 28 & 0.16 & 0.534 & 0.793 & 963682 \\
 (e) & 8 & 0.16 & 0.5179 & 0.782 & 984326 \\
-(f) & 8 & 0.17 & 0.523 & 0.786 & 979915 \\
+(f) & 9 & 0.19 & 0.5455 & 0.8 & 960225 \\
 (g) & 19 & 0.01 & 0.2447 & 0.284 & 653673 \\
 
 \end{longtable}
@@ -5414,7 +5471,7 @@ Nous reviendrons une dernière fois sur cet exemple dans le chapitre
 traitant des données manquantes. Nous verrons alors comment procéder si
 des valeurs manquantes sont présentes dans les variables explicatives.
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, toptitle=1mm, bottomtitle=1mm, arc=.35mm, toprule=.15mm, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, breakable, opacitybacktitle=0.6, coltitle=black, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-note-color-frame, left=2mm, opacityback=0]
+\begin{tcolorbox}[enhanced jigsaw, coltitle=black, left=2mm, opacitybacktitle=0.6, colback=white, leftrule=.75mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, colbacktitle=quarto-callout-note-color!10!white, opacityback=0, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, breakable, titlerule=0mm, arc=.35mm, bottomrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -5514,7 +5571,7 @@ probabilité de succès et la variance associée à cette prédiction est
 marge d'erreur associée à la taille de l'échantillon qui est rapportée.
 Cette dernière permet de déterminer la précision du sondage et des
 résultats. Plus il y a de répondant(e)s, plus les résultats se
-rapprochent de la réalité pourvu que l'échantillonage soit adéquate.
+rapprochent de la réalité pourvu que l'échantillonage soit adéquat.
 
 Considérons maintenant un sondage avec plus de deux choix de réponse: si
 l'option \(j\) reçoit \(p_j\) pourcentage d'appui, alors l'estimation
@@ -5584,7 +5641,7 @@ voie de sondage. Nous allons modéliser l'intention de vote,
 
 \centering{
 
-\includegraphics[width=0.9\textwidth,height=\textheight]{reglogistique_files/figure-pdf/fig-multinom_means-Ipsos-1.pdf}
+\includegraphics[width=0.9\linewidth,height=\textheight,keepaspectratio]{reglogistique_files/figure-pdf/fig-multinom_means-Ipsos-1.pdf}
 
 }
 
@@ -5616,7 +5673,7 @@ cet artefact, on considère les personnes de plus de 30 ans uniquement.
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{reglogistique_files/figure-pdf/fig-vote-age-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{reglogistique_files/figure-pdf/fig-vote-age-1.pdf}}
 
 }
 
@@ -5756,8 +5813,8 @@ modèle & DL & déviance & DL & rapport vrais. & valeur-p \\
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-cst & 9692 & 9781 & & & \\
-age & 9690 & 9078 & 2 & 703 & \textless0.0001 \\
+cst & 9692 & 9781.07 & & & \\
+age & 9690 & 9077.63 & 2 & 703.44 & \textless{} 0.0001 \\
 
 \end{longtable}
 
@@ -5995,7 +6052,7 @@ route.
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{reglogistique_files/figure-pdf/fig-predmultinom-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{reglogistique_files/figure-pdf/fig-predmultinom-1.pdf}}
 
 }
 
@@ -6023,7 +6080,7 @@ la valeur-\(p\), infime, indique que le modèle plus complexe, soit le
 modèle saturé, est préférable. Cela nous indique que le modèle a un
 piètre pouvoir explicatif.
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, toptitle=1mm, bottomtitle=1mm, arc=.35mm, toprule=.15mm, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, breakable, opacitybacktitle=0.6, coltitle=black, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-note-color-frame, left=2mm, opacityback=0]
+\begin{tcolorbox}[enhanced jigsaw, coltitle=black, left=2mm, opacitybacktitle=0.6, colback=white, leftrule=.75mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, colbacktitle=quarto-callout-note-color!10!white, opacityback=0, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, breakable, titlerule=0mm, arc=.35mm, bottomrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -6076,7 +6133,7 @@ calendrier) et l'axe des ordonnées (\(y\)) la durée observée.
 
 \centering{
 
-\includegraphics[width=0.55\textwidth,height=\textheight]{figures/Lexis_censure.pdf}
+\includegraphics[width=0.55\linewidth,height=\textheight,keepaspectratio]{figures/Lexis_censure.png}
 
 }
 
@@ -6154,7 +6211,7 @@ représenté dans la Figure~\ref{fig-troncatureintervalle}.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{figures/lexis_troncationintervalle.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{figures/lexis_troncationintervalle.png}
 
 }
 
@@ -6189,8 +6246,8 @@ article tiré de \emph{The Conversation}} montre l'impact drastique de la
 censure en représentant l'âge moyen au décès en fonction du genre
 musical, ordonné par ordre d'apparition de ce dernier. Puisque seules
 les personnes décédées sont incluses, les artistes de hip-hop décédés
-l'ont été forcément en bas-âge. Si on ne prend pas en compte la censure,
-on obtiendrait une conclusion erronnée.
+étaient forcément jeunes. Si on ne prend pas en compte la censure, on
+obtiendrait une conclusion erronée.
 
 \subsection{Exemple du temps
 d'abonnement}\label{exemple-du-temps-dabonnement}
@@ -6299,10 +6356,10 @@ tableau suivant fait une analogie entre ce que nous ferons dans ce
 chapitre et des méthodes que vous connaissez.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2323}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2839}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3355}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1484}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2323}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2839}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3355}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1484}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 réponse \(Y\)
@@ -6459,11 +6516,22 @@ temps & nb à risque & nb échecs & nb cumul. & survie & erreur-type\\
 
 \end{longtable}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ggsurv }\OtherTok{\textless{}{-}}\NormalTok{ survminer}\SpecialCharTok{::}\FunctionTok{ggsurvplot}\NormalTok{(kapm, }\AttributeTok{palette =} \DecValTok{1}\NormalTok{)}
+\NormalTok{ggsurv}\SpecialCharTok{$}\NormalTok{plot }\SpecialCharTok{+} \CommentTok{\# objet de class \textquotesingle{}ggplot\textquotesingle{}}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"none"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"temps"}\NormalTok{, }
+       \AttributeTok{subtitle =} \StringTok{"Fonction de survie"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{""}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{figure}[ht!]
 
 \centering{
 
-\includegraphics[width=0.9\textwidth,height=\textheight]{survie_files/figure-pdf/fig-km-survie1-1.pdf}
+\includegraphics[width=0.9\linewidth,height=\textheight,keepaspectratio]{survie_files/figure-pdf/fig-km-survie1-1.pdf}
 
 }
 
@@ -6568,9 +6636,8 @@ Pour un temps \(t\) donné, on multiplie tous les termes
 \end{align*} où \(i(t) =\max(j \in \{1, \ldots, m\}:  t \geq t_{j})\),
 soit le plus grand indice parmi \(1, \ldots, m\) tel que
 \(t \geq t_{i(t)}\). Par convention, si \(t < t_{(1)}\), on fixe
-\(\widehat{S}(t)=1\). La fonction de survie n'est pas définie aux temps
-de défaillance observée, mais la convention veut qu'elle soit continue à
-gauche.
+\(\widehat{S}(t)=1\). La fonction de survie est par convention continue
+à gauche aux temps de défaillance observés.
 
 Ainsi, l'estimation de la survie estimée ne change qu'aux valeurs de
 \(t_{(i)}\) (\(i=1, \ldots, m\)). Les contre-marches de l'escalier ainsi
@@ -6608,24 +6675,38 @@ d'abonnement:
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\CommentTok{\# Modèle de régression (avec réponse de survie) en fonction (\textasciitilde{}) d\textquotesingle{}une variable catégorielle}
 \NormalTok{strat\_sexe }\OtherTok{\textless{}{-}} \FunctionTok{survfit}\NormalTok{(}\FunctionTok{Surv}\NormalTok{(temps, censure) }\SpecialCharTok{\textasciitilde{}}\NormalTok{ sexe, }\AttributeTok{data =}\NormalTok{ survie1)}
 \NormalTok{lograng }\OtherTok{\textless{}{-}} \FunctionTok{survdiff}\NormalTok{(}\FunctionTok{Surv}\NormalTok{(temps, censure) }\SpecialCharTok{\textasciitilde{}}\NormalTok{ sexe, }\AttributeTok{data =}\NormalTok{ survie1)}
 \end{Highlighting}
 \end{Shaded}
 
-Si on utilise les méthodes (\texttt{print}, \texttt{summary},
-\texttt{plot}, \texttt{quantile}) pour la sortie de \texttt{survfit}, on
-obtiendra les résultats pour chaque strate (ou niveaux de la variable
-catégorielle). Par exemple, il y a 309 hommes et 191 femmes et
-l'estimation du temps de survie médian est de 110 semaines pour les
-hommes et de 123 semaines pour les femmes.
+Si on utilise les méthodes sur l'objet \texttt{strat\_sexe}, on
+obtiendra pour chaque niveau de la variable catégorielle \texttt{sexe}:
 
-La fonction \texttt{survdiff} avec la formule retourne le résultat du
-test asymptotique du log-rang pour l'hypothèse d'égalité des fonctions
-de survie. La statistique du khi-deux vaut 16.43 et la valeur-\(p\) du
-test est inférieure à \(10^{-4}\): on rejette donc \(\mathscr{H}_0\)
-pour conclure qu'il y a donc une différence significative entre les deux
-courbes de survie.
+\begin{itemize}
+\tightlist
+\item
+  quelques statistiques descriptives (\texttt{print}),
+\item
+  la fonction de survie (\texttt{summary}),
+\item
+  un graphique des courbes de survie (\texttt{plot}) ou
+\item
+  les quantiles (\texttt{quantile}, par défaut les quartiles avec des
+  intervalles de confiance à 95\%).
+\end{itemize}
+
+Par exemple, il y a 309 hommes et 191 femmes et l'estimation du temps de
+survie médian est de 110 semaines pour les hommes et de 123 semaines
+pour les femmes.
+
+La fonction \texttt{survdiff} retourne le résultat du test asymptotique
+du log-rang pour l'hypothèse d'égalité des fonctions de survie. La
+statistique du khi-deux vaut 16.43 et la valeur-\(p\) du test est
+inférieure à \(10^{-4}\): on rejette donc \(\mathscr{H}_0\) pour
+conclure qu'il y a une différence significative entre les deux courbes
+de survie.
 
 Les courbes de survie selon le sexe sont représentées dans la
 Figure~\ref{fig-survie-comparaison-courbes}. On voit que la courbe des
@@ -6648,7 +6729,7 @@ cette différence est significative.
 
 \centering{
 
-\includegraphics[width=0.9\textwidth,height=\textheight]{survie_files/figure-pdf/fig-survie-comparaison-courbes-1.pdf}
+\includegraphics[width=0.9\linewidth,height=\textheight,keepaspectratio]{survie_files/figure-pdf/fig-survie-comparaison-courbes-1.pdf}
 
 }
 
@@ -6673,7 +6754,7 @@ gardant en tête que cela réduit la taille de l'échantillon disponible et
 que l'estimation résultante est possiblement trop incertaine pour être
 utile.
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, toptitle=1mm, bottomtitle=1mm, arc=.35mm, toprule=.15mm, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, breakable, opacitybacktitle=0.6, coltitle=black, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-note-color-frame, left=2mm, opacityback=0]
+\begin{tcolorbox}[enhanced jigsaw, coltitle=black, left=2mm, opacitybacktitle=0.6, colback=white, leftrule=.75mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, colbacktitle=quarto-callout-note-color!10!white, opacityback=0, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, breakable, titlerule=0mm, arc=.35mm, bottomrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -6798,6 +6879,7 @@ sexe.
               \AttributeTok{data =}\NormalTok{ survie1,}
               \AttributeTok{ties =} \StringTok{"exact"}\NormalTok{)}
 \CommentTok{\# Coefficients, tests et IC 95\% de Wald}
+\CommentTok{\# Les dernières lignes indiquent le test où tous les coefficients sont nuls}
 \FunctionTok{summary}\NormalTok{(cox1)}
 \CommentTok{\# Test du rapport de vraisemblance}
 \NormalTok{car}\SpecialCharTok{::}\FunctionTok{Anova}\NormalTok{(cox1, }\AttributeTok{type =} \DecValTok{3}\NormalTok{)}
@@ -6822,9 +6904,9 @@ intervalles de Wald de la forme
 \(\exp\{\widehat{\beta} \pm 1.96 \cdot \mathsf{se}(\widehat{\beta})\}\)
 pour le rapport de risque. Un rapport de risque de 1 signifie que le
 risque n'est pas affecté par la variable explicative. Ici, le test
-correspondant à l'hypothèse nulle \(\beta=0\) ne mène pas au rejet de
-l'hypothèse qui veut que la variable n'impacte pas le risque. On
-pourrait obtenir les intervalle
+correspondant à l'hypothèse nulle \(\beta=0\) mène au rejet de
+l'hypothèse qui veut que la variable n'impacte pas le risque (les deux
+courbes de survie diffèrent).
 
 \begin{longtable}[t]{lrrr}
 
@@ -6948,10 +7030,10 @@ variables explicatives.}
 \toprule
 terme & statistique & ddl & valeur-p\\
 \midrule
-age & 68.07 & 1 & <0.0001\\
-sexe & 32.82 & 1 & <0.0001\\
+age & 68.07 & 1 & <1e-04\\
+sexe & 32.82 & 1 & <1e-04\\
 region & 7.67 & 4 & 0.1\\
-service & 159.31 & 3 & <0.0001\\
+service & 159.31 & 3 & <1e-04\\
 \bottomrule
 
 \end{longtable}
@@ -7021,7 +7103,7 @@ seront utilisées à cette fin.
 
 \centering{
 
-\includegraphics[width=0.8\textwidth,height=\textheight]{survie_files/figure-pdf/fig-courbes-survie-1.pdf}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{survie_files/figure-pdf/fig-courbes-survie-1.pdf}
 
 }
 
@@ -7079,7 +7161,7 @@ fenêtre sera de la censure à droite.
 
 \centering{
 
-\includegraphics[width=0.35\textwidth,height=\textheight]{figures/Lexis_censure_modif.pdf}
+\includegraphics[width=0.35\linewidth,height=\textheight,keepaspectratio]{figures/Lexis_censure_modif.png}
 
 }
 
@@ -7166,7 +7248,7 @@ explicative.
 
 \centering{
 
-\includegraphics[width=0.9\textwidth,height=\textheight]{survie_files/figure-pdf/fig-risquepropfig-1.pdf}
+\includegraphics[width=0.9\linewidth,height=\textheight,keepaspectratio]{survie_files/figure-pdf/fig-risquepropfig-1.pdf}
 
 }
 
@@ -7196,7 +7278,7 @@ une absence de preuve contre l'hypothèse nulle \(\mathscr{H}_0\):
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{survie_files/figure-pdf/fig-coxphhypothese-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{survie_files/figure-pdf/fig-coxphhypothese-1.pdf}}
 
 }
 
@@ -7332,7 +7414,7 @@ chaque fonction est estimée à partir d'un sous-ensemble des données.
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{survie_files/figure-pdf/fig-courbesurviesstrat-1.pdf}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{survie_files/figure-pdf/fig-courbesurviesstrat-1.pdf}
 
 }
 
@@ -7401,15 +7483,15 @@ linéaire entre temps et service).}
 \toprule
 terme & exp(coef) & test de Wald & valeur-p\\
 \midrule
-age & 0.953 & -7.37 & <0.001\\
-sexe & 0.543 & -5.24 & <0.001\\
-service1 & 0.144 & -4.29 & <0.001\\
-service2 & 0.072 & -3.76 & <0.001\\
-service3 & 0.010 & -4.14 & <0.001\\
+age & 0.953 & -7.368 & <0.001\\
+sexe & 0.543 & -5.241 & <0.001\\
+service1 & 0.144 & -4.293 & <0.001\\
+service2 & 0.072 & -3.762 & <0.001\\
+service3 & 0.010 & -4.139 & <0.001\\
 \addlinespace
-tt(service1) & 1.010 & 2.17 & 0.0298\\
-tt(service2) & 1.010 & 1.58 & 0.1132\\
-tt(service3) & 1.023 & 2.48 & 0.0133\\
+tt(service1) & 1.010 & 2.173 & 0.0298\\
+tt(service2) & 1.010 & 1.584 & 0.1132\\
+tt(service3) & 1.023 & 2.476 & 0.0133\\
 \bottomrule
 
 \end{longtable}
@@ -7519,7 +7601,7 @@ l'événement survienne.
 
 \centering{
 
-\includegraphics[width=0.65\textwidth,height=\textheight]{figures/transition_etats_modele_risque_competitifs.pdf}
+\includegraphics[width=0.65\linewidth,height=\textheight,keepaspectratio]{figures/transition_etats_modele_risque_competitifs.png}
 
 }
 
@@ -7688,7 +7770,7 @@ correspondant à la probabilité de demeurer abonné.
 
 \centering{
 
-\includegraphics[width=0.9\textwidth,height=\textheight]{survie_files/figure-pdf/fig-competitif-1.pdf}
+\includegraphics[width=0.9\linewidth,height=\textheight,keepaspectratio]{survie_files/figure-pdf/fig-competitif-1.pdf}
 
 }
 
@@ -7704,7 +7786,7 @@ du paquet \texttt{survival} offre des détails sur l'implémentation des
 méthodes qui traitent de l'inclusion de variables explicatives dont la
 valeur change dans le temps et sur les risques compétitifs.
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, toptitle=1mm, bottomtitle=1mm, arc=.35mm, toprule=.15mm, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, breakable, opacitybacktitle=0.6, coltitle=black, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-note-color-frame, left=2mm, opacityback=0]
+\begin{tcolorbox}[enhanced jigsaw, coltitle=black, left=2mm, opacitybacktitle=0.6, colback=white, leftrule=.75mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, colbacktitle=quarto-callout-note-color!10!white, opacityback=0, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, breakable, titlerule=0mm, arc=.35mm, bottomrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -7848,7 +7930,7 @@ Règle générale,
 
 \centering{
 
-\includegraphics{figures/DataSaurusDozen.png}
+\pandocbounded{\includegraphics[keepaspectratio]{figures/DataSaurusDozen.png}}
 
 }
 
@@ -7966,7 +8048,7 @@ x12 &  &  &  &  &  &  &  &  &  &  &  & \\
 
 \centering{
 
-\includegraphics[width=0.8\textwidth,height=\textheight]{analysefactorielle_files/figure-pdf/fig-corrmat-1.pdf}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{analysefactorielle_files/figure-pdf/fig-corrmat-1.pdf}
 
 }
 
@@ -8071,7 +8153,7 @@ variance totale.
 
 \centering{
 
-\includegraphics[width=0.9\textwidth,height=\textheight]{analysefactorielle_files/figure-pdf/fig-acprotation-1.pdf}
+\includegraphics[width=0.9\linewidth,height=\textheight,keepaspectratio]{analysefactorielle_files/figure-pdf/fig-acprotation-1.pdf}
 
 }
 
@@ -8162,7 +8244,7 @@ veut réduire le coût de la collecte.
 
 \centering{
 
-\includegraphics[width=0.6\textwidth,height=\textheight]{analysefactorielle_files/figure-pdf/fig-biplot-1.pdf}
+\includegraphics[width=0.6\linewidth,height=\textheight,keepaspectratio]{analysefactorielle_files/figure-pdf/fig-biplot-1.pdf}
 
 }
 
@@ -8245,11 +8327,17 @@ Figure~\ref{fig-screeplot}, qui peut être produit avec la fonction
 \texttt{hecmulti::eboulis(eigen(cor(factor))} suggère quant à lui quatre
 composantes.
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{hecmulti}\SpecialCharTok{::}\FunctionTok{eboulis}\NormalTok{(}\FunctionTok{eigen}\NormalTok{(}\FunctionTok{cor}\NormalTok{(factor)))}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{figure}[ht!]
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{analysefactorielle_files/figure-pdf/fig-screeplot-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{analysefactorielle_files/figure-pdf/fig-screeplot-1.pdf}}
 
 }
 
@@ -8288,7 +8376,7 @@ contenant les vecteurs propres. La meilleure approximation de rang
 \(\boldsymbol{q}_1, \ldots, \boldsymbol{q}_k \in \mathbb{R}^p\) non
 corrélés.
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, toptitle=1mm, bottomtitle=1mm, arc=.35mm, toprule=.15mm, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, breakable, opacitybacktitle=0.6, coltitle=black, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-note-color-frame, left=2mm, opacityback=0]
+\begin{tcolorbox}[enhanced jigsaw, coltitle=black, left=2mm, opacitybacktitle=0.6, colback=white, leftrule=.75mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, colbacktitle=quarto-callout-note-color!10!white, opacityback=0, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, breakable, titlerule=0mm, arc=.35mm, bottomrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -8658,11 +8746,11 @@ pour les cas de (quasi)-Heywood}
 \toprule
  & k & AIC & BIC & valeur-p & npar & heywood\\
 \midrule
-1 & 1 & 2267 & 2346 & <2e-16 & 24 & non\\
-2 & 2 & 2138 & 2253 & <2e-16 & 35 & non\\
-3 & 3 & 2017 & 2166 & 0.1251 & 45 & non\\
-4 & 4 & 2003 & 2181 & 0.9787 & 54 & oui\\
-5 & 5 & 2013 & 2217 & 0.9794 & 62 & oui\\
+1 & 1 & 2267.14 & 2346.30 & <2e-16 & 24 & non\\
+2 & 2 & 2137.87 & 2253.31 & <2e-16 & 35 & non\\
+3 & 3 & 2017.19 & 2165.61 & 0.1251 & 45 & non\\
+4 & 4 & 2002.56 & 2180.67 & 0.9787 & 54 & oui\\
+5 & 5 & 2012.70 & 2217.19 & 0.9794 & 62 & oui\\
 \bottomrule
 
 \end{longtable}
@@ -9000,7 +9088,7 @@ premiers scores (modèle d'analyse factorielle à quatre facteurs) et
 
 \end{longtable}
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, toptitle=1mm, bottomtitle=1mm, arc=.35mm, toprule=.15mm, rightrule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, breakable, opacitybacktitle=0.6, coltitle=black, titlerule=0mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes de l'analyse factorielle exploratoire}, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-tip-color-frame, left=2mm, opacityback=0]
+\begin{tcolorbox}[enhanced jigsaw, coltitle=black, left=2mm, opacitybacktitle=0.6, colback=white, leftrule=.75mm, colframe=quarto-callout-tip-color-frame, toprule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, opacityback=0, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes de l'analyse factorielle exploratoire}, breakable, titlerule=0mm, arc=.35mm, bottomrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -9022,7 +9110,7 @@ premiers scores (modèle d'analyse factorielle à quatre facteurs) et
 
 \end{tcolorbox}
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, toptitle=1mm, bottomtitle=1mm, arc=.35mm, toprule=.15mm, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, breakable, opacitybacktitle=0.6, coltitle=black, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-note-color-frame, left=2mm, opacityback=0]
+\begin{tcolorbox}[enhanced jigsaw, coltitle=black, left=2mm, opacitybacktitle=0.6, colback=white, leftrule=.75mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, colbacktitle=quarto-callout-note-color!10!white, opacityback=0, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, breakable, titlerule=0mm, arc=.35mm, bottomrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -9102,7 +9190,7 @@ Pour créer les regroupements, on utilisera \(p\) variables explicatives
 dénotera la valeur de la \(j\)e variable explicative pour le \(i\)e
 sujet.
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, toptitle=1mm, bottomtitle=1mm, arc=.35mm, toprule=.15mm, rightrule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, breakable, opacitybacktitle=0.6, coltitle=black, titlerule=0mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes d'une analyse de regroupements}, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-tip-color-frame, left=2mm, opacityback=0]
+\begin{tcolorbox}[enhanced jigsaw, coltitle=black, left=2mm, opacitybacktitle=0.6, colback=white, leftrule=.75mm, colframe=quarto-callout-tip-color-frame, toprule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, opacityback=0, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Étapes d'une analyse de regroupements}, breakable, titlerule=0mm, arc=.35mm, bottomrule=.15mm]
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -9290,22 +9378,22 @@ variable & moyenne & écart-type & min & max & manquant \\
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-ndons & 5.13 & 5.21 & 1 & 27.0 & 0 \\
-recence & 86.41 & 81.80 & 2 & 299.0 & 0 \\
-anciennete & 168.72 & 95.77 & 2 & 302.0 & 0 \\
-vdons & 117.66 & 431.08 & 1 & 19260.0 & 0 \\
-vdonsmax & 30.72 & 88.13 & 1 & 2460.0 & 0 \\
-vdonsmin & 10.98 & 28.79 & 1 & 1570.0 & 0 \\
-npromesse & 1.72 & 2.37 & 0 & 15.0 & 0 \\
-vpromesse & 61.32 & 282.07 & 0 & 12680.0 & 0 \\
-nradiations & 0.52 & 0.89 & 0 & 10.0 & 0 \\
-vradiations & 28.09 & 141.47 & 0 & 11815.0 & 7142 \\
-ddons & 2.13 & 1.94 & 0 & 23.9 & 5736 \\
-ddonsmax & 3.85 & 3.24 & 0 & 23.9 & 5736 \\
-ddonsmin & 1.32 & 1.83 & 0 & 23.9 & 5736 \\
-nrefus & 2.18 & 2.26 & 0 & 11.0 & 0 \\
-nrefusconsec & 1.56 & 2.06 & 0 & 11.0 & 0 \\
-nindecis & 0.47 & 0.93 & 0 & 8.0 & 0 \\
+ndons & 5.13 & 5.21 & 1 & 27.00 & 0 \\
+recence & 86.41 & 81.80 & 2 & 299.00 & 0 \\
+anciennete & 168.72 & 95.77 & 2 & 302.00 & 0 \\
+vdons & 117.66 & 431.08 & 1 & 19260.00 & 0 \\
+vdonsmax & 30.72 & 88.13 & 1 & 2460.00 & 0 \\
+vdonsmin & 10.98 & 28.79 & 1 & 1570.00 & 0 \\
+npromesse & 1.72 & 2.37 & 0 & 15.00 & 0 \\
+vpromesse & 61.32 & 282.07 & 0 & 12680.00 & 0 \\
+nradiations & 0.52 & 0.89 & 0 & 10.00 & 0 \\
+vradiations & 28.09 & 141.47 & 0 & 11815.00 & 7142 \\
+ddons & 2.13 & 1.94 & 0 & 23.92 & 5736 \\
+ddonsmax & 3.85 & 3.24 & 0 & 23.92 & 5736 \\
+ddonsmin & 1.32 & 1.83 & 0 & 23.92 & 5736 \\
+nrefus & 2.18 & 2.26 & 0 & 11.00 & 0 \\
+nrefusconsec & 1.56 & 2.06 & 0 & 11.00 & 0 \\
+nindecis & 0.47 & 0.93 & 0 & 8.00 & 0 \\
 
 \end{longtable}
 
@@ -9384,7 +9472,7 @@ formée par les valeurs des canaux (rouge, vert, bleu) de l'image.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{figures/kmoyennes_decelles.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{figures/kmoyennes_decelles.png}
 
 }
 
@@ -9413,7 +9501,7 @@ observations aberrances.
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-regroupements-bidons-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{regroupements_files/figure-pdf/fig-regroupements-bidons-1.pdf}}
 
 }
 
@@ -9726,7 +9814,7 @@ Voici quelques forces et faiblesses de la méthode des \(K\)-moyennes
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/kmoyperfo-1.pdf}
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{regroupements_files/figure-pdf/kmoyperfo-1.pdf}}
 
 }
 
@@ -9781,7 +9869,7 @@ de leurs prototypes.
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-kmoyenne-mauvais-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{regroupements_files/figure-pdf/fig-kmoyenne-mauvais-1.pdf}}
 
 }
 
@@ -9889,7 +9977,7 @@ dont deux rapprochés.
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-coudekmoy-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{regroupements_files/figure-pdf/fig-coudekmoy-1.pdf}}
 
 }
 
@@ -9918,7 +10006,7 @@ et un prototype est calculée avec la distance Euclidienne au carré.
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-voronoikmoy-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{regroupements_files/figure-pdf/fig-voronoikmoy-1.pdf}}
 
 }
 
@@ -9994,9 +10082,12 @@ si on ne se trouve pas avec des regroupements fortements débalancés.
 \NormalTok{kmoy5 }\OtherTok{\textless{}{-}}\NormalTok{ kmoy[[}\DecValTok{5}\NormalTok{]]}
 \CommentTok{\# Regarder la répartition}
 \NormalTok{kmoy5}\SpecialCharTok{$}\NormalTok{size}
-\CommentTok{\#\textgreater{} [1]  993   64 3812 4496 4252}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+[1]  993   64 3812 4496 4252
+\end{verbatim}
 
 On peut étudier les coordonnées des prototypes (par exemple, avec
 \texttt{kmoy5\$centers}), mais ici les données standardisées ne sont pas
@@ -10066,7 +10157,7 @@ premières composantes principales avec les deux mesures de dissemblance.
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-acpkmoy5-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{regroupements_files/figure-pdf/fig-acpkmoy5-1.pdf}}
 
 }
 
@@ -10100,7 +10191,7 @@ intra-groupes.
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-homogeneite-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{regroupements_files/figure-pdf/fig-homogeneite-1.pdf}}
 
 }
 
@@ -10118,7 +10209,7 @@ trop.
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-bickmoy-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{regroupements_files/figure-pdf/fig-bickmoy-1.pdf}}
 
 }
 
@@ -10192,7 +10283,7 @@ plus élevée.
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-silhouette-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{regroupements_files/figure-pdf/fig-silhouette-1.pdf}}
 
 }
 
@@ -10233,19 +10324,22 @@ bonnes valeurs de départ. On peut tracer le profil des silhouettes
 \begin{Highlighting}[]
 \FunctionTok{plot}\NormalTok{(factoextra}\SpecialCharTok{::}\FunctionTok{fviz\_silhouette}\NormalTok{(kmedoide[[}\DecValTok{4}\NormalTok{]]),}
      \AttributeTok{print.summary =} \ConstantTok{FALSE}\NormalTok{)}
-\CommentTok{\#\textgreater{}   cluster size ave.sil.width}
-\CommentTok{\#\textgreater{} 1       1  146          0.29}
-\CommentTok{\#\textgreater{} 2       2  190          0.25}
-\CommentTok{\#\textgreater{} 3       3   90          0.33}
-\CommentTok{\#\textgreater{} 4       4   74          0.26}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+  cluster size ave.sil.width
+1       1  146          0.29
+2       2  190          0.25
+3       3   90          0.33
+4       4   74          0.26
+\end{verbatim}
 
 \begin{figure}[ht!]
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-clarasilhouette-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{regroupements_files/figure-pdf/fig-clarasilhouette-1.pdf}}
 
 }
 
@@ -10350,7 +10444,7 @@ Tableau 3 de Scrucca et al. (\citeproc{ref-mclust5}{2016}).
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{figures/mclust5-parametrization.png}
+\includegraphics[width=3.35in,height=\textheight,keepaspectratio]{figures/mclust5-parametrization.png}
 
 }
 
@@ -10457,7 +10551,7 @@ covariance et le nombre qui maximise \(-\mathsf{BIC}\).
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-mclustbic-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{regroupements_files/figure-pdf/fig-mclustbic-1.pdf}}
 
 }
 
@@ -10479,7 +10573,16 @@ réduction de la dimension pour obtenir une représentation graphique.
 \NormalTok{reduc\_dim\_mmg }\OtherTok{\textless{}{-}}\NormalTok{ mclust}\SpecialCharTok{::}\FunctionTok{MclustDR}\NormalTok{(mmg)}
 \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{)) }\CommentTok{\# graphiques côte{-}à{-}côte}
 \FunctionTok{plot}\NormalTok{(reduc\_dim\_mmg, }\AttributeTok{what =} \StringTok{"contour"}\NormalTok{)}
-\CommentTok{\#\textgreater{} Error in parameters$variance$sigma[, , k]: indice hors limites}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Error in `parameters$variance$sigma[, , k]`:
+! indice hors limites
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \FunctionTok{plot}\NormalTok{(reduc\_dim\_mmg, }\AttributeTok{what =} \StringTok{"scatterplot"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -10488,7 +10591,7 @@ réduction de la dimension pour obtenir une représentation graphique.
 
 \centering{
 
-\includegraphics[width=0.9\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-classifreducmclust-1.pdf}
+\includegraphics[width=0.9\linewidth,height=\textheight,keepaspectratio]{regroupements_files/figure-pdf/fig-classifreducmclust-1.pdf}
 
 }
 
@@ -10545,7 +10648,7 @@ regroupements différents. Les méthodes les plus populaires incluent
 
 \centering{
 
-\includegraphics[width=0.8\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-distances-1.pdf}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{regroupements_files/figure-pdf/fig-distances-1.pdf}
 
 }
 
@@ -10627,7 +10730,7 @@ profondeur.
 
 \centering{
 
-\includegraphics[width=0.85\textwidth,height=\textheight]{regroupements_files/figure-pdf/fig-dendrogramme-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{regroupements_files/figure-pdf/fig-dendrogramme-1.pdf}}
 
 }
 
@@ -10704,7 +10807,7 @@ d'observations). Si la segmentation n'est pas satisfaisante, on retourne
 calibration des hyperparamètres jusqu'à ce qu'on soit satisfaits du
 résultat.
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, toptitle=1mm, bottomtitle=1mm, arc=.35mm, toprule=.15mm, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, breakable, opacitybacktitle=0.6, coltitle=black, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-note-color-frame, left=2mm, opacityback=0]
+\begin{tcolorbox}[enhanced jigsaw, coltitle=black, left=2mm, opacitybacktitle=0.6, colback=white, leftrule=.75mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, colbacktitle=quarto-callout-note-color!10!white, opacityback=0, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, breakable, titlerule=0mm, arc=.35mm, bottomrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -10923,7 +11026,7 @@ fait.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{donneesmanquantes_files/figure-pdf/fig-imputation-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{donneesmanquantes_files/figure-pdf/fig-imputation-1.pdf}
 
 }
 
@@ -10972,7 +11075,7 @@ modèle d'intérêt avec cet échantillon. On répète ce processus plusieurs
 fois et on combine les résultats obtenus.
 
 \begin{center}
-\includegraphics[width=0.7\textwidth,height=\textheight]{figures/donnees_manquantes_workflow.pdf}
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{figures/donnees_manquantes_workflow.png}
 \end{center}
 
 L'estimation finale des paramètres du modèle est alors simplement la
@@ -11183,7 +11286,7 @@ l'imputation.
 
 \centering{
 
-\includegraphics[width=0.7\textwidth,height=\textheight]{donneesmanquantes_files/figure-pdf/fig-manquantes2-1.pdf}
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{donneesmanquantes_files/figure-pdf/fig-manquantes2-1.pdf}
 
 }
 
@@ -11275,24 +11378,24 @@ complets (milieu) et avec l'imputation multiple (droite).}
 \toprule
 \multicolumn{1}{c}{} & \multicolumn{3}{c}{Données complètes} & \multicolumn{3}{c}{Cas complets} & \multicolumn{3}{c}{Imputation multiple} \\
 \cmidrule(l{3pt}r{3pt}){2-4} \cmidrule(l{3pt}r{3pt}){5-7} \cmidrule(l{3pt}r{3pt}){8-10}
- & \$\textbackslash{}widehat\{\textbackslash{}boldsymbol\{\textbackslash{}beta\}\}\$ & \$\textbackslash{}mathrm\{se\}(\textbackslash{}widehat\{\textbackslash{}boldsymbol\{\textbackslash{}beta\}\})\$ & valeur-\$p\$ & \$\textbackslash{}widehat\{\textbackslash{}boldsymbol\{\textbackslash{}beta\}\}\$ & \$\textbackslash{}mathrm\{se\}(\textbackslash{}widehat\{\textbackslash{}boldsymbol\{\textbackslash{}beta\}\})\$ & valeur-\$p\$ & \$\textbackslash{}widehat\{\textbackslash{}boldsymbol\{\textbackslash{}beta\}\}\$ & \$\textbackslash{}mathrm\{se\}(\textbackslash{}widehat\{\textbackslash{}boldsymbol\{\textbackslash{}beta\}\})\$ & valeur-\$p\$\\
+ & \textbackslash{}(\textbackslash{}widehat\{\textbackslash{}boldsymbol\{\textbackslash{}beta\}\}\textbackslash{}) & \textbackslash{}(\textbackslash{}mathrm\{se\}(\textbackslash{}widehat\{\textbackslash{}boldsymbol\{\textbackslash{}beta\}\})\textbackslash{}) & valeur-\textbackslash{}(p\textbackslash{}) & \textbackslash{}(\textbackslash{}widehat\{\textbackslash{}boldsymbol\{\textbackslash{}beta\}\}\textbackslash{}) & \textbackslash{}(\textbackslash{}mathrm\{se\}(\textbackslash{}widehat\{\textbackslash{}boldsymbol\{\textbackslash{}beta\}\})\textbackslash{}) & valeur-\textbackslash{}(p\textbackslash{}) & \textbackslash{}(\textbackslash{}widehat\{\textbackslash{}boldsymbol\{\textbackslash{}beta\}\}\textbackslash{}) & \textbackslash{}(\textbackslash{}mathrm\{se\}(\textbackslash{}widehat\{\textbackslash{}boldsymbol\{\textbackslash{}beta\}\})\textbackslash{}) & valeur-\textbackslash{}(p\textbackslash{})\\
 \midrule
 cste & -6.89 & 1.02 & 0.00 & -5.25 & 1.70 & 0.00 & -6.57 & 1.04 & 0.00\\
-\$x\_1=1\$ & 0.36 & 0.48 & 0.46 & -0.09 & 0.85 & 0.92 & 0.55 & 0.54 & 0.31\\
-\$x\_1=2\$ & -0.47 & 0.37 & 0.21 & -0.57 & 0.66 & 0.39 & -0.13 & 0.45 & 0.78\\
-\$x\_1=3\$ & -0.31 & 0.35 & 0.37 & -0.47 & 0.66 & 0.47 & 0.07 & 0.44 & 0.87\\
-\$x\_1=4\$ & -0.32 & 0.40 & 0.43 & -0.93 & 0.74 & 0.21 & -0.04 & 0.48 & 0.93\\
+\textbackslash{}(x\_1=1\textbackslash{}) & 0.36 & 0.48 & 0.46 & -0.09 & 0.85 & 0.92 & 0.55 & 0.54 & 0.31\\
+\textbackslash{}(x\_1=2\textbackslash{}) & -0.47 & 0.37 & 0.21 & -0.57 & 0.66 & 0.39 & -0.13 & 0.45 & 0.78\\
+\textbackslash{}(x\_1=3\textbackslash{}) & -0.31 & 0.35 & 0.37 & -0.47 & 0.66 & 0.47 & 0.07 & 0.44 & 0.87\\
+\textbackslash{}(x\_1=4\textbackslash{}) & -0.32 & 0.40 & 0.43 & -0.93 & 0.74 & 0.21 & -0.04 & 0.48 & 0.93\\
 \addlinespace
-\$x\_2=1\$ & 1.33 & 0.60 & 0.03 & -0.74 & 1.14 & 0.52 & 1.10 & 0.65 & 0.09\\
-\$x\_2=2\$ & 1.15 & 0.50 & 0.02 & 0.46 & 0.91 & 0.61 & 1.03 & 0.55 & 0.06\\
-\$x\_2=3\$ & 0.77 & 0.48 & 0.11 & -0.41 & 0.89 & 0.64 & 0.52 & 0.52 & 0.31\\
-\$x\_2=4\$ & -1.11 & 0.54 & 0.04 & -2.74 & 1.02 & 0.01 & -1.04 & 0.57 & 0.07\\
-\$x\_3\$ & 1.35 & 0.26 & 0.00 & 0.80 & 0.44 & 0.07 & 1.19 & 0.27 & 0.00\\
+\textbackslash{}(x\_2=1\textbackslash{}) & 1.33 & 0.60 & 0.03 & -0.74 & 1.14 & 0.52 & 1.10 & 0.65 & 0.09\\
+\textbackslash{}(x\_2=2\textbackslash{}) & 1.15 & 0.50 & 0.02 & 0.46 & 0.91 & 0.61 & 1.03 & 0.55 & 0.06\\
+\textbackslash{}(x\_2=3\textbackslash{}) & 0.77 & 0.48 & 0.11 & -0.41 & 0.89 & 0.64 & 0.52 & 0.52 & 0.31\\
+\textbackslash{}(x\_2=4\textbackslash{}) & -1.11 & 0.54 & 0.04 & -2.74 & 1.02 & 0.01 & -1.04 & 0.57 & 0.07\\
+\textbackslash{}(x\_3\textbackslash{}) & 1.35 & 0.26 & 0.00 & 0.80 & 0.44 & 0.07 & 1.19 & 0.27 & 0.00\\
 \addlinespace
-\$x\_4\$ & 1.83 & 0.30 & 0.00 & 2.25 & 0.58 & 0.00 & 1.52 & 0.37 & 0.00\\
-\$x\_5\$ & 0.11 & 0.02 & 0.00 & 0.11 & 0.03 & 0.00 & 0.10 & 0.02 & 0.00\\
-\$x\_6=1\$ & 2.41 & 0.38 & 0.00 & 2.23 & 0.66 & 0.00 & 2.26 & 0.38 & 0.00\\
-\$x\_6=2\$ & 1.04 & 0.25 & 0.00 & 0.83 & 0.44 & 0.06 & 1.00 & 0.25 & 0.00\\
+\textbackslash{}(x\_4\textbackslash{}) & 1.83 & 0.30 & 0.00 & 2.25 & 0.58 & 0.00 & 1.52 & 0.37 & 0.00\\
+\textbackslash{}(x\_5\textbackslash{}) & 0.11 & 0.02 & 0.00 & 0.11 & 0.03 & 0.00 & 0.10 & 0.02 & 0.00\\
+\textbackslash{}(x\_6=1\textbackslash{}) & 2.41 & 0.38 & 0.00 & 2.23 & 0.66 & 0.00 & 2.26 & 0.38 & 0.00\\
+\textbackslash{}(x\_6=2\textbackslash{}) & 1.04 & 0.25 & 0.00 & 0.83 & 0.44 & 0.06 & 1.00 & 0.25 & 0.00\\
 \bottomrule
 
 \end{longtable}
@@ -11311,7 +11414,7 @@ aussi significatif, alors qu'il ne l'était plus si on retirait les
 manquantes. Il est peu probable que les données soit \(\mathsf{MCAR}\)
 et donc les résultats de l'analyse des cas complets seraient biaisés.
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, toptitle=1mm, bottomtitle=1mm, arc=.35mm, toprule=.15mm, rightrule=.15mm, colbacktitle=quarto-callout-note-color!10!white, breakable, opacitybacktitle=0.6, coltitle=black, titlerule=0mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-note-color-frame, left=2mm, opacityback=0]
+\begin{tcolorbox}[enhanced jigsaw, coltitle=black, left=2mm, opacitybacktitle=0.6, colback=white, leftrule=.75mm, colframe=quarto-callout-note-color-frame, toprule=.15mm, colbacktitle=quarto-callout-note-color!10!white, opacityback=0, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{En résumé}, breakable, titlerule=0mm, arc=.35mm, bottomrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -11362,6 +11465,13 @@ Gagolewski, Marek, Maciej Bartoszuk, and Anna Cena. 2016. {``Genie: A
 New, Fast, and Outlier-Resistant Hierarchical~Clustering~Algorithm.''}
 \emph{Information Sciences} 363: 8--23.
 \url{https://doi.org/10.1016/j.ins.2016.05.003}.
+
+\bibitem[\citeproctext]{ref-Gibson:2026}
+Gibson, Alexander D., Nicole M. White, Gary S. Collins, and Adrian G.
+Barnett. 2026. {``Evidence of Unreliable Data and Poor Data Provenance
+in Clinical Prediction Model Research and Clinical Practice.''}
+\emph{BMC Medicine} 24 (1): 386.
+\url{https://doi.org/10.1186/s12916-026-04981-y}.
 
 \bibitem[\citeproctext]{ref-Gower:1971}
 Gower, J. C. 1971. {``A General Coefficient of Similarity and Some of
@@ -11529,7 +11639,7 @@ salaires varient sur cette échelle.
 
 \centering{
 
-\includegraphics[width=0.9\textwidth,height=\textheight]{rappel-regressionlineaire_files/figure-pdf/fig-edacollege-1.pdf}
+\includegraphics[width=0.9\linewidth,height=\textheight,keepaspectratio]{rappel-regressionlineaire_files/figure-pdf/fig-edacollege-1.pdf}
 
 }
 
@@ -11587,26 +11697,29 @@ variable continue \texttt{service}.
 \FunctionTok{data}\NormalTok{(salaireprof, }\AttributeTok{package =} \StringTok{"hecmulti"}\NormalTok{)}
 \NormalTok{modlin1 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(salaire }\SpecialCharTok{\textasciitilde{}}\NormalTok{ service, }\AttributeTok{data =}\NormalTok{ salaireprof)}
 \FunctionTok{summary}\NormalTok{(modlin1)}
-\CommentTok{\#\textgreater{} }
-\CommentTok{\#\textgreater{} Call:}
-\CommentTok{\#\textgreater{} lm(formula = salaire \textasciitilde{} service, data = salaireprof)}
-\CommentTok{\#\textgreater{} }
-\CommentTok{\#\textgreater{} Residuals:}
-\CommentTok{\#\textgreater{}    Min     1Q Median     3Q    Max }
-\CommentTok{\#\textgreater{} {-}81.93 {-}20.51  {-}3.78  16.42 101.95 }
-\CommentTok{\#\textgreater{} }
-\CommentTok{\#\textgreater{} Coefficients:}
-\CommentTok{\#\textgreater{}             Estimate Std. Error t value        Pr(\textgreater{}|t|)    }
-\CommentTok{\#\textgreater{} (Intercept)    99.97       2.42   41.37         \textless{} 2e{-}16 ***}
-\CommentTok{\#\textgreater{} service         0.78       0.11    7.06 0.0000000000075 ***}
-\CommentTok{\#\textgreater{} {-}{-}{-}}
-\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
-\CommentTok{\#\textgreater{} }
-\CommentTok{\#\textgreater{} Residual standard error: 28.6 on 395 degrees of freedom}
-\CommentTok{\#\textgreater{} Multiple R{-}squared:  0.112,  Adjusted R{-}squared:  0.11 }
-\CommentTok{\#\textgreater{} F{-}statistic: 49.8 on 1 and 395 DF,  p{-}value: 0.00000000000753}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = salaire ~ service, data = salaireprof)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-81.933 -20.511  -3.776  16.417 101.947 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  99.9747     2.4166   41.37  < 2e-16 ***
+service       0.7796     0.1104    7.06 7.53e-12 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 28.58 on 395 degrees of freedom
+Multiple R-squared:  0.1121,    Adjusted R-squared:  0.1098 
+F-statistic: 49.85 on 1 and 395 DF,  p-value: 7.529e-12
+\end{verbatim}
 
 Une fois le modèle estimé, on peut extraire les coefficients avec la
 méthode \texttt{coef}, ici via \texttt{coef(modlin1)}, ou imprimer un
@@ -11636,7 +11749,7 @@ ligne qui correspond à l'ordonnée à l'origine \texttt{(Intercept)}.
 
 \centering{
 
-\includegraphics[width=0.7\textwidth,height=\textheight]{rappel-regressionlineaire_files/figure-pdf/fig-droitenuage-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{rappel-regressionlineaire_files/figure-pdf/fig-droitenuage-1.pdf}}
 
 }
 
@@ -11677,7 +11790,7 @@ veut minimiser.
 
 \centering{
 
-\includegraphics[width=0.7\textwidth,height=\textheight]{rappel-regressionlineaire_files/figure-pdf/fig-distancevert-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{rappel-regressionlineaire_files/figure-pdf/fig-distancevert-1.pdf}}
 
 }
 
@@ -11718,20 +11831,39 @@ peut vérifier que la moyenne des erreurs est bien zéro.
 \begin{Highlighting}[]
 \CommentTok{\# Si on inclut une ordonnée à l\textquotesingle{}origine, la moyenne des erreurs est nulle}
 \FunctionTok{mean}\NormalTok{(}\FunctionTok{resid}\NormalTok{(modlin1))}
-\CommentTok{\#\textgreater{} [1] 1.4e{-}17}
-\CommentTok{\# Modèle de base avec uniquement l\textquotesingle{}ordonnée à l\textquotesingle{}origine}
-\CommentTok{\# beta0 estimée comme moyenne}
-\FunctionTok{coef}\NormalTok{(}\FunctionTok{lm}\NormalTok{(salaire }\SpecialCharTok{\textasciitilde{}} \DecValTok{1}\NormalTok{, }\AttributeTok{data =}\NormalTok{ salaireprof))}
-\CommentTok{\#\textgreater{} (Intercept) }
-\CommentTok{\#\textgreater{}         114}
-\FunctionTok{mean}\NormalTok{(salaireprof}\SpecialCharTok{$}\NormalTok{salaire)}
-\CommentTok{\#\textgreater{} [1] 114}
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+[1] 1.395644e-17
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Modèle de base avec uniquement l\textquotesingle{}ordonnée à l\textquotesingle{}origine}
+\CommentTok{\# beta0 estimée comme moyenne}
+\FunctionTok{coef}\NormalTok{(}\FunctionTok{lm}\NormalTok{(salaire }\SpecialCharTok{\textasciitilde{}} \DecValTok{1}\NormalTok{, }\AttributeTok{data =}\NormalTok{ salaireprof))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+(Intercept) 
+   113.7065 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{mean}\NormalTok{(salaireprof}\SpecialCharTok{$}\NormalTok{salaire)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 113.7065
+\end{verbatim}
+
 Dans notre exemple, l'équation de la droite ajustée de la
 Figure~\ref{fig-droitenuage} est \[
-\widehat{\texttt{salaire}} = 99.975 + 0.78\texttt{service}.
+\widehat{\texttt{salaire}} = 99.9746529 + 0.7795691\texttt{service}.
 \]
 
 Ainsi, le salaire moyen d'un nouveau professeur serait 99975 dollars,
@@ -11772,7 +11904,7 @@ empiriques entre femmes et hommes.
 
 \centering{
 
-\includegraphics[width=0.7\textwidth,height=\textheight]{rappel-regressionlineaire_files/figure-pdf/fig-graphcollegesexe-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{rappel-regressionlineaire_files/figure-pdf/fig-graphcollegesexe-1.pdf}}
 
 }
 
@@ -11787,25 +11919,36 @@ et \(1\) est réalisable.}
 \begin{Highlighting}[]
 \CommentTok{\# Catégorie de base: femme (première en ordre alphanumérique)}
 \FunctionTok{levels}\NormalTok{(salaireprof}\SpecialCharTok{$}\NormalTok{sexe)}
-\CommentTok{\#\textgreater{} [1] "femme" "homme"}
-\CommentTok{\# Coefficients du modèle: moyenne des femmes et différentiel homme vs ref}
-\FunctionTok{coef}\NormalTok{(}\FunctionTok{lm}\NormalTok{(salaire }\SpecialCharTok{\textasciitilde{}}\NormalTok{ sexe, }\AttributeTok{data =}\NormalTok{ salaireprof))}
-\CommentTok{\#\textgreater{} (Intercept)   sexehomme }
-\CommentTok{\#\textgreater{}       101.0        14.1}
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+[1] "femme" "homme"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Coefficients du modèle: moyenne des femmes et différentiel homme vs ref}
+\FunctionTok{coef}\NormalTok{(}\FunctionTok{lm}\NormalTok{(salaire }\SpecialCharTok{\textasciitilde{}}\NormalTok{ sexe, }\AttributeTok{data =}\NormalTok{ salaireprof))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+(Intercept)   sexehomme 
+  101.00241    14.08801 
+\end{verbatim}
+
 Si on ajuste un modèle de régression linéaire pour les données
 \texttt{salaireprof}, on obtient un salaire moyen de
-\(\widehat{\beta}_0=101002\) dollars USD pour les femmes et une
-différence moyenne de salaire entre hommes et femmes de
-\(\widehat{\beta}_1=-14088\) dollars US. Puisque l'estimé est positif,
-les femmes sont moins payés: ce modèle n'est en revanche pas suffisant
-pour déterminer s'il y a inéquité salariale: la
-Figure~\ref{fig-droitenuage} montre que le nombre d'années de service et
-l'échelon académique impactent fortement le salaire, or il n'est pas dit
-que la répartition des sexes au sein des échelons est comparable (et ce
-n'est pas le cas).
+\(\widehat{\beta}_0=\ensuremath{1.01002\times 10^{5}}\) dollars USD pour
+les femmes et une différence moyenne de salaire entre hommes et femmes
+de \(\widehat{\beta}_1=\ensuremath{-1.4088\times 10^{4}}\) dollars US.
+Puisque l'estimé est positif, les femmes sont moins payés: ce modèle
+n'est en revanche pas suffisant pour déterminer s'il y a inéquité
+salariale: la Figure~\ref{fig-droitenuage} montre que le nombre d'années
+de service et l'échelon académique impactent fortement le salaire, or il
+n'est pas dit que la répartition des sexes au sein des échelons est
+comparable (et ce n'est pas le cas).
 
 Même si le modèle linéaire simple définit une droite, cette dernière n'a
 de sens qu'en \(0\) ou \(1\); la Figure~\ref{fig-graphcollegesexe}
@@ -11931,7 +12074,7 @@ que si on avait \texttt{x}, \texttt{I(x\^{}2)}, \texttt{I(x\^{}3)}, etc.
 
 \centering{
 
-\includegraphics[width=0.7\textwidth,height=\textheight]{rappel-regressionlineaire_files/figure-pdf/fig-autoquad2d-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{rappel-regressionlineaire_files/figure-pdf/fig-autoquad2d-1.pdf}}
 
 }
 
@@ -11965,7 +12108,7 @@ représenté en gris dans la Figure~\ref{fig-hyperplan}.
 
 \centering{
 
-\includegraphics[width=0.7\textwidth,height=\textheight]{figures/hyperplan_auto.png}
+\includegraphics[width=2.14in,height=\textheight,keepaspectratio]{figures/hyperplan_auto.png}
 
 }
 
@@ -11990,12 +12133,12 @@ modèle linéaire s'écrit \begin{align*}
 \end{align*}
 
 \begin{longtable}[]{@{}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}@{}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}@{}}
 
 \caption{\label{tbl-collegecoefs}Estimés des coefficients du modèle
 linéaire pour les données \(\texttt{salaireprof}\) (en dollars USD,
@@ -12030,30 +12173,33 @@ arrondis à l'unité).}
 \NormalTok{modlin2 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(salaire }\SpecialCharTok{\textasciitilde{}}\NormalTok{  sexe }\SpecialCharTok{+}\NormalTok{ domaine }\SpecialCharTok{+}\NormalTok{ echelon }\SpecialCharTok{+}\NormalTok{ service,}
               \AttributeTok{data =}\NormalTok{ salaireprof)}
 \FunctionTok{summary}\NormalTok{(modlin2)}
-\CommentTok{\#\textgreater{} }
-\CommentTok{\#\textgreater{} Call:}
-\CommentTok{\#\textgreater{} lm(formula = salaire \textasciitilde{} sexe + domaine + echelon + service, data = salaireprof)}
-\CommentTok{\#\textgreater{} }
-\CommentTok{\#\textgreater{} Residuals:}
-\CommentTok{\#\textgreater{}    Min     1Q Median     3Q    Max }
-\CommentTok{\#\textgreater{} {-}64.20 {-}14.26  {-}1.53  10.57  99.16 }
-\CommentTok{\#\textgreater{} }
-\CommentTok{\#\textgreater{} Coefficients:}
-\CommentTok{\#\textgreater{}                  Estimate Std. Error t value    Pr(\textgreater{}|t|)    }
-\CommentTok{\#\textgreater{} (Intercept)       86.5963     2.9603   29.25     \textless{} 2e{-}16 ***}
-\CommentTok{\#\textgreater{} sexefemme         {-}4.7712     3.8780   {-}1.23     0.21931    }
-\CommentTok{\#\textgreater{} domainetheorique {-}13.4734     2.3155   {-}5.82 0.000000012 ***}
-\CommentTok{\#\textgreater{} echelonaggrege    14.5604     4.0983    3.55     0.00043 ***}
-\CommentTok{\#\textgreater{} echelontitulaire  49.1596     3.8345   12.82     \textless{} 2e{-}16 ***}
-\CommentTok{\#\textgreater{} service           {-}0.0888     0.1116   {-}0.80     0.42696    }
-\CommentTok{\#\textgreater{} {-}{-}{-}}
-\CommentTok{\#\textgreater{} Signif. codes:  0 \textquotesingle{}***\textquotesingle{} 0.001 \textquotesingle{}**\textquotesingle{} 0.01 \textquotesingle{}*\textquotesingle{} 0.05 \textquotesingle{}.\textquotesingle{} 0.1 \textquotesingle{} \textquotesingle{} 1}
-\CommentTok{\#\textgreater{} }
-\CommentTok{\#\textgreater{} Residual standard error: 22.7 on 391 degrees of freedom}
-\CommentTok{\#\textgreater{} Multiple R{-}squared:  0.448,  Adjusted R{-}squared:  0.441 }
-\CommentTok{\#\textgreater{} F{-}statistic: 63.4 on 5 and 391 DF,  p{-}value: \textless{}2e{-}16}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = salaire ~ sexe + domaine + echelon + service, data = salaireprof)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-64.202 -14.255  -1.533  10.571  99.163 
+
+Coefficients:
+                  Estimate Std. Error t value Pr(>|t|)    
+(Intercept)       86.59629    2.96031  29.252  < 2e-16 ***
+sexefemme         -4.77125    3.87800  -1.230 0.219311    
+domainetheorique -13.47338    2.31550  -5.819 1.24e-08 ***
+echelonaggrege    14.56040    4.09832   3.553 0.000428 ***
+echelontitulaire  49.15964    3.83449  12.820  < 2e-16 ***
+service           -0.08878    0.11164  -0.795 0.426958    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 22.65 on 391 degrees of freedom
+Multiple R-squared:  0.4478,    Adjusted R-squared:  0.4407 
+F-statistic: 63.41 on 5 and 391 DF,  p-value: < 2.2e-16
+\end{verbatim}
 
 L'interprétation des coefficients est la suivante:
 
@@ -12063,7 +12209,7 @@ L'interprétation des coefficients est la suivante:
   L'ordonnée à l'origine \(\beta_0\) correspond au salaire moyen d'une
   professeure adjointe (une femme) qui vient de compléter ses études et
   qui travaille dans un domaine appliqué: on estime ce salaire à
-  \(\widehat{\beta}_0=86596\) dollars.
+  \(\widehat{\beta}_0=\ensuremath{8.6596\times 10^{4}}\) dollars.
 \item
   toutes choses étant égales par ailleurs (même domaine, échelon et
   années depuis le dernier diplôme), l'écart de salaire entre une femme
@@ -12071,16 +12217,16 @@ L'interprétation des coefficients est la suivante:
 \item
   \emph{ceteris paribus}, un(e) professeur(e) qui oeuvre dans un domaine
   théorique gagne \(\beta_2\) dollars de plus qu'une personne du même
-  sexe dans un domaine appliqué; on estime cette différence à \(-13473\)
-  dollars.
+  sexe dans un domaine appliqué; on estime cette différence à
+  \(\ensuremath{-1.3473\times 10^{4}}\) dollars.
 \item
   \emph{ceteris paribus}, la différence moyenne de salaire entre
   professeurs adjoints et aggrégés est estimée à
-  \(\widehat{\beta}_3=14560\) dollars.
+  \(\widehat{\beta}_3=\ensuremath{1.456\times 10^{4}}\) dollars.
 \item
   \emph{ceteris paribus}, la différence moyenne de salaire entre
-  professeurs adjoints et titulaires est de \(\widehat{\beta}_4=49160\)
-  dollars.
+  professeurs adjoints et titulaires est de
+  \(\widehat{\beta}_4=\ensuremath{4.916\times 10^{4}}\) dollars.
 \item
   au sein d'un même échelon, chaque année supplémentaire de service mène
   à une augmentation de salaire annuelle moyenne de

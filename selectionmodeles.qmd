@@ -31,7 +31,7 @@ Dans ce cas, on désire seulement que notre modèle soit performant pour prédir
 
 - **2e situation**: On veut développer un modèle pour estimer les effets de certaines variables sur notre $Y$ et tester des hypothèses de recherche spécifiques concernant certaines variables.
 
-Dans ce cas, il est préférable de spécifier le modèle dès le départ selon des considérations scientifiques et de s'en tenir à lui. Faire une sélection de variables dans ce cas est dangereux car on ne peut pas utiliser directement les valeurs-_p_ des tests d'hypothèses (ou les intervalles de confiance sur les paramètres) concernant les paramètres du modèle final car elles ne tiennent pas compte de la variabilité due au processus de sélection de variables.
+Dans ce cas, il est préférable de spécifier le modèle dès le départ selon des considérations scientifiques et de s'en tenir à lui. Par exemple, un plan d'expérience a souvent un ou plusieurs facteurs (sous-groupes) avec des traitements différents: si notre échantillon aléatoire est représentatif de la population, on peut directement estimer à l'aide d'un modèle les différences de moyennes entre groupes et voir si les différences entre ces dernières sont significatives. Faire une sélection de variables dans ce cas est dangereux car on ne peut pas utiliser directement les valeurs-_p_ des tests d'hypothèses (ou les intervalles de confiance sur les paramètres) concernant les paramètres du modèle final car elles ne tiennent pas compte de la variabilité due au processus de sélection de variables.
 
 Une bonne planification de l'étude est alors cruciale afin de collecter les bonnes variables, de spécifier le ou les bons modèles, et de s'assurer d'avoir suffisamment d'observations pour ajuster le ou les modèles désirés.
 
@@ -76,11 +76,11 @@ mod_2b <- lm(y_b ~ X1 + X2) # surspécifié
 #| label: tbl-specification
 #| layout-ncol: 2
 #| tbl-cap: "Surspécification de modèle de régression linéaire pour des données simulées."
-tab1 <- cbind(coef(mod_1a),
-          confint(mod_1a))
+tab1 <- cbind(coef(mod_1b),
+          confint(mod_1b))
 rownames(tab1) <- c("(cst)", "X1")
-tab2 <- cbind(coef(mod_2a),
-          confint(mod_2a))
+tab2 <- cbind(coef(mod_2b),
+          confint(mod_2b))
 rownames(tab2) <- c("(cst)", "X1", "X2")
 
 kable(
@@ -113,11 +113,11 @@ Supposons à l'inverse qu'il manque des variables dans le modèle ajusté et que
 #| label: tbl-specification2
 #| layout-ncol: 2
 #| tbl-cap: "Sous-spécification de modèle de régression linéaire pour des données simulées."
-tab1 <- cbind(coef(mod_1b),
-          confint(mod_1b))
+tab1 <- cbind(coef(mod_1a),
+          confint(mod_1a))
 rownames(tab1) <- c("(cst)", "X1")
-tab2 <- cbind(coef(mod_2b),
-          confint(mod_2b))
+tab2 <- cbind(coef(mod_2a),
+          confint(mod_2a))
 rownames(tab2) <- c("(cst)", "X1", "X2")
 
 kable(
@@ -315,20 +315,20 @@ Mais avant cela, nous allons discuter un peu plus en détail au sujet de la rég
 \begin{align*}
 \widehat{f}(X_1, \ldots, X_p) = \widehat{Y}=\widehat{\beta}_0 + \widehat{\beta}_1X_1+ \cdots + \widehat{\beta}_p X_p.
 \end{align*}
-La somme du carré des erreurs ($\mathsf{SCE}$) pour notre échantillon est
+L'erreur quadratique moyenne pour notre échantillon est
 \begin{align*}
-\mathsf{SCE}=\sum_{i=1}^n (Y_i - \widehat{\beta}_0 - \widehat{\beta}_1X_1 - \cdots - \widehat{\beta}_p X_p)^2 = \sum_{i=1}^n (Y_i-\widehat{Y}_i)^2.
+\mathsf{EQM}=\frac{1}{n}\sum_{i=1}^n (Y_i - \widehat{\beta}_0 - \widehat{\beta}_1X_1 - \cdots - \widehat{\beta}_p X_p)^2 = \sum_{i=1}^n (Y_i-\widehat{Y}_i)^2.
  \end{align*}
-On peut démontrer que si on ajoute une variable quelconque au modèle, la valeur de la somme du carré des erreurs va nécessairement baisser. Il est facile de se convaincre de cela. En régression linéaire, les estimations sont obtenues par la méthode des moindres carrés qui consiste justement à minimiser la $\mathsf{SCE}$. Ainsi, en ajoutant une variable $X_{p+1}$ au modèle, la $\mathsf{SCE}$ ne peut que baisser car, dans le pire des cas, le paramètre de la nouvelle variable sera $\widehat{\beta}_{p+1}=0$ et on retombera sur le modèle sans cette variable. C'est pourquoi, la quantité $\widehat{\mathsf{EQM}}_a=\mathsf{SCE}/n$ ne peut être utilisée comme outil de sélection de modèles en régression linéaire.
+On peut démontrer que si on ajoute une variable quelconque au modèle, la valeur de l'erreur quadratique moyenne va nécessairement baisser. Il est facile de se convaincre de cela. En régression linéaire, les estimations sont obtenues par la méthode des moindres carrés qui consiste justement à minimiser l'$\mathsf{EQM}$. Ainsi, en ajoutant une variable $X_{p+1}$ au modèle, l'erreur quadratique moyenne ne peut que baisser car, dans le pire des cas, le paramètre de la nouvelle variable sera $\widehat{\beta}_{p+1}=0$ et on retombera sur le modèle sans cette variable. C'est pourquoi, la quantité $\widehat{\mathsf{EQM}}_a$ ne peut être utilisée comme outil de sélection de modèles en régression linéaire.
 
-Nous venons d'ailleurs d'illustrer cela avec notre exemple sur les modèles polynomiaux. En effet, augmenter l'ordre du polynôme de $1$ revient à ajouter une variable. Le coefficient de détermination ($R^2$) est souvent utilisé, à tort, comme mesure de qualité du modèle. Il peut s'interpréter comme étant la proportion de la variance de $Y$ qui est expliquée par le modèle.
+Nous venons d'ailleurs d'illustrer cela avec notre exemple sur les modèles polynomiaux. En effet, augmenter l'ordre du polynôme de $1$ revient à ajouter une variable. Le coefficient de détermination ($R^2$) est souvent utilisé, à tort, comme mesure de qualité du modèle. Il peut s'interpréter comme étant la proportion de la variance de $Y$ qui est expliquée par le modèle, ou comme un score relatif par rapport à l'erreur quadratique moyenne du modèle nul qui n'inclut que l'ordonnée à l'origine, et pour lequel la prédiction de chaque observation est la moyenne empirique de la variable cible, $\overline{Y}$.
 
 Le coefficient de détermination est
 \begin{align*}
-R^2=\{\mathsf{cor}(\boldsymbol{y}, \widehat{\boldsymbol{y}})\}^2 = 1-\frac{\mathsf{SCE}}{\mathsf{SCT}},
+R^2=\{\mathsf{cor}(\boldsymbol{y}, \widehat{\boldsymbol{y}})\}^2 = 1-\frac{\mathsf{EQM}}{\mathsf{EQM}_0},
 \end{align*}
-où $\mathsf{SCT}=\sum_{i=1}^n (Y_i-\overline{Y})^2$ est la somme des carrés totale calculée en centrant les observations. La somme des carrés totale, $\mathsf{SCT}$, ne varie pas en fonction du modèle.
-Ainsi, on voit que le $R^2$ va méchaniquement augmenter lorsqu'on ajoute une variable au modèle (car la $\mathsf{SCE}$ diminue). C'est pourquoi on ne peut pas l'utiliser comme outil de sélection de variables.
+où $\mathsf{EQM}_0=n^{-1}\sum_{i=1}^n (Y_i-\overline{Y})^2$ est la somme des carrés totale calculée en centrant les observations. La référence globale $\mathsf{EQM}_0$ ne varie pas en fonction du modèle.
+Ainsi, on voit que le $R^2$ va méchaniquement augmenter lorsqu'on ajoute une variable au modèle. C'est pourquoi on ne peut pas l'utiliser comme outil de sélection de variables, à moins de l'estimer sur un échantillon de validation, auquel cas la valeur du $R^2$ pourrait être négative si le modèle prédit moins bien que la référence.
 
 Le problème principal que nous avons identifié jusqu'à présent afin d'être en mesure de bien estimer la performance d'un modèle est le suivant : si on utilise les mêmes observations pour évaluer la performance d'un modèle que celles qui ont servi à l'ajuster, on va surestimer sa performance.
 
@@ -352,7 +352,7 @@ tandis que le  critère d'information bayésien de Schwartz, $\mathsf{BIC}$, est
 \begin{align*}
 \mathsf{BIC} &=-2 \ell(\widehat{\boldsymbol{\beta}}, \widehat{\sigma}^2) + p\ln(n)=n \ln (\mathsf{EQM}) + p\ln(n) + \text{constante}.
 \end{align*}
-Plus la valeur du $\mathsf{AIC}$ (ou du $\mathsf{BIC}$) est petite, meilleur est l'adéquation. Que se passe-t-il lorsqu'on ajoute un paramètre à un modèle? D'une part, la somme du carré des erreurs va méchaniquement diminuer tout comme l'erreur quadratique moyenne  $\textsf{EQM} = \textsf{SCE}/n$, donc la quantité $n \ln (\mathsf{EQM})$ va diminuer. D'autre part, la valeur de $p$ augmente de $1$. Ainsi, le $\mathsf{AIC}$ peut soit augmenter, soit diminuer, lorsqu'on ajoute un paramètre; idem pour le $\mathsf{BIC}$. Par exemple, le $\mathsf{AIC}$ va diminuer seulement si la baisse de la somme du carré des erreurs est suffisante pour compenser le fait que le terme $2p$ augmente à $2 (p+1)$.
+Plus la valeur du $\mathsf{AIC}$ (ou du $\mathsf{BIC}$) est petite, meilleur est l'adéquation. Que se passe-t-il lorsqu'on ajoute un paramètre à un modèle? D'une part, la somme du carré des erreurs va méchaniquement diminuer tout comme l'erreur quadratique moyenne  $\textsf{EQM}$, donc la quantité $n \ln (\mathsf{EQM})$ va diminuer. D'autre part, la valeur de $p$ augmente de $1$. Ainsi, le $\mathsf{AIC}$ peut soit augmenter, soit diminuer, lorsqu'on ajoute un paramètre; idem pour le $\mathsf{BIC}$. Par exemple, le $\mathsf{AIC}$ va diminuer seulement si la baisse de la somme du carré des erreurs est suffisante pour compenser le fait que le terme $2p$ augmente à $2 (p+1)$.
 
 Ces critères pénalisent l'ajout de variables afin de se prémunir contre le surajustement. De plus, le $\mathsf{BIC}$ pénalise plus que le $\mathsf{AIC}$. Par conséquent, le critère $\mathsf{BIC}$ va choisir des modèles contenant soit le même nombre, soit moins de paramètres que le $\mathsf{AIC}$.
 
@@ -861,7 +861,7 @@ Ainsi, si le nombre de variables est restreint, il est possible de comparer tous
 On veut trouver un bon modèle pour prévoir la valeur de `ymontant` des clients qui ont acheté quelque chose. On a vu qu'il y a 210 clients qui ont acheté dans l'échantillon d'apprentissage. Nous allons chercher à développer un « bon » modèle avec ces 210 clients. Dans ce premier exemple, nous allons seulement utiliser les 10 variables explicatives de base (14 variables avec les indicatrices). 
 
 
-Pour un nombre de variables fixé, le meilleur modèle selon le $R^2$ est aussi le meilleur selon les critères d'information $\mathsf{AIC}$ et $\mathsf{BIC}$, pour ce nombre fixé de variables. Pour vous convaincre de cette affirmation, fixons le nombre de variables et restreignons-nous seulement aux modèles avec ce nombre de variables. Comme $R^2=1 - \mathsf{SCE}/\mathsf{SCT}$ et que $\mathsf{SCT}$ est une constante indépendante du modèle, le modèle avec le plus grand coefficient de détermination, $R^2$, est aussi celui avec la plus petite somme du carré des erreurs ($\mathsf{SCE}$). Comme $\mathsf{AIC}=n \ln (\mathsf{EQM}) + 2p$, ce sera aussi celui avec le plus petit $\mathsf{AIC}$ car la pénalité $2p$ est la même si on fixe le nombre de variables; la même remarque est valide pour le $\mathsf{BIC}$.
+Pour un nombre de variables fixé, le meilleur modèle selon le $R^2$ est aussi le meilleur selon les critères d'information $\mathsf{AIC}$ et $\mathsf{BIC}$, pour ce nombre fixé de variables. Pour vous convaincre de cette affirmation, fixons le nombre de variables et restreignons-nous seulement aux modèles avec ce nombre de variables. Comme $R^2=1 - \mathsf{EQM}/\mathsf{EQM}_0$ et que $\mathsf{EQM}_0$ est une constante indépendante du modèle, le modèle avec le plus grand coefficient de détermination, $R^2$, est aussi celui avec la plus petite erreur quadratique moyenne. Comme $\mathsf{AIC}=n \ln (\mathsf{EQM}) + 2p$, ce sera aussi celui avec le plus petit $\mathsf{AIC}$ car la pénalité $2p$ est la même si on fixe le nombre de variables; la même remarque est valide pour le $\mathsf{BIC}$.
 
 Ainsi, pour trouver le meilleur modèle globalement (sans fixer le nombre de variables), il suffit de trouver le modèle à $k$ variables explicatives ayant le coefficient de détermination le plus élevé pour tous les nombres de variables fixés et d'ensuite de trouver celui qui minimise le $\mathsf{AIC}$ (ou le $\mathsf{BIC}$) parmi ces modèles. Ainsi, le modèle linéaire simple qui a le plus grand $R^2$ est celui qui inclut l'indicateur de couple (`x5`). Le meilleur modèle (selon le $R^2$) parmi tous les modèles avec deux variables est celui avec `x5` et `x6`.
 
@@ -1432,20 +1432,20 @@ L'avantage des moindres carrés est que les valeurs ajustées et les prédiction
 Peu importe le choix d'unité (par exemple, exprimer une distance en centimètres plutôt qu'en mètres, ou la température en Farenheit plutôt qu'en Celcius), on obtient le  même ajustement. En revanche, une fois qu'on introduit un terme de pénalité, notre solution dépendra de l'unité de mesure, d'où l'importance d'utiliser les données centrées et réduites pour que la solution reste la même.
 
 
-Les estimateurs des moindres carrés ordinaires pour la régression linéaire représentent la combinaison qui minimise la somme du carré des erreurs,
+Les estimateurs des moindres carrés ordinaires pour la régression linéaire représentent la combinaison qui minimise l'erreur quadratique moyenne,
 \begin{align*}
-\mathsf{SCE} = \sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^pX_{ij}\beta_{j}\right)^2.
+\mathsf{EQM} = \frac{1}{n}\sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^pX_{ij}\beta_{j}\right)^2.
 \end{align*}
-On peut ajouter à cette fonction objective $\mathsf{SCE}$ un terme additionnel de pénalité qui va contraindre les paramètres à ne pas être trop grand. On considère une pénalité additionnelle pour la valeur absolue des coefficients, 
+On peut ajouter à cette fonction objective $\mathsf{EQM}$ un terme additionnel de pénalité qui va contraindre les paramètres à ne pas être trop grand. On considère une pénalité additionnelle pour la valeur absolue des coefficients, 
 \begin{align*}
 q_1(\lambda) = \lambda \sum_{j=1}^p |\beta_j|.
 \end{align*}
-Pour chaque valeur de $\lambda$ donnée, on obtiendra une solution différente pour les estimés car on minimisera désormais $\mathsf{SCE} + q_1(\lambda)$. On ne pénalise pas l'ordonnée à l'origine $\beta_0$, parce que ce coefficient sert à recentrer les observations et a une signification particulière: si on standardise les données, de manière à ce que leur moyenne empirique soit zéro et leur écart-type un, alors $\widehat{\beta}_0 = \overline{y}$.
+Pour chaque valeur de $\lambda$ donnée, on obtiendra une solution différente pour les estimés car on minimisera désormais $n\mathsf{EQM} + q_1(\lambda)$. On ne pénalise pas l'ordonnée à l'origine $\beta_0$, parce que ce coefficient sert à recentrer les observations et a une signification particulière: si on standardise les données, de manière à ce que leur moyenne empirique soit zéro et leur écart-type un, alors $\widehat{\beta}_0 = \overline{y}$.
 
 
 La pénalité $q_1(\lambda)$ a un rôle particulier parce qu'elle a deux effets: elle réduit la taille des paramètres, mais elle force également certains paramètres très proches de zéro à être exactement égaux à zéro, ce qui fait que la régression pénalité agit également comme outil de sélection de variables. Des algorithmes efficaces permettent de trouver la solution du problème d'optimisation
 \begin{align*}
-\min_{\boldsymbol{\beta}} \{\mathsf{SCE} + q_1(\lambda)\} = \min_{\boldsymbol{\beta}}  \left\{\sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^pX_{ij}\beta_{j}\right)^2 +
+\min_{\boldsymbol{\beta}} \{n\mathsf{EQM} + q_1(\lambda)\} = \min_{\boldsymbol{\beta}}  \left\{\sum_{i=1}^n \left(y_i - \beta_0 - \sum_{j=1}^pX_{ij}\beta_{j}\right)^2 +
 \lambda \sum_{j=1}^p |\beta_j|\right\}
 \end{align*}
 laquelle est appelée LASSO. La  @fig-lassopenalty montre la fonction objective (lignes de contour) dans le cas où on a deux paramètres, $\beta_1$ et $\beta_2$: chaque point représente une solution différente au problème, selon la valeur de la pénalité, allant de la solution des moindres carrés ordinaires, qui minimisent l'erreur quadratique moyenne, au centre des ellipses et correspondant à la solution du modèle avec $\lambda=0$, à la pénalité infinie qui réduit le modèle à l'ordonnée à l'origine. À mesure que l'on augmente la pénalité $\lambda$, les coefficients rétrécissent vers $(0, 0)$. On peut interpréter la pénalité $l_1$ comme une contraire budgétaire: les coefficients estimés pour une valeur de $\lambda$ donnée sont ceux qui minimisent la somme du carré des erreurs, mais doivent être à l'intérieur d'un budget alloué (losange). La forme de la région fait en sorte que la solution, qui se trouve sur la bordure du losange, intervient souvent dans un coin avec certaines coordonnées nulles. Par analogie, pensez à une course qui démarre à l'origine et dont l'objectif est d'atteindre, en le moins de temps possible, le point le plus élevé possible. Si le temps est limité (contrainte due à la pénalité), nous aurons moins de temps pour parcourir et on coupera au plus court. Sans contrainte de temps, on peut atteindra le sommet de la montagne correspond à la solution optimale. Les points représentent le tracé qui permet d'obtenir le gain en dénivelé le plus rapide, en quelque sorte. Les losanges représentent la distance maximale qu'on peut parcourir selon la valeur de $\lambda$.
@@ -1694,9 +1694,9 @@ Commençons par l'estimation de l'erreur quadratique moyenne (moyenne des carré
 
 | nombre de variables | $\mathsf{EQM}$    |  méthode                    |
 |:----:|:-----:|:-----|
-| `r npars_c[1]` | `r round(eqm_c[1], 2)` | toutes les variables        |
-| `r npars_c[2]` | `r round(eqm_c[2], 2)` | exhaustive - $\mathsf{AIC}$ |
-| `r npars_c[3]` | `r round(eqm_c[3], 2)` | exhaustive - $\mathsf{BIC}$ |
+| `r npars_c[1]` | `r round(eqm_c[1], 3)` | toutes les variables        |
+| `r npars_c[2]` | `r round(eqm_c[2], 3)` | exhaustive - $\mathsf{AIC}$ |
+| `r npars_c[3]` | `r round(eqm_c[3], 3)` | exhaustive - $\mathsf{BIC}$ |
 
 
 
@@ -1706,12 +1706,12 @@ Commençons par l'estimation de l'erreur quadratique moyenne (moyenne des carré
 
 | nombre de variables | $\mathsf{EQM}$ | méthode |
 |:----:|:-----:|:-----|
-| `r npars_c[4]` | `r round(eqm_c[4], 2)` | toutes les variables |
-| `r npars_c[5]` | `r round(eqm_c[5], 2)` | séquentielle ascendante, choix selon $\mathsf{AIC}$ |
-| `r npars_c[6]` | `r round(eqm_c[6], 2)` | séquentielle ascendante, choix selon $\mathsf{BIC}$ |
-| `r npars_c[7]` | `r round(eqm_c[7], 2)` | séquentielle ascendante avec critère $\mathsf{AIC}$ |
-| `r npars_c[8]` | `r round(eqm_c[8], 2)` | séquentielle descendante avec critère $\mathsf{BIC}$ |
-| `r npars_c[9]` | `r round(eqm_c[9], 2)` | LASSO, validation croisée avec 10 groupes |
+| `r npars_c[4]` | `r round(eqm_c[4], 3)` | toutes les variables |
+| `r npars_c[5]` | `r round(eqm_c[5], 3)` | séquentielle ascendante, choix selon $\mathsf{AIC}$ |
+| `r npars_c[6]` | `r round(eqm_c[6], 3)` | séquentielle ascendante, choix selon $\mathsf{BIC}$ |
+| `r npars_c[7]` | `r round(eqm_c[7], 3)` | séquentielle ascendante avec critère $\mathsf{AIC}$ |
+| `r npars_c[8]` | `r round(eqm_c[8], 3)` | séquentielle descendante avec critère $\mathsf{BIC}$ |
+| `r npars_c[9]` | `r round(eqm_c[9], 3)` | LASSO, validation croisée avec 10 groupes |
 
 
 : Comparaison des méthodes selon l'erreur quadratique moyenne avec les variables de base, les interactions et les termes quadratiques. {#tbl-02-modelcomparaisonfull}
