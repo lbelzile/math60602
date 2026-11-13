@@ -37,10 +37,9 @@ Avec une variable réponse continue, le modèle de régression linéaire,
 \begin{align*}
  Y = \beta_0 + \beta_1\mathrm{X}_1 + \cdots + \beta_p \mathrm{X}_p + \varepsilon,
 \end{align*}
-avec $\mathsf{E}(\varepsilon \mid \mathbf{X})=0$ et $\mathsf{Va}(\varepsilon \mid \mathbf{X})=\sigma^2$, peut être écrit de manière équivalente comme $\mathsf{E}(Y  \mid \mathbf{X}) = \beta_0 + \beta_1\mathrm{X}_1 + \cdots + \beta_p\mathrm{X}_p$ et $\mathsf{Va}(Y \mid \mathbf{X})=\sigma^2.$ 
+avec $\mathsf{E}(\varepsilon \mid \mathbf{X})=0$ et $\mathsf{Va}(\varepsilon \mid \mathbf{X})=\sigma^2$, peut être écrit de manière équivalente comme $\mathsf{E}(Y  \mid \mathbf{X}) = \eta =\beta_0 + \beta_1\mathrm{X}_1 + \cdots + \beta_p\mathrm{X}_p$ et $\mathsf{Va}(Y \mid \mathbf{X})=\sigma^2.$ 
 
-
-Si $Y$ est binaire (0/1), on peut facilement vérifier que 
+Ainsi, notre somme pondérée de variables explicatives, $\eta$, sert à modéliser la moyenne de la variable réponse. Si $Y$ est binaire (0/1), on peut facilement vérifier que 
 \begin{align*}
 \mathsf{E}(Y \mid \mathbf{X}) = \Pr(Y=1 \mid  \mathbf{X}),
 \end{align*}
@@ -200,7 +199,7 @@ En pratique, il est habituellement plus simple de chercher à maximiser le log d
 
 Vous connaissez déjà des exemples d'estimateurs du maximum de vraisemblance. La moyenne d'un échantillon est l'estimateur du maximum de vraisemblance pour la moyenne de la population $\mu$ si les observations représentent un échantillon aléatoire simple tiré d'une loi normale.
 
-Dans le cas d'un modèle de régression linéaire multiple de la forme $Y_i \sim \mathsf{No}(\beta_0 + \sum_{j=1}^p \beta_j\mathrm{X}_{ij}, \sigma^2)$ des termes indépendants et de même loi, la log-vraisemblance du modèle pour un échantillon de taille $n$ est 
+Dans le cas d'un modèle de régression linéaire multiple de la forme $Y_i \sim \mathsf{normal}(\beta_0 + \sum_{j=1}^p \beta_j\mathrm{X}_{ij}, \sigma^2)$ des termes indépendants et de même loi, la log-vraisemblance du modèle pour un échantillon de taille $n$ est 
 \begin{align*}
  \ell(\boldsymbol{\beta}, \sigma^2) =- \frac{n}{2} \ln(2\pi\sigma^2) - \frac{1}{2\sigma^2}\sum_{i=1}^n (Y_i- \beta_0 - \beta_1 \mathrm{X}_{1i} - \cdots - \beta_p\mathrm{X}_{ip})^2.
 \end{align*}
@@ -357,7 +356,7 @@ Ainsi, lorsque $\mathrm{X}_5$ augmente d'une année, la cote est multipliée par
 L'interprétation des coefficients du modèle logistique se fait au niveau du rapport de cote, à savoir $\exp(\beta)$. 
 
 
-Un des avantages d'utiliser la vraisemblance comme fonction objective est que les intervalles de confiance et les estimateurs basés sur la vraisemblance (profilée) sont invariant aux reparamétrisations: l'intervalle de confiance à niveau 95\% pour $\exp(\beta_{\texttt{age}})$ est obtenu en prenant l'exponentielle des bornes de l'intervalle pour $\beta_{\texttt{age}}$, [$\exp(0.0465); \exp(0.1043)$], soit [$1.048; 1.110$] tel que rapporté dans la sortie. Ce n'est **pas** le cas des intervalles usuels de Wald qui ont la forme $\widehat{\beta} \pm 1.96 \mathrm{se}(\widehat{\beta})$.
+Un des avantages d'utiliser la vraisemblance comme fonction objective est que les intervalles de confiance et les estimateurs basés sur la vraisemblance (profilée) sont invariant aux reparamétrisations injectives: l'intervalle de confiance à niveau 95\% pour $\exp(\beta_{\texttt{age}})$ est obtenu en prenant l'exponentielle des bornes de l'intervalle pour $\beta_{\texttt{age}}$, [$\exp(0.0465); \exp(0.1043)$], soit [$1.048; 1.110$] tel que rapporté dans la sortie. Ce n'est **pas** le cas des intervalles usuels de Wald qui ont la forme $\widehat{\beta} \pm 1.96 \mathrm{se}(\widehat{\beta}),$ ni pour les transformations telles que les différences de coefficients peu importe la méthode.
 
 
 Comme l'exponentielle est une transformation monotone croissante, on a $\beta>0$ si et seulement si $\exp(\beta)>1$, etc. On peut ainsi utiliser les intervalles de confiance pour tester l'hypothèse $\mathscr{H}_0: \beta_j=0$ ou de façon équivalente $\mathscr{H}_0: \exp(\beta_j)=1$ à niveau 95\%.
